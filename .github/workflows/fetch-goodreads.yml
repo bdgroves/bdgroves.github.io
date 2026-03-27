@@ -1,0 +1,81 @@
+name: Fetch Goodreads Books
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  fetch-books:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch Goodreads RSS and generate books.json
+        run: |
+          python3 << 'EOF'
+          import urllib.request
+          import xml.etree.ElementTree as ET
+          import json
+
+          USER_ID = "9579797"
+
+          def fetch_shelf(shelf):
+              url = f"https://www.goodreads.com/review/list_rss/{USER_ID}?shelf={shelf}"
+              headers = {"User-Agent": "Mozilla/5.0 (compatible; brooksgroves-bot/1.0)"}
+              req = urllib.request.Request(url, headers=headers)
+              with urllib.request.urlopen(req, timeout=15) as r:
+                  return r.read()
+
+          def parse_books(xml_data, limit=5):
+              root = ET.fromstring(xml_data)
+              channel = root.find("channel")
+              books = []
+              for item in channel.findall("item")[:limit]:
+                  def tag(name):
+                      el = item.find(name)
+                      return el.text.strip() if el is not None and el.text else ""
+                  books.append({
+                      "title": tag("title"),
+                      "author": tag("author_name"),
+                      "image": tag("book_medium_image_url"),
+                      "link": tag("link"),
+                      "rating": tag("user_rating"),
+                      "shelf": tag("user_shelves"),
+                      "read_at": tag("user_read_at"),
+                  })
+              return books
+
+          output = {}
+
+          try:
+              xml = fetch_shelf("currently-reading")
+              output["currently_reading"] = parse_books(xml, limit=3)
+              print(f"Currently reading: {len(output['currently_reading'])} books")
+          except Exception as e:
+              print(f"Error: {e}")
+              output["currently_reading"] = []
+
+          try:
+              xml = fetch_shelf("read")
+              output["recently_read"] = parse_books(xml, limit=5)
+              print(f"Recently read: {len(output['recently_read'])} books")
+          except Exception as e:
+              print(f"Error: {e}")
+              output["recently_read"] = []
+
+          with open("books.json", "w") as f:
+              json.dump(output, f, indent=2)
+
+          print("Done — books.json written")
+          EOF
+
+      - name: Commit books.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add books.json
+          git diff --staged --quiet || git commit -m "chore: update books.json [skip ci]"
+          git push
