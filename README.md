@@ -1,72 +1,55 @@
-Skip to content
-bdgroves
-bdgroves.github.io
-Repository navigation
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-Owner avatar
-bdgroves.github.io
-Public
-bdgroves/bdgroves.github.io
+# brooksgroves.com
 
-t
-Name		
-bdgroves
-bdgroves
-Delete nv_imcome.html
-7f5b6f1
- · 
-now
-README.md
-Initial commit
-2 years ago
-index.html
-Add initial HTML structure for personal website
-4 minutes ago
-Repository files navigation
-README
-bdgroves.github.io
+Personal site of Brooks Groves — developer, writer, and outdoorsman based in Tacoma, WA.
 
+Live at **[brooksgroves.com](https://brooksgroves.com)**
 
-About
+-----
 
-No description, website, or topics provided.
-Resources
- Readme
- Activity
-Stars
- 0 stars
-Watchers
- 1 watching
-Forks
- 0 forks
-Releases
+## What’s here
 
-No releases published
-Create a new release
-Deployments
-10
+A hand-built static site serving as home base for projects, writing, reading, and sports. No frameworks, no build step — just HTML, CSS, and a few lines of vanilla JS. Hosted on GitHub Pages with a custom domain via Cloudflare.
 
-github-pages
-+ 9 deployments
-Packages
+### Sections
 
-No packages published
-Publish your first package
-Contributors
-1
+- **Projects** — geospatial dashboards, environmental monitors, baseball analytics, and more
+- **Blog** — technical writing on Python, R, geospatial tools, and data pipelines
+- **Journal** — field notes, race dispatches, and things worth remembering
+- **Reading** — current stack and recent reads
+- **Sports** — MLB (Mariners), NFL, pro cycling, running, and triathlon
 
-@bdgroves
-bdgroves Brooks Groves
-Languages
+-----
 
-HTML
-100.0%
-bdgroves/bdgroves.github.io1Password menu is available. Press down arrow to select.
+## Related projects
+
+|Project                                                             |Description                                               |
+|--------------------------------------------------------------------|----------------------------------------------------------|
+|[EDGAR](https://bdgroves.github.io/EDGAR)                           |Mariners & Rainiers automated stats dashboard             |
+|[RIDGELINE](https://bdgroves.github.io/ridgeline)                   |WUI search & rescue call volume analysis                  |
+|[Sierra Streamflow](https://bdgroves.github.io/sierra-streamflow)   |Live USGS stream gage monitor for Sierra Nevada watersheds|
+|[Weather Report Bot](https://github.com/bdgroves/weather-report-bot)|Automated weather cards posted to Twitter & Bluesky       |
+
+-----
+
+## Stack
+
+- Pure HTML/CSS/JS — no build tooling
+- Hosted on GitHub Pages
+- DNS via Cloudflare Registrar
+- Fonts: Playfair Display, Libre Baskerville, DM Mono (Google Fonts)
+
+-----
+
+## Local development
+
+No build step required. Just open `index.html` in a browser or serve it locally:
+
+```bash
+python -m http.server 8000
+```
+
+Then visit `http://localhost:8000`.
+
+-----
+
+*Pacific Northwest · 47.6° N, 122.3° W*
