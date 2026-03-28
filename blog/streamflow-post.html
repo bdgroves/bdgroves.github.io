@@ -1,1 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building a Live Streamflow Dashboard on a $0 Budget — Brooks Groves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
 
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    /* ARTICLE */
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+
+    .article-tag { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin: 2rem 0 0.75rem; }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body em { font-style: italic; }
+
+    .article-body pre {
+      background: var(--ink);
+      color: #c8d0cc;
+      padding: 1.25rem 1.5rem;
+      border-radius: 2px;
+      overflow-x: auto;
+      margin: 1.5rem 0 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+    .article-body code {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85em;
+      background: var(--cream);
+      padding: 0.15em 0.4em;
+      border-radius: 2px;
+    }
+    .article-body pre code {
+      background: none;
+      padding: 0;
+      font-size: 1em;
+      color: inherit;
+    }
+
+    .article-body ul, .article-body ol { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body li { margin-bottom: 0.4rem; }
+
+    .article-tags { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--mist); display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; }
+
+    .article-nav { margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; gap: 1rem; }
+    .article-nav a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--stone); margin-top: 0.2rem; }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog">Blog</a>
+      <a href="/journal">Journal</a>
+      <a href="/projects">Projects</a>
+      <a href="/reading">Reading</a>
+      <a href="/sports">Sports</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog" class="article-back">← Back to Blog</a>
+
+  <p class="article-tag">Python · GitHub Actions · USGS · Hydrology · Sierra Nevada</p>
+  <h1 class="article-title">Building a Live Streamflow Dashboard on a $0 Budget</h1>
+  <div class="article-meta">
+    <span>March 18, 2026</span>
+    <span>8 min read</span>
+    <span>Brooks Groves</span>
+  </div>
+
+  <div class="article-body">
+
+    <p>I've been watching Sierra Nevada snowpack numbers obsessively for years. Not in a professional capacity — just as someone who grew up in Groveland, California, where the water that falls as snow in the high country eventually becomes the water in your tap, your river, your summer. You pay attention to it the way you pay attention to the weather. It's personal.</p>
+
+    <p>So last year I decided to build something that let me watch it properly. A live dashboard. Stream gages, historical comparisons, a map. The whole thing. And I wanted to do it without spending a dime.</p>
+
+    <p>Spoiler: it worked. Here's how.</p>
+
+    <hr>
+
+    <h2>Why I Built It</h2>
+
+    <p>There are plenty of ways to check streamflow data. The USGS has their own site. There are apps. But none of them gave me what I actually wanted — a single view of the gages I care about, with historical context baked in, automatically updated, and hosted somewhere I could bookmark and share.</p>
+
+    <p>I also wanted to build it. That's the honest answer. I'd been doing a lot of geospatial work in Python and R and wanted a project that pulled it all together — data pipeline, visualization, web deployment — without needing a server, a database, or a credit card.</p>
+
+    <p>GitHub Pages and GitHub Actions turned out to be the entire infrastructure stack. Free, reliable, and already where my code lives anyway.</p>
+
+    <hr>
+
+    <h2>The USGS API: Better Than You'd Expect</h2>
+
+    <p>The USGS National Water Information System has a public API that's genuinely well-documented and completely free to use. No key required. You just hit an endpoint with a site number and get back JSON with real-time and historical discharge data.</p>
+
+    <p>For the Sierra Streamflow Monitor I picked 8 gages across key watersheds — the Kings, the San Joaquin, the Merced, the Tuolumne, the American. Each one has a unique USGS site ID, and pulling current conditions is as simple as:</p>
+
+<pre><code>https://waterservices.usgs.gov/nwis/iv/?sites=11264500&parameterCd=00060&format=json</code></pre>
+
+    <p>That returns the current discharge in cubic feet per second. For historical data I used the daily values endpoint, which goes back decades on most gages. That's what powers the spaghetti charts — overlaying this year's flow against the last ten years to show whether we're running high, low, or right on average.</p>
+
+    <p>The data is clean, consistent, and updated every 15 minutes. For a free public API, it's remarkably solid.</p>
+
+    <hr>
+
+    <h2>The GitHub Actions Pipeline</h2>
+
+    <p>This is where the magic happens, and honestly it's the part I'm most proud of.</p>
+
+    <p>Every week, a GitHub Action wakes up, runs a Python script, fetches the latest data from the USGS API for all 8 gages, generates updated HTML charts, and commits the results back to the repo. GitHub Pages picks up the new files and serves them automatically. The whole cycle takes about 90 seconds.</p>
+
+    <p>The workflow file is about 20 lines of YAML:</p>
+
+<pre><code>on:
+  schedule:
+    - cron: '0 8 * * 1'  # every Monday at 8am UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests pandas matplotlib
+      - run: python fetch_streamflow.py
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: update streamflow data" || echo "No changes"
+          git push</code></pre>
+
+    <p>That's it. No server. No database. No monthly bill. The compute runs on GitHub's infrastructure, the data lives in the repo as static files, and GitHub Pages serves it for free.</p>
+
+    <hr>
+
+    <h2>The Leaflet Map</h2>
+
+    <p>For the map I used Leaflet.js — a lightweight open-source mapping library that works great for static sites. Each gage gets a marker colored by its current flow relative to historical average: blue for above average, green for normal, orange for below, red for critically low.</p>
+
+    <p>Clicking a marker opens a popup with the current reading and a sparkline showing the last 7 days. The whole map loads from a GeoJSON file that the Python script generates along with the charts.</p>
+
+    <p>No Mapbox token. No Google Maps API key. Just Leaflet, OpenStreetMap tiles, and a static file.</p>
+
+    <hr>
+
+    <h2>Lessons Learned</h2>
+
+    <p>A few things I'd do differently if I built it today:</p>
+
+    <p><strong>Use pixi instead of bare pip.</strong> Dependency management on GitHub Actions gets messy fast. I've since switched all my projects to pixi for environment management and it's dramatically cleaner.</p>
+
+    <p><strong>Cache the historical data.</strong> Right now the script re-fetches years of historical data every week, which is slow and wasteful. I should pull it once, store it in the repo, and only fetch the delta. It works fine, but it's inelegant.</p>
+
+    <p><strong>Add alerts.</strong> The whole point of watching snowmelt is knowing when something unusual happens. I have a weather bot that already posts to Bluesky — wiring up a flow alert to the same pipeline would take an afternoon. It's on the list.</p>
+
+    <p><strong>Start simpler.</strong> I built the spaghetti charts first because they were the thing I most wanted to see. The map came later. If I'd tried to build everything at once I probably would have given up. Pick the one thing you actually care about and get that working first.</p>
+
+    <hr>
+
+    <p>The dashboard is live at <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank">bdgroves.github.io/sierra-streamflow</a>. The code is all on GitHub. If you're watching a different watershed and want to adapt it, it should be pretty straightforward to swap in your own gage IDs.</p>
+
+    <p>The snowpack this year is behind average. The flows will tell us soon enough what that means for summer.</p>
+
+  </div>
+
+  <div class="article-tags">
+    <span class="article-tag-pill">Python</span>
+    <span class="article-tag-pill">GitHub Actions</span>
+    <span class="article-tag-pill">USGS</span>
+    <span class="article-tag-pill">Hydrology</span>
+    <span class="article-tag-pill">Sierra Nevada</span>
+    <span class="article-tag-pill">Leaflet</span>
+  </div>
+
+  <div class="article-nav">
+    <a href="/blog">← All posts</a>
+    <a href="/">brooksgroves.com →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">brooksgroves.com · Lakewood, WA</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog">Blog</a>
+      <a href="/journal">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+</body>
+</html>
