@@ -1,0 +1,82 @@
+name: Fetch Untappd Checkins
+
+on:
+  schedule:
+    - cron: '0 7 * * *'   # daily at 7am UTC
+  workflow_dispatch:
+
+jobs:
+  fetch-beers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch Untappd RSS and generate beers.json
+        env:
+          UNTAPPD_RSS_URL: ${{ secrets.UNTAPPD_RSS_URL }}
+        run: |
+          python3 << 'EOF'
+          import urllib.request
+          import xml.etree.ElementTree as ET
+          import json
+          import os
+          import re
+
+          rss_url = os.environ.get("UNTAPPD_RSS_URL", "https://untappd.com/rss/user/Bdgroves")
+
+          headers = {"User-Agent": "Mozilla/5.0 (compatible; brooksgroves-bot/1.0)"}
+          req = urllib.request.Request(rss_url, headers=headers)
+
+          try:
+              with urllib.request.urlopen(req, timeout=15) as r:
+                  xml_data = r.read()
+          except Exception as e:
+              print(f"Error fetching RSS: {e}")
+              exit(1)
+
+          root = ET.fromstring(xml_data)
+          channel = root.find("channel")
+
+          checkins = []
+          for item in channel.findall("item")[:20]:
+              def tag(name):
+                  el = item.find(name)
+                  return el.text.strip() if el is not None and el.text else ""
+
+              title = tag("title")
+              desc = tag("description")
+              link = tag("link")
+              pub_date = tag("pubDate")
+
+              # Extract image from description if present
+              img_match = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', desc)
+              image = img_match.group(1) if img_match else ""
+
+              # Clean description of HTML tags
+              clean_desc = re.sub(r'<[^>]+>', '', desc).strip()
+
+              checkins.append({
+                  "title": title,
+                  "description": clean_desc,
+                  "image": image,
+                  "link": link,
+                  "date": pub_date,
+              })
+
+          output = {"checkins": checkins}
+
+          with open("beers.json", "w") as f:
+              json.dump(output, f, indent=2)
+
+          print(f"beers.json written with {len(checkins)} checkins")
+          EOF
+
+      - name: Commit beers.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add beers.json
+          git diff --staged --quiet || git commit -m "chore: update beers.json [skip ci]"
+          git push
