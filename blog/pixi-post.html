@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why I Switched to pixi for Managing Python and R Environments — Brooks Groves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    /* ARTICLE */
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+
+    .article-tag { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; margin: 2rem 0 0.75rem; }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body em { font-style: italic; }
+
+    .article-body pre {
+      background: var(--ink);
+      color: #c8d0cc;
+      padding: 1.25rem 1.5rem;
+      border-radius: 2px;
+      overflow-x: auto;
+      margin: 1.5rem 0 2rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+    .article-body code {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85em;
+      background: var(--cream);
+      padding: 0.15em 0.4em;
+      border-radius: 2px;
+    }
+    .article-body pre code {
+      background: none;
+      padding: 0;
+      font-size: 1em;
+      color: inherit;
+    }
+
+    /* code comment color */
+    .article-body pre .comment { color: #6a8a72; }
+
+    .article-body ul, .article-body ol { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body li { margin-bottom: 0.4rem; }
+
+    .article-body blockquote {
+      border-left: 3px solid var(--rust);
+      padding-left: 1.25rem;
+      margin: 2rem 0;
+      font-style: italic;
+      color: var(--stone);
+      font-size: 1rem;
+    }
+
+    .article-tags { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--mist); display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; }
+
+    .article-footer { margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(1.5rem,4vw,2.5rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/construction.html">Journal</a>
+      <a href="/construction.html">Projects</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">← Back to Blog</a>
+
+  <p class="article-tag">Python · R · Environments · pixi</p>
+  <h1 class="article-title">Why I Switched to pixi for Managing Python and R Environments</h1>
+  <div class="article-meta">
+    <span>March 31, 2026</span>
+    <span>Brooks Groves</span>
+    <span>6 min read</span>
+  </div>
+
+  <div class="article-body">
+
+    <p>I've spent enough time fighting Python and R environments on Windows to know when a tool is actually helping and when it's just introducing a different kind of chaos.</p>
+
+    <p>For years, my setup was some mix of conda environments, half-remembered installs, and geospatial packages that worked right up until they didn't. It was manageable, but never especially clean. A project would work fine for a while, then I'd come back to it a few months later and have to remember which environment it needed, which channel solved the weird dependency issue, or why one machine behaved differently than another.</p>
+
+    <p>That kind of friction adds up. Not all at once, but slowly. Enough that you start treating environment management as part of the cost of doing technical work.</p>
+
+    <p>Then I started using <a href="https://pixi.sh" target="_blank">pixi</a>.</p>
+
+    <p>It's not magic. Geospatial tooling still has sharp edges, and no package manager is going to protect you from every questionable dependency choice. But pixi made something that used to feel messy and fragile feel much more orderly. My project environments got cleaner, easier to rebuild, and a lot less likely to surprise me later.</p>
+
+    <p>For the kind of work I do — geospatial analysis, Python, R, Windows, and the occasional stack of compiled spatial libraries — that's been a pretty big upgrade.</p>
+
+    <h2>Why I Finally Switched</h2>
+
+    <p>At some point I got tired of treating environment management like background noise.</p>
+
+    <p>I want projects to be self-contained. I want dependencies declared in one place. I want to come back to a repo three months later and still understand how it works. And I really do not want one experimental GIS setup quietly breaking three other projects on the same machine.</p>
+
+    <p>That was the real problem with the way I had been working. It wasn't that conda never worked. It often did. It was that over time my setups started to feel more improvised than intentional. Some environments were clean. Some were not. Some could be rebuilt easily. Others were held together by memory and luck.</p>
+
+    <p>pixi pushed me in a better direction.</p>
+
+    <p>What I like most is that it encourages a simple rule: one project, one environment, clearly defined. That sounds obvious, but in practice it changes a lot. It makes old projects easier to revisit, new projects easier to start, and weird dependency problems easier to isolate when they do show up.</p>
+
+    <p>It also just feels lighter. Less ceremony, less clutter, less mystery.</p>
+
+    <h2>Why pixi Fits Geospatial Work</h2>
+
+    <p>Geospatial projects tend to stress-test your tooling.</p>
+
+    <p>A basic Python project can get away with a little sloppiness. A geospatial one usually cannot. As soon as GDAL, PROJ, GEOS, raster libraries, or a mix of Python and R enter the picture, small environment problems become real workflow problems.</p>
+
+    <p>That's where pixi has felt especially useful for me.</p>
+
+    <p>The biggest thing is isolation. I can keep a Python mapping project separate from an R visualization project, and both separate from some one-off notebook experiment I may or may not ever touch again. Each repo gets its own environment, and that environment lives with the project instead of in some vague mental inventory I have to reconstruct later.</p>
+
+    <p>That matters more in geospatial work because the dependencies are usually heavier and less forgiving. When a project depends on spatial libraries, reproducibility stops being a nice idea and starts being part of whether the work is enjoyable at all.</p>
+
+    <p>Windows also shapes my opinion here. A lot of geospatial tooling works fine on Windows right up until it doesn't. When compiled dependencies are involved, the setup itself can become the project. pixi hasn't made that reality disappear, but it has made it feel much more predictable. That's worth a lot.</p>
+
+    <p>The other thing I like is that Python and R can both live in the same mental system. Some of my projects are firmly one or the other, but plenty of useful workflows cross that line. Data prep in Python, visualization in R. Exploratory work in one, reporting in the other. I like having one consistent way to think about project environments, even when the language changes.</p>
+
+    <h2>What I Like Most</h2>
+
+    <p>The best part of pixi is not that it does something dramatic. It's that it reduces background friction.</p>
+
+    <p>Projects feel tidier. Dependencies feel more explicit. Rebuilding an environment later feels normal instead of vaguely threatening.</p>
+
+    <p>That shows up in a few ways for me.</p>
+
+    <p>First, I keep cleaner project boundaries. If I'm working on a hydrology dashboard, a terrain rendering project, and some random spatial ETL idea all in the same month, I do not want those environments blending together. pixi makes it easy to keep each one in its lane.</p>
+
+    <p>Second, old projects are easier to trust. This is maybe the biggest one. I like being able to open a repo I haven't touched in a while and feel like the environment is part of the project itself, not some missing precondition I forgot to document.</p>
+
+    <p>Third, it makes experimentation cheaper. If I want to try a new package, a new workflow, or a weird geospatial library I found late at night, I can do that without polluting everything else on my machine. That's a small quality-of-life improvement that ends up mattering a lot.</p>
+
+    <p>And finally, it just feels more orderly. That's not a very technical selling point, but I think it's a real one. Good tooling should reduce chaos. pixi does that for me.</p>
+
+    <h2>A Few Tradeoffs</h2>
+
+    <p>I like pixi a lot, but I do not think any tool gets better by pretending it has no downsides.</p>
+
+    <p>The first tradeoff is habit. If you've been using conda for years, some of your muscle memory has to change. That's not a serious problem, but there is always a short adjustment period when you switch the thing you use to bootstrap every project.</p>
+
+    <p>The second is that geospatial packaging is still geospatial packaging. Some combinations of libraries are always going to need a little care, and no environment manager can fully abstract that away. pixi improves the workflow, but it does not repeal the laws of compiled dependencies.</p>
+
+    <p>The third is that personal workflow changes are easier than team workflow changes. If you're working solo, switching is simple. If you're collaborating across a team where everybody has their own habits and environment preferences, it can take a while before a cleaner setup becomes the shared default.</p>
+
+    <p>None of those have been deal-breakers for me. They just seem worth saying out loud.</p>
+
+    <h2>Getting Started</h2>
+
+    <p>If you're curious, getting started is pretty straightforward. On Windows, install pixi with:</p>
+
+<pre><code>winget install prefix-dev.pixi</code></pre>
+
+    <p>Then inside a new project:</p>
+
+<pre><code>pixi init</code></pre>
+
+    <p>From there you can add what you need. For a Python geospatial project:</p>
+
+<pre><code>pixi add python geopandas rasterio jupyter</code></pre>
+
+    <p>For an R project:</p>
+
+<pre><code>pixi add r-base r-sf r-terra r-tidyverse</code></pre>
+
+    <p>Then install and drop into the environment:</p>
+
+<pre><code>pixi install
+pixi shell</code></pre>
+
+    <p>Or just run commands directly without activating first — probably my favorite part of the day-to-day workflow:</p>
+
+<pre><code>pixi run python script.py</code></pre>
+
+    <p>It keeps things feeling project-scoped and explicit without adding much overhead.</p>
+
+    <p>If I were recommending a way to try it, I would not migrate everything at once. Start with one real project — preferably one that has annoyed you at least once already. Set it up cleanly, keep the environment definition in the repo, and see how it feels after a couple weeks.</p>
+
+    <p>That's more or less how I got into it. Not through some grand migration plan. Just by noticing that one project felt calmer, then another, then another.</p>
+
+    <h2>Lessons Learned</h2>
+
+    <p>The biggest lesson for me is that environment management affects more of the work than I used to admit.</p>
+
+    <p>When the setup feels fragile, everything downstream feels a little heavier. Starting a new project takes more energy. Revisiting an old one takes more confidence. Experimenting feels riskier than it should. None of that is catastrophic, but it changes how willing you are to make things.</p>
+
+    <p>A cleaner environment workflow does the opposite. It lowers the cost of starting, revisiting, and tinkering. That's not glamorous, but it's important.</p>
+
+    <p>I've also realized that I don't actually want a package manager to be exciting. I want it to be boring in the best possible way. Clear, predictable, and easy to trust. For me, pixi has been closer to that than the setups I was using before.</p>
+
+    <h2>Final Thoughts</h2>
+
+    <p>I didn't switch to pixi because I wanted a new toy.</p>
+
+    <p>I switched because I was tired of environments that felt fragile, messy, and harder to trust than they should have been. For the kind of geospatial work I do — especially on Windows, and especially across both Python and R — pixi has made things noticeably calmer.</p>
+
+    <p>That's really all I wanted.</p>
+
+    <div class="article-tags">
+      <span class="article-tag-pill">Python</span>
+      <span class="article-tag-pill">R</span>
+      <span class="article-tag-pill">pixi</span>
+      <span class="article-tag-pill">Environments</span>
+      <span class="article-tag-pill">Geospatial</span>
+      <span class="article-tag-pill">Windows</span>
+      <span class="article-tag-pill">Workflow</span>
+    </div>
+
+    <div class="article-footer">
+      <div class="article-footer-author">Written by Brooks Groves · March 31, 2026</div>
+      <div class="article-footer-nav">
+        <a href="/blog/streamflow-post.html">← Previous post</a>
+        <a href="/blog/index.html">All posts →</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">Made in the Pacific Northwest · Born in Tuolumne County, CA</p>
+    </div>
+    <div class="footer-links">
+      <a href="/blog/index.html">Blog</a>
+      <a href="/construction.html">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://bsky.app" target="_blank">Bluesky</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+</body>
+</html>

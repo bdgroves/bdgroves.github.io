@@ -38,20 +38,22 @@
     .post-row { display: grid; grid-template-columns: auto 1fr; gap: 2rem; padding: 2rem 0; border-bottom: 1px solid var(--mist); text-decoration: none; color: inherit; transition: padding-left 0.2s; }
     .post-row:hover { padding-left: 0.5rem; }
     .post-row:hover .post-title { color: var(--rust); }
-
     .post-meta-col { text-align: right; min-width: 100px; padding-top: 0.2rem; }
     .post-date { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; color: var(--stone); text-transform: uppercase; }
     .post-read { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--mist); margin-top: 0.25rem; }
-
     .post-tag { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
     .post-title { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2vw,1.5rem); font-weight: 700; line-height: 1.25; transition: color 0.2s; margin-bottom: 0.5rem; }
     .post-excerpt { font-size: 0.875rem; color: var(--stone); line-height: 1.65; }
     .post-arrow { font-family: 'DM Mono', monospace; font-size: 0.63rem; color: var(--rust); margin-top: 0.75rem; display: block; }
 
+    /* Coming soon style — not a link, dimmed */
+    .post-row-soon { display: grid; grid-template-columns: auto 1fr; gap: 2rem; padding: 2rem 0; border-bottom: 1px solid var(--mist); opacity: 0.45; }
+    .coming-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--stone); margin-top: 0.75rem; display: block; letter-spacing: 0.1em; text-transform: uppercase; }
+
     footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
     .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
     .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
-    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--stone); margin-top: 0.2rem; }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
     .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
     .footer-links a:hover { color: var(--gold); }
@@ -65,11 +67,10 @@
   <div class="masthead-inner">
     <a href="/" class="site-name">Brooks Groves</a>
     <nav>
-      <a href="/blog">Blog</a>
-      <a href="/journal">Journal</a>
-      <a href="/projects">Projects</a>
-      <a href="/reading">Reading</a>
-      <a href="/sports">Sports</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/construction.html">Journal</a>
+      <a href="/construction.html">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
       <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
     </nav>
   </div>
@@ -83,6 +84,21 @@
 
 <div class="posts-list">
 
+  <!-- POST 2 — pixi (newest first) -->
+  <a href="/blog/pixi-post.html" class="post-row">
+    <div class="post-meta-col">
+      <div class="post-date">Mar 31, 2026</div>
+      <div class="post-read">6 min read</div>
+    </div>
+    <div>
+      <p class="post-tag">Python · R · Environments · pixi</p>
+      <h2 class="post-title">Why I Switched to pixi for Managing Python and R Environments</h2>
+      <p class="post-excerpt">After years of conda headaches, a faster and cleaner path to reproducible geospatial work on Windows.</p>
+      <span class="post-arrow">Read post →</span>
+    </div>
+  </a>
+
+  <!-- POST 1 — streamflow -->
   <a href="/blog/streamflow-post.html" class="post-row">
     <div class="post-meta-col">
       <div class="post-date">Mar 18, 2026</div>
@@ -96,31 +112,18 @@
     </div>
   </a>
 
-  <a href="#" class="post-row">
+  <!-- COMING SOON — Rayshader -->
+  <div class="post-row-soon">
     <div class="post-meta-col">
-      <div class="post-date">Feb 28, 2026</div>
-      <div class="post-read">6 min read</div>
-    </div>
-    <div>
-      <p class="post-tag">Python · R · Environments · pixi</p>
-      <h2 class="post-title">Why I Switched to pixi for Managing Python and R Environments</h2>
-      <p class="post-excerpt">After years of conda headaches, a faster and cleaner path to reproducible geospatial work on Windows.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
-
-  <a href="#" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Feb 9, 2026</div>
-      <div class="post-read">10 min read</div>
+      <div class="post-date">Coming soon</div>
     </div>
     <div>
       <p class="post-tag">R · Rayshader · USGS · Visualization</p>
       <h2 class="post-title">Rayshading Mt. Rainier in R — A Step-by-Step Walkthrough</h2>
       <p class="post-excerpt">Getting DEM data, setting up lighting, and producing a proper topo overlay without losing your mind.</p>
-      <span class="post-arrow">Read post →</span>
+      <span class="coming-label">In progress →</span>
     </div>
-  </a>
+  </div>
 
 </div>
 
@@ -128,15 +131,15 @@
   <div class="footer-inner">
     <div>
       <p class="footer-name">Brooks Groves</p>
-      <p class="footer-tagline">brooksgroves.com · Lakewood, WA</p>
+      <p class="footer-tagline">Made in the Pacific Northwest · Born in Tuolumne County, CA</p>
     </div>
     <div class="footer-links">
       <a href="/">Home</a>
-      <a href="/blog">Blog</a>
-      <a href="/journal">Journal</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/construction.html">Journal</a>
       <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
     </div>
-    <p style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);">© 2026 Brooks Groves</p>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
   </div>
 </footer>
 
