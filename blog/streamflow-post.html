@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Building a Live Streamflow Dashboard on a $0 Budget — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -18,7 +19,6 @@
     body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
     body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
     .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
-
     header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
     .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
     .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
@@ -31,9 +31,15 @@
     .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
     .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
     .article-back:hover { color: var(--rust); }
-    .article-tag { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
-    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
-    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    /* TAGS — now at top */
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; transition: background 0.2s, color 0.2s; }
+    .article-tag-pill:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
     .article-body { font-size: 1.05rem; line-height: 1.85; }
     .article-body p { margin-bottom: 1.5rem; }
     .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
@@ -46,9 +52,12 @@
     .article-body pre code { background: none; padding: 0; font-size: 1em; color: inherit; }
     .article-body ul, .article-body ol { padding-left: 1.5rem; margin-bottom: 1.5rem; }
     .article-body li { margin-bottom: 0.4rem; }
-    .article-tags { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--mist); display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; }
-    .article-footer { margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+
+    /* REACTIONS */
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
     .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
     .article-footer-nav { display: flex; gap: 1.5rem; }
     .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
@@ -63,6 +72,9 @@
     .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
     .footer-links a:hover { color: var(--gold); }
+
+    /* Giscus theme override to match site */
+    .giscus { margin-top: 0.5rem; }
   </style>
 </head>
 <body>
@@ -88,12 +100,21 @@
 
   <a href="/blog/index.html" class="article-back">← Back to Blog</a>
 
-  <p class="article-tag">Python · GitHub Actions · USGS · Hydrology · Sierra Nevada</p>
+  <p class="article-kicker">Python · GitHub Actions · USGS · Hydrology · Sierra Nevada</p>
   <h1 class="article-title">Building a Live Streamflow Dashboard on a $0 Budget</h1>
   <div class="article-meta">
     <span>March 18, 2026</span>
     <span>8 min read</span>
     <span>Brooks Groves</span>
+  </div>
+
+  <div class="article-tags">
+    <span class="article-tag-pill">Python</span>
+    <span class="article-tag-pill">GitHub Actions</span>
+    <span class="article-tag-pill">USGS</span>
+    <span class="article-tag-pill">Hydrology</span>
+    <span class="article-tag-pill">Sierra Nevada</span>
+    <span class="article-tag-pill">Leaflet</span>
   </div>
 
   <div class="article-body">
@@ -194,13 +215,24 @@ jobs:
 
   </div>
 
-  <div class="article-tags">
-    <span class="article-tag-pill">Python</span>
-    <span class="article-tag-pill">GitHub Actions</span>
-    <span class="article-tag-pill">USGS</span>
-    <span class="article-tag-pill">Hydrology</span>
-    <span class="article-tag-pill">Sierra Nevada</span>
-    <span class="article-tag-pill">Leaflet</span>
+  <!-- REACTIONS -->
+  <div class="reactions-section">
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
   </div>
 
   <div class="article-footer">
