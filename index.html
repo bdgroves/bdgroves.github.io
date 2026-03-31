@@ -18,50 +18,44 @@
     body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
     body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
 
-    /* ── TOPLINE ── */
     .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
 
-    /* ── WEATHER BAR ── */
-    .weather-bar { background:var(--ink); padding:0.5rem clamp(1rem,4vw,3rem); }
-    .weather-bar-inner { max-width:1400px; margin:0 auto; display:flex; gap:2rem; align-items:center; flex-wrap:wrap; }
-    .wx-loc { display:flex; align-items:center; gap:0.5rem; }
-    .wx-icon { font-size:1rem; }
-    .wx-place { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
-    .wx-temp { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); margin-left:0.3rem; }
-    .wx-cond { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); letter-spacing:0.06em; margin-left:0.2rem; }
-    .wx-forecast { display:flex; gap:0.75rem; margin-left:0.5rem; }
+    /* WEATHER BAR */
+    .weather-bar { background:var(--ink); padding:0.5rem clamp(1rem,4vw,3rem); overflow-x:auto; }
+    .weather-bar-inner { max-width:1400px; margin:0 auto; display:flex; gap:1.5rem; align-items:center; flex-wrap:nowrap; min-width:max-content; }
+    .wx-loc { display:flex; align-items:center; gap:0.4rem; white-space:nowrap; }
+    .wx-icon { font-size:0.95rem; }
+    .wx-place { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); }
+    .wx-temp { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); margin-left:0.25rem; }
+    .wx-cond { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); letter-spacing:0.05em; margin-left:0.15rem; }
+    .wx-forecast { display:flex; gap:0.6rem; margin-left:0.4rem; }
     .wx-day { text-align:center; }
-    .wx-dow { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); }
-    .wx-hi { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--mist); }
-    .wx-rain { font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--sky); }
-    .wx-divider { width:1px; height:1.8rem; background:#333; flex-shrink:0; }
-    .wx-updated { font-family:'DM Mono',monospace; font-size:0.5rem; color:#3a3a3a; margin-left:auto; letter-spacing:0.08em; }
-    @media(max-width:600px){ .wx-forecast{display:none;} .wx-divider{display:none;} }
+    .wx-dow { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); }
+    .wx-hi { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--mist); }
+    .wx-rain { font-family:'DM Mono',monospace; font-size:0.45rem; color:var(--sky); }
+    .wx-divider { width:1px; height:1.6rem; background:#333; flex-shrink:0; }
+    .wx-updated { font-family:'DM Mono',monospace; font-size:0.48rem; color:#3a3a3a; margin-left:auto; letter-spacing:0.08em; white-space:nowrap; padding-left:1rem; }
 
-    /* ── MASTHEAD ── */
+    /* MASTHEAD */
     .masthead { border-bottom:3px solid var(--ink); padding:1.25rem clamp(1rem,4vw,3rem) 0; background:var(--parchment); }
     .masthead-top { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding-bottom:1rem; border-bottom:1px solid var(--mist); }
     .masthead-meta { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.1em; }
     .site-nameplate { font-family:'Playfair Display',serif; font-size:clamp(2rem,6vw,3.5rem); font-weight:900; letter-spacing:-0.02em; text-decoration:none; color:var(--ink); display:block; text-align:center; line-height:1; }
     .site-tagline { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); text-align:center; margin-top:0.4rem; padding-bottom:1rem; }
 
-    /* ── SECTION NAV ── */
-    .section-nav { max-width:1400px; margin:0 auto; display:flex; align-items:center; gap:0; position:relative; }
+    /* SECTION NAV */
+    .section-nav { max-width:1400px; margin:0 auto; display:flex; align-items:center; position:relative; }
     .section-nav-item { position:relative; }
     .section-nav-btn { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; background:none; border:none; cursor:pointer; padding:0.7rem 1rem; color:var(--stone); transition:color 0.2s; white-space:nowrap; display:flex; align-items:center; gap:0.3rem; }
     .section-nav-btn:hover { color:var(--ink); }
-    .section-nav-btn.active { color:var(--ink); border-bottom:2px solid var(--rust); }
     .section-nav-btn svg { width:8px; height:8px; fill:currentColor; transition:transform 0.2s; }
     .section-nav-item:hover .section-nav-btn svg { transform:rotate(180deg); }
-
-    /* dropdowns */
     .dropdown { display:none; position:absolute; top:100%; left:0; background:var(--ink); min-width:200px; z-index:300; border-top:2px solid var(--rust); }
     .section-nav-item:hover .dropdown { display:block; }
-    .dropdown a { display:block; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); padding:0.75rem 1.25rem; border-bottom:1px solid #2a2a26; transition:color 0.15s, background 0.15s; }
+    .dropdown a { display:block; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); padding:0.75rem 1.25rem; border-bottom:1px solid #2a2a26; transition:color 0.15s,background 0.15s; }
     .dropdown a:hover { color:var(--gold); background:#222; }
     .dropdown-label { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.2em; text-transform:uppercase; color:#3a3a36; padding:0.75rem 1.25rem 0.25rem; }
 
-    /* hamburger for mobile */
     .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
     .hamburger span { display:block; width:22px; height:2px; background:var(--ink); transition:all 0.3s; }
     .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
@@ -76,20 +70,19 @@
     .overlay.open { display:block; }
     @media(max-width:768px) { .section-nav { display:none; } .hamburger { display:flex; } }
 
-    /* ── PAGE LAYOUT ── */
+    /* PAGE */
     .page { max-width:1400px; margin:0 auto; padding:0 clamp(1rem,4vw,3rem); }
 
-    /* ── LEAD SECTION ── */
+    /* LEAD */
     .lead-section { padding:2rem 0; border-bottom:1px solid var(--mist); }
     .lead-section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
     .lead-section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
     .lead-section-label a:hover { color:var(--rust); }
 
-    /* lead project grid */
     .lead-grid { display:grid; grid-template-columns:3fr 2fr; gap:0; border:1px solid var(--mist); }
     @media(max-width:768px) { .lead-grid { grid-template-columns:1fr; } }
 
-    .lead-story { padding:2rem; border-right:1px solid var(--mist); text-decoration:none; color:inherit; display:block; position:relative; transition:background 0.2s; }
+    .lead-story { padding:2rem; border-right:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; }
     .lead-story:hover { background:var(--cream); }
     .lead-story::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); display:block; margin-bottom:0.75rem; }
     .lead-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
@@ -99,9 +92,8 @@
     .lead-quote { border-left:3px solid var(--rust); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.9rem; color:var(--stone); }
     .lead-stack { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
     .stack-pill { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.6rem; }
-    .lead-link { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--rust); margin-top:1.25rem; display:block; letter-spacing:0.05em; }
+    .lead-link { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--rust); margin-top:1.25rem; display:block; }
 
-    /* supporting projects */
     .support-stories { display:flex; flex-direction:column; }
     .support-story { padding:1.25rem 1.5rem; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; flex:1; }
     .support-story:last-child { border-bottom:none; }
@@ -112,16 +104,16 @@
     .support-dek { font-size:0.8rem; color:var(--stone); line-height:1.6; }
     .support-link { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.5rem; display:block; }
 
-    /* ── OLOGIES SECTION ── */
-    .ologies-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:1px solid var(--mist); margin-top:0; }
+    /* OLOGIES */
+    .ologies-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:1px solid var(--mist); }
     @media(max-width:680px) { .ologies-grid { grid-template-columns:1fr; } }
     .ology-card { padding:1.75rem; border-right:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; position:relative; overflow:hidden; }
     .ology-card:last-child { border-right:none; }
     .ology-card:hover { background:var(--cream); }
     .ology-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; transform:scaleX(0); transform-origin:left; transition:transform 0.3s; }
-    .ology-card.met::after { background:#5a7a8a; }
-    .ology-card.hyd::after { background:#4a5c45; }
-    .ology-card.geo::after { background:#8b3a2a; }
+    .ology-card.met::after { background:var(--sky); }
+    .ology-card.hyd::after { background:var(--sage); }
+    .ology-card.geo::after { background:var(--rust); }
     .ology-card:hover::after { transform:scaleX(1); }
     .ology-icon { font-size:1.75rem; margin-bottom:0.75rem; display:block; }
     .ology-name { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:900; margin-bottom:0.5rem; }
@@ -129,7 +121,7 @@
     .ology-projects { margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--gold); letter-spacing:0.08em; }
     .ology-link { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.75rem; display:block; }
 
-    /* ── TWO COLUMN BELOW FOLD ── */
+    /* BELOW FOLD */
     .below-fold { display:grid; grid-template-columns:2fr 3fr; gap:0; border-top:1px solid var(--mist); padding:2rem 0; }
     @media(max-width:768px) { .below-fold { grid-template-columns:1fr; } }
     .below-col { padding:0 2rem 0 0; }
@@ -140,16 +132,14 @@
     .col-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
     .col-label a:hover { color:var(--rust); }
 
-    /* writing items */
     .writing-item { padding:0.9rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:padding-left 0.2s; }
     .writing-item:hover { padding-left:0.4rem; }
     .writing-item:hover .writing-hed { color:var(--rust); }
-    .writing-type { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:0.15rem; }
+    .writing-type { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:0.1rem; }
     .writing-date { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.08em; color:var(--stone); }
     .writing-hed { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; line-height:1.3; transition:color 0.2s; }
     .writing-dek { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; line-height:1.55; }
 
-    /* reading */
     .book-item { display:flex; gap:0.75rem; padding:0.85rem 0; border-bottom:1px solid var(--mist); align-items:flex-start; text-decoration:none; color:inherit; transition:padding-left 0.2s; }
     .book-item:hover { padding-left:0.3rem; }
     .book-item:hover .book-title { color:var(--rust); }
@@ -160,11 +150,11 @@
     .book-status { font-size:0.7rem; font-style:italic; margin-top:0.1rem; }
     .book-status.reading { color:var(--gold); }
     .book-status.done { color:var(--sage); }
-    .book-loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); padding:1rem 0; letter-spacing:0.08em; }
+    .book-loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); padding:1rem 0; }
     .goodreads-link { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
     .goodreads-link:hover { color:var(--rust); }
 
-    /* ── SPORTS + BEER ── */
+    /* SPORTS */
     .sports-section { padding:2rem 0; border-top:1px solid var(--mist); }
     .sports-tabs { display:flex; margin-bottom:1.5rem; border-bottom:1px solid var(--mist); flex-wrap:wrap; }
     .tab-btn { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; background:none; border:none; cursor:pointer; padding:0.5rem 0.9rem; color:var(--stone); border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.2s; }
@@ -208,7 +198,15 @@
     .untappd-link { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
     .untappd-link:hover { color:var(--gold); }
 
-    /* ── FOOTER ── */
+    /* STANDINGS */
+    .standings-grid { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); }
+    .standings-header { display:grid; grid-template-columns:1fr auto auto auto; gap:0.25rem 0.75rem; padding-bottom:0.4rem; border-bottom:1px solid var(--mist); margin-bottom:0.4rem; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); }
+    .standings-row { display:grid; grid-template-columns:1fr auto auto auto; gap:0.25rem 0.75rem; padding:0.3rem 0; border-bottom:1px solid var(--mist); font-size:0.6rem; }
+    .standings-row.highlight { color:var(--ink); font-weight:bold; }
+    .standings-row .gb-pos { color:var(--sage); }
+    .standings-row .gb-neg { color:var(--rust); }
+
+    /* FOOTER */
     footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,4vw,3rem) clamp(1rem,4vw,3rem); margin-top:3rem; }
     .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
     .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
@@ -218,7 +216,6 @@
     .footer-links a:hover { color:var(--gold); }
 
     hr.rule { border:none; border-top:1px solid var(--mist); margin:0; }
-
     .fade-in { opacity:0; transform:translateY(12px); animation:fadeIn 0.5s forwards; }
     @keyframes fadeIn { to{opacity:1;transform:translateY(0);} }
   </style>
@@ -231,15 +228,15 @@
 <!-- MOBILE DRAWER -->
 <nav class="mobile-nav" id="mobileNav">
   <div class="nav-section">Projects</div>
-  <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">Rainier Snowpack</a>
-  <a href="https://bdgroves.github.io/EDGAR" target="_blank">EDGAR</a>
-  <a href="https://bdgroves.github.io/ridgeline" target="_blank">RIDGELINE</a>
-  <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank">Sierra Streamflow</a>
+  <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">❄️ Rainier Snowpack</a>
+  <a href="https://bdgroves.github.io/EDGAR" target="_blank">⚾ EDGAR</a>
+  <a href="https://bdgroves.github.io/ridgeline" target="_blank">🔥 RIDGELINE</a>
+  <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank">💧 Sierra Streamflow</a>
   <a href="https://github.com/bdgroves" target="_blank">All on GitHub</a>
   <div class="nav-section">Ologies</div>
-  <a href="/construction.html">Meteorology</a>
-  <a href="/construction.html">Hydrology</a>
-  <a href="/construction.html">Geospatial</a>
+  <a href="/construction.html">🌩 Meteorology</a>
+  <a href="/construction.html">💧 Hydrology</a>
+  <a href="/construction.html">🗺 Geospatial</a>
   <div class="nav-section">Writing</div>
   <a href="/blog/index.html">Blog</a>
   <a href="/construction.html">Journal</a>
@@ -259,19 +256,32 @@
   <div class="weather-bar-inner">
     <div class="wx-loc">
       <span class="wx-icon" id="icon-lakewood">🌡️</span>
-      <span class="wx-place">Lakewood, WA</span>
-      <span class="wx-temp" id="temp-lakewood">--°F</span>
+      <span class="wx-place">Lakewood WA</span>
+      <span class="wx-temp" id="temp-lakewood">--°</span>
       <span class="wx-cond" id="cond-lakewood"></span>
     </div>
     <div class="wx-forecast" id="forecast-lakewood"></div>
+
     <div class="wx-divider"></div>
+
     <div class="wx-loc">
       <span class="wx-icon" id="icon-groveland">🌡️</span>
-      <span class="wx-place">Groveland, CA</span>
-      <span class="wx-temp" id="temp-groveland">--°F</span>
+      <span class="wx-place">Groveland CA</span>
+      <span class="wx-temp" id="temp-groveland">--°</span>
       <span class="wx-cond" id="cond-groveland"></span>
     </div>
     <div class="wx-forecast" id="forecast-groveland"></div>
+
+    <div class="wx-divider"></div>
+
+    <div class="wx-loc">
+      <span class="wx-icon" id="icon-deathvalley">🔥</span>
+      <span class="wx-place">Death Valley CA</span>
+      <span class="wx-temp" id="temp-deathvalley">--°</span>
+      <span class="wx-cond" id="cond-deathvalley"></span>
+    </div>
+    <div class="wx-forecast" id="forecast-deathvalley"></div>
+
     <span class="wx-updated" id="weather-updated">via NWS</span>
   </div>
 </div>
@@ -287,14 +297,9 @@
   <a href="/" class="site-nameplate fade-in">Brooks Groves</a>
   <p class="site-tagline">Developer · Geospatial · Pacific Northwest</p>
 
-  <!-- SECTION NAV -->
   <nav class="section-nav">
-
     <div class="section-nav-item">
-      <button class="section-nav-btn">
-        Projects
-        <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg>
-      </button>
+      <button class="section-nav-btn">Projects <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
       <div class="dropdown">
         <div class="dropdown-label">Featured</div>
         <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">❄️ Rainier Snowpack</a>
@@ -305,46 +310,30 @@
         <a href="https://github.com/bdgroves" target="_blank">All on GitHub ↗</a>
       </div>
     </div>
-
     <div class="section-nav-item">
-      <button class="section-nav-btn">
-        Ologies
-        <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg>
-      </button>
+      <button class="section-nav-btn">Ologies <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
       <div class="dropdown">
         <a href="/construction.html">🌩 Meteorology</a>
         <a href="/construction.html">💧 Hydrology</a>
         <a href="/construction.html">🗺 Geospatial</a>
       </div>
     </div>
-
     <div class="section-nav-item">
-      <button class="section-nav-btn">
-        Writing
-        <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg>
-      </button>
+      <button class="section-nav-btn">Writing <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
       <div class="dropdown">
         <a href="/blog/index.html">Blog</a>
         <a href="/construction.html">Journal</a>
       </div>
     </div>
-
     <div class="section-nav-item">
-      <button class="section-nav-btn">
-        Personal
-        <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg>
-      </button>
+      <button class="section-nav-btn">Personal <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
       <div class="dropdown">
         <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
         <a href="/construction.html">Sports & Beer</a>
       </div>
     </div>
-
     <div class="section-nav-item">
-      <button class="section-nav-btn">
-        Connect
-        <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg>
-      </button>
+      <button class="section-nav-btn">Connect <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
       <div class="dropdown">
         <a href="https://github.com/bdgroves" target="_blank">GitHub ↗</a>
         <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads ↗</a>
@@ -353,11 +342,10 @@
         <a href="https://bsky.app" target="_blank">Bluesky ↗</a>
       </div>
     </div>
-
   </nav>
 </div>
 
-<!-- PAGE CONTENT -->
+<!-- PAGE -->
 <div class="page">
 
   <!-- PROJECTS LEAD -->
@@ -366,10 +354,7 @@
       <span>Featured Projects</span>
       <a href="https://github.com/bdgroves" target="_blank">All on GitHub →</a>
     </div>
-
     <div class="lead-grid">
-
-      <!-- LEAD: RAINIER SNOWPACK -->
       <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank" class="lead-story">
         <p class="lead-kicker">Snowpack · SNOTEL · NASA MODIS · Cascades</p>
         <h1 class="lead-hed">❄️ STORM CHASER:<br><em>Rainier</em></h1>
@@ -385,31 +370,25 @@
         </div>
         <span class="lead-link">View live dashboard →</span>
       </a>
-
-      <!-- SUPPORTING PROJECTS -->
       <div class="support-stories">
-
         <a href="https://bdgroves.github.io/EDGAR" target="_blank" class="support-story">
           <p class="support-kicker">Baseball · Mariners · MLB Stats API</p>
           <h3 class="support-hed">⚾ EDGAR — Mariners Analytics</h3>
           <p class="support-dek">Automated daily Mariners & Rainiers stats dashboard. Spray charts, pitch movement, live scores. Launched Opening Day 2026.</p>
           <span class="support-link">View dashboard →</span>
         </a>
-
         <a href="https://bdgroves.github.io/ridgeline" target="_blank" class="support-story">
-          <p class="support-kicker">WUI · Search & Rescue · Fire · Phoenix FD</p>
+          <p class="support-kicker">WUI · Search & Rescue · Phoenix FD</p>
           <h3 class="support-hed">🔥 RIDGELINE — WUI Call Volume</h3>
           <p class="support-dek">86K+ Phoenix Fire Department dispatch incidents. Behavioral cluster analysis, interactive maps, CI/CD pipeline.</p>
           <span class="support-link">View project →</span>
         </a>
-
         <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank" class="support-story">
           <p class="support-kicker">Hydrology · Sierra Nevada · USGS</p>
           <h3 class="support-hed">💧 Sierra Streamflow Monitor</h3>
           <p class="support-dek">8 USGS stream gages across Sierra Nevada watersheds. Historical spaghetti charts, Leaflet map, weekly cron.</p>
           <span class="support-link">View dashboard →</span>
         </a>
-
       </div>
     </div>
   </div>
@@ -449,14 +428,11 @@
 
   <!-- WRITING + READING -->
   <div class="below-fold">
-
-    <!-- WRITING -->
     <div class="below-col">
       <div class="col-label">
         <span>Writing</span>
         <a href="/blog/index.html">All →</a>
       </div>
-
       <a href="/blog/streamflow-post.html" class="writing-item">
         <div class="writing-type">Blog</div>
         <div class="writing-date">March 18, 2026</div>
@@ -482,8 +458,6 @@
         <div class="writing-dek">14 miles on the interurban trail. Slow, wet, and exactly what I needed.</div>
       </a>
     </div>
-
-    <!-- READING -->
     <div class="below-col">
       <div class="col-label">
         <span>Reading</span>
@@ -492,7 +466,6 @@
       <div id="reading-list"><p class="book-loading">Loading from Goodreads…</p></div>
       <a href="https://www.goodreads.com/user/show/9579797" target="_blank" class="goodreads-link">View all 982 books →</a>
     </div>
-
   </div>
 
   <hr class="rule">
@@ -503,7 +476,6 @@
       <span>Sports &amp; Beer</span>
       <a href="/construction.html">More →</a>
     </div>
-
     <div class="sports-tabs">
       <button class="tab-btn active" onclick="showTab('mlb',this)">Mariners</button>
       <button class="tab-btn" onclick="showTab('nfl',this)">Seahawks</button>
@@ -512,35 +484,21 @@
       <button class="tab-btn" onclick="showTab('beer',this)">Beer 🍺</button>
     </div>
 
+    <!-- MARINERS — live via MLB Stats API -->
     <div class="sport-panel active" id="tab-mlb">
       <div class="sports-grid">
+        <div id="mlb-scores"><p class="sport-note" style="padding-top:0;">Loading scores…</p></div>
         <div>
-          <div class="game-row">
-            <div class="team-home"><div class="team-name winner">Seattle</div><div class="team-record">2–2</div></div>
-            <div class="game-score-block"><span class="score-line">1 · 0</span><span class="score-status live"><span class="live-dot"></span>Live · vs NYY</span></div>
-            <div class="team-away"><div class="team-name loser">NY Yankees</div><div class="team-record">3–0</div></div>
+          <div class="standings-grid">
+            <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);padding-bottom:0.4rem;border-bottom:1px solid var(--mist);margin-bottom:0.4rem;">AL West</div>
+            <div class="standings-header"><span>Team</span><span>W</span><span>L</span><span>GB</span></div>
+            <div class="standings-row"><span>Texas</span><span>3</span><span>1</span><span class="gb-pos">—</span></div>
+            <div class="standings-row"><span>Houston</span><span>2</span><span>2</span><span>1</span></div>
+            <div class="standings-row highlight"><span>Seattle</span><span>2</span><span>2</span><span>1</span></div>
+            <div class="standings-row"><span>LA Angels</span><span>2</span><span>3</span><span class="gb-neg">1.5</span></div>
+            <div class="standings-row"><span>Athletics</span><span>0</span><span>4</span><span class="gb-neg">3</span></div>
           </div>
-          <div class="game-row">
-            <div class="team-home"><div class="team-name winner">Seattle</div></div>
-            <div class="game-score-block"><span class="score-line">8 · 0</span><span class="score-status final">Final · Mar 29</span></div>
-            <div class="team-away"><div class="team-name loser">Cleveland</div></div>
-          </div>
-          <div class="game-row">
-            <div class="team-home"><div class="team-name">Seattle</div></div>
-            <div class="game-score-block"><span class="score-line">vs NYY</span><span class="score-status sched">Tue · 6:40 PM</span></div>
-            <div class="team-away"><div class="team-name">NY Yankees</div></div>
-          </div>
-          <p class="sport-note">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>
-        </div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--stone);padding-top:0.5rem;">
-          <p style="margin-bottom:0.5rem;letter-spacing:0.08em;">AL WEST STANDINGS</p>
-          <div style="display:grid;grid-template-columns:1fr auto auto;gap:0.25rem 1rem;font-size:0.6rem;border-bottom:1px solid var(--mist);padding-bottom:0.5rem;margin-bottom:0.5rem;color:var(--stone);">
-            <span>Texas</span><span>3-1</span><span style="color:var(--sage)">+2</span>
-            <span>Houston</span><span>2-2</span><span>.500</span>
-            <span style="color:var(--ink);font-weight:bold;">Seattle</span><span style="color:var(--ink);">2-2</span><span>.500</span>
-            <span>LA Angels</span><span>2-3</span><span style="color:var(--rust)">-1.5</span>
-            <span>Athletics</span><span>0-4</span><span style="color:var(--rust)">-3</span>
-          </div>
+          <p class="sport-note" style="margin-top:0.75rem;">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>
         </div>
       </div>
     </div>
@@ -564,7 +522,7 @@
         <div class="race-meta"><span>Mar 22</span><span class="score-status final">Final</span></div>
       </div>
       <div class="race-row">
-        <div><p class="race-name">Tour de France</p><p class="race-leader" style="color:var(--stone);font-style:normal;font-size:0.72rem">Starts Jul 5, Copenhagen</p></div>
+        <div><p class="race-name">Tour de France</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Starts Jul 5, Copenhagen</p></div>
         <div class="race-meta"><span>96 days</span><span class="score-status sched">Upcoming</span></div>
       </div>
     </div>
@@ -590,15 +548,14 @@
     </div>
 
   </div>
-
-</div><!-- end .page -->
+</div>
 
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div>
       <p class="footer-name">Brooks Groves</p>
-      <p class="footer-tagline">brooksgroves.com · Lakewood, WA · From Groveland, CA</p>
+      <p class="footer-tagline">Made in the Pacific Northwest · Born in Tuolumne County, CA</p>
     </div>
     <div class="footer-links">
       <a href="/blog/index.html">Blog</a>
@@ -614,7 +571,6 @@
 </footer>
 
 <script>
-  // Date in masthead
   document.getElementById('masthead-date').textContent =
     new Date().toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
 
@@ -635,40 +591,132 @@
     btn.classList.add('active');
   }
 
+  // ── WEATHER from weather.json ──
   async function loadWeather() {
     try {
       const res = await fetch('/weather.json?t=' + Date.now());
       if (!res.ok) throw new Error();
       const data = await res.json();
-      if (data.lakewood) {
-        const w = data.lakewood;
-        document.getElementById('icon-lakewood').textContent = w.emoji;
-        document.getElementById('temp-lakewood').textContent = w.temp + '°F';
-        document.getElementById('cond-lakewood').textContent = '· ' + w.condition;
-        document.getElementById('forecast-lakewood').innerHTML = w.forecast.map(d =>
-          `<div class="wx-day"><div class="wx-dow">${d.name}</div><div class="wx-hi">${d.high}°</div><div class="wx-rain">${d.precip}%</div></div>`).join('');
+
+      function applyLocation(key, elPrefix) {
+        if (!data[key]) return;
+        const w = data[key];
+        document.getElementById('icon-' + elPrefix).textContent = w.emoji;
+        document.getElementById('temp-' + elPrefix).textContent = w.temp + '°';
+        document.getElementById('cond-' + elPrefix).textContent = '· ' + w.condition;
+        const fc = document.getElementById('forecast-' + elPrefix);
+        if (fc) fc.innerHTML = w.forecast.map(d =>
+          `<div class="wx-day"><div class="wx-dow">${d.name}</div><div class="wx-hi">${d.high}°</div><div class="wx-rain">${d.precip}%</div></div>`
+        ).join('');
       }
-      if (data.groveland) {
-        const w = data.groveland;
-        document.getElementById('icon-groveland').textContent = w.emoji;
-        document.getElementById('temp-groveland').textContent = w.temp + '°F';
-        document.getElementById('cond-groveland').textContent = '· ' + w.condition;
-        document.getElementById('forecast-groveland').innerHTML = w.forecast.map(d =>
-          `<div class="wx-day"><div class="wx-dow">${d.name}</div><div class="wx-hi">${d.high}°</div><div class="wx-rain">${d.precip}%</div></div>`).join('');
-      }
+
+      applyLocation('lakewood', 'lakewood');
+      applyLocation('groveland', 'groveland');
+      applyLocation('deathvalley', 'deathvalley');
+
       if (data.updated) {
         const d = new Date(data.updated);
         document.getElementById('weather-updated').textContent =
-          'NWS · ' + d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+          'NWS · ' + d.toLocaleDateString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
       }
     } catch(e) {
+      // fallback values
       document.getElementById('icon-lakewood').textContent = '⛅';
-      document.getElementById('temp-lakewood').textContent = '47°F';
+      document.getElementById('temp-lakewood').textContent = '47°';
       document.getElementById('icon-groveland').textContent = '☁️';
-      document.getElementById('temp-groveland').textContent = '65°F';
+      document.getElementById('temp-groveland').textContent = '65°';
+      document.getElementById('icon-deathvalley').textContent = '🔥';
+      document.getElementById('temp-deathvalley').textContent = '73°';
     }
   }
 
+  // ── LIVE MLB SCORES via MLB Stats API ──
+  async function loadMLB() {
+    const el = document.getElementById('mlb-scores');
+    try {
+      const today = new Date().toISOString().split('T')[0].replace(/-/g, '-');
+      const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId=136&date=${today}&hydrate=linescore`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+
+      const games = data.dates?.[0]?.games || [];
+      if (!games.length) {
+        // try yesterday
+        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+        const res2 = await fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId=136&date=${yesterday}&hydrate=linescore`);
+        const data2 = await res2.json();
+        const games2 = data2.dates?.[0]?.games || [];
+        renderGames(el, games2);
+      } else {
+        renderGames(el, games);
+      }
+    } catch(e) {
+      el.innerHTML = `
+        <div class="game-row">
+          <div class="team-home"><div class="team-name winner">Seattle</div><div class="team-record">2–2</div></div>
+          <div class="game-score-block"><span class="score-line">1 · 0</span><span class="score-status live"><span class="live-dot"></span>Live</span></div>
+          <div class="team-away"><div class="team-name loser">NY Yankees</div></div>
+        </div>
+        <p class="sport-note">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>`;
+    }
+  }
+
+  function renderGames(el, games) {
+    if (!games.length) {
+      el.innerHTML = '<p class="sport-note">No Mariners games today. Next series coming up.</p>';
+      return;
+    }
+    el.innerHTML = games.slice(0,3).map(g => {
+      const status = g.status.abstractGameState; // Preview, Live, Final
+      const home = g.teams.home;
+      const away = g.teams.away;
+      const isSEAHome = home.team.id === 136;
+      const seaTeam = isSEAHome ? home : away;
+      const oppTeam = isSEAHome ? away : home;
+      const seaScore = seaTeam.score ?? '--';
+      const oppScore = oppTeam.score ?? '--';
+      const seaWin = seaScore > oppScore;
+
+      let statusLabel = '';
+      let statusClass = 'sched';
+      if (status === 'Final') { statusLabel = 'Final'; statusClass = 'final'; }
+      else if (status === 'Live') {
+        const inning = g.linescore?.currentInningOrdinal || '';
+        statusLabel = `<span class="live-dot"></span>${inning}`;
+        statusClass = 'live';
+      } else {
+        const t = new Date(g.gameDate);
+        statusLabel = t.toLocaleDateString('en-US', {weekday:'short'}) + ' · ' +
+          t.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+        statusClass = 'sched';
+      }
+
+      const scoreDisplay = status === 'Preview'
+        ? `<span class="score-line">vs ${oppTeam.team.abbreviation}</span>`
+        : `<span class="score-line">${seaScore} · ${oppScore}</span>`;
+
+      return `<div class="game-row">
+        <div class="team-home">
+          <div class="team-name ${isSEAHome && seaWin ? 'winner' : isSEAHome && !seaWin ? 'loser' : ''}">
+            ${isSEAHome ? 'Seattle' : oppTeam.team.teamName}
+          </div>
+        </div>
+        <div class="game-score-block">
+          ${scoreDisplay}
+          <span class="score-status ${statusClass}">${statusLabel}</span>
+        </div>
+        <div class="team-away">
+          <div class="team-name ${!isSEAHome && seaWin ? 'winner' : !isSEAHome && !seaWin ? 'loser' : ''}">
+            ${isSEAHome ? oppTeam.team.teamName : 'Seattle'}
+          </div>
+        </div>
+      </div>`;
+    }).join('') +
+    `<p class="sport-note">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>`;
+  }
+
+  // ── BOOKS from Goodreads ──
   async function loadBooks() {
     const el = document.getElementById('reading-list');
     try {
@@ -697,15 +745,16 @@
     }
   }
 
+  // ── BEERS from Untappd ──
   async function loadBeers() {
     const el = document.getElementById('beer-list');
     try {
       const res = await fetch('/beers.json?t=' + Date.now());
       if (!res.ok) throw new Error();
       const data = await res.json();
-      const beers = data.checkins.slice(0, 5);
+      const beers = data.checkins.slice(0, 4);
       if (!beers.length) throw new Error();
-      el.innerHTML = `<div class="sports-grid">` + beers.slice(0,4).map(b => {
+      el.innerHTML = `<div class="sports-grid">` + beers.map(b => {
         const match = b.title.match(/drinking an? (.+?) by\s+(.+?) at/);
         const beerName = match ? match[1].trim() : b.title;
         const brewery = match ? match[2].trim() : '';
@@ -725,9 +774,16 @@
     }
   }
 
+  // Run all
   loadWeather();
+  loadMLB();
   loadBooks();
   loadBeers();
+
+  // Auto-refresh MLB scores every 5 minutes when tab is visible
+  setInterval(() => {
+    if (!document.hidden) loadMLB();
+  }, 5 * 60 * 1000);
 </script>
 
 </body>
