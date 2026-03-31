@@ -1,0 +1,113 @@
+name: Fetch Weather
+
+on:
+  schedule:
+    - cron: '0 14 * * *'   # 6am Pacific every day
+  workflow_dispatch:
+
+jobs:
+  fetch-weather:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch NWS weather and write weather.json
+        run: |
+          python3 << 'EOF'
+          import urllib.request
+          import json
+          from datetime import datetime, timezone
+
+          def fetch(url):
+              req = urllib.request.Request(url, headers={
+                  "User-Agent": "brooksgroves-weather-bot/1.0 (bdgroves1970@gmail.com)",
+                  "Accept": "application/geo+json"
+              })
+              with urllib.request.urlopen(req, timeout=15) as r:
+                  return json.loads(r.read())
+
+          def get_weather(lat, lon, label):
+              try:
+                  point = fetch(f"https://api.weather.gov/points/{lat},{lon}")
+                  forecast_url = point["properties"]["forecast"]
+                  hourly_url = point["properties"]["forecastHourly"]
+
+                  forecast = fetch(forecast_url)
+                  periods = forecast["properties"]["periods"]
+
+                  hourly = fetch(hourly_url)
+                  current = hourly["properties"]["periods"][0]
+
+                  days = []
+                  for p in periods:
+                      if p["isDaytime"] and len(days) < 5:
+                          precip = 0
+                          if p.get("probabilityOfPrecipitation"):
+                              precip = p["probabilityOfPrecipitation"].get("value") or 0
+                          days.append({
+                              "name": p["name"][:3].upper(),
+                              "high": p["temperature"],
+                              "precip": int(precip)
+                          })
+
+                  temp = current["temperature"]
+                  condition = current["shortForecast"]
+                  cond_lower = condition.lower()
+
+                  if "thunder" in cond_lower:
+                      emoji = "⛈"
+                  elif "snow" in cond_lower:
+                      emoji = "❄️"
+                  elif "rain" in cond_lower or "shower" in cond_lower or "drizzle" in cond_lower:
+                      emoji = "🌧"
+                  elif "partly" in cond_lower:
+                      emoji = "⛅"
+                  elif "cloudy" in cond_lower or "overcast" in cond_lower:
+                      emoji = "☁️"
+                  elif "sunny" in cond_lower or "clear" in cond_lower or "fair" in cond_lower:
+                      emoji = "☀️"
+                  elif "fog" in cond_lower:
+                      emoji = "🌫"
+                  else:
+                      emoji = "🌡️"
+
+                  return {
+                      "label": label,
+                      "temp": temp,
+                      "condition": condition,
+                      "emoji": emoji,
+                      "forecast": days
+                  }
+              except Exception as e:
+                  print(f"Error fetching {label}: {e}")
+                  return None
+
+          output = {}
+
+          lakewood = get_weather(47.1718, -122.5185, "Lakewood, WA")
+          if lakewood:
+              output["lakewood"] = lakewood
+              print(f"Lakewood: {lakewood['temp']}F {lakewood['condition']}")
+
+          groveland = get_weather(37.8274, -120.2327, "Groveland, CA")
+          if groveland:
+              output["groveland"] = groveland
+              print(f"Groveland: {groveland['temp']}F {groveland['condition']}")
+
+          output["updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+          with open("weather.json", "w") as f:
+              json.dump(output, f, indent=2)
+
+          print("weather.json written")
+          EOF
+
+      - name: Commit weather.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add weather.json
+          git diff --staged --quiet || git commit -m "chore: update weather.json [skip ci]"
+          git push
