@@ -18,6 +18,7 @@
     body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
     body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
     .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+
     header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
     .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
     .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
@@ -46,7 +47,6 @@
     .post-excerpt { font-size: 0.875rem; color: var(--stone); line-height: 1.65; }
     .post-arrow { font-family: 'DM Mono', monospace; font-size: 0.63rem; color: var(--rust); margin-top: 0.75rem; display: block; }
 
-    /* Coming soon style — not a link, dimmed */
     .post-row-soon { display: grid; grid-template-columns: auto 1fr; gap: 2rem; padding: 2rem 0; border-bottom: 1px solid var(--mist); opacity: 0.45; }
     .coming-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--stone); margin-top: 0.75rem; display: block; letter-spacing: 0.1em; text-transform: uppercase; }
 
@@ -54,6 +54,8 @@
     .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
     .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
     .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
     .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
     .footer-links a:hover { color: var(--gold); }
@@ -71,6 +73,8 @@
       <a href="/construction.html">Journal</a>
       <a href="/construction.html">Projects</a>
       <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
       <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
     </nav>
   </div>
@@ -84,7 +88,6 @@
 
 <div class="posts-list">
 
-  <!-- POST 2 — pixi (newest first) -->
   <a href="/blog/pixi-post.html" class="post-row">
     <div class="post-meta-col">
       <div class="post-date">Mar 31, 2026</div>
@@ -98,7 +101,6 @@
     </div>
   </a>
 
-  <!-- POST 1 — streamflow -->
   <a href="/blog/streamflow-post.html" class="post-row">
     <div class="post-meta-col">
       <div class="post-date">Mar 18, 2026</div>
@@ -112,7 +114,6 @@
     </div>
   </a>
 
-  <!-- COMING SOON — Rayshader -->
   <div class="post-row-soon">
     <div class="post-meta-col">
       <div class="post-date">Coming soon</div>
@@ -131,13 +132,17 @@
   <div class="footer-inner">
     <div>
       <p class="footer-name">Brooks Groves</p>
-      <p class="footer-tagline">Made in the Pacific Northwest · Born in Tuolumne County, CA</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
     </div>
     <div class="footer-links">
       <a href="/">Home</a>
       <a href="/blog/index.html">Blog</a>
       <a href="/construction.html">Journal</a>
       <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://bsky.app" target="_blank">Bluesky</a>
     </div>
     <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
   </div>
