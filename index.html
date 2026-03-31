@@ -19,40 +19,30 @@
     body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
     .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
 
-    /* MASTHEAD */
     header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:200; }
     .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
     .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; letter-spacing:0.02em; text-decoration:none; color:var(--ink); }
-
     .desktop-nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
     .desktop-nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
     .desktop-nav a:hover { color:var(--rust); }
     .desktop-nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
     .desktop-nav a.github:hover { background:var(--ink); color:var(--parchment); border-color:var(--ink); }
 
-    /* HAMBURGER */
-    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; z-index:300; }
+    .hamburger { display:flex; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; z-index:300; }
     .hamburger span { display:block; width:24px; height:2px; background:var(--ink); transition:all 0.3s; }
     .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity:0; }
     .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
 
-    /* MOBILE DRAWER */
-    .mobile-nav { display:none; position:fixed; top:0; right:0; bottom:0; width:280px; background:var(--ink); z-index:250; padding:5rem 2rem 2rem; flex-direction:column; gap:0; transform:translateX(100%); transition:transform 0.3s ease; overflow-y:auto; }
+    .mobile-nav { display:flex; position:fixed; top:0; right:0; bottom:0; width:280px; background:var(--ink); z-index:250; padding:5rem 2rem 2rem; flex-direction:column; gap:0; transform:translateX(100%); transition:transform 0.3s ease; overflow-y:auto; }
     .mobile-nav.open { transform:translateX(0); }
     .mobile-nav a { font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; text-decoration:none; color:var(--stone); padding:0.9rem 0; border-bottom:1px solid #2a2a26; transition:color 0.2s; display:block; }
     .mobile-nav a:hover { color:var(--gold); }
     .mobile-nav .nav-section { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.2em; text-transform:uppercase; color:#3a3a36; padding:1.25rem 0 0.4rem; }
     .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:240; }
     .overlay.open { display:block; }
+    @media(max-width:768px) { .desktop-nav { display:none; } }
 
-    @media(max-width:768px) {
-  .desktop-nav { display:none; }
-}
-.hamburger { display:flex; }
-.mobile-nav { display:flex; }
-
-    /* WEATHER */
     .weather-strip { background:var(--ink); padding:0.8rem clamp(1.5rem,5vw,4rem); }
     .weather-inner { max-width:1400px; margin:0 auto; display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap; }
     .weather-block { display:flex; align-items:center; gap:0.9rem; }
@@ -68,7 +58,6 @@
     .forecast-rain { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--sky); margin-top:0.1rem; }
     .weather-tag { font-family:'DM Mono',monospace; font-size:0.52rem; color:#3a3a3a; letter-spacing:0.08em; align-self:flex-end; padding-bottom:0.1rem; margin-left:auto; }
 
-    /* HERO */
     .hero { max-width:1400px; margin:0 auto; padding:clamp(3rem,8vw,6rem) clamp(1.5rem,5vw,4rem) clamp(2.5rem,5vw,4rem); display:grid; grid-template-columns:1fr auto; gap:2rem; align-items:end; border-bottom:1px solid var(--mist); }
     .hero-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:1rem; }
     .hero-headline { font-family:'Playfair Display',serif; font-size:clamp(2.8rem,7vw,5.5rem); font-weight:900; line-height:1.03; letter-spacing:-0.02em; }
@@ -81,7 +70,6 @@
     .btn-fill:hover { background:var(--ink); border-color:var(--ink); }
     .hero-coords { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--mist); letter-spacing:0.08em; writing-mode:vertical-rl; align-self:stretch; display:flex; align-items:flex-end; padding-bottom:0.5rem; }
 
-    /* SECTIONS */
     .section { max-width:1400px; margin:0 auto; padding:clamp(2.5rem,6vw,4.5rem) clamp(1.5rem,5vw,4rem); }
     .section-header { display:flex; align-items:baseline; justify-content:space-between; border-bottom:2px solid var(--ink); padding-bottom:0.6rem; margin-bottom:2.5rem; }
     .section-label { font-family:'Playfair Display',serif; font-size:clamp(1.2rem,2.5vw,1.7rem); font-weight:900; }
@@ -89,7 +77,6 @@
     .section-more:hover { color:var(--rust); }
     hr.divider { border:none; border-top:1px solid var(--mist); max-width:1400px; margin:0 auto; }
 
-    /* PROJECTS */
     .projects-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); border:1px solid var(--mist); }
     .project-card { border:1px solid var(--mist); padding:1.75rem; text-decoration:none; color:inherit; display:block; transition:background 0.2s; position:relative; overflow:hidden; }
     .project-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--sage); transform:scaleX(0); transform-origin:left; transition:transform 0.3s; }
@@ -100,7 +87,6 @@
     .project-desc { font-size:0.845rem; color:var(--stone); line-height:1.65; }
     .project-arrow { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--rust); margin-top:1rem; display:block; }
 
-    /* WRITING */
     .writing-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; }
     @media(max-width:680px){ .writing-grid{grid-template-columns:1fr;gap:2.5rem;} }
     .writing-col-label { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); padding-bottom:0.6rem; border-bottom:1px solid var(--mist); margin-bottom:0.5rem; display:flex; justify-content:space-between; }
@@ -113,13 +99,11 @@
     .post-item:hover .post-title { color:var(--rust); }
     .post-excerpt { font-size:0.8rem; color:var(--stone); margin-top:0.25rem; line-height:1.6; }
 
-    /* BOTTOM ROW */
     .bottom-row { display:grid; grid-template-columns:5fr 7fr; border-top:1px solid var(--mist); }
     @media(max-width:768px){ .bottom-row{grid-template-columns:1fr;} }
     .bottom-col { padding:clamp(2rem,5vw,3.5rem) clamp(1.5rem,5vw,4rem); }
     .bottom-col:first-child { border-right:1px solid var(--mist); }
 
-    /* READING */
     .book-item { display:flex; gap:1rem; padding:0.9rem 0; border-bottom:1px solid var(--mist); align-items:flex-start; text-decoration:none; color:inherit; transition:padding-left 0.2s; }
     .book-item:hover { padding-left:0.4rem; }
     .book-item:hover .book-title { color:var(--rust); }
@@ -134,9 +118,8 @@
     .goodreads-link { display:inline-block; margin-top:1.1rem; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
     .goodreads-link:hover { color:var(--rust); }
 
-    /* SPORTS */
-    .sports-tabs { display:flex; margin-bottom:1.75rem; border-bottom:1px solid var(--mist); }
-    .tab-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; background:none; border:none; cursor:pointer; padding:0.5rem 1rem; color:var(--stone); border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.2s; }
+    .sports-tabs { display:flex; margin-bottom:1.75rem; border-bottom:1px solid var(--mist); flex-wrap:wrap; }
+    .tab-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; background:none; border:none; cursor:pointer; padding:0.5rem 0.8rem; color:var(--stone); border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.2s; }
     .tab-btn.active { color:var(--ink); border-bottom-color:var(--rust); }
     .tab-btn:hover { color:var(--ink); }
     .sport-panel { display:none; }
@@ -160,9 +143,20 @@
     .race-leader { font-style:italic; color:var(--gold); font-size:0.78rem; margin-top:0.15rem; }
     .race-meta { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.08em; text-align:right; flex-shrink:0; }
     .race-meta span { display:block; }
-    .sport-note { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); padding-top:1rem; letter-spacing:0.08em; }
+    .sport-note { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); padding-top:0.5rem; letter-spacing:0.08em; }
 
-    /* FOOTER */
+    .beer-item { display:flex; align-items:flex-start; gap:1rem; padding:0.9rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:padding-left 0.2s; }
+    .beer-item:hover { padding-left:0.4rem; }
+    .beer-item:hover .beer-name { color:var(--rust); }
+    .beer-thumb { width:40px; min-width:40px; height:40px; object-fit:cover; border-radius:2px; }
+    .beer-thumb-placeholder { width:40px; min-width:40px; height:40px; background:var(--mist); border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+    .beer-name { font-family:'Playfair Display',serif; font-size:0.9rem; font-weight:700; line-height:1.3; transition:color 0.2s; }
+    .beer-brewery { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.08em; color:var(--stone); margin-top:0.1rem; text-transform:uppercase; }
+    .beer-comment { font-size:0.75rem; color:var(--stone); font-style:italic; margin-top:0.2rem; }
+    .beer-date { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--mist); letter-spacing:0.08em; margin-top:0.2rem; }
+    .untappd-link { display:inline-block; margin-top:1rem; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .untappd-link:hover { color:var(--gold); }
+
     footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); }
     .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
     .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
@@ -174,7 +168,6 @@
     .fade-in { opacity:0; transform:translateY(16px); animation:fadeIn 0.55s forwards; }
     .fade-in:nth-child(1){animation-delay:0.05s} .fade-in:nth-child(2){animation-delay:0.15s} .fade-in:nth-child(3){animation-delay:0.25s}
     @keyframes fadeIn { to{opacity:1;transform:translateY(0);} }
-
     @media(max-width:520px){
       .hero{grid-template-columns:1fr;}
       .hero-coords{display:none;}
@@ -189,7 +182,6 @@
 <div class="topline"></div>
 <div class="overlay" id="overlay" onclick="closeMenu()"></div>
 
-<!-- MOBILE DRAWER -->
 <nav class="mobile-nav" id="mobileNav">
   <div class="nav-section">Content</div>
   <a href="/blog/index.html">Blog</a>
@@ -206,10 +198,10 @@
   <a href="https://github.com/bdgroves" target="_blank">GitHub ↗</a>
   <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads ↗</a>
   <a href="https://www.strava.com" target="_blank">Strava ↗</a>
+  <a href="https://untappd.com/user/bdgroves" target="_blank">Untappd ↗</a>
   <a href="https://bsky.app" target="_blank">Bluesky ↗</a>
 </nav>
 
-<!-- MASTHEAD -->
 <header>
   <div class="masthead-inner">
     <a href="/" class="site-name">Brooks Groves</a>
@@ -227,7 +219,6 @@
   </div>
 </header>
 
-<!-- WEATHER STRIP -->
 <div class="weather-strip">
   <div class="weather-inner">
     <div class="weather-block">
@@ -265,7 +256,6 @@
   </div>
 </div>
 
-<!-- HERO -->
 <div class="hero">
   <div class="hero-text">
     <p class="hero-eyebrow fade-in">Developer · Writer · Outdoorsman · Pacific Northwest</p>
@@ -280,7 +270,6 @@
   <span class="hero-coords">47.6062° N · 122.3321° W</span>
 </div>
 
-<!-- PROJECTS -->
 <section class="section" id="projects">
   <div class="section-header">
     <span class="section-label">Featured Projects</span>
@@ -316,7 +305,6 @@
 
 <hr class="divider">
 
-<!-- WRITING -->
 <section class="section" id="writing">
   <div class="section-header">
     <span class="section-label">Writing</span>
@@ -367,9 +355,7 @@
 
 <hr class="divider">
 
-<!-- READING + SPORTS -->
 <div class="bottom-row">
-
   <div class="bottom-col" id="reading">
     <div class="section-header">
       <span class="section-label">Reading</span>
@@ -383,7 +369,7 @@
 
   <div class="bottom-col" id="sports">
     <div class="section-header">
-      <span class="section-label">Sports</span>
+      <span class="section-label">Sports &amp; Beer</span>
       <a href="/construction.html" class="section-more">More →</a>
     </div>
     <div class="sports-tabs">
@@ -391,6 +377,7 @@
       <button class="tab-btn" onclick="showTab('nfl',this)">Seahawks</button>
       <button class="tab-btn" onclick="showTab('cycling',this)">Cycling</button>
       <button class="tab-btn" onclick="showTab('running',this)">Running</button>
+      <button class="tab-btn" onclick="showTab('beer',this)">Beer 🍺</button>
     </div>
 
     <div class="sport-panel active" id="tab-mlb">
@@ -446,10 +433,17 @@
         <div class="race-meta"><span class="score-status sched">View →</span></div>
       </div>
     </div>
+
+    <div class="sport-panel" id="tab-beer">
+      <div id="beer-list">
+        <p class="sport-note">Loading from Untappd…</p>
+      </div>
+      <a href="https://untappd.com/user/bdgroves" target="_blank" class="untappd-link">View profile on Untappd →</a>
+    </div>
+
   </div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div>
@@ -463,6 +457,7 @@
       <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
       <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
       <a href="https://www.strava.com" target="_blank">Strava</a>
+      <a href="https://untappd.com/user/bdgroves" target="_blank">Untappd</a>
       <a href="https://bsky.app" target="_blank">Bluesky</a>
     </div>
     <p style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);letter-spacing:0.08em;">© 2026 Brooks Groves</p>
@@ -486,6 +481,7 @@
     document.getElementById('tab-' + id).classList.add('active');
     btn.classList.add('active');
   }
+
   async function loadBooks() {
     const el = document.getElementById('reading-list');
     try {
@@ -534,7 +530,40 @@
         </a>`;
     }
   }
+
+  async function loadBeers() {
+    const el = document.getElementById('beer-list');
+    try {
+      const res = await fetch('/beers.json?t=' + Date.now());
+      if (!res.ok) throw new Error('missing');
+      const data = await res.json();
+      const beers = data.checkins.slice(0, 5);
+      if (!beers.length) throw new Error('empty');
+      el.innerHTML = beers.map(b => {
+        const match = b.title.match(/drinking an? (.+?) by\s+(.+?) at/);
+        const beerName = match ? match[1].trim() : b.title;
+        const brewery = match ? match[2].trim() : '';
+        const date = new Date(b.date).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+        return `
+          <a href="${b.link}" target="_blank" class="beer-item">
+            ${b.image
+              ? `<img src="${b.image}" class="beer-thumb" alt="${beerName}">`
+              : `<div class="beer-thumb-placeholder">🍺</div>`}
+            <div style="flex:1;">
+              <p class="beer-name">${beerName}</p>
+              <p class="beer-brewery">${brewery}</p>
+              ${b.description ? `<p class="beer-comment">"${b.description}"</p>` : ''}
+              <p class="beer-date">${date}</p>
+            </div>
+          </a>`;
+      }).join('');
+    } catch(e) {
+      el.innerHTML = '<p class="sport-note">Check back soon for recent check-ins.</p>';
+    }
+  }
+
   loadBooks();
+  loadBeers();
 </script>
 
 </body>
