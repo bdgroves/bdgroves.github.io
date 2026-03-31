@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paleontology — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sky:#5a7a8a;
+      --bone:#c8b89a; --deep:#3a2e1e; --triassic:#7a5c38;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--triassic) 0%,var(--bone) 50%,var(--sage) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--rust); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    /* VALIDATION BANNER */
+    .validation-banner { background:var(--deep); padding:0.75rem clamp(1.5rem,5vw,4rem); }
+    .validation-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+    .validation-badge { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; background:var(--gold); color:var(--ink); padding:0.2rem 0.6rem; flex-shrink:0; }
+    .validation-text { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--bone); letter-spacing:0.06em; line-height:1.5; }
+    .validation-text strong { color:var(--gold); }
+
+    .page-header { max-width:1400px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--rust); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--triassic); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:620px; line-height:1.8; }
+
+    .page-content { max-width:1400px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .section-label a:hover { color:var(--rust); }
+
+    /* PROJECT CARDS — side by side lead */
+    .project-pair { display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--mist); margin-bottom:3rem; }
+    @media(max-width:768px) { .project-pair { grid-template-columns:1fr; } }
+
+    .project-card-lead { padding:2rem; border-right:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; position:relative; }
+    .project-card-lead:last-child { border-right:none; }
+    .project-card-lead:hover { background:var(--cream); }
+    .project-badge { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.16em; text-transform:uppercase; padding:0.2rem 0.6rem; margin-bottom:0.75rem; display:inline-block; }
+    .project-badge.triassic { background:var(--triassic); color:var(--white); }
+    .project-badge.pleistocene { background:var(--deep); color:var(--bone); }
+    .project-badge.validated { background:var(--sage); color:var(--white); }
+    .project-kicker { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .project-hed { font-family:'Playfair Display',serif; font-size:clamp(1.4rem,2.5vw,2rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .project-hed em { font-style:italic; color:var(--triassic); }
+    .project-hed em.ice { color:var(--sky); }
+    .project-dek { font-size:0.9rem; color:var(--stone); line-height:1.75; margin-bottom:1rem; }
+    .project-quote { border-left:3px solid var(--triassic); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.88rem; color:var(--stone); }
+    .project-quote.ice { border-left-color:var(--sky); }
+    .project-stats { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin:1rem 0; }
+    .mini-stat { background:var(--cream); padding:0.6rem 0.75rem; }
+    .mini-stat-label { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:0.2rem; }
+    .mini-stat-value { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:900; color:var(--ink); line-height:1.1; }
+    .mini-stat-value.highlight { color:var(--triassic); }
+    .mini-stat-value.ice { color:var(--sky); }
+    .project-stack { display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.75rem; }
+    .stack-pill { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.15rem 0.5rem; }
+    .project-link { display:inline-block; margin-top:1rem; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.5rem 1rem; border:1.5px solid var(--ink); color:var(--ink); transition:background 0.2s, color 0.2s; }
+    .project-link:hover { background:var(--ink); color:var(--parchment); }
+
+    /* VALIDATION SECTION */
+    .validation-block { background:var(--deep); color:var(--bone); padding:2rem; margin-bottom:3rem; border-left:4px solid var(--gold); }
+    .validation-block h3 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--gold); margin-bottom:0.75rem; line-height:1.2; }
+    .validation-block p { font-size:0.88rem; line-height:1.75; margin-bottom:0.75rem; color:var(--bone); }
+    .validation-block p:last-child { margin-bottom:0; }
+    .validation-block strong { color:var(--white); }
+    .val-table { width:100%; border-collapse:collapse; margin:1rem 0; font-size:0.78rem; }
+    .val-table th { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); padding:0.4rem 0.6rem; border-bottom:1px solid #3a3a36; text-align:left; }
+    .val-table td { font-family:'DM Mono',monospace; font-size:0.62rem; padding:0.4rem 0.6rem; border-bottom:1px solid #2a2a26; color:var(--bone); }
+    .val-table .match { color:var(--gold); font-weight:bold; }
+
+    /* TOP TARGETS */
+    .targets-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; margin-bottom:3rem; }
+    @media(max-width:680px) { .targets-grid { grid-template-columns:1fr; gap:2rem; } }
+    .targets-col h3 { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:0.75rem; padding-bottom:0.5rem; border-bottom:1px solid var(--mist); }
+    .target-row { display:grid; grid-template-columns:auto 1fr auto; gap:0.5rem 0.75rem; align-items:baseline; padding:0.5rem 0; border-bottom:1px solid var(--mist); font-family:'DM Mono',monospace; font-size:0.6rem; }
+    .target-rank { color:var(--gold); font-weight:bold; }
+    .target-coords { color:var(--stone); }
+    .target-score { color:var(--ink); }
+    .target-priority { font-size:0.55rem; color:var(--sage); grid-column:2; margin-top:-0.2rem; }
+    .target-row.validated .target-coords { color:var(--sage); }
+    .target-row.validated .target-rank::after { content:' ✓'; color:var(--sage); }
+
+    /* CONTEXT */
+    .context-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; margin-bottom:3rem; }
+    @media(max-width:680px) { .context-grid { grid-template-columns:1fr; gap:2rem; } }
+    .context-hed { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; margin-bottom:0.75rem; padding-bottom:0.5rem; border-bottom:1px solid var(--mist); }
+    .context-body { font-size:0.875rem; color:var(--stone); line-height:1.75; }
+    .context-body p { margin-bottom:0.75rem; }
+    .context-body strong { color:var(--ink); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:2rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<!-- VALIDATION BANNER -->
+<div class="validation-banner">
+  <div class="validation-inner">
+    <span class="validation-badge">✓ Validated</span>
+    <span class="validation-text"><strong>IceWave E02 confirmed:</strong> Model's #1 east target matched active Columbian mammoth excavation at McBones Coyote Canyon, Kennewick WA — predicted before any knowledge of the dig site. LiDAR TPI independently confirms valley floor geometry.</span>
+  </div>
+</div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/construction.html">Journal</a>
+      <a href="/construction.html">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · The Ologies</p>
+  <h1 class="page-title">🦕 Paleon<em>tology</em></h1>
+  <p class="page-sub">Machine learning meets deep time. Using Random Forest models, LiDAR terrain analysis, and open paleontology databases to predict where Triassic marine reptiles and Pleistocene megafauna are buried — then going to check.</p>
+</div>
+
+<div class="page-content">
+
+  <!-- LEAD PROJECTS — side by side -->
+  <div class="section-label">
+    <span>Featured Projects</span>
+    <a href="https://github.com/bdgroves" target="_blank">All on GitHub →</a>
+  </div>
+
+  <div class="project-pair">
+
+    <!-- PALEOWAVE -->
+    <a href="https://github.com/bdgroves/Project-PaleoWave" target="_blank" class="project-card-lead">
+      <img src="https://raw.githubusercontent.com/bdgroves/Project-PaleoWave/main/assets/paleowave_flag.png" alt="PaleoWave Flag" style="height:80px;margin-bottom:1rem;display:block;">
+      <span class="project-badge triassic">Triassic · Nevada · Phase 3 Complete</span>
+      <p class="project-kicker">Ichthyosaurs · Random Forest · LiDAR · PBDB · USGS 3DEP</p>
+      <h2 class="project-hed">🌊 Project <em>PaleoWave</em></h2>
+      <blockquote class="project-quote">Two hundred and forty million years ago, Nevada was the bottom of a warm shallow sea.</blockquote>
+      <p class="project-dek">Random Forest fossil locality prediction for Triassic ichthyosaurs in central Nevada. Trained on the terrain signature of 30 known PBDB localities — elevation, slope, TRI, TPI — and scored every candidate pixel within the TRc formation extent. 50 priority targets, 20 LiDAR terrain analyses, a field report, and a most-wanted list.</p>
+      <p class="project-dek">Version 3 introduced formation-stratified submodels — separate Random Forests for the north (Prida/Favret) and south (Luning/Gabbs) domains. The south model's LOO recall jumped from 0% to 71.4%.</p>
+      <div class="project-stats">
+        <div class="mini-stat">
+          <div class="mini-stat-label">Model AUC</div>
+          <div class="mini-stat-value highlight">0.906</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">Priority targets</div>
+          <div class="mini-stat-value highlight">50</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">South LOO recall (v3)</div>
+          <div class="mini-stat-value highlight">71.4%</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">LiDAR analyses</div>
+          <div class="mini-stat-value highlight">20</div>
+        </div>
+      </div>
+      <div class="project-stack">
+        <span class="stack-pill">Python</span>
+        <span class="stack-pill">Scikit-learn</span>
+        <span class="stack-pill">USGS 3DEP</span>
+        <span class="stack-pill">PBDB</span>
+        <span class="stack-pill">LiDAR</span>
+        <span class="stack-pill">QGIS</span>
+        <span class="stack-pill">pixi</span>
+      </div>
+      <span class="project-link">View on GitHub →</span>
+    </a>
+
+    <!-- ICEWAVE -->
+    <a href="https://github.com/bdgroves/project_ice_wave" target="_blank" class="project-card-lead">
+      <img src="https://raw.githubusercontent.com/bdgroves/project_ice_wave/main/assets/icewave_flag.png" alt="IceWave Flag" style="height:80px;margin-bottom:1rem;display:block;">
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
+        <span class="project-badge pleistocene">Pleistocene · 5-State</span>
+        <span class="project-badge validated">✓ Field Validated</span>
+      </div>
+      <p class="project-kicker">Megafauna · Split-Ecoregion RF · LiDAR · SGMC Lithology</p>
+      <h2 class="project-hed">🦣 Project <em class="ice">IceWave</em></h2>
+      <blockquote class="project-quote ice">Target E02 was predicted as the #1 east target before any knowledge of existing dig sites. March 2026: active Columbian mammoth excavation confirmed at McBones Coyote Canyon near Kennewick, WA.</blockquote>
+      <p class="project-dek">Split-ecoregion Random Forest predicting Pleistocene megafauna localities across Washington, Oregon, Nevada, Idaho, and Montana. West model (Willamette/Puget Sound) and east model (Columbia Basin/Owyhee) trained separately. Features include terrain, lithology score from USGS SGMC, and LiDAR-derived TPI at 15m resolution.</p>
+      <p class="project-dek">The model predicted mammoth, mastodon, horse, camel, ground sloth, short-faced bear, and Pleistocene bison localities — using the same Missoula Flood slack-water depositional geometry the real animals were buried in.</p>
+      <div class="project-stats">
+        <div class="mini-stat">
+          <div class="mini-stat-label">West AUC</div>
+          <div class="mini-stat-value ice">0.890</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">East LOO recall</div>
+          <div class="mini-stat-value ice">90%</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">States</div>
+          <div class="mini-stat-value ice">5</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">E02 validated</div>
+          <div class="mini-stat-value ice">✓</div>
+        </div>
+      </div>
+      <div class="project-stack">
+        <span class="stack-pill">Python</span>
+        <span class="stack-pill">Scikit-learn</span>
+        <span class="stack-pill">USGS 3DEP</span>
+        <span class="stack-pill">USGS SGMC</span>
+        <span class="stack-pill">PBDB</span>
+        <span class="stack-pill">iDigBio</span>
+        <span class="stack-pill">LiDAR</span>
+        <span class="stack-pill">QGIS</span>
+      </div>
+      <span class="project-link">View on GitHub →</span>
+    </a>
+
+  </div>
+
+  <!-- VALIDATION BLOCK -->
+  <div class="validation-block">
+    <h3>✓ The Model Called Its Shot</h3>
+    <p>IceWave predicted Target E02 (46.3003°N, 120.1336°W) as the #1 east priority target before any knowledge of existing excavations. The model identified the location based on terrain alone — Missoula Flood valley floor geometry, confirmed by LiDAR TPI of -5.4m.</p>
+    <p>In March 2026, an active Columbian mammoth excavation was confirmed at <strong>McBones Coyote Canyon near Kennewick, WA</strong> — within miles of the predicted pixel. Mammoth killed ~17,000 years ago, drowned in a Missoula Flood event, deposited as slack-water receded. Exactly the depositional geometry the model learned to find.</p>
+    <table class="val-table">
+      <thead>
+        <tr><th>Source</th><th>Latitude</th><th>Longitude</th><th>TPI</th><th>Method</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="match">IceWave E02</td><td>46.3003°N</td><td>120.1336°W</td><td>-5.4m ▼</td><td>ML model only</td></tr>
+        <tr><td class="match">McBones Coyote Canyon</td><td>~46.30°N</td><td>~120.1°W</td><td>—</td><td>Active excavation</td></tr>
+        <tr><td class="match">LiDAR DTM confirmation</td><td>46.3003°N</td><td>120.1336°W</td><td>-5.4m</td><td>USGS 3DEP 15m</td></tr>
+      </tbody>
+    </table>
+    <p>Three methods. One answer.</p>
+  </div>
+
+  <!-- TOP TARGETS -->
+  <div class="section-label"><span>Top Targets</span></div>
+  <div class="targets-grid">
+    <div class="targets-col">
+      <h3>🌊 PaleoWave — Top 10 (Nevada)</h3>
+      <div class="target-row">
+        <span class="target-rank">#1</span>
+        <span class="target-coords">40.265°N 117.480°W</span>
+        <span class="target-score">0.689 ⭐</span>
+        <span class="target-priority">HIGH · TPI -2.8m · 13.8km from nearest</span>
+      </div>
+      <div class="target-row">
+        <span class="target-rank">#2</span>
+        <span class="target-coords">40.907°N 118.464°W</span>
+        <span class="target-score">0.660 ⭐</span>
+        <span class="target-priority">HIGH · most novel · 50.2km from nearest</span>
+      </div>
+      <div class="target-row">
+        <span class="target-rank">#3</span>
+        <span class="target-coords">40.405°N 118.244°W</span>
+        <span class="target-score">0.608</span>
+        <span class="target-priority">LOW — ridge terrain · TPI +18.2m</span>
+      </div>
+      <div class="target-row">
+        <span class="target-rank">#4</span>
+        <span class="target-coords">40.096°N 117.246°W</span>
+        <span class="target-score">0.595</span>
+        <span class="target-priority">MED · TPI +3.9m · 25.4km from nearest</span>
+      </div>
+      <div class="target-row">
+        <span class="target-rank">#7</span>
+        <span class="target-coords">40.787°N 117.456°W</span>
+        <span class="target-score">0.521</span>
+        <span class="target-priority">MED — was v2 #1 · demoted by TPI</span>
+      </div>
+      <div class="target-row">
+        <span class="target-rank">#10</span>
+        <span class="target-coords">39.655°N 117.859°W</span>
+        <span class="target-score">0.504 ⭐</span>
+        <span class="target-priority">HIGH · strongest basin TPI in top-10</span>
+      </div>
+    </div>
+
+    <div class="targets-col">
+      <h3>🦣 IceWave — Top East Targets</h3>
+      <div class="target-row validated">
+        <span class="target-rank">#E02</span>
+        <span class="target-coords">46.3003°N 120.1336°W</span>
+        <span class="target-score">1.000</span>
+        <span class="target-priority">VALIDATED · McBones Coyote Canyon · TPI -5.4m</span>
+      </div>
+      <div class="target-row">
+        <span class="target-rank">#E03</span>
+        <span class="target-coords">46.6753°N 117.7586°W</span>
+        <span class="target-score">1.000</span>
+        <span class="target-priority">1B · TPI -86.3m · extreme basin</span>
+      </div>
+      <div class="target-row">
+        <span class="target-rank">#E04</span>
+        <span class="target-coords">46.6336°N 117.3836°W</span>
+        <span class="target-score">0.994</span>
+        <span class="target-priority">1B · TPI -106.2m · extreme basin</span>
+      </div>
+      <div class="target-row">
+        <span class="target-rank">#E15</span>
+        <span class="target-coords">47.9531°N 117.8003°W</span>
+        <span class="target-score">0.814</span>
+        <span class="target-priority">1A · TPI -15.6m · valley floor</span>
+      </div>
+      <div class="target-row">
+        <span class="target-rank">#E19</span>
+        <span class="target-coords">42.4669°N 117.9392°W</span>
+        <span class="target-score">0.616</span>
+        <span class="target-priority">1A · largest channel zone · 32.39km²</span>
+      </div>
+      <div class="target-row">
+        <span class="target-rank">#E21</span>
+        <span class="target-coords">47.5086°N 121.1892°W</span>
+        <span class="target-score">0.478</span>
+        <span class="target-priority">1B · TPI -250.1m · most extreme basin</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTEXT -->
+  <div class="section-label"><span>The Science</span></div>
+  <div class="context-grid">
+    <div>
+      <h3 class="context-hed">PaleoWave — Triassic Nevada</h3>
+      <div class="context-body">
+        <p>240 million years ago, Nevada was the bottom of a warm shallow sea. Giant marine reptiles — ichthyosaurs up to 15 meters long — cruised these waters, hunted, died, and sank into the carbonate mud. Then a continent happened.</p>
+        <p>Basin and Range tectonics folded and faulted the seafloor into the desert mountain ranges we drive past on I-80. Erosion has been working on those limestone layers ever since, slowly uncovering the bones. <strong>Berlin-Ichthyosaur State Park found some of them.</strong> The Triassic marine formation covers hundreds of square kilometers of central Nevada outback — largely unwalked by paleontologists.</p>
+        <p>The key insight: fossils don't appear at random. They appear where Triassic limestone is being actively exhumed — basin floors where erosion strips overburden. <strong>TRI ruggedness is the single strongest predictor at ~45% feature importance.</strong></p>
+      </div>
+    </div>
+    <div>
+      <h3 class="context-hed">IceWave — Pleistocene West</h3>
+      <div class="context-body">
+        <p>The Missoula Floods were among the largest floods in Earth's history — repeated catastrophic releases from Glacial Lake Missoula that scoured the Columbia Basin and deposited slack-water sediments across eastern Washington and Oregon. Megafauna that drowned in these events were buried in exactly those slack-water deposits.</p>
+        <p>IceWave targets seven species: <strong>Columbian mammoth, woolly mammoth, American mastodon, Pleistocene horse, Yesterday's camel, Harlan's ground sloth, and short-faced bear.</strong></p>
+        <p>The model splits at -121.5°W — separate Random Forests for the maritime west (Willamette/Puget Sound) and the semi-arid east (Columbia Basin/Owyhee/Basin & Range). Lithology score from USGS SGMC and LiDAR TPI at 15m resolution give the model real depositional environment context.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGAL NOTE -->
+  <div style="padding:1.25rem 1.5rem;border:1px solid var(--mist);background:var(--cream);font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);letter-spacing:0.06em;line-height:1.7;margin-bottom:2rem;">
+    ⚠️ <strong style="color:var(--ink);">Field Use:</strong> A PRPA permit is required for all vertebrate fossil collection on federal land. Unpermitted collection is a federal crime. These projects predict where to look — they do not collect. Any finds should be reported to the relevant BLM field office and submitted to PBDB. Do not disturb McBones Coyote Canyon — active permitted excavation.
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://bsky.app" target="_blank">Bluesky</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geospatial — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sky:#5a7a8a;
+      --fire:#c0392b; --char:#4a3728; --range:#8b6914;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--rust); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    /* PAGE HEADER */
+    .page-header { max-width:1400px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--rust); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--rust); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:600px; line-height:1.8; }
+
+    /* MAIN */
+    .page-content { max-width:1400px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .section-label a:hover { color:var(--rust); }
+
+    /* LEAD PROJECT */
+    .project-lead { display:grid; grid-template-columns:3fr 2fr; gap:0; border:1px solid var(--mist); margin-bottom:3rem; }
+    @media(max-width:768px) { .project-lead { grid-template-columns:1fr; } }
+    .project-lead-main { padding:2rem; border-right:1px solid var(--mist); }
+    .project-lead-main::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); display:block; margin-bottom:0.75rem; }
+    .project-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .project-hed { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .project-hed em { font-style:italic; color:var(--rust); }
+    .project-dek { font-size:0.95rem; color:var(--stone); line-height:1.75; margin-bottom:1rem; }
+    .project-quote { border-left:3px solid var(--rust); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.9rem; color:var(--stone); }
+    .project-stack { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
+    .stack-pill { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.6rem; }
+    .project-link { display:inline-block; margin-top:1.25rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.6rem 1.2rem; border:1.5px solid var(--rust); color:var(--rust); transition:background 0.2s, color 0.2s; margin-right:0.75rem; }
+    .project-link:hover { background:var(--rust); color:var(--white); }
+    .project-link.secondary { border-color:var(--mist); color:var(--stone); }
+    .project-link.secondary:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+
+    /* STATS SIDEBAR */
+    .project-lead-stats { padding:1.5rem; display:flex; flex-direction:column; }
+    .stat-block { padding:1rem 0; border-bottom:1px solid var(--mist); }
+    .stat-block:last-child { border-bottom:none; }
+    .stat-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.25rem; }
+    .stat-value { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; line-height:1.1; }
+    .stat-value.danger { color:var(--fire); }
+    .stat-value.warning { color:var(--gold); }
+    .stat-value.good { color:var(--sage); }
+    .stat-sub { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.06em; }
+
+    /* FINDINGS TABLE */
+    .findings-table { width:100%; border-collapse:collapse; margin-bottom:3rem; font-size:0.85rem; }
+    .findings-table th { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); padding:0.6rem 0.75rem; border-bottom:2px solid var(--ink); text-align:left; }
+    .findings-table td { padding:0.7rem 0.75rem; border-bottom:1px solid var(--mist); font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--stone); }
+    .findings-table tr:hover td { background:var(--cream); }
+    .findings-table .state { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--ink); }
+    .findings-table .outlier { color:var(--fire); font-weight:bold; }
+    .findings-table .normal { color:var(--sage); }
+
+    /* CONTEXT GRID */
+    .context-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; margin-bottom:3rem; }
+    @media(max-width:680px) { .context-grid { grid-template-columns:1fr; gap:2rem; } }
+    .context-hed { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; margin-bottom:0.75rem; padding-bottom:0.5rem; border-bottom:1px solid var(--mist); }
+    .context-body { font-size:0.875rem; color:var(--stone); line-height:1.75; }
+    .context-body p { margin-bottom:0.75rem; }
+    .context-body strong { color:var(--ink); }
+
+    /* MORE PROJECTS */
+    .projects-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); border:1px solid var(--mist); margin-bottom:3rem; }
+    .project-card { padding:1.5rem; border-right:1px solid var(--mist); border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; position:relative; overflow:hidden; }
+    .project-card:hover { background:var(--cream); }
+    .project-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--rust); transform:scaleX(0); transform-origin:left; transition:transform 0.3s; }
+    .project-card:hover::after { transform:scaleX(1); }
+    .card-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.4rem; }
+    .card-hed { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; line-height:1.25; margin-bottom:0.4rem; }
+    .project-card:hover .card-hed { color:var(--rust); }
+    .card-dek { font-size:0.8rem; color:var(--stone); line-height:1.6; }
+    .card-link { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.75rem; display:block; }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:2rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/construction.html">Journal</a>
+      <a href="/construction.html">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · The Ologies</p>
+  <h1 class="page-title">🗺 Geo<em>spatial</em></h1>
+  <p class="page-sub">Spatial analysis, GIS pipelines, LiDAR, and remote sensing. Using R, Python, QGIS, and open data to understand landscapes, hazards, and the gaps between what we map and what's actually out there.</p>
+</div>
+
+<div class="page-content">
+
+  <!-- LEAD PROJECT -->
+  <div class="section-label" style="margin-bottom:1.5rem;">
+    <span>Featured Project</span>
+    <a href="https://github.com/bdgroves/wildfire-response-gaps" target="_blank">View on GitHub →</a>
+  </div>
+
+  <div class="project-lead">
+    <div class="project-lead-main">
+      <p class="project-kicker">Wildfire · GIS · R · Haversine · NIFC · OpenStreetMap</p>
+      <h2 class="project-hed">🔥 Wildfire <em>Response Gaps</em></h2>
+      <blockquote class="project-quote">"It's already on the ground."</blockquote>
+      <p class="project-dek">When a wildfire ignites in eastern Oregon, help isn't minutes away — it's hours. Sometimes it isn't coming at all, not from a mapped fire station. This project measures that gap across every wildfire perimeter on the West Coast, names the stations carrying the load, and tracks the 2026 season live.</p>
+      <p class="project-dek">Haversine distances from 3,635 fire perimeters to the nearest mapped fire station across California, Oregon, and Washington. The Oregon finding was unexpected: a median fire-to-station distance of 26.7 km — three times California's — with 30% of fires beyond 50km from any station. In Malheur County, the median is 139 km. Every single fire is beyond 50km.</p>
+      <p class="project-dek">The pipeline runs automatically: Python fetches fresh perimeters from the NIFC WFIGS API at 5am Pacific, recomputes distances, commits GeoJSON. R rebuilds the NatGeo-style static map at 6am. No manual intervention required.</p>
+      <div class="project-stack">
+        <span class="stack-pill">R</span>
+        <span class="stack-pill">Python</span>
+        <span class="stack-pill">Leaflet</span>
+        <span class="stack-pill">NIFC WFIGS</span>
+        <span class="stack-pill">OpenStreetMap</span>
+        <span class="stack-pill">US Census TIGER</span>
+        <span class="stack-pill">GitHub Actions</span>
+        <span class="stack-pill">ggplot2</span>
+      </div>
+      <div style="margin-top:1.25rem;">
+        <a href="https://bdgroves.github.io/wildfire-response-gaps" target="_blank" class="project-link">View Live Map →</a>
+        <a href="https://github.com/bdgroves/wildfire-response-gaps" target="_blank" class="project-link secondary">GitHub →</a>
+      </div>
+    </div>
+
+    <div class="project-lead-stats">
+      <div class="stat-block">
+        <div class="stat-label">Oregon median distance</div>
+        <div class="stat-value danger">26.7 km</div>
+        <div class="stat-sub">vs 8.6 km Washington, 10.8 km California</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Oregon fires beyond 50km</div>
+        <div class="stat-value danger">30.1%</div>
+        <div class="stat-sub">vs 1.9% WA · 1.5% CA</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Malheur County median</div>
+        <div class="stat-value danger">139 km</div>
+        <div class="stat-sub">larger than New Hampshire · 9,930 sq mi</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Fire perimeters analyzed</div>
+        <div class="stat-value">3,635</div>
+        <div class="stat-sub">CA · OR · WA · historical + 2026 YTD</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Frenchglen coverage zone</div>
+        <div class="stat-value warning">516,867 ac</div>
+        <div class="stat-sub">148 fires · 114 min mean response · pop. ~12</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY FINDINGS TABLE -->
+  <div class="section-label">
+    <span>State Comparison</span>
+  </div>
+  <table class="findings-table">
+    <thead>
+      <tr>
+        <th>State</th>
+        <th>Fires</th>
+        <th>Median Distance</th>
+        <th>% Beyond 50km</th>
+        <th>Pattern</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="state">Washington</td>
+        <td>1,388</td>
+        <td class="normal">8.6 km</td>
+        <td class="normal">1.9%</td>
+        <td>Dense station coverage · western model works</td>
+      </tr>
+      <tr>
+        <td class="state">California</td>
+        <td>1,051</td>
+        <td class="normal">10.8 km</td>
+        <td class="normal">1.5%</td>
+        <td>Populated corridors well-covered</td>
+      </tr>
+      <tr>
+        <td class="state">Oregon</td>
+        <td>1,196</td>
+        <td class="outlier">26.7 km ⚠</td>
+        <td class="outlier">30.1% ⚠</td>
+        <td>Eastern rangeland structural gap — RFPAs fill the void</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- CONTEXT -->
+  <div class="section-label"><span>Context</span></div>
+  <div class="context-grid">
+    <div>
+      <h3 class="context-hed">Why Oregon Is Different</h3>
+      <div class="context-body">
+        <p>Eastern Oregon is enormous, sparsely populated rangeland. <strong>Malheur County alone is 9,930 square miles</strong> — larger than New Hampshire — with a median fire-to-station distance of 139.1 km. Every single fire in the county is beyond 50km from any mapped station.</p>
+        <p>Oregon's answer is <strong>Rangeland Fire Protection Associations (RFPAs)</strong> — legally recognized volunteer networks of ranchers and landowners organized to protect over 17.5 million acres that have no existing state or local fire protection. Codified in Oregon statute. Oregon is the only state in the country with this formal structure.</p>
+        <p>The infrastructure gap is real. The people filling it are remarkable.</p>
+      </div>
+    </div>
+    <div>
+      <h3 class="context-hed">Frenchglen Fire Guard Station</h3>
+      <div class="context-body">
+        <p>Frenchglen Fire Guard Station sits in Harney County — <strong>population approximately 12</strong>. It is the nearest mapped station to 148 wildfires covering 516,867 acres, with a mean estimated response time of 114 minutes.</p>
+        <p>But Frenchglen isn't alone. It's one node in a network that includes the Frenchglen RFPA, BLM resources, and US Fish & Wildlife. The ranchers in these associations are often on scene <strong>hours before federal resources arrive</strong> — with fire-equipped trucks, slip-on water tanks, and generations of knowledge of this land.</p>
+        <p>The largest fire in Frenchglen's coverage zone: the Falls Fire — 151,683 acres, 2024.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MORE GEOSPATIAL PROJECTS -->
+  <div class="section-label">
+    <span>More Geospatial Work</span>
+    <a href="https://github.com/bdgroves" target="_blank">All on GitHub →</a>
+  </div>
+  <div class="projects-grid">
+    <a href="https://bdgroves.github.io/ridgeline" target="_blank" class="project-card">
+      <p class="card-kicker">WUI · Search & Rescue · Phoenix FD · Clustering</p>
+      <h3 class="card-hed">🔥 RIDGELINE — WUI Call Volume</h3>
+      <p class="card-dek">86K+ Phoenix Fire Department dispatch incidents. Four behavioral clusters extracted from real nature codes. Interactive maps, CI/CD pipeline.</p>
+      <span class="card-link">View project →</span>
+    </a>
+    <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank" class="project-card">
+      <p class="card-kicker">Hydrology · USGS · Leaflet · Sierra Nevada</p>
+      <h3 class="card-hed">💧 Sierra Streamflow Monitor</h3>
+      <p class="card-dek">8 USGS stream gages mapped across Sierra Nevada watersheds. Historical spaghetti charts, Leaflet map, weekly GitHub Actions cron.</p>
+      <span class="card-link">View dashboard →</span>
+    </a>
+    <a href="https://github.com/bdgroves" target="_blank" class="project-card">
+      <p class="card-kicker">LiDAR · Archaeology · USGS 3DEP · Chaco Canyon</p>
+      <h3 class="card-hed">🏜 Project Kiva</h3>
+      <p class="card-dek">Southwest archaeology remote sensing pipeline using real USGS 3DEP LiDAR DEMs. Chaco Canyon, Mesa Verde, Hohokam Phoenix, Canyon de Chelly.</p>
+      <span class="card-link">View on GitHub →</span>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://bsky.app" target="_blank">Bluesky</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+</body>
+</html>
