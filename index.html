@@ -17,7 +17,6 @@
     html { scroll-behavior:smooth; }
     body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
     body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
-
     .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
 
     /* WEATHER BAR */
@@ -56,6 +55,7 @@
     .dropdown a:hover { color:var(--gold); background:#222; }
     .dropdown-label { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.2em; text-transform:uppercase; color:#3a3a36; padding:0.75rem 1.25rem 0.25rem; }
 
+    /* HAMBURGER */
     .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
     .hamburger span { display:block; width:22px; height:2px; background:var(--ink); transition:all 0.3s; }
     .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
@@ -78,22 +78,19 @@
     .lead-section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
     .lead-section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
     .lead-section-label a:hover { color:var(--rust); }
-
     .lead-grid { display:grid; grid-template-columns:3fr 2fr; gap:0; border:1px solid var(--mist); }
     @media(max-width:768px) { .lead-grid { grid-template-columns:1fr; } }
-
     .lead-story { padding:2rem; border-right:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; }
     .lead-story:hover { background:var(--cream); }
     .lead-story::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); display:block; margin-bottom:0.75rem; }
     .lead-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
     .lead-hed { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
     .lead-hed em { font-style:italic; color:var(--rust); }
-    .lead-dek { font-size:0.95rem; color:var(--stone); line-height:1.75; margin-bottom:1rem; }
+    .lead-dek { font-size:0.95rem; color:var(--stone); line-height:1.75; }
     .lead-quote { border-left:3px solid var(--rust); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.9rem; color:var(--stone); }
     .lead-stack { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
     .stack-pill { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.6rem; }
     .lead-link { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--rust); margin-top:1.25rem; display:block; }
-
     .support-stories { display:flex; flex-direction:column; }
     .support-story { padding:1.25rem 1.5rem; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; flex:1; }
     .support-story:last-child { border-bottom:none; }
@@ -127,11 +124,9 @@
     .below-col { padding:0 2rem 0 0; }
     .below-col:last-child { padding:0 0 0 2rem; border-left:1px solid var(--mist); }
     @media(max-width:768px) { .below-col { padding:1.5rem 0 !important; border-left:none !important; border-top:1px solid var(--mist); } }
-
     .col-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.6rem; border-bottom:2px solid var(--ink); margin-bottom:1rem; display:flex; justify-content:space-between; }
     .col-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
     .col-label a:hover { color:var(--rust); }
-
     .writing-item { padding:0.9rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:padding-left 0.2s; }
     .writing-item:hover { padding-left:0.4rem; }
     .writing-item:hover .writing-hed { color:var(--rust); }
@@ -139,7 +134,6 @@
     .writing-date { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.08em; color:var(--stone); }
     .writing-hed { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; line-height:1.3; transition:color 0.2s; }
     .writing-dek { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; line-height:1.55; }
-
     .book-item { display:flex; gap:0.75rem; padding:0.85rem 0; border-bottom:1px solid var(--mist); align-items:flex-start; text-decoration:none; color:inherit; transition:padding-left 0.2s; }
     .book-item:hover { padding-left:0.3rem; }
     .book-item:hover .book-title { color:var(--rust); }
@@ -164,7 +158,6 @@
     .sport-panel.active { display:block; }
     .sports-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; }
     @media(max-width:680px){ .sports-grid { grid-template-columns:1fr; gap:1.5rem; } }
-
     .game-row { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; padding:0.7rem 0; border-bottom:1px solid var(--mist); gap:0.5rem; }
     .team-home { text-align:right; }
     .team-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:600; }
@@ -185,6 +178,13 @@
     .race-meta { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); letter-spacing:0.08em; text-align:right; flex-shrink:0; }
     .race-meta span { display:block; }
     .sport-note { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); padding-top:0.5rem; letter-spacing:0.08em; }
+    .standings-grid { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); }
+    .standings-title { font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); padding-bottom:0.4rem; border-bottom:1px solid var(--mist); margin-bottom:0.4rem; }
+    .standings-header { display:grid; grid-template-columns:1fr auto auto auto; gap:0.25rem 0.75rem; padding-bottom:0.3rem; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; }
+    .standings-row { display:grid; grid-template-columns:1fr auto auto auto; gap:0.25rem 0.75rem; padding:0.3rem 0; border-bottom:1px solid var(--mist); font-size:0.6rem; }
+    .standings-row.highlight { color:var(--ink); font-weight:bold; }
+    .gb-pos { color:var(--sage); }
+    .gb-neg { color:var(--rust); }
 
     .beer-item { display:flex; align-items:flex-start; gap:0.75rem; padding:0.85rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:padding-left 0.2s; }
     .beer-item:hover { padding-left:0.3rem; }
@@ -198,14 +198,6 @@
     .untappd-link { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
     .untappd-link:hover { color:var(--gold); }
 
-    /* STANDINGS */
-    .standings-grid { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); }
-    .standings-header { display:grid; grid-template-columns:1fr auto auto auto; gap:0.25rem 0.75rem; padding-bottom:0.4rem; border-bottom:1px solid var(--mist); margin-bottom:0.4rem; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); }
-    .standings-row { display:grid; grid-template-columns:1fr auto auto auto; gap:0.25rem 0.75rem; padding:0.3rem 0; border-bottom:1px solid var(--mist); font-size:0.6rem; }
-    .standings-row.highlight { color:var(--ink); font-weight:bold; }
-    .standings-row .gb-pos { color:var(--sage); }
-    .standings-row .gb-neg { color:var(--rust); }
-
     /* FOOTER */
     footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,4vw,3rem) clamp(1rem,4vw,3rem); margin-top:3rem; }
     .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
@@ -214,7 +206,6 @@
     .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
     .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
     .footer-links a:hover { color:var(--gold); }
-
     hr.rule { border:none; border-top:1px solid var(--mist); margin:0; }
     .fade-in { opacity:0; transform:translateY(12px); animation:fadeIn 0.5s forwards; }
     @keyframes fadeIn { to{opacity:1;transform:translateY(0);} }
@@ -261,9 +252,7 @@
       <span class="wx-cond" id="cond-lakewood"></span>
     </div>
     <div class="wx-forecast" id="forecast-lakewood"></div>
-
     <div class="wx-divider"></div>
-
     <div class="wx-loc">
       <span class="wx-icon" id="icon-groveland">🌡️</span>
       <span class="wx-place">Groveland CA</span>
@@ -271,9 +260,7 @@
       <span class="wx-cond" id="cond-groveland"></span>
     </div>
     <div class="wx-forecast" id="forecast-groveland"></div>
-
     <div class="wx-divider"></div>
-
     <div class="wx-loc">
       <span class="wx-icon" id="icon-deathvalley">🔥</span>
       <span class="wx-place">Death Valley CA</span>
@@ -281,7 +268,6 @@
       <span class="wx-cond" id="cond-deathvalley"></span>
     </div>
     <div class="wx-forecast" id="forecast-deathvalley"></div>
-
     <span class="wx-updated" id="weather-updated">via NWS</span>
   </div>
 </div>
@@ -296,7 +282,6 @@
   </div>
   <a href="/" class="site-nameplate fade-in">Brooks Groves</a>
   <p class="site-tagline">Developer · Geospatial · Pacific Northwest</p>
-
   <nav class="section-nav">
     <div class="section-nav-item">
       <button class="section-nav-btn">Projects <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
@@ -487,10 +472,10 @@
     <!-- MARINERS — live via MLB Stats API -->
     <div class="sport-panel active" id="tab-mlb">
       <div class="sports-grid">
-        <div id="mlb-scores"><p class="sport-note" style="padding-top:0;">Loading scores…</p></div>
+        <div id="mlb-scores"><p class="sport-note">Loading scores…</p></div>
         <div>
           <div class="standings-grid">
-            <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);padding-bottom:0.4rem;border-bottom:1px solid var(--mist);margin-bottom:0.4rem;">AL West</div>
+            <div class="standings-title">AL West Standings</div>
             <div class="standings-header"><span>Team</span><span>W</span><span>L</span><span>GB</span></div>
             <div class="standings-row"><span>Texas</span><span>3</span><span>1</span><span class="gb-pos">—</span></div>
             <div class="standings-row"><span>Houston</span><span>2</span><span>2</span><span>1</span></div>
@@ -503,6 +488,7 @@
       </div>
     </div>
 
+    <!-- SEAHAWKS -->
     <div class="sport-panel" id="tab-nfl">
       <div class="game-row">
         <div class="team-home"><div class="team-name loser">Seattle</div></div>
@@ -512,25 +498,35 @@
       <p class="sport-note" style="padding-top:0.75rem;">Offseason · 2026 Draft — Apr 23–25, Green Bay</p>
     </div>
 
+    <!-- CYCLING — updated with today's real results -->
     <div class="sport-panel" id="tab-cycling">
       <div class="race-row">
-        <div><p class="race-name">Volta a Catalunya</p><p class="race-leader">GC: Evenepoel (Soudal)</p></div>
-        <div class="race-meta"><span>Stage 4 of 7</span><span style="color:var(--rust)"><span class="live-dot"></span>Live</span></div>
+        <div><p class="race-name">GP de Denain</p><p class="race-leader">Winner: Segaert (Bahrain)</p></div>
+        <div class="race-meta"><span>Today · Mar 31</span><span class="score-status final">Final</span></div>
       </div>
       <div class="race-row">
-        <div><p class="race-name">Milan–San Remo</p><p class="race-leader">Winner: Van der Poel</p></div>
-        <div class="race-meta"><span>Mar 22</span><span class="score-status final">Final</span></div>
+        <div><p class="race-name">Bredene Koksijde Classic</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Belgium · 1.Pro</p></div>
+        <div class="race-meta"><span>Apr 1</span><span class="score-status sched">Tomorrow</span></div>
       </div>
       <div class="race-row">
-        <div><p class="race-name">Tour de France</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Starts Jul 5, Copenhagen</p></div>
-        <div class="race-meta"><span>96 days</span><span class="score-status sched">Upcoming</span></div>
+        <div><p class="race-name">Ronde van Vlaanderen</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Tour of Flanders · Monument</p></div>
+        <div class="race-meta"><span>Apr 5</span><span class="score-status sched">5 days</span></div>
+      </div>
+      <div class="race-row">
+        <div><p class="race-name">Paris-Roubaix</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Hell of the North · Monument</p></div>
+        <div class="race-meta"><span>Apr 12</span><span class="score-status sched">12 days</span></div>
+      </div>
+      <div class="race-row">
+        <div><p class="race-name">Tour de France</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Starts Copenhagen</p></div>
+        <div class="race-meta"><span>Jul 5</span><span class="score-status sched">96 days</span></div>
       </div>
     </div>
 
+    <!-- RUNNING -->
     <div class="sport-panel" id="tab-running">
       <div class="race-row">
         <div><p class="race-name">Boston Marathon</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Hopkinton → Boston, MA</p></div>
-        <div class="race-meta"><span>Apr 21, 2026</span><span class="score-status sched">22 days</span></div>
+        <div class="race-meta"><span>Apr 21, 2026</span><span class="score-status sched">21 days</span></div>
       </div>
       <div class="race-row">
         <div><p class="race-name">Ironman World Championship</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Nice, France</p></div>
@@ -542,6 +538,7 @@
       </div>
     </div>
 
+    <!-- BEER -->
     <div class="sport-panel" id="tab-beer">
       <div id="beer-list"><p class="sport-note">Loading from Untappd…</p></div>
       <a href="https://untappd.com/user/bdgroves" target="_blank" class="untappd-link">View profile on Untappd →</a>
@@ -591,84 +588,57 @@
     btn.classList.add('active');
   }
 
-  // ── WEATHER from weather.json ──
+  // ── WEATHER ──
   async function loadWeather() {
     try {
       const res = await fetch('/weather.json?t=' + Date.now());
       if (!res.ok) throw new Error();
       const data = await res.json();
-
-      function applyLocation(key, elPrefix) {
+      function applyLoc(key, id) {
         if (!data[key]) return;
         const w = data[key];
-        document.getElementById('icon-' + elPrefix).textContent = w.emoji;
-        document.getElementById('temp-' + elPrefix).textContent = w.temp + '°';
-        document.getElementById('cond-' + elPrefix).textContent = '· ' + w.condition;
-        const fc = document.getElementById('forecast-' + elPrefix);
+        document.getElementById('icon-' + id).textContent = w.emoji;
+        document.getElementById('temp-' + id).textContent = w.temp + '°';
+        document.getElementById('cond-' + id).textContent = '· ' + w.condition;
+        const fc = document.getElementById('forecast-' + id);
         if (fc) fc.innerHTML = w.forecast.map(d =>
           `<div class="wx-day"><div class="wx-dow">${d.name}</div><div class="wx-hi">${d.high}°</div><div class="wx-rain">${d.precip}%</div></div>`
         ).join('');
       }
-
-      applyLocation('lakewood', 'lakewood');
-      applyLocation('groveland', 'groveland');
-      applyLocation('deathvalley', 'deathvalley');
-
+      applyLoc('lakewood', 'lakewood');
+      applyLoc('groveland', 'groveland');
+      applyLoc('deathvalley', 'deathvalley');
       if (data.updated) {
         const d = new Date(data.updated);
         document.getElementById('weather-updated').textContent =
-          'NWS · ' + d.toLocaleDateString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit'});
+          'NWS · ' + d.toLocaleDateString('en-US', {month:'short', day:'numeric'}) +
+          ' ' + d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
       }
     } catch(e) {
-      // fallback values
       document.getElementById('icon-lakewood').textContent = '⛅';
-      document.getElementById('temp-lakewood').textContent = '47°';
-      document.getElementById('icon-groveland').textContent = '☁️';
-      document.getElementById('temp-groveland').textContent = '65°';
+      document.getElementById('temp-lakewood').textContent = '34°';
+      document.getElementById('cond-lakewood').textContent = '· Mostly Cloudy';
+      document.getElementById('icon-groveland').textContent = '🌧';
+      document.getElementById('temp-groveland').textContent = '55°';
+      document.getElementById('cond-groveland').textContent = '· Chance Rain';
       document.getElementById('icon-deathvalley').textContent = '🔥';
       document.getElementById('temp-deathvalley').textContent = '73°';
+      document.getElementById('cond-deathvalley').textContent = '· Cloudy';
     }
   }
 
-  // ── LIVE MLB SCORES via MLB Stats API ──
-  async function loadMLB() {
-    const el = document.getElementById('mlb-scores');
-    try {
-      const today = new Date().toISOString().split('T')[0].replace(/-/g, '-');
-      const url = `https://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId=136&date=${today}&hydrate=linescore`;
-      const res = await fetch(url);
-      if (!res.ok) throw new Error();
-      const data = await res.json();
-
-      const games = data.dates?.[0]?.games || [];
-      if (!games.length) {
-        // try yesterday
-        const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-        const res2 = await fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId=136&date=${yesterday}&hydrate=linescore`);
-        const data2 = await res2.json();
-        const games2 = data2.dates?.[0]?.games || [];
-        renderGames(el, games2);
-      } else {
-        renderGames(el, games);
-      }
-    } catch(e) {
-      el.innerHTML = `
-        <div class="game-row">
-          <div class="team-home"><div class="team-name winner">Seattle</div><div class="team-record">2–2</div></div>
-          <div class="game-score-block"><span class="score-line">1 · 0</span><span class="score-status live"><span class="live-dot"></span>Live</span></div>
-          <div class="team-away"><div class="team-name loser">NY Yankees</div></div>
-        </div>
-        <p class="sport-note">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>`;
-    }
-  }
-
+  // ── MLB SCORES — today + yesterday, fixed team names ──
   function renderGames(el, games) {
     if (!games.length) {
-      el.innerHTML = '<p class="sport-note">No Mariners games today. Next series coming up.</p>';
+      el.innerHTML = '<p class="sport-note">No Mariners games found. Check back soon.</p>';
       return;
     }
-    el.innerHTML = games.slice(0,3).map(g => {
-      const status = g.status.abstractGameState; // Preview, Live, Final
+    // Sort: live first, then final, then scheduled
+    const order = { 'Live': 0, 'Final': 1, 'Preview': 2 };
+    games.sort((a, b) => (order[a.status.abstractGameState] || 2) - (order[b.status.abstractGameState] || 2));
+
+    el.innerHTML = games.slice(0, 4).map(g => {
+      const status = g.status.abstractGameState;
       const home = g.teams.home;
       const away = g.teams.away;
       const isSEAHome = home.team.id === 136;
@@ -676,47 +646,80 @@
       const oppTeam = isSEAHome ? away : home;
       const seaScore = seaTeam.score ?? '--';
       const oppScore = oppTeam.score ?? '--';
-      const seaWin = seaScore > oppScore;
+      const seaWin = status !== 'Preview' && Number(seaScore) > Number(oppScore);
+      const oppWin = status !== 'Preview' && Number(oppScore) > Number(seaScore);
+
+      // Safe team name extraction
+      const oppName = oppTeam.team?.teamName || oppTeam.team?.name?.split(' ').slice(-1)[0] || 'Opponent';
+      const oppAbbr = oppTeam.team?.abbreviation || '';
 
       let statusLabel = '';
       let statusClass = 'sched';
-      if (status === 'Final') { statusLabel = 'Final'; statusClass = 'final'; }
-      else if (status === 'Live') {
+      if (status === 'Final') {
+        statusLabel = 'Final · ' + new Date(g.gameDate).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+        statusClass = 'final';
+      } else if (status === 'Live') {
         const inning = g.linescore?.currentInningOrdinal || '';
         statusLabel = `<span class="live-dot"></span>${inning}`;
         statusClass = 'live';
       } else {
         const t = new Date(g.gameDate);
-        statusLabel = t.toLocaleDateString('en-US', {weekday:'short'}) + ' · ' +
-          t.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+        statusLabel = t.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'}) +
+          ' · ' + t.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
         statusClass = 'sched';
       }
 
       const scoreDisplay = status === 'Preview'
-        ? `<span class="score-line">vs ${oppTeam.team.abbreviation}</span>`
-        : `<span class="score-line">${seaScore} · ${oppScore}</span>`;
+        ? `<span class="score-line">vs ${oppAbbr}</span>`
+        : `<span class="score-line">${isSEAHome ? seaScore : oppScore} · ${isSEAHome ? oppScore : seaScore}</span>`;
+
+      const leftTeam = isSEAHome ? 'Seattle' : oppName;
+      const rightTeam = isSEAHome ? oppName : 'Seattle';
+      const leftWin = isSEAHome ? seaWin : oppWin;
+      const rightWin = isSEAHome ? oppWin : seaWin;
 
       return `<div class="game-row">
         <div class="team-home">
-          <div class="team-name ${isSEAHome && seaWin ? 'winner' : isSEAHome && !seaWin ? 'loser' : ''}">
-            ${isSEAHome ? 'Seattle' : oppTeam.team.teamName}
-          </div>
+          <div class="team-name ${status !== 'Preview' ? (leftWin ? 'winner' : 'loser') : ''}">${leftTeam}</div>
         </div>
         <div class="game-score-block">
           ${scoreDisplay}
           <span class="score-status ${statusClass}">${statusLabel}</span>
         </div>
         <div class="team-away">
-          <div class="team-name ${!isSEAHome && seaWin ? 'winner' : !isSEAHome && !seaWin ? 'loser' : ''}">
-            ${isSEAHome ? oppTeam.team.teamName : 'Seattle'}
-          </div>
+          <div class="team-name ${status !== 'Preview' ? (rightWin ? 'winner' : 'loser') : ''}">${rightTeam}</div>
         </div>
       </div>`;
-    }).join('') +
-    `<p class="sport-note">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>`;
+    }).join('');
   }
 
-  // ── BOOKS from Goodreads ──
+  async function loadMLB() {
+    const el = document.getElementById('mlb-scores');
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+      const [r1, r2] = await Promise.all([
+        fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId=136&date=${today}&hydrate=linescore`),
+        fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId=136&date=${yesterday}&hydrate=linescore`)
+      ]);
+      const [d1, d2] = await Promise.all([r1.json(), r2.json()]);
+      const games = [
+        ...(d1.dates?.[0]?.games || []),
+        ...(d2.dates?.[0]?.games || [])
+      ];
+      renderGames(el, games);
+    } catch(e) {
+      el.innerHTML = `
+        <div class="game-row">
+          <div class="team-home"><div class="team-name winner">Seattle</div></div>
+          <div class="game-score-block"><span class="score-line">8 · 0</span><span class="score-status final">Final · Mar 29</span></div>
+          <div class="team-away"><div class="team-name loser">Cleveland</div></div>
+        </div>
+        <p class="sport-note">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>`;
+    }
+  }
+
+  // ── BOOKS ──
   async function loadBooks() {
     const el = document.getElementById('reading-list');
     try {
@@ -745,7 +748,7 @@
     }
   }
 
-  // ── BEERS from Untappd ──
+  // ── BEERS ──
   async function loadBeers() {
     const el = document.getElementById('beer-list');
     try {
@@ -780,10 +783,8 @@
   loadBooks();
   loadBeers();
 
-  // Auto-refresh MLB scores every 5 minutes when tab is visible
-  setInterval(() => {
-    if (!document.hidden) loadMLB();
-  }, 5 * 60 * 1000);
+  // Auto-refresh MLB every 5 minutes when tab is visible
+  setInterval(() => { if (!document.hidden) loadMLB(); }, 5 * 60 * 1000);
 </script>
 
 </body>
