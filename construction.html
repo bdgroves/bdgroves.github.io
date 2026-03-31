@@ -4,52 +4,108 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coming Soon — Brooks Groves</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,400&family=DM+Mono&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
-    body {
-      background: #f5f0e8;
-      font-family: 'DM Mono', monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      text-align: center;
-      padding: 2rem;
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
     }
-    .topline { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #8b3a2a, #c8922a, #4a5c45); }
-    h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,6vw,3rem); font-weight: 900; color: #1c1a16; margin-bottom: 0.75rem; }
-    h1 em { font-style: italic; color: #8b3a2a; }
-    .eyebrow { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: #7a7268; margin-bottom: 1rem; }
-    .desc { font-size: 0.72rem; color: #7a7268; letter-spacing: 0.08em; line-height: 1.8; max-width: 380px; margin: 0 auto 2rem; }
-    .coming { display: flex; flex-direction: column; gap: 0.5rem; margin: 1.5rem auto; max-width: 320px; text-align: left; }
-    .coming-item { font-size: 0.65rem; letter-spacing: 0.1em; color: #7a7268; padding: 0.5rem 0; border-bottom: 1px solid #d6d0c4; display: flex; gap: 0.75rem; }
-    .coming-item::before { content: '○'; color: #c8922a; }
-    a.back { display: inline-block; margin-top: 1.5rem; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; padding: 0.6rem 1.2rem; border: 1.5px solid #1c1a16; color: #1c1a16; transition: background 0.2s, color 0.2s; }
-    a.back:hover { background: #1c1a16; color: #f5f0e8; }
-    .sig { margin-top: 3rem; font-size: 0.58rem; color: #d6d0c4; letter-spacing: 0.1em; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    /* MAIN CONTENT */
+    .main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: clamp(4rem,10vw,8rem) clamp(1.5rem,5vw,4rem); }
+    .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem,6vw,3.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .page-title em { font-style: italic; color: var(--rust); }
+    .desc { font-family: 'Libre Baskerville', serif; font-size: 0.95rem; color: var(--stone); line-height: 1.8; max-width: 420px; margin: 0 auto 2.5rem; }
+    .coming-list { display: flex; flex-direction: column; gap: 0; margin: 0 auto 2.5rem; max-width: 360px; text-align: left; border: 1px solid var(--mist); }
+    .coming-item { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; color: var(--stone); padding: 0.75rem 1rem; border-bottom: 1px solid var(--mist); display: flex; gap: 0.75rem; align-items: center; }
+    .coming-item:last-child { border-bottom: none; }
+    .coming-item::before { content: '○'; color: var(--gold); flex-shrink: 0; }
+    .back-btn { display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; padding: 0.6rem 1.4rem; border: 1.5px solid var(--ink); color: var(--ink); transition: background 0.2s, color 0.2s; }
+    .back-btn:hover { background: var(--ink); color: var(--parchment); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
   </style>
 </head>
 <body>
 
-  <div class="topline"></div>
+<div class="topline"></div>
 
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/construction.html">Journal</a>
+      <a href="/construction.html">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="main">
   <p class="eyebrow">Brooks Groves · brooksgroves.com</p>
-  <h1>Something is <em>coming</em></h1>
+  <h1 class="page-title">Something is <em>coming</em></h1>
   <p class="desc">This section is still being built. More to come soon — check back in a few days.</p>
 
-  <div class="coming">
+  <div class="coming-list">
     <div class="coming-item">Journal — field notes, travel, dispatches</div>
-    <div class="coming-item">Meteorology & hydrology dashboards</div>
+    <div class="coming-item">Meteorology & hydrology hubs</div>
+    <div class="coming-item">Geospatial — LiDAR, remote sensing, QGIS</div>
+    <div class="coming-item">Volcanology & Paleology — one day</div>
     <div class="coming-item">Training log — running, cycling, triathlon</div>
-    <div class="coming-item">Beer — recent check-ins via Untappd</div>
     <div class="coming-item">Photos — from the field</div>
   </div>
 
-  <a href="/" class="back">← Back to brooksgroves.com</a>
+  <a href="/" class="back-btn">← Back to brooksgroves.com</a>
+</div>
 
-  <p class="sig">brooksgroves.com · Lakewood, WA</p>
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://bsky.app" target="_blank">Bluesky</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
 
 </body>
 </html>
