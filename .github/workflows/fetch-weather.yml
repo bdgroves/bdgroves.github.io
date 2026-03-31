@@ -2,7 +2,7 @@ name: Fetch Weather
 
 on:
   schedule:
-    - cron: '0 14 * * *'   # 6am Pacific every day
+    - cron: '0 6,12,18,0 * * *'   # 6am, noon, 6pm, midnight UTC (4x daily)
   workflow_dispatch:
 
 jobs:
@@ -30,9 +30,11 @@ jobs:
 
           def get_weather(lat, lon, label):
               try:
+                  print(f"  Fetching points for {label} ({lat},{lon})...")
                   point = fetch(f"https://api.weather.gov/points/{lat},{lon}")
                   forecast_url = point["properties"]["forecast"]
                   hourly_url = point["properties"]["forecastHourly"]
+                  print(f"  Got grid: {point['properties'].get('gridId','?')} {point['properties'].get('gridX','?')},{point['properties'].get('gridY','?')}")
 
                   forecast = fetch(forecast_url)
                   periods = forecast["properties"]["periods"]
@@ -70,6 +72,8 @@ jobs:
                       emoji = "☀️"
                   elif "fog" in cond_lower:
                       emoji = "🌫"
+                  elif "hot" in cond_lower:
+                      emoji = "🔥"
                   else:
                       emoji = "🌡️"
 
@@ -81,8 +85,18 @@ jobs:
                       "forecast": days
                   }
               except Exception as e:
-                  print(f"Error fetching {label}: {e}")
+                  print(f"  ERROR fetching {label}: {type(e).__name__}: {e}")
                   return None
+
+          def get_weather_with_fallback(coords_list, label):
+              """Try multiple coordinates until one works."""
+              for lat, lon in coords_list:
+                  result = get_weather(lat, lon, label)
+                  if result:
+                      return result
+                  print(f"  Trying next fallback for {label}...")
+              print(f"  All coordinates failed for {label}")
+              return None
 
           output = {}
 
@@ -95,6 +109,20 @@ jobs:
           if groveland:
               output["groveland"] = groveland
               print(f"Groveland: {groveland['temp']}F {groveland['condition']}")
+
+          # Death Valley — multiple fallback coordinates
+          # 1. Furnace Creek visitor center (primary)
+          # 2. Stovepipe Wells (north valley)
+          # 3. Death Valley Junction (east edge)
+          dv_coords = [
+              (36.4622, -116.8636),   # Furnace Creek
+              (36.5991, -117.1473),   # Stovepipe Wells
+              (36.3022, -116.4130),   # Death Valley Junction
+          ]
+          deathvalley = get_weather_with_fallback(dv_coords, "Death Valley, CA")
+          if deathvalley:
+              output["deathvalley"] = deathvalley
+              print(f"Death Valley: {deathvalley['temp']}F {deathvalley['condition']}")
 
           output["updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
