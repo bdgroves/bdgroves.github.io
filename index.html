@@ -27,13 +27,11 @@
     .desktop-nav a:hover { color:var(--rust); }
     .desktop-nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
     .desktop-nav a.github:hover { background:var(--ink); color:var(--parchment); border-color:var(--ink); }
-
     .hamburger { display:flex; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; z-index:300; }
     .hamburger span { display:block; width:24px; height:2px; background:var(--ink); transition:all 0.3s; }
     .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
     .hamburger.open span:nth-child(2) { opacity:0; }
     .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
-
     .mobile-nav { display:flex; position:fixed; top:0; right:0; bottom:0; width:280px; background:var(--ink); z-index:250; padding:5rem 2rem 2rem; flex-direction:column; gap:0; transform:translateX(100%); transition:transform 0.3s ease; overflow-y:auto; }
     .mobile-nav.open { transform:translateX(0); }
     .mobile-nav a { font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.14em; text-transform:uppercase; text-decoration:none; color:var(--stone); padding:0.9rem 0; border-bottom:1px solid #2a2a26; transition:color 0.2s; display:block; }
@@ -43,6 +41,7 @@
     .overlay.open { display:block; }
     @media(max-width:768px) { .desktop-nav { display:none; } }
 
+    /* WEATHER */
     .weather-strip { background:var(--ink); padding:0.8rem clamp(1.5rem,5vw,4rem); }
     .weather-inner { max-width:1400px; margin:0 auto; display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap; }
     .weather-block { display:flex; align-items:center; gap:0.9rem; }
@@ -58,6 +57,7 @@
     .forecast-rain { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--sky); margin-top:0.1rem; }
     .weather-tag { font-family:'DM Mono',monospace; font-size:0.52rem; color:#3a3a3a; letter-spacing:0.08em; align-self:flex-end; padding-bottom:0.1rem; margin-left:auto; }
 
+    /* HERO */
     .hero { max-width:1400px; margin:0 auto; padding:clamp(3rem,8vw,6rem) clamp(1.5rem,5vw,4rem) clamp(2.5rem,5vw,4rem); display:grid; grid-template-columns:1fr auto; gap:2rem; align-items:end; border-bottom:1px solid var(--mist); }
     .hero-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:1rem; }
     .hero-headline { font-family:'Playfair Display',serif; font-size:clamp(2.8rem,7vw,5.5rem); font-weight:900; line-height:1.03; letter-spacing:-0.02em; }
@@ -70,6 +70,7 @@
     .btn-fill:hover { background:var(--ink); border-color:var(--ink); }
     .hero-coords { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--mist); letter-spacing:0.08em; writing-mode:vertical-rl; align-self:stretch; display:flex; align-items:flex-end; padding-bottom:0.5rem; }
 
+    /* SECTIONS */
     .section { max-width:1400px; margin:0 auto; padding:clamp(2.5rem,6vw,4.5rem) clamp(1.5rem,5vw,4rem); }
     .section-header { display:flex; align-items:baseline; justify-content:space-between; border-bottom:2px solid var(--ink); padding-bottom:0.6rem; margin-bottom:2.5rem; }
     .section-label { font-family:'Playfair Display',serif; font-size:clamp(1.2rem,2.5vw,1.7rem); font-weight:900; }
@@ -77,6 +78,7 @@
     .section-more:hover { color:var(--rust); }
     hr.divider { border:none; border-top:1px solid var(--mist); max-width:1400px; margin:0 auto; }
 
+    /* PROJECTS */
     .projects-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); border:1px solid var(--mist); }
     .project-card { border:1px solid var(--mist); padding:1.75rem; text-decoration:none; color:inherit; display:block; transition:background 0.2s; position:relative; overflow:hidden; }
     .project-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--sage); transform:scaleX(0); transform-origin:left; transition:transform 0.3s; }
@@ -87,6 +89,7 @@
     .project-desc { font-size:0.845rem; color:var(--stone); line-height:1.65; }
     .project-arrow { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--rust); margin-top:1rem; display:block; }
 
+    /* WRITING */
     .writing-grid { display:grid; grid-template-columns:1fr 1fr; gap:4rem; }
     @media(max-width:680px){ .writing-grid{grid-template-columns:1fr;gap:2.5rem;} }
     .writing-col-label { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); padding-bottom:0.6rem; border-bottom:1px solid var(--mist); margin-bottom:0.5rem; display:flex; justify-content:space-between; }
@@ -99,11 +102,13 @@
     .post-item:hover .post-title { color:var(--rust); }
     .post-excerpt { font-size:0.8rem; color:var(--stone); margin-top:0.25rem; line-height:1.6; }
 
+    /* BOTTOM ROW */
     .bottom-row { display:grid; grid-template-columns:5fr 7fr; border-top:1px solid var(--mist); }
     @media(max-width:768px){ .bottom-row{grid-template-columns:1fr;} }
     .bottom-col { padding:clamp(2rem,5vw,3.5rem) clamp(1.5rem,5vw,4rem); }
     .bottom-col:first-child { border-right:1px solid var(--mist); }
 
+    /* READING */
     .book-item { display:flex; gap:1rem; padding:0.9rem 0; border-bottom:1px solid var(--mist); align-items:flex-start; text-decoration:none; color:inherit; transition:padding-left 0.2s; }
     .book-item:hover { padding-left:0.4rem; }
     .book-item:hover .book-title { color:var(--rust); }
@@ -118,6 +123,7 @@
     .goodreads-link { display:inline-block; margin-top:1.1rem; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
     .goodreads-link:hover { color:var(--rust); }
 
+    /* SPORTS */
     .sports-tabs { display:flex; margin-bottom:1.75rem; border-bottom:1px solid var(--mist); flex-wrap:wrap; }
     .tab-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; background:none; border:none; cursor:pointer; padding:0.5rem 0.8rem; color:var(--stone); border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.2s; }
     .tab-btn.active { color:var(--ink); border-bottom-color:var(--rust); }
@@ -145,6 +151,7 @@
     .race-meta span { display:block; }
     .sport-note { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); padding-top:0.5rem; letter-spacing:0.08em; }
 
+    /* BEER */
     .beer-item { display:flex; align-items:flex-start; gap:1rem; padding:0.9rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:padding-left 0.2s; }
     .beer-item:hover { padding-left:0.4rem; }
     .beer-item:hover .beer-name { color:var(--rust); }
@@ -157,6 +164,7 @@
     .untappd-link { display:inline-block; margin-top:1rem; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
     .untappd-link:hover { color:var(--gold); }
 
+    /* FOOTER */
     footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); }
     .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
     .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
@@ -219,40 +227,29 @@
   </div>
 </header>
 
+<!-- WEATHER STRIP — populated by loadWeather() from weather.json -->
 <div class="weather-strip">
   <div class="weather-inner">
     <div class="weather-block">
-      <span class="weather-icon">⛅</span>
+      <span class="weather-icon" id="icon-lakewood">🌡️</span>
       <div>
         <div class="weather-place">Lakewood, WA</div>
-        <div class="weather-temp">51°F</div>
-        <div class="weather-cond">Partly Sunny</div>
+        <div class="weather-temp" id="temp-lakewood">--°F</div>
+        <div class="weather-cond" id="cond-lakewood">Loading…</div>
       </div>
     </div>
-    <div class="weather-forecast">
-      <div class="forecast-day"><div class="forecast-dow">Mon</div><div class="forecast-hi">50°</div><div class="forecast-rain">15%</div></div>
-      <div class="forecast-day"><div class="forecast-dow">Tue</div><div class="forecast-hi">53°</div><div class="forecast-rain">10%</div></div>
-      <div class="forecast-day"><div class="forecast-dow">Wed</div><div class="forecast-hi">55°</div><div class="forecast-rain">20%</div></div>
-      <div class="forecast-day"><div class="forecast-dow">Thu</div><div class="forecast-hi">52°</div><div class="forecast-rain">25%</div></div>
-      <div class="forecast-day"><div class="forecast-dow">Fri</div><div class="forecast-hi">54°</div><div class="forecast-rain">10%</div></div>
-    </div>
+    <div class="weather-forecast" id="forecast-lakewood"></div>
     <div class="weather-divider"></div>
     <div class="weather-block">
-      <span class="weather-icon">☁️</span>
+      <span class="weather-icon" id="icon-groveland">🌡️</span>
       <div>
         <div class="weather-place">Groveland, CA · Hometown</div>
-        <div class="weather-temp">72°F</div>
-        <div class="weather-cond">Cloudy</div>
+        <div class="weather-temp" id="temp-groveland">--°F</div>
+        <div class="weather-cond" id="cond-groveland">Loading…</div>
       </div>
     </div>
-    <div class="weather-forecast">
-      <div class="forecast-day"><div class="forecast-dow">Mon</div><div class="forecast-hi">71°</div><div class="forecast-rain">10%</div></div>
-      <div class="forecast-day"><div class="forecast-dow">Tue</div><div class="forecast-hi">60°</div><div class="forecast-rain">15%</div></div>
-      <div class="forecast-day"><div class="forecast-dow">Wed</div><div class="forecast-hi">62°</div><div class="forecast-rain">20%</div></div>
-      <div class="forecast-day"><div class="forecast-dow">Thu</div><div class="forecast-hi">65°</div><div class="forecast-rain">10%</div></div>
-      <div class="forecast-day"><div class="forecast-dow">Fri</div><div class="forecast-hi">68°</div><div class="forecast-rain">5%</div></div>
-    </div>
-    <div class="weather-tag">via weather-report-bot · updates daily</div>
+    <div class="weather-forecast" id="forecast-groveland"></div>
+    <div class="weather-tag" id="weather-updated">via NWS · updates daily</div>
   </div>
 </div>
 
@@ -361,9 +358,7 @@
       <span class="section-label">Reading</span>
       <a href="https://www.goodreads.com/user/show/9579797" target="_blank" class="section-more">Goodreads →</a>
     </div>
-    <div id="reading-list">
-      <p class="book-loading">Loading from Goodreads…</p>
-    </div>
+    <div id="reading-list"><p class="book-loading">Loading from Goodreads…</p></div>
     <a href="https://www.goodreads.com/user/show/9579797" target="_blank" class="goodreads-link">View all 982 books on Goodreads →</a>
   </div>
 
@@ -380,20 +375,35 @@
       <button class="tab-btn" onclick="showTab('beer',this)">Beer 🍺</button>
     </div>
 
+    <!-- MARINERS — live data as of Mar 30 2026 -->
     <div class="sport-panel active" id="tab-mlb">
       <div class="game-row">
-        <div class="team-home"><div class="team-name winner">Seattle</div><div class="team-record">3–1</div></div>
-        <div class="game-score-block"><span class="score-line">5 · 3</span><span class="score-status final">Final · Mar 28</span></div>
-        <div class="team-away"><div class="team-name loser">Houston</div><div class="team-record">1–3</div></div>
+        <div class="team-home"><div class="team-name winner">Seattle</div><div class="team-record">2–2</div></div>
+        <div class="game-score-block">
+          <span class="score-line">1 · 0</span>
+          <span class="score-status live"><span class="live-dot"></span>Live · vs NYY</span>
+        </div>
+        <div class="team-away"><div class="team-name loser">NY Yankees</div><div class="team-record">3–0</div></div>
+      </div>
+      <div class="game-row">
+        <div class="team-home"><div class="team-name winner">Seattle</div></div>
+        <div class="game-score-block"><span class="score-line">8 · 0</span><span class="score-status final">Final · Mar 29</span></div>
+        <div class="team-away"><div class="team-name loser">Cleveland</div></div>
       </div>
       <div class="game-row">
         <div class="team-home"><div class="team-name">Seattle</div></div>
-        <div class="game-score-block"><span class="score-line">vs HOU</span><span class="score-status sched">Today · 4:10 PM</span></div>
-        <div class="team-away"><div class="team-name">Houston</div></div>
+        <div class="game-score-block"><span class="score-line">vs NYY</span><span class="score-status sched">Tue · 6:40 PM</span></div>
+        <div class="team-away"><div class="team-name">NY Yankees</div></div>
+      </div>
+      <div class="game-row">
+        <div class="team-home"><div class="team-name">Seattle</div></div>
+        <div class="game-score-block"><span class="score-line">vs NYY</span><span class="score-status sched">Wed · 1:10 PM</span></div>
+        <div class="team-away"><div class="team-name">NY Yankees</div></div>
       </div>
       <p class="sport-note">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats & spray charts on EDGAR ↗</a></p>
     </div>
 
+    <!-- SEAHAWKS -->
     <div class="sport-panel" id="tab-nfl">
       <div class="game-row">
         <div class="team-home"><div class="team-name loser">Seattle</div></div>
@@ -404,6 +414,7 @@
       <p class="sport-note" style="padding-top:0.4rem;">Sam Darnold signed · OL depth the big question mark</p>
     </div>
 
+    <!-- CYCLING -->
     <div class="sport-panel" id="tab-cycling">
       <div class="race-row">
         <div><p class="race-name">Volta a Catalunya</p><p class="race-leader">GC: Evenepoel (Soudal)</p></div>
@@ -415,10 +426,11 @@
       </div>
       <div class="race-row">
         <div><p class="race-name">Tour de France</p><p class="race-leader" style="color:var(--stone);font-style:normal;font-size:0.72rem">Starts Jul 5, Copenhagen</p></div>
-        <div class="race-meta"><span>97 days</span><span class="score-status sched">Upcoming</span></div>
+        <div class="race-meta"><span>96 days</span><span class="score-status sched">Upcoming</span></div>
       </div>
     </div>
 
+    <!-- RUNNING -->
     <div class="sport-panel" id="tab-running">
       <div class="race-row">
         <div><p class="race-name">Boston Marathon</p><p class="race-leader" style="color:var(--stone);font-style:normal;font-size:0.72rem">Hopkinton → Boston, MA</p></div>
@@ -434,10 +446,9 @@
       </div>
     </div>
 
+    <!-- BEER -->
     <div class="sport-panel" id="tab-beer">
-      <div id="beer-list">
-        <p class="sport-note">Loading from Untappd…</p>
-      </div>
+      <div id="beer-list"><p class="sport-note">Loading from Untappd…</p></div>
       <a href="https://untappd.com/user/bdgroves" target="_blank" class="untappd-link">View profile on Untappd →</a>
     </div>
 
@@ -482,6 +493,51 @@
     btn.classList.add('active');
   }
 
+  async function loadWeather() {
+    try {
+      const res = await fetch('/weather.json?t=' + Date.now());
+      if (!res.ok) throw new Error('missing');
+      const data = await res.json();
+      if (data.lakewood) {
+        const w = data.lakewood;
+        document.getElementById('icon-lakewood').textContent = w.emoji;
+        document.getElementById('temp-lakewood').textContent = w.temp + '°F';
+        document.getElementById('cond-lakewood').textContent = w.condition;
+        document.getElementById('forecast-lakewood').innerHTML = w.forecast.map(d =>
+          `<div class="forecast-day">
+            <div class="forecast-dow">${d.name}</div>
+            <div class="forecast-hi">${d.high}°</div>
+            <div class="forecast-rain">${d.precip}%</div>
+          </div>`).join('');
+      }
+      if (data.groveland) {
+        const w = data.groveland;
+        document.getElementById('icon-groveland').textContent = w.emoji;
+        document.getElementById('temp-groveland').textContent = w.temp + '°F';
+        document.getElementById('cond-groveland').textContent = w.condition;
+        document.getElementById('forecast-groveland').innerHTML = w.forecast.map(d =>
+          `<div class="forecast-day">
+            <div class="forecast-dow">${d.name}</div>
+            <div class="forecast-hi">${d.high}°</div>
+            <div class="forecast-rain">${d.precip}%</div>
+          </div>`).join('');
+      }
+      if (data.updated) {
+        const d = new Date(data.updated);
+        document.getElementById('weather-updated').textContent =
+          'via NWS · updated ' + d.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+      }
+    } catch(e) {
+      console.log('Weather load failed:', e);
+      document.getElementById('icon-lakewood').textContent = '⛅';
+      document.getElementById('temp-lakewood').textContent = '47°F';
+      document.getElementById('cond-lakewood').textContent = 'Mostly Clear';
+      document.getElementById('icon-groveland').textContent = '☁️';
+      document.getElementById('temp-groveland').textContent = '65°F';
+      document.getElementById('cond-groveland').textContent = 'Mostly Cloudy';
+    }
+  }
+
   async function loadBooks() {
     const el = document.getElementById('reading-list');
     try {
@@ -507,25 +563,9 @@
         <a href="https://www.goodreads.com/book/show/40406806-coders" target="_blank" class="book-item">
           <div class="book-cover-placeholder"></div>
           <div>
-            <p class="book-title">Coders: The Making of a New Tribe and the Remaking of the World</p>
+            <p class="book-title">Coders: The Making of a New Tribe</p>
             <p class="book-author">Clive Thompson</p>
             <p class="book-status reading">Currently reading</p>
-          </div>
-        </a>
-        <a href="https://www.goodreads.com/book/show/214614.Desert_Solitaire" target="_blank" class="book-item">
-          <div class="book-cover-placeholder"></div>
-          <div>
-            <p class="book-title">Desert Solitaire</p>
-            <p class="book-author">Edward Abbey</p>
-            <p class="book-status done">Recently finished</p>
-          </div>
-        </a>
-        <a href="https://www.goodreads.com/book/show/903335.The_Great_Game" target="_blank" class="book-item">
-          <div class="book-cover-placeholder"></div>
-          <div>
-            <p class="book-title">The Great Game</p>
-            <p class="book-author">Peter Hopkirk</p>
-            <p class="book-status done">Recently finished</p>
           </div>
         </a>`;
     }
@@ -546,9 +586,7 @@
         const date = new Date(b.date).toLocaleDateString('en-US', {month:'short', day:'numeric'});
         return `
           <a href="${b.link}" target="_blank" class="beer-item">
-            ${b.image
-              ? `<img src="${b.image}" class="beer-thumb" alt="${beerName}">`
-              : `<div class="beer-thumb-placeholder">🍺</div>`}
+            ${b.image ? `<img src="${b.image}" class="beer-thumb" alt="${beerName}">` : `<div class="beer-thumb-placeholder">🍺</div>`}
             <div style="flex:1;">
               <p class="beer-name">${beerName}</p>
               <p class="beer-brewery">${brewery}</p>
@@ -562,6 +600,7 @@
     }
   }
 
+  loadWeather();
   loadBooks();
   loadBeers();
 </script>
