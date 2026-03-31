@@ -2,7 +2,7 @@ name: Fetch Weather
 
 on:
   schedule:
-    - cron: '0 14 * * *'   # 6am Pacific every day
+    - cron: '0 6,12,18,0 * * *'   # 6am, noon, 6pm, midnight UTC (4x daily)
   workflow_dispatch:
 
 jobs:
@@ -70,6 +70,8 @@ jobs:
                       emoji = "☀️"
                   elif "fog" in cond_lower:
                       emoji = "🌫"
+                  elif "hot" in cond_lower:
+                      emoji = "🔥"
                   else:
                       emoji = "🌡️"
 
@@ -95,6 +97,11 @@ jobs:
           if groveland:
               output["groveland"] = groveland
               print(f"Groveland: {groveland['temp']}F {groveland['condition']}")
+
+          deathvalley = get_weather(36.4615, -116.8672, "Death Valley, CA")
+          if deathvalley:
+              output["deathvalley"] = deathvalley
+              print(f"Death Valley: {deathvalley['temp']}F {deathvalley['condition']}")
 
           output["updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
