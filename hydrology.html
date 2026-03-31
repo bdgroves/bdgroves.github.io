@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hydrology — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sky:#5a7a8a;
+      --water:#2e6b8a; --flow:#4a9ab5; --deep:#1a3d4f;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--deep) 0%,var(--flow) 50%,var(--sage) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--rust); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .page-header { max-width:1400px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--rust); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--water); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:620px; line-height:1.8; }
+
+    .page-content { max-width:1400px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .section-label a:hover { color:var(--rust); }
+
+    /* LEAD PROJECT */
+    .project-lead { display:grid; grid-template-columns:3fr 2fr; gap:0; border:1px solid var(--mist); margin-bottom:3rem; }
+    @media(max-width:768px) { .project-lead { grid-template-columns:1fr; } }
+    .project-lead-main { padding:2rem; border-right:1px solid var(--mist); }
+    .project-lead-main::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); display:block; margin-bottom:0.75rem; }
+    .project-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .project-hed { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .project-hed em { font-style:italic; color:var(--water); }
+    .project-dek { font-size:0.95rem; color:var(--stone); line-height:1.75; margin-bottom:1rem; }
+    .project-quote { border-left:3px solid var(--water); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.9rem; color:var(--stone); }
+    .project-stack { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
+    .stack-pill { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.6rem; }
+    .project-link { display:inline-block; margin-top:1.25rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.6rem 1.2rem; border:1.5px solid var(--water); color:var(--water); transition:background 0.2s, color 0.2s; margin-right:0.75rem; }
+    .project-link:hover { background:var(--water); color:var(--white); }
+    .project-link.secondary { border-color:var(--mist); color:var(--stone); }
+    .project-link.secondary:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+
+    /* STATS SIDEBAR */
+    .project-lead-stats { padding:1.5rem; display:flex; flex-direction:column; }
+    .stat-block { padding:1rem 0; border-bottom:1px solid var(--mist); }
+    .stat-block:last-child { border-bottom:none; }
+    .stat-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.25rem; }
+    .stat-value { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; line-height:1.1; color:var(--water); }
+    .stat-sub { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.06em; }
+
+    /* GAUGE TABLE */
+    .gauge-table { width:100%; border-collapse:collapse; margin-bottom:3rem; font-size:0.85rem; }
+    .gauge-table th { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); padding:0.6rem 0.75rem; border-bottom:2px solid var(--ink); text-align:left; }
+    .gauge-table td { padding:0.7rem 0.75rem; border-bottom:1px solid var(--mist); font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); }
+    .gauge-table tr:hover td { background:var(--cream); }
+    .gauge-table .gauge-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; color:var(--ink); }
+    .gauge-table .watershed { color:var(--water); }
+    .gauge-table .canary { color:var(--gold); }
+
+    /* STORM SEQUENCE */
+    .storm-sequence { background:var(--deep); color:var(--white); padding:2rem; margin-bottom:3rem; border-left:4px solid var(--flow); }
+    .storm-sequence h3 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--flow); margin-bottom:1rem; }
+    .storm-steps { display:flex; flex-direction:column; gap:0; }
+    .storm-step { display:grid; grid-template-columns:auto 1fr; gap:1rem; padding:0.85rem 0; border-bottom:1px solid rgba(255,255,255,0.08); align-items:start; }
+    .storm-step:last-child { border-bottom:none; }
+    .step-time { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:var(--flow); white-space:nowrap; padding-top:0.15rem; min-width:80px; }
+    .step-desc { font-size:0.88rem; color:rgba(255,255,255,0.85); line-height:1.6; }
+    .step-desc strong { color:var(--white); }
+
+    /* MORE PROJECTS */
+    .projects-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); border:1px solid var(--mist); margin-bottom:3rem; }
+    .project-card { padding:1.5rem; border-right:1px solid var(--mist); border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; position:relative; overflow:hidden; }
+    .project-card:hover { background:var(--cream); }
+    .project-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; background:var(--water); transform:scaleX(0); transform-origin:left; transition:transform 0.3s; }
+    .project-card:hover::after { transform:scaleX(1); }
+    .card-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.4rem; }
+    .card-hed { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; line-height:1.25; margin-bottom:0.4rem; }
+    .project-card:hover .card-hed { color:var(--rust); }
+    .card-dek { font-size:0.8rem; color:var(--stone); line-height:1.6; }
+    .card-link { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.75rem; display:block; }
+
+    /* ALERT THRESHOLDS */
+    .threshold-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; margin-bottom:3rem; }
+    @media(max-width:680px) { .threshold-grid { grid-template-columns:1fr; gap:2rem; } }
+    .threshold-block h3 { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:0.75rem; padding-bottom:0.5rem; border-bottom:1px solid var(--mist); }
+    .threshold-row { display:grid; grid-template-columns:auto 1fr; gap:0.5rem 0.75rem; padding:0.5rem 0; border-bottom:1px solid var(--mist); font-family:'DM Mono',monospace; font-size:0.62rem; align-items:baseline; }
+    .threshold-status { white-space:nowrap; }
+    .threshold-desc { color:var(--stone); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:2rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/construction.html">Journal</a>
+      <a href="/construction.html">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · The Ologies</p>
+  <h1 class="page-title">💧 Hydro<em>logy</em></h1>
+  <p class="page-sub">Streamflow monitoring, snowpack analysis, and watershed intelligence across the Sierra Nevada and Cascades. Eleven gauges, three watersheds, one bot that only speaks when the water does something worth saying.</p>
+</div>
+
+<div class="page-content">
+
+  <!-- LEAD PROJECT -->
+  <div class="section-label">
+    <span>Featured Project</span>
+    <a href="https://github.com/bdgroves/streamchaser" target="_blank">View on GitHub →</a>
+  </div>
+
+  <div class="project-lead">
+    <div class="project-lead-main">
+      <p class="project-kicker">USGS · Sierra Nevada · Tuolumne · Merced · Stanislaus · Bluesky · Twitter</p>
+      <h2 class="project-hed">〰 <em>streamchaser</em></h2>
+      <blockquote class="project-quote">"You don't chase the water. You read it."</blockquote>
+      <p class="project-dek">Groveland, California sits at 2,800 feet on the western slope of the Sierra Nevada, halfway between the Central Valley floor and Yosemite Valley. The Tuolumne River runs through the canyon a thousand feet below town. Big Creek drains the hills right behind the fire station. Cherry Creek drops out of the high country from the north, cold and fast, before it meets the mainstem below.</p>
+      <p class="project-dek">This bot watches eleven gauges across three Sierra Nevada watersheds — simultaneously, around the clock — and says nothing unless something is worth saying. When a storm moves through the Sierra, you can watch it travel gauge by gauge, from the granite headwaters at Happy Isles and Hetch Hetchy down to the valley floor at Modesto. Monday's spike at Hetch Hetchy becomes Thursday's flood warning at Modesto.</p>
+      <p class="project-dek">Dual threshold systems: absolute cfs thresholds for large regulated rivers, proportional thresholds for small unregulated streams like Big Creek and Cherry Creek. Over 400 years of combined USGS record across all eleven gauges.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Python</span>
+        <span class="stack-pill">USGS NWIS</span>
+        <span class="stack-pill">GitHub Actions</span>
+        <span class="stack-pill">Bluesky API</span>
+        <span class="stack-pill">Twitter API</span>
+        <span class="stack-pill">Matplotlib</span>
+      </div>
+      <div style="margin-top:1.25rem;">
+        <a href="https://github.com/bdgroves/streamchaser" target="_blank" class="project-link">View on GitHub →</a>
+        <a href="https://bsky.app" target="_blank" class="project-link secondary">Follow on Bluesky →</a>
+      </div>
+    </div>
+
+    <div class="project-lead-stats">
+      <div class="stat-block">
+        <div class="stat-label">Gauges monitored</div>
+        <div class="stat-value">11</div>
+        <div class="stat-sub">Tuolumne · Merced · Stanislaus + local tributaries</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Update frequency</div>
+        <div class="stat-value">1hr</div>
+        <div class="stat-sub">GitHub Actions cron · free tier · ~600 min/month</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Combined USGS record</div>
+        <div class="stat-value">400+</div>
+        <div class="stat-sub">years across all eleven gauges</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">The hometown gauge</div>
+        <div class="stat-value">Big Creek</div>
+        <div class="stat-sub">no dams · pure signal · the canary in the watershed</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">High country canary</div>
+        <div class="stat-value">Cherry Ck</div>
+        <div class="stat-sub">spikes first · drops fast · drains the granite</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STORM SEQUENCE -->
+  <div class="section-label"><span>How a Storm Moves Through the Sierra</span></div>
+  <div class="storm-sequence">
+    <h3>Reading the Hydrograph</h3>
+    <div class="storm-steps">
+      <div class="storm-step">
+        <span class="step-time">Hours 0–6</span>
+        <span class="step-desc"><strong>Happy Isles &amp; Hetch Hetchy respond first.</strong> They drain bare granite above 4,000 feet — thin soil, nowhere for the rain to go but down. When a storm hits, these show it within hours.</span>
+      </div>
+      <div class="storm-step">
+        <span class="step-time">Hours 6–18</span>
+        <span class="step-desc"><strong>Cherry Creek — the high-country canary — spikes fast and drops fast.</strong> It's the warning shot for the local watershed, draining terrain that doesn't forgive. Big Creek follows close behind with no dams to buffer anything.</span>
+      </div>
+      <div class="storm-step">
+        <span class="step-time">Hours 12–24</span>
+        <span class="step-desc"><strong>Grand Canyon of the Tuolumne and Early Intake catch the pulse</strong> as it consolidates in the canyon. This is where you start to see the full shape of the hydrograph forming.</span>
+      </div>
+      <div class="storm-step">
+        <span class="step-time">Days 2–3</span>
+        <span class="step-desc"><strong>Pohono Bridge shows the Merced doing its own thing</strong> — Yosemite Valley floods independently of the Tuolumne, and the two watersheds don't always move together.</span>
+      </div>
+      <div class="storm-step">
+        <span class="step-time">Days 3–5</span>
+        <span class="step-desc"><strong>LaGrange and Modesto tell you what the valley is actually going to receive</strong> — after the reservoirs have taken their cut, after the diversions have started, after the pulse has smoothed out over days of travel. Monday's spike at Hetch Hetchy becomes Thursday's flood warning at Modesto.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAUGE TABLE -->
+  <div class="section-label"><span>The Eleven Gauges</span></div>
+  <table class="gauge-table">
+    <thead>
+      <tr>
+        <th>Gauge</th>
+        <th>Watershed</th>
+        <th>Character</th>
+        <th>Mode</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="gauge-name">Hetch Hetchy</td>
+        <td class="watershed">Tuolumne</td>
+        <td>Headwaters · first to spike · below O'Shaughnessy Dam</td>
+        <td>Absolute</td>
+      </tr>
+      <tr>
+        <td class="gauge-name">Grand Canyon</td>
+        <td class="watershed">Tuolumne</td>
+        <td>Wild canyon reach · above valley influence</td>
+        <td>Absolute</td>
+      </tr>
+      <tr>
+        <td class="gauge-name">Early Intake</td>
+        <td class="watershed">Tuolumne</td>
+        <td>Pre–Don Pedro · above Cherry Creek confluence</td>
+        <td>Absolute</td>
+      </tr>
+      <tr>
+        <td class="gauge-name">LaGrange Dam</td>
+        <td class="watershed">Tuolumne</td>
+        <td>Below all major dams · what enters the valley</td>
+        <td>Absolute</td>
+      </tr>
+      <tr>
+        <td class="gauge-name">Modesto</td>
+        <td class="watershed">Tuolumne</td>
+        <td>Valley floor · the bottom line for Central Valley water</td>
+        <td>Absolute</td>
+      </tr>
+      <tr>
+        <td class="gauge-name">Happy Isles</td>
+        <td class="watershed">Merced</td>
+        <td>Raw Yosemite backcountry signal · above Pohono Bridge</td>
+        <td>Absolute</td>
+      </tr>
+      <tr>
+        <td class="gauge-name">Pohono Bridge</td>
+        <td class="watershed">Merced</td>
+        <td>Classic Yosemite Valley gauge · spectacular in flood years</td>
+        <td>Absolute</td>
+      </tr>
+      <tr>
+        <td class="gauge-name">Ripon</td>
+        <td class="watershed">Stanislaus</td>
+        <td>Valley floor · below New Melones Reservoir</td>
+        <td>Absolute</td>
+      </tr>
+      <tr>
+        <td class="gauge-name canary">Big Creek @ Whites Gulch</td>
+        <td class="watershed">Local</td>
+        <td>The hometown gauge · no dams · pure signal · the canary</td>
+        <td>Proportional</td>
+      </tr>
+      <tr>
+        <td class="gauge-name canary">Cherry Creek NR Early Intake</td>
+        <td class="watershed">Local</td>
+        <td>High-country canary · spikes first · drains the granite</td>
+        <td>Proportional</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ALERT THRESHOLDS -->
+  <div class="section-label"><span>Alert Thresholds</span></div>
+  <div class="threshold-grid">
+    <div class="threshold-block">
+      <h3>Large / Regulated Rivers</h3>
+      <div class="threshold-row">
+        <span class="threshold-status">🟡 Elevated</span>
+        <span class="threshold-desc">≥ 200 cfs · active snowmelt or moderate storm response</span>
+      </div>
+      <div class="threshold-row">
+        <span class="threshold-status">🟠 High</span>
+        <span class="threshold-desc">≥ 1,000 cfs · significant flood potential — monitor closely</span>
+      </div>
+      <div class="threshold-row">
+        <span class="threshold-status">🔴 Flood</span>
+        <span class="threshold-desc">≥ 5,000 cfs · major flood event</span>
+      </div>
+      <div class="threshold-row">
+        <span class="threshold-status">📈 Peak</span>
+        <span class="threshold-desc">New 7-day peak set within 2 hours</span>
+      </div>
+    </div>
+    <div class="threshold-block">
+      <h3>Small / Unregulated Streams</h3>
+      <div class="threshold-row">
+        <span class="threshold-status">⚡ Rising</span>
+        <span class="threshold-desc">≥ 10% of historical mean per hour</span>
+      </div>
+      <div class="threshold-row">
+        <span class="threshold-status">📊 Above normal</span>
+        <span class="threshold-desc">Current flow > p75 historical percentile</span>
+      </div>
+      <div class="threshold-row">
+        <span class="threshold-status">🏜 Going dry</span>
+        <span class="threshold-desc">Flow &lt; 1.0 cfs</span>
+      </div>
+      <div class="threshold-row">
+        <span class="threshold-status">💧 Returning</span>
+        <span class="threshold-desc">Was dry yesterday, now rising</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MORE HYDROLOGY PROJECTS -->
+  <div class="section-label">
+    <span>More Hydrology Work</span>
+    <a href="https://github.com/bdgroves" target="_blank">All on GitHub →</a>
+  </div>
+  <div class="projects-grid">
+    <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank" class="project-card">
+      <p class="card-kicker">USGS · Leaflet · Sierra Nevada · Historical</p>
+      <h3 class="card-hed">💧 Sierra Streamflow Monitor</h3>
+      <p class="card-dek">8 USGS stream gages across Sierra Nevada watersheds. Historical spaghetti charts overlay current year against the last decade. Leaflet map, weekly GitHub Actions cron.</p>
+      <span class="card-link">View dashboard →</span>
+    </a>
+    <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank" class="project-card">
+      <p class="card-kicker">SNOTEL · NASA MODIS · Cascades · Snowpack</p>
+      <h3 class="card-hed">❄️ Rainier Snowpack Monitor</h3>
+      <p class="card-dek">7 SNOTEL ground stations and NASA MODIS satellite data pulling hourly. Basin SWE, melt alerts, freeze-thaw cycles. The water in the river starts here.</p>
+      <span class="card-link">View dashboard →</span>
+    </a>
+    <a href="https://bdgroves.github.io/lahar-watch" target="_blank" class="project-card">
+      <p class="card-kicker">Stream Gauges · USGS NWIS · Rainier · Lahar</p>
+      <h3 class="card-hed">🌋 lahar-watch Stream Gauges</h3>
+      <p class="card-dek">Four stream gauges on the Puyallup, Carbon, White River, and Nisqually drainages — monitoring for the flow anomalies that would precede a lahar from Mount Rainier.</p>
+      <span class="card-link">View dashboard →</span>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://bsky.app" target="_blank">Bluesky</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+</body>
+</html>
