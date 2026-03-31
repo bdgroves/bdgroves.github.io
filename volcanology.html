@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volcanology — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sky:#5a7a8a;
+      --lava:#c0392b; --ash:#6b6560;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--lava) 0%,var(--gold) 50%,var(--ash) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--rust); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    /* PAGE HEADER */
+    .page-header { max-width:1400px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--rust); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--lava); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:600px; line-height:1.8; }
+
+    /* ALERT BANNER */
+    .alert-banner { max-width:1400px; margin:2rem auto 0; padding:0 clamp(1.5rem,5vw,4rem); }
+    .alert-inner { background:var(--ink); color:var(--white); padding:1rem 1.5rem; display:flex; align-items:center; gap:1rem; border-left:4px solid var(--lava); }
+    .alert-dot { width:8px; height:8px; border-radius:50%; background:var(--lava); flex-shrink:0; animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .alert-text { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; }
+    .alert-text strong { color:var(--gold); }
+    .alert-link { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--gold); margin-left:auto; white-space:nowrap; flex-shrink:0; }
+    .alert-link:hover { color:var(--white); }
+
+    /* MAIN CONTENT */
+    .page-content { max-width:1400px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    /* LEAD PROJECT */
+    .project-lead { display:grid; grid-template-columns:3fr 2fr; gap:0; border:1px solid var(--mist); margin-bottom:3rem; }
+    @media(max-width:768px) { .project-lead { grid-template-columns:1fr; } }
+
+    .project-lead-main { padding:2rem; border-right:1px solid var(--mist); }
+    .project-lead-main::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--lava); display:block; margin-bottom:0.75rem; }
+    .project-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .project-hed { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .project-hed em { font-style:italic; color:var(--lava); }
+    .project-dek { font-size:0.95rem; color:var(--stone); line-height:1.75; margin-bottom:1rem; }
+    .project-quote { border-left:3px solid var(--lava); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.9rem; color:var(--stone); }
+    .project-stack { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
+    .stack-pill { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.6rem; }
+    .project-link { display:inline-block; margin-top:1.25rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.6rem 1.2rem; border:1.5px solid var(--lava); color:var(--lava); transition:background 0.2s, color 0.2s; }
+    .project-link:hover { background:var(--lava); color:var(--white); }
+
+    /* STATS SIDEBAR */
+    .project-lead-stats { padding:1.5rem; display:flex; flex-direction:column; gap:0; }
+    .stat-block { padding:1rem 0; border-bottom:1px solid var(--mist); }
+    .stat-block:last-child { border-bottom:none; }
+    .stat-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.25rem; }
+    .stat-value { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; line-height:1.1; }
+    .stat-value.danger { color:var(--lava); }
+    .stat-value.warning { color:var(--gold); }
+    .stat-sub { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.06em; }
+
+    /* SENSOR GRID */
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .section-label a:hover { color:var(--rust); }
+
+    .sensor-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:0; border:1px solid var(--mist); margin-bottom:3rem; }
+    .sensor-card { padding:1.25rem; border-right:1px solid var(--mist); border-bottom:1px solid var(--mist); }
+    .sensor-card:hover { background:var(--cream); }
+    .sensor-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; margin-bottom:0.25rem; }
+    .sensor-id { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:var(--gold); margin-bottom:0.35rem; }
+    .sensor-loc { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); letter-spacing:0.06em; }
+    .sensor-drainage { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .sensor-elev { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--mist); margin-top:0.1rem; }
+
+    /* WARNING TABLE */
+    .warning-table { width:100%; border-collapse:collapse; margin-bottom:3rem; font-size:0.85rem; }
+    .warning-table th { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); padding:0.6rem 0.75rem; border-bottom:2px solid var(--ink); text-align:left; }
+    .warning-table td { padding:0.7rem 0.75rem; border-bottom:1px solid var(--mist); font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); }
+    .warning-table tr:hover td { background:var(--cream); }
+    .warning-table .community { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; color:var(--ink); }
+    .time-critical { color:var(--lava); font-weight:bold; }
+    .time-warning { color:var(--gold); }
+    .time-ok { color:var(--sage); }
+
+    /* CONTEXT SECTION */
+    .context-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; margin-bottom:3rem; }
+    @media(max-width:680px) { .context-grid { grid-template-columns:1fr; gap:2rem; } }
+    .context-block { }
+    .context-hed { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; margin-bottom:0.75rem; padding-bottom:0.5rem; border-bottom:1px solid var(--mist); }
+    .context-body { font-size:0.875rem; color:var(--stone); line-height:1.75; }
+    .context-body p { margin-bottom:0.75rem; }
+    .context-body strong { color:var(--ink); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:2rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/construction.html">Journal</a>
+      <a href="/construction.html">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · The Ologies</p>
+  <h1 class="page-title">🌋 Volcano<em>logy</em></h1>
+  <p class="page-sub">Mount Rainier is the most dangerous volcano in the United States — not because it's the most active, but because of what surrounds it. More than 80,000 people live inside its lahar hazard zones. I build tools to watch it.</p>
+</div>
+
+<!-- LIVE ALERT BANNER -->
+<div class="alert-banner">
+  <div class="alert-inner">
+    <div class="alert-dot"></div>
+    <span class="alert-text"><strong>USGS Alert Level:</strong> Normal · No volcanic unrest detected · Sensor network operational</span>
+    <a href="https://bdgroves.github.io/lahar-watch" target="_blank" class="alert-link">Live Dashboard →</a>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <!-- LEAD PROJECT -->
+  <div style="margin-bottom:0.75rem;">
+    <div class="section-label">
+      <span>Featured Project</span>
+      <a href="https://github.com/bdgroves/lahar-watch" target="_blank">View on GitHub →</a>
+    </div>
+  </div>
+
+  <div class="project-lead">
+    <div class="project-lead-main">
+      <p class="project-kicker">Lahar Detection · Seismic · Stream Gauges · USGS · IRIS</p>
+      <h2 class="project-hed">🌋 <em>lahar-watch</em></h2>
+      <p class="project-dek">Real-time monitoring dashboard tracking the sensor network standing between Mount Rainier and the communities in its lahar hazard zones. Live seismic waveforms from 8 PNSN stations, stream gauges across 4 river drainages, USGS volcano alert level, and an interactive lahar travel-time calculator.</p>
+      <blockquote class="project-quote">"Most lahars from Mount Rainier have started with eruptions — but one of them didn't. The Electron Mudflow came without warning, without fire, without any sign at all. It just came."</blockquote>
+      <p class="project-dek">The pipeline runs twice daily via GitHub Actions, pulling from USGS HANS, USGS NWIS water services, USGS Earthquake Hazards, and IRIS FDSN — all public APIs, no authentication required. Pure static HTML/JS, no server, no backend.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Python</span>
+        <span class="stack-pill">pixi</span>
+        <span class="stack-pill">GitHub Actions</span>
+        <span class="stack-pill">USGS HANS</span>
+        <span class="stack-pill">IRIS FDSN</span>
+        <span class="stack-pill">USGS NWIS</span>
+        <span class="stack-pill">PNSN</span>
+      </div>
+      <a href="https://bdgroves.github.io/lahar-watch" target="_blank" class="project-link">View Live Dashboard →</a>
+    </div>
+
+    <div class="project-lead-stats">
+      <div class="stat-block">
+        <div class="stat-label">People in hazard zones</div>
+        <div class="stat-value danger">80,000+</div>
+        <div class="stat-sub">in Puyallup, Carbon, White, Nisqually drainages</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Warning time — Orting, WA</div>
+        <div class="stat-value warning">~30 min</div>
+        <div class="stat-sub">city built on Electron Mudflow deposits</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">USGS probability estimate</div>
+        <div class="stat-value danger">1 in 7</div>
+        <div class="stat-sub">catastrophic lahar in next 75 years</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Seismic stations monitored</div>
+        <div class="stat-value">8</div>
+        <div class="stat-sub">MUIR · CR01 · WR02 · TC04 · PARA · CRY5 · NQ01 · PUPY</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Stream gauges</div>
+        <div class="stat-value">4</div>
+        <div class="stat-sub">Puyallup · Carbon · White River · Nisqually</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEISMIC STATIONS -->
+  <div class="section-label">
+    <span>Seismic Stations</span>
+    <a href="https://bdgroves.github.io/lahar-watch/seismic.html" target="_blank">Live waveforms →</a>
+  </div>
+  <div class="sensor-grid">
+    <div class="sensor-card">
+      <div class="sensor-name">Camp Muir</div>
+      <div class="sensor-id">UW.RCM.HHZ · MUIR</div>
+      <div class="sensor-loc">Summit · 10,100 ft</div>
+      <div class="sensor-drainage">Drainage: Summit</div>
+    </div>
+    <div class="sensor-card">
+      <div class="sensor-name">Camp Sherman</div>
+      <div class="sensor-id">UW.RCS.EHZ · CR01</div>
+      <div class="sensor-loc">Carbon River · 1,860 ft</div>
+      <div class="sensor-drainage">Drainage: Carbon River</div>
+    </div>
+    <div class="sensor-card">
+      <div class="sensor-name">White River</div>
+      <div class="sensor-id">UW.STOR.HHZ · WR02</div>
+      <div class="sensor-loc">White River · ~3,000 ft</div>
+      <div class="sensor-drainage">Drainage: White River</div>
+    </div>
+    <div class="sensor-card">
+      <div class="sensor-name">Tahoma Creek</div>
+      <div class="sensor-id">UW.TDH.HHZ · TC04</div>
+      <div class="sensor-loc">Tahoma Creek · 2,900 ft</div>
+      <div class="sensor-drainage">Drainage: Tahoma Creek</div>
+    </div>
+    <div class="sensor-card">
+      <div class="sensor-name">Paradise</div>
+      <div class="sensor-id">CC.PARA.BHZ · PARA</div>
+      <div class="sensor-loc">Paradise · 5,400 ft</div>
+      <div class="sensor-drainage">Drainage: Nisqually</div>
+    </div>
+    <div class="sensor-card">
+      <div class="sensor-name">Crystal Mountain</div>
+      <div class="sensor-id">CC.CRYS.HHZ · CRY5</div>
+      <div class="sensor-loc">Crystal Mountain · 5,800 ft</div>
+      <div class="sensor-drainage">Drainage: White River NE</div>
+    </div>
+    <div class="sensor-card">
+      <div class="sensor-name">Nisqually / Longmire</div>
+      <div class="sensor-id">CC.MILD.BHZ · NQ01</div>
+      <div class="sensor-loc">Longmire · 2,100 ft</div>
+      <div class="sensor-drainage">Drainage: Nisqually</div>
+    </div>
+    <div class="sensor-card">
+      <div class="sensor-name">Puyallup Valley</div>
+      <div class="sensor-id">UW.PUPY.EHZ · PUPY</div>
+      <div class="sensor-loc">Puyallup Valley · 580 ft</div>
+      <div class="sensor-drainage">Drainage: Puyallup</div>
+    </div>
+  </div>
+
+  <!-- WARNING TIMES -->
+  <div class="section-label">
+    <span>Community Warning Times</span>
+    <a href="https://bdgroves.github.io/lahar-watch/travel-time.html" target="_blank">Interactive calculator →</a>
+  </div>
+  <table class="warning-table">
+    <thead>
+      <tr>
+        <th>Community</th>
+        <th>Drainage</th>
+        <th>Distance</th>
+        <th>Warning Time</th>
+        <th>Population</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="community">Ashford</td>
+        <td>Puyallup / Nisqually</td>
+        <td>8 km</td>
+        <td class="time-critical">~8 min ⚠</td>
+        <td>1,200</td>
+      </tr>
+      <tr>
+        <td class="community">Orting</td>
+        <td>Puyallup / Carbon</td>
+        <td>56 km</td>
+        <td class="time-critical">~33 min ⚡</td>
+        <td>8,000</td>
+      </tr>
+      <tr>
+        <td class="community">Buckley</td>
+        <td>Carbon / White</td>
+        <td>72 km</td>
+        <td class="time-warning">~44 min ⚡</td>
+        <td>4,800</td>
+      </tr>
+      <tr>
+        <td class="community">Enumclaw</td>
+        <td>White River</td>
+        <td>48 km</td>
+        <td class="time-warning">~38 min ⚡</td>
+        <td>12,000</td>
+      </tr>
+      <tr>
+        <td class="community">Bonney Lake</td>
+        <td>Puyallup</td>
+        <td>80 km</td>
+        <td class="time-warning">~55 min ⚡</td>
+        <td>21,000</td>
+      </tr>
+      <tr>
+        <td class="community">Auburn</td>
+        <td>White River</td>
+        <td>78 km</td>
+        <td class="time-ok">~62 min ✓</td>
+        <td>87,000</td>
+      </tr>
+      <tr>
+        <td class="community">Puyallup City</td>
+        <td>Puyallup</td>
+        <td>98 km</td>
+        <td class="time-ok">~82 min ✓</td>
+        <td>43,000</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- CONTEXT -->
+  <div class="section-label"><span>Background</span></div>
+  <div class="context-grid">
+    <div class="context-block">
+      <h3 class="context-hed">What Is a Lahar</h3>
+      <div class="context-body">
+        <p>A lahar is a volcanic mudflow — a fast-moving slurry of volcanic debris, rock, ash, and water that can travel over 100 mph on steep slopes and still move at 15–20 mph when it reaches the valley floor. They bury everything: roads, bridges, neighborhoods, ports.</p>
+        <p>Rainier has buried the Puget Lowlands at least <strong>11 times in the last 6,000 years</strong>. The Osceola Mudflow — 5,600 years ago — sent 3.8 cubic kilometers of material all the way to Commencement Bay in Tacoma. Enumclaw, Buckley, Bonney Lake, Sumner, and Auburn are built on top of it.</p>
+        <p>The most recent large lahar, the <strong>Electron Mudflow (~1507 AD)</strong>, came from a landslide on Rainier's weakened west flank. No eruption. No warning. The city of Orting sits directly in its path — with roughly 30 minutes of warning time today.</p>
+      </div>
+    </div>
+    <div class="context-block">
+      <h3 class="context-hed">The Sensor Network</h3>
+      <div class="context-body">
+        <p>The lahar detection system has been operating since <strong>1998</strong>, when Pierce County Emergency Management and the USGS Cascades Volcano Observatory installed the first Acoustic Flow Monitors in the Carbon and Puyallup River valleys.</p>
+        <p>Since 2017, modern Lahar Monitoring Stations feature broadband seismometers, infrasound arrays, tripwire sensors, webcams, and GPS receivers. Data transmits to Washington State Emergency Operations Center within <strong>10 seconds</strong>. Automated algorithms trigger AHAB sirens across the valley — over 40 sirens strategically placed through the communities.</p>
+        <p>In October 2025, the NPS approved 9 new monitoring stations on the southwest flank — including two deliberately placed in the <strong>path of potential lahars</strong>. When those stations go dark, scientists calculate the lahar's speed from the time elapsed between failures.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://bsky.app" target="_blank">Bluesky</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+</body>
+</html>
