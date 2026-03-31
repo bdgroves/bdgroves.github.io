@@ -29,20 +29,29 @@
     nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
     nav a.github:hover { background: var(--ink); color: var(--parchment); }
 
-    /* MAIN CONTENT */
-    .main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: clamp(4rem,10vw,8rem) clamp(1.5rem,5vw,4rem); }
+    .main { flex: 1; max-width: 720px; margin: 0 auto; padding: clamp(4rem,8vw,6rem) clamp(1.5rem,5vw,2rem); width: 100%; }
     .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
-    .page-title { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem,6vw,3.5rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .page-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
     .page-title em { font-style: italic; color: var(--rust); }
-    .desc { font-family: 'Libre Baskerville', serif; font-size: 0.95rem; color: var(--stone); line-height: 1.8; max-width: 420px; margin: 0 auto 2.5rem; }
-    .coming-list { display: flex; flex-direction: column; gap: 0; margin: 0 auto 2.5rem; max-width: 360px; text-align: left; border: 1px solid var(--mist); }
-    .coming-item { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; color: var(--stone); padding: 0.75rem 1rem; border-bottom: 1px solid var(--mist); display: flex; gap: 0.75rem; align-items: center; }
-    .coming-item:last-child { border-bottom: none; }
-    .coming-item::before { content: '○'; color: var(--gold); flex-shrink: 0; }
-    .back-btn { display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; padding: 0.6rem 1.4rem; border: 1.5px solid var(--ink); color: var(--ink); transition: background 0.2s, color 0.2s; }
+    .desc { font-size: 0.95rem; color: var(--stone); line-height: 1.8; margin-bottom: 3rem; }
+
+    .status-section { margin-bottom: 2.5rem; }
+    .status-heading { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--stone); padding-bottom: 0.6rem; border-bottom: 2px solid var(--ink); margin-bottom: 1rem; }
+    .status-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--mist); }
+    .status-item { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; color: var(--stone); padding: 0.8rem 1rem; border-bottom: 1px solid var(--mist); display: flex; gap: 0.75rem; align-items: center; text-decoration: none; transition: background 0.15s; }
+    .status-item:last-child { border-bottom: none; }
+    a.status-item:hover { background: var(--cream); color: var(--ink); }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .dot-live { background: var(--sage); }
+    .dot-soon { background: var(--gold); opacity: 0.6; }
+    .status-label { flex: 1; }
+    .status-tag { font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mist); margin-left: auto; white-space: nowrap; }
+    a.status-item .status-tag { color: var(--sage); }
+
+    .back-btn { display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; padding: 0.6rem 1.4rem; border: 1.5px solid var(--ink); color: var(--ink); transition: background 0.2s, color 0.2s; margin-top: 1rem; }
     .back-btn:hover { background: var(--ink); color: var(--parchment); }
 
-    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); }
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: auto; }
     .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
     .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
     .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
@@ -63,7 +72,6 @@
     <nav>
       <a href="/blog/index.html">Blog</a>
       <a href="/construction.html">Journal</a>
-      <a href="/construction.html">Projects</a>
       <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
       <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
       <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
@@ -74,15 +82,76 @@
 
 <div class="main">
   <p class="eyebrow">Brooks Groves · brooksgroves.com</p>
-  <h1 class="page-title">Something is <em>coming</em></h1>
-  <p class="desc">This section is still being built. More to come soon — check back in a few days.</p>
+  <h1 class="page-title">Still being <em>built.</em></h1>
+  <p class="desc">This section isn't ready yet. In the meantime, here's where things stand across the site.</p>
 
-  <div class="coming-list">
-    <div class="coming-item">Journal — field notes, travel, dispatches</div>
-    <div class="coming-item">Meteorology & hydrology hubs</div>
-    <div class="coming-item">Geospatial — LiDAR, remote sensing, QGIS</div>
-    <div class="coming-item">Training log — running, cycling, triathlon</div>
-    <div class="coming-item">Photos — from the field</div>
+  <!-- LIVE NOW -->
+  <div class="status-section">
+    <div class="status-heading">Live Now</div>
+    <div class="status-list">
+      <a href="/" class="status-item">
+        <span class="status-dot dot-live"></span>
+        <span class="status-label">Homepage — weather bar, MLB scores, reading, beer</span>
+        <span class="status-tag">↗ Live</span>
+      </a>
+      <a href="/blog/index.html" class="status-item">
+        <span class="status-dot dot-live"></span>
+        <span class="status-label">Blog — pixi environments post, streamflow dashboard post</span>
+        <span class="status-tag">↗ Live</span>
+      </a>
+      <a href="/volcanology.html" class="status-item">
+        <span class="status-dot dot-live"></span>
+        <span class="status-label">Volcanology — lahar-watch, Mt. Rainier sensor network</span>
+        <span class="status-tag">↗ Live</span>
+      </a>
+      <a href="/geospatial.html" class="status-item">
+        <span class="status-dot dot-live"></span>
+        <span class="status-label">Geospatial — wildfire response gaps, Project Kiva</span>
+        <span class="status-tag">↗ Live</span>
+      </a>
+      <a href="/hydrology.html" class="status-item">
+        <span class="status-dot dot-live"></span>
+        <span class="status-label">Hydrology — streamchaser, Sierra Streamflow, Rainier Snowpack</span>
+        <span class="status-tag">↗ Live</span>
+      </a>
+      <a href="/paleontology.html" class="status-item">
+        <span class="status-dot dot-live"></span>
+        <span class="status-label">Paleontology — PaleoWave ichthyosaurs, IceWave megafauna (E02 validated)</span>
+        <span class="status-tag">↗ Live</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- COMING SOON -->
+  <div class="status-section">
+    <div class="status-heading">Coming Soon</div>
+    <div class="status-list">
+      <div class="status-item">
+        <span class="status-dot dot-soon"></span>
+        <span class="status-label">Journal — Cannon Beach, field notes, race reports, travel</span>
+        <span class="status-tag">Soon</span>
+      </div>
+      <div class="status-item">
+        <span class="status-dot dot-soon"></span>
+        <span class="status-label">Meteorology hub — Weather Report Bot, NWS pipelines, radar</span>
+        <span class="status-tag">Soon</span>
+      </div>
+      <div class="status-item">
+        <span class="status-dot dot-soon"></span>
+        <span class="status-label">Sports & Beer — full Mariners, Seahawks, cycling, Untappd pages</span>
+        <span class="status-tag">Soon</span>
+      </div>
+      <div class="status-item">
+        <span class="status-dot dot-soon"></span>
+        <span class="status-label">Training log — running, triathlon, Strava feed</span>
+        <span class="status-tag">Soon</span>
+      </div>
+      <div class="status-item">
+        <span class="status-dot dot-soon"></span>
+        <span class="status-label">Photos — field work, Pacific Northwest, race days</span>
+        <span class="status-tag">Soon</span>
+      </div>
+    </div>
   </div>
 
   <a href="/" class="back-btn">← Back to brooksgroves.com</a>
