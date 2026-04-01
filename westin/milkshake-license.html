@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🥤 The Milkshake License Incident — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4;
+      --westin:#1a3a5c;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--westin) 0%,var(--gold) 50%,var(--stone) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--rust); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; transition:color 0.2s; }
+    .article-back:hover { color:var(--rust); }
+    .article-num { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--westin); margin-bottom:0.4rem; }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.3rem 0.7rem; }
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); line-height:1.2; }
+    .article-body h2 em { font-style:italic; color:var(--rust); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body blockquote { border-left:3px solid var(--westin); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body strong { font-weight:700; }
+    .article-body em { font-style:italic; }
+    .article-body ul { padding-left:1.5rem; margin-bottom:1.5rem; }
+    .article-body ul li { margin-bottom:0.4rem; }
+    .radio-code { font-family:'DM Mono',monospace; background:var(--ink); color:var(--gold); padding:0.15rem 0.5rem; font-size:0.85rem; letter-spacing:0.08em; }
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .article-footer-nav a:hover { color:var(--rust); }
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="/westin/index.html">Westin</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+<div class="article-wrap">
+  <a href="/westin/index.html" class="article-back">← Stories from the Westin Seattle</a>
+  <div class="article-num">The Westin Years · Story 05</div>
+  <p class="article-kicker">Room Service · The Danimal · Licensing</p>
+  <h1 class="article-title">🥤 The Milkshake License Incident</h1>
+  <div class="article-meta">
+    <span>Brooks Groves</span>
+    <span>Westin Seattle · 1997–2018</span>
+    <span>Call sign: 940</span>
+  </div>
+  <div class="article-tags">
+    <span class="article-tag-pill">Room Service</span><span class="article-tag-pill">The Danimal</span><span class="article-tag-pill">Service Express</span><span class="article-tag-pill">Licensing</span>
+  </div>
+  <div class="article-body">
+    <p>In Service Express, it wasn't just bellmen — it was room service, the PBX operators, and the minibar crew, all rolled into one semi-functional, barely-organized, chaos-engine. On a good day, we were efficient. On a bad day, we were an experimental jazz band with radios and rolling carts.</p>
+    <p>This story starts in Room Service, with a man named Dan — call sign 923, known universally as <strong>The Danimal</strong>. Dan was a beast. When he wasn't working every shift in every department at the Westin, he was a powerlifter of some note. The guy could deadlift a banquet table. He also had ideas.</p>
+    <h2>The Milkshake Problem</h2>
+    <p>It was one of those slammed nights — both towers full, 450 rooms each. The service corridor between the towers looked like an aircraft carrier, with room service tables lined up like fighter jets, ready for deployment. Everyone was triple-stacked with orders. The milkshake machine? "Broken," as usual — which really just meant "don't ask."</p>
+    <p>But Dan wasn't one to let things slow him down. He got an order for a couple of milkshakes and decided to blaze his own trail. His plan? Microwave the ice cream. No milk. No blending. Just soften it up, pour it into a glass, slap on a straw, and call it a day.</p>
+    <p>And so he did. Two hot, thick, milkless shakes, straight out of the microwave. He ran them up proudly, convinced he'd revolutionized the process.</p>
+    <p>We were all too busy to notice — until a call came over the radio:</p>
+    <blockquote>"999 to 923. Please see me in the office. Right now."</blockquote>
+    <p>The guests were furious. <em>"The milkshakes are hot. There's no milk. What is this?"</em></p>
+    <p>Dan had to sit through a pretty uncomfortable conversation with the Service Express Manager, who had to personally go down, remake the shakes, and deliver them himself — because he officially no longer trusted anyone in the department with dairy products.</p>
+    <p>Dan came back from his chat looking slightly confused, still kind of proud of his "efficiency." When he told us what he'd done, we lost it. We were on the floor crying. He still thought it was a smart move.</p>
+    <h2>The Milkshake License Program</h2>
+    <p>The next morning, a new protocol dropped: <strong>The Milkshake License Program.</strong></p>
+    <p>From now on, no one could make a milkshake without a license. You had to demonstrate proper use of the machine, proper ratios, and prove — under supervision — that you could deliver a shake that wasn't hot and didn't confuse the guest. Pass, and you got a laminated card. Fail, and you were banned from all frozen beverage operations. Even if you passed, your license could be revoked at any time. Random shake audits were now on the table.</p>
+    <p>We thought it was a one-off. Then came Damon. But that's another licensing story.</p>
+  </div>
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · 940 · Westin Seattle</span>
+    <div class="article-footer-nav">
+      <a href="/westin/gator-in-a-box.html">← Gator in a Box</a>
+      <a href="/westin/index.html">All Stories</a>
+      <a href="/westin/coffee-license.html">The Coffee License Fiasco →</a>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="/westin/index.html">Westin Stories</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+</body>
+</html>
