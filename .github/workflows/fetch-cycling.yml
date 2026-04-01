@@ -33,14 +33,26 @@ jobs:
                   rider = Rider(f"rider/{pcs_slug}")
                   data = rider.parse()
 
-                  # Current season results
-                  results_scraper = RiderResults(f"rider/{pcs_slug}/results/2026")
-                  results_data = results_scraper.parse()
-                  results = results_data.get("results", []) or []
+                  # Try multiple URL formats for results
+                  results = []
+                  for url in [
+                      f"rider/{pcs_slug}/results/2026/all",
+                      f"rider/{pcs_slug}/results/2026",
+                      f"rider/{pcs_slug}/statistics/wins",
+                  ]:
+                      try:
+                          results_scraper = RiderResults(url)
+                          results_data = results_scraper.parse()
+                          results = results_data.get("results", []) or []
+                          if results:
+                              print(f"    Got {len(results)} results via {url}")
+                              break
+                      except Exception as e2:
+                          print(f"    URL {url} failed: {e2}")
+                          continue
 
-                  # Count wins this season
                   wins_2026 = [r for r in results if str(r.get("result", "")).strip() == "1"]
-                  recent = results[:5]  # most recent 5
+                  recent = results[:5]
 
                   return {
                       "name": display_name,
@@ -50,19 +62,11 @@ jobs:
                       "pcs_ranking": data.get("ranking", None),
                       "wins_2026": len(wins_2026),
                       "win_list": [
-                          {
-                              "race": w.get("race", ""),
-                              "date": w.get("date", ""),
-                              "category": w.get("class", "")
-                          }
+                          {"race": w.get("race", ""), "date": w.get("date", ""), "category": w.get("class", "")}
                           for w in wins_2026[:8]
                       ],
                       "recent_results": [
-                          {
-                              "race": r.get("race", ""),
-                              "result": r.get("result", ""),
-                              "date": r.get("date", "")
-                          }
+                          {"race": r.get("race", ""), "result": r.get("result", ""), "date": r.get("date", "")}
                           for r in recent
                       ],
                       "fetched": True
