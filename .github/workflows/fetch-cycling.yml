@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: pip install procyclingstats cloudscraper requests --break-system-packages
+        run: pip install cloudscraper selectolax requests --break-system-packages
 
       - name: Fetch cycling data and write cycling.json
         run: |
@@ -27,48 +27,65 @@ jobs:
           # Pull live stats for watched riders from PCS
           def get_rider_stats(pcs_slug, display_name, nationality_flag):
               try:
-                  from procyclingstats import Rider, RiderResults
+                  import cloudscraper
+                  from selectolax.parser import HTMLParser
                   print(f"  Fetching rider: {display_name}...")
 
-                  rider = Rider(f"rider/{pcs_slug}")
-                  data = rider.parse()
+                  scraper = cloudscraper.create_scraper()
+                  headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
-                  # Try multiple URL formats for results
+                  # Fetch rider profile page for team + ranking
+                  profile_url = f"https://www.procyclingstats.com/rider/{pcs_slug}"
+                  r = scraper.get(profile_url, headers=headers, timeout=15)
+                  tree = HTMLParser(r.text)
+
+                  team = ""
+                  pcs_ranking = None
+                  try:
+                      # Team is usually in the info list
+                      for li in tree.css("ul.rdr-details li"):
+                          text = li.text(strip=True)
+                          if "Team:" in text:
+                              team = text.replace("Team:", "").strip()
+                          if "PCS ranking:" in text or "Ranking:" in text:
+                              pcs_ranking = text.split(":")[-1].strip().split()[0]
+                  except Exception as e:
+                      print(f"    Profile parse warning: {e}")
+
+                  # Fetch 2026 results page
                   results = []
-                  for url in [
-                      f"rider/{pcs_slug}/results/2026/all",
-                      f"rider/{pcs_slug}/results/2026",
-                      f"rider/{pcs_slug}/statistics/wins",
-                  ]:
-                      try:
-                          results_scraper = RiderResults(url)
-                          results_data = results_scraper.parse()
-                          results = results_data.get("results", []) or []
-                          if results:
-                              print(f"    Got {len(results)} results via {url}")
-                              break
-                      except Exception as e2:
-                          print(f"    URL {url} failed: {e2}")
-                          continue
+                  results_url = f"https://www.procyclingstats.com/rider/{pcs_slug}/results/2026"
+                  r2 = scraper.get(results_url, headers=headers, timeout=15)
+                  tree2 = HTMLParser(r2.text)
+
+                  try:
+                      rows = tree2.css("table.results tbody tr")
+                      for row in rows[:20]:
+                          cols = row.css("td")
+                          if len(cols) >= 4:
+                              result_val = cols[0].text(strip=True)
+                              date_val = cols[1].text(strip=True) if len(cols) > 1 else ""
+                              race_val = cols[3].text(strip=True) if len(cols) > 3 else ""
+                              if race_val:
+                                  results.append({
+                                      "result": result_val,
+                                      "date": date_val,
+                                      "race": race_val
+                                  })
+                      print(f"    Got {len(results)} results from direct scrape")
+                  except Exception as e:
+                      print(f"    Results parse warning: {e}")
 
                   wins_2026 = [r for r in results if str(r.get("result", "")).strip() == "1"]
-                  recent = results[:5]
 
                   return {
                       "name": display_name,
                       "flag": nationality_flag,
-                      "team": data.get("team", ""),
-                      "nationality": data.get("nationality", ""),
-                      "pcs_ranking": data.get("ranking", None),
+                      "team": team,
+                      "pcs_ranking": pcs_ranking,
                       "wins_2026": len(wins_2026),
-                      "win_list": [
-                          {"race": w.get("race", ""), "date": w.get("date", ""), "category": w.get("class", "")}
-                          for w in wins_2026[:8]
-                      ],
-                      "recent_results": [
-                          {"race": r.get("race", ""), "result": r.get("result", ""), "date": r.get("date", "")}
-                          for r in recent
-                      ],
+                      "win_list": [{"race": w.get("race",""), "date": w.get("date","")} for w in wins_2026[:8]],
+                      "recent_results": results[:5],
                       "fetched": True
                   }
               except Exception as e:
