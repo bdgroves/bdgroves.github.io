@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meteorology — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sky:#5a7a8a;
+      --storm:#2c4a6e; --lightning:#e8c547; --rain:#4a7a9b;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--storm) 0%,var(--sky) 50%,var(--sage) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--rust); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .page-header { max-width:1400px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--rust); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--sky); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:620px; line-height:1.8; }
+
+    .page-content { max-width:1400px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .section-label a:hover { color:var(--rust); }
+
+    /* LEAD PROJECT */
+    .project-lead { display:grid; grid-template-columns:3fr 2fr; gap:0; border:1px solid var(--mist); margin-bottom:3rem; }
+    @media(max-width:768px) { .project-lead { grid-template-columns:1fr; } }
+    .project-lead-main { padding:2rem; border-right:1px solid var(--mist); }
+    .project-lead-main::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); display:block; margin-bottom:0.75rem; }
+    .project-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .project-hed { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .project-hed em { font-style:italic; color:var(--sky); }
+    .project-dek { font-size:0.95rem; color:var(--stone); line-height:1.75; margin-bottom:1rem; }
+    .project-quote { border-left:3px solid var(--sky); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.9rem; color:var(--stone); }
+    .project-stack { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
+    .stack-pill { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.6rem; }
+    .project-link { display:inline-block; margin-top:1.25rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.6rem 1.2rem; border:1.5px solid var(--sky); color:var(--sky); transition:background 0.2s, color 0.2s; margin-right:0.75rem; }
+    .project-link:hover { background:var(--sky); color:var(--white); }
+    .project-link.secondary { border-color:var(--mist); color:var(--stone); }
+    .project-link.secondary:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+
+    /* STATIONS SIDEBAR */
+    .project-lead-stats { padding:1.5rem; display:flex; flex-direction:column; }
+    .stat-block { padding:1rem 0; border-bottom:1px solid var(--mist); }
+    .stat-block:last-child { border-bottom:none; }
+    .stat-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.25rem; }
+    .stat-value { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:900; line-height:1.1; color:var(--ink); }
+    .stat-sub { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.06em; }
+
+    /* STATIONS GRID */
+    .stations-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0; border:1px solid var(--mist); margin-bottom:3rem; }
+    @media(max-width:600px) { .stations-grid { grid-template-columns:1fr; } }
+    .station-card { padding:1.5rem; border-right:1px solid var(--mist); border-bottom:1px solid var(--mist); }
+    .station-card:nth-child(2n) { border-right:none; }
+    .station-card:nth-child(3), .station-card:nth-child(4) { border-bottom:none; }
+    .station-card:hover { background:var(--cream); }
+    .station-emoji { font-size:1.5rem; margin-bottom:0.5rem; display:block; }
+    .station-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.25rem; }
+    .station-name { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; margin-bottom:0.25rem; }
+    .station-desc { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); line-height:1.5; }
+
+    /* SCHEDULE */
+    .schedule-row { display:grid; grid-template-columns:auto 1fr auto; gap:1rem; padding:0.75rem 0; border-bottom:1px solid var(--mist); align-items:center; font-family:'DM Mono',monospace; font-size:0.62rem; }
+    .schedule-time { color:var(--gold); white-space:nowrap; }
+    .schedule-desc { color:var(--stone); }
+    .schedule-status { color:var(--sage); }
+
+    /* CONTEXT */
+    .context-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; margin-bottom:3rem; }
+    @media(max-width:680px) { .context-grid { grid-template-columns:1fr; gap:2rem; } }
+    .context-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:0.75rem; padding-bottom:0.5rem; border-bottom:1px solid var(--mist); }
+    .context-body { font-size:0.875rem; color:var(--stone); line-height:1.75; }
+    .context-body p { margin-bottom:0.75rem; }
+    .context-body strong { color:var(--ink); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:2rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · The Ologies</p>
+  <h1 class="page-title">🌩 Meteoro<em>logy</em></h1>
+  <p class="page-sub">Automated weather intelligence across four wildly different air masses — Pacific Northwest maritime, Sierra foothills, Mojave extreme, and Great Basin high desert. Broadcast-style cards, posted twice daily, no human required.</p>
+</div>
+
+<div class="page-content">
+
+  <!-- LEAD PROJECT -->
+  <div class="section-label">
+    <span>Featured Project</span>
+    <a href="https://github.com/bdgroves/weather-report-bot" target="_blank">View on GitHub →</a>
+  </div>
+
+  <div class="project-lead">
+    <div class="project-lead-main">
+      <p class="project-kicker">Python · Matplotlib · OpenWeatherMap · GitHub Actions · Twitter · Bluesky</p>
+      <h2 class="project-hed">🌪️ <em>weather-report-bot</em></h2>
+      <blockquote class="project-quote">"It's already on the ground. It's not gonna stop."</blockquote>
+      <p class="project-dek">A fully automated broadcast-quality weather intelligence system. Twice daily it wakes up, pulls live atmospheric data across four wildly different locations, renders cinematic station cards, and fires them to Twitter and BlueSky — no human required.</p>
+      <p class="project-dek">Each station card is a 1200×675 broadcast-style graphic with three panels: current conditions with color-coded temperature and hand-drawn weather icons, an instruments panel with arc gauges for humidity and UV index plus a wind compass, and a sky & atmosphere panel with precipitation chance, cloud cover, sunrise/sunset, and pressure. Every pixel hand-drawn in Matplotlib — no emoji fonts, no templates.</p>
+      <p class="project-dek">The four stations span completely different climate regimes: Pacific Northwest maritime, Sierra Nevada foothills, Mojave Desert extreme, and Great Basin high desert. Same report time. Four completely different air masses.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Python</span>
+        <span class="stack-pill">Matplotlib</span>
+        <span class="stack-pill">OpenWeatherMap</span>
+        <span class="stack-pill">GitHub Actions</span>
+        <span class="stack-pill">Tweepy</span>
+        <span class="stack-pill">Bluesky AT Protocol</span>
+        <span class="stack-pill">pixi</span>
+      </div>
+      <div style="margin-top:1.25rem;">
+        <a href="https://bdgroves.github.io/weather-report-bot/" target="_blank" class="project-link">View Live Cards →</a>
+        <a href="https://github.com/bdgroves/weather-report-bot" target="_blank" class="project-link secondary">GitHub →</a>
+      </div>
+    </div>
+
+    <div class="project-lead-stats">
+      <div class="stat-block">
+        <div class="stat-label">Stations monitored</div>
+        <div class="stat-value">4</div>
+        <div class="stat-sub">Lakewood · Groveland · Death Valley · Reno</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Posts per day</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">7am PT · 6pm PT · Twitter + Bluesky</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Card resolution</div>
+        <div class="stat-value">1200×675</div>
+        <div class="stat-sub">16:9 · 150 DPI · broadcast standard</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Rendering engine</div>
+        <div class="stat-value">Matplotlib</div>
+        <div class="stat-sub">pure geometry · every pixel hand-drawn</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Infrastructure cost</div>
+        <div class="stat-value">$0</div>
+        <div class="stat-sub">GitHub Actions free tier · ~4 min/run</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- THE FOUR STATIONS -->
+  <div class="section-label"><span>The Four Stations</span></div>
+  <div class="stations-grid">
+    <div class="station-card">
+      <span class="station-emoji">🏠</span>
+      <div class="station-label">Home Base</div>
+      <div class="station-name">Lakewood, WA</div>
+      <div class="station-desc">Pacific Northwest maritime climate. Cool, wet, green. The baseline everything else gets measured against.</div>
+    </div>
+    <div class="station-card">
+      <span class="station-emoji">🏔️</span>
+      <div class="station-label">Sierra Foothills</div>
+      <div class="station-name">Groveland, CA</div>
+      <div class="station-desc">Gateway to Yosemite. 2,800 feet. Four seasons in one week. Hometown gauge.</div>
+    </div>
+    <div class="station-card">
+      <span class="station-emoji">🔥</span>
+      <div class="station-label">Extreme Conditions</div>
+      <div class="station-name">Death Valley, CA</div>
+      <div class="station-desc">Hottest place on Earth. No mercy. The card that always reads differently from the others.</div>
+    </div>
+    <div class="station-card">
+      <span class="station-emoji">🎰</span>
+      <div class="station-label">Biggest Little City</div>
+      <div class="station-name">Reno, NV</div>
+      <div class="station-desc">High desert. Wind. Dry. The contrast station — shows what happens when you get over the Sierra crest.</div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <div class="section-label"><span>Broadcast Schedule</span></div>
+  <div style="margin-bottom:3rem;">
+    <div class="schedule-row">
+      <span class="schedule-time">7:00 AM PT</span>
+      <span class="schedule-desc">Morning report · current conditions + full-day forecast · posted to Twitter + Bluesky</span>
+      <span class="schedule-status">Daily ✓</span>
+    </div>
+    <div class="schedule-row">
+      <span class="schedule-time">6:00 PM PT</span>
+      <span class="schedule-desc">Evening report · end-of-day conditions + overnight outlook</span>
+      <span class="schedule-status">Daily ✓</span>
+    </div>
+    <div class="schedule-row">
+      <span class="schedule-time">On demand</span>
+      <span class="schedule-desc">Trigger manually from GitHub Actions tab anytime</span>
+      <span class="schedule-status">workflow_dispatch</span>
+    </div>
+  </div>
+
+  <!-- CONTEXT -->
+  <div class="section-label"><span>How It Works</span></div>
+  <div class="context-grid">
+    <div>
+      <h3 class="context-hed">The Pipeline</h3>
+      <div class="context-body">
+        <p>GitHub Actions wakes up twice daily, runs the Python orchestrator, and pulls live atmospheric data from <strong>OpenWeatherMap One Call 3.0</strong> for all four stations simultaneously — current conditions, forecast, UV index, humidity, wind, pressure, dew point, cloud cover.</p>
+        <p>The Matplotlib renderer then builds each card from scratch: temperature colored by heat level, weather icons drawn as pure geometry (no emoji fonts, no image assets), arc gauges for humidity and UV, a wind compass with directional arrow, precipitation bars, and a broadcast-style ticker across the bottom.</p>
+        <p>Cards are posted to <strong>Twitter/X via Tweepy</strong> and <strong>Bluesky via AT Protocol</strong> with live data captions and location hashtags. Total runtime: about 4 minutes on GitHub's free tier.</p>
+      </div>
+    </div>
+    <div>
+      <h3 class="context-hed">Why These Four</h3>
+      <div class="context-body">
+        <p><strong>Lakewood</strong> is home — the Pacific maritime baseline. When it's 52°F and drizzling in Lakewood, that's just Tuesday.</p>
+        <p><strong>Groveland</strong> is where I grew up, at 2,800 feet on the western slope of the Sierra. It swings between fog and fire season. The hometown gauge.</p>
+        <p><strong>Death Valley</strong> is the extreme outlier — the card that always reads 105°F when everywhere else is mild. It's there to remind you what weather actually means at its limit.</p>
+        <p><strong>Reno</strong> sits just over the Sierra crest in a completely different climate regime — high desert, intense sun, wind. The contrast between Reno and Groveland in a single storm is one of the most dramatic demonstrations of orographic lift you'll find.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://bsky.app" target="_blank">Bluesky</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+</body>
+</html>
