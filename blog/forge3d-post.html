@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exploring forge3d With Washington LiDAR — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; transition: background 0.2s, color 0.2s; }
+    .article-tag-pill:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body h2 em { font-style: italic; color: var(--rust); }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body em { font-style: italic; }
+    .article-body code { font-family: 'DM Mono', monospace; font-size: 0.85em; background: var(--cream); padding: 0.15em 0.4em; border-radius: 2px; }
+    .article-body pre { background: var(--ink); color: #c8d0cc; padding: 1.25rem 1.5rem; border-radius: 2px; overflow-x: auto; margin: 1.5rem 0 2rem; font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.65; }
+    .article-body pre code { background: none; padding: 0; font-size: 1em; color: inherit; }
+    .article-body ul { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body ul li { margin-bottom: 0.4rem; }
+
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">← Back to Blog</a>
+
+  <p class="article-kicker">Python · GIS · LiDAR · Terrain · Cartography</p>
+  <h1 class="article-title">Exploring forge3d With Washington LiDAR</h1>
+  <div class="article-meta">
+    <span>April 2026</span>
+    <span>Brooks Groves</span>
+    <span>7 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <span class="article-tag-pill">Python</span>
+    <span class="article-tag-pill">GIS</span>
+    <span class="article-tag-pill">LiDAR</span>
+    <span class="article-tag-pill">Terrain</span>
+    <span class="article-tag-pill">forge3d</span>
+    <span class="article-tag-pill">Cartography</span>
+    <span class="article-tag-pill">Open Source</span>
+  </div>
+
+  <div class="article-body">
+
+    <p>Every once in a while a new geospatial tool shows up and you can tell immediately it has range.</p>
+
+    <p>That was my reaction to <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a>, a new Python package by Milos Popovic: a GPU-accelerated 3D terrain renderer built in Rust and shipped as prebuilt Python wheels. No Rust toolchain. No elaborate setup. Just <code>pip install forge3d</code> and go.</p>
+
+    <p>That is already a pretty compelling sentence. But what got me interested was not just the technical stack. It was the promise of a terrain workflow that felt fast, modern, and native to Python. So I did what I usually do when I find a new library that looks promising: I spun up an isolated pixi environment, opened a few notebooks, and started poking at it until I understood the shape of the thing.</p>
+
+    <p>And honestly, I was up and running much faster than I expected.</p>
+
+    <!-- HERO IMAGE — Rainier -->
+    <div class="photo-block">
+      <img src="/images/rainier_social.png" alt="Mount Rainier, Washington — terrain render showing 4,391m summit with terrain colour and hillshade, rendered with forge3d and matplotlib">
+      <p class="photo-caption">Mount Rainier, Washington · 4,391m summit · 30m DEM · terrain colour + hillshade · rendered with forge3d + matplotlib</p>
+    </div>
+
+    <h2>Why I Tried It</h2>
+
+    <p>Washington State has incredibly good open LiDAR data, so it felt like the obvious place to start. I mostly wanted to see what forge3d could do — especially with lighting, relief, and terrain shading — and one of the nicest surprises was how quickly I got to something usable.</p>
+
+    <p>I had been doing similar terrain work in R with Rayshader, and this felt much faster to get off the ground. Once I understood the basics, it really started to open up. The bottleneck was no longer the software. It was just my own imagination, plus however much great open LiDAR data I could find.</p>
+
+    <p>That is probably the best compliment I can give a new geospatial tool. It got out of the way quickly enough that I could start thinking about images instead of setup.</p>
+
+    <h2>First Impressions</h2>
+
+    <p>What stood out right away was that forge3d seems aimed at actual geospatial users, not just graphics people. Even early on, it already has the bones of a serious terrain workflow: DEM loading and terrain rendering, a large colormap catalog, CRS and reprojection support, Jupyter support, vector overlays, labels, and point cloud handling, and a Python API that is readable enough to learn from directly.</p>
+
+    <p>That last part matters more than people admit. A lot of geospatial libraries technically work, but make you fight them. This one feels like it wants you to get from raw elevation data to a render worth keeping with as little ceremony as possible. That is a very good instinct for a mapping library.</p>
+
+    <h2>I Started With Mount St. Helens</h2>
+
+    <p>I did not start by trying to reproduce the polished hero renders from the project page. I started with Mount St. Helens.</p>
+
+    <p>Partly because it is one of the most recognizable volcanic landscapes in the Pacific Northwest, and partly because it is just a great terrain subject. The crater, the blast zone, the radial drainage, the contrast between broad landforms and fine surface texture — it gives you a lot to work with very quickly.</p>
+
+    <p>It also made for a good test case because Washington's LiDAR data is good enough that you can really see the difference when you start pushing resolution. That led me to make three images: a 10-meter vs 1-meter resolution comparison, a standalone annotated terrain plate, and eventually a render of Crater Lake just to see how the workflow handled a completely different landform.</p>
+
+    <!-- MT ST HELENS SINGLE -->
+    <div class="photo-block">
+      <img src="/images/mt_st_helens_twitter.png" alt="Mount St. Helens, Washington — terrain render showing the crater and blast zone, USGS 3DEP data, rendered with forge3d and matplotlib">
+      <p class="photo-caption">Mount St. Helens, Washington · summit 2,526m · USGS 3DEP 10m · rendered with forge3d + matplotlib · The crater and radial drainage make it a great first test subject.</p>
+    </div>
+
+    <h2>The Resolution Comparison</h2>
+
+    <p>This is where things got interesting. Same mountain, same color scale, same basic framing — but the jump from 10-meter USGS 3DEP data to 1-meter Washington DNR LiDAR changes the image completely. Gullies sharpen. Flow structure appears. Surface texture starts to read in a way that feels much more immediate.</p>
+
+    <p>That is where the package stops being "cool rendering tech" and starts becoming genuinely useful. The difference is not subtle. It is the difference between a terrain render that communicates landform and one that communicates geology.</p>
+
+    <!-- RESOLUTION COMPARISON -->
+    <div class="photo-block">
+      <img src="/images/st-helens-resolution-comparison.png" alt="Mount St. Helens resolution comparison — USGS 3DEP 10m on left versus WA DNR LiDAR 1m on right, same area, same colour scale">
+      <p class="photo-caption">Same area · same colour scale · 10× difference in terrain detail · USGS 3DEP 10m (left) vs WA DNR LiDAR 1m (right) · Washington's open LiDAR data is where this workflow started to feel especially interesting.</p>
+    </div>
+
+    <h2>Then Crater Lake</h2>
+
+    <p>After St. Helens I wanted to test something structurally different — a caldera instead of a cone. Crater Lake is a great subject for exactly the same reasons St. Helens is: dramatic landform, clear story, and terrain that earns its elevation data.</p>
+
+    <p>The USGS 3DEP data handled the caldera rim and the deep lake basin cleanly. Wizard Island reads clearly in the render. The color scale at this elevation range does exactly what you want — it separates the water, the rim, and the surrounding plateau without any manual intervention.</p>
+
+    <!-- CRATER LAKE -->
+    <div class="photo-block">
+      <img src="/images/crater_lake_twitter.png" alt="Crater Lake National Park, Oregon — terrain render showing the caldera, Wizard Island, and surrounding volcanic landscape, USGS 3DEP data">
+      <p class="photo-caption">Crater Lake National Park, Oregon · deepest lake in the US · rim elevation 2,716m · USGS 3DEP · rendered with forge3d + matplotlib · Wizard Island reads clearly in the basin.</p>
+    </div>
+
+    <h2>The Funny Part: My Favorite Output Wasn't Really About the GPU</h2>
+
+    <p>The render I liked most was built with a pretty plain stack: forge3d for the terrain workflow, NumPy for the hillshade-style processing, and matplotlib for composition and output. No interactive viewer. No dramatic camera flythrough. No complicated rendering pipeline. Just Python, elevation, light, and composition.</p>
+
+    <p>That is not a criticism of forge3d. If anything, it is a point in its favor. Good tools do not force you into a single aesthetic or workflow. They give you leverage. forge3d seems built for high-end interactive and rendered output, but it also works as a very clean way into terrain data and scene-making even when the final image still passes through the Python tools you already trust.</p>
+
+    <h2>What Stood Out</h2>
+
+    <p><strong>Packaging that makes experimentation easy.</strong> A Rust-backed rendering library shipped as Python wheels is just easier to say yes to. There is a big difference between "install this and start playing" and "clear your afternoon because your build chain might break." forge3d makes experimentation easy, which is exactly what a young library should do.</p>
+
+    <p><strong>It feels designed for GIS people.</strong> This is not a graphics engine pretending to understand maps. The examples, terminology, and data model all suggest a project built by somebody who understands what geospatial users actually want to do: load terrain, manage coordinate systems, bring in overlays, place labels, and make strong images.</p>
+
+    <p><strong>The source is readable.</strong> I like learning new libraries from the source when the docs are still evolving. forge3d is readable enough that this actually feels productive rather than intimidating. That matters a lot early in a project's life.</p>
+
+    <h2>Why I Think It's Worth Watching</h2>
+
+    <p>A lot of geospatial Python tools are either analytically strong and visually awkward, or visually strong and disconnected from everyday GIS workflows. forge3d looks like it wants to bridge that gap.</p>
+
+    <p>Terrain visualization is still more fragmented than it should be. You can do it in desktop GIS. You can do it in game engines. You can do it in custom graphics stacks. You can absolutely brute-force it in matplotlib. But there is still room for a tool that says: here is a modern renderer, here is a Python API, and here is a workflow that feels natural to geospatial people. That is a real niche.</p>
+
+    <p>And right now it feels like there is a lot of exciting geospatial tooling coming online in 2026. forge3d feels like part of that wave.</p>
+
+    <h2>What I Want to Do Next</h2>
+
+    <p>Now that I have the basic workflow working, I want to push it harder. The next thing on my list: find the highest-grade LiDAR I can get my hands on for Mount Rainier specifically and see what 1-meter resolution does to that summit terrain. The 30m DEM render above is already strong. What the WA DNR LiDAR does to it is going to be something else.</p>
+
+    <p>That is where I ended up with forge3d. Once I got the hang of it, I felt like I was mostly limited by my own ideas — and by the quality of the open data I could find. That is a very fun place to be. For a first pass, that is about as strong an endorsement as I can give. I installed it because I was curious. A few notebooks later, I had images I genuinely wanted to keep.</p>
+
+    <p>That is usually a sign.</p>
+
+  </div>
+
+  <div class="reactions-section">
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · April 2026</span>
+    <div class="article-footer-nav">
+      <a href="/blog/pixi-post.html">← Previous post</a>
+      <a href="/blog/index.html">All posts</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+</body>
+</html>
