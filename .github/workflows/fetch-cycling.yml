@@ -1,0 +1,218 @@
+name: Fetch Cycling
+
+on:
+  schedule:
+    - cron: '0 20 * * *'   # 8pm UTC daily — catches afternoon European race finishes
+  workflow_dispatch:
+
+jobs:
+  fetch-cycling:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Write cycling.json
+        run: |
+          python3 << 'EOF'
+          import urllib.request
+          import json
+          from datetime import datetime, timezone, date
+
+          # ── RACE CALENDAR ──
+          # Update winner/result after each race
+          # status: "upcoming" | "live" | "final"
+          races = [
+
+            # ── SPRING CLASSICS 2026 ──
+            {
+              "name": "Omloop Het Nieuwsblad",
+              "emoji": "🇧🇪",
+              "category": "1.UWT",
+              "date": "2026-03-01",
+              "status": "final",
+              "winner": "Mathieu van der Poel",
+              "team": "Alpecin-Premier Tech",
+              "notes": "Van der Poel opens the classics season"
+            },
+            {
+              "name": "Strade Bianche",
+              "emoji": "🇮🇹",
+              "category": "Monument",
+              "date": "2026-03-07",
+              "status": "final",
+              "winner": "Tadej Pogačar 🌈",
+              "team": "UAE Team Emirates XRG",
+              "notes": "79km solo — Pogačar dominates on the white roads"
+            },
+            {
+              "name": "Milan–San Remo",
+              "emoji": "🇮🇹",
+              "category": "Monument",
+              "date": "2026-03-21",
+              "status": "final",
+              "winner": "Tadej Pogačar 🌈",
+              "team": "UAE Team Emirates XRG",
+              "notes": "Spectacular chase — beats Pidcock in sprint. Monument #1 of 2026."
+            },
+            {
+              "name": "E3 Saxo Classic",
+              "emoji": "🇧🇪",
+              "category": "1.UWT",
+              "date": "2026-03-27",
+              "status": "final",
+              "winner": "Mathieu van der Poel",
+              "team": "Alpecin-Premier Tech",
+              "notes": "Mini Tour of Flanders — MvdP takes control of cobbles season"
+            },
+            {
+              "name": "In Flanders Fields",
+              "emoji": "🇧🇪",
+              "category": "1.UWT",
+              "date": "2026-03-29",
+              "status": "final",
+              "winner": "Jasper Philipsen",
+              "team": "Alpecin-Premier Tech",
+              "notes": "Formerly Gent-Wevelgem"
+            },
+            {
+              "name": "Dwars door Vlaanderen",
+              "emoji": "🇧🇪",
+              "category": "1.UWT",
+              "date": "2026-04-01",
+              "status": "live",
+              "winner": None,
+              "team": None,
+              "notes": "Racing today — semi-classic ahead of RVV"
+            },
+            {
+              "name": "Ronde van Vlaanderen",
+              "emoji": "🇧🇪",
+              "category": "Monument",
+              "date": "2026-04-05",
+              "status": "upcoming",
+              "winner": None,
+              "team": None,
+              "notes": "Tour of Flanders · Pogačar vs MvdP · The big one"
+            },
+            {
+              "name": "Paris–Roubaix",
+              "emoji": "🇫🇷",
+              "category": "Monument",
+              "date": "2026-04-12",
+              "status": "upcoming",
+              "winner": None,
+              "team": None,
+              "notes": "Hell of the North · 50km of cobbles"
+            },
+            {
+              "name": "Amstel Gold Race",
+              "emoji": "🇳🇱",
+              "category": "1.UWT",
+              "date": "2026-04-19",
+              "status": "upcoming",
+              "winner": None,
+              "team": None,
+              "notes": "Ardennes opener"
+            },
+            {
+              "name": "La Flèche Wallonne",
+              "emoji": "🇧🇪",
+              "category": "1.UWT",
+              "date": "2026-04-22",
+              "status": "upcoming",
+              "winner": None,
+              "team": None,
+              "notes": "Mur de Huy wall finish"
+            },
+            {
+              "name": "Liège–Bastogne–Liège",
+              "emoji": "🇧🇪",
+              "category": "Monument",
+              "date": "2026-04-26",
+              "status": "upcoming",
+              "winner": None,
+              "team": None,
+              "notes": "La Doyenne · Ardennes finale · Pogačar won in 2025"
+            },
+
+            # ── GRAND TOURS ──
+            {
+              "name": "Giro d'Italia",
+              "emoji": "🇮🇹",
+              "category": "Grand Tour",
+              "date": "2026-05-09",
+              "status": "upcoming",
+              "winner": None,
+              "team": None,
+              "notes": "3 weeks · May 9 – Jun 1"
+            },
+            {
+              "name": "Tour de France",
+              "emoji": "🇫🇷",
+              "category": "Grand Tour",
+              "date": "2026-07-04",
+              "status": "upcoming",
+              "winner": None,
+              "team": None,
+              "notes": "Grand Départ Copenhagen · Jul 4–26"
+            },
+            {
+              "name": "Vuelta a España",
+              "emoji": "🇪🇸",
+              "category": "Grand Tour",
+              "date": "2026-08-15",
+              "status": "upcoming",
+              "winner": None,
+              "team": None,
+              "notes": "Aug 15 – Sep 6"
+            },
+
+            # ── MONUMENTS FALL ──
+            {
+              "name": "Il Lombardia",
+              "emoji": "🇮🇹",
+              "category": "Monument",
+              "date": "2026-10-10",
+              "status": "upcoming",
+              "winner": None,
+              "team": None,
+              "notes": "Race of the Falling Leaves · final Monument"
+            },
+          ]
+
+          # Compute days away for upcoming races
+          today = date.today()
+          for r in races:
+            race_date = date.fromisoformat(r["date"])
+            delta = (race_date - today).days
+            if delta > 0:
+              r["days_away"] = delta
+            elif delta == 0:
+              r["days_away"] = 0
+            else:
+              r["days_away"] = None
+
+          output = {
+            "races": races,
+            "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "season": "2026",
+            "watch": "Tadej Pogačar — chasing all 5 Monuments"
+          }
+
+          with open("cycling.json", "w") as f:
+            json.dump(output, f, indent=2, ensure_ascii=False)
+
+          finals = [r for r in races if r["status"] == "final"]
+          upcoming = [r for r in races if r["status"] == "upcoming"]
+          print(f"cycling.json written: {len(finals)} results, {len(upcoming)} upcoming")
+          EOF
+
+      - name: Commit cycling.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add cycling.json
+          git diff --staged --quiet || git commit -m "chore: update cycling.json [skip ci]"
+          git push

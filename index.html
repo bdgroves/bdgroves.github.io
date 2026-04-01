@@ -314,9 +314,8 @@
         <a href="/volcanology.html">🌋 Volcanology</a>
         <a href="/paleontology.html">🦕 Paleontology</a>
         <a href="/hydrology.html">💧 Hydrology</a>
-		<a href="/meteorology.html">🌩 Meteorology</a>
         <div class="dropdown-label">Coming Soon</div>
-        
+        <a href="/meteorology.html">🌩 Meteorology</a>
       </div>
     </div>
 
@@ -514,26 +513,7 @@
     </div>
 
     <div class="sport-panel" id="tab-cycling">
-      <div class="race-row">
-        <div><p class="race-name">GP de Denain</p><p class="race-leader">Winner: Segaert (Bahrain)</p></div>
-        <div class="race-meta"><span>Mar 31</span><span class="score-status final">Final</span></div>
-      </div>
-      <div class="race-row">
-        <div><p class="race-name">Bredene Koksijde Classic</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Belgium · 1.Pro</p></div>
-        <div class="race-meta"><span>Apr 1</span><span class="score-status sched">Tomorrow</span></div>
-      </div>
-      <div class="race-row">
-        <div><p class="race-name">Ronde van Vlaanderen</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Tour of Flanders · Monument</p></div>
-        <div class="race-meta"><span>Apr 5</span><span class="score-status sched">5 days</span></div>
-      </div>
-      <div class="race-row">
-        <div><p class="race-name">Paris-Roubaix</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Hell of the North · Monument</p></div>
-        <div class="race-meta"><span>Apr 12</span><span class="score-status sched">12 days</span></div>
-      </div>
-      <div class="race-row">
-        <div><p class="race-name">Tour de France</p><p class="race-leader" style="color:var(--stone);font-style:normal;">Starts Copenhagen</p></div>
-        <div class="race-meta"><span>Jul 5</span><span class="score-status sched">96 days</span></div>
-      </div>
+      <div id="cycling-races"><p class="sport-note">Loading races…</p></div>
     </div>
 
     <div class="sport-panel" id="tab-running">
@@ -766,10 +746,71 @@
     }
   }
 
+  // ── CYCLING ──
+  async function loadCycling() {
+    const el = document.getElementById('cycling-races');
+    try {
+      const res = await fetch('/cycling.json?t=' + Date.now());
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      const races = data.races;
+
+      // Show: recent finals (last 3) + any live + next 6 upcoming
+      const finals = races.filter(r => r.status === 'final').slice(-4);
+      const live = races.filter(r => r.status === 'live');
+      const upcoming = races.filter(r => r.status === 'upcoming').slice(0, 5);
+      const display = [...finals, ...live, ...upcoming];
+
+      el.innerHTML = display.map(r => {
+        const isMonument = r.category === 'Monument' || r.category === 'Grand Tour';
+        const nameStyle = isMonument ? 'font-weight:900;' : '';
+        let leader = '', statusClass = 'sched', statusLabel = '';
+
+        if (r.status === 'final') {
+          statusClass = 'final';
+          statusLabel = 'Final';
+          leader = `<p class="race-leader">${r.winner} · ${r.team}</p>`;
+          if (r.notes) leader += `<p class="race-leader" style="color:var(--stone);font-style:normal;font-size:0.72rem;">${r.notes}</p>`;
+        } else if (r.status === 'live') {
+          statusClass = 'live';
+          statusLabel = '<span class="live-dot"></span>Live';
+          leader = `<p class="race-leader" style="color:var(--rust);">Racing now</p>`;
+        } else {
+          statusClass = 'sched';
+          statusLabel = r.days_away === 0 ? 'Today' :
+                        r.days_away === 1 ? 'Tomorrow' :
+                        r.days_away ? `${r.days_away} days` : 'Upcoming';
+          if (r.notes) leader = `<p class="race-leader" style="color:var(--stone);font-style:normal;">${r.notes}</p>`;
+        }
+
+        const dateObj = new Date(r.date + 'T12:00:00');
+        const dateStr = dateObj.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+
+        return `<div class="race-row">
+          <div>
+            <p class="race-name" style="${nameStyle}">${r.emoji} ${r.name} <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--stone);font-weight:normal;">${r.category}</span></p>
+            ${leader}
+          </div>
+          <div class="race-meta">
+            <span>${dateStr}</span>
+            <span class="score-status ${statusClass}">${statusLabel}</span>
+          </div>
+        </div>`;
+      }).join('');
+
+      if (data.watch) {
+        el.innerHTML += `<p class="sport-note" style="margin-top:0.75rem;">👀 Watching: ${data.watch}</p>`;
+      }
+    } catch(e) {
+      el.innerHTML = `<p class="sport-note">Cycling data loading… check back soon.</p>`;
+    }
+  }
+
   loadWeather();
   loadMLB();
   loadBooks();
   loadBeers();
+  loadCycling();
   setInterval(() => { if (!document.hidden) loadMLB(); }, 5 * 60 * 1000);
 </script>
 
