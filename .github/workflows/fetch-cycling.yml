@@ -125,28 +125,19 @@ jobs:
                               pcs_ranking = m.group(1)
                               break
 
-                      # 2026 points from table.basic.small first data row
+                      # 2026 points from table.basic.small — regex "2026{points}{rank}"
                       basic = tp.css_first("table[class*='basic small'], table[class=' basic small']")
                       if basic:
-                          rows = basic.css("tr")
-                          for row in rows[1:]:  # skip header
-                              cols = row.css("td")
-                              if len(cols) >= 2:
-                                  yr_txt = cols[0].text(strip=True) if len(cols) > 2 else ""
-                                  # find 2026 row
-                                  for col in cols:
-                                      if col.text(strip=True) == "2026":
-                                          idx = cols.index(col)
-                                          if idx + 1 < len(cols):
-                                              pcs_points = cols[idx+1].text(strip=True)
-                                          break
-                              if pcs_points:
-                                  break
-                          # simpler: just grab text and regex
                           tbl_txt = basic.text(strip=True)
-                          m = re.search(r'2026(\d+)', tbl_txt)
+                          # Pattern: 2026 followed by points then rank number
+                          m = re.search(r'2026(\d+)(\d+)', tbl_txt)
                           if m:
-                              pcs_points = m.group(1)
+                              # First capture is points, but they're run together
+                              # Use the known rank to split: points end where rank digit(s) begin
+                              # Simpler: grab first number after "2026" that's > 10 (points not rank)
+                              all_nums = re.findall(r'\d+', tbl_txt[tbl_txt.find('2026'):tbl_txt.find('2026')+20])
+                              if len(all_nums) >= 2:
+                                  pcs_points = all_nums[1]  # skip "2026" itself
 
                       print(f"    Team: {team or 'not found'}, Ranking: #{pcs_ranking or '?'}, Points 2026: {pcs_points or '?'}")
                   except Exception as ep:
