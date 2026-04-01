@@ -19,7 +19,6 @@
     body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
     body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
     .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
-
     header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
     .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
     .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
@@ -28,13 +27,11 @@
     nav a:hover { color: var(--rust); }
     nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
     nav a.github:hover { background: var(--ink); color: var(--parchment); }
-
     .main { flex: 1; max-width: 720px; margin: 0 auto; padding: clamp(4rem,8vw,6rem) clamp(1.5rem,5vw,2rem); width: 100%; }
     .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
     .page-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
     .page-title em { font-style: italic; color: var(--rust); }
     .desc { font-size: 0.95rem; color: var(--stone); line-height: 1.8; margin-bottom: 3rem; }
-
     .status-section { margin-bottom: 2.5rem; }
     .status-heading { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--stone); padding-bottom: 0.6rem; border-bottom: 2px solid var(--ink); margin-bottom: 1rem; }
     .status-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--mist); }
@@ -47,10 +44,8 @@
     .status-label { flex: 1; }
     .status-tag { font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mist); margin-left: auto; white-space: nowrap; }
     a.status-item .status-tag { color: var(--sage); }
-
     .back-btn { display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; padding: 0.6rem 1.4rem; border: 1.5px solid var(--ink); color: var(--ink); transition: background 0.2s, color 0.2s; margin-top: 1rem; }
     .back-btn:hover { background: var(--ink); color: var(--parchment); }
-
     footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: auto; }
     .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
     .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
@@ -97,7 +92,22 @@
       </a>
       <a href="/blog/index.html" class="status-item">
         <span class="status-dot dot-live"></span>
-        <span class="status-label">Blog — pixi environments post, streamflow dashboard post</span>
+        <span class="status-label">Blog — pixi environments, streamflow dashboard</span>
+        <span class="status-tag">↗ Live</span>
+      </a>
+      <a href="/journal/index.html" class="status-item">
+        <span class="status-dot dot-live"></span>
+        <span class="status-label">Journal — Cannon Beach, tide pools, Fort George beers</span>
+        <span class="status-tag">↗ Live</span>
+      </a>
+      <a href="/westin/index.html" class="status-item">
+        <span class="status-dot dot-live"></span>
+        <span class="status-label">Westin Stories — 8 dispatches from 21 years as bell captain</span>
+        <span class="status-tag">↗ Live</span>
+      </a>
+      <a href="/meteorology.html" class="status-item">
+        <span class="status-dot dot-live"></span>
+        <span class="status-label">Meteorology — weather-report-bot, 4 stations, twice daily</span>
         <span class="status-tag">↗ Live</span>
       </a>
       <a href="/volcanology.html" class="status-item">
@@ -129,12 +139,17 @@
     <div class="status-list">
       <div class="status-item">
         <span class="status-dot dot-soon"></span>
-        <span class="status-label">Journal — Cannon Beach, field notes, race reports, travel</span>
+        <span class="status-label">Westin story pages — individual HTML for all 8 dispatches</span>
         <span class="status-tag">Soon</span>
       </div>
       <div class="status-item">
         <span class="status-dot dot-soon"></span>
-        <span class="status-label">Meteorology hub — Weather Report Bot, NWS pipelines, radar</span>
+        <span class="status-label">More journal entries — hamstring run, field notes, race reports</span>
+        <span class="status-tag">Soon</span>
+      </div>
+      <div class="status-item">
+        <span class="status-dot dot-soon"></span>
+        <span class="status-label">Rayshader blog post — Mt. Rainier 3D terrain in R</span>
         <span class="status-tag">Soon</span>
       </div>
       <div class="status-item">
@@ -145,6 +160,11 @@
       <div class="status-item">
         <span class="status-dot dot-soon"></span>
         <span class="status-label">Training log — running, triathlon, Strava feed</span>
+        <span class="status-tag">Soon</span>
+      </div>
+      <div class="status-item">
+        <span class="status-dot dot-soon"></span>
+        <span class="status-label">Cycling auto-updates — GitHub Action pulling race results</span>
         <span class="status-tag">Soon</span>
       </div>
       <div class="status-item">
@@ -167,6 +187,7 @@
     <div class="footer-links">
       <a href="/">Home</a>
       <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
       <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
       <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
       <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
