@@ -13,19 +13,73 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Write cycling.json
+      - name: Install dependencies
+        run: pip install procyclingstats requests --break-system-packages
+
+      - name: Fetch cycling data and write cycling.json
         run: |
           python3 << 'EOF'
-          import urllib.request
           import json
+          import traceback
           from datetime import datetime, timezone, date
 
-          # ── RACE CALENDAR ──
-          # Update winner/result after each race
-          # status: "upcoming" | "live" | "final"
-          races = [
+          # ── RIDER SPOTLIGHT ──
+          # Pull live stats for watched riders from PCS
+          def get_rider_stats(pcs_slug, display_name, nationality_flag):
+              try:
+                  from procyclingstats import Rider, RiderResults
+                  print(f"  Fetching rider: {display_name}...")
 
-            # ── SPRING CLASSICS 2026 ──
+                  rider = Rider(f"rider/{pcs_slug}")
+                  data = rider.parse()
+
+                  # Current season results
+                  results_scraper = RiderResults(f"rider/{pcs_slug}/results/2026")
+                  results_data = results_scraper.parse()
+                  results = results_data.get("results", []) or []
+
+                  # Count wins this season
+                  wins_2026 = [r for r in results if str(r.get("result", "")).strip() == "1"]
+                  recent = results[:5]  # most recent 5
+
+                  return {
+                      "name": display_name,
+                      "flag": nationality_flag,
+                      "team": data.get("team", ""),
+                      "nationality": data.get("nationality", ""),
+                      "pcs_ranking": data.get("ranking", None),
+                      "wins_2026": len(wins_2026),
+                      "win_list": [
+                          {
+                              "race": w.get("race", ""),
+                              "date": w.get("date", ""),
+                              "category": w.get("class", "")
+                          }
+                          for w in wins_2026[:8]
+                      ],
+                      "recent_results": [
+                          {
+                              "race": r.get("race", ""),
+                              "result": r.get("result", ""),
+                              "date": r.get("date", "")
+                          }
+                          for r in recent
+                      ],
+                      "fetched": True
+                  }
+              except Exception as e:
+                  print(f"  ERROR fetching {display_name}: {e}")
+                  traceback.print_exc()
+                  return {
+                      "name": display_name,
+                      "flag": nationality_flag,
+                      "fetched": False,
+                      "error": str(e)
+                  }
+
+          # ── RACE CALENDAR ──
+          races = [
+            # SPRING CLASSICS 2026
             {
               "name": "Omloop Het Nieuwsblad",
               "emoji": "🇧🇪",
@@ -54,7 +108,7 @@ jobs:
               "status": "final",
               "winner": "Tadej Pogačar 🌈",
               "team": "UAE Team Emirates XRG",
-              "notes": "Spectacular chase — beats Pidcock in sprint. Monument #1 of 2026."
+              "notes": "Spectacular chase — beats Pidcock in sprint. Monument #1."
             },
             {
               "name": "E3 Saxo Classic",
@@ -64,7 +118,7 @@ jobs:
               "status": "final",
               "winner": "Mathieu van der Poel",
               "team": "Alpecin-Premier Tech",
-              "notes": "Mini Tour of Flanders — MvdP takes control of cobbles season"
+              "notes": "Mini Tour of Flanders"
             },
             {
               "name": "In Flanders Fields",
@@ -81,10 +135,10 @@ jobs:
               "emoji": "🇧🇪",
               "category": "1.UWT",
               "date": "2026-04-01",
-              "status": "live",
+              "status": "final",
               "winner": None,
               "team": None,
-              "notes": "Racing today — semi-classic ahead of RVV"
+              "notes": "Semi-classic ahead of RVV — update after race"
             },
             {
               "name": "Ronde van Vlaanderen",
@@ -134,10 +188,9 @@ jobs:
               "status": "upcoming",
               "winner": None,
               "team": None,
-              "notes": "La Doyenne · Ardennes finale · Pogačar won in 2025"
+              "notes": "La Doyenne · Pogačar won in 2025"
             },
-
-            # ── GRAND TOURS ──
+            # GRAND TOURS
             {
               "name": "Giro d'Italia",
               "emoji": "🇮🇹",
@@ -146,7 +199,7 @@ jobs:
               "status": "upcoming",
               "winner": None,
               "team": None,
-              "notes": "3 weeks · May 9 – Jun 1"
+              "notes": "May 9 – Jun 1"
             },
             {
               "name": "Tour de France",
@@ -168,8 +221,7 @@ jobs:
               "team": None,
               "notes": "Aug 15 – Sep 6"
             },
-
-            # ── MONUMENTS FALL ──
+            # FALL MONUMENTS
             {
               "name": "Il Lombardia",
               "emoji": "🇮🇹",
@@ -182,31 +234,43 @@ jobs:
             },
           ]
 
-          # Compute days away for upcoming races
+          # Compute days away
           today = date.today()
           for r in races:
-            race_date = date.fromisoformat(r["date"])
-            delta = (race_date - today).days
-            if delta > 0:
-              r["days_away"] = delta
-            elif delta == 0:
-              r["days_away"] = 0
-            else:
-              r["days_away"] = None
+              race_date = date.fromisoformat(r["date"])
+              delta = (race_date - today).days
+              r["days_away"] = delta if delta >= 0 else None
 
+          # ── FETCH RIDER STATS ──
+          riders = []
+          watch_list = [
+              ("tadej-pogacar", "Tadej Pogačar", "🇸🇮"),
+              ("mathieu-van-der-poel", "Mathieu van der Poel", "🇳🇱"),
+              ("remco-evenepoel", "Remco Evenepoel", "🇧🇪"),
+          ]
+
+          for slug, name, flag in watch_list:
+              stats = get_rider_stats(slug, name, flag)
+              riders.append(stats)
+              if stats.get("fetched"):
+                  print(f"  {name}: {stats.get('wins_2026', 0)} wins in 2026, PCS rank #{stats.get('pcs_ranking', '?')}")
+
+          # ── WRITE OUTPUT ──
           output = {
-            "races": races,
-            "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            "season": "2026",
-            "watch": "Tadej Pogačar — chasing all 5 Monuments"
+              "races": races,
+              "riders": riders,
+              "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "season": "2026",
+              "watch": "Tadej Pogačar — chasing all 5 Monuments"
           }
 
           with open("cycling.json", "w") as f:
-            json.dump(output, f, indent=2, ensure_ascii=False)
+              json.dump(output, f, indent=2, ensure_ascii=False)
 
           finals = [r for r in races if r["status"] == "final"]
           upcoming = [r for r in races if r["status"] == "upcoming"]
-          print(f"cycling.json written: {len(finals)} results, {len(upcoming)} upcoming")
+          fetched_riders = [r for r in riders if r.get("fetched")]
+          print(f"cycling.json written: {len(finals)} results, {len(upcoming)} upcoming, {len(fetched_riders)}/{len(riders)} rider profiles")
           EOF
 
       - name: Commit cycling.json

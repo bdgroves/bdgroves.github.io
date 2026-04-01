@@ -755,13 +755,14 @@
       const data = await res.json();
       const races = data.races;
 
-      // Show: recent finals (last 3) + any live + next 6 upcoming
+      // Show: recent finals (last 4) + any live + next 5 upcoming
       const finals = races.filter(r => r.status === 'final').slice(-4);
       const live = races.filter(r => r.status === 'live');
       const upcoming = races.filter(r => r.status === 'upcoming').slice(0, 5);
       const display = [...finals, ...live, ...upcoming];
 
-      el.innerHTML = display.map(r => {
+      // RACES
+      let html = display.map(r => {
         const isMonument = r.category === 'Monument' || r.category === 'Grand Tour';
         const nameStyle = isMonument ? 'font-weight:900;' : '';
         let leader = '', statusClass = 'sched', statusLabel = '';
@@ -769,7 +770,9 @@
         if (r.status === 'final') {
           statusClass = 'final';
           statusLabel = 'Final';
-          leader = `<p class="race-leader">${r.winner} · ${r.team}</p>`;
+          if (r.winner) {
+            leader = `<p class="race-leader">${r.winner}${r.team ? ' · ' + r.team : ''}</p>`;
+          }
           if (r.notes) leader += `<p class="race-leader" style="color:var(--stone);font-style:normal;font-size:0.72rem;">${r.notes}</p>`;
         } else if (r.status === 'live') {
           statusClass = 'live';
@@ -798,9 +801,48 @@
         </div>`;
       }).join('');
 
-      if (data.watch) {
-        el.innerHTML += `<p class="sport-note" style="margin-top:0.75rem;">👀 Watching: ${data.watch}</p>`;
+      // RIDER SPOTLIGHT
+      if (data.riders && data.riders.length) {
+        html += `<div style="margin-top:1.5rem;padding-top:1rem;border-top:2px solid var(--ink);">
+          <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);padding-bottom:0.6rem;margin-bottom:0.75rem;">2026 Rider Spotlight</div>`;
+
+        data.riders.forEach(rider => {
+          if (!rider.fetched) return;
+          const recentHTML = (rider.recent_results || []).slice(0, 4).map(r =>
+            `<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);">
+              <span style="color:${r.result == 1 ? 'var(--gold)' : 'var(--stone)'};">${r.result == 1 ? '🏆' : r.result}</span>
+              ${r.race}
+            </span>`
+          ).join('<br>');
+
+          html += `<div style="padding:0.75rem 0;border-bottom:1px solid var(--mist);">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.35rem;">
+              <span style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;">${rider.flag} ${rider.name}</span>
+              <span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);">${rider.team || ''}</span>
+            </div>
+            <div style="display:flex;gap:1.5rem;margin-bottom:0.5rem;">
+              <div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);">2026 Wins</div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--gold);">${rider.wins_2026 || 0}</div>
+              </div>
+              ${rider.pcs_ranking ? `<div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);">PCS Rank</div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--ink);">#${rider.pcs_ranking}</div>
+              </div>` : ''}
+            </div>
+            ${recentHTML ? `<div style="margin-top:0.35rem;">${recentHTML}</div>` : ''}
+          </div>`;
+        });
+
+        html += `</div>`;
       }
+
+      if (data.watch) {
+        html += `<p class="sport-note" style="margin-top:0.75rem;">👀 ${data.watch}</p>`;
+      }
+
+      el.innerHTML = html;
+
     } catch(e) {
       el.innerHTML = `<p class="sport-note">Cycling data loading… check back soon.</p>`;
     }
