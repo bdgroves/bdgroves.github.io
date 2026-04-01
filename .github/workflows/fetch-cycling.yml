@@ -75,6 +75,20 @@ jobs:
                       print(f"    No rdrResults table found")
 
                   wins_2026 = [r for r in results if str(r.get("result","")).strip() == "1"]
+
+                  # Clean up race names — strip "S4Stage 4- " prefixes and "General classification" dupes
+                  def clean_race_name(name):
+                      import re
+                      name = re.sub(r'^S\d+Stage \d+[-–]\s*', '', name)
+                      name = re.sub(r'^General classification\s*', 'GC ', name)
+                      name = re.sub(r'\s*ME$', '', name)
+                      return name.strip()
+
+                  for r in results:
+                      r["race"] = clean_race_name(r["race"])
+                  for w in wins_2026:
+                      w["race"] = clean_race_name(w["race"])
+
                   print(f"    {len(results)} results, {len(wins_2026)} wins")
                   if wins_2026:
                       print(f"    Wins: {[w['race'] for w in wins_2026]}")
@@ -86,18 +100,39 @@ jobs:
                       profile_url = f"https://www.procyclingstats.com/rider/{pcs_slug}"
                       rp = scraper.get(profile_url, headers=headers, timeout=15)
                       tp = HTMLParser(rp.text)
-                      # Team and ranking are in ul.rdr-details
-                      for ul in tp.css("ul"):
-                          cls = ul.attributes.get("class","")
-                          if "rdr-details" in cls or "info" in cls:
-                              for li in ul.css("li"):
-                                  txt = li.text(strip=True)
-                                  if "Team" in txt and not team:
-                                      a = li.css_first("a")
-                                      team = a.text(strip=True) if a else txt.split(":")[-1].strip()
-                                  if "ranking" in txt.lower() and not pcs_ranking:
-                                      pcs_ranking = re.search(r'\d+', txt)
-                                      pcs_ranking = pcs_ranking.group() if pcs_ranking else None
+
+                      # Team is in the rdr-details ul
+                      for ul in tp.css("ul.rdr-details, ul.list.horizontal.rdr-details"):
+                          for li in ul.css("li"):
+                              txt = li.text(strip=True)
+                              if "Team" in txt and not team:
+                                  a = li.css_first("a")
+                                  team = a.text(strip=True) if a else txt.split(":")[-1].strip()
+
+                      # PCS ranking is in the basic small table, first data row
+                      for table in tp.css("table.basic.small, table.basic"):
+                          rows = table.css("tr")
+                          for row in rows:
+                              cols = row.css("td")
+                              for i, col in enumerate(cols):
+                                  txt = col.text(strip=True)
+                                  if "PCS ranking" in txt or "ranking" in txt.lower():
+                                      # Next col has the value
+                                      if i + 1 < len(cols):
+                                          val = cols[i+1].text(strip=True)
+                                          m = re.search(r'\d+', val)
+                                          if m:
+                                              pcs_ranking = m.group()
+                              # Also check th/td pairs
+                              ths = row.css("th")
+                              tds = row.css("td")
+                              for th, td in zip(ths, tds):
+                                  if "ranking" in th.text(strip=True).lower():
+                                      m = re.search(r'\d+', td.text(strip=True))
+                                      if m:
+                                          pcs_ranking = m.group()
+
+                      print(f"    Team: {team or 'not found'}, Ranking: {pcs_ranking or 'not found'}")
                   except Exception as ep:
                       print(f"    Profile error: {ep}")
 
