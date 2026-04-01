@@ -500,18 +500,7 @@
     <div class="sport-panel active" id="tab-mlb">
       <div class="sports-grid">
         <div id="mlb-scores"><p class="sport-note">Loading scores…</p></div>
-        <div>
-          <div class="standings-grid">
-            <div class="standings-title">AL West Standings</div>
-            <div class="standings-header"><span>Team</span><span>W</span><span>L</span><span>GB</span></div>
-            <div class="standings-row"><span>Texas</span><span>3</span><span>1</span><span class="gb-pos">—</span></div>
-            <div class="standings-row"><span>Houston</span><span>2</span><span>2</span><span>1</span></div>
-            <div class="standings-row highlight"><span>Seattle</span><span>2</span><span>2</span><span>1</span></div>
-            <div class="standings-row"><span>LA Angels</span><span>2</span><span>3</span><span class="gb-neg">1.5</span></div>
-            <div class="standings-row"><span>Athletics</span><span>0</span><span>4</span><span class="gb-neg">3</span></div>
-          </div>
-          <p class="sport-note" style="margin-top:0.75rem;">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>
-        </div>
+        <div id="mlb-standings"><p class="sport-note">Loading standings…</p></div>
       </div>
     </div>
 
@@ -864,12 +853,56 @@
     }
   }
 
+  async function loadStandings() {
+    const el = document.getElementById('mlb-standings');
+    try {
+      // League 103 = AL, divisionId 200 = AL West
+      const res = await fetch('https://statsapi.mlb.com/api/v1/standings?leagueId=103&season=2026&standingsTypes=regularSeason');
+      const data = await res.json();
+      const alWest = data.records?.find(r => r.division?.id === 200);
+      if (!alWest) throw new Error('no AL West data');
+
+      const rows = alWest.teamRecords.map(t => {
+        const name = t.team.name.replace('Los Angeles', 'LA').replace('Seattle Mariners', 'Seattle').replace('Houston Astros', 'Houston').replace('Texas Rangers', 'Texas').replace('Los Angeles Angels', 'LA Angels');
+        const isSEA = t.team.id === 136;
+        const gb = t.gamesBack === '-' ? '—' : t.gamesBack;
+        const gbClass = gb === '—' ? 'gb-pos' : parseFloat(gb) > 2 ? 'gb-neg' : '';
+        return `<div class="standings-row${isSEA ? ' highlight' : ''}">
+          <span>${name}</span>
+          <span>${t.wins}</span>
+          <span>${t.losses}</span>
+          <span class="${gbClass}">${gb}</span>
+        </div>`;
+      }).join('');
+
+      el.innerHTML = `<div class="standings-grid">
+        <div class="standings-title">AL West Standings</div>
+        <div class="standings-header"><span>Team</span><span>W</span><span>L</span><span>GB</span></div>
+        ${rows}
+      </div>
+      <p class="sport-note" style="margin-top:0.75rem;">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>`;
+    } catch(e) {
+      // Fallback to hardcoded if API fails
+      el.innerHTML = `<div class="standings-grid">
+        <div class="standings-title">AL West Standings</div>
+        <div class="standings-header"><span>Team</span><span>W</span><span>L</span><span>GB</span></div>
+        <div class="standings-row"><span>Houston</span><span>4</span><span>2</span><span class="gb-pos">—</span></div>
+        <div class="standings-row"><span>Texas</span><span>4</span><span>2</span><span class="gb-pos">—</span></div>
+        <div class="standings-row"><span>LA Angels</span><span>3</span><span>3</span><span>1</span></div>
+        <div class="standings-row highlight"><span>Seattle</span><span>3</span><span>3</span><span>1</span></div>
+        <div class="standings-row"><span>Athletics</span><span>1</span><span>5</span><span class="gb-neg">3</span></div>
+      </div>
+      <p class="sport-note" style="margin-top:0.75rem;">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>`;
+    }
+  }
+
   loadWeather();
   loadMLB();
+  loadStandings();
   loadBooks();
   loadBeers();
   loadCycling();
-  setInterval(() => { if (!document.hidden) loadMLB(); }, 5 * 60 * 1000);
+  setInterval(() => { if (!document.hidden) { loadMLB(); loadStandings(); } }, 5 * 60 * 1000);
 </script>
 
 </body>
