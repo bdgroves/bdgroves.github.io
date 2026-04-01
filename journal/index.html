@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Journal — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--rust); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .page-wrap { max-width:800px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem); }
+
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.5rem; }
+    .page-sub { font-size:0.9rem; color:var(--stone); line-height:1.8; margin-bottom:3rem; max-width:540px; }
+
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.6rem; border-bottom:2px solid var(--ink); margin-bottom:0; }
+
+    .journal-list { display:flex; flex-direction:column; }
+    .journal-item { display:grid; grid-template-columns:auto 1fr; gap:0 2rem; padding:1.5rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:padding-left 0.2s; align-items:start; }
+    .journal-item:hover { padding-left:0.4rem; }
+    .journal-item:hover .journal-hed { color:var(--rust); }
+    .journal-date-col { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); white-space:nowrap; padding-top:0.2rem; min-width:100px; }
+    .journal-date-month { text-transform:uppercase; letter-spacing:0.12em; }
+    .journal-date-year { color:var(--mist); display:block; margin-top:0.1rem; }
+    .journal-tag { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:0.3rem; }
+    .journal-hed { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; line-height:1.25; margin-bottom:0.35rem; transition:color 0.2s; }
+    .journal-dek { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    .journal-read { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--rust); margin-top:0.5rem; display:block; }
+
+    /* PLACEHOLDER ENTRIES — dimmed */
+    .journal-item.dim { opacity:0.45; pointer-events:none; }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+  <p class="page-eyebrow">Brooks Groves</p>
+  <h1 class="page-title">Journal</h1>
+  <p class="page-sub">Field notes, travel dispatches, race reports, and things worth remembering. Not optimized for anything except being true.</p>
+
+  <div class="section-label">All Entries</div>
+
+  <div class="journal-list">
+
+    <!-- CANNON BEACH — LIVE -->
+    <a href="/journal/cannon-beach.html" class="journal-item">
+      <div class="journal-date-col">
+        <div class="journal-date-month">Mar 29</div>
+        <span class="journal-date-year">2026</span>
+      </div>
+      <div>
+        <div class="journal-tag">Travel · Oregon Coast</div>
+        <h2 class="journal-hed">Cannon Beach — Tide Pools, Dogs, and the Goonies Coast</h2>
+        <p class="journal-dek">Haystack Rock at low tide. Mussels older than comprehension. A disco dog with a green light. Fort George beers in Astoria. Sitting somewhere between the tide and a new website.</p>
+        <span class="journal-read">Read entry →</span>
+      </div>
+    </a>
+
+    <!-- PLACEHOLDER — not yet written -->
+    <div class="journal-item dim">
+      <div class="journal-date-col">
+        <div class="journal-date-month">Feb 20</div>
+        <span class="journal-date-year">2026</span>
+      </div>
+      <div>
+        <div class="journal-tag">Running · Lakewood</div>
+        <h2 class="journal-hed">First Long Run Back After the Hamstring, Finally</h2>
+        <p class="journal-dek">14 miles on the interurban trail. Slow, wet, and exactly what I needed.</p>
+        <span class="journal-read">Coming soon</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://bsky.app" target="_blank">Bluesky</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+</body>
+</html>
