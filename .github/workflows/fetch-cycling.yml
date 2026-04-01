@@ -29,64 +29,75 @@ jobs:
               try:
                   import cloudscraper
                   from selectolax.parser import HTMLParser
+                  import re
                   print(f"  Fetching rider: {display_name}...")
 
                   scraper = cloudscraper.create_scraper()
                   headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
-                  # Fetch 2026 results page and debug what we get
+                  # Fetch 2026 results page
                   results_url = f"https://www.procyclingstats.com/rider/{pcs_slug}/results/2026"
                   r2 = scraper.get(results_url, headers=headers, timeout=15)
                   tree2 = HTMLParser(r2.text)
 
-                  # Debug: print all table/list classes found
-                  tables = tree2.css("table")
-                  print(f"    Tables found: {len(tables)}")
-                  for i, t in enumerate(tables[:5]):
-                      cls = t.attributes.get("class", "none")
-                      rows = t.css("tr")
-                      print(f"      table[{i}] class='{cls}' rows={len(rows)}")
-
-                  divs_with_class = tree2.css("div.rdrResults, div.results, ul.results, div[class*='result']")
-                  print(f"    Result divs found: {len(divs_with_class)}")
-
-                  # Try every table regardless of class
+                  # Table is class='rdrResults'
+                  # Columns: date(0), result(1), race(2+)
                   results = []
-                  for table in tables:
+                  table = tree2.css_first("table.rdrResults")
+                  if table:
                       rows = table.css("tr")
-                      for row in rows[1:]:  # skip header
+                      print(f"    rdrResults rows: {len(rows)}")
+                      for row in rows:
                           cols = row.css("td")
                           if len(cols) >= 3:
-                              result_val = cols[0].text(strip=True)
-                              date_val = cols[1].text(strip=True)
-                              # Race name — look for longest text col
-                              race_val = max([c.text(strip=True) for c in cols], key=len)
-                              if race_val and len(race_val) > 3:
+                              date_val = cols[0].text(strip=True)
+                              result_val = cols[1].text(strip=True)
+                              # Race name — find the td with an <a> tag
+                              race_val = ""
+                              for col in cols[2:]:
+                                  a = col.css_first("a")
+                                  if a:
+                                      race_val = a.text(strip=True)
+                                      # Strip trailing category like (1.UWT)
+                                      race_val = re.sub(r'\s*\(.*?\)\s*', '', race_val).strip()
+                                      break
+                              if not race_val:
+                                  race_val = cols[2].text(strip=True)
+                                  race_val = re.sub(r'\s*\(.*?\)\s*', '', race_val).strip()
+
+                              if race_val and len(race_val) > 2:
                                   results.append({
-                                      "result": result_val,
                                       "date": date_val,
+                                      "result": result_val,
                                       "race": race_val
                                   })
-
-                  print(f"    Total results parsed: {len(results)}")
-                  if results:
-                      print(f"    Sample: {results[0]}")
+                  else:
+                      print(f"    No rdrResults table found")
 
                   wins_2026 = [r for r in results if str(r.get("result","")).strip() == "1"]
+                  print(f"    {len(results)} results, {len(wins_2026)} wins")
+                  if wins_2026:
+                      print(f"    Wins: {[w['race'] for w in wins_2026]}")
 
-                  # Profile page for team
+                  # Profile page for team + ranking
                   team = ""
                   pcs_ranking = None
                   try:
                       profile_url = f"https://www.procyclingstats.com/rider/{pcs_slug}"
                       rp = scraper.get(profile_url, headers=headers, timeout=15)
                       tp = HTMLParser(rp.text)
-                      # Debug profile
-                      uls = tp.css("ul")
-                      print(f"    Profile ULs: {len(uls)}")
-                      for ul in uls[:3]:
-                          cls = ul.attributes.get("class","none")
-                          print(f"      ul class='{cls}': {ul.text(strip=True)[:80]}")
+                      # Team and ranking are in ul.rdr-details
+                      for ul in tp.css("ul"):
+                          cls = ul.attributes.get("class","")
+                          if "rdr-details" in cls or "info" in cls:
+                              for li in ul.css("li"):
+                                  txt = li.text(strip=True)
+                                  if "Team" in txt and not team:
+                                      a = li.css_first("a")
+                                      team = a.text(strip=True) if a else txt.split(":")[-1].strip()
+                                  if "ranking" in txt.lower() and not pcs_ranking:
+                                      pcs_ranking = re.search(r'\d+', txt)
+                                      pcs_ranking = pcs_ranking.group() if pcs_ranking else None
                   except Exception as ep:
                       print(f"    Profile error: {ep}")
 
@@ -97,7 +108,7 @@ jobs:
                       "pcs_ranking": pcs_ranking,
                       "wins_2026": len(wins_2026),
                       "win_list": [{"race": w.get("race",""), "date": w.get("date","")} for w in wins_2026[:8]],
-                      "recent_results": results[:5],
+                      "recent_results": results[:6],
                       "fetched": True
                   }
               except Exception as e:
