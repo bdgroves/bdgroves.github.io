@@ -125,19 +125,15 @@ jobs:
                               pcs_ranking = m.group(1)
                               break
 
-                      # 2026 points from table.basic.small — regex "2026{points}{rank}"
+                      # 2026 points from table.basic.small — parse row by row
                       basic = tp.css_first("table[class*='basic small'], table[class=' basic small']")
                       if basic:
-                          tbl_txt = basic.text(strip=True)
-                          # Pattern: 2026 followed by points then rank number
-                          m = re.search(r'2026(\d+)(\d+)', tbl_txt)
-                          if m:
-                              # First capture is points, but they're run together
-                              # Use the known rank to split: points end where rank digit(s) begin
-                              # Simpler: grab first number after "2026" that's > 10 (points not rank)
-                              all_nums = re.findall(r'\d+', tbl_txt[tbl_txt.find('2026'):tbl_txt.find('2026')+20])
-                              if len(all_nums) >= 2:
-                                  pcs_points = all_nums[1]  # skip "2026" itself
+                          for row in basic.css("tr"):
+                              cols = row.css("td")
+                              col_texts = [c.text(strip=True) for c in cols]
+                              if col_texts and col_texts[0] == "2026":
+                                  pcs_points = col_texts[1] if len(col_texts) > 1 else None
+                                  break
 
                       print(f"    Team: {team or 'not found'}, Ranking: #{pcs_ranking or '?'}, Points 2026: {pcs_points or '?'}")
                   except Exception as ep:
