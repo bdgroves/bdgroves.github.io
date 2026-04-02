@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      if (sessionStorage.getItem('y2k_auth') !== 'true') {
+        var pw = prompt('Password:');
+        if (pw !== null && pw === 'Starwood') {
+          sessionStorage.setItem('y2k_auth', 'true');
+        } else {
+          document.body.innerHTML = '';
+          window.location.replace('/');
+        }
+      }
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>📻 "940 to Base… Radio Check" — Brooks Groves</title>
