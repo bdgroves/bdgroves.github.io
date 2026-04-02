@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FORTRAN, Snowpack, and the Language the Atmosphere Speaks — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+      --amber: #ffb000; --amber-bg: #0a0800;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body h2 em { font-style: italic; color: var(--rust); }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body em { font-style: italic; }
+    .article-body code { font-family: 'DM Mono', monospace; font-size: 0.85em; background: var(--cream); padding: 0.15em 0.4em; border-radius: 2px; }
+    .article-body blockquote { border-left: 3px solid var(--rust); padding-left: 1.25rem; margin: 1.5rem 0; font-style: italic; color: var(--stone); font-size: 1rem; line-height: 1.75; }
+    .article-body ul { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body ul li { margin-bottom: 0.4rem; }
+
+    /* AMBER TERMINAL — FORTRAN aesthetic */
+    .terminal-block { background: var(--amber-bg); border: 1px solid #2a1f00; padding: 1.5rem; margin: 2rem 0; font-family: 'DM Mono', monospace; font-size: 0.78rem; line-height: 1.7; overflow-x: auto; }
+    .terminal-block .t-amber { color: var(--amber); }
+    .terminal-block .t-dim { color: #4a3800; }
+    .terminal-block .t-bright { color: #ffd060; font-weight: bold; }
+    .terminal-block .t-header { color: var(--amber); border-bottom: 1px solid #2a1f00; padding-bottom: 0.5rem; margin-bottom: 0.75rem; letter-spacing: 0.08em; }
+
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">← Back to Blog</a>
+
+  <p class="article-kicker">FORTRAN · Python · SNOTEL · Atmospheric Science · Pacific Northwest</p>
+  <h1 class="article-title">FORTRAN, Snowpack, and the Language the Atmosphere Speaks</h1>
+  <div class="article-meta">
+    <span>April 2, 2026</span>
+    <span>Brooks Groves</span>
+    <span>8 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <span class="article-tag-pill">FORTRAN</span>
+    <span class="article-tag-pill">Python</span>
+    <span class="article-tag-pill">SNOTEL</span>
+    <span class="article-tag-pill">Meteorology</span>
+    <span class="article-tag-pill">Pacific Northwest</span>
+    <span class="article-tag-pill">GitHub Actions</span>
+    <span class="article-tag-pill">Open Data</span>
+  </div>
+
+  <div class="article-body">
+
+    <p>Yesterday I built a COBOL program that fetched live USGS streamflow data from eight Sierra Nevada rivers. It ran on Artemis II launch day and terminated normally with return code zero. I wrote about it <a href="/blog/sierra-flow-cobol-post.html">here</a>.</p>
+
+    <p>This morning, over coffee, I thought: COBOL was 1959. FORTRAN was 1957. And FORTRAN is still running the actual atmosphere.</p>
+
+    <p>The National Weather Service runs FORTRAN. NCAR runs FORTRAN. ECMWF — the European Centre for Medium-Range Weather Forecasts, widely considered the best weather modeling operation on Earth — runs FORTRAN. The WRF model, the backbone of regional weather forecasting in the United States, is FORTRAN. The first successful numerical weather prediction was computed in 1950 on ENIAC, and when that code was ported to faster machines, it was rewritten in FORTRAN. The atmosphere has been computed in FORTRAN for 75 years.</p>
+
+    <p>So I built <a href="https://github.com/bdgroves/cascadia-wx" target="_blank">CASCADIA-WX</a>.</p>
+
+    <h2>What It Does</h2>
+
+    <p>Every morning at 8AM Pacific, GitHub Actions wakes up and runs the pipeline. A Python fetcher pulls live data from 11 NRCS SNOTEL stations buried in the Cascades, Olympics, and on the flanks of Rainier — sensors that have been running since before the internet existed, measuring snowpack in the mountains that supply water to most of western Washington. Four valley airport observations come in alongside. All of it goes into a CSV.</p>
+
+    <p>Then FORTRAN takes over.</p>
+
+    <p>The program computes environmental lapse rates from the temperature gradient between valley floor and mountain stations. It estimates snow level — the elevation where temperature crosses 2°C, the rain/snow phase boundary. It partitions precipitation phase, accumulates degree days, calculates an atmospheric river index from snow level anomaly and SWE rate, classifies the storm type (Gulf of Alaska, Pineapple Express, Cutoff Low), and rolls everything up by massif: Rainier, Olympics, Cascades. Four sections, formatted report, committed back to the repo. Dashboard reads it live.</p>
+
+    <div class="terminal-block">
+      <div class="t-header">CASCADIA-WX — SECTION III: MOUNTAIN MASSIF SNOWPACK SUMMARY</div>
+      <div class="t-amber">  MASSIF        STATIONS  AVG SWE (IN)  AVG % NORMAL  STATUS</div>
+      <div class="t-dim">  ------------------------------------------------------------</div>
+      <div class="t-bright">  RAINIER            4         24.65          52.5  WELL BELOW NORMAL</div>
+      <div class="t-bright">  OLYMPICS           2         13.90          33.2  WELL BELOW NORMAL</div>
+      <div class="t-bright">  CASCADES           5          4.68          15.1  WELL BELOW NORMAL</div>
+      <div class="t-dim">  </div>
+      <div class="t-amber">  ATMOSPHERIC RIVER INDEX:      -0.71  (NO AR CONDITIONS)</div>
+      <div class="t-amber">  STORM CLASSIFICATION:         GULF OF ALASKA</div>
+      <div class="t-amber">  REGIONAL SNOW LEVEL:          2972 ft</div>
+      <div class="t-amber">  REGIONAL SWE % NORMAL:        32.0%</div>
+      <div class="t-dim">  </div>
+      <div class="t-dim">  CASCADIA-WX.f90  NORMAL TERMINATION.  RETURN CODE: 0.</div>
+    </div>
+
+    <h2>The Numbers Are Alarming</h2>
+
+    <p>The Cascades are running at <strong>15% of normal snowpack</strong>. Snoqualmie Pass: 0.0 inches. Stevens Pass: 0.0 inches. Stampede Pass: 0.0 inches. The passes are bare in early April, which is when they should still be holding their peak accumulation before the melt season begins.</p>
+
+    <p>Paradise, sitting at 5,150 feet on the southern flank of Rainier, is still holding 36.7 inches — 73% of normal. The mountain remembers what the passes have forgotten. But the reservoirs downstream feed from the whole watershed, not just the summit. What the passes don't hold now, the valley won't have in August.</p>
+
+    <p>This is exactly the kind of analysis FORTRAN was built for. Large arrays of numerical data, physical equations applied systematically, formatted output. The language was designed by John Backus at IBM in 1957 specifically because scientists were spending more time writing machine code than doing science. FORTRAN — FORmula TRANslation — let them write equations that looked like equations. Seventy years later that's still the right idea for atmospheric modeling.</p>
+
+    <h2>The Eleven Stations</h2>
+
+    <p>Three massifs. Eleven sensors. Each one measuring snowpack that will become river flow that will become drinking water and irrigation and hydropower. The most interesting station in the network is also the highest: <strong>Corral Pass at 5,810 feet</strong> — the last to lose its snow, the first to signal when the season has truly turned. Snoqualmie Pass at 3,000 feet is the canary on the low end — when it goes bare in March instead of May, something is wrong.</p>
+
+    <p>Right now, something is wrong. FORTRAN is measuring it every morning.</p>
+
+    <h2>Why FORTRAN After COBOL</h2>
+
+    <p>Yesterday's COBOL project and today's FORTRAN project are sister projects in what is apparently becoming a retro-computing streak. Both use the same pattern: Python stdlib fetcher pulls free government data, old compiled language does the domain-specific computation, GitHub Actions runs it daily, static dashboard reads the output. Zero dependencies. Zero cost. Correct output every morning.</p>
+
+    <p>The difference is in what the languages are good at. COBOL is verbose, record-oriented, obsessive about data layout — perfect for the structured tabular output of a streamflow report. FORTRAN is mathematical, array-oriented, built for floating point computation — perfect for the physics of atmospheric science. They're not interchangeable. They were designed for different problems, and both are still running in production at government agencies for exactly those problems.</p>
+
+    <p>Writing FORTRAN in 2026 felt surprisingly natural. The fixed-format source (columns matter, line length is enforced) is initially jarring coming from modern languages, but the mathematical expressiveness is genuinely elegant. An array computation that would take several lines in Python is one line in FORTRAN. The lapse rate calculation, the degree day accumulation, the atmospheric river index — they read almost like the equations in a meteorology textbook. That was the original design goal, and it still works.</p>
+
+    <h2>The Hatch Has to Be Maintained</h2>
+
+    <p>The README for this project has a LOST reference: <em>enter the numbers every 108 minutes or the snowpack anomaly gets worse.</em> That's a joke, but it's also not entirely wrong. The SNOTEL network has been continuously measuring snowpack since the 1970s. That unbroken record — daily observations, every station, every winter — is what makes percent-of-normal calculations meaningful. The baseline is the point. The comparison is the point. Without the continuous measurement, you just have numbers without context.</p>
+
+    <p>CASCADIA-WX maintains that measurement in its own small way. Every morning at 8AM it wakes up, pulls the numbers, runs the physics, and commits the result. The hatch is maintained. Whether anyone is watching or not.</p>
+
+    <p>The <a href="https://bdgroves.github.io/cascadia-wx/" target="_blank">live dashboard</a> is here. The <a href="https://github.com/bdgroves/cascadia-wx" target="_blank">source is on GitHub</a>. The snowpack is at 32% of normal and falling.</p>
+
+    <p><code>CASCADIA-WX.f90: NORMAL TERMINATION. RETURN CODE: 0.</code></p>
+
+  </div>
+
+  <div class="reactions-section">
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · April 2, 2026</span>
+    <div class="article-footer-nav">
+      <a href="/blog/sierra-flow-cobol-post.html">← Previous post</a>
+      <a href="/blog/index.html">All posts</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+</body>
+</html>
