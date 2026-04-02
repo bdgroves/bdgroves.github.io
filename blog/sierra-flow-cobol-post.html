@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COBOL, Streamflow, and Artemis II — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+      --terminal: #00ff41; --terminal-bg: #0a0a0a;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; transition: background 0.2s, color 0.2s; }
+    .article-tag-pill:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body h2 em { font-style: italic; color: var(--rust); }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body em { font-style: italic; }
+    .article-body code { font-family: 'DM Mono', monospace; font-size: 0.85em; background: var(--cream); padding: 0.15em 0.4em; border-radius: 2px; }
+    .article-body pre { background: var(--ink); color: #c8d0cc; padding: 1.25rem 1.5rem; border-radius: 2px; overflow-x: auto; margin: 1.5rem 0 2rem; font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.65; }
+    .article-body pre code { background: none; padding: 0; font-size: 1em; color: inherit; }
+    .article-body ul { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body ul li { margin-bottom: 0.4rem; }
+    .article-body blockquote { border-left: 3px solid var(--rust); padding-left: 1.25rem; margin: 1.5rem 0; font-style: italic; color: var(--stone); font-size: 1rem; line-height: 1.75; }
+
+    /* TERMINAL BLOCK */
+    .terminal-block { background: var(--terminal-bg); border: 1px solid #1a3a1a; padding: 1.5rem; margin: 2rem 0; font-family: 'DM Mono', monospace; font-size: 0.78rem; line-height: 1.7; overflow-x: auto; }
+    .terminal-block .t-green { color: var(--terminal); }
+    .terminal-block .t-dim { color: #4a4a4a; }
+    .terminal-block .t-gold { color: var(--gold); }
+    .terminal-block .t-header { color: var(--terminal); font-weight: bold; border-bottom: 1px solid #1a3a1a; padding-bottom: 0.5rem; margin-bottom: 0.75rem; }
+
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">← Back to Blog</a>
+
+  <p class="article-kicker">COBOL · Python · USGS · GitHub Actions · Hydrology</p>
+  <h1 class="article-title">COBOL, Streamflow, and Artemis II</h1>
+  <div class="article-meta">
+    <span>April 1, 2026</span>
+    <span>Brooks Groves</span>
+    <span>8 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <span class="article-tag-pill">COBOL</span>
+    <span class="article-tag-pill">Python</span>
+    <span class="article-tag-pill">USGS</span>
+    <span class="article-tag-pill">Hydrology</span>
+    <span class="article-tag-pill">GitHub Actions</span>
+    <span class="article-tag-pill">Sierra Nevada</span>
+    <span class="article-tag-pill">Open Data</span>
+  </div>
+
+  <div class="article-body">
+
+    <p>On April 1, 2026, at 6:35 p.m. EDT, four humans left Earth's orbit for the first time since Apollo 17 in 1972. Artemis II — Reid Wiseman, Victor Glover, Christina Koch, Jeremy Hansen — riding a 322-foot rocket on a 10-day slingshot around the Moon.</p>
+
+    <p>At roughly the same hour, a COBOL program on my laptop fetched live streamflow data from eight Sierra Nevada rivers, computed percent-of-normal against historical medians, sorted stations by mean discharge, rolled up watershed basin totals, and printed a 132-column formatted report.</p>
+
+    <p>Both terminated normally. Both did exactly what they were designed to do.</p>
+
+    <p>1959 meets 2026. Punch cards meet REST APIs. Grace Hopper meets the Moon.</p>
+
+    <h2>Why COBOL?</h2>
+
+    <p>The honest answer: I learned COBOL in college in the late 1980s and hadn't touched it since. I was curious whether it still worked, whether I could still think in it, and whether a language designed for batch processing on mainframes the size of refrigerators had any business talking to a live government REST API in 2026.</p>
+
+    <p>The answer to all three turned out to be yes.</p>
+
+    <p>COBOL is genuinely still running in some wild places. The Federal Reserve processes daily transactions on systems that trace their lineage to the 1970s. Some state unemployment systems still run on IBM mainframes installed before I was born. During COVID, New Jersey posted emergency job listings for COBOL programmers because their unemployment system was overwhelmed and they couldn't find enough people who knew the language. An estimated $3 trillion in daily financial transactions run through COBOL code right now.</p>
+
+    <p>Languages don't really die. They just stop being taught. COBOL is extremely good at exactly one thing: reading records, doing math on them, and printing formatted reports. That's also what a watershed data center does.</p>
+
+    <h2>What It Does</h2>
+
+    <p>The project is called <a href="https://github.com/bdgroves/sierra-flow-cobol" target="_blank">sierra-flow-cobol</a>. Every morning at 7:00 AM Pacific, GitHub Actions wakes up and runs a three-step pipeline: a Python fetcher pulls 30 days of discharge data from eight USGS gages across the Sierra Nevada, a COBOL program processes that data into a 132-column formatted report, and both the CSV and the report get committed back to the repo. A plain HTML dashboard reads the CSV client-side and renders everything live — sparklines, percent-of-normal badges, basin roll-up, trend indicators. No framework. No build step. No API. One CSV file, two consumers.</p>
+
+    <div class="terminal-block">
+      <div class="t-header">SIERRA NEVADA WATERSHED ANALYSIS SYSTEM — SECTION I: STATION STATISTICS</div>
+      <div class="t-green">  SITE ID    STATION NAME                REC  MEAN(CFS)   %NORM  TREND</div>
+      <div class="t-dim">  ─────────────────────────────────────────────────────────────────</div>
+      <div class="t-green">  11290000   Tuolumne R at Modesto        31   2059.97   147.1  ▲ RISING</div>
+      <div class="t-green">  11289650   Tuolumne R at LaGrange Dam   31   1872.84   156.1  ▲ RISING</div>
+      <div class="t-green">  11266500   Merced R at Pohono Bridge    31   1647.32   205.9  ─ STABLE</div>
+      <div class="t-green">  11274790   Tuolumne R Grand Canyon      31   1361.68   151.3  ─ STABLE</div>
+      <div class="t-green">  11264500   Merced R at Happy Isles      31    932.68   207.3  ─ STABLE</div>
+      <div class="t-green">  11276500   Tuolumne R at Hetch Hetchy   31    443.55   126.7  ─ STABLE</div>
+      <div class="t-green">  11303000   Stanislaus R at Ripon        31    243.55    40.6  ─ STABLE</div>
+      <div class="t-gold">  11284400   Big Creek nr Hetch Hetchy    31      3.09    38.6  ─ STABLE  *** LOW FLOW ***</div>
+      <div class="t-dim">  ─────────────────────────────────────────────────────────────────</div>
+      <div class="t-dim">  NORMAL TERMINATION. RETURN CODE: 0.</div>
+    </div>
+
+    <h2>The Eight Gages</h2>
+
+    <p>Three watersheds. Eight sensors. One storm system moving through all of them in sequence — first hitting the headwaters, then the canyon reaches, then the valley floor — a pulse you can watch travel downstream over days.</p>
+
+    <p>The most interesting station is the one with the lowest flow: <strong>Big Creek near Hetch Hetchy, 3 CFS</strong>. Every other gage in the network sits downstream of a major reservoir, which buffers and smooths the natural flood pulse. Big Creek has nothing between it and the sky. No dams. No regulation. It responds directly and honestly to whatever the Sierra Nevada is doing. When it spikes, a storm just hit. When it drops below normal, the snowpack is struggling. The COBOL flags it. It's the canary in the watershed.</p>
+
+    <p>As of April 1, the Merced is running at 206% of normal. The Stanislaus is at 40%. Big Creek is at 38%. The Sierra is uneven this spring — wet in the south, dry in the north. That's a story you can read in eight numbers.</p>
+
+    <h2>The COBOL Is Legitimately Sophisticated</h2>
+
+    <p>This isn't Hello World. The program runs to about 850 lines and uses features that would be at home in a production government data center:</p>
+
+    <ul>
+      <li><strong>Dual input files</strong> — <code>streamflow.csv</code> and <code>baselines.csv</code> read simultaneously with separate FILE-CONTROL assignments</li>
+      <li><strong>Native SORT verb</strong> — stations ranked by mean discharge using COBOL's built-in sort, not a workaround</li>
+      <li><strong>Baseline cache pattern</strong> — historical medians load before station data registers, applied after processing to avoid file ordering dependencies</li>
+      <li><strong>Percent-of-normal computation</strong> — <code>COMPUTE ST-PCT-NORMAL = (ST-MEAN / ST-MEDIAN) * 100</code></li>
+      <li><strong>Day-over-day trend accumulation</strong> — 30 readings of delta → ▲ RISING / ▼ FALLING / ─ STABLE</li>
+      <li><strong>Watershed basin roll-up</strong> — EVALUATE assigns each gage to Tuolumne / Merced / Stanislaus, accumulates basin totals</li>
+      <li><strong>Four-section 132-column report</strong> — matching classic mainframe report standards</li>
+    </ul>
+
+    <p>Debugging was instructive. COBOL is fixed-format — column positions matter, a trailing character in column 73 is a fatal error, and the compiler will tell you exactly which line broke and why. After three decades away from it, the muscle memory came back faster than expected. The language is verbose by design. It reads almost like English. That was Grace Hopper's original insight: make it readable enough that a business analyst could understand it, not just a programmer.</p>
+
+    <h2>Zero Dependencies, End to End</h2>
+
+    <p>The Python fetcher uses nothing but the standard library. The COBOL program has no external libraries. The dashboard is plain HTML, CSS, and vanilla JavaScript. No npm. No pip installs. No frameworks. No cloud bills. The entire stack runs on free infrastructure.</p>
+
+    <p>The USGS Water Services API is free, requires no key, and has 135 years of public hydrological data behind it. The GitHub Actions free tier handles the daily CI run in about four minutes. The dashboard is a static file served from GitHub Pages. Total monthly cost: $0.00.</p>
+
+    <h2>The Artemis Detail</h2>
+
+    <p>I didn't plan the timing. I was deep in a debugging session when someone mentioned the launch. By the time I had the COBOL running cleanly against live USGS data, the crew was already outbound.</p>
+
+    <p>There's something fitting about it. The Apollo program ran on FORTRAN and assembly, on computers with less processing power than a modern wristwatch. The engineering culture of that era — precise, documented, obsessive about correctness — is exactly the culture COBOL was designed for. Grace Hopper and Margaret Hamilton were contemporaries. The language and the Moon program grew up together.</p>
+
+    <p>Sixty-seven years later, a COBOL program is fetching live telemetry from rivers in the Sierra Nevada, running in a cloud CI/CD pipeline, and feeding a modern web dashboard. On the same day four humans left low Earth orbit for the first time since 1972.</p>
+
+    <p><code>SIERRA-FLOW V2.0: NORMAL TERMINATION. RETURN CODE: 0.</code></p>
+
+    <p>Not a bad detail. The <a href="https://bdgroves.github.io/sierra-flow-cobol/" target="_blank">live dashboard</a> is here. The <a href="https://github.com/bdgroves/sierra-flow-cobol" target="_blank">source is on GitHub</a>. It updates every morning at 7AM Pacific. The Sierra rivers are running high. Big Creek is watching.</p>
+
+  </div>
+
+  <div class="reactions-section">
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · April 1, 2026</span>
+    <div class="article-footer-nav">
+      <a href="/blog/forge3d-post.html">← Previous post</a>
+      <a href="/blog/index.html">All posts</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+</body>
+</html>
