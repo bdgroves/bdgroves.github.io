@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    (function() {
+      if (sessionStorage.getItem('y2k_auth') !== 'true') {
+        var pw = prompt('Password:');
+        if (pw === 'Starwood') {
+          sessionStorage.setItem('y2k_auth', 'true');
+        } else {
+          document.body.innerHTML = '';
+          window.location.href = '/';
+        }
+      }
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stories from the Westin Seattle — Brooks Groves</title>
@@ -42,6 +55,7 @@
 
     .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.6rem; border-bottom:2px solid var(--ink); margin-bottom:0; }
 
+    .disclaimer { background:var(--cream); border-left:3px solid var(--stone); padding:1rem 1.25rem; margin:1.5rem 0 2rem; font-size:0.82rem; color:var(--stone); line-height:1.75; font-style:italic; }
     .story-list { display:flex; flex-direction:column; }
 
     /* LIVE STORIES */
@@ -93,6 +107,8 @@
   <h1 class="page-title">Stories from the <em>Westin Seattle</em></h1>
   <p class="page-sub">Bell captain dispatches from a 900-room skyscraper of hospitality. Graveyard shifts, radio codes, VIP secrets, and the strange physics of hotel life. Twenty-one years of stories. These are some of them.</p>
   <p class="page-meta">Westin Seattle · 1997–2018 · Call sign: 940</p>
+
+  <div class="disclaimer">The stories collected here are based on the author's personal recollections from twenty-one years employed at a large hotel in downtown Seattle. All guest names have been omitted or changed. Colleague names and identifying details have been altered. Certain events have been compressed or reordered for narrative clarity. The hotel itself is identifiable and intentionally so — the institution is part of the story. Nothing here is intended to disparage any individual, living or dead. These are one person's memories of a particular place and time, told as honestly as memory allows.</div>
 
   <div class="section-label">All Stories</div>
 
@@ -228,7 +244,7 @@
       <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
       <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
       <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
-      <a href="https://bsky.app" target="_blank">Bluesky</a>
+      <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky</a>
     </div>
     <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
   </div>
