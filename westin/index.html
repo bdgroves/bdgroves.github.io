@@ -5,7 +5,7 @@
     (function() {
       if (sessionStorage.getItem('y2k_auth') !== 'true') {
         var pw = prompt('Password:'); if (pw === null) { document.body.innerHTML=''; window.location.replace('/'); return; }
-        if (pw !== null && pw === 'Starwood') {
+        if (pw !== null && pw !== '' && pw === 'Starwood') {
           sessionStorage.setItem('y2k_auth', 'true');
         } else {
           document.body.innerHTML = '';
