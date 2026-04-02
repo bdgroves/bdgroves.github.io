@@ -309,6 +309,17 @@ function renderStages(data) {
         <div class="stage-desc-short">${s.desc}</div>
         ${climbTags}
         ${winnerLine}
+        <div class="stage-expand" id="expand-${s.num}" style="display:none;margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--mist);">
+          <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);margin-bottom:0.3rem;">STAGE DETAILS</div>
+          <div style="font-size:0.82rem;line-height:1.7;">${s.desc}</div>
+          ${s.key_climbs.length ? `<div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink);margin-bottom:0.3rem;">Key Climbs</div><ul style="font-size:0.8rem;padding-left:1.2rem;color:var(--stone);">${s.key_climbs.map(c=>`<li>${c}</li>`).join('')}</ul>` : ''}
+          <div style="margin-top:0.5rem;display:flex;gap:1.5rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);">
+            <span>📏 ${s.km}km</span>
+            <span>⛰️ ${s.elevation.toLocaleString()}m gain</span>
+            <span>📅 ${s.date}</span>
+          </div>
+          ${s.winner ? `<div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--green);font-weight:600;">✓ WINNER: ${s.winner} — ${s.winner_team}</div>` : ''}
+        </div>
       </div>
       <div class="stage-right">
         <div class="stage-km">${s.km}km</div>
@@ -317,7 +328,18 @@ function renderStages(data) {
         <div class="profile-bar-wrap">
           <div class="profile-bar-bg"><div class="profile-bar-fill" style="width:${barWidth}%"></div></div>
         </div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--mist);margin-top:0.4rem;">tap to expand</div>
       </div>`;
+
+    // Click to expand
+    el.addEventListener('click', () => {
+      const exp = document.getElementById(`expand-${s.num}`);
+      if (!exp) return;
+      const open = exp.style.display !== 'none';
+      exp.style.display = open ? 'none' : 'block';
+      el.style.background = open ? '' : 'var(--cream)';
+    });
+
     list.appendChild(el);
   }
 }
