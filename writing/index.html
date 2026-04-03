@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Writing — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --y2k:#2a4a7a; --y2k-light:#4a7ab5;
+      --sage:#4a5c45; --rust:#8b3a2a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--ink) 0%,var(--stone) 50%,var(--gold) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:900px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    .site-sub { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); }
+    .header-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .header-link:hover { color:var(--ink); }
+
+    .page-wrap { max-width:900px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(4rem,8vw,6rem); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.5rem; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.2rem,5vw,3.2rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-desc { font-size:0.95rem; color:var(--stone); max-width:560px; line-height:1.75; margin-bottom:3rem; border-left:3px solid var(--gold); padding-left:1.25rem; }
+
+    /* SECTION LABELS */
+    .section-label { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); border-bottom:1px solid var(--mist); padding-bottom:0.5rem; margin-bottom:1.5rem; margin-top:3rem; }
+    .section-label:first-of-type { margin-top:0; }
+
+    /* WRITING ITEMS */
+    .writing-grid { display:flex; flex-direction:column; gap:0; }
+    .writing-item { display:grid; grid-template-columns:1fr auto; align-items:start; gap:2rem; padding:1.5rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.15s; }
+    .writing-item:hover { background:var(--cream); margin:0 -1rem; padding-left:1rem; padding-right:1rem; }
+    .writing-item:last-child { border-bottom:none; }
+    .writing-type { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.3rem; }
+    .writing-title { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:600; line-height:1.3; color:var(--ink); margin-bottom:0.4rem; }
+    .writing-item:hover .writing-title { color:var(--y2k); }
+    .writing-title em { font-style:italic; font-weight:400; }
+    .writing-sub { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    .writing-meta { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--mist); text-align:right; white-space:nowrap; line-height:1.8; }
+    .writing-pub { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); display:block; margin-top:0.25rem; }
+
+    /* TAG PILLS */
+    .writing-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.5rem; }
+    .tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.5rem; }
+
+    footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:900px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-link:hover { color:var(--gold); }
+
+    @media(max-width:600px) {
+      .writing-item { grid-template-columns:1fr; gap:0.5rem; }
+      .writing-meta { text-align:left; }
+    }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <div>
+      <a href="/" class="site-name">Brooks Groves</a>
+      <div class="site-sub">Writing</div>
+    </div>
+    <a href="/" class="header-link">← Home</a>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="page-eyebrow">Brooks Groves</div>
+  <h1 class="page-title">Writing</h1>
+  <p class="page-desc">Essays, reviews, and field dispatches. Separate from the technical blog — this is the other kind of writing.</p>
+
+  <!-- ESSAYS & REVIEWS -->
+  <div class="section-label">Essays &amp; Reviews</div>
+  <div class="writing-grid">
+
+    <a href="/writing/draught-south-land.html" class="writing-item">
+      <div>
+        <div class="writing-type">Book Review · Cartography</div>
+        <div class="writing-title">Review: <em>A Draught of the South Land: Mapping New Zealand from Tasman to Cook</em></div>
+        <div class="writing-sub">Paul Moon's meticulous account of how cartography shaped New Zealand's encounter with European powers — from the VOC's strategic maps to Cook's empirical surveys and the enduring legacy of both on modern land rights.</div>
+        <div class="writing-tags">
+          <span class="tag">Cartography</span>
+          <span class="tag">New Zealand</span>
+          <span class="tag">VOC</span>
+          <span class="tag">James Cook</span>
+          <span class="tag">Colonial History</span>
+        </div>
+      </div>
+      <div class="writing-meta">
+        2025
+        <span class="writing-pub">Cartographic Perspectives<br>No. 105</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- FIELD NOTES & JOURNAL -->
+  <div class="section-label">Field Notes &amp; Journal</div>
+  <div class="writing-grid">
+
+    <a href="/journal/cannon-beach.html" class="writing-item">
+      <div>
+        <div class="writing-type">Field Notes · Oregon Coast</div>
+        <div class="writing-title">Cannon Beach — Tide Pools, Fort George, and the Long Way Home</div>
+        <div class="writing-sub">A weekend on the Oregon coast. Haystack Rock at low tide, the geology of basalt sea stacks, Fort George Brewing, and what it means to find a place that feels like it belongs to you.</div>
+        <div class="writing-tags">
+          <span class="tag">Oregon Coast</span>
+          <span class="tag">Geology</span>
+          <span class="tag">Beer</span>
+          <span class="tag">Pacific Northwest</span>
+        </div>
+      </div>
+      <div class="writing-meta">
+        2025
+        <span class="writing-pub">brooksgroves.com</span>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- TECHNICAL BLOG -->
+  <div class="section-label">Technical Blog</div>
+  <div class="writing-grid">
+
+    <a href="/blog/index.html" class="writing-item">
+      <div>
+        <div class="writing-type">Blog · Data Engineering · GIS</div>
+        <div class="writing-title">All Technical Posts →</div>
+        <div class="writing-sub">Terrain rendering with forge3d, Python environments with pixi, Sierra streamflow dashboards, COBOL in 2026, and more.</div>
+        <div class="writing-tags">
+          <span class="tag">Python</span>
+          <span class="tag">GIS</span>
+          <span class="tag">GitHub Actions</span>
+          <span class="tag">Data Engineering</span>
+        </div>
+      </div>
+      <div class="writing-meta">
+        2025–26
+        <span class="writing-pub">brooksgroves.com/blog</span>
+      </div>
+    </a>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <a href="/" class="footer-link">← brooksgroves.com</a>
+  </div>
+</footer>
+</body>
+</html>

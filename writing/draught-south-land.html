@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review: A Draught of the South Land — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --y2k:#2a4a7a; --y2k-light:#4a7ab5;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--ink) 0%,var(--stone) 50%,var(--gold) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:860px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    .site-sub { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); }
+    .header-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .header-link:hover { color:var(--ink); }
+
+    .article-wrap { max-width:680px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(4rem,8vw,6rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--y2k); }
+
+    /* PUBLICATION BADGE */
+    .pub-badge { background:var(--ink); color:var(--white); display:inline-flex; align-items:center; gap:0.75rem; padding:0.5rem 1rem; margin-bottom:2rem; }
+    .pub-badge-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); }
+    .pub-badge-name { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.08em; color:var(--white); }
+
+    .article-type { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,4vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.5rem; }
+    .article-subtitle { font-family:'Playfair Display',serif; font-size:clamp(1rem,2.5vw,1.25rem); font-weight:400; font-style:italic; color:var(--stone); line-height:1.4; margin-bottom:1.5rem; }
+
+    /* BOOK INFO BOX */
+    .book-info { background:var(--cream); border-left:3px solid var(--gold); padding:1.25rem 1.5rem; margin:1.5rem 0 2.5rem; display:grid; grid-template-columns:1fr 1fr; gap:0.25rem 2rem; }
+    .book-info-row { font-size:0.82rem; line-height:1.6; }
+    .book-info-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); display:block; margin-bottom:0.1rem; }
+    .book-info-val { color:var(--ink); }
+    .book-info-val em { font-style:italic; }
+
+    /* REVIEW META */
+    .review-meta { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; display:flex; gap:2rem; flex-wrap:wrap; }
+
+    /* SOURCE NOTE */
+    .source-note { background:var(--cream); border-left:3px solid var(--y2k); padding:0.75rem 1rem; margin-bottom:2.5rem; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); letter-spacing:0.06em; line-height:1.6; }
+    .source-note a { color:var(--y2k); text-decoration:underline; text-underline-offset:3px; }
+
+    /* ARTICLE BODY */
+    .article-body { font-size:1.05rem; line-height:1.9; }
+    .article-body p { margin-bottom:1.6rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--ink); }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+
+    /* FOOTER */
+    .article-footer { margin-top:3rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--y2k); }
+
+    footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:860px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-link:hover { color:var(--gold); }
+
+    @media(max-width:600px) {
+      .book-info { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <div>
+      <a href="/" class="site-name">Brooks Groves</a>
+      <div class="site-sub">Writing</div>
+    </div>
+    <a href="/writing/index.html" class="header-link">← Writing</a>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/writing/index.html" class="article-back">← All Writing</a>
+
+  <div class="pub-badge">
+    <span class="pub-badge-label">Published in</span>
+    <span class="pub-badge-name">Cartographic Perspectives · No. 105 · 2025</span>
+  </div>
+
+  <div class="article-type">Book Review · Cartography · Colonial History</div>
+  <h1 class="article-title">A Draught of the South Land</h1>
+  <p class="article-subtitle">Mapping New Zealand from Tasman to Cook</p>
+
+  <div class="book-info">
+    <div class="book-info-row">
+      <span class="book-info-label">Author</span>
+      <span class="book-info-val">Paul Moon</span>
+    </div>
+    <div class="book-info-row">
+      <span class="book-info-label">Publisher</span>
+      <span class="book-info-val">The Lutterworth Press, 2023</span>
+    </div>
+    <div class="book-info-row">
+      <span class="book-info-label">Pages</span>
+      <span class="book-info-val">200 pp., including maps and diagrams</span>
+    </div>
+    <div class="book-info-row">
+      <span class="book-info-label">ISBN (Hardcover)</span>
+      <span class="book-info-val">978-0-7188-9721-5 · $90.00</span>
+    </div>
+    <div class="book-info-row">
+      <span class="book-info-label">ISBN (Paperback)</span>
+      <span class="book-info-val">978-0-7188-9720-8 · $30.00</span>
+    </div>
+    <div class="book-info-row">
+      <span class="book-info-label">DOI</span>
+      <span class="book-info-val">10.14714/CP105.1959</span>
+    </div>
+  </div>
+
+  <div class="review-meta">
+    <span>Review by Brooks Groves</span>
+    <span>Cartographic Perspectives, Number 105, 2025</span>
+    <span>pp. 126–129</span>
+  </div>
+
+  <div class="source-note">Originally published in <em>Cartographic Perspectives</em>, No. 105, 2025. Licensed under <a href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank">CC BY-NC-ND 4.0</a>. DOI: 10.14714/CP105.1959</div>
+
+  <div class="article-body">
+
+    <p>In this insightful book, <em>A Draught of the South Land: Mapping New Zealand from Tasman to Cook</em>, historian Paul Moon meticulously uncovers the cartographic history that not only charted New Zealand but also shaped its encounter with European powers. Moon, a distinguished scholar of New Zealand's colonial and indigenous histories, crafts a narrative that extends far beyond maritime exploration, highlighting the strategic and often contentious role of cartography in imperial expansion, cultural encounter, and geopolitical strategies.</p>
+
+    <p>Moon begins by setting the stage within the Age of Discovery, a period roughly spanning the sixteenth and seventeenth centuries that is characterized by significant advancements in navigational technology and intense competition among European nations eager to expand their realms and control trade routes. Central to this was the Dutch East India Company (Vereenigde Oostindische Compagnie, or VOC), founded in 1602 as one of the first joint-stock trading companies — a pioneering innovation that distinguished it from previous trading entities, which were merely groups of individual traders. The joint-stock structure allowed the VOC to pool resources from multiple investors, spreading risk and enabling more substantial and sustained investment in trade and exploration.</p>
+
+    <p>The VOC epitomized the use of cartography as a strategic tool to assert and expand Dutch imperial interests, establishing a global trade network that connected Europe with Asia, Africa, and the Americas. Within this framework, Hessel Gerritsz emerged as a pivotal figure. As the first exclusive cartographer of the VOC and considered by some as the chief Dutch cartographer of the seventeenth century, Gerritsz's role was crucial. His detailed maps were not only practical tools for navigation and trade, but also potent symbols displayed in diplomatic courts to impress both domestic and foreign viewers, asserting Dutch maritime and commercial supremacy. Gerritsz's work exemplified the integration of cartographic skill with imperial strategy, reinforcing the VOC's position as a dominant force in global trade and exploration.</p>
+
+    <p>These maps — replete with strategic embellishments — exaggerated the size and potential wealth of Dutch claims to deter rivals and attract investment. Gerritsz's creations highlighted the newly "discovered" territories in relation to existing trade routes, aligning perfectly with the VOC's vision of economic dominance and diplomatic prowess. The maps were intricately woven into the fabric of Dutch imperial ambitions, functioning on multiple levels: as navigational aids, territorial markers, and artifacts of diplomacy.</p>
+
+    <p>Moon recounts the voyage Abel Tasman undertook in 1642, sailing his ships along the west coast of New Zealand. One of a series of exploratory endeavors sponsored by the VOC, it was not merely a voyage into uncharted waters, but a mission driven by the allure of wealth and strategic imperatives. The company's primary ambition was to expand their lucrative spice trade and to probe rumored southern lands said to be rich in gold and other commodities. This journey — the first European encounter with New Zealand — also produced the first European maps of these large and diverse lands. Tasman's maps were not only instrumental in the VOC's expansionist strategy but were pivotal in integrating the region into the broader scope of European maritime ambitions, sparking interest in further exploration in the Pacific.</p>
+
+    <hr>
+
+    <p>Paul Moon provides an intriguing examination of the extended lull between Abel Tasman's 1642 encounter with New Zealand and James Cook's more scientifically rigorous expeditions beginning in 1769. During this interim, lasting over a century, European cartographers, working half a world away, relied on hearsay and the often-sketchy charts of Tasman and others, resulting in maps that were more speculative than accurate. The VOC's Hessel Gerritsz contributed significantly to this period of speculative mapping. His maps, like those of many of his contemporaries, sometimes included fantastical elements — mythical creatures, speculative landmasses, and fictionalized depictions of the indigenous Māori — reflecting the European fantasies about distant lands.</p>
+
+    <p>These representations painted New Zealand as a place of wonder and mystery, and an alluring blank canvas for European aspirations and fears. The speculative nature of Gerritsz's maps, while not unique, highlights the era's blend of curiosity, ambition, and the limited availability of accurate information. Moon's analysis underscores how the conception of New Zealand took shape in the minds and maps of Europeans during this period, setting the stage for Cook's later, more empirical explorations.</p>
+
+    <p>Cook's voyages — which Moon contrasts sharply with the earlier era — were underpinned by Enlightenment values and equipped with advanced scientific instruments, and were aimed at generating accurate knowledge and dispelling myths. These expeditions marked a turning point: a shift away from the realm of imagination to one of empirical inquiry and detailed, systematic cartography.</p>
+
+    <p>The earlier, speculative maps, while inaccurate, were not merely errors in cartography; they reflected the European zeitgeist, a testament to the era's blend of curiosity, ambition, and ignorance. Moon's analysis of this period reveals how the conception of New Zealand took shape in the minds and maps of Europeans and showcases the profound impact these imaginings had on the eventual European engagement with the actual land and peoples of New Zealand.</p>
+
+    <p>James Cook's voyages represent that fundamental shift in European exploration. The ostensive rationale for Cook's 1768 voyage was observation of the 1769 transit of Venus, but he was also secretly commissioned to seek out <em>Terra Australis</em>: the hypothesized southern continent. Thus, beginning with Cook's first Pacific expedition, commercial and imperial justifications began to be overlaid with, and joined onto, Enlightenment endeavors aimed at enhancing European knowledge and understanding of the world.</p>
+
+    <p>During his comprehensive exploration of New Zealand, Cook employed meticulous survey methods that resulted in significantly more accurate charts. Using new tools like the marine chronometer, which allowed for precise longitude measurements, Cook and his crew undertook a detailed coastal charting project, correcting the earlier, more primitive maps produced by Tasman and his contemporaries. Through these methodical surveys, Cook established that New Zealand consisted of two main islands — which he named the North and South Islands — thus dispelling earlier European beliefs that it might be part of a larger southern continent.</p>
+
+    <p>The level of detail in Cook's maps was unprecedented. He charted the intricate inlets and harbors of New Zealand's coastlines, often navigating closer to the shore than previous explorers had dared. Cook's charts were so accurate that some were used well into the twentieth century, a testament to their precision and usefulness.</p>
+
+    <hr>
+
+    <p>Cook's interactions with the indigenous Māori were significantly enhanced by the presence of Tupaia, a Polynesian priest and skilled navigator, who had joined Cook's expedition in Tahiti. Tupaia's ability to communicate with the Māori was invaluable, not only in facilitating immediate interactions but also in contributing to a deeper cultural exchange. He helped bridge the cultural gap between Europeans and the Māori, allowing for a more nuanced understanding of the social structures, customs, and languages of the Pacific peoples.</p>
+
+    <p>Tupaia's contributions went beyond mere translation; he provided Cook and his crew with insights into the Polynesian wayfinding techniques and local geographical knowledge, which enriched the European maps with ethnographic details and helped Cook navigate other parts of the Pacific. Recognition of the pivotal importance of indigenous knowledge, such as that brought by Tupaia, challenges the standard narrative of heroic European exploration and solitary discovery, and instead highlights the collaborative nature of exploration.</p>
+
+    <p>Moon places emphasis on Tupaia's role not only to illustrate the collaborative nature of Cook's voyages but also to underscore what he sees as a critical shift in European exploration — from conquest to scientific inquiry and mutual exchange. However, it is important to note that the integration of indigenous knowledge, and the recognition of figures like Tupaia, has only recently come to be acknowledged, much like the recent recognition of the role of Sacagawea in the success of the Lewis and Clark expedition. Moon seems to suggest that this shift towards recognizing indigenous contributions was not fully realized or appreciated by the people of the eighteenth century.</p>
+
+    <hr>
+
+    <p>In the final segment of Moon's exploration, attention turns to the lasting impact of historical cartography on contemporary issues in New Zealand. Moon highlights how maps crafted by explorers like Tasman and Cook, initially designed for navigation, evolved into essential tools for colonial administration. These maps are now frequently referenced in legal disputes, particularly those involving land claims by indigenous Māori communities, underscoring their enduring significance.</p>
+
+    <p>Moon further explains how the precision and detail of Cook's maps have lent a degree of legitimacy to certain land claims, as these maps often serve as some of the earliest comprehensive records of the geography and human settlements in New Zealand. Moreover, Moon discusses the role of maps in cultural heritage preservation. The maps are more than just geographical representations; they are cultural artifacts that carry the imprints of cross-cultural encounters and the mingling of Western and indigenous knowledge systems.</p>
+
+    <p>The evolution of cartography from traditional methods to modern satellite-based techniques also features prominently in Moon's analysis. Despite these changes, Moon argues that the fundamental role of maps as instruments of knowledge and power remains unchanged. Contemporary satellite maps continue to influence geopolitical strategies and cultural narratives much like their hand-drawn precursors, shaping perceptions and policies at both national and global levels.</p>
+
+    <hr>
+
+    <p>In <em>A Draught of the South Land</em>, Paul Moon offers an extensive exploration of the roles of cartography in empire-building and knowledge dissemination, marked by its engaging narrative and thorough research. However, while the book is commendable for its depth and breadth, it is not beyond criticism.</p>
+
+    <p>One point of critique is Moon's heavy reliance on European sources, which, while rich and informative, could be seen as presenting a somewhat Eurocentric view of history. Although Moon acknowledges the contributions of indigenous knowledge through figures like Tupaia, the primary perspective tends to favor the European narratives of discovery and exploration. This approach may leave readers yearning for a more balanced account that elevates non-European voices and perspectives, particularly those of the Māori, whose land and culture were significantly impacted by the events described.</p>
+
+    <p>Additionally, some readers might find Moon's detailed descriptions of cartographic techniques and historical map analysis somewhat esoteric. While these sections underscore the scientific advancements of the period, they can occasionally bog down the narrative, potentially alienating readers who are less familiar with geographic or cartographic jargon.</p>
+
+    <p>Despite these criticisms, <em>A Draught of the South Land</em> remains an indispensable resource. It provides a nuanced understanding of how exploration and cartography have shaped not only New Zealand but also the broader dynamics of global history. The book's exploration of the enduring impact of these maps on contemporary issues adds a layer of relevance, making it a valuable read for those interested in the intersections of history, geography, and politics. Moon's work is a critical addition to the field, offering insights into the transformative power of maps while highlighting areas where historical narratives can be expanded to incorporate a more inclusive range of perspectives.</p>
+
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · Cartographic Perspectives No. 105 · 2025</span>
+    <div class="article-footer-nav">
+      <a href="/writing/index.html">← All Writing</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <a href="/" class="footer-link">brooksgroves.com ↗</a>
+  </div>
+</footer>
+</body>
+</html>
