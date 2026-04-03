@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --y2k:#2a4a7a; --y2k-light:#4a7ab5;
+      --sage:#4a5c45;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+
+    .topline { height:4px; background:linear-gradient(90deg,var(--ink) 0%,var(--stone) 40%,var(--gold) 70%,var(--sage) 100%); }
+
+    /* HEADER */
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:900px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    .site-sub { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); }
+    .header-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .header-link:hover { color:var(--ink); }
+
+    /* HERO — full width cover photo */
+    .hero-cover { width:100%; height:320px; background:url('/images/about-cover.jpg') center/cover no-repeat; position:relative; }
+    .hero-cover-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, transparent 40%, rgba(28,26,22,0.7) 100%); }
+
+    /* PROFILE ROW */
+    .profile-row { max-width:900px; margin:0 auto; padding:0 clamp(1.5rem,5vw,2rem); display:flex; align-items:flex-end; gap:2rem; transform:translateY(-60px); margin-bottom:-60px; }
+    .profile-photo { width:120px; height:120px; border-radius:50%; border:4px solid var(--parchment); object-fit:cover; flex-shrink:0; box-shadow:0 4px 16px rgba(0,0,0,0.15); }
+    .profile-name-block { padding-bottom:0.5rem; }
+    .profile-name { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,4vw,2.4rem); font-weight:900; line-height:1.1; color:var(--ink); }
+    .profile-title { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-top:0.3rem; }
+
+    /* PAGE WRAP */
+    .page-wrap { max-width:900px; margin:0 auto; padding:2.5rem clamp(1.5rem,5vw,2rem) clamp(4rem,8vw,6rem); }
+
+    /* BIO */
+    .bio-grid { display:grid; grid-template-columns:1fr 280px; gap:3rem; align-items:start; margin-bottom:3rem; }
+    .bio-text { font-size:1.05rem; line-height:1.9; }
+    .bio-text p { margin-bottom:1.5rem; }
+    .bio-text p:last-child { margin-bottom:0; }
+
+    /* SIDEBAR CARD */
+    .sidebar-card { background:var(--cream); border-left:3px solid var(--gold); padding:1.5rem; }
+    .sidebar-section { margin-bottom:1.5rem; }
+    .sidebar-section:last-child { margin-bottom:0; }
+    .sidebar-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--stone); margin-bottom:0.6rem; border-bottom:1px solid var(--mist); padding-bottom:0.4rem; }
+    .sidebar-item { font-size:0.82rem; line-height:1.7; color:var(--ink); }
+    .sidebar-item + .sidebar-item { margin-top:0.3rem; }
+    .sidebar-item span { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); display:block; }
+
+    /* CONNECT LINKS */
+    .connect-links { display:flex; flex-direction:column; gap:0.4rem; }
+    .connect-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; text-decoration:none; color:var(--y2k); display:flex; align-items:center; gap:0.4rem; }
+    .connect-link:hover { color:var(--ink); }
+
+    /* SECTION DIVIDER */
+    .section-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); border-bottom:1px solid var(--mist); padding-bottom:0.5rem; margin-bottom:1.5rem; margin-top:3rem; }
+
+    /* INTEREST TAGS */
+    .interest-tags { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:3rem; }
+    .interest-tag { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.3rem 0.8rem; background:var(--cream); }
+
+    /* TIMELINE */
+    .timeline { display:flex; flex-direction:column; gap:0; }
+    .timeline-item { display:grid; grid-template-columns:100px 1fr; gap:1.5rem; padding:1.25rem 0; border-bottom:1px solid var(--mist); }
+    .timeline-item:last-child { border-bottom:none; }
+    .timeline-year { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; color:var(--stone); padding-top:0.1rem; }
+    .timeline-title { font-weight:700; font-size:0.95rem; margin-bottom:0.2rem; }
+    .timeline-sub { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+
+    /* FOOTER */
+    footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:900px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-link:hover { color:var(--gold); }
+
+    @media(max-width:700px) {
+      .bio-grid { grid-template-columns:1fr; }
+      .profile-row { flex-direction:column; align-items:flex-start; gap:1rem; transform:translateY(-40px); margin-bottom:-40px; }
+      .timeline-item { grid-template-columns:80px 1fr; gap:1rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <div>
+      <a href="/" class="site-name">Brooks Groves</a>
+      <div class="site-sub">About</div>
+    </div>
+    <a href="/" class="header-link">← Home</a>
+  </div>
+</header>
+
+<!-- COVER PHOTO -->
+<div class="hero-cover">
+  <div class="hero-cover-overlay"></div>
+</div>
+
+<!-- PROFILE ROW -->
+<div class="profile-row">
+  <img src="/images/brooks-profile.jpg" alt="Brooks Groves on a summit in Yosemite" class="profile-photo">
+  <div class="profile-name-block">
+    <h1 class="profile-name">Brooks Groves</h1>
+    <p class="profile-title">GIS Analyst &amp; Data Scientist · Zillow · Lakewood, WA</p>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+  <!-- BIO + SIDEBAR -->
+  <div class="bio-grid">
+    <div class="bio-text">
+      <p>I grew up in Groveland, California — a small mountain town at the western edge of Yosemite, elevation 2,800 feet, population not many. The Sierra Nevada shaped how I see the world: as terrain first, everything else second.</p>
+
+      <p>After studying molecular biology at the University of Nevada, Reno, I ended up in Seattle, where I spent 21 years as bell captain at the Westin — one of the largest hotels in the Pacific Northwest. That job taught me more about human nature than any classroom. I watched the city change from the inside of a revolving door: the dot-com boom, 9/11, the slow recovery, the tech explosion. I met several sitting presidents, dozens of world leaders, Hall of Fame athletes, and Snoop Dogg — more than a few times. I wrote most of it down.</p>
+
+      <p>In 2017 I went back to school at the University of Washington and completed a certificate in Geographic Information Science and Cartography. I've been at Zillow since 2019 — first as a GIS Technician, now as a GIS Analyst and data scientist — building spatial pipelines, analyzing market data, and finding patterns in the geography of real estate.</p>
+
+      <p>Outside of work I build open-source dashboards and data tools: streamflow monitors, snowpack trackers, wildfire response analyses, Mariners analytics. I run, swim, and ride. I geocache. I watch too much pro cycling. I read constantly and write when I can.</p>
+
+      <p>This site is the place where all of it lives — the technical work, the writing, the data, the mountains.</p>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Location</div>
+        <div class="sidebar-item">Lakewood, Washington<span>Greater Seattle Area</span></div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Work</div>
+        <div class="sidebar-item">GIS Analyst &amp; Data Scientist<span>Zillow · 2019–Present</span></div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Education</div>
+        <div class="sidebar-item">GIS &amp; Cartography Certificate<span>University of Washington · 2017–2018</span></div>
+        <div class="sidebar-item" style="margin-top:0.5rem;">B.S. Molecular Biology<span>University of Nevada, Reno · 1990–1994</span></div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Connect</div>
+        <div class="connect-links">
+          <a href="https://github.com/bdgroves" target="_blank" class="connect-link">⌥ GitHub · bdgroves</a>
+          <a href="https://linkedin.com/in/brooks-groves-137219139" target="_blank" class="connect-link">in LinkedIn</a>
+          <a href="https://twitter.com/bdgroves" target="_blank" class="connect-link">✕ Twitter · @bdgroves</a>
+          <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" class="connect-link">☁ Bluesky · @bdgroves</a>
+          <a href="https://www.strava.com/athletes/59148" target="_blank" class="connect-link">⚡ Strava</a>
+          <a href="https://untappd.com/user/bdgroves" target="_blank" class="connect-link">🍺 Untappd · bdgroves</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERESTS -->
+  <div class="section-head">Interests</div>
+  <div class="interest-tags">
+    <span class="interest-tag">GIS</span>
+    <span class="interest-tag">Cartography</span>
+    <span class="interest-tag">Hydrology</span>
+    <span class="interest-tag">Meteorology</span>
+    <span class="interest-tag">Volcanology</span>
+    <span class="interest-tag">Ecology</span>
+    <span class="interest-tag">Paleontology</span>
+    <span class="interest-tag">Archaeology</span>
+    <span class="interest-tag">Remote Sensing</span>
+    <span class="interest-tag">Python</span>
+    <span class="interest-tag">R</span>
+    <span class="interest-tag">Pro Cycling</span>
+    <span class="interest-tag">Triathlon</span>
+    <span class="interest-tag">Running</span>
+    <span class="interest-tag">Geocaching</span>
+    <span class="interest-tag">Craft Beer</span>
+    <span class="interest-tag">Mountaineering</span>
+    <span class="interest-tag">Mariners</span>
+    <span class="interest-tag">Seahawks</span>
+    <span class="interest-tag">Reading</span>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="section-head">Arc</div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-year">1970</div>
+      <div>
+        <div class="timeline-title">Born in Groveland, CA</div>
+        <div class="timeline-sub">Tuolumne County, Sierra Nevada foothills. Western gateway to Yosemite.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">1990–94</div>
+      <div>
+        <div class="timeline-title">University of Nevada, Reno</div>
+        <div class="timeline-sub">B.S. Molecular Biology. First serious exposure to the Basin and Range, the Great Basin, the desert west.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">1997</div>
+      <div>
+        <div class="timeline-title">Arrived in Seattle</div>
+        <div class="timeline-sub">Joined the Westin Seattle as bell captain. Stayed 21 years. Watched the city become something else entirely.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">2000–05</div>
+      <div>
+        <div class="timeline-title">brooksgroves.com — the first version</div>
+        <div class="timeline-sub">Personal journal published online. Geocaching, triathlon, the scanner, the ferrets. Recovered from the Wayback Machine and archived at y2k.brooksgroves.com.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">2017–18</div>
+      <div>
+        <div class="timeline-title">University of Washington — GIS Certificate</div>
+        <div class="timeline-sub">Geographic Information Science and Cartography. Python, spatial analysis, remote sensing. Career pivot, 20 years in the making.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">2018–19</div>
+      <div>
+        <div class="timeline-title">Oregon Natural Desert Association</div>
+        <div class="timeline-sub">Volunteer GIS Technician. NDVI analysis, riparian restoration sites, Google Earth Engine, remote sensing.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">2019</div>
+      <div>
+        <div class="timeline-title">Joined Zillow</div>
+        <div class="timeline-sub">GIS Technician, then GIS Analyst. Spatial pipelines, market analysis, geospatial data engineering.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">2025</div>
+      <div>
+        <div class="timeline-title">Cartographic Perspectives</div>
+        <div class="timeline-sub">Published book review in Cartographic Perspectives No. 105. Paul Moon's <em>A Draught of the South Land</em>.</div>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">Now</div>
+      <div>
+        <div class="timeline-title">Lakewood, WA</div>
+        <div class="timeline-sub">GIS at Zillow. Building open-source data tools. Watching the Giro. Waiting for summer.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · Born in Tuolumne County, CA</p>
+    </div>
+    <a href="/" class="footer-link">← brooksgroves.com</a>
+  </div>
+</footer>
+</body>
+</html>
