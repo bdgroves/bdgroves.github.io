@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Concerts — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --y2k:#2a4a7a; --y2k-light:#4a7ab5;
+      --music:#8b2252;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:15px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+
+    .topline { height:4px; background:linear-gradient(90deg,var(--music) 0%,var(--gold) 50%,var(--y2k) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); background:var(--parchment); }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:900px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    .site-sub { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); }
+    .header-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .header-link:hover { color:var(--music); }
+
+    .page-wrap { max-width:900px; margin:0 auto; padding:clamp(2.5rem,5vw,4rem) clamp(1.5rem,5vw,2rem) clamp(4rem,8vw,6rem); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--music); margin-bottom:0.4rem; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); font-weight:900; line-height:1.05; margin-bottom:0.5rem; }
+    .page-desc { font-size:0.9rem; color:var(--stone); max-width:520px; line-height:1.75; margin-bottom:2rem; }
+
+    /* STATS BAR */
+    .stats-bar { display:flex; gap:2rem; flex-wrap:wrap; padding:1.25rem 1.5rem; background:var(--ink); color:var(--white); margin-bottom:2.5rem; }
+    .stat-item { }
+    .stat-val { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; line-height:1; }
+    .stat-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:#888; margin-top:0.2rem; }
+
+    /* FILTER */
+    .filter-bar { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.5rem; align-items:center; }
+    .filter-input { font-family:'DM Mono',monospace; font-size:0.7rem; padding:0.5rem 0.75rem; background:var(--white); border:1px solid var(--mist); color:var(--ink); outline:none; width:220px; }
+    .filter-input:focus { border-color:var(--music); }
+    .filter-count { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--mist); margin-left:0.5rem; }
+
+    /* SECTION HEAD */
+    .section-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); border-bottom:1px solid var(--mist); padding-bottom:0.5rem; margin-bottom:1.25rem; }
+
+    /* CONCERT LIST */
+    .concert-list { display:flex; flex-direction:column; }
+    .concert-item { display:grid; grid-template-columns:90px 1fr auto; gap:1rem; align-items:start; padding:1.1rem 0; border-bottom:1px solid var(--mist); }
+    .concert-item:last-child { border-bottom:none; }
+    .concert-date { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); line-height:1.5; padding-top:0.1rem; }
+    .concert-artist { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:var(--ink); margin-bottom:0.2rem; }
+    .concert-venue { font-size:0.82rem; color:var(--stone); }
+    .concert-tour { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.06em; color:var(--music); margin-top:0.2rem; }
+    .concert-songs { display:flex; flex-wrap:wrap; gap:0.3rem; margin-top:0.4rem; max-height:0; overflow:hidden; transition:max-height 0.3s; }
+    .concert-songs.open { max-height:500px; }
+    .song-pill { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.06em; background:var(--cream); border:1px solid var(--mist); color:var(--stone); padding:0.15rem 0.5rem; }
+    .concert-link { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--mist); white-space:nowrap; padding-top:0.1rem; }
+    .concert-link:hover { color:var(--music); }
+    .songs-toggle { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--music); cursor:pointer; margin-top:0.3rem; display:inline-block; }
+    .songs-toggle:hover { text-decoration:underline; }
+
+    /* YEAR DIVIDER */
+    .year-divider { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--music); background:var(--cream); padding:0.4rem 0.75rem; margin:1.5rem 0 0; display:inline-block; }
+
+    .loading { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--mist); padding:2rem 0; }
+    .updated-note { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--mist); margin-top:2rem; }
+
+    .setlist-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--music); border:1px solid var(--music); padding:0.35rem 0.8rem; display:inline-block; margin-bottom:2.5rem; }
+    .setlist-link:hover { background:var(--music); color:var(--white); }
+
+    footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:900px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-link:hover { color:var(--gold); }
+
+    @media(max-width:600px) {
+      .concert-item { grid-template-columns:1fr; gap:0.25rem; }
+      .concert-link { display:none; }
+      .concert-date { font-size:0.58rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <div>
+      <a href="/" class="site-name">Brooks Groves</a>
+      <div class="site-sub">Concerts</div>
+    </div>
+    <a href="/" class="header-link">← Home</a>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="page-eyebrow">setlist.fm · Live Data</div>
+  <h1 class="page-title">Concert Log</h1>
+  <p class="page-desc">Every show I've logged on setlist.fm — bands, venues, dates, and what they played. From Seattle to the Sierra Nevada and everywhere between.</p>
+  <a href="https://www.setlist.fm/user/bdgroves" target="_blank" class="setlist-link">View on setlist.fm ↗</a>
+
+  <!-- STATS -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-item"><div class="loading">Loading…</div></div>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <input type="text" class="filter-input" id="filter-input" placeholder="Filter by artist, venue, city…" oninput="filterConcerts()">
+    <span class="filter-count" id="filter-count"></span>
+  </div>
+
+  <!-- CONCERT LIST -->
+  <div class="concert-list" id="concert-list">
+    <div class="loading">Loading concerts…</div>
+  </div>
+
+  <div class="updated-note" id="updated-note"></div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Data via setlist.fm API · Updated daily via GitHub Actions</p>
+    </div>
+    <a href="/" class="footer-link">← brooksgroves.com</a>
+  </div>
+</footer>
+
+<script>
+const DATA_URL = '/data/setlist.json';
+let allConcerts = [];
+
+async function load() {
+  try {
+    const res = await fetch(DATA_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('No data');
+    const d = await res.json();
+    allConcerts = d.concerts || [];
+
+    renderStats(d);
+    renderConcerts(allConcerts);
+    document.getElementById('filter-count').textContent = `${allConcerts.length} shows`;
+
+    if (d.updated) {
+      const dt = new Date(d.updated);
+      document.getElementById('updated-note').textContent =
+        'Last updated ' + dt.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+    }
+  } catch(e) {
+    document.getElementById('concert-list').innerHTML = '<p class="loading">Concert data loading — check back soon or <a href="https://www.setlist.fm/user/bdgroves" target="_blank" style="color:var(--music)">view on setlist.fm ↗</a></p>';
+    document.getElementById('stats-bar').innerHTML = '';
+  }
+}
+
+function renderStats(d) {
+  const concerts = d.concerts || [];
+  const artists = new Set(concerts.map(c => c.artist));
+  const venues  = new Set(concerts.map(c => c.venue).filter(Boolean));
+  const years   = new Set(concerts.map(c => c.sort.slice(0,4)).filter(Boolean));
+
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat-item">
+      <div class="stat-val">${concerts.length}</div>
+      <div class="stat-label">Shows</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val">${artists.size}</div>
+      <div class="stat-label">Artists</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val">${venues.size}</div>
+      <div class="stat-label">Venues</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val">${years.size}</div>
+      <div class="stat-label">Years</div>
+    </div>`;
+}
+
+function renderConcerts(concerts) {
+  if (!concerts.length) {
+    document.getElementById('concert-list').innerHTML = '<p class="loading">No concerts found.</p>';
+    return;
+  }
+
+  let html = '';
+  let currentYear = '';
+
+  concerts.forEach((c, i) => {
+    const year = c.sort ? c.sort.slice(0,4) : '';
+    if (year && year !== currentYear) {
+      currentYear = year;
+      html += `<div class="year-divider">${year}</div>`;
+    }
+
+    const hasSongs = c.songs && c.songs.length > 0;
+    const songPills = hasSongs
+      ? c.songs.map(s => `<span class="song-pill">${s}</span>`).join('')
+      : '';
+
+    html += `
+      <div class="concert-item">
+        <div class="concert-date">${c.date}</div>
+        <div>
+          <div class="concert-artist">${c.artist}</div>
+          <div class="concert-venue">${[c.venue, c.location].filter(Boolean).join(' · ')}</div>
+          ${c.tour ? `<div class="concert-tour">${c.tour}</div>` : ''}
+          ${hasSongs ? `<span class="songs-toggle" onclick="toggleSongs(${i})">▸ ${c.song_count} songs</span>` : ''}
+          <div class="concert-songs" id="songs-${i}">${songPills}</div>
+        </div>
+        <a href="${c.url}" target="_blank" class="concert-link">Setlist ↗</a>
+      </div>`;
+  });
+
+  document.getElementById('concert-list').innerHTML = html;
+}
+
+function toggleSongs(i) {
+  const el = document.getElementById(`songs-${i}`);
+  const toggle = el.previousElementSibling;
+  const open = el.classList.toggle('open');
+  toggle.textContent = open
+    ? `▾ ${el.querySelectorAll('.song-pill').length} songs`
+    : `▸ ${el.querySelectorAll('.song-pill').length} songs`;
+}
+
+function filterConcerts() {
+  const q = document.getElementById('filter-input').value.toLowerCase().trim();
+  const filtered = q
+    ? allConcerts.filter(c =>
+        c.artist.toLowerCase().includes(q) ||
+        (c.venue || '').toLowerCase().includes(q) ||
+        (c.location || '').toLowerCase().includes(q) ||
+        (c.tour || '').toLowerCase().includes(q)
+      )
+    : allConcerts;
+  document.getElementById('filter-count').textContent = `${filtered.length} of ${allConcerts.length} shows`;
+  renderConcerts(filtered);
+}
+
+load();
+</script>
+</body>
+</html>

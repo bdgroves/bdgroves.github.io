@@ -1,0 +1,129 @@
+name: Fetch Setlist.fm Data
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # 9am UTC daily
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch Setlist.fm data
+        env:
+          SETLIST_API_KEY: ${{ secrets.SETLIST_API_KEY }}
+        run: |
+          python3 << 'EOF'
+          import json, requests, os
+          from datetime import datetime, timezone
+
+          API_KEY  = os.environ['SETLIST_API_KEY']
+          USERNAME = 'bdgroves'
+          HEADERS  = {
+              'x-api-key': API_KEY,
+              'Accept': 'application/json'
+          }
+
+          concerts = []
+          page = 1
+
+          while True:
+              url = f'https://api.setlist.fm/rest/1.0/user/{USERNAME}/attended'
+              res = requests.get(url, headers=HEADERS, params={'p': page})
+              if res.status_code != 200:
+                  print(f"Page {page} returned {res.status_code} — stopping")
+                  break
+              data = res.json()
+              setlists = data.get('setlist', [])
+              if not setlists:
+                  break
+
+              for s in setlists:
+                  artist = s.get('artist', {}).get('name', 'Unknown')
+                  event_date = s.get('eventDate', '')
+                  venue = s.get('venue', {})
+                  venue_name = venue.get('name', '')
+                  city = venue.get('city', {}).get('name', '')
+                  state = venue.get('city', {}).get('stateCode', '')
+                  country = venue.get('city', {}).get('country', {}).get('name', '')
+                  tour = s.get('tour', {}).get('name', '') if s.get('tour') else ''
+                  url_link = s.get('url', '')
+                  setlist_id = s.get('id', '')
+
+                  # Parse date
+                  date_display = ''
+                  date_sort = ''
+                  try:
+                      dt = datetime.strptime(event_date, '%d-%m-%Y')
+                      date_display = dt.strftime('%b %d, %Y')
+                      date_sort = dt.strftime('%Y-%m-%d')
+                  except:
+                      date_display = event_date
+                      date_sort = event_date
+
+                  # Songs played
+                  songs = []
+                  for sets in s.get('sets', {}).get('set', []):
+                      for song in sets.get('song', []):
+                          name = song.get('name', '')
+                          if name:
+                              songs.append(name)
+
+                  # Location string
+                  location_parts = [x for x in [city, state, country] if x]
+                  location = ', '.join(location_parts)
+
+                  concerts.append({
+                      'id':       setlist_id,
+                      'artist':   artist,
+                      'date':     date_display,
+                      'sort':     date_sort,
+                      'venue':    venue_name,
+                      'location': location,
+                      'tour':     tour,
+                      'songs':    songs,
+                      'song_count': len(songs),
+                      'url':      url_link
+                  })
+
+              total = data.get('total', 0)
+              per_page = data.get('itemsPerPage', 20)
+              print(f"Page {page}: {len(setlists)} concerts (total: {total})")
+
+              if page * per_page >= total:
+                  break
+              page += 1
+
+          # Sort newest first
+          concerts.sort(key=lambda x: x['sort'], reverse=True)
+
+          output = {
+              'updated': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'total': len(concerts),
+              'concerts': concerts
+          }
+
+          os.makedirs('data', exist_ok=True)
+          with open('data/setlist.json', 'w') as f:
+              json.dump(output, f, indent=2)
+
+          print(f"Written {len(concerts)} concerts to data/setlist.json")
+          EOF
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/setlist.json
+          git diff --staged --quiet || git commit -m "chore: setlist data $(date -u +%Y-%m-%d)"
+          git push
