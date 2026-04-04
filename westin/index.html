@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>(function(){if(sessionStorage.getItem('y2k_auth')==='true')return;document.documentElement.style.visibility='hidden';function buildGate(){var o=document.createElement('div');o.id='gate-overlay';o.innerHTML='<div style="position:fixed;inset:0;background:#1c1a16;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:Georgia,serif;"><div style="text-align:center;padding:3rem;max-width:380px;width:90%;"><div style="font-family:monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#7a7268;margin-bottom:1rem;">Private Archive</div><div style="font-size:1.8rem;font-weight:700;color:#f5f0e8;margin-bottom:0.5rem;">Brooks Groves</div><div style="font-size:0.85rem;color:#7a7268;margin-bottom:2rem;">Password required</div><input id="gate-pw" type="password" placeholder="Enter password" style="width:100%;padding:0.75rem 1rem;background:#2a2826;border:1px solid #3a3836;color:#f5f0e8;font-size:1rem;outline:none;margin-bottom:0.75rem;box-sizing:border-box;"/><div id="gate-err" style="color:#e40046;font-size:0.75rem;margin-bottom:0.75rem;min-height:1rem;"></div><button id="gate-btn" style="width:100%;padding:0.75rem;background:#2a4a7a;border:none;color:#f5f0e8;font-size:0.9rem;cursor:pointer;letter-spacing:0.05em;">Enter</button></div></div>';document.body.appendChild(o);document.documentElement.style.visibility='visible';var inp=document.getElementById('gate-pw');inp.focus();function tryPw(){var pw=inp.value;if(!pw){document.getElementById('gate-err').textContent='Please enter the password.';return;}if(pw==='Starwood'){sessionStorage.setItem('y2k_auth','true');document.getElementById('gate-overlay').remove();}else{document.getElementById('gate-err').textContent='Incorrect password.';inp.value='';inp.focus();}}document.getElementById('gate-btn').addEventListener('click',tryPw);inp.addEventListener('keydown',function(e){if(e.key==='Enter')tryPw();});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',buildGate);}else{buildGate();}})();</script>
   <script>
     (function() {
       if (sessionStorage.getItem('y2k_auth') !== 'true') {
-        var pw = prompt('Password:'); if (pw === null) { document.body.innerHTML=''; window.location.replace('/'); return; }
-        if (pw !== null && pw !== '' && pw === 'Starwood') {
+        var pw = prompt('Password:');
+        if (pw === 'Starwood') {
           sessionStorage.setItem('y2k_auth', 'true');
         } else {
           document.body.innerHTML = '';
@@ -196,16 +195,18 @@
       </div>
     </a>
 
-    <!-- PLACEHOLDERS — coming soon -->
-    <div class="story-item soon">
+    <!-- STORY 09 — LIVE -->
+    <a href="/westin/new-years-eve.html" class="story-item">
       <div class="story-num">09</div>
       <div>
-        <div class="story-tag">New Year's Eve · All Hands</div>
-        <h2 class="story-hed">🎆 New Year's Eve at the Westin</h2>
-        <p class="story-dek">The night when 900 rooms check out and check back in simultaneously and the entire crew runs on adrenaline and bad decisions.</p>
-        <span class="story-read">Coming soon</span>
+        <div class="story-tag">New Year's Eve · All Hands · Late 1990s–2000s</div>
+        <h2 class="story-hed">🎆 Turn and Burn</h2>
+        <p class="story-dek">900 rooms out. 900 rooms in. Same day. Same building. Same crew. One Russian suite. Twelve bottles of Dom. And the night the whole hotel turned into a spaceship barely holding orbit.</p>
+        <span class="story-read">Read →</span>
       </div>
-    </div>
+    </a>
+
+    <!-- PLACEHOLDERS — coming soon -->
 
     <div class="story-item soon">
       <div class="story-num">10</div>
