@@ -1,0 +1,168 @@
+name: Fetch Strava Data
+
+on:
+  schedule:
+    - cron: '0 8 * * *'   # 8am UTC daily — catches overnight activities
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch Strava data
+        env:
+          STRAVA_CLIENT_ID: ${{ secrets.STRAVA_CLIENT_ID }}
+          STRAVA_CLIENT_SECRET: ${{ secrets.STRAVA_CLIENT_SECRET }}
+          STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
+        run: |
+          python3 << 'EOF'
+          import json, requests, os
+          from datetime import datetime, timezone
+
+          CLIENT_ID     = os.environ['STRAVA_CLIENT_ID']
+          CLIENT_SECRET = os.environ['STRAVA_CLIENT_SECRET']
+          REFRESH_TOKEN = os.environ['STRAVA_REFRESH_TOKEN']
+
+          # --- Refresh access token ---
+          token_res = requests.post('https://www.strava.com/oauth/token', data={
+              'client_id':     CLIENT_ID,
+              'client_secret': CLIENT_SECRET,
+              'refresh_token': REFRESH_TOKEN,
+              'grant_type':    'refresh_token'
+          })
+          token_res.raise_for_status()
+          access_token = token_res.json()['access_token']
+          headers = {'Authorization': f'Bearer {access_token}'}
+          print(f"Token refreshed OK")
+
+          # --- Athlete stats ---
+          stats_res = requests.get('https://www.strava.com/api/v3/athletes/59148/stats', headers=headers)
+          stats_res.raise_for_status()
+          stats = stats_res.json()
+
+          ytd_run   = stats.get('ytd_run_totals', {})
+          ytd_ride  = stats.get('ytd_ride_totals', {})
+          ytd_swim  = stats.get('ytd_swim_totals', {})
+          all_run   = stats.get('all_run_totals', {})
+          all_ride  = stats.get('all_ride_totals', {})
+          all_swim  = stats.get('all_swim_totals', {})
+
+          def m_to_mi(m): return round(m * 0.000621371, 1)
+          def m_to_yd(m): return round(m * 1.09361)
+          def sec_to_hm(s):
+              h = s // 3600
+              m = (s % 3600) // 60
+              return f"{h}h {m}m"
+
+          # --- Recent activities (last 10) ---
+          acts_res = requests.get(
+              'https://www.strava.com/api/v3/athlete/activities',
+              headers=headers,
+              params={'per_page': 10, 'page': 1}
+          )
+          acts_res.raise_for_status()
+          activities_raw = acts_res.json()
+
+          SPORT_ICONS = {
+              'Run': '🏃', 'Ride': '🚴', 'Swim': '🏊',
+              'Hike': '🥾', 'Walk': '🚶', 'VirtualRide': '🚴',
+              'WeightTraining': '🏋️', 'Yoga': '🧘',
+              'Kayaking': '🚣', 'Rowing': '🚣',
+              'Workout': '⚡', 'EBikeRide': '⚡'
+          }
+
+          activities = []
+          for a in activities_raw:
+              sport = a.get('sport_type', a.get('type', 'Workout'))
+              dist_m = a.get('distance', 0)
+              elev_m = a.get('total_elevation_gain', 0)
+
+              # Format distance based on sport
+              if sport == 'Swim':
+                  dist_str = f"{m_to_yd(dist_m):,} yd" if dist_m else ''
+              else:
+                  dist_str = f"{m_to_mi(dist_m)} mi" if dist_m else ''
+
+              # Format moving time
+              move_secs = a.get('moving_time', 0)
+              h = move_secs // 3600
+              m = (move_secs % 3600) // 60
+              s = move_secs % 60
+              if h > 0:
+                  time_str = f"{h}:{m:02d}:{s:02d}"
+              else:
+                  time_str = f"{m}:{s:02d}"
+
+              # Pace for runs (min/mi)
+              pace_str = ''
+              if sport == 'Run' and dist_m > 0:
+                  pace_secs = move_secs / (dist_m * 0.000621371)
+                  pm = int(pace_secs // 60)
+                  ps = int(pace_secs % 60)
+                  pace_str = f"{pm}:{ps:02d}/mi"
+
+              # Date
+              start = a.get('start_date_local', '')
+              try:
+                  dt = datetime.fromisoformat(start.replace('Z',''))
+                  date_str = dt.strftime('%b %d')
+              except:
+                  date_str = ''
+
+              activities.append({
+                  'id':       a.get('id'),
+                  'name':     a.get('name', 'Activity'),
+                  'sport':    sport,
+                  'icon':     SPORT_ICONS.get(sport, '⚡'),
+                  'distance': dist_str,
+                  'time':     time_str,
+                  'pace':     pace_str,
+                  'elevation': f"{round(elev_m * 3.28084)} ft" if elev_m else '',
+                  'date':     date_str,
+                  'kudos':    a.get('kudos_count', 0),
+                  'map_url':  f"https://www.strava.com/activities/{a.get('id')}"
+              })
+
+          # --- Build output JSON ---
+          output = {
+              'updated': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'ytd': {
+                  'run':  {'miles': m_to_mi(ytd_run.get('distance',0)),  'time': sec_to_hm(ytd_run.get('moving_time',0)),  'count': ytd_run.get('count',0)},
+                  'ride': {'miles': m_to_mi(ytd_ride.get('distance',0)), 'time': sec_to_hm(ytd_ride.get('moving_time',0)), 'count': ytd_ride.get('count',0)},
+                  'swim': {'yards': m_to_yd(ytd_swim.get('distance',0)), 'time': sec_to_hm(ytd_swim.get('moving_time',0)), 'count': ytd_swim.get('count',0)},
+              },
+              'all_time': {
+                  'run':  {'miles': m_to_mi(all_run.get('distance',0)),  'count': all_run.get('count',0)},
+                  'ride': {'miles': m_to_mi(all_ride.get('distance',0)), 'count': all_ride.get('count',0)},
+                  'swim': {'yards': m_to_yd(all_swim.get('distance',0)), 'count': all_swim.get('count',0)},
+              },
+              'activities': activities
+          }
+
+          os.makedirs('data', exist_ok=True)
+          with open('data/strava.json', 'w') as f:
+              json.dump(output, f, indent=2)
+
+          print(f"Strava data written — {len(activities)} activities")
+          print(f"YTD Run: {output['ytd']['run']['miles']} mi")
+          print(f"YTD Ride: {output['ytd']['ride']['miles']} mi")
+          print(f"YTD Swim: {output['ytd']['swim']['yards']} yd")
+          EOF
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/strava.json
+          git diff --staged --quiet || git commit -m "chore: strava data $(date -u +%Y-%m-%d)"
+          git push

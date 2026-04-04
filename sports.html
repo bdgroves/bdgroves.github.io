@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --y2k:#2a4a7a; --y2k-light:#4a7ab5;
+      --strava:#fc4c02; --sage:#4a5c45;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Inter',sans-serif; font-size:15px; line-height:1.6; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+
+    .topline { height:4px; background:linear-gradient(90deg,var(--strava) 0%,var(--gold) 50%,var(--sage) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); background:var(--parchment); }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:960px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    .site-sub { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); }
+    .header-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .header-link:hover { color:var(--strava); }
+
+    .page-wrap { max-width:960px; margin:0 auto; padding:clamp(2.5rem,5vw,4rem) clamp(1.5rem,5vw,2rem) clamp(4rem,8vw,6rem); }
+
+    /* PAGE HEADER */
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--strava); margin-bottom:0.4rem; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); font-weight:900; line-height:1.05; margin-bottom:0.5rem; }
+    .page-desc { font-size:0.9rem; color:var(--stone); max-width:520px; line-height:1.75; margin-bottom:2.5rem; }
+    .strava-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--strava); border:1px solid var(--strava); padding:0.35rem 0.8rem; display:inline-block; margin-bottom:2.5rem; }
+    .strava-link:hover { background:var(--strava); color:var(--white); }
+
+    /* SECTION HEAD */
+    .section-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); border-bottom:1px solid var(--mist); padding-bottom:0.5rem; margin-bottom:1.5rem; margin-top:3rem; }
+    .section-head:first-of-type { margin-top:0; }
+
+    /* YTD STATS */
+    .ytd-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--mist); border:1px solid var(--mist); margin-bottom:3rem; }
+    .ytd-card { background:var(--white); padding:1.5rem; text-align:center; }
+    .ytd-icon { font-size:1.8rem; margin-bottom:0.5rem; }
+    .ytd-sport { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .ytd-stat { margin-bottom:0.4rem; }
+    .ytd-val { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; color:var(--ink); line-height:1; }
+    .ytd-unit { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); margin-left:0.2rem; }
+    .ytd-sub { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--mist); margin-top:0.4rem; }
+
+    /* ACTIVITY LIST */
+    .activity-list { display:flex; flex-direction:column; gap:0; }
+    .activity-item { display:grid; grid-template-columns:36px 1fr auto; align-items:center; gap:1rem; padding:1rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.1s; }
+    .activity-item:hover { background:var(--cream); margin:0 -0.75rem; padding-left:0.75rem; padding-right:0.75rem; }
+    .activity-item:last-child { border-bottom:none; }
+    .activity-icon { font-size:1.3rem; text-align:center; }
+    .activity-name { font-weight:600; font-size:0.92rem; color:var(--ink); margin-bottom:0.15rem; }
+    .activity-item:hover .activity-name { color:var(--strava); }
+    .activity-meta { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); display:flex; gap:0.75rem; flex-wrap:wrap; }
+    .activity-date { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--mist); text-align:right; white-space:nowrap; }
+
+    /* ALL TIME */
+    .alltime-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+    .alltime-card { background:var(--cream); padding:1.25rem; border-left:3px solid var(--gold); }
+    .alltime-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.5rem; }
+    .alltime-val { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:900; color:var(--ink); }
+    .alltime-unit { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); }
+    .alltime-count { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--mist); margin-top:0.2rem; }
+
+    /* LOADING / ERROR */
+    .loading { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--mist); padding:2rem 0; }
+
+    /* UPDATED */
+    .updated-note { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--mist); letter-spacing:0.08em; margin-top:2rem; }
+
+    footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:960px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-link:hover { color:var(--gold); }
+
+    @media(max-width:600px) {
+      .ytd-grid { grid-template-columns:1fr; }
+      .alltime-grid { grid-template-columns:1fr; }
+      .activity-item { grid-template-columns:32px 1fr; }
+      .activity-date { display:none; }
+    }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <div>
+      <a href="/" class="site-name">Brooks Groves</a>
+      <div class="site-sub">Training</div>
+    </div>
+    <a href="/" class="header-link">← Home</a>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="page-eyebrow">Strava · Live Data</div>
+  <h1 class="page-title">Training Log</h1>
+  <p class="page-desc">Endurance athlete in my 50s — still chasing PRs and big horizons. Running, cycling, swimming, hiking. Grew up in the Sierra Nevada, now training in the Pacific Northwest.</p>
+  <a href="https://www.strava.com/athletes/59148" target="_blank" class="strava-link">View on Strava ↗</a>
+
+  <!-- YTD STATS -->
+  <div class="section-head">Year to Date — <span id="current-year">2026</span></div>
+  <div class="ytd-grid" id="ytd-grid">
+    <div class="ytd-card"><div class="loading">Loading…</div></div>
+    <div class="ytd-card"></div>
+    <div class="ytd-card"></div>
+  </div>
+
+  <!-- RECENT ACTIVITIES -->
+  <div class="section-head">Recent Activities</div>
+  <div class="activity-list" id="activity-list">
+    <div class="loading">Loading activities…</div>
+  </div>
+
+  <!-- ALL TIME -->
+  <div class="section-head">All Time</div>
+  <div class="alltime-grid" id="alltime-grid">
+    <div class="loading">Loading…</div>
+  </div>
+
+  <div class="updated-note" id="updated-note"></div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Data via Strava API · Updated daily via GitHub Actions</p>
+    </div>
+    <a href="/" class="footer-link">← brooksgroves.com</a>
+  </div>
+</footer>
+
+<script>
+const DATA_URL = '/data/strava.json';
+
+async function load() {
+  try {
+    const res = await fetch(DATA_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error('No data');
+    const d = await res.json();
+    renderYTD(d.ytd);
+    renderActivities(d.activities);
+    renderAllTime(d.all_time);
+    if (d.updated) {
+      const dt = new Date(d.updated);
+      document.getElementById('updated-note').textContent =
+        'Last updated ' + dt.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+    }
+  } catch(e) {
+    document.getElementById('ytd-grid').innerHTML = '<div class="ytd-card" style="grid-column:1/-1"><p class="loading">Training data loading — check back soon or <a href="https://www.strava.com/athletes/59148" target="_blank" style="color:var(--strava)">view on Strava ↗</a></p></div>';
+    document.getElementById('activity-list').innerHTML = '';
+    document.getElementById('alltime-grid').innerHTML = '';
+  }
+}
+
+function renderYTD(ytd) {
+  document.getElementById('current-year').textContent = new Date().getFullYear();
+  document.getElementById('ytd-grid').innerHTML = `
+    <div class="ytd-card">
+      <div class="ytd-icon">🏃</div>
+      <div class="ytd-sport">Running</div>
+      <div class="ytd-stat"><span class="ytd-val">${ytd.run.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div>
+      <div class="ytd-sub">${ytd.run.count} runs · ${ytd.run.time}</div>
+    </div>
+    <div class="ytd-card">
+      <div class="ytd-icon">🚴</div>
+      <div class="ytd-sport">Cycling</div>
+      <div class="ytd-stat"><span class="ytd-val">${ytd.ride.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div>
+      <div class="ytd-sub">${ytd.ride.count} rides · ${ytd.ride.time}</div>
+    </div>
+    <div class="ytd-card">
+      <div class="ytd-icon">🏊</div>
+      <div class="ytd-sport">Swimming</div>
+      <div class="ytd-stat"><span class="ytd-val">${ytd.swim.yards.toLocaleString()}</span><span class="ytd-unit">yd</span></div>
+      <div class="ytd-sub">${ytd.swim.count} swims · ${ytd.swim.time}</div>
+    </div>`;
+}
+
+function renderActivities(acts) {
+  if (!acts || acts.length === 0) {
+    document.getElementById('activity-list').innerHTML = '<p class="loading">No recent activities found.</p>';
+    return;
+  }
+  document.getElementById('activity-list').innerHTML = acts.map(a => `
+    <a href="${a.map_url}" target="_blank" class="activity-item">
+      <div class="activity-icon">${a.icon}</div>
+      <div>
+        <div class="activity-name">${a.name}</div>
+        <div class="activity-meta">
+          ${a.distance ? `<span>${a.distance}</span>` : ''}
+          ${a.time ? `<span>${a.time}</span>` : ''}
+          ${a.pace ? `<span>${a.pace}</span>` : ''}
+          ${a.elevation ? `<span>↑${a.elevation}</span>` : ''}
+          ${a.kudos ? `<span>👍 ${a.kudos}</span>` : ''}
+        </div>
+      </div>
+      <div class="activity-date">${a.date}</div>
+    </a>`).join('');
+}
+
+function renderAllTime(at) {
+  document.getElementById('alltime-grid').innerHTML = `
+    <div class="alltime-card">
+      <div class="alltime-label">🏃 Running</div>
+      <div><span class="alltime-val">${at.run.miles.toLocaleString()}</span> <span class="alltime-unit">miles</span></div>
+      <div class="alltime-count">${at.run.count.toLocaleString()} activities</div>
+    </div>
+    <div class="alltime-card">
+      <div class="alltime-label">🚴 Cycling</div>
+      <div><span class="alltime-val">${at.ride.miles.toLocaleString()}</span> <span class="alltime-unit">miles</span></div>
+      <div class="alltime-count">${at.ride.count.toLocaleString()} activities</div>
+    </div>
+    <div class="alltime-card">
+      <div class="alltime-label">🏊 Swimming</div>
+      <div><span class="alltime-val">${at.swim.yards.toLocaleString()}</span> <span class="alltime-unit">yards</span></div>
+      <div class="alltime-count">${at.swim.count.toLocaleString()} activities</div>
+    </div>`;
+}
+
+document.getElementById('current-year').textContent = new Date().getFullYear();
+load();
+</script>
+</body>
+</html>
