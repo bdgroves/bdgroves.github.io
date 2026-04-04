@@ -1,0 +1,174 @@
+name: Fetch Tour de France 2026
+
+on:
+  schedule:
+    - cron: '0 19 * * *'   # 6pm UTC daily — catches afternoon Italian stage finishes
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Fetch Tour de France results
+        run: |
+          python3 << 'EOF'
+          import json, requests, re
+          from datetime import date
+          from bs4 import BeautifulSoup
+
+          GIRO_PCS = "https://www.procyclingstats.com/race/vuelta-a-espana/2026"
+          HEADERS = {"User-Agent": "Mozilla/5.0"}
+
+          def get_stage_results():
+              """Scrape stage winners from PCS"""
+              results = {}
+              try:
+                  url = f"{GIRO_PCS}/gc"
+                  r = requests.get(url, headers=HEADERS, timeout=15)
+                  soup = BeautifulSoup(r.text, "html.parser")
+                  # Find stage results table
+                  tables = soup.find_all("table")
+                  for table in tables:
+                      rows = table.find_all("tr")
+                      for row in rows:
+                          cells = row.find_all("td")
+                          if len(cells) >= 3:
+                              pass
+              except Exception as e:
+                  print(f"Stage results error: {e}")
+              return results
+
+          def get_gc():
+              """Scrape GC standings from PCS"""
+              gc = []
+              try:
+                  url = f"{GIRO_PCS}/gc"
+                  r = requests.get(url, headers=HEADERS, timeout=15)
+                  soup = BeautifulSoup(r.text, "html.parser")
+                  rows = soup.select("table.basic tr")[1:11]  # top 10
+                  for row in rows:
+                      cells = row.find_all("td")
+                      if len(cells) >= 4:
+                          name = cells[1].get_text(strip=True) if len(cells) > 1 else ""
+                          team = cells[2].get_text(strip=True) if len(cells) > 2 else ""
+                          gap  = cells[3].get_text(strip=True) if len(cells) > 3 else ""
+                          if name:
+                              gc.append({"name": name, "team": team, "gap": gap if gap else "+0:00"})
+              except Exception as e:
+                  print(f"GC error: {e}")
+              return gc
+
+          def get_stage_winners():
+              """Scrape stage winners from PCS stages page"""
+              winners = {}
+              try:
+                  url = f"{GIRO_PCS}/stages"
+                  r = requests.get(url, headers=HEADERS, timeout=15)
+                  soup = BeautifulSoup(r.text, "html.parser")
+                  rows = soup.select("table.basic tr")[1:]
+                  for row in rows:
+                      cells = row.find_all("td")
+                      if len(cells) >= 4:
+                          stage_text = cells[0].get_text(strip=True)
+                          winner_cell = cells[3] if len(cells) > 3 else None
+                          team_cell   = cells[4] if len(cells) > 4 else None
+                          # Extract stage number
+                          m = re.search(r'Stage\s*(\d+)', stage_text, re.I)
+                          if m and winner_cell:
+                              num = int(m.group(1))
+                              winner = winner_cell.get_text(strip=True)
+                              team   = team_cell.get_text(strip=True) if team_cell else ""
+                              if winner and winner not in ("", "-"):
+                                  winners[num] = {"winner": winner, "team": team}
+                              print(f"  Stage {num}: {winner} ({team})")
+              except Exception as e:
+                  print(f"Stage winners error: {e}")
+              return winners
+
+          def get_jerseys():
+              """Scrape jersey holders"""
+              jerseys = {"pink": None, "points": None, "kom": None, "young": None}
+              try:
+                  r = requests.get(GIRO_PCS, headers=HEADERS, timeout=15)
+                  soup = BeautifulSoup(r.text, "html.parser")
+                  # Jersey leaders often in a summary section
+                  leader_divs = soup.select(".leaderboard, .jersey, .leader")
+                  for d in leader_divs:
+                      text = d.get_text(strip=True).lower()
+                      name_el = d.select_one("a")
+                      if not name_el:
+                          continue
+                      name = name_el.get_text(strip=True)
+                      if "gc" in text or "rosa" in text:
+                          jerseys["pink"] = name
+                      elif "point" in text or "ciclamino" in text:
+                          jerseys["points"] = name
+                      elif "mountain" in text or "azzurra" in text:
+                          jerseys["kom"] = name
+                      elif "young" in text or "bianca" in text:
+                          jerseys["young"] = name
+              except Exception as e:
+                  print(f"Jersey error: {e}")
+              return jerseys
+
+          # Load existing data
+          with open("data/vuelta-2026.json") as f:
+              data = json.load(f)
+
+          today = date.today().isoformat()
+          race_start = "2026-08-22"
+          race_end   = "2026-09-13"
+
+          # Only run during race
+          if today < race_start:
+              print(f"Race hasn't started yet ({race_start}). Nothing to update.")
+          elif today > race_end:
+              print("Race is over. No updates needed.")
+          else:
+              print(f"Race is live — fetching results for {today}")
+
+              # Get stage winners
+              winners = get_stage_winners()
+              for stage in data["stages"]:
+                  num = stage["num"]
+                  if num in winners and not stage.get("winner"):
+                      stage["winner"] = winners[num]["winner"]
+                      stage["winner_team"] = winners[num]["team"]
+                      print(f"  Updated stage {num}: {stage['winner']}")
+
+              # Get GC
+              gc = get_gc()
+              if gc:
+                  data["gc"] = gc
+                  print(f"  GC updated: {gc[0]['name']} leads")
+
+              # Get jerseys
+              jerseys = get_jerseys()
+              if jerseys["pink"]:   data["gc_leader"]    = jerseys["pink"]
+              if jerseys["points"]: data["points_leader"] = jerseys["points"]
+              if jerseys["kom"]:    data["kom_leader"]    = jerseys["kom"]
+              if jerseys["young"]:  data["young_rider"]   = jerseys["young"]
+
+          # Always write back
+          with open("data/vuelta-2026.json", "w") as f:
+              json.dump(data, f, indent=2)
+          print("vuelta-2026.json written.")
+          EOF
+
+      - name: Commit results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/vuelta-2026.json
+          git diff --staged --quiet || git commit -m "chore: tdf stage results $(date -u +%Y-%m-%d)"
+          git push
