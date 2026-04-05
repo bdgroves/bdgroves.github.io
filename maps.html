@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maps — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900&family=DM+Mono:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --y2k:#2a4a7a; --sage:#4a5c45;
+      --rust:#8b3a2a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:15px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+
+    .topline { height:4px; background:linear-gradient(90deg,var(--sage) 0%,var(--gold) 50%,var(--y2k) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); background:var(--parchment); position:sticky; top:0; z-index:1000; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1200px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    .site-sub { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); }
+    .header-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .header-link:hover { color:var(--ink); }
+
+    .page-wrap { max-width:1200px; margin:0 auto; padding:2rem clamp(1.5rem,5vw,2rem) 4rem; }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--sage); margin-bottom:0.4rem; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(1.8rem,4vw,2.6rem); font-weight:900; line-height:1.05; margin-bottom:0.4rem; }
+    .page-desc { font-size:0.88rem; color:var(--stone); max-width:560px; line-height:1.75; margin-bottom:1.5rem; }
+
+    /* LAYER TOGGLES */
+    .layer-bar { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .layer-btn { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.35rem 0.8rem; border:1px solid var(--mist); background:var(--white); color:var(--stone); cursor:pointer; transition:all 0.15s; }
+    .layer-btn.active { background:var(--ink); color:var(--white); border-color:var(--ink); }
+    .layer-btn:hover:not(.active) { border-color:var(--stone); color:var(--ink); }
+
+    /* MAP */
+    #map { width:100%; height:560px; border:2px solid var(--ink); z-index:1; }
+
+    /* SIDEBAR LIST */
+    .map-grid { display:grid; grid-template-columns:1fr 320px; gap:2rem; align-items:start; margin-top:2rem; }
+    .section-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); border-bottom:1px solid var(--mist); padding-bottom:0.5rem; margin-bottom:1rem; }
+    .place-list { display:flex; flex-direction:column; gap:0; }
+    .place-item { padding:0.9rem 0; border-bottom:1px solid var(--mist); cursor:pointer; transition:background 0.1s; }
+    .place-item:hover { background:var(--cream); margin:0 -0.5rem; padding-left:0.5rem; padding-right:0.5rem; }
+    .place-item:last-child { border-bottom:none; }
+    .place-name { font-weight:700; font-size:0.92rem; color:var(--ink); margin-bottom:0.15rem; }
+    .place-item:hover .place-name { color:var(--y2k); }
+    .place-meta { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); }
+    .place-desc { font-size:0.8rem; color:var(--stone); margin-top:0.2rem; line-height:1.5; }
+    .place-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:0.4rem; vertical-align:middle; }
+
+    /* COMING SOON LAYERS */
+    .coming-soon-panel { background:var(--cream); border-left:3px solid var(--gold); padding:1.25rem; }
+    .coming-soon-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .coming-soon-item { font-size:0.82rem; color:var(--stone); padding:0.3rem 0; border-bottom:1px solid var(--mist); display:flex; align-items:center; gap:0.5rem; }
+    .coming-soon-item:last-child { border-bottom:none; }
+
+    /* Leaflet popup override */
+    .leaflet-popup-content-wrapper { border-radius:0; border:2px solid var(--ink); font-family:'Libre Baskerville',Georgia,serif; }
+    .leaflet-popup-content { font-size:0.85rem; line-height:1.6; }
+    .popup-title { font-family:'Playfair Display',serif; font-weight:700; font-size:1rem; margin-bottom:0.2rem; }
+    .popup-meta { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); letter-spacing:0.08em; }
+    .popup-desc { font-size:0.8rem; color:var(--stone); margin-top:0.4rem; line-height:1.5; }
+
+    footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-link:hover { color:var(--gold); }
+
+    @media(max-width:800px) {
+      .map-grid { grid-template-columns:1fr; }
+      #map { height:420px; }
+    }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <div>
+      <a href="/" class="site-name">Brooks Groves</a>
+      <div class="site-sub">Maps</div>
+    </div>
+    <a href="/" class="header-link">← Home</a>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <div class="page-eyebrow">Leaflet · Interactive</div>
+  <h1 class="page-title">Places</h1>
+  <p class="page-desc">The geography of a life — places lived, roads driven, trails walked. More layers coming: geocaches, races, field work, hikes.</p>
+
+  <!-- LAYER TOGGLES -->
+  <div class="layer-bar">
+    <button class="layer-btn active" onclick="toggleLayer('lived', this)">🏠 Places Lived</button>
+    <button class="layer-btn" onclick="toggleLayer('geocaches', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">📍 Geocaches</button>
+    <button class="layer-btn" onclick="toggleLayer('races', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🏃 Races</button>
+    <button class="layer-btn" onclick="toggleLayer('hikes', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🥾 Hikes</button>
+    <button class="layer-btn" onclick="toggleLayer('fieldwork', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🗺️ Field Work</button>
+  </div>
+
+  <!-- MAP -->
+  <div id="map"></div>
+
+  <!-- SIDEBAR -->
+  <div class="map-grid">
+    <div>
+      <div class="section-head">Places Lived</div>
+      <div class="place-list" id="place-list"></div>
+    </div>
+    <div>
+      <div class="coming-soon-panel">
+        <div class="coming-soon-label">Coming Soon</div>
+        <div class="coming-soon-item"><span>📍</span> Geocache finds</div>
+        <div class="coming-soon-item"><span>🏃</span> Race courses — running, triathlon</div>
+        <div class="coming-soon-item"><span>🚴</span> Strava routes — rides &amp; runs</div>
+        <div class="coming-soon-item"><span>🥾</span> Hikes — Cascades, Sierra Nevada</div>
+        <div class="coming-soon-item"><span>🗺️</span> Field work — GIS, ONDA, RIDGELINE</div>
+        <div class="coming-soon-item"><span>🏔️</span> Summits &amp; high points</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Built with Leaflet · OpenStreetMap</p>
+    </div>
+    <a href="/" class="footer-link">← brooksgroves.com</a>
+  </div>
+</footer>
+
+<script>
+// =============================================
+// PLACES DATA — edit this to add/update places
+// =============================================
+const PLACES_LIVED = [
+  {
+    name: 'Groveland, CA',
+    lat: 37.8274, lng: -120.2338,
+    years: '1970–1988',
+    desc: 'Grew up here. Parents were Forest Rangers. Tuolumne County, western gateway to Yosemite. Learned to swim in the Tuolumne River at Rainbow Pools. Tioga Pass every summer.',
+    color: '#c8922a'
+  },
+  {
+    name: 'Brenham, TX',
+    lat: 30.1669, lng: -96.3977,
+    years: '~1988–1990',
+    desc: 'Blinn College. Texas Hill Country — limestone hills, live oaks, bluebonnets. Trying to figure it all out far from the Sierra Nevada.',
+    color: '#8b3a2a'
+  },
+  {
+    name: 'Reno, NV',
+    lat: 39.5296, lng: -119.8138,
+    years: '1990–1997',
+    desc: 'University of Nevada, Reno. B.S. Molecular Biology. Dr. Lee Weber — heat shock proteins in Lahontan cutthroat trout and Tui chub at Pyramid Lake. Dr. Vineyard — Desert and Montane Ecosystems. The Basin and Range as classroom.',
+    color: '#4a5c45'
+  },
+  {
+    name: 'Cape Town, South Africa',
+    lat: -33.9249, lng: 18.4241,
+    years: '1996',
+    desc: 'University of Cape Town. Early days of what would become CeBER — Centre for Bioprocess Engineering Research. Working with Doug Rawlings on bioleaching and acidophilic microorganisms.',
+    color: '#2a4a7a'
+  },
+  {
+    name: 'Seattle, WA',
+    lat: 47.6062, lng: -122.3321,
+    years: '1997–2019',
+    desc: 'Arrived to go to grad school, stayed 22 years. Bell captain at the Westin Seattle. UW GIS Certificate 2017–18. Watched the city transform from the inside of a revolving door.',
+    color: '#1a3a5c'
+  },
+  {
+    name: 'Lakewood, WA',
+    lat: 47.1718, lng: -122.5185,
+    years: '2019–Present',
+    desc: 'GIS Analyst & Data Scientist at Zillow. South Puget Sound. Mt. Rainier on clear days. Home base for Pacific Northwest adventures.',
+    color: '#4a5c45'
+  }
+];
+
+// =============================================
+// MAP SETUP
+// =============================================
+const map = L.map('map', {
+  center: [39, -105],
+  zoom: 4,
+  zoomControl: true
+});
+
+// Greyscale tile layer — consistent with site aesthetic
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/">CARTO</a>',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
+
+// =============================================
+// MARKERS
+// =============================================
+const livedLayer = L.layerGroup().addTo(map);
+const markers = [];
+
+function makeIcon(color) {
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2px solid #1c1a16;box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div>`,
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -10]
+  });
+}
+
+PLACES_LIVED.forEach((p, i) => {
+  const marker = L.marker([p.lat, p.lng], { icon: makeIcon(p.color) })
+    .bindPopup(`
+      <div class="popup-title">${p.name}</div>
+      <div class="popup-meta">${p.years}</div>
+      <div class="popup-desc">${p.desc}</div>
+    `, { maxWidth: 260 });
+
+  livedLayer.addLayer(marker);
+  markers.push(marker);
+
+  // Render sidebar list
+  const item = document.createElement('div');
+  item.className = 'place-item';
+  item.innerHTML = `
+    <div class="place-name">
+      <span class="place-dot" style="background:${p.color}"></span>
+      ${p.name}
+    </div>
+    <div class="place-meta">${p.years}</div>
+    <div class="place-desc">${p.desc}</div>
+  `;
+  item.addEventListener('click', () => {
+    map.setView([p.lat, p.lng], 9, { animate: true });
+    marker.openPopup();
+  });
+  document.getElementById('place-list').appendChild(item);
+});
+
+// Draw a subtle line connecting lived places in order
+const latlngs = PLACES_LIVED.map(p => [p.lat, p.lng]);
+L.polyline(latlngs, {
+  color: '#d6d0c4',
+  weight: 1.5,
+  dashArray: '4 6',
+  opacity: 0.8
+}).addTo(livedLayer);
+
+// =============================================
+// LAYER TOGGLE
+// =============================================
+const layers = { lived: livedLayer };
+
+function toggleLayer(name, btn) {
+  if (!layers[name]) return;
+  if (map.hasLayer(layers[name])) {
+    map.removeLayer(layers[name]);
+    btn.classList.remove('active');
+  } else {
+    map.addLayer(layers[name]);
+    btn.classList.add('active');
+  }
+}
+
+// Fit map to lived markers
+const group = L.featureGroup(markers);
+map.fitBounds(group.getBounds().pad(0.15));
+</script>
+</body>
+</html>
