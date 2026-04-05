@@ -136,6 +136,11 @@
 
 <script>
 const DATA_URL = '/data/setlist.json';
+
+// Concert entries that have associated stories
+const STORY_LINKS = {
+  '53d6d7c9': { url: '/writing/cow-palace-nye-1991.html', label: 'NYE 1991 — Read the story →' }
+};
 let allConcerts = [];
 
 async function load() {
@@ -215,6 +220,7 @@ function renderConcerts(concerts) {
           ${c.tour ? `<div class="concert-tour">${c.tour}</div>` : ''}
           ${hasSongs ? `<span class="songs-toggle" onclick="toggleSongs(${i})">▸ ${c.song_count} songs</span>` : ''}
           <div class="concert-songs" id="songs-${i}">${songPills}</div>
+          ${STORY_LINKS[c.id] ? `<a href="${STORY_LINKS[c.id].url}" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--music);text-decoration:none;display:inline-block;margin-top:0.4rem;">${STORY_LINKS[c.id].label}</a>` : ''}
         </div>
         <a href="${c.url}" target="_blank" class="concert-link">Setlist ↗</a>
       </div>`;
