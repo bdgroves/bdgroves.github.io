@@ -103,7 +103,7 @@
   <!-- LAYER TOGGLES -->
   <div class="layer-bar">
     <button class="layer-btn active" onclick="toggleLayer('lived', this)">🏠 Places Lived</button>
-    <button class="layer-btn" onclick="toggleLayer('geocaches', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">📍 Geocaches</button>
+    <button class="layer-btn" onclick="toggleLayer('geocaches', this)">📍 Geocaches (1,170)</button>
     <button class="layer-btn" onclick="toggleLayer('races', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🏃 Races</button>
     <button class="layer-btn" onclick="toggleLayer('hikes', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🥾 Hikes</button>
     <button class="layer-btn" onclick="toggleLayer('fieldwork', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🗺️ Field Work</button>
@@ -121,8 +121,7 @@
     <div>
       <div class="coming-soon-panel">
         <div class="coming-soon-label">Coming Soon</div>
-        <div class="coming-soon-item"><span>📍</span> Geocache finds</div>
-        <div class="coming-soon-item"><span>🏃</span> Race courses — running, triathlon</div>
+                <div class="coming-soon-item"><span>🏃</span> Race courses — running, triathlon</div>
         <div class="coming-soon-item"><span>🚴</span> Strava routes — rides &amp; runs</div>
         <div class="coming-soon-item"><span>🥾</span> Hikes — Cascades, Sierra Nevada</div>
         <div class="coming-soon-item"><span>🗺️</span> Field work — GIS, ONDA, RIDGELINE</div>
@@ -281,6 +280,61 @@ function toggleLayer(name, btn) {
 // Fit map to lived markers
 const group = L.featureGroup(markers);
 map.fitBounds(group.getBounds().pad(0.15));
+
+// =============================================
+// GEOCACHE LAYER
+// =============================================
+const geocacheLayer = L.layerGroup();
+layers.geocaches = geocacheLayer;
+
+// Load geocache data
+fetch('/data/geocaches.json?t=' + Date.now())
+  .then(r => r.json())
+  .then(data => {
+    // Build clustered markers
+    const byType = {};
+    data.forEach(c => {
+      if (!byType[c.t]) byType[c.t] = [];
+      byType[c.t].push(c);
+    });
+
+    data.forEach(c => {
+      const color = c.t === 'Traditional Cache' ? '#22a722'
+        : c.t === 'Virtual Cache' ? '#888'
+        : c.t === 'Earthcache' ? '#8b6914'
+        : c.t === 'Multi-cache' ? '#e07800'
+        : c.t === 'Unknown Cache' ? '#7a2a9a'
+        : '#2a4a7a';
+
+      const marker = L.circleMarker([c.lat, c.lon], {
+        radius: 5,
+        fillColor: color,
+        color: '#fff',
+        weight: 1,
+        opacity: 0.9,
+        fillOpacity: 0.8
+      }).bindPopup(`
+        <div class="popup-title">${c.i} ${c.n}</div>
+        <div class="popup-meta">${c.gc} · D${c.d}/T${c.tr}</div>
+        <div class="popup-desc">${c.t}${c.f ? ' · Found ' + c.f : ''}</div>
+        <div style="margin-top:0.4rem;"><a href="https://www.geocaching.com/geocache/${c.gc}" target="_blank" style="font-family:monospace;font-size:0.7rem;color:var(--y2k);">View on geocaching.com ↗</a></div>
+      `, { maxWidth: 240 });
+
+      geocacheLayer.addLayer(marker);
+    });
+
+    console.log(`Loaded ${data.length} geocaches`);
+  })
+  .catch(e => console.log('Geocaches not loaded yet:', e));
+
+// Geocache legend note
+const geocacheLegend = L.control({position: 'bottomright'});
+geocacheLegend.onAdd = function() {
+  const div = L.DomUtil.create('div');
+  div.style.cssText = 'background:white;padding:0.5rem 0.75rem;font-family:monospace;font-size:0.6rem;border:1px solid #ccc;line-height:1.8;';
+  div.innerHTML = '<strong>Geocaches</strong><br>🟢 Traditional<br>⚪ Virtual<br>🟤 EarthCache<br>🟠 Multi<br>🟣 Mystery';
+  return div;
+};
 </script>
 </body>
 </html>
