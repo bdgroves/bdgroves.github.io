@@ -826,8 +826,8 @@
       const data = await res.json();
       const races = data.races;
 
-      // Show: recent finals (last 4) + any live + next 5 upcoming
-      const finals = races.filter(r => r.status === 'final').slice(-4);
+      // Show: recent finals (last 6) + any live + next 5 upcoming
+      const finals = races.filter(r => r.status === 'final').slice(-6);
       const live = races.filter(r => r.status === 'live');
       const upcoming = races.filter(r => r.status === 'upcoming').slice(0, 5);
       const display = [...finals, ...live, ...upcoming];
@@ -879,12 +879,15 @@
 
         data.riders.forEach(rider => {
           if (!rider.fetched) return;
-          const recentHTML = (rider.recent_results || []).slice(0, 4).map(r =>
-            `<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);">
-              <span style="color:${r.result == 1 ? 'var(--gold)' : 'var(--stone)'};">${r.result == 1 ? '🏆' : r.result}</span>
-              ${r.race}
-            </span>`
-          ).join('<br>');
+          const recentHTML = (rider.recent_results || []).slice(0, 4).map(r => {
+            // Clean up race name — strip classification suffixes
+            const raceName = (r.race || '').replace(/Mountains classification|Points classification|Youth classification/g, '').replace(/\s+/g, ' ').trim();
+            const isWin = r.result == 1;
+            return `<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);display:inline-block;margin-bottom:0.15rem;">
+              <span style="color:${isWin ? 'var(--gold)' : 'var(--stone)'};">${isWin ? '🏆' : r.result}</span>
+              ${raceName}
+            </span>`;
+          }).join('<br>');
 
           html += `<div style="padding:0.75rem 0;border-bottom:1px solid var(--mist);">
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.35rem;">
