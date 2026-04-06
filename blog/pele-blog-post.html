@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PELE — Building a Live Kīlauea Dashboard — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --lava:#c0392b; --ash:#6b6560;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--lava) 0%,var(--gold) 50%,var(--ash) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--lava); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; transition:color 0.2s; }
+    .article-back:hover { color:var(--lava); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--lava); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.3rem 0.7rem; }
+
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--lava); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--lava); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body blockquote { border-left:3px solid var(--lava); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--lava); text-decoration:underline; text-underline-offset:3px; }
+    .article-body a:hover { color:var(--ink); }
+
+    /* CODE BLOCK */
+    .code-block { background:var(--ink); color:#e8e4dc; font-family:'DM Mono',monospace; font-size:0.78rem; padding:1.25rem 1.5rem; margin:1.5rem 0; overflow-x:auto; line-height:1.7; }
+    .code-comment { color:#7a7268; }
+    .code-key { color:var(--gold); }
+    .code-val { color:#8ab4a0; }
+
+    /* SPEC TABLE */
+    .spec-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.85rem; }
+    .spec-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .spec-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    .spec-table tr:last-child td { border-bottom:none; }
+    .spec-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--lava); }
+
+    /* LIVE BADGE */
+    .live-badge { display:inline-flex; align-items:center; gap:0.5rem; background:var(--ink); color:var(--white); font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; padding:0.4rem 0.8rem; margin:1.5rem 0; text-decoration:none; }
+    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--lava); animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .live-badge:hover { background:var(--lava); }
+
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--lava); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/volcanology.html">Volcanology</a>
+      <a href="https://bdgroves.github.io/PELE" target="_blank">PELE ↗</a>
+      <a href="https://github.com/bdgroves/PELE" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/index.html" class="article-back">← Blog</a>
+
+  <p class="article-kicker">Project Build · Volcanology · USGS · GitHub Actions · April 2026</p>
+  <h1 class="article-title">🌋 PELE — Building a Live Kīlauea Dashboard for a Birthday Trip</h1>
+  <div class="article-meta">
+    <span>Brooks Groves</span>
+    <span>April 2026</span>
+    <span>Python · GitHub Actions · USGS HVO</span>
+  </div>
+  <div class="article-tags">
+    <span class="article-tag-pill">Volcanology</span>
+    <span class="article-tag-pill">Python</span>
+    <span class="article-tag-pill">GitHub Actions</span>
+    <span class="article-tag-pill">USGS</span>
+    <span class="article-tag-pill">Kīlauea</span>
+    <span class="article-tag-pill">Hawai'i</span>
+    <span class="article-tag-pill">Data Pipeline</span>
+  </div>
+
+  <a href="https://bdgroves.github.io/PELE" target="_blank" class="live-badge">
+    <span class="live-dot"></span>
+    Live Dashboard · bdgroves.github.io/PELE
+  </a>
+
+  <div class="article-body">
+
+    <p>I'm going to Hawai'i Volcanoes National Park in May for my birthday. Kīlauea is actively erupting — has been since December 23, 2024, in an episodic lava fountaining pattern not seen at the summit since the 1980s. By the time I booked the trip, the volcano had already produced 43 episodes of spectacular lava fountains, one of which sent a plume 1,000 feet into the air visible from restaurants in Hilo. The USGS Hawaiian Volcano Observatory was forecasting Episode 44 for the window of April 6–14. I had two weeks before my trip and a working knowledge of the USGS public API ecosystem. The obvious thing to do was build a dashboard.</p>
+
+    <p>PELE is a live monitoring dashboard for the six volcanoes of Hawai'i — Kīlauea, Mauna Loa, Hualālai, Mauna Kea, Haleakalā, and Kama'ehuakanaloa (the submarine seamount that will eventually become Hawai'i's next island). It pulls real-time data from USGS APIs every six hours via GitHub Actions, embeds live HVO webcam feeds, and tracks the ongoing eruption episode by episode.</p>
+
+    <h2>The Data Sources</h2>
+
+    <p>The USGS runs a genuinely excellent public API ecosystem. Everything PELE needs is free, unauthenticated, and well-documented:</p>
+
+    <table class="spec-table">
+      <tr><th>Source</th><th>What It Provides</th><th>Refresh</th></tr>
+      <tr><td>USGS HANS Public API</td><td>Volcano alert levels, activity notices</td><td>Every 6 hours</td></tr>
+      <tr><td>USGS Earthquake Hazards</td><td>7-day seismicity catalog, FDSN query</td><td>Every 6 hours + live client-side</td></tr>
+      <tr><td>HVO Webcam Images</td><td>Kīlauea and Mauna Loa camera snapshots</td><td>Every page load</td></tr>
+      <tr><td>YouTube Data API</td><td>Auto-discover live V1/V2/V3 stream IDs</td><td>Every page load</td></tr>
+      <tr><td>USGS YouTube Livestreams</td><td>24/7 live video from three crater webcams</td><td>Continuous</td></tr>
+    </table>
+
+    <p>The earthquake endpoint is particularly useful. A standard FDSN query gets you every seismic event within 100km of the Kīlauea summit over the past 7 days — magnitude, depth, location, timestamp. Filter for M2.0+ and you have a real-time picture of what the volcano's plumbing is doing.</p>
+
+    <h2>The Architecture</h2>
+
+    <p>Same pattern as everything else in this collection — Sierra Streamflow, EDGAR, brooksgroves.com itself. GitHub Actions runs <em>fetch.py</em> on a cron schedule, pulls from USGS APIs, writes static JSON to <em>data/</em>. The frontend reads those JSON files on page load. No server. No backend. No build step. Just files on GitHub Pages.</p>
+
+    <div class="code-block"><span class="code-comment"># .github/workflows/fetch.yml</span>
+<span class="code-key">on:</span>
+  <span class="code-key">schedule:</span>
+    - <span class="code-key">cron:</span> <span class="code-val">'0 */6 * * *'</span>   <span class="code-comment"># every 6 hours</span>
+  <span class="code-key">workflow_dispatch:</span>       <span class="code-comment"># manual trigger</span></div>
+
+    <p>The dual data source approach came from a lesson learned on Sierra Streamflow — if the Actions job fails, the page shouldn't go dark. So earthquake data loads both from the Actions-generated JSON cache <em>and</em> directly from the USGS FDSN API client-side. Whichever responds first wins. Belt and suspenders.</p>
+
+    <h2>The YouTube Problem</h2>
+
+    <p>HVO runs three live webcam streams on the USGS YouTube channel — V1cam, V2cam, V3cam — but the video IDs change every time a stream starts. You can't hardcode them. The solution: on every page load, a JavaScript call hits the YouTube Data API, searches for currently-live streams on the USGS channel, matches them to V1/V2/V3 by title keyword, and embeds them as iframes. If the API call fails or the streams are offline, the page falls back to the static webcam snapshot images from the USGS servers, which update every few minutes anyway.</p>
+
+    <p>The V3cam has its own backstory. During Episode 38 in December 2025, a broad arcing fountain extended over 600 meters from the south vent and buried the camera under 10 meters of tephra — volcanic glass and debris. HVO had a replacement deployed within two weeks. The new V3cam is positioned at a safer angle. PELE tracks which camera feeds are live and which are offline, and degrades gracefully when a webcam goes dark.</p>
+
+    <h2>The Eruption Log</h2>
+
+    <p>One of the most useful features is the episode tracker — a manually-maintained timeline of all 43 fountaining episodes since December 23, 2024, with dates, durations, peak heights, and notes. Episode 42's north vent fountain reached approximately 300 meters. Episode 38 buried V3cam. Episode 1 lasted about 8 hours. The pattern has settled into a recognizable inflate-pause-overflow-fountain rhythm that HVO has calibrated well enough to forecast the next episode within a week-long window.</p>
+
+    <blockquote>"They've watched 43 episodes of this eruption cycle unfold since December 2024. They've calibrated their tiltmeters. They know exactly how much microradian tilt means tomorrow versus next week."</blockquote>
+
+    <h2>The Timing</h2>
+
+    <p>Episode 44 is forecast for April 6–14. The south vent started precursory overflows on April 3. The NWS issued a Special Weather Statement about potential tephra fall in downwind communities. I built this dashboard while watching the tiltmeter data tick upward in real time, knowing the next episode was days away.</p>
+
+    <p>I'll be in the park in May. If Episode 44 happens on schedule — and 43 episodes of data says it will — I'll be standing on the rim of Kīlauea while Episode 45 or 46 is probably building. The dashboard will be on my phone. The tiltmeters will be running. The V1cam will be streaming.</p>
+
+    <p>Real data. Real APIs. Real science. Served six times a day by a cron job. Built for a birthday trip.</p>
+
+    <hr>
+
+    <p>PELE is open source at <a href="https://github.com/bdgroves/PELE" target="_blank">github.com/bdgroves/PELE</a>. Live dashboard at <a href="https://bdgroves.github.io/PELE" target="_blank">bdgroves.github.io/PELE</a>. The volcano is ready. The question is whether we are.</p>
+
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · April 2026</span>
+    <div class="article-footer-nav">
+      <a href="/volcanology.html">Volcanology Hub →</a>
+      <a href="/blog/index.html">← All Posts</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/volcanology.html">Volcanology</a>
+      <a href="https://bdgroves.github.io/PELE" target="_blank">PELE ↗</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
