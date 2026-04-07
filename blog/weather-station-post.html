@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Station — Four Climates, Zero Dollars — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --sky:#2a5c8a; --storm:#4a3a6a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--sky) 0%,var(--gold) 50%,var(--storm) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--sky); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--sky); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--sky); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.3rem 0.7rem; }
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--sky); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--sky); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body blockquote { border-left:3px solid var(--sky); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--sky); text-decoration:underline; text-underline-offset:3px; }
+
+    /* STATION TABLE */
+    .station-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.85rem; }
+    .station-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .station-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    .station-table tr:last-child td { border-bottom:none; }
+    .station-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--sky); font-weight:500; }
+
+    /* COST TABLE */
+    .cost-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.82rem; }
+    .cost-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .cost-table td { padding:0.5rem 0.75rem; border-bottom:1px solid var(--mist); }
+    .cost-table .winner { color:var(--gold); font-weight:700; font-family:'DM Mono',monospace; font-size:0.75rem; }
+
+    /* CODE */
+    .code-block { background:var(--ink); color:#e8e4dc; font-family:'DM Mono',monospace; font-size:0.78rem; padding:1.25rem 1.5rem; margin:1.5rem 0; overflow-x:auto; line-height:1.7; }
+    .code-comment { color:#7a7268; }
+
+    /* LIVE BADGE */
+    .live-badge { display:inline-flex; align-items:center; gap:0.5rem; background:var(--ink); color:var(--white); font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; padding:0.4rem 0.8rem; margin:1.5rem 0; text-decoration:none; }
+    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--sky); animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .live-badge:hover { background:var(--sky); }
+
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--sky); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/meteorology.html">Meteorology</a>
+      <a href="https://bdgroves.github.io/weather-station" target="_blank">Dashboard ↗</a>
+      <a href="https://github.com/bdgroves/weather-station" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/index.html" class="article-back">← Blog</a>
+
+  <p class="article-kicker">Project Build · Meteorology · Open-Meteo · NWS · April 2026</p>
+  <h1 class="article-title">🌡️ Weather Station — Four Climates, Zero Dollars, Half a Cup of Coffee</h1>
+  <div class="article-meta">
+    <span>Brooks Groves</span>
+    <span>April 2026</span>
+    <span>Python · GitHub Actions · Open-Meteo · NWS</span>
+  </div>
+  <div class="article-tags">
+    <span class="article-tag-pill">Meteorology</span>
+    <span class="article-tag-pill">Python</span>
+    <span class="article-tag-pill">GitHub Actions</span>
+    <span class="article-tag-pill">Open-Meteo</span>
+    <span class="article-tag-pill">NWS</span>
+    <span class="article-tag-pill">Pacific Northwest</span>
+    <span class="article-tag-pill">Death Valley</span>
+  </div>
+
+  <a href="https://bdgroves.github.io/weather-station" target="_blank" class="live-badge">
+    <span class="live-dot"></span>
+    Live Dashboard · bdgroves.github.io/weather-station
+  </a>
+
+  <div class="article-body">
+
+    <p>I was halfway through my morning coffee when the thought arrived fully formed: <em>build a weather station</em>. Not a physical one — a Davis Vantage Pro2 runs $700 and requires mounting hardware and a roof I'd rather not climb. A software one. Four stations, four climates, one dashboard, zero dollars. I had the coffee. I had the API docs open. The project was going to happen whether I finished the cup or not.</p>
+
+    <p>Weather Station is a real-time monitoring dashboard tracking four locations across the American West, updating every 15 minutes via GitHub Actions. It looks like something bolted to the wall of a NOAA operations center. It cost exactly nothing.</p>
+
+    <h2>The Four Stations</h2>
+
+    <table class="station-table">
+      <tr><th>Station</th><th>Elevation</th><th>The Vibe</th></tr>
+      <tr>
+        <td>Lakewood, WA</td>
+        <td>300 ft</td>
+        <td>Home base. Pacific Northwest grey. The kind of place where "partly cloudy" is basically sunshine and you own four rain jackets.</td>
+      </tr>
+      <tr>
+        <td>Groveland, CA</td>
+        <td>2,844 ft</td>
+        <td>Where I grew up. Gateway to Yosemite. Pine trees, gold country air, thunderstorms rolling off the Sierra crest on summer afternoons.</td>
+      </tr>
+      <tr>
+        <td>Reno, NV</td>
+        <td>4,505 ft</td>
+        <td>High desert. Big wind, bigger sky. Where a "partly sunny" forecast means the sun is actively trying to fight you.</td>
+      </tr>
+      <tr>
+        <td>Death Valley, CA</td>
+        <td>-282 ft</td>
+        <td>The hottest place on Earth. Below sea level. The barometric pressure is higher than sea level because you're in a geological hole. We monitor this one for sport.</td>
+      </tr>
+    </table>
+
+    <p>The four locations aren't random — they're the geography of a life. Lakewood is home. Groveland is where I'm from. Reno is where I went to college. Death Valley is where the atmosphere runs out of ways to be reasonable. Together they give you a cross-section of the American West from the Pacific coast to the Mojave, from sea level to high desert plateau.</p>
+
+    <h2>What's on the Dashboard</h2>
+
+    <p>This isn't your phone's weather app. The instrument panel has real depth — wind compass with a proper SVG dial showing the actual direction the wind is coming from, not just a text label. Barometric pressure with a 3-hour trend arrow — rising, falling fast, steady. This is how storm chasers read the sky before the clouds arrive. NWS alerts rendered as color-coded banners pulled straight from the National Weather Service. Heat advisories in Death Valley, wind advisories in Reno, frost warnings in Groveland. Tabs get a colored dot when a station has something brewing.</p>
+
+    <p>The astronomy panel was the unexpected pleasure — moon phase, illumination percentage, age in days, and countdowns to the next full and new moon, all calculated via Julian day math with no API required. A method that has worked since 45 BC and continues to work in a Python script in 2026. Air quality covers US AQI, PM2.5, PM10, and ozone — critical during wildfire season in the West. And 24-hour trend charts: temperature and pressure plotted on canvas-drawn charts with gradient fills. Watch the pressure drop. Feel the front coming in.</p>
+
+    <blockquote>"The barometer reading plus a 3-hour trend indicator. Rising? Falling fast? Steady? The arrow tells you what's coming before the clouds do."</blockquote>
+
+    <h2>The Architecture</h2>
+
+    <p>Same pattern as everything else in this collection. GitHub Actions runs <em>fetch_weather.py</em> on a 15-minute cron, pulls from Open-Meteo and the NWS API, writes <em>data/weather.json</em>. The frontend reads that JSON on page load. No frameworks. No npm install. No node_modules black hole. Python that writes JSON and HTML that reads it.</p>
+
+    <div class="code-block"><span class="code-comment"># The whole data pipeline in one line of intent</span>
+Open-Meteo + NWS API → fetch_weather.py → data/weather.json → index.html → your eyeballs</div>
+
+    <p>Open-Meteo is genuinely excellent — free, no API key required, open source, and it covers weather data, forecasts, and air quality in a single ecosystem. The NWS API is taxpayer-funded public infrastructure that works exactly as advertised. The moon phase is pure math. Zero authentication, zero rate limits that matter, zero cost.</p>
+
+    <h2>The Cost Analysis</h2>
+
+    <table class="cost-table">
+      <tr><th>Item</th><th>Physical Station</th><th>This Project</th></tr>
+      <tr><td>Hardware</td><td>$330–$700</td><td class="winner">$0</td></tr>
+      <tr><td>Monthly fees</td><td>$0–$10</td><td class="winner">$0</td></tr>
+      <tr><td>Roof climbing required</td><td>Yes</td><td class="winner">No</td></tr>
+      <tr><td>Covers 4 locations</td><td>No</td><td class="winner">Yes</td></tr>
+      <tr><td>NWS alerts</td><td>No</td><td class="winner">Yes</td></tr>
+      <tr><td>Moon phase</td><td>No</td><td class="winner">Yes</td></tr>
+      <tr><td>Looks like a NOAA ops center</td><td>No</td><td class="winner">Yes</td></tr>
+      <tr><td><strong>Total</strong></td><td><strong>$385–$765</strong></td><td class="winner"><strong>$0.00</strong></td></tr>
+    </table>
+
+    <h2>The Design</h2>
+
+    <p>Dark instrument panel aesthetic — Barlow Condensed for the industrial gauge readouts, IBM Plex Sans for body text, JetBrains Mono for the data values. Amber accent on charcoal. Built to look like you're monitoring the atmosphere from a bunker in Oklahoma. The Twister reference in the README is intentional. Bill Paxton's character had a wind compass too. His was analog. Mine updates every 15 minutes automatically via a cron job and has never once required him to drive into an F5.</p>
+
+    <hr>
+
+    <p>The whole thing was built before the coffee was finished. That's either a testament to the quality of the tooling or a sign that I should drink slower. Either way — live at <a href="https://bdgroves.github.io/weather-station" target="_blank">bdgroves.github.io/weather-station</a>. Open source at <a href="https://github.com/bdgroves/weather-station" target="_blank">github.com/bdgroves/weather-station</a>. The barometric pressure in Death Valley right now is higher than sea level. The atmosphere is doing something out there. Might as well watch.</p>
+
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · April 2026</span>
+    <div class="article-footer-nav">
+      <a href="/meteorology.html">Meteorology Hub →</a>
+      <a href="/blog/index.html">← All Posts</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/meteorology.html">Meteorology</a>
+      <a href="https://bdgroves.github.io/weather-station" target="_blank">Dashboard ↗</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
