@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentinel Stockpile — The Economy You Can See From Space — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --satellite:#2a5c3a; --data:#8b6914;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--satellite) 0%,var(--data) 50%,var(--ink) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--satellite); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .article-wrap { max-width:760px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--satellite); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--satellite); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.3rem 0.7rem; }
+
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--satellite); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--satellite); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body blockquote { border-left:3px solid var(--satellite); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--satellite); text-decoration:underline; text-underline-offset:3px; }
+
+    /* IMAGE FIGURES */
+    .fig { margin:2rem 0; }
+    .fig img { width:100%; border:1px solid var(--mist); display:block; }
+    .fig-caption { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); margin-top:0.5rem; line-height:1.6; }
+    .fig-caption strong { color:var(--data); }
+
+    /* SIDE BY SIDE */
+    .fig-pair { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:2rem 0; }
+    .fig-pair .fig { margin:0; }
+    @media(max-width:600px) { .fig-pair { grid-template-columns:1fr; } }
+
+    /* SEASONAL TABLE */
+    .season-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.88rem; }
+    .season-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .season-table td { padding:0.65rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; line-height:1.55; }
+    .season-table tr:last-child td { border-bottom:none; }
+    .season-table td:first-child { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--data); font-weight:600; white-space:nowrap; }
+
+    /* INDICES TABLE */
+    .index-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.85rem; }
+    .index-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .index-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    .index-table tr:last-child td { border-bottom:none; }
+    .index-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--satellite); font-weight:600; }
+
+    /* USES BOX */
+    .uses-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0; }
+    .use-card { background:var(--cream); padding:1rem 1.25rem; border-left:3px solid var(--data); }
+    .use-card-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--data); margin-bottom:0.4rem; }
+    .use-card-body { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    @media(max-width:560px) { .uses-grid { grid-template-columns:1fr; } }
+
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--satellite); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/index.html" class="article-back">← Blog</a>
+
+  <p class="article-kicker">Project Build · Remote Sensing · Sentinel-2 · GIS · April 2026</p>
+  <h1 class="article-title">🛰️ Sentinel Stockpile — The Economy You Can See From Space</h1>
+  <div class="article-meta">
+    <span>Brooks Groves</span>
+    <span>April 2026</span>
+    <span>Python · Sentinel-2 · Planetary Computer · pixi</span>
+  </div>
+  <div class="article-tags">
+    <span class="article-tag-pill">Remote Sensing</span>
+    <span class="article-tag-pill">Sentinel-2</span>
+    <span class="article-tag-pill">GIS</span>
+    <span class="article-tag-pill">Python</span>
+    <span class="article-tag-pill">pixi</span>
+    <span class="article-tag-pill">Supply Chain</span>
+    <span class="article-tag-pill">Columbia River</span>
+    <span class="article-tag-pill">Lumber</span>
+  </div>
+
+  <div class="article-body">
+
+    <p>Every year, the Pacific Northwest lumber supply chain does the same thing. Mills cut timber all summer. Logs pile up at export terminals along the Columbia River. Ships carry them to Asia. Then winter comes, logging roads close, and the yards go quiet. We know this because economists track it, because industry reports document it, and — as of this project — because we watched it happen from 500 miles up.</p>
+
+    <p>Sentinel Stockpile is a commodity intelligence pipeline built on free ESA satellite imagery and Microsoft Planetary Computer. It monitors industrial stockpile levels at fixed locations over time — watching the lumber accumulate and deplete at the Port of Longview, Washington, the largest log export terminal on the Columbia River, scene by scene, across an entire year.</p>
+
+    <h2>The Time Series</h2>
+
+    <div class="fig">
+      <img src="/images/sentinel-time-series.png" alt="12-month stockpile area time series at Port of Longview">
+      <p class="fig-caption"><strong>Port of Longview · 12-month stockpile area · April 2025 – April 2026.</strong> Each dot is a Sentinel-2 scene. The seasonal pulse of the Pacific Northwest lumber industry, measured in hectares.</p>
+    </div>
+
+    <p>That chart is 12 months of lumber stockpile area at Port of Longview. The signal is unmistakable — a classic seasonal cycle driven by the rhythm of Cascades timber harvest, Columbia River export logistics, and Asian construction markets.</p>
+
+    <table class="season-table">
+      <tr><th>Season</th><th>Area</th><th>What's Happening</th></tr>
+      <tr><td>Spring (Apr–May)</td><td>~20 ha</td><td>Yards sitting at annual low. Mills spinning up after winter. Logging trucks starting to roll as mountain roads dry out.</td></tr>
+      <tr><td>Summer (Jun–Jul)</td><td>47 ha peak</td><td>Peak harvest. Cascades timber sales in full swing. Lumber accumulating faster than ships can carry it out. If you drove past in July, you'd see mountains of logs stretching across the terminal.</td></tr>
+      <tr><td>Fall (Aug–Sep)</td><td>22 ha</td><td>The drawdown. Export vessels loading for Asian construction markets. Watch the inventory liquidate — 47 hectares back to 22 in six weeks.</td></tr>
+      <tr><td>Winter (Jan)</td><td>5 ha</td><td>Rain shuts down logging roads. Mills cut shifts. The Columbia River lumber supply chain exhales.</td></tr>
+    </table>
+
+    <h2>See It With Your Own Eyes</h2>
+
+    <p>Here's what the port looks like from orbit in July versus January. Those reddish-brown rectangles in the upper left are log stacks. The bright white patches are dimensional lumber or tarped material. In July, they're everywhere. In January, the yard is mostly empty pavement.</p>
+
+    <div class="fig-pair">
+      <div class="fig">
+        <img src="/images/sentinel-rgb-july.png" alt="True color satellite image July 2025 - Port of Longview">
+        <p class="fig-caption"><strong>July 13, 2025 — Peak season.</strong> Log stacks and lumber filling the terminal. Columbia River at lower left.</p>
+      </div>
+      <div class="fig">
+        <img src="/images/sentinel-rgb-january.png" alt="True color satellite image January 2026 - Port of Longview">
+        <p class="fig-caption"><strong>January 16, 2026 — Winter low.</strong> Same terminal. Mostly bare pavement. The Columbia has risen with winter rain.</p>
+      </div>
+    </div>
+
+    <p>Now here's what the classifier sees — the algorithm's interpretation of the same scenes, pixel by pixel:</p>
+
+    <div class="fig-pair">
+      <div class="fig">
+        <img src="/images/sentinel-map-july.png" alt="Classification map July 2025 - 32% stockpile">
+        <p class="fig-caption"><strong>July 2025 — 32% stockpile.</strong> Amber = stockpile. Blue = Columbia River. Brown = pavement. Green = vegetation. Nearly a third of the terminal covered in lumber.</p>
+      </div>
+      <div class="fig">
+        <img src="/images/sentinel-map-january.png" alt="Classification map January 2026 - 3.4% stockpile">
+        <p class="fig-caption"><strong>January 2026 — 3.4% stockpile.</strong> Same classifier. The terminal has exhaled. Blue dominates as the Columbia River rises. Amber nearly gone.</p>
+      </div>
+    </div>
+
+    <h2>How the Classification Works</h2>
+
+    <p>The trick is that different materials reflect light differently in ways the human eye can't fully resolve but multispectral sensors can. Sentinel-2 captures six spectral bands — visible light plus near-infrared and shortwave infrared — and we compute indices that quantify these reflectance differences.</p>
+
+    <table class="index-table">
+      <tr><th>Index</th><th>What It Does</th></tr>
+      <tr><td>NDVI</td><td>Vegetation index — identifies trees and grass so we can exclude them from stockpile counts</td></tr>
+      <tr><td>BSI</td><td>Bare soil index — separates textured surfaces like lumber stacks from smooth pavement</td></tr>
+      <tr><td>Brightness</td><td>Catches the actual stockpile material, which reflects more light than surrounding terminal surfaces</td></tr>
+    </table>
+
+    <p>Each pixel gets classified as water, vegetation, stockpile, or ground. Count the stockpile pixels, multiply by the pixel area (100 m² each), and you have a measurement in square meters. Do it across 32 scenes over 12 months and you have a time series. The thresholds that separate "stockpile" from "ground" were tuned empirically — looking at the satellite imagery with human eyes, comparing it to the classification output, adjusting until the amber pixels land where the actual lumber sits. Part science, part craft.</p>
+
+    <blockquote>"This is the seasonal pulse of a $40 billion industry, visible from space, measured with free tools, and reproducible by anyone with a laptop."</blockquote>
+
+    <h2>Why This Matters Beyond Lumber</h2>
+
+    <p>The Port of Longview lumber cycle is a proof of concept for a broader class of analysis. The same spectral classification approach works for anything that accumulates visibly at a fixed outdoor location:</p>
+
+    <div class="uses-grid">
+      <div class="use-card">
+        <div class="use-card-head">🏗️ Container Terminals</div>
+        <div class="use-card-body">Are ports backing up or flowing? Trade disruptions show up as container area changes weeks before they hit economic reports.</div>
+      </div>
+      <div class="use-card">
+        <div class="use-card-head">🛢️ Oil Tank Farms</div>
+        <div class="use-card-body">The shadow inside a floating-roof tank tells you how full it is. Multiply across a tank farm and estimate regional petroleum reserves.</div>
+      </div>
+      <div class="use-card">
+        <div class="use-card-head">🌾 Grain Elevators</div>
+        <div class="use-card-body">Seasonal agricultural commodity flows visible from the accumulation patterns at storage and export facilities.</div>
+      </div>
+      <div class="use-card">
+        <div class="use-card-head">⛏️ Mining Stockpiles</div>
+        <div class="use-card-body">Coal, ore, aggregate — anything stored outdoors in bulk before transport. Every mine is a potential monitoring site.</div>
+      </div>
+    </div>
+
+    <p>This is the kind of analysis hedge funds pay six figures a year for — satellite-derived commodity intelligence that moves faster than official reports. Sentinel Stockpile is proof you can build the same thing with open data, open tools, and a pixi environment.</p>
+
+    <h2>The Architecture</h2>
+
+    <p>Each monitoring site is a JSON config file. Each commodity type has its own classification thresholds. The pipeline runs via GitHub Actions on a monthly cron — downloading fresh Sentinel-2 scenes from Microsoft Planetary Computer, classifying pixels, computing area measurements, and generating updated time series charts. No API keys. No paid accounts. The European Space Agency and Microsoft provide everything for free.</p>
+
+    <p>Current sites: Port of Longview (12-month time series, complete), Port of Tacoma containers (configured, threshold tuning in progress), Weyerhaeuser Longview (configured). Next up: Sentinel-1 SAR integration to see through the PNW cloud gap that blanks out optical imagery from October through January. Radar fills the winter hole.</p>
+
+    <hr>
+
+    <p>The project is open source at <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank">github.com/bdgroves/sentinel-stockpile</a>. Add a site config, run the pipeline, get a time series. Point it at something interesting.</p>
+
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · April 2026</span>
+    <div class="article-footer-nav">
+      <a href="/geospatial.html">Geospatial Hub →</a>
+      <a href="/blog/index.html">← All Posts</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
