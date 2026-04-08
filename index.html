@@ -99,15 +99,19 @@
     .support-dek { font-size:0.8rem; color:var(--stone); line-height:1.6; }
     .support-link { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.5rem; display:block; }
 
-    .ologies-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:1px solid var(--mist); }
+    .ologies-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0; border:1px solid var(--mist); }
     @media(max-width:680px) { .ologies-grid { grid-template-columns:1fr; } }
     .ology-card { padding:1.75rem; border-right:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; position:relative; overflow:hidden; }
     .ology-card:last-child { border-right:none; }
+    @media(max-width:900px) { .ologies-grid { grid-template-columns:repeat(3,1fr); } }
+    @media(max-width:560px) { .ologies-grid { grid-template-columns:1fr 1fr; } }
     .ology-card:hover { background:var(--cream); }
     .ology-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; transform:scaleX(0); transform-origin:left; transition:transform 0.3s; }
     .ology-card.met::after { background:var(--sky); }
     .ology-card.hyd::after { background:var(--sage); }
     .ology-card.geo::after { background:var(--rust); }
+    .ology-card.vol::after { background:#c0392b; }
+    .ology-card.eco::after { background:#4a5c45; }
     .ology-card:hover::after { transform:scaleX(1); }
     .ology-icon { font-size:1.75rem; margin-bottom:0.75rem; display:block; }
     .ology-name { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:900; margin-bottom:0.5rem; }
@@ -445,7 +449,7 @@
     </div>
   </div>
 
-  <!-- OLOGIES — Geospatial live, Meteorology/Hydrology coming soon -->
+  <!-- OLOGIES -->
   <div class="lead-section">
     <div class="lead-section-label">
       <span>The Ologies</span>
@@ -456,21 +460,35 @@
         <span class="ology-icon">🌩</span>
         <h3 class="ology-name">Meteorology</h3>
         <p class="ology-desc">Weather data pipelines, atmospheric analysis, and forecast automation across the Pacific Northwest and California.</p>
-        <p class="ology-projects">Weather Report Bot · NWS API · Radar</p>
+        <p class="ology-projects">Weather Station · CASCADIA-WX · NWS API</p>
         <span class="ology-link">Explore →</span>
       </a>
       <a href="/hydrology.html" class="ology-card hyd">
         <span class="ology-icon">💧</span>
         <h3 class="ology-name">Hydrology</h3>
         <p class="ology-desc">Streamflow monitoring, snowpack analysis, and water resource tracking across Sierra Nevada and Cascade watersheds.</p>
-        <p class="ology-projects">streamchaser · Sierra Streamflow · Rainier Snowpack</p>
+        <p class="ology-projects">Rainier Snowpack · Sierra Streamflow · SNOTEL</p>
         <span class="ology-link">Explore →</span>
       </a>
       <a href="/geospatial.html" class="ology-card geo">
         <span class="ology-icon">🗺</span>
         <h3 class="ology-name">Geospatial</h3>
         <p class="ology-desc">LiDAR, remote sensing, GIS pipelines, and spatial analysis. QGIS, Python, R, and real-world field data.</p>
-        <p class="ology-projects">Wildfire Response Gaps · Project Kiva · QGIS</p>
+        <p class="ology-projects">Sentinel Stockpile · Project Kiva · RIDGELINE</p>
+        <span class="ology-link">Explore →</span>
+      </a>
+      <a href="/volcanology.html" class="ology-card vol">
+        <span class="ology-icon">🌋</span>
+        <h3 class="ology-name">Volcanology</h3>
+        <p class="ology-desc">Live eruption monitoring, lahar hazard tracking, and seismic analysis across Hawaiʻi and the Pacific Northwest.</p>
+        <p class="ology-projects">PELE · lahar-watch · USGS HVO</p>
+        <span class="ology-link">Explore →</span>
+      </a>
+      <a href="/ecology.html" class="ology-card eco">
+        <span class="ology-icon">🌿</span>
+        <h3 class="ology-name">Ecology</h3>
+        <p class="ology-desc">Species distributions, community dynamics, and the data infrastructure of biodiversity science. Desert to rainforest.</p>
+        <p class="ology-projects">DIPODOMYS · desert-ecostats · iNaturalist</p>
         <span class="ology-link">Explore →</span>
       </a>
     </div>
