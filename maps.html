@@ -322,7 +322,7 @@ const COUNTRIES = [
   { name:'Croatia', flag:'🇭🇷', lat:45.1, lng:15.2, wiki:'https://en.wikipedia.org/wiki/Croatia', note:'', airport:false },
   { name:'Curaçao', flag:'🇨🇼', lat:12.1696, lng:-68.99, wiki:'https://en.wikipedia.org/wiki/Cura%C3%A7ao', note:'', airport:false },
   // D
-  { name:'Denmark', flag:'🇩🇰', lat:56.2639, lng:9.5018, wiki:'https://en.wikipedia.org/wiki/Denmark', note:'Airport only ✈️', airport:true },
+  { name:'Denmark', flag:'🇩🇰', lat:56.2639, lng:9.5018, wiki:'https://en.wikipedia.org/wiki/Denmark', note:'Airport transit only', airport:true },
   { name:'Dominica', flag:'🇩🇲', lat:15.415, lng:-61.371, wiki:'https://en.wikipedia.org/wiki/Dominica', note:'', airport:false },
   { name:'Dominican Republic', flag:'🇩🇴', lat:18.7357, lng:-70.1627, wiki:'https://en.wikipedia.org/wiki/Dominican_Republic', note:'', airport:false },
   // E
@@ -335,7 +335,7 @@ const COUNTRIES = [
   { name:'Greece', flag:'🇬🇷', lat:39.0742, lng:21.8243, wiki:'https://en.wikipedia.org/wiki/Greece', note:'', airport:false },
   { name:'Guadeloupe', flag:'🇫🇷', lat:16.265, lng:-61.551, wiki:'https://en.wikipedia.org/wiki/Guadeloupe', note:'', airport:false },
   // H
-  { name:'Hong Kong', flag:'🇭🇰', lat:22.3193, lng:114.1694, wiki:'https://en.wikipedia.org/wiki/Hong_Kong', note:'Airport only ✈️', airport:true },
+  { name:'Hong Kong', flag:'🇭🇰', lat:22.3193, lng:114.1694, wiki:'https://en.wikipedia.org/wiki/Hong_Kong', note:'Airport transit only', airport:true },
   // I
   { name:'Iceland', flag:'🇮🇸', lat:64.9631, lng:-19.0208, wiki:'https://en.wikipedia.org/wiki/Iceland', note:'', airport:false },
   { name:'Ireland', flag:'🇮🇪', lat:53.4129, lng:-8.2439, wiki:'https://en.wikipedia.org/wiki/Republic_of_Ireland', note:'', airport:false },
@@ -364,9 +364,9 @@ const COUNTRIES = [
   // Z
   { name:'Zimbabwe', flag:'🇿🇼', lat:-19.0154, lng:29.1549, wiki:'https://en.wikipedia.org/wiki/Zimbabwe', note:'', airport:false },
   // NOT RECOGNIZED — fun ones
-  { name:'Conch Republic', flag:'🦞', lat:24.5551, lng:-81.7800, wiki:'https://en.wikipedia.org/wiki/Conch_Republic', note:'Not internationally recognized 😄', airport:false },
-  { name:'Cascadia', flag:'🌲', lat:47.5, lng:-121.5, wiki:'https://en.wikipedia.org/wiki/Cascadia_(independence_movement)', note:'Not internationally recognized 🌲', airport:false },
-  { name:'Jefferson', flag:'⛏️', lat:41.5, lng:-122.5, wiki:'https://en.wikipedia.org/wiki/State_of_Jefferson', note:'Not internationally recognized ⛏️', airport:false },
+  { name:'Conch Republic', flag:'🦞', lat:24.5551, lng:-81.7800, wiki:'https://en.wikipedia.org/wiki/Conch_Republic', note:'Not internationally recognized', airport:false },
+  { name:'Cascadia', flag:'🌲', lat:47.5, lng:-121.5, wiki:'https://en.wikipedia.org/wiki/Cascadia_(independence_movement)', note:'Not internationally recognized', airport:false },
+  { name:'Jefferson', flag:'⛏️', lat:41.5, lng:-122.5, wiki:'https://en.wikipedia.org/wiki/State_of_Jefferson', note:'Not internationally recognized', airport:false },
 ];
 
 const travelLayer = L.layerGroup();
@@ -379,11 +379,11 @@ COUNTRIES.forEach(c => {
   // green = fun/unrecognized
   let fillColor, label;
   if (FUN.includes(c.name)) {
-    fillColor = '#4a5c45'; label = 'Unrecognized 😄';
+    fillColor = '#4a5c45'; label = 'Not internationally recognized';
   } else if (c.airport) {
-    fillColor = '#7a7268'; label = 'Airport only ✈️';
+    fillColor = '#7a7268'; label = 'Airport transit only';
   } else if (c.name === 'United States') {
-    fillColor = '#2a4a7a'; label = 'Home 🏠';
+    fillColor = '#2a4a7a'; label = 'Home';
   } else {
     fillColor = '#c8922a'; label = 'Visited';
   }
@@ -401,7 +401,7 @@ COUNTRIES.forEach(c => {
     fillOpacity: 0.85
   })
     .bindPopup(`
-      <div class="popup-title">${c.flag} ${c.name}</div>
+      <div class="popup-title">${c.name}</div>
       ${noteHtml}
       <div style="margin-top:0.5rem;">
         <a href="${c.wiki}" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--y2k);text-decoration:none;">Wikipedia →</a>
@@ -416,19 +416,19 @@ const visitedCount = COUNTRIES.filter(c => !c.airport && !FUN_NAMES.includes(c.n
 const airportCount = COUNTRIES.filter(c => c.airport).length;
 document.querySelector('.coming-soon-panel').innerHTML +=
   `<div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--mist);">
-    <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--stone);margin-bottom:0.5rem;">🌍 Countries Layer</div>
+    <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--stone);margin-bottom:0.5rem;">Countries Layer</div>
     <div style="display:flex;flex-direction:column;gap:0.3rem;">
       <div style="display:flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);">
         <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#c8922a;border:1.5px solid #1c1a16;flex-shrink:0;"></span> Visited (${visitedCount})
       </div>
       <div style="display:flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);">
-        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7a7268;border:1.5px solid #1c1a16;flex-shrink:0;"></span> Airport only (${airportCount})
+        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7a7268;border:1.5px solid #1c1a16;flex-shrink:0;"></span> Airport transit only (${airportCount})
       </div>
       <div style="display:flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);">
         <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#2a4a7a;border:1.5px solid #1c1a16;flex-shrink:0;"></span> Home
       </div>
       <div style="display:flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);">
-        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a5c45;border:1.5px solid #1c1a16;flex-shrink:0;"></span> Unrecognized 😄
+        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a5c45;border:1.5px solid #1c1a16;flex-shrink:0;"></span> Not internationally recognized
       </div>
     </div>
   </div>`;
