@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIPODOMYS — A Data Portrait of Death Valley's Kangaroo Rats — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --desert:#8b4513; --night:#1a1a2e;
+      --sand:#c8a96a; --ecology:#4a5c2a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--night) 0%,var(--desert) 40%,var(--sand) 70%,var(--ecology) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--desert); }
+    nav a.live { border:1px solid var(--ecology); padding:0.3rem 0.7rem; color:var(--ecology); }
+    nav a.live:hover { background:var(--ecology); color:var(--white); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--desert); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--desert); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.3rem 0.7rem; }
+
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--desert); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--desert); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body blockquote { border-left:3px solid var(--sand); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--desert); text-decoration:underline; text-underline-offset:3px; }
+
+    .night-box { background:var(--night); color:#e8e4d0; padding:1.75rem 2rem; margin:2rem 0; border-left:3px solid var(--sand); font-style:italic; font-size:1.05rem; line-height:1.9; }
+
+    .species-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0; }
+    .species-card { padding:1.25rem; border:1px solid var(--mist); }
+    .species-card.deserti { border-top:3px solid var(--sand); }
+    .species-card.merriami { border-top:3px solid var(--ecology); }
+    .species-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; font-style:italic; margin-bottom:0.5rem; }
+    .species-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:0.4rem; }
+    .species-fact { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+
+    .adapt-list { margin:1.5rem 0; }
+    .adapt-item { display:grid; grid-template-columns:auto 1fr; gap:0.75rem 1rem; padding:0.75rem 0; border-bottom:1px solid var(--mist); align-items:start; }
+    .adapt-item:last-child { border-bottom:none; }
+    .adapt-icon { font-size:1.1rem; padding-top:0.1rem; }
+    .adapt-text { font-size:0.9rem; line-height:1.65; }
+    .adapt-text strong { font-size:0.82rem; font-family:'DM Mono',monospace; letter-spacing:0.06em; display:block; text-transform:uppercase; color:var(--desert); margin-bottom:0.2rem; }
+
+    .data-badge { display:inline-flex; align-items:center; gap:0.5rem; background:var(--night); color:#e8e4d0; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; padding:0.4rem 0.8rem; margin:1.5rem 0; text-decoration:none; }
+    .data-badge:hover { background:var(--desert); }
+    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--sand); animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--desert); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+    @media(max-width:560px) { .species-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/ecology.html">Ecology</a>
+      <a href="https://bdgroves.github.io/dipodomys" target="_blank" class="live">Live Site ↗</a>
+      <a href="https://github.com/bdgroves/dipodomys" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/index.html" class="article-back">← Blog</a>
+
+  <p class="article-kicker">Project Build · Ecology · iNaturalist · Death Valley · Citizen Science</p>
+  <h1 class="article-title">🐾 DIPODOMYS — A Data Portrait of Death Valley's Kangaroo Rats</h1>
+  <div class="article-meta">
+    <span>Brooks Groves</span>
+    <span>April 2026</span>
+    <span>Vanilla JS · Leaflet · iNaturalist API · Chart.js</span>
+  </div>
+  <div class="article-tags">
+    <span class="article-tag-pill">Ecology</span>
+    <span class="article-tag-pill">iNaturalist</span>
+    <span class="article-tag-pill">Death Valley</span>
+    <span class="article-tag-pill">Citizen Science</span>
+    <span class="article-tag-pill">Leaflet</span>
+    <span class="article-tag-pill">Kangaroo Rats</span>
+    <span class="article-tag-pill">Mojave</span>
+  </div>
+
+  <a href="https://bdgroves.github.io/dipodomys" target="_blank" class="data-badge">
+    <span class="live-dot"></span>
+    Live Site · bdgroves.github.io/dipodomys
+  </a>
+
+  <div class="article-body">
+
+    <div class="night-box">
+      It is two in the morning at Badwater Basin, the lowest point in North America at 282 feet below sea level. The temperature has dropped to 95°F. A small, pale mammal the size of a large gerbil emerges from a burrow entrance in the hardpan, pauses, then launches itself across the salt flat in a series of long bipedal bounds — five feet per leap, tail spinning for balance, landing in silence.<br><br>
+      It will not drink water tonight. It never does.
+    </div>
+
+    <p><em>Dipodomys deserti</em> — the Desert Kangaroo Rat — is one of the most physiologically extreme mammals on Earth. It lives in one of the hottest, driest environments on the planet without ever consuming free liquid water. Instead, it extracts moisture metabolically from dry seeds through the same oxidative process by which all cells release energy from carbohydrates. Its kidneys concentrate urine at five times the efficiency of a human's. Its nasal passages recapture moisture from exhaled breath before it escapes. It has, over five million years of evolution in the Mojave basin, essentially solved the problem of liquid water.</p>
+
+    <p>DIPODOMYS is an interactive data portrait of the two kangaroo rat species that share Death Valley — built on live iNaturalist occurrence data, Leaflet mapping, and as much natural history context as I could pack into one HTML file.</p>
+
+    <h2>Two Species, One Valley</h2>
+
+    <div class="species-grid">
+      <div class="species-card deserti">
+        <div class="species-label">The Specialist</div>
+        <div class="species-name">Dipodomys deserti</div>
+        <div class="species-fact">Pale as bleached sand. Larger. Five hind toes. Lives almost exclusively on open, firm sandy flats and alluvial fans — requires loose, wind-deposited sand for burrowing. Will not venture onto rocky substrate. Range barely extends beyond the Mojave. Has bet everything on one habitat, and been winning for millions of years.</div>
+      </div>
+      <div class="species-card merriami">
+        <div class="species-label">The Generalist</div>
+        <div class="species-name">Dipodomys merriami</div>
+        <div class="species-fact">Smaller, darker. Four hind toes. Most widespread kangaroo rat in North America. Lives in desert scrub, sagebrush steppe, alluvial bajadas, Joshua tree woodland, rocky slopes. Ranges from California to Texas. Where deserti specialized, merriami generalized — and the tradeoff shows. Merriami is everywhere. Deserti is only here.</div>
+      </div>
+    </div>
+
+    <p>Where the two species meet — as they do across Death Valley's sandy flats — they partition microhabitats. <em>Deserti</em> takes the open dunes. <em>Merriami</em> works the surrounding scrub. The boundary between them is ecological, not geographic, drawn in seed patches and burrow densities and nightly foraging circuits.</p>
+
+    <h2>How They Survive</h2>
+
+    <div class="adapt-list">
+      <div class="adapt-item">
+        <div class="adapt-icon">🌡️</div>
+        <div class="adapt-text"><strong>Burrow Thermoregulation</strong>Subsurface temperatures at 18 inches run 20–30°C cooler than the surface. The animal simply goes underground during the worst heat entirely.</div>
+      </div>
+      <div class="adapt-item">
+        <div class="adapt-icon">🌙</div>
+        <div class="adapt-text"><strong>Nocturnal Activity</strong>Emergence timed to the window after surface temperatures drop but before early dawn. The desert floor at night, to a kangaroo rat, is not a hostile environment.</div>
+      </div>
+      <div class="adapt-item">
+        <div class="adapt-icon">👂</div>
+        <div class="adapt-text"><strong>Enlarged Auditory Bullae</strong>The outsized middle ear structures that give kangaroo rats their distinctive wide-skulled profile — evolved to detect the low-frequency wingbeats of approaching owls in near-total darkness.</div>
+      </div>
+      <div class="adapt-item">
+        <div class="adapt-icon">💧</div>
+        <div class="adapt-text"><strong>Metabolic Water</strong>No free water consumed. Ever. Moisture extracted metabolically from dry seeds. Kidneys concentrate urine at 5× human efficiency. Nasal passages recapture exhaled moisture.</div>
+      </div>
+      <div class="adapt-item">
+        <div class="adapt-icon">🦘</div>
+        <div class="adapt-text"><strong>Bipedal Saltation</strong>Explosive, directional escape jumps of up to nine feet — making them nearly impossible for a striking rattlesnake to intercept. Five million years of selection pressure.</div>
+      </div>
+    </div>
+
+    <h2>The Data</h2>
+
+    <p>The project pulls live from the iNaturalist API on every page load — no cached datasets, no static files. Every observation on the map is a georeferenced wildlife sighting contributed by a naturalist, researcher, or citizen scientist. Many were photographed with a phone flashlight in the middle of the night in one of the most remote desert regions in the United States.</p>
+
+    <p>The temporal chart reveals the citizen science explosion clearly: a long flat line of museum specimen records from the early 20th century, a modest uptick from mid-century field surveys, and then — after roughly 2012 — a near-vertical spike as iNaturalist reached critical mass. The bias is real and worth naming: we know more about where these animals were seen in 2023 than in 1983, not because they changed their range, but because observer coverage changed.</p>
+
+    <p>The elevation chart shows the habitat partitioning directly: <em>deserti</em> clusters tightly near and below sea level, on the valley floor and lower alluvial fans. <em>Merriami</em> spreads across a wider elevation range, turning up on bajadas, in canyons, on the slopes of the surrounding ranges. Two species, same valley, different vertical worlds.</p>
+
+    <blockquote>"The gaps on the map are not just places where kangaroo rats don't live — they are places where people with smartphones don't go."</blockquote>
+
+    <h2>The Stack</h2>
+
+    <p>Deliberately minimal. One HTML file. No frameworks, no build system, no package manager, no dependencies to rot. Leaflet with MarkerCluster for the map, CartoDB Dark Matter tiles (the desert-night aesthetic demanded a dark basemap), Chart.js for the temporal and elevation charts, iNaturalist API v1 for live occurrence data and CC-licensed field photos. Six API calls on page load, everything rendered client-side, zero maintenance burden.</p>
+
+    <p>The design philosophy mirrors the ecology: specialization where it matters, nothing extraneous. <em>Dipodomys deserti</em> has been solving the problem of desert survival for five million years with exactly what it needs and nothing it doesn't. The website follows the same principle.</p>
+
+    <hr>
+
+    <p>Live at <a href="https://bdgroves.github.io/dipodomys" target="_blank">bdgroves.github.io/dipodomys</a>. Open source at <a href="https://github.com/bdgroves/dipodomys" target="_blank">github.com/bdgroves/dipodomys</a>. <em>Dipodomys deserti</em> survives 134-degree heat without drinking water. It has earned a decent website.</p>
+
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · April 2026</span>
+    <div class="article-footer-nav">
+      <a href="/ecology.html">Ecology Hub →</a>
+      <a href="/blog/index.html">← All Posts</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/ecology.html">Ecology</a>
+      <a href="https://bdgroves.github.io/dipodomys" target="_blank">DIPODOMYS ↗</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
