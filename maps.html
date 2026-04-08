@@ -104,6 +104,7 @@
   <div class="layer-bar">
     <button class="layer-btn active" onclick="toggleLayer('lived', this)">🏠 Places Lived</button>
     <button class="layer-btn" onclick="toggleLayer('geocaches', this)">📍 Geocaches (1,170)</button>
+    <button class="layer-btn" onclick="toggleLayer('travel', this)">🌍 Countries Visited</button>
     <button class="layer-btn" onclick="toggleLayer('races', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🏃 Races</button>
     <button class="layer-btn" onclick="toggleLayer('hikes', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🥾 Hikes</button>
     <button class="layer-btn" onclick="toggleLayer('fieldwork', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🗺️ Field Work</button>
@@ -301,6 +302,102 @@ function toggleLayer(name, btn) {
 // Fit map to lived markers
 const group = L.featureGroup(markers);
 map.fitBounds(group.getBounds().pad(0.15));
+
+// =============================================
+// TRAVEL LAYER
+// =============================================
+const COUNTRIES = [
+  // A
+  { name:'Australia', flag:'🇦🇺', lat:-25.2744, lng:133.7751, wiki:'https://en.wikipedia.org/wiki/Australia', note:'', airport:false },
+  { name:'Angola', flag:'🇦🇴', lat:-11.2027, lng:17.8739, wiki:'https://en.wikipedia.org/wiki/Angola', note:'', airport:false },
+  { name:'Antigua and Barbuda', flag:'🇦🇬', lat:17.0608, lng:-61.7964, wiki:'https://en.wikipedia.org/wiki/Antigua_and_Barbuda', note:'', airport:false },
+  { name:'Albania', flag:'🇦🇱', lat:41.1533, lng:20.1683, wiki:'https://en.wikipedia.org/wiki/Albania', note:'', airport:false },
+  { name:'Aruba', flag:'🇦🇼', lat:12.5211, lng:-69.9683, wiki:'https://en.wikipedia.org/wiki/Aruba', note:'', airport:false },
+  // B
+  { name:'Botswana', flag:'🇧🇼', lat:-22.3285, lng:24.6849, wiki:'https://en.wikipedia.org/wiki/Botswana', note:'', airport:false },
+  { name:'Bahamas', flag:'🇧🇸', lat:25.0343, lng:-77.3963, wiki:'https://en.wikipedia.org/wiki/The_Bahamas', note:'', airport:false },
+  { name:'Belgium', flag:'🇧🇪', lat:50.5039, lng:4.4699, wiki:'https://en.wikipedia.org/wiki/Belgium', note:'', airport:false },
+  // C
+  { name:'Canada', flag:'🇨🇦', lat:56.1304, lng:-106.3468, wiki:'https://en.wikipedia.org/wiki/Canada', note:'', airport:false },
+  { name:'Croatia', flag:'🇭🇷', lat:45.1, lng:15.2, wiki:'https://en.wikipedia.org/wiki/Croatia', note:'', airport:false },
+  { name:'Curaçao', flag:'🇨🇼', lat:12.1696, lng:-68.99, wiki:'https://en.wikipedia.org/wiki/Cura%C3%A7ao', note:'', airport:false },
+  // D
+  { name:'Denmark', flag:'🇩🇰', lat:56.2639, lng:9.5018, wiki:'https://en.wikipedia.org/wiki/Denmark', note:'Airport only ✈️', airport:true },
+  { name:'Dominica', flag:'🇩🇲', lat:15.415, lng:-61.371, wiki:'https://en.wikipedia.org/wiki/Dominica', note:'', airport:false },
+  { name:'Dominican Republic', flag:'🇩🇴', lat:18.7357, lng:-70.1627, wiki:'https://en.wikipedia.org/wiki/Dominican_Republic', note:'', airport:false },
+  // E
+  { name:'England', flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', lat:52.3555, lng:-1.1743, wiki:'https://en.wikipedia.org/wiki/England', note:'', airport:false },
+  { name:'Ethiopia', flag:'🇪🇹', lat:9.145, lng:40.4897, wiki:'https://en.wikipedia.org/wiki/Ethiopia', note:'', airport:false },
+  // F
+  { name:'France', flag:'🇫🇷', lat:46.2276, lng:2.2137, wiki:'https://en.wikipedia.org/wiki/France', note:'', airport:false },
+  // G
+  { name:'Germany', flag:'🇩🇪', lat:51.1657, lng:10.4515, wiki:'https://en.wikipedia.org/wiki/Germany', note:'', airport:false },
+  { name:'Greece', flag:'🇬🇷', lat:39.0742, lng:21.8243, wiki:'https://en.wikipedia.org/wiki/Greece', note:'', airport:false },
+  { name:'Guadeloupe', flag:'🇫🇷', lat:16.265, lng:-61.551, wiki:'https://en.wikipedia.org/wiki/Guadeloupe', note:'', airport:false },
+  // H
+  { name:'Hong Kong', flag:'🇭🇰', lat:22.3193, lng:114.1694, wiki:'https://en.wikipedia.org/wiki/Hong_Kong', note:'Airport only ✈️', airport:true },
+  // I
+  { name:'Iceland', flag:'🇮🇸', lat:64.9631, lng:-19.0208, wiki:'https://en.wikipedia.org/wiki/Iceland', note:'', airport:false },
+  { name:'Ireland', flag:'🇮🇪', lat:53.4129, lng:-8.2439, wiki:'https://en.wikipedia.org/wiki/Republic_of_Ireland', note:'', airport:false },
+  { name:'Italy', flag:'🇮🇹', lat:41.8719, lng:12.5674, wiki:'https://en.wikipedia.org/wiki/Italy', note:'', airport:false },
+  { name:'Indonesia', flag:'🇮🇩', lat:-0.7893, lng:113.9213, wiki:'https://en.wikipedia.org/wiki/Indonesia', note:'', airport:false },
+  // L
+  { name:'Luxembourg', flag:'🇱🇺', lat:49.8153, lng:6.1296, wiki:'https://en.wikipedia.org/wiki/Luxembourg', note:'', airport:false },
+  // M
+  { name:'Montenegro', flag:'🇲🇪', lat:42.7087, lng:19.3744, wiki:'https://en.wikipedia.org/wiki/Montenegro', note:'', airport:false },
+  { name:'Mexico', flag:'🇲🇽', lat:23.6345, lng:-102.5528, wiki:'https://en.wikipedia.org/wiki/Mexico', note:'', airport:false },
+  // N
+  { name:'Namibia', flag:'🇳🇦', lat:-22.9576, lng:18.4904, wiki:'https://en.wikipedia.org/wiki/Namibia', note:'', airport:false },
+  { name:'New Zealand', flag:'🇳🇿', lat:-40.9006, lng:174.886, wiki:'https://en.wikipedia.org/wiki/New_Zealand', note:'', airport:false },
+  { name:'Netherlands', flag:'🇳🇱', lat:52.1326, lng:5.2913, wiki:'https://en.wikipedia.org/wiki/Netherlands', note:'', airport:false },
+  // S
+  { name:'South Africa', flag:'🇿🇦', lat:-30.5595, lng:22.9375, wiki:'https://en.wikipedia.org/wiki/South_Africa', note:'UCT Cape Town 1996', airport:false },
+  { name:'Saint Kitts and Nevis', flag:'🇰🇳', lat:17.3578, lng:-62.783, wiki:'https://en.wikipedia.org/wiki/Saint_Kitts_and_Nevis', note:'', airport:false },
+  { name:'Sint Maarten / Saint Martin', flag:'🇸🇽', lat:18.0708, lng:-63.0501, wiki:'https://en.wikipedia.org/wiki/Sint_Maarten', note:'', airport:false },
+  // T
+  { name:'Tanzania', flag:'🇹🇿', lat:-6.369, lng:34.8888, wiki:'https://en.wikipedia.org/wiki/Tanzania', note:'', airport:false },
+  { name:'Turks and Caicos', flag:'🇹🇨', lat:21.694, lng:-71.7979, wiki:'https://en.wikipedia.org/wiki/Turks_and_Caicos_Islands', note:'', airport:false },
+  // U
+  { name:'United States', flag:'🇺🇸', lat:37.09, lng:-95.7129, wiki:'https://en.wikipedia.org/wiki/United_States', note:'Home', airport:false },
+  // V
+  { name:'Vatican City', flag:'🇻🇦', lat:41.9029, lng:12.4534, wiki:'https://en.wikipedia.org/wiki/Vatican_City', note:'', airport:false },
+  // Z
+  { name:'Zimbabwe', flag:'🇿🇼', lat:-19.0154, lng:29.1549, wiki:'https://en.wikipedia.org/wiki/Zimbabwe', note:'', airport:false },
+  // NOT RECOGNIZED — fun ones
+  { name:'Conch Republic', flag:'🦞', lat:24.5551, lng:-81.7800, wiki:'https://en.wikipedia.org/wiki/Conch_Republic', note:'Not internationally recognized 😄', airport:false },
+  { name:'Cascadia', flag:'🌲', lat:47.5, lng:-121.5, wiki:'https://en.wikipedia.org/wiki/Cascadia_(independence_movement)', note:'Not internationally recognized 🌲', airport:false },
+  { name:'Jefferson', flag:'⛏️', lat:41.5, lng:-122.5, wiki:'https://en.wikipedia.org/wiki/State_of_Jefferson', note:'Not internationally recognized ⛏️', airport:false },
+];
+
+const travelLayer = L.layerGroup();
+layers.travel = travelLayer;
+
+COUNTRIES.forEach(c => {
+  const color = c.airport ? '#7a7268' : c.name === 'United States' ? '#2a4a7a' : '#c8922a';
+  const icon = L.divIcon({
+    className: '',
+    html: `<div style="font-size:18px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4));">${c.flag}</div>`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -14]
+  });
+
+  const noteHtml = c.note ? `<div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:#888;margin-top:0.3rem;">${c.note}</div>` : '';
+
+  L.marker([c.lat, c.lng], { icon })
+    .bindPopup(`
+      <div class="popup-title">${c.flag} ${c.name}</div>
+      ${noteHtml}
+      <div style="margin-top:0.5rem;">
+        <a href="${c.wiki}" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--y2k);text-decoration:none;">Wikipedia →</a>
+      </div>
+    `, { maxWidth: 220 })
+    .addTo(travelLayer);
+});
+
+// Stats note in coming-soon panel
+document.querySelector('.coming-soon-panel').innerHTML +=
+  `<div class="coming-soon-item" style="margin-top:0.5rem;"><span>🌍</span> ${COUNTRIES.filter(c=>!c.airport && !['Conch Republic','Cascadia','Jefferson'].includes(c.name)).length} countries visited · ${COUNTRIES.filter(c=>c.airport).length} airport only</div>`;
 
 // =============================================
 // GEOCACHE LAYER
