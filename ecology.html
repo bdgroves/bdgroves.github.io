@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecology — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4;
+      --forest:#2d5a1b; --desert:#8b6914; --sky:#3a6b8a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--forest) 0%,var(--sage) 35%,var(--desert) 65%,var(--gold) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--forest); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    /* PAGE HEADER */
+    .page-header { max-width:1400px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--forest); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--forest); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+
+    /* MAIN CONTENT */
+    .page-content { max-width:1400px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    /* SECTION LABEL */
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .section-label a:hover { color:var(--forest); }
+
+    /* LEAD PROJECT */
+    .project-lead { display:grid; grid-template-columns:3fr 2fr; gap:0; border:1px solid var(--mist); margin-bottom:3rem; }
+    @media(max-width:768px) { .project-lead { grid-template-columns:1fr; } }
+    .project-lead-main { padding:2rem; border-right:1px solid var(--mist); }
+    .project-lead-main::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--forest); display:block; margin-bottom:0.75rem; }
+    .project-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .project-hed { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .project-hed em { font-style:italic; color:var(--desert); }
+    .project-dek { font-size:0.95rem; color:var(--stone); line-height:1.75; margin-bottom:1rem; }
+    .project-quote { border-left:3px solid var(--desert); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.9rem; color:var(--stone); line-height:1.7; }
+    .project-stack { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
+    .stack-pill { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.6rem; }
+    .project-link { display:inline-block; margin-top:1.25rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.6rem 1.2rem; border:1.5px solid var(--forest); color:var(--forest); transition:background 0.2s, color 0.2s; margin-right:0.5rem; }
+    .project-link:hover { background:var(--forest); color:var(--white); }
+    .project-link.secondary { border-color:var(--mist); color:var(--stone); }
+    .project-link.secondary:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+
+    /* STATS SIDEBAR */
+    .project-lead-stats { padding:1.5rem; display:flex; flex-direction:column; gap:0; }
+    .stat-block { padding:1rem 0; border-bottom:1px solid var(--mist); }
+    .stat-block:last-child { border-bottom:none; }
+    .stat-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.25rem; }
+    .stat-value { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; line-height:1.1; color:var(--ink); }
+    .stat-value.highlight { color:var(--forest); }
+    .stat-value.desert { color:var(--desert); }
+    .stat-sub { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.06em; }
+
+    /* BACKGROUND CARDS */
+    .context-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:3rem; }
+    @media(max-width:700px) { .context-grid { grid-template-columns:1fr; } }
+    .context-block { }
+    .context-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:0.75rem; color:var(--forest); }
+    .context-body p { font-size:0.88rem; color:var(--stone); line-height:1.75; margin-bottom:0.75rem; }
+    .context-body p:last-child { margin-bottom:0; }
+
+    /* SPECIES COMPARE */
+    .species-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:3rem; }
+    @media(max-width:560px) { .species-grid { grid-template-columns:1fr; } }
+    .species-card { padding:1.25rem; border:1px solid var(--mist); }
+    .species-card.specialist { border-top:3px solid var(--desert); }
+    .species-card.generalist { border-top:3px solid var(--forest); }
+    .species-strategy { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.3rem; }
+    .species-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; font-style:italic; margin-bottom:0.5rem; }
+    .species-common { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); margin-bottom:0.5rem; }
+    .species-fact { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+
+    /* RELATED PROJECTS */
+    .related-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:3rem; }
+    @media(max-width:600px) { .related-grid { grid-template-columns:1fr; } }
+    .related-card { border:1px solid var(--mist); padding:1.25rem; text-decoration:none; color:inherit; display:block; transition:background 0.15s; }
+    .related-card:hover { background:var(--cream); }
+    .related-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:0.3rem; }
+    .related-hed { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; margin-bottom:0.4rem; }
+    .related-dek { font-size:0.8rem; color:var(--stone); line-height:1.6; }
+    .related-link { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--forest); margin-top:0.5rem; display:block; }
+
+    /* BACKGROUND READING */
+    .reading-list { display:flex; flex-direction:column; gap:0; }
+    .reading-item { padding:0.9rem 0; border-bottom:1px solid var(--mist); display:grid; grid-template-columns:auto 1fr; gap:1rem; align-items:baseline; }
+    .reading-item:last-child { border-bottom:none; }
+    .reading-emoji { font-size:1rem; }
+    .reading-title { font-size:0.88rem; font-weight:600; color:var(--ink); }
+    .reading-desc { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:0.2rem; }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://bdgroves.github.io/dipodomys" target="_blank">DIPODOMYS ↗</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · The Ologies</p>
+  <h1 class="page-title">🌿 <em>Ecology</em></h1>
+  <p class="page-sub">Field ecology, species distributions, community dynamics, and the data infrastructure of biodiversity science. From the kangaroo rats of Death Valley to the fire ecology of the Pacific Northwest — the living layer of the planet, measured and mapped.</p>
+</div>
+
+<div class="page-content">
+
+  <!-- LEAD PROJECT — DIPODOMYS -->
+  <div class="section-label">
+    <span>Featured Project</span>
+    <a href="https://github.com/bdgroves/dipodomys" target="_blank">View on GitHub →</a>
+  </div>
+
+  <div class="project-lead">
+    <div class="project-lead-main">
+      <p class="project-kicker">iNaturalist · Death Valley · Citizen Science · Species Distribution</p>
+      <h2 class="project-hed">🐾 <em>DIPODOMYS</em></h2>
+      <p class="project-dek">An interactive data portrait of the two kangaroo rat species that share Death Valley — <em>Dipodomys deserti</em> (the desert specialist) and <em>D. merriami</em> (the continent-wide generalist). Live occurrence data from iNaturalist on every page load. Leaflet map with MarkerCluster, temporal analysis showing the citizen science explosion after 2012, and elevation charts revealing the microhabitat partitioning between species.</p>
+      <div class="project-quote">"It is two in the morning at Badwater Basin. The temperature has dropped to 95°F. A small, pale mammal launches itself across the salt flat in a series of long bipedal bounds — five feet per leap, tail spinning for balance, landing in silence. It will not drink water tonight. It never does."</div>
+      <p class="project-dek">One HTML file. No frameworks, no build system, no cached data. Six API calls on page load, everything rendered client-side. The design philosophy mirrors the ecology: specialization where it matters, nothing extraneous.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Vanilla JS</span>
+        <span class="stack-pill">Leaflet</span>
+        <span class="stack-pill">MarkerCluster</span>
+        <span class="stack-pill">Chart.js</span>
+        <span class="stack-pill">iNaturalist API</span>
+        <span class="stack-pill">CartoDB Dark Matter</span>
+        <span class="stack-pill">GitHub Pages</span>
+      </div>
+      <div style="margin-top:1.25rem;">
+        <a href="https://bdgroves.github.io/dipodomys" target="_blank" class="project-link">View Live Site →</a>
+        <a href="/blog/dipodomys-post.html" class="project-link secondary">Read the Build Post →</a>
+      </div>
+    </div>
+    <div class="project-lead-stats">
+      <div class="stat-block">
+        <div class="stat-label">Species covered</div>
+        <div class="stat-value highlight">2</div>
+        <div class="stat-sub">D. deserti · D. merriami · Death Valley</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Data source</div>
+        <div class="stat-value highlight" style="font-size:1rem;">iNaturalist</div>
+        <div class="stat-sub">Live API · research-grade only · community science</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Hottest place on Earth</div>
+        <div class="stat-value desert">134°F</div>
+        <div class="stat-sub">Furnace Creek record · July 1913 · D. deserti thrives here</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Years of desert adaptation</div>
+        <div class="stat-value">5M+</div>
+        <div class="stat-sub">Mojave evolution · never consumes free water</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Escape jump distance</div>
+        <div class="stat-value">9 ft</div>
+        <div class="stat-sub">Bipedal saltation · rattlesnake-proof</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TWO SPECIES -->
+  <div class="section-label"><span>The Two Strategies</span></div>
+  <div class="species-grid">
+    <div class="species-card specialist">
+      <div class="species-strategy">The Specialist</div>
+      <div class="species-name">Dipodomys deserti</div>
+      <div class="species-common">Desert Kangaroo Rat</div>
+      <div class="species-fact">Pale as bleached sand. Five hind toes. Lives almost exclusively on open, firm sandy flats — requires loose, wind-deposited sand for burrowing. Will not venture onto rocky substrate. Range barely extends beyond the Mojave. Has bet everything on one extreme habitat, and been winning for millions of years.</div>
+    </div>
+    <div class="species-card generalist">
+      <div class="species-strategy">The Generalist</div>
+      <div class="species-name">Dipodomys merriami</div>
+      <div class="species-common">Merriam's Kangaroo Rat</div>
+      <div class="species-fact">Smaller, darker. Four hind toes. Most widespread kangaroo rat in North America. Desert scrub, sagebrush steppe, bajadas, Joshua tree woodland, rocky slopes. California to Texas. Where deserti specialized, merriami generalized — the tradeoff shows. Merriami is everywhere. Deserti is only here, in exactly this kind of place.</div>
+    </div>
+  </div>
+
+  <!-- BACKGROUND -->
+  <div class="section-label"><span>Background</span></div>
+  <div class="context-grid">
+    <div class="context-block">
+      <h3 class="context-hed">The Citizen Science Revolution</h3>
+      <div class="context-body">
+        <p>iNaturalist has fundamentally changed what is possible in ecological research. A dataset that would have required years of fieldwork can now be assembled in seconds via API call. The temporal analysis in DIPODOMYS shows the explosion clearly — a flat line of museum specimen records from the early 20th century, modest upticks from mid-century field surveys, then a near-vertical spike after 2012 as iNaturalist reached critical mass.</p>
+        <p>But the bias is real and worth naming: we know more about where these animals were seen in 2023 than in 1983 not because their range changed, but because observer coverage changed. Understanding what the data doesn't show is as important as understanding what it does.</p>
+      </div>
+    </div>
+    <div class="context-block">
+      <h3 class="context-hed">Habitat Partitioning</h3>
+      <div class="context-body">
+        <p>Where the two species meet — as they do across Death Valley's sandy flats — they partition microhabitats. <em>Deserti</em> takes the open dunes. <em>Merriami</em> works the surrounding scrub. The boundary is ecological, not geographic — drawn in seed patches and burrow densities and nightly foraging circuits.</p>
+        <p>The elevation chart in DIPODOMYS shows this directly: <em>deserti</em> clusters near and below sea level on the valley floor. <em>Merriami</em> spreads across a wider elevation range, turning up on bajadas, in canyons, on the surrounding ranges. Two species, same valley, different vertical worlds.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RELATED PROJECTS -->
+  <div class="section-label"><span>Related Work</span></div>
+  <div class="related-grid">
+    <a href="https://github.com/bdgroves/desert-ecostats" target="_blank" class="related-card">
+      <div class="related-kicker">R · Community Ecology · Mojave</div>
+      <div class="related-hed">🏜️ desert-ecostats</div>
+      <div class="related-dek">R-based community ecology toolkit — NMDS ordination, PERMANOVA, indicator species analysis, co-occurrence networks. The statistical backbone that DIPODOMYS grew out of.</div>
+      <span class="related-link">View on GitHub →</span>
+    </a>
+    <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank" class="related-card">
+      <div class="related-kicker">Remote Sensing · Sentinel-2 · Land Cover</div>
+      <div class="related-hed">🛰️ Sentinel Stockpile</div>
+      <div class="related-dek">ESA satellite imagery pipeline — the spectral classification methods (NDVI, BSI) developed here have direct applications in vegetation mapping and habitat change detection.</div>
+      <span class="related-link">View on GitHub →</span>
+    </a>
+    <a href="https://bdgroves.github.io/ridgeline" target="_blank" class="related-card">
+      <div class="related-kicker">Wildfire · WUI · GIS · Phoenix FD</div>
+      <div class="related-hed">🔥 RIDGELINE</div>
+      <div class="related-dek">86K+ wildfire dispatch incidents analyzed for community response gaps. Fire ecology and human geography intersect at the wildland-urban interface — this is the data side of that story.</div>
+      <span class="related-link">View project →</span>
+    </a>
+    <a href="/blog/dipodomys-post.html" class="related-card">
+      <div class="related-kicker">Blog · Natural History · Data</div>
+      <div class="related-hed">📝 The DIPODOMYS Build Post</div>
+      <div class="related-dek">The full write-up — natural history of Death Valley's kangaroo rats, the citizen science data story, and the design philosophy behind the project.</div>
+      <span class="related-link">Read the post →</span>
+    </a>
+  </div>
+
+  <!-- BACKGROUND READING -->
+  <div class="section-label"><span>Background Reading</span></div>
+  <div class="reading-list">
+    <div class="reading-item">
+      <div class="reading-emoji">🌿</div>
+      <div>
+        <div class="reading-title">iNaturalist — inaturalist.org</div>
+        <div class="reading-desc">The largest community science biodiversity platform. Every observation in DIPODOMYS came from here.</div>
+      </div>
+    </div>
+    <div class="reading-item">
+      <div class="reading-emoji">📚</div>
+      <div>
+        <div class="reading-title">Animal Diversity Web — animaldiversity.org</div>
+        <div class="reading-desc">University of Michigan natural history database. Primary reference for physiological adaptation data.</div>
+      </div>
+    </div>
+    <div class="reading-item">
+      <div class="reading-emoji">🏜️</div>
+      <div>
+        <div class="reading-title">ALICE Database — United Way</div>
+        <div class="reading-desc">Asset Limited, Income Constrained, Employed — household financial data. Referenced in the Little Free Pantry community context.</div>
+      </div>
+    </div>
+    <div class="reading-item">
+      <div class="reading-emoji">🛰️</div>
+      <div>
+        <div class="reading-title">Microsoft Planetary Computer — planetarycomputer.microsoft.com</div>
+        <div class="reading-desc">Free access to Sentinel-2, Landsat, and other Earth observation datasets. Used in Sentinel Stockpile and applicable to habitat mapping.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://bdgroves.github.io/dipodomys" target="_blank">DIPODOMYS</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+</body>
+</html>
