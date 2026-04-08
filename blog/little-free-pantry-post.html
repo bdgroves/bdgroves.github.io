@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Little Free Pantry — Mapping Food Access in Lakewood — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rotary:#003f87; --community:#2a7a4a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rotary) 0%,var(--community) 50%,var(--gold) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rotary); }
+    nav a.live { border:1px solid var(--community); padding:0.3rem 0.7rem; color:var(--community); }
+    nav a.live:hover { background:var(--community); color:var(--white); }
+
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--rotary); }
+
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--community); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.3rem 0.7rem; }
+
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--community); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--rotary); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body blockquote { border-left:3px solid var(--community); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--rotary); text-decoration:underline; text-underline-offset:3px; }
+
+    /* PANTRY STATS */
+    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--mist); border:1px solid var(--mist); margin:2rem 0; }
+    .stat-cell { background:var(--white); padding:1.25rem; text-align:center; }
+    .stat-num { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; color:var(--rotary); line-height:1; }
+    .stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-top:0.3rem; }
+
+    /* NEEDS LIST */
+    .needs-box { background:var(--cream); border-left:3px solid var(--community); padding:1.25rem 1.5rem; margin:1.5rem 0; }
+    .needs-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--community); margin-bottom:0.75rem; }
+    .needs-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.3rem 1.5rem; }
+    .needs-item { font-size:0.85rem; color:var(--stone); }
+
+    /* MAP LINK */
+    .map-link { display:inline-flex; align-items:center; gap:0.5rem; background:var(--rotary); color:var(--white); font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.6rem 1.2rem; text-decoration:none; margin:1.5rem 0; }
+    .map-link:hover { background:var(--community); }
+
+    /* ALICE BOX */
+    .alice-box { background:var(--ink); color:var(--white); padding:1.5rem; margin:2rem 0; }
+    .alice-head { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+    .alice-stat { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--white); }
+    .alice-sub { font-family:'DM Mono',monospace; font-size:0.6rem; color:#888; margin-top:0.2rem; }
+
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--rotary); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+
+    @media(max-width:500px) {
+      .stats-row { grid-template-columns:1fr 1fr; }
+      .needs-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://brooksgroves.com/little-free-pantry" target="_blank" class="live">View Map ↗</a>
+      <a href="https://www.lakewoodrotary.com/" target="_blank">Lakewood Rotary ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/index.html" class="article-back">← Blog</a>
+
+  <p class="article-kicker">Community GIS · Lakewood Rotary · Food Access · 2020–Present</p>
+  <h1 class="article-title">🏠 Little Free Pantry — Mapping Food Access in Lakewood</h1>
+  <div class="article-meta">
+    <span>Brooks Groves</span>
+    <span>GIS Map · Community Project</span>
+    <span>Lakewood Rotary Club</span>
+  </div>
+  <div class="article-tags">
+    <span class="article-tag-pill">Community GIS</span>
+    <span class="article-tag-pill">Leaflet</span>
+    <span class="article-tag-pill">Food Access</span>
+    <span class="article-tag-pill">Lakewood WA</span>
+    <span class="article-tag-pill">Rotary</span>
+    <span class="article-tag-pill">Civic Tech</span>
+  </div>
+
+  <a href="https://brooksgroves.com/little-free-pantry" target="_blank" class="map-link">
+    🗺️ View the Interactive Map →
+  </a>
+
+  <div class="article-body">
+
+    <p>During the 2020 pandemic, the Rotary Club of Lakewood launched the Little Free Pantry initiative — a network of neighborhood pantry cabinets providing 24/7, no-barrier access to food and hygiene items across Lakewood, Tillicum, and Steilacoom. No applications. No ID required. No questions asked. Just a cabinet on a post, stocked by the community, open to anyone.</p>
+
+    <p>The project grew. By 2025, seven pantries were operating across the South Sound, supported by five community drop-off sites. What started as a pandemic response had become a permanent piece of local infrastructure — filling gaps in a community where food insecurity is a real and measurable problem.</p>
+
+    <div class="stats-row">
+      <div class="stat-cell">
+        <div class="stat-num">7</div>
+        <div class="stat-lbl">Active pantries</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">5</div>
+        <div class="stat-lbl">Drop-off sites</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">24/7</div>
+        <div class="stat-lbl">Always open</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">$0</div>
+        <div class="stat-lbl">No barriers</div>
+      </div>
+    </div>
+
+    <h2>The Food Desert Context</h2>
+
+    <p>Lakewood isn't a wealthy suburb. The ALICE data — Asset Limited, Income Constrained, Employed — tells a harder story. These are households that work, often more than one job, but still can't consistently afford basics like food, housing, and healthcare. They don't qualify for most assistance programs. They fall between the safety net and stability.</p>
+
+    <div class="alice-box">
+      <div class="alice-head">ALICE — Asset Limited, Income Constrained, Employed</div>
+      <div class="alice-stat">Households working but struggling</div>
+      <div class="alice-sub">Too much income for assistance programs. Not enough for basic needs. The Little Free Pantry serves this gap.</div>
+    </div>
+
+    <p>The little free pantry model works precisely because it has no eligibility requirements. Anyone can take. Anyone can give. The cabinet doesn't know the difference between someone in crisis and someone leaving a can of soup on their way to work. That's the point.</p>
+
+    <h2>The Map</h2>
+
+    <p>Lakewood Rotary had a PDF map of the pantry locations — a static document that lived in emails and meeting materials. What they needed was something anyone could pull up on a phone, with directions, photos, and current needs. That's a Leaflet map project.</p>
+
+    <p>The interactive map shows all seven pantry locations with Rotary-branded markers, rich popups with directions links, and photo galleries showing the different cabinet styles across the network — wood cabinets, metal cabinets, repurposed furniture. Each location has its own character because each was built by a different part of the community.</p>
+
+    <p>The technical stack is deliberately minimal — plain HTML, CSS, and JavaScript, Leaflet with CARTO Voyager tiles, hosted on GitHub Pages. No frameworks, no dependencies, no maintenance burden. The Rotary doesn't have a developer on staff. The map needs to work without anyone tending it.</p>
+
+    <h2>What's Most Needed</h2>
+
+    <div class="needs-box">
+      <div class="needs-head">Current high-need items</div>
+      <div class="needs-grid">
+        <div class="needs-item">🥫 Canned proteins — tuna, chicken, beans</div>
+        <div class="needs-item">🧴 Shampoo and conditioner</div>
+        <div class="needs-item">🍝 Pasta and rice</div>
+        <div class="needs-item">🧼 Bar soap and hand soap</div>
+        <div class="needs-item">🥣 Cereal and oatmeal</div>
+        <div class="needs-item">🪥 Toothbrushes and toothpaste</div>
+        <div class="needs-item">🍲 Soup — ready to eat</div>
+        <div class="needs-item">🧻 Paper towels and tissues</div>
+      </div>
+    </div>
+
+    <p>Drop-off sites are located across the city — full addresses and hours are on the map. Items should be unexpired, shelf-stable, and in original packaging. Hygiene products are consistently among the most-needed and least-donated items.</p>
+
+    <h2>GIS as Community Infrastructure</h2>
+
+    <p>This project sits at a different register than the rest of my work. There's no satellite data, no spectral classification, no GitHub Actions cron job. It's a map with seven points on it and some photos. The technical lift was light.</p>
+
+    <p>But a map that makes it easier for someone to find food at 2am, or easier for a volunteer to know where to drop off a bag of groceries — that has a different kind of value than a 12-month lumber stockpile time series or a live volcano dashboard. The skills are the same. The application is closer to home.</p>
+
+    <blockquote>"Anyone can take. Anyone can give. The cabinet doesn't know the difference."</blockquote>
+
+    <p>I live in Lakewood. I work in geospatial. When the Rotary needed a map, the answer was obvious.</p>
+
+    <hr>
+
+    <p>The interactive map is live at <a href="https://brooksgroves.com/little-free-pantry" target="_blank">brooksgroves.com/little-free-pantry</a>. To donate or volunteer, contact the <a href="https://www.lakewoodrotary.com/" target="_blank">Rotary Club of Lakewood</a> at info@lakewoodrotary.com.</p>
+
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · Lakewood, WA · Rotary Club of Lakewood</span>
+    <div class="article-footer-nav">
+      <a href="https://brooksgroves.com/little-free-pantry" target="_blank">View Map →</a>
+      <a href="/blog/index.html">← All Posts</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · Lakewood, WA</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://brooksgroves.com/little-free-pantry" target="_blank">Pantry Map ↗</a>
+      <a href="https://www.lakewoodrotary.com/" target="_blank">Lakewood Rotary ↗</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
