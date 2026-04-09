@@ -100,6 +100,13 @@
 
     /* STAGE COUNT */
     .stage-counter { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); margin-bottom:1rem; }
+    .stage-imgs { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-top:0.75rem; }
+    .stage-img-wrap { position:relative; }
+    .stage-img-wrap img { width:100%; border:1px solid var(--mist); display:block; background:var(--cream); min-height:80px; }
+    .stage-img-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); margin-top:0.25rem; }
+    .stage-pcs-link { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--pink); border:1px solid var(--pink); padding:0.25rem 0.6rem; }
+    .stage-pcs-link:hover { background:var(--pink); color:white; }
+    @media(max-width:500px) { .stage-imgs { grid-template-columns:1fr; } }
 
     footer { background:var(--ink); color:#555; padding:2rem; margin-top:3rem; text-align:center; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; }
     footer a { color:#888; text-decoration:none; }
@@ -314,11 +321,34 @@ function renderStages(data) {
           <div style="font-size:0.82rem;line-height:1.7;">${s.desc}</div>
           ${s.key_climbs.length ? `<div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink);margin-bottom:0.3rem;">Key Climbs</div><ul style="font-size:0.8rem;padding-left:1.2rem;color:var(--stone);">${s.key_climbs.map(c=>`<li>${c}</li>`).join('')}</ul>` : ''}
           <div style="margin-top:0.5rem;display:flex;gap:1.5rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);">
-            <span>📏 ${s.km}km</span>
-            <span>⛰️ ${s.elevation.toLocaleString()}m gain</span>
-            <span>📅 ${s.date}</span>
+            <span>${s.km}km</span>
+            <span>↑${s.elevation.toLocaleString()}m gain</span>
+            <span>${s.date}</span>
           </div>
-          ${s.winner ? `<div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--green);font-weight:600;">✓ WINNER: ${s.winner} — ${s.winner_team}</div>` : ''}
+          ${s.winner ? `<div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--green);font-weight:600;">WINNER: ${s.winner} — ${s.winner_team}</div>` : ''}
+          <div class="stage-imgs">
+            <div class="stage-img-wrap">
+              <img
+                src="https://cdn.procyclingstats.com/images/profiles/races/2026/vuelta-a-espana/stage-${s.num}.jpg"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
+                alt="Stage ${s.num} profile"
+                loading="lazy"
+              >
+              <div style="display:none;padding:0.75rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);background:var(--cream);border:1px solid var(--mist);">Profile not yet available</div>
+              <div class="stage-img-label">Elevation Profile</div>
+            </div>
+            <div class="stage-img-wrap">
+              <img
+                src="https://cdn.procyclingstats.com/images/maps/races/2026/vuelta-a-espana/stage-${s.num}.jpg"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
+                alt="Stage ${s.num} map"
+                loading="lazy"
+              >
+              <div style="display:none;padding:0.75rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);background:var(--cream);border:1px solid var(--mist);">Map not yet available</div>
+              <div class="stage-img-label">Stage Map</div>
+            </div>
+          </div>
+          <a href="https://www.procyclingstats.com/race/vuelta-a-espana/2026/stage-${s.num}" target="_blank" class="stage-pcs-link">Full stage details on PCS →</a>
         </div>
       </div>
       <div class="stage-right">
