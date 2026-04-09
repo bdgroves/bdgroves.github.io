@@ -100,10 +100,6 @@
 
     /* STAGE COUNT */
     .stage-counter { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); margin-bottom:1rem; }
-    .stage-imgs { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-top:0.75rem; }
-    .stage-img-wrap { position:relative; }
-    .stage-img-wrap img { width:100%; border:1px solid var(--mist); display:block; background:var(--cream); min-height:80px; }
-    .stage-img-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); margin-top:0.25rem; }
     .stage-pcs-link { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--pink); border:1px solid var(--pink); padding:0.25rem 0.6rem; }
     .stage-pcs-link:hover { background:var(--pink); color:white; }
     @media(max-width:500px) { .stage-imgs { grid-template-columns:1fr; } }
@@ -326,29 +322,10 @@ function renderStages(data) {
             <span>${s.date}</span>
           </div>
           ${s.winner ? `<div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--green);font-weight:600;">WINNER: ${s.winner} — ${s.winner_team}</div>` : ''}
-          <div class="stage-imgs">
-            <div class="stage-img-wrap">
-              <img
-                src="https://cdn.procyclingstats.com/images/profiles/races/2026/giro-d-italia/stage-${s.num}.jpg"
-                onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
-                alt="Stage ${s.num} profile"
-                loading="lazy"
-              >
-              <div style="display:none;padding:0.75rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);background:var(--cream);border:1px solid var(--mist);">Profile not yet available</div>
-              <div class="stage-img-label">Elevation Profile</div>
-            </div>
-            <div class="stage-img-wrap">
-              <img
-                src="https://cdn.procyclingstats.com/images/maps/races/2026/giro-d-italia/stage-${s.num}.jpg"
-                onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
-                alt="Stage ${s.num} map"
-                loading="lazy"
-              >
-              <div style="display:none;padding:0.75rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);background:var(--cream);border:1px solid var(--mist);">Map not yet available</div>
-              <div class="stage-img-label">Stage Map</div>
-            </div>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:0.75rem;">
+            <a href="https://www.procyclingstats.com/race/giro-d-italia/2026/stage-${s.num}" target="_blank" class="stage-pcs-link">Stage details on PCS →</a>
+            <a href="https://www.procyclingstats.com/race/giro-d-italia/2026/result/info/profiles" target="_blank" class="stage-pcs-link">Stage profiles →</a>
           </div>
-          <a href="https://www.procyclingstats.com/race/giro-d-italia/2026/stage-${s.num}" target="_blank" class="stage-pcs-link">Full stage details on PCS →</a>
         </div>
       </div>
       <div class="stage-right">
