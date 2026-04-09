@@ -94,9 +94,6 @@
     .jersey-holder.empty { color:var(--mist); font-weight:400; font-style:italic; }
 
     /* PROFILE SCORE BAR */
-    .profile-bar-wrap { margin-top:0.3rem; }
-    .profile-bar-bg { background:var(--mist); height:3px; width:100%; }
-    .profile-bar-fill { height:3px; background:var(--pink); }
 
     /* STAGE COUNT */
     .stage-counter { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); margin-bottom:1rem; }
@@ -301,7 +298,6 @@ function renderStages(data) {
       : '';
     const winnerLine = s.winner
       ? `<div class="stage-winner">✓ ${s.winner} (${s.winner_team})</div>` : '';
-    const barWidth = Math.round(s.profile_score);
     const el = document.createElement('div');
     el.className = 'stage-item' + (s.date <= today && !s.winner ? ' active' : '');
     el.innerHTML = `
@@ -332,9 +328,6 @@ function renderStages(data) {
         <div class="stage-km">${s.km}km</div>
         <div class="stage-elev">↑${s.elevation.toLocaleString()}m</div>
         <div><span class="stage-type ${TYPE_CLASSES[s.type]}">${TYPE_LABELS[s.type]}</span></div>
-        <div class="profile-bar-wrap">
-          <div class="profile-bar-bg"><div class="profile-bar-fill" style="width:${barWidth}%"></div></div>
-        </div>
         <div style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--mist);margin-top:0.4rem;">tap to expand</div>
       </div>`;
 

@@ -660,6 +660,22 @@
           <a href="/vuelta-2026.html" style="color:var(--accent);font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;">Stage Tracker →</a>
         </div>
       </div>
+      <div style="margin-top:1.25rem;padding-top:1rem;border-top:2px solid var(--ink);">
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;">
+          <span>Latest News</span>
+          <a href="https://www.cyclingnews.com" target="_blank" style="color:var(--stone);text-decoration:none;font-size:0.55rem;">Cyclingnews →</a>
+        </div>
+        <div id="cycling-news"><p class="sport-note" style="font-size:0.75rem;">Loading news…</p></div>
+      </div>
+
+      <!-- CYCLING NEWS -->
+      <div style="margin-top:1.25rem;padding-top:1rem;border-top:2px solid var(--ink);">
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center;">
+          <span>Latest News</span>
+          <a href="https://www.cyclingnews.com" target="_blank" style="color:var(--stone);text-decoration:none;font-size:0.55rem;">Cyclingnews →</a>
+        </div>
+        <div id="cycling-news"><p class="sport-note" style="font-size:0.75rem;">Loading news…</p></div>
+      </div>
     </div>
 
     <div class="sport-panel" id="tab-running">
@@ -1063,7 +1079,42 @@
   loadBooks();
   loadBeers();
   loadCycling();
+  loadCyclingNews();
   setInterval(() => { if (!document.hidden) { loadMLB(); loadStandings(); } }, 5 * 60 * 1000);
+
+async function loadCyclingNews() {
+  const el = document.getElementById('cycling-news');
+  if (!el) return;
+  try {
+    const RSS_URL = encodeURIComponent('https://www.cyclingnews.com/rss/news/');
+    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${RSS_URL}&count=6`);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    if (data.status !== 'ok' || !data.items?.length) throw new Error();
+    el.innerHTML = data.items.map(item => {
+      const date = new Date(item.pubDate).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+      const desc = item.description.replace(/<[^>]+>/g, '').slice(0, 100).trim();
+      return `<a href="${item.link}" target="_blank" style="display:block;padding:0.55rem 0;border-bottom:1px solid var(--mist);text-decoration:none;color:inherit;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);margin-bottom:0.1rem;">${date}</div>
+        <div style="font-size:0.82rem;font-weight:600;line-height:1.4;">${item.title}</div>
+        ${desc ? `<div style="font-size:0.74rem;color:var(--stone);margin-top:0.1rem;line-height:1.45;">${desc}…</div>` : ''}
+      </a>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = `
+      <a href="https://www.cyclingnews.com/races/paris-roubaix-2026/" target="_blank" style="display:block;padding:0.5rem 0;border-bottom:1px solid var(--mist);text-decoration:none;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">Coverage</div>
+        <div style="font-size:0.82rem;font-weight:600;">Paris-Roubaix 2026 — Cyclingnews</div>
+      </a>
+      <a href="https://www.cyclingnews.com/races/giro-d-italia-2026/" target="_blank" style="display:block;padding:0.5rem 0;border-bottom:1px solid var(--mist);text-decoration:none;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">Upcoming</div>
+        <div style="font-size:0.82rem;font-weight:600;">Giro d'Italia 2026 — Cyclingnews</div>
+      </a>
+      <a href="https://www.cyclingnews.com" target="_blank" style="display:block;padding:0.5rem 0;text-decoration:none;">
+        <div style="font-size:0.78rem;color:var(--stone);">All cycling news → cyclingnews.com</div>
+      </a>`;
+  }
+}
 </script>
 
 </body>
