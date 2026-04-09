@@ -99,11 +99,11 @@
     .support-dek { font-size:0.8rem; color:var(--stone); line-height:1.6; }
     .support-link { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.5rem; display:block; }
 
-    .ologies-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0; border:1px solid var(--mist); }
+    .ologies-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:0; border:1px solid var(--mist); }
     @media(max-width:680px) { .ologies-grid { grid-template-columns:1fr; } }
     .ology-card { padding:1.75rem; border-right:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; position:relative; overflow:hidden; }
     .ology-card:last-child { border-right:none; }
-    @media(max-width:900px) { .ologies-grid { grid-template-columns:repeat(3,1fr); } }
+    @media(max-width:1100px) { .ologies-grid { grid-template-columns:repeat(3,1fr); } }
     @media(max-width:560px) { .ologies-grid { grid-template-columns:1fr 1fr; } }
     .ology-card:hover { background:var(--cream); }
     .ology-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; transform:scaleX(0); transform-origin:left; transition:transform 0.3s; }
@@ -112,6 +112,8 @@
     .ology-card.geo::after { background:var(--rust); }
     .ology-card.vol::after { background:#c0392b; }
     .ology-card.eco::after { background:#4a5c45; }
+    .ology-card.geo2::after { background:#c0392b; }
+    .ology-card.geo2::after { background:#6b3a2a; }
     .ology-card:hover::after { transform:scaleX(1); }
     .ology-icon { font-size:1.75rem; margin-bottom:0.75rem; display:block; }
     .ology-name { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:900; margin-bottom:0.5rem; }
@@ -219,10 +221,12 @@
   <div class="nav-section">Projects</div>
   <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">❄️ Rainier Snowpack</a>
   <a href="https://bdgroves.github.io/lahar-watch" target="_blank">🌋 lahar-watch</a>
+  <a href="https://bdgroves.github.io/aftershock" target="_blank">🌍 AFTERSHOCK</a>
   <a href="https://bdgroves.github.io/PELE" target="_blank">🌋 PELE</a>
   <a href="https://bdgroves.github.io/weather-station" target="_blank">🌡️ Weather Station</a>
   <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank">🛰️ Sentinel Stockpile</a>
   <a href="https://bdgroves.github.io/dipodomys" target="_blank">🐾 DIPODOMYS</a>
+  <a href="https://bdgroves.github.io/aftershock" target="_blank">🌍 AFTERSHOCK</a>
   <a href="https://bdgroves.github.io/EDGAR" target="_blank">⚾ EDGAR</a>
   <a href="https://bdgroves.github.io/ridgeline" target="_blank">🔥 RIDGELINE</a>
   <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank">💧 Sierra Streamflow</a>
@@ -239,7 +243,7 @@
   <a href="/volcanology.html">🌋 Volcanology</a>
   <a href="/paleontology.html">🦕 Paleontology</a>
   <a href="/ecology.html">🌿 Ecology</a>
-  <a href="/construction.html" class="dim">🪨 Geology — coming soon</a>
+  <a href="/geology.html">🪨 Geology</a>
   <a href="/construction.html" class="dim">🏺 Archaeology — coming soon</a>
   <div class="nav-section">Writing</div>
   <a href="/writing/index.html">✍️ All Writing</a>
@@ -291,6 +295,7 @@
     </div>
     <div class="wx-forecast" id="forecast-deathvalley"></div>
     <span class="wx-updated" id="weather-updated">via NWS</span>
+    <span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:#888;margin-left:0.75rem;white-space:nowrap;" id="local-clock"></span>
   </div>
 </div>
 
@@ -313,10 +318,12 @@
         <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">❄️ Rainier Snowpack</a>
         <a href="https://bdgroves.github.io/lahar-watch" target="_blank">🌋 lahar-watch</a>
         <a href="https://bdgroves.github.io/PELE" target="_blank">🌋 PELE</a>
-  <a href="https://bdgroves.github.io/PELE" target="_blank">🌋 PELE</a>
+  <a href="https://bdgroves.github.io/aftershock" target="_blank">🌍 AFTERSHOCK</a>
+        <a href="https://bdgroves.github.io/PELE" target="_blank">🌋 PELE</a>
         <a href="https://bdgroves.github.io/weather-station" target="_blank">🌡️ Weather Station</a>
         <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank">🛰️ Sentinel Stockpile</a>
         <a href="https://bdgroves.github.io/dipodomys" target="_blank">🐾 DIPODOMYS</a>
+        <a href="https://bdgroves.github.io/aftershock" target="_blank">🌍 AFTERSHOCK</a>
         <a href="https://bdgroves.github.io/EDGAR" target="_blank">⚾ EDGAR</a>
         <a href="https://bdgroves.github.io/ridgeline" target="_blank">🔥 RIDGELINE</a>
         <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank">💧 Sierra Streamflow</a>
@@ -342,8 +349,8 @@
         <a href="/volcanology.html">🌋 Volcanology</a>
         <a href="/paleontology.html">🦕 Paleontology</a>
         <a href="/ecology.html">🌿 Ecology</a>
+        <a href="/geology.html">🪨 Geology</a>
         <div class="dropdown-label">Coming Soon</div>
-        <a href="/construction.html" class="dim">🪨 Geology</a>
         <a href="/construction.html" class="dim">🏺 Archaeology</a>
       </div>
     </div>
@@ -490,6 +497,13 @@
         <p class="ology-projects">DIPODOMYS · desert-ecostats · iNaturalist</p>
         <span class="ology-link">Explore →</span>
       </a>
+      <a href="/geology.html" class="ology-card geo2">
+        <span class="ology-icon">🪨</span>
+        <h3 class="ology-name">Geology</h3>
+        <p class="ology-desc">Seismic monitoring, fault systems, and earth structure. From the Melones Fault Zone to the Cascadia Subduction Zone.</p>
+        <p class="ology-projects">AFTERSHOCK · USGS ComCat · Cascadia</p>
+        <span class="ology-link">Explore →</span>
+      </a>
     </div>
   </div>
 
@@ -502,6 +516,18 @@
         <span>Writing</span>
         <a href="/blog/index.html">All →</a>
       </div>
+      <a href="/blog/aftershock-post.html" class="writing-item">
+        <div class="writing-type">Blog · Geology</div>
+        <div class="writing-date">April 2026</div>
+        <div class="writing-hed">🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor</div>
+        <div class="writing-dek">Growing up on the Melones Fault Zone. Loma Prieta 1989. A live seismic dashboard from a USGS public API and a GitHub Actions cron job.</div>
+      </a>
+      <a href="/blog/aftershock-post.html" class="writing-item">
+        <div class="writing-type">Blog · Geology</div>
+        <div class="writing-date">April 2026</div>
+        <div class="writing-hed">🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor</div>
+        <div class="writing-dek">Loma Prieta 1989, the Melones Fault Zone, and a live seismic dashboard watching every M1.5+ shake across the US. Alaska is always first.</div>
+      </a>
       <a href="/blog/dipodomys-post.html" class="writing-item">
         <div class="writing-type">Blog · Ecology</div>
         <div class="writing-date">April 2026</div>
@@ -692,6 +718,18 @@
   document.getElementById('masthead-date').textContent =
     new Date().toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
 
+  // Live clock in weather bar — user's local time, ticks every second
+  function updateClock() {
+    const now = new Date();
+    const el = document.getElementById('local-clock');
+    if (el) el.textContent = now.toLocaleTimeString('en-US', {
+      hour: 'numeric', minute: '2-digit', second: '2-digit',
+      timeZoneName: 'short'
+    });
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
   function toggleMenu() {
     document.getElementById('mobileNav').classList.toggle('open');
     document.getElementById('hamburger').classList.toggle('open');
@@ -730,9 +768,10 @@
       applyLoc('deathvalley', 'deathvalley');
       if (data.updated) {
         const d = new Date(data.updated);
+        // Format in user's local timezone
         document.getElementById('weather-updated').textContent =
           'NWS · ' + d.toLocaleDateString('en-US', {month:'short', day:'numeric'}) +
-          ' ' + d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+          ' ' + d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', timeZoneName:'short'});
       }
     } catch(e) {
       document.getElementById('icon-lakewood').textContent = '⛅';

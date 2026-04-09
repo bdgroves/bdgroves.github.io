@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geology — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4;
+      --fault:#6b3a2a; --seismic:#c0392b; --deep:#2a3a5a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--deep) 0%,var(--fault) 40%,var(--seismic) 70%,var(--gold) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--seismic); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .page-header { max-width:1400px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--seismic); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--seismic); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+
+    .alert-banner { max-width:1400px; margin:2rem auto 0; padding:0 clamp(1.5rem,5vw,4rem); }
+    .alert-inner { background:var(--ink); color:var(--white); padding:1rem 1.5rem; display:flex; align-items:center; gap:1rem; border-left:4px solid var(--seismic); }
+    .alert-dot { width:8px; height:8px; border-radius:50%; background:var(--seismic); flex-shrink:0; animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .alert-text { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; }
+    .alert-text strong { color:var(--gold); }
+    .alert-link { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--gold); margin-left:auto; white-space:nowrap; flex-shrink:0; }
+    .alert-link:hover { color:var(--white); }
+
+    .page-content { max-width:1400px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .section-label a:hover { color:var(--seismic); }
+
+    .project-lead { display:grid; grid-template-columns:3fr 2fr; gap:0; border:1px solid var(--mist); margin-bottom:3rem; }
+    @media(max-width:768px) { .project-lead { grid-template-columns:1fr; } }
+    .project-lead-main { padding:2rem; border-right:1px solid var(--mist); }
+    .project-lead-main::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--seismic); display:block; margin-bottom:0.75rem; }
+    .project-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .project-hed { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .project-hed em { font-style:italic; color:var(--seismic); }
+    .project-dek { font-size:0.95rem; color:var(--stone); line-height:1.75; margin-bottom:1rem; }
+    .project-quote { border-left:3px solid var(--seismic); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.9rem; color:var(--stone); line-height:1.7; }
+    .project-stack { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
+    .stack-pill { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.6rem; }
+    .project-link { display:inline-block; margin-top:1.25rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.6rem 1.2rem; border:1.5px solid var(--seismic); color:var(--seismic); transition:background 0.2s,color 0.2s; margin-right:0.5rem; }
+    .project-link:hover { background:var(--seismic); color:var(--white); }
+    .project-link.secondary { border-color:var(--mist); color:var(--stone); }
+    .project-link.secondary:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+
+    .project-lead-stats { padding:1.5rem; display:flex; flex-direction:column; gap:0; }
+    .stat-block { padding:1rem 0; border-bottom:1px solid var(--mist); }
+    .stat-block:last-child { border-bottom:none; }
+    .stat-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.25rem; }
+    .stat-value { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; line-height:1.1; color:var(--ink); }
+    .stat-value.danger { color:var(--seismic); }
+    .stat-value.warning { color:var(--gold); }
+    .stat-sub { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.06em; }
+
+    /* MAGNITUDE TABLE */
+    .mag-table { width:100%; border-collapse:collapse; margin-bottom:3rem; font-size:0.85rem; }
+    .mag-table th { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); text-align:left; }
+    .mag-table td { padding:0.65rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    .mag-table tr:last-child td { border-bottom:none; }
+    .mag-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--seismic); font-weight:600; }
+    .mag-table td:nth-child(2) { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--gold); }
+
+    .context-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; margin-bottom:3rem; }
+    @media(max-width:680px) { .context-grid { grid-template-columns:1fr; gap:2rem; } }
+    .context-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:0.75rem; padding-bottom:0.5rem; border-bottom:1px solid var(--mist); color:var(--fault); }
+    .context-body p { font-size:0.875rem; color:var(--stone); line-height:1.75; margin-bottom:0.75rem; }
+    .context-body p:last-child { margin-bottom:0; }
+    .context-body strong { color:var(--ink); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:2rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://bdgroves.github.io/aftershock" target="_blank">AFTERSHOCK Live ↗</a>
+      <a href="https://github.com/bdgroves/aftershock" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · The Ologies</p>
+  <h1 class="page-title">🪨 Geo<em>logy</em></h1>
+  <p class="page-sub">The ground is not stable. It never was. Real-time seismic monitoring, fault zone analysis, and the data infrastructure of earth science. Built by someone who grew up walking fault scarps without knowing it.</p>
+</div>
+
+<div class="alert-banner">
+  <div class="alert-inner">
+    <div class="alert-dot"></div>
+    <span class="alert-text"><strong>AFTERSHOCK:</strong> Live · USGS ComCat API · M1.5+ worldwide · Updated every 6 hours · Alaska is always first</span>
+    <a href="https://bdgroves.github.io/aftershock" target="_blank" class="alert-link">Live Dashboard →</a>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <div class="section-label">
+    <span>Featured Project</span>
+    <a href="https://github.com/bdgroves/aftershock" target="_blank">View on GitHub →</a>
+  </div>
+
+  <div class="project-lead">
+    <div class="project-lead-main">
+      <p class="project-kicker">USGS ComCat · Real-Time Seismic · US States · Magnitude Analysis</p>
+      <h2 class="project-hed">🌍 <em>AFTERSHOCK</em></h2>
+      <p class="project-dek">Real-time U.S. seismic activity monitor pulling every measurable shake from the USGS Earthquake Hazards Program ComCat API — M1.5 and up, worldwide, updated every six hours via GitHub Actions. A dark cinematic map where earthquake dots are sized and colored by magnitude, from tiny green pinpoints for microseismicity through yellow, orange, and red into deep red and purple as the energy scales up. A magnitude 7 sits on the map like a bruise.</p>
+      <div class="project-quote">"I grew up in Sonora, California — a Gold Rush town wedged into the western Sierra Nevada foothills where the hills are crumpled and old. The Melones Fault Zone runs right through that country. As a kid, I walked those fault scarps without knowing what they were. I just knew the land felt different there — broken in some deep, geological way, like the earth was remembering something."</div>
+      <p class="project-dek">Click any US state for a full breakdown: event count, largest magnitude, average depth, magnitude distribution chart, most recent events list. Click any earthquake dot for magnitude, depth, time elapsed, and a direct USGS event link. Two filter controls — time window (1D to 30D) and magnitude slider — wire through everything simultaneously.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Python</span>
+        <span class="stack-pill">pixi</span>
+        <span class="stack-pill">GitHub Actions</span>
+        <span class="stack-pill">USGS ComCat API</span>
+        <span class="stack-pill">Leaflet</span>
+        <span class="stack-pill">Chart.js</span>
+        <span class="stack-pill">ESRI Dark Gray</span>
+        <span class="stack-pill">GitHub Pages</span>
+      </div>
+      <div style="margin-top:1.25rem;">
+        <a href="https://bdgroves.github.io/aftershock" target="_blank" class="project-link">View Live Dashboard →</a>
+        <a href="/blog/aftershock-post.html" class="project-link secondary">Read the Build Post →</a>
+      </div>
+    </div>
+    <div class="project-lead-stats">
+      <div class="stat-block">
+        <div class="stat-label">Data source</div>
+        <div class="stat-value" style="font-size:1rem;">USGS ComCat</div>
+        <div class="stat-sub">Earthquake Hazards Program · free · no key</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Minimum magnitude tracked</div>
+        <div class="stat-value">M 1.5</div>
+        <div class="stat-sub">worldwide · filter up to M 6.0</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Update frequency</div>
+        <div class="stat-value warning">6 hrs</div>
+        <div class="stat-sub">GitHub Actions cron · zero cost</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Loma Prieta, 1989</div>
+        <div class="stat-value danger">M 6.9</div>
+        <div class="stat-sub">15 sec · 63 dead · the memory that built this</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">M9.0 energy equivalent</div>
+        <div class="stat-value danger">32,000×</div>
+        <div class="stat-sub">Hiroshima bombs · the Richter scale is not intuitive</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAGNITUDE SCALE -->
+  <div class="section-label"><span>The Magnitude Scale</span></div>
+  <table class="mag-table">
+    <tr><th>Magnitude</th><th>Energy Equivalent</th><th>What It Feels Like</th></tr>
+    <tr><td>M 2.0</td><td>Small construction blast</td><td>Rarely felt. Detected by instruments only in most cases.</td></tr>
+    <tr><td>M 4.0</td><td>~1 ton of TNT</td><td>Felt indoors. Rattles dishes. No significant damage.</td></tr>
+    <tr><td>M 5.0</td><td>~32 tons of TNT</td><td>Widely felt. Minor damage to poorly constructed buildings.</td></tr>
+    <tr><td>M 6.0</td><td>Hiroshima bomb</td><td>Destructive in populated areas. The Napa earthquake (2014) was M6.0.</td></tr>
+    <tr><td>M 7.0</td><td>32 Hiroshima bombs</td><td>Major earthquake. Loma Prieta (1989) was M6.9. Serious damage over large areas.</td></tr>
+    <tr><td>M 8.0</td><td>1,000 Hiroshima bombs</td><td>Great earthquake. The 1906 San Francisco earthquake was estimated M7.9.</td></tr>
+    <tr><td>M 9.0</td><td>32,000 Hiroshima bombs</td><td>Massive. The 2011 Tōhoku earthquake was M9.1. Triggers tsunamis.</td></tr>
+  </table>
+  <p style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);margin-bottom:3rem;">Each full magnitude step releases ~31.6× more energy than the step below it. The Richter scale is logarithmic. AFTERSHOCK expresses total seismic energy as a Hiroshima equivalent to make this concrete.</p>
+
+  <!-- BACKGROUND -->
+  <div class="section-label"><span>Background</span></div>
+  <div class="context-grid">
+    <div>
+      <h3 class="context-hed">The Melones Fault Zone</h3>
+      <div class="context-body">
+        <p>The Melones Fault Zone is a major tectonic suture running through the western Sierra Nevada foothills of California — a boundary between ancient terranes accreted onto the North American continent during the Mesozoic. Tuolumne County sits squarely in this geology. The hills around Sonora and Groveland are crumpled and compressed, the rock record of collisions that happened hundreds of millions of years ago.</p>
+        <p>The 1989 Loma Prieta earthquake — M6.9, 15 seconds, 63 dead — was the event that made this abstract geology personal. The fault does not announce itself. The data never lies.</p>
+      </div>
+    </div>
+    <div>
+      <h3 class="context-hed">Alaska Is Always First</h3>
+      <div class="context-body">
+        <p>The AFTERSHOCK national leaderboard ranks US states by seismic event count, and Alaska is always first — by a margin that isn't even close. The state sits at the convergence of the Pacific and North American plates, one of the most seismically active regions on Earth. The 1964 Good Friday earthquake was M9.2 — the most powerful ever recorded in North America.</p>
+        <p>The Cascadia Subduction Zone — offshore of Washington, Oregon, and northern California — is the other major threat in the region. A full-margin rupture would produce a M9.0+ earthquake and a tsunami reaching the coast within minutes. AFTERSHOCK watches the microseismicity along that margin constantly.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://bdgroves.github.io/aftershock" target="_blank">AFTERSHOCK</a>
+      <a href="https://github.com/bdgroves/aftershock" target="_blank">GitHub</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+</body>
+</html>
