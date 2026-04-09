@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archaeology — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --mesa:#8b6914; --sky:#2a4a6b;
+      --petroglyph:#5a3a1a; --sage:#4a5c45;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--petroglyph) 0%,var(--mesa) 40%,var(--gold) 70%,var(--sky) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--mesa); }
+    nav a.live { border:1px solid var(--sky); padding:0.3rem 0.7rem; color:var(--sky); }
+    nav a.live:hover { background:var(--sky); color:var(--white); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .page-header { max-width:1400px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--mesa); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--mesa); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+
+    .page-content { max-width:1400px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .section-label a:hover { color:var(--mesa); }
+
+    /* OPENING QUOTE */
+    .opening-quote { background:var(--ink); color:#e8e4d8; padding:2rem 2.5rem; margin-bottom:3rem; border-left:4px solid var(--gold); }
+    .opening-quote-text { font-size:1.05rem; line-height:1.9; font-style:italic; }
+    .opening-quote-attr { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--gold); margin-top:1rem; }
+
+    /* LEAD PROJECT */
+    .project-lead { display:grid; grid-template-columns:3fr 2fr; gap:0; border:1px solid var(--mist); margin-bottom:3rem; }
+    @media(max-width:768px) { .project-lead { grid-template-columns:1fr; } }
+    .project-lead-main { padding:2rem; border-right:1px solid var(--mist); }
+    .project-lead-main::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--mesa); display:block; margin-bottom:0.75rem; }
+    .project-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .project-hed { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .project-hed em { font-style:italic; color:var(--sky); }
+    .project-dek { font-size:0.95rem; color:var(--stone); line-height:1.75; margin-bottom:1rem; }
+    .project-quote { border-left:3px solid var(--gold); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.9rem; color:var(--stone); line-height:1.7; }
+    .project-stack { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
+    .stack-pill { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.6rem; }
+    .project-link { display:inline-block; margin-top:1.25rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.6rem 1.2rem; border:1.5px solid var(--sky); color:var(--sky); transition:background 0.2s,color 0.2s; margin-right:0.5rem; }
+    .project-link:hover { background:var(--sky); color:var(--white); }
+    .project-link.secondary { border-color:var(--mist); color:var(--stone); }
+    .project-link.secondary:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+
+    .project-lead-stats { padding:1.5rem; display:flex; flex-direction:column; gap:0; }
+    .stat-block { padding:1rem 0; border-bottom:1px solid var(--mist); }
+    .stat-block:last-child { border-bottom:none; }
+    .stat-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.25rem; }
+    .stat-value { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; line-height:1.1; color:var(--ink); }
+    .stat-value.gold { color:var(--gold); }
+    .stat-value.sky { color:var(--sky); }
+    .stat-sub { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.06em; }
+
+    /* GREAT HOUSES TABLE */
+    .great-house-table { width:100%; border-collapse:collapse; margin-bottom:3rem; font-size:0.85rem; }
+    .great-house-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .great-house-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; line-height:1.55; }
+    .great-house-table tr:last-child td { border-bottom:none; }
+    .great-house-table td:first-child { font-weight:600; color:var(--petroglyph); }
+    .great-house-table tr:hover td { background:var(--cream); }
+
+    /* CONTEXT */
+    .context-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:3rem; }
+    @media(max-width:700px) { .context-grid { grid-template-columns:1fr; } }
+    .context-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:0.75rem; color:var(--mesa); }
+    .context-body p { font-size:0.88rem; color:var(--stone); line-height:1.75; margin-bottom:0.75rem; }
+    .context-body p:last-child { margin-bottom:0; }
+
+    /* RELATED */
+    .related-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:3rem; }
+    @media(max-width:600px) { .related-grid { grid-template-columns:1fr; } }
+    .related-card { border:1px solid var(--mist); padding:1.25rem; text-decoration:none; color:inherit; display:block; transition:background 0.15s; }
+    .related-card:hover { background:var(--cream); }
+    .related-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:0.3rem; }
+    .related-hed { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; margin-bottom:0.4rem; }
+    .related-dek { font-size:0.8rem; color:var(--stone); line-height:1.6; }
+    .related-link { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--sky); margin-top:0.5rem; display:block; }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://bdgroves.github.io/solstice" target="_blank" class="live">SOLSTICE ↗</a>
+      <a href="https://github.com/bdgroves/solstice" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · The Ologies</p>
+  <h1 class="page-title">🏺 <em>Archaeology</em></h1>
+  <p class="page-sub">Remote sensing, archaeoastronomy, and the data infrastructure of the ancient world. From the great houses of Chaco Canyon to the LiDAR pipelines that read the landscape beneath the surface — what people built, how they watched the sky, and what the data says about both.</p>
+</div>
+
+<div class="page-content">
+
+  <!-- OPENING QUOTE -->
+  <div class="opening-quote">
+    <div class="opening-quote-text">"In the summer of A.D. 1054, a supernova blazed in the sky bright enough to cast shadows at night. Somewhere near Fajada Butte, at the eastern entrance to Chaco Canyon, a Chacoan astronomer watched it rise. We don't know their name. We don't know their language. We don't know what they called the sky above them. But we know they were watching, because they built it into the stone."</div>
+    <div class="opening-quote-attr">— SOLSTICE README · April 2026</div>
+  </div>
+
+  <!-- LEAD PROJECT — SOLSTICE -->
+  <div class="section-label">
+    <span>Featured Project</span>
+    <a href="https://github.com/bdgroves/solstice" target="_blank">View on GitHub →</a>
+  </div>
+
+  <div class="project-lead">
+    <div class="project-lead-main">
+      <p class="project-kicker">Chaco Canyon · Archaeoastronomy · ephem · forge3d · Leaflet</p>
+      <h2 class="project-hed">☀️ <em>SOLSTICE</em></h2>
+      <p class="project-dek">A live archaeoastronomy dashboard watching the same sky, over the same canyon, that the Chacoan people built their great houses to track. Current sun and moon positions computed for Chaco Canyon twice daily. Live alignment monitor for the Casa Rinconada northeast doorway — the great kiva whose entrance aligns to the summer solstice sunrise at 66.5°. Days to the next solstice and equinox. Interactive Leaflet map with all ten great houses and the Chacoan road network.</p>
+      <div class="project-quote">"The canyon aligned its stones to the sky. We aligned our data to the canyon."</div>
+      <p class="project-dek">The terrain hero is a GPU-rendered 4K hillshade of Chaco Canyon from USGS 3DEP 1/3 arc-second LiDAR data, rendered via forge3d — camera southeast of the canyon looking northwest, late-afternoon sun casting shadows into the mesa cuts. Pueblo Bonito's rear wall runs true north within 0.1°. Casa Rinconada's alignment activates in the dashboard when the current sunrise azimuth falls within 3.5° of 66.5° — around the summer solstice window each June.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Python ephem</span>
+        <span class="stack-pill">forge3d</span>
+        <span class="stack-pill">USGS 3DEP LiDAR</span>
+        <span class="stack-pill">Leaflet</span>
+        <span class="stack-pill">GitHub Actions</span>
+        <span class="stack-pill">rasterio</span>
+        <span class="stack-pill">pixi</span>
+        <span class="stack-pill">GitHub Pages</span>
+      </div>
+      <div style="margin-top:1.25rem;">
+        <a href="https://bdgroves.github.io/solstice" target="_blank" class="project-link">View Live Dashboard →</a>
+        <a href="/blog/solstice-post.html" class="project-link secondary">Read the Build Post →</a>
+      </div>
+    </div>
+    <div class="project-lead-stats">
+      <div class="stat-block">
+        <div class="stat-label">Casa Rinconada alignment</div>
+        <div class="stat-value gold">66.5°</div>
+        <div class="stat-sub">NE doorway azimuth · summer solstice sunrise</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Pueblo Bonito north wall precision</div>
+        <div class="stat-value">0.1°</div>
+        <div class="stat-sub">true north · within a tenth of a degree</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Great houses mapped</div>
+        <div class="stat-value sky">10</div>
+        <div class="stat-sub">Pueblo Bonito · Casa Rinconada · Chetro Ketl · +7</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Terrain resolution</div>
+        <div class="stat-value">1/3"</div>
+        <div class="stat-sub">arc-second · USGS 3DEP · ~10m per pixel</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Dashboard updates</div>
+        <div class="stat-value sky">2×/day</div>
+        <div class="stat-sub">06:00 and 18:00 UTC · GitHub Actions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GREAT HOUSES -->
+  <div class="section-label"><span>The Great Houses of Chaco Canyon</span></div>
+  <table class="great-house-table">
+    <tr><th>Site</th><th>Rooms</th><th>Period</th><th>Notable</th></tr>
+    <tr><td>Pueblo Bonito</td><td>~800</td><td>850–1150 CE</td><td>Rear wall faces true north within 0.1°. Largest great house in the canyon.</td></tr>
+    <tr><td>Chetro Ketl</td><td>~500</td><td>1010–1110 CE</td><td>Unique colonnade. 4 stories. One of the finest examples of Chacoan masonry.</td></tr>
+    <tr><td>Casa Rinconada</td><td>—</td><td>1000–1100 CE</td><td>Great kiva. NE doorway aligns to summer solstice sunrise at 66.5°. SOLSTICE alignment anchor.</td></tr>
+    <tr><td>Pueblo del Arroyo</td><td>~280</td><td>1075–1115 CE</td><td>Adjoins rare tri-walled structure. Late occupation.</td></tr>
+    <tr><td>Hungo Pavi</td><td>~150</td><td>900–1100 CE</td><td>Largely unexcavated. Two great kivas. Spring equinox alignments documented.</td></tr>
+    <tr><td>Una Vida</td><td>~160</td><td>850–1000 CE</td><td>One of the earliest great houses. Nearby petroglyphs including possible supernova pictograph.</td></tr>
+    <tr><td>Penasco Blanco</td><td>~150</td><td>900–1125 CE</td><td>Near the possible 1054 CE supernova pictograph — a painted hand, crescent, and bright disc.</td></tr>
+    <tr><td>Pueblo Alto</td><td>~90</td><td>1020–1100 CE</td><td>Mesa-top terminus of the Great North Road — 50 miles straight across the mesa with no practical purpose.</td></tr>
+    <tr><td>Kin Kletso</td><td>~55</td><td>1125–1150 CE</td><td>Late McElmo-tradition construction. One of the last great houses built.</td></tr>
+    <tr><td>Wijiji</td><td>~90</td><td>1100–1150 CE</td><td>Easternmost great house. Accessible only by foot trail.</td></tr>
+  </table>
+
+  <!-- BACKGROUND -->
+  <div class="section-label"><span>Background</span></div>
+  <div class="context-grid">
+    <div>
+      <h3 class="context-hed">The Alignment at Fajada Butte</h3>
+      <div class="context-body">
+        <p>On Fajada Butte, three stone slabs leaning against a cliff face create daggers of light that bisect spiral petroglyphs at every solstice, equinox, and major lunar standstill over an 18.6-year cycle. This solar marker was documented by artist Anna Sofaer in 1977 — she returned during summer solstice and watched a dagger of light bisect the center of the spiral at noon.</p>
+        <p>The great north road leaves Pueblo Alto and runs straight for fifty miles across the mesa, cutting through arroyos and climbing ridges with no apparent practical purpose. As if it wasn't built for walking, but for seeing — a line drawn from a specific point toward something on the horizon that mattered.</p>
+      </div>
+    </div>
+    <div>
+      <h3 class="context-hed">Project Kiva — LiDAR Pipeline</h3>
+      <div class="context-body">
+        <p>SOLSTICE's companion project — Project Kiva is a Southwest archaeology remote sensing pipeline using real USGS 3DEP LiDAR data. Sky-View Factor, Local Relief Model, and automated feature detection across Chaco Canyon, Mesa Verde, Hohokam Phoenix, and Canyon de Chelly.</p>
+        <p>The same LiDAR data that renders SOLSTICE's terrain hero also feeds Project Kiva's archaeological feature detection. The 1/3 arc-second DEM strips the vegetation and modern disturbance away and reads the landform underneath — walls, roads, kivas — that have been invisible to surface survey for generations.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RELATED -->
+  <div class="section-label"><span>Related Work</span></div>
+  <div class="related-grid">
+    <a href="https://bdgroves.github.io/solstice" target="_blank" class="related-card">
+      <div class="related-kicker">Live · Archaeoastronomy · Chaco</div>
+      <div class="related-hed">☀️ SOLSTICE Dashboard</div>
+      <div class="related-dek">Live sun and moon positions over Chaco Canyon. Casa Rinconada alignment monitor. 4K LiDAR terrain render. Days to the next solstice.</div>
+      <span class="related-link">Open dashboard →</span>
+    </a>
+    <a href="https://bdgroves.github.io/project-kiva" target="_blank" class="related-card">
+      <div class="related-kicker">LiDAR · Remote Sensing · Southwest</div>
+      <div class="related-hed">🏜 Project Kiva</div>
+      <div class="related-dek">USGS 3DEP LiDAR pipeline for Southwest archaeology. Sky-View Factor, Local Relief Model, automated kiva detection. Chaco, Mesa Verde, Canyon de Chelly.</div>
+      <span class="related-link">View project →</span>
+    </a>
+    <a href="/geology.html" class="related-card">
+      <div class="related-kicker">Geology · Seismicity · USGS</div>
+      <div class="related-hed">🪨 Geology Hub</div>
+      <div class="related-dek">AFTERSHOCK seismic monitor — the same USGS data infrastructure that powers the seismology hub also underlies the terrain data for the Southwest.</div>
+      <span class="related-link">Explore →</span>
+    </a>
+    <a href="/blog/solstice-post.html" class="related-card">
+      <div class="related-kicker">Blog · Build Post · Archaeoastronomy</div>
+      <div class="related-hed">📝 The SOLSTICE Build Post</div>
+      <div class="related-dek">The 1054 CE supernova, Pueblo Bonito's true north wall, and a live dashboard tracking the summer solstice alignment at Casa Rinconada.</div>
+      <span class="related-link">Read the post →</span>
+    </a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://bdgroves.github.io/solstice" target="_blank">SOLSTICE</a>
+      <a href="https://github.com/bdgroves/solstice" target="_blank">GitHub</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+</body>
+</html>
