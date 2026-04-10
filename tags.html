@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tags — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --rust:#8b3a2a; --white:#fdfaf4; --sage:#4a5c45;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
+
+    .page-wrap { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--rust); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.5rem; }
+    .page-sub { font-size:0.9rem; color:var(--stone); margin-bottom:2.5rem; }
+
+    /* TAG CLOUD */
+    .tag-cloud { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:3rem; padding-bottom:2rem; border-bottom:2px solid var(--ink); }
+    .tag-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; background:none; border:1px solid var(--mist); padding:0.35rem 0.8rem; cursor:pointer; color:var(--stone); transition:all 0.15s; }
+    .tag-btn:hover { border-color:var(--gold); color:var(--gold); }
+    .tag-btn.active { background:var(--ink); color:var(--white); border-color:var(--ink); }
+    .tag-btn .tag-count { font-size:0.55rem; opacity:0.7; margin-left:0.3rem; }
+
+    /* RESULTS */
+    .results-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:1rem; }
+    .results-label span { color:var(--gold); }
+
+    .post-list { display:flex; flex-direction:column; gap:0; }
+    .post-item { padding:1.1rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.1s; }
+    .post-item:hover { background:var(--cream); margin:0 -1rem; padding-left:1rem; padding-right:1rem; }
+    .post-item:last-child { border-bottom:none; }
+    .post-item-tags { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:0.2rem; }
+    .post-item-title { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; margin-bottom:0.2rem; line-height:1.35; }
+    .post-item-dek { font-size:0.82rem; color:var(--stone); line-height:1.55; }
+    .post-item-date { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:0.25rem; }
+
+    .no-results { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--stone); padding:2rem 0; }
+
+    footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">All Posts</a>
+      <a href="/">Home</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-wrap">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/blog/index.html">Blog</a></p>
+  <h1 class="page-title">Browse by Tag</h1>
+  <p class="page-sub">Click any tag to filter posts. Click again to clear.</p>
+
+  <div class="tag-cloud" id="tagCloud"></div>
+
+  <div class="results-label" id="resultsLabel">All posts</div>
+  <div class="post-list" id="postList"></div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const POSTS = [
+  {
+    url: '/blog/solstice-post.html',
+    title: '☀️ SOLSTICE — Watching the Same Sky Over Chaco Canyon',
+    dek: 'A 1054 CE supernova, Pueblo Bonito\'s true-north wall, and a live dashboard tracking the summer solstice alignment at Casa Rinconada.',
+    date: 'April 2026',
+    tags: ['Archaeology','Archaeoastronomy','Chaco Canyon','Python','ephem','forge3d','LiDAR','GitHub Actions','Southwest','New Mexico']
+  },
+  {
+    url: '/blog/aftershock-post.html',
+    title: '🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor',
+    dek: 'Growing up on the Melones Fault Zone. Loma Prieta 1989. A live seismic dashboard from a USGS public API and a GitHub Actions cron job.',
+    date: 'April 2026',
+    tags: ['Geology','Seismology','USGS','Python','Leaflet','Cascadia','Tuolumne County','Sierra Nevada','GitHub Actions']
+  },
+  {
+    url: '/blog/dipodomys-post.html',
+    title: '🐾 DIPODOMYS — A Data Portrait of Death Valley\'s Kangaroo Rats',
+    dek: 'Live iNaturalist data, two species, one valley. What citizen science reveals about habitat partitioning at the hottest place on Earth.',
+    date: 'April 2026',
+    tags: ['Ecology','iNaturalist','Death Valley','Citizen Science','Leaflet','Mojave','California','Desert']
+  },
+  {
+    url: '/blog/little-free-pantry-post.html',
+    title: '🏠 Little Free Pantry — Mapping Food Access in Lakewood',
+    dek: 'Interactive map for the Lakewood Rotary\'s 7-pantry network. 24/7 no-barrier food access across South Sound communities.',
+    date: 'April 2026',
+    tags: ['Community GIS','Leaflet','Food Access','Lakewood WA','Rotary','Civic Tech','Pacific Northwest']
+  },
+  {
+    url: '/blog/sentinel-stockpile-post.html',
+    title: '🛰️ Sentinel Stockpile — The Economy You Can See From Space',
+    dek: '12 months of Sentinel-2 satellite imagery tracking lumber stockpiles at the Port of Longview.',
+    date: 'April 2026',
+    tags: ['Remote Sensing','GIS','Sentinel-2','Python','Supply Chain','Columbia River','Pacific Northwest','pixi']
+  },
+  {
+    url: '/blog/weather-station-post.html',
+    title: '🌡️ Weather Station — Four Climates, Zero Dollars, Half a Cup of Coffee',
+    dek: 'A real-time weather dashboard monitoring the Pacific Northwest to Death Valley.',
+    date: 'April 2026',
+    tags: ['Meteorology','Python','GitHub Actions','Open-Meteo','NWS','Pacific Northwest','Death Valley','Groveland','Reno']
+  },
+  {
+    url: '/blog/pele-blog-post.html',
+    title: '🌋 PELE — Building a Live Kīlauea Dashboard for a Birthday Trip',
+    dek: '43 eruption episodes, a buried webcam, and a cron job. Real data from USGS HVO, served six times a day.',
+    date: 'April 2026',
+    tags: ['Volcanology','Python','GitHub Actions','USGS','Kīlauea','Hawaii','Episodic Eruption']
+  },
+  {
+    url: '/blog/cascadia-wx-post.html',
+    title: 'FORTRAN, Snowpack, and the Language the Atmosphere Speaks',
+    dek: 'The Cascades are at 15% of normal snowpack. FORTRAN has been computing the atmosphere for 75 years.',
+    date: 'April 2, 2026',
+    tags: ['Meteorology','FORTRAN','Python','SNOTEL','Pacific Northwest','Cascades','Snowpack']
+  },
+  {
+    url: '/blog/sierra-flow-cobol-post.html',
+    title: 'COBOL, Streamflow, and Artemis II',
+    dek: 'A 1959 language fetching live USGS telemetry on the day four humans left Earth\'s orbit.',
+    date: 'April 1, 2026',
+    tags: ['Hydrology','COBOL','Python','USGS','Sierra Nevada','Streamflow','GitHub Actions']
+  },
+  {
+    url: '/blog/forge3d-post.html',
+    title: 'Exploring forge3d With Washington LiDAR',
+    dek: 'A GPU-accelerated terrain renderer in Python. Mount St. Helens, Crater Lake, and what 1-meter LiDAR does to a summit.',
+    date: 'April 2026',
+    tags: ['GIS','LiDAR','forge3d','Python','Terrain','Pacific Northwest','Washington']
+  },
+  {
+    url: '/blog/pixi-post.html',
+    title: 'Why I Switched to pixi for Managing Python and R Environments',
+    dek: 'After years of conda headaches, a cleaner path to reproducible geospatial work.',
+    date: 'March 31, 2026',
+    tags: ['Python','R','pixi','GIS','Environments','Reproducibility']
+  },
+  {
+    url: '/blog/streamflow-post.html',
+    title: 'Building a Live Streamflow Dashboard on a $0 Budget',
+    dek: 'GitHub Actions, USGS APIs, and a healthy respect for Pacific snowmelt.',
+    date: 'March 18, 2026',
+    tags: ['Hydrology','Python','USGS','GitHub Actions','Sierra Nevada','Streamflow']
+  },
+  {
+    url: '/writing/cow-palace-nye-1991.html',
+    title: 'Cow Palace, NYE 1991 — RHCP / Nirvana / Pearl Jam',
+    dek: 'Drove over Donner Pass in a snowstorm. Locked eyes with Anthony Kiedis. Eddie Vedder dove into the crowd.',
+    date: '2026',
+    tags: ['Memoir','Music','Concerts','San Francisco','1990s','Nevada Neil','Pearl Jam','Nirvana','Red Hot Chili Peppers']
+  },
+  {
+    url: '/writing/draught-south-land.html',
+    title: 'Book Review: Draught of the South Land',
+    dek: 'Review of Paul Moon\'s historical work. Published in Cartographic Perspectives No. 105, 2025.',
+    date: '2025',
+    tags: ['Writing','Book Review','Cartography','Cartographic Perspectives']
+  },
+];
+
+// Build tag frequency map
+const tagMap = {};
+POSTS.forEach(p => p.tags.forEach(t => { tagMap[t] = (tagMap[t]||0)+1; }));
+const sortedTags = Object.entries(tagMap).sort((a,b) => b[1]-a[1] || a[0].localeCompare(b[0]));
+
+let activeTag = null;
+
+// Check URL hash on load
+if (window.location.hash) {
+  activeTag = decodeURIComponent(window.location.hash.slice(1));
+}
+
+// Render tag cloud
+const tagCloud = document.getElementById('tagCloud');
+sortedTags.forEach(([tag, count]) => {
+  const btn = document.createElement('button');
+  btn.className = 'tag-btn' + (activeTag === tag ? ' active' : '');
+  btn.innerHTML = tag + `<span class="tag-count">${count}</span>`;
+  btn.onclick = () => {
+    if (activeTag === tag) {
+      activeTag = null;
+      window.location.hash = '';
+    } else {
+      activeTag = tag;
+      window.location.hash = encodeURIComponent(tag);
+    }
+    renderPosts();
+    document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+    if (activeTag) btn.classList.add('active');
+  };
+  tagCloud.appendChild(btn);
+});
+
+function renderPosts() {
+  const label = document.getElementById('resultsLabel');
+  const list = document.getElementById('postList');
+  const filtered = activeTag ? POSTS.filter(p => p.tags.includes(activeTag)) : POSTS;
+
+  label.innerHTML = activeTag
+    ? `Showing <span>${filtered.length} post${filtered.length !== 1 ? 's' : ''}</span> tagged <span>${activeTag}</span>`
+    : `All posts — <span>${POSTS.length} total</span>`;
+
+  if (!filtered.length) {
+    list.innerHTML = '<div class="no-results">No posts found for this tag.</div>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(p => `
+    <a href="${p.url}" class="post-item">
+      <div class="post-item-tags">${p.tags.slice(0,4).join(' · ')}</div>
+      <div class="post-item-title">${p.title}</div>
+      <div class="post-item-dek">${p.dek}</div>
+      <div class="post-item-date">${p.date}</div>
+    </a>
+  `).join('');
+}
+
+renderPosts();
+</script>
+</body>
+</html>
