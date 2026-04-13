@@ -24,7 +24,6 @@ jobs:
           from datetime import datetime, timezone, date
 
           # ── RIDER SPOTLIGHT ──
-          # Pull live stats for watched riders from PCS
           def get_rider_stats(pcs_slug, display_name, nationality_flag):
               try:
                   import cloudscraper
@@ -35,13 +34,10 @@ jobs:
                   scraper = cloudscraper.create_scraper()
                   headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
-                  # Fetch 2026 results page
                   results_url = f"https://www.procyclingstats.com/rider/{pcs_slug}/results/2026"
                   r2 = scraper.get(results_url, headers=headers, timeout=15)
                   tree2 = HTMLParser(r2.text)
 
-                  # Table is class='rdrResults'
-                  # Columns: date(0), result(1), race(2+)
                   results = []
                   table = tree2.css_first("table.rdrResults")
                   if table:
@@ -52,31 +48,23 @@ jobs:
                           if len(cols) >= 3:
                               date_val = cols[0].text(strip=True)
                               result_val = cols[1].text(strip=True)
-                              # Race name — find the td with an <a> tag
                               race_val = ""
                               for col in cols[2:]:
                                   a = col.css_first("a")
                                   if a:
                                       race_val = a.text(strip=True)
-                                      # Strip trailing category like (1.UWT)
                                       race_val = re.sub(r'\s*\(.*?\)\s*', '', race_val).strip()
                                       break
                               if not race_val:
                                   race_val = cols[2].text(strip=True)
                                   race_val = re.sub(r'\s*\(.*?\)\s*', '', race_val).strip()
-
                               if race_val and len(race_val) > 2:
-                                  results.append({
-                                      "date": date_val,
-                                      "result": result_val,
-                                      "race": race_val
-                                  })
+                                  results.append({"date": date_val, "result": result_val, "race": race_val})
                   else:
                       print(f"    No rdrResults table found")
 
                   wins_2026 = [r for r in results if str(r.get("result","")).strip() == "1"]
 
-                  # Clean up race names — strip "S4Stage 4- " prefixes and "General classification" dupes
                   def clean_race_name(name):
                       import re
                       name = re.sub(r'^S\d+Stage \d+[-–]\s*', '', name)
@@ -93,7 +81,6 @@ jobs:
                   if wins_2026:
                       print(f"    Wins: {[w['race'] for w in wins_2026]}")
 
-                  # Profile page for team + ranking
                   team = ""
                   pcs_ranking = None
                   pcs_points = None
@@ -102,7 +89,6 @@ jobs:
                       rp = scraper.get(profile_url, headers=headers, timeout=15)
                       tp = HTMLParser(rp.text)
 
-                      # Team from ul.rdr-teams2 — first linked team name
                       teams_ul = tp.css_first("ul[class*='rdr-teams']")
                       if teams_ul:
                           for a in teams_ul.css("a"):
@@ -111,13 +97,11 @@ jobs:
                                   team = txt
                                   break
                           if not team:
-                              # fallback: grab text between year and (WT)
                               full = teams_ul.text(strip=True)
                               m = re.search(r'\d{4}(.*?)\(WT\)', full)
                               if m:
                                   team = m.group(1).strip()
 
-                      # PCS Ranking from ul.list.horizontal — "PCS Ranking{N}"
                       for ul in tp.css("ul.list.horizontal, ul[class='list horizontal']"):
                           txt = ul.text(strip=True)
                           m = re.search(r'PCS Ranking(\d+)', txt)
@@ -125,7 +109,6 @@ jobs:
                               pcs_ranking = m.group(1)
                               break
 
-                      # 2026 points from table.basic.small — parse row by row
                       basic = tp.css_first("table[class*='basic small'], table[class=' basic small']")
                       if basic:
                           for row in basic.css("tr"):
@@ -153,16 +136,10 @@ jobs:
               except Exception as e:
                   print(f"  ERROR fetching {display_name}: {e}")
                   traceback.print_exc()
-                  return {
-                      "name": display_name,
-                      "flag": nationality_flag,
-                      "fetched": False,
-                      "error": str(e)
-                  }
+                  return {"name": display_name, "flag": nationality_flag, "fetched": False, "error": str(e)}
 
           # ── RACE CALENDAR ──
           races = [
-            # SPRING CLASSICS 2026
             {
               "name": "Omloop Het Nieuwsblad",
               "emoji": "🇧🇪",
@@ -219,9 +196,9 @@ jobs:
               "category": "1.UWT",
               "date": "2026-04-01",
               "status": "final",
-              "winner": None,
-              "team": None,
-              "notes": "Semi-classic ahead of RVV — update after race"
+              "winner": "Filippo Ganna",
+              "team": "INEOS Grenadiers",
+              "notes": "Ganna powers away to win the semi-classic ahead of RVV"
             },
             {
               "name": "Ronde van Vlaanderen",
@@ -230,19 +207,18 @@ jobs:
               "date": "2026-04-05",
               "status": "final",
               "winner": "Tadej Pogačar 🌈",
-              "notes": "Solos to 3rd Flanders title · Record-equalling win · MvdP 2nd · Evenepoel 3rd on debut",
-              "team": None,
-              "notes": "Tour of Flanders · Pogačar vs MvdP · The big one"
+              "team": "UAE Team Emirates XRG",
+              "notes": "Solos to 3rd Flanders title. Record-equalling win. MvdP 2nd, Evenepoel 3rd on debut."
             },
             {
               "name": "Paris–Roubaix",
               "emoji": "🇫🇷",
               "category": "Monument",
               "date": "2026-04-12",
-              "status": "upcoming",
-              "winner": None,
-              "team": None,
-              "notes": "Hell of the North · 50km of cobbles"
+              "status": "final",
+              "winner": "Wout van Aert",
+              "team": "Visma-Lease a Bike",
+              "notes": "Sprint à deux over Pogačar. Stuyven 3rd, MvdP 4th after mechanical. Fastest ever — 48.91 km/h. Van Aert's first cobbled Monument."
             },
             {
               "name": "Amstel Gold Race",
@@ -274,7 +250,6 @@ jobs:
               "team": None,
               "notes": "La Doyenne · Pogačar won in 2025"
             },
-            # GRAND TOURS
             {
               "name": "Giro d'Italia",
               "emoji": "🇮🇹",
@@ -305,7 +280,6 @@ jobs:
               "team": None,
               "notes": "Aug 15 – Sep 6"
             },
-            # FALL MONUMENTS
             {
               "name": "Il Lombardia",
               "emoji": "🇮🇹",
@@ -318,7 +292,6 @@ jobs:
             },
           ]
 
-          # Compute days away
           today = date.today()
           for r in races:
               race_date = date.fromisoformat(r["date"])
@@ -339,7 +312,6 @@ jobs:
               if stats.get("fetched"):
                   print(f"  {name}: {stats.get('wins_2026', 0)} wins in 2026, PCS rank #{stats.get('pcs_ranking', '?')}")
 
-          # ── WRITE OUTPUT ──
           output = {
               "races": races,
               "riders": riders,
