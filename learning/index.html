@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --study:#2a4a6b;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--study) 0%,var(--gold) 50%,var(--sage) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--study); }
+
+    .page-header { max-width:1400px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--study); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--study); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+    .page-distinction { display:inline-block; margin-top:1rem; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; color:var(--stone); border-left:3px solid var(--gold); padding-left:0.75rem; line-height:1.8; }
+
+    .page-content { max-width:1400px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+
+    /* TOPIC GRID */
+    .topic-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--mist); border:1px solid var(--mist); margin-bottom:3rem; }
+    @media(max-width:900px) { .topic-grid { grid-template-columns:repeat(2,1fr); } }
+    @media(max-width:560px) { .topic-grid { grid-template-columns:1fr; } }
+
+    .topic-card { background:var(--parchment); padding:1.75rem; text-decoration:none; color:inherit; display:block; transition:background 0.15s; position:relative; }
+    .topic-card:hover { background:var(--cream); }
+    .topic-card.live::after { content:'LIVE'; font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.12em; background:var(--study); color:var(--white); padding:0.15rem 0.45rem; position:absolute; top:1rem; right:1rem; }
+    .topic-card.soon { opacity:0.55; cursor:default; pointer-events:none; }
+    .topic-card.soon::after { content:'SOON'; font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.12em; background:var(--mist); color:var(--stone); padding:0.15rem 0.45rem; position:absolute; top:1rem; right:1rem; }
+    .topic-icon { font-size:2rem; display:block; margin-bottom:0.75rem; }
+    .topic-category { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.35rem; }
+    .topic-name { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:900; margin-bottom:0.5rem; }
+    .topic-dek { font-size:0.82rem; color:var(--stone); line-height:1.65; margin-bottom:0.75rem; }
+    .topic-meta { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); display:flex; gap:1rem; flex-wrap:wrap; }
+    .topic-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--study); margin-top:0.75rem; display:block; }
+
+    /* ABOUT SECTION */
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:3rem; }
+    @media(max-width:700px) { .about-grid { grid-template-columns:1fr; } }
+    .about-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:0.75rem; color:var(--study); }
+    .about-body { font-size:0.88rem; color:var(--stone); line-height:1.75; }
+    .about-body p { margin-bottom:0.75rem; }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/learning/" style="color:var(--study);">Learning</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a></p>
+  <h1 class="page-title">📚 <em>Learning</em></h1>
+  <p class="page-sub">Self-directed curricula across science, history, music, and culture. Not credentials — comprehension. Built for the kind of person who wants to understand something properly, not just know its name.</p>
+  <p class="page-distinction">Ologies = what I build. Learning = what I study. Different things, cross-linked.</p>
+</div>
+
+<div class="page-content">
+
+  <div class="section-label"><span>Curricula</span></div>
+
+  <div class="topic-grid">
+    <a href="/learning/quantum-physics/" class="topic-card live">
+      <span class="topic-icon">⚛️</span>
+      <div class="topic-category">Physics</div>
+      <div class="topic-name">Quantum Physics</div>
+      <div class="topic-dek">From the photoelectric effect to the multiverse. 15 lessons across 4 phases — the actual science, not the pop-science version.</div>
+      <div class="topic-meta">
+        <span>15 lessons</span>
+        <span>~12–16 hrs</span>
+        <span>4 phases</span>
+      </div>
+      <span class="topic-link">Start curriculum →</span>
+    </a>
+
+    <div class="topic-card soon">
+      <span class="topic-icon">🌌</span>
+      <div class="topic-category">Cosmology</div>
+      <div class="topic-name">Cosmology & the Early Universe</div>
+      <div class="topic-dek">The Big Bang, dark matter, dark energy, and the large-scale structure of spacetime. How we know what we know.</div>
+      <div class="topic-meta"><span>Building</span></div>
+    </div>
+
+    <div class="topic-card soon">
+      <span class="topic-icon">🎵</span>
+      <div class="topic-category">Music History</div>
+      <div class="topic-name">Music Underground 1985–95</div>
+      <div class="topic-dek">SST Records, Sub Pop, 4AD, Touch and Go. The decade before the internet changed everything about how music moved.</div>
+      <div class="topic-meta"><span>Building</span></div>
+    </div>
+
+    <div class="topic-card soon">
+      <span class="topic-icon">🏺</span>
+      <div class="topic-category">Archaeology</div>
+      <div class="topic-name">Ancestral Puebloans</div>
+      <div class="topic-dek">Chaco Canyon, Mesa Verde, the great houses, the road network, the archaeoastronomy. The people who built it into the stone.</div>
+      <div class="topic-meta"><span>Building</span></div>
+    </div>
+
+    <div class="topic-card soon">
+      <span class="topic-icon">🌋</span>
+      <div class="topic-category">Volcanology</div>
+      <div class="topic-name">Volcanology & Eruption Science</div>
+      <div class="topic-dek">Shield volcanoes, stratovolcanoes, calderas, lahars, pyroclastic flows. The science behind PELE and lahar-watch.</div>
+      <div class="topic-meta"><span>Building</span></div>
+    </div>
+
+    <div class="topic-card soon">
+      <span class="topic-icon">🧊</span>
+      <div class="topic-category">Cryosphere</div>
+      <div class="topic-name">The Cryosphere</div>
+      <div class="topic-dek">Glaciers, sea ice, permafrost, ice sheets. The frozen layer of Earth and what happens when it melts.</div>
+      <div class="topic-meta"><span>Building</span></div>
+    </div>
+  </div>
+
+  <div class="section-label"><span>About This Section</span></div>
+  <div class="about-grid">
+    <div>
+      <h3 class="about-hed">How These Curricula Work</h3>
+      <div class="about-body">
+        <p>Each curriculum is a self-contained study path — lessons that expand with core concepts, vocabulary, and what I call the Cocktail Party Line: the one precise thing you can say at a dinner party that signals you actually understand the subject, not just the surface.</p>
+        <p>The goal is genuine comprehension. Not "I read a pop-science book about it" — more like "I could explain it to a physicist without embarrassing myself." That bar is higher than it sounds.</p>
+      </div>
+    </div>
+    <div>
+      <h3 class="about-hed">Ologies ↔ Learning</h3>
+      <div class="about-body">
+        <p>The Ologies section is where I build things — dashboards, pipelines, instruments. The Learning section is where I study the underlying science. They're related but different.</p>
+        <p>PELE tracks Kīlauea eruptions. The Volcanology curriculum explains why volcanoes work the way they do. SOLSTICE tracks the Casa Rinconada alignment. The Ancestral Puebloans curriculum explains who built it and why. The projects and the study inform each other.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/learning/">Learning</a>
+      <a href="/blog/index.html">Blog</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Physics — Learning — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --study:#2a4a6b; --quantum:#4a2a6b;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--quantum) 0%,var(--study) 50%,var(--gold) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--study); }
+
+    .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--study); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+    .page-stats { display:flex; gap:2rem; margin-top:1.5rem; flex-wrap:wrap; }
+    .page-stat-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--study); }
+    .page-stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
+
+    .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    /* PHASE LABEL */
+    .phase-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1.25rem; display:flex; justify-content:space-between; }
+    .phase-label:first-child { margin-top:0; }
+    .phase-name { color:var(--quantum); }
+
+    /* LESSON */
+    .lesson { border:1px solid var(--mist); margin-bottom:0.75rem; }
+    .lesson-header { padding:1.1rem 1.25rem; cursor:pointer; display:grid; grid-template-columns:2.5rem 1fr auto; gap:0.75rem; align-items:start; transition:background 0.15s; }
+    .lesson-header:hover { background:var(--cream); }
+    .lesson-num { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--stone); padding-top:0.1rem; }
+    .lesson-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.3; }
+    .lesson-sub { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; font-family:'Libre Baskerville',serif; font-style:italic; }
+    .lesson-time { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); text-align:right; white-space:nowrap; padding-top:0.2rem; }
+    .lesson-expand { display:none; padding:1.25rem 1.5rem; border-top:1px solid var(--mist); background:var(--cream); }
+    .lesson.open .lesson-expand { display:block; }
+    .lesson.open .lesson-header { background:var(--cream); }
+
+    .expand-section { margin-bottom:1.25rem; }
+    .expand-section:last-child { margin-bottom:0; }
+    .expand-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--quantum); margin-bottom:0.5rem; }
+    .expand-body { font-size:0.88rem; line-height:1.75; color:var(--stone); }
+    .expand-body p { margin-bottom:0.6rem; }
+    .expand-body p:last-child { margin-bottom:0; }
+
+    /* COCKTAIL PARTY LINE */
+    .cocktail-box { background:var(--ink); color:#e8e4d8; padding:1rem 1.25rem; margin-top:1rem; border-left:3px solid var(--gold); }
+    .cocktail-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.4rem; }
+    .cocktail-line { font-size:0.88rem; font-style:italic; line-height:1.7; }
+
+    /* VOCAB */
+    .vocab-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .vocab-grid { grid-template-columns:1fr; } }
+    .vocab-item { font-size:0.82rem; color:var(--stone); }
+    .vocab-item strong { color:var(--ink); font-weight:700; }
+
+    /* RESOURCES */
+    .resources { border:1px solid var(--mist); padding:1.75rem; margin-top:3rem; }
+    .resources-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:var(--study); }
+    .resource-list { display:flex; flex-direction:column; gap:0.6rem; }
+    .resource-item { font-size:0.85rem; color:var(--stone); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:baseline; }
+    .resource-item a { color:var(--study); text-decoration:underline; text-underline-offset:3px; font-size:0.75rem; font-family:'DM Mono',monospace; }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/learning/">Learning</a>
+      <a href="/">Home</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/learning/">Learning</a></p>
+  <h1 class="page-title">⚛️ Quantum Physics</h1>
+  <p class="page-sub">The actual science, not the pop-science version. From the photoelectric effect to the multiverse — 15 lessons across 4 phases. Each lesson includes core concepts, vocabulary, and the Cocktail Party Line.</p>
+  <div class="page-stats">
+    <div><div class="page-stat-val">15</div><div class="page-stat-lbl">Lessons</div></div>
+    <div><div class="page-stat-val">4</div><div class="page-stat-lbl">Phases</div></div>
+    <div><div class="page-stat-val">~14 hrs</div><div class="page-stat-lbl">Estimated</div></div>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <!-- PHASE 1 -->
+  <div class="phase-label"><span>Phase 1 — Foundation</span><span class="phase-name">4 lessons · ~3–4 hrs</span></div>
+
+  <div class="lesson" id="l1">
+    <div class="lesson-header" onclick="toggle('l1')">
+      <div class="lesson-num">01</div>
+      <div><div class="lesson-title">The Quantization of Energy</div><div class="lesson-sub">Why Planck broke classical physics to save it</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Classical physics predicted that a hot object should radiate infinite energy at high frequencies — the "ultraviolet catastrophe." Max Planck solved it in 1900 by assuming energy is emitted in discrete chunks, or quanta, proportional to frequency: E = hf.</p>
+          <p>This wasn't supposed to be a real physical claim — Planck called it a "mathematical trick." But it worked perfectly, and five years later Einstein showed it was actually true. Energy doesn't flow continuously. It comes in packets.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Quantum</strong> — a discrete, indivisible unit of energy</div>
+          <div class="vocab-item"><strong>Planck's constant (h)</strong> — 6.626 × 10⁻³⁴ J·s; the fundamental scale of quantization</div>
+          <div class="vocab-item"><strong>Blackbody radiation</strong> — thermal radiation from an idealized perfect absorber</div>
+          <div class="vocab-item"><strong>Ultraviolet catastrophe</strong> — classical physics' prediction of infinite energy at high frequencies</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Planck didn't believe quantization was real — he thought it was a mathematical trick to fix a broken equation. Einstein proved it was actually how the universe works."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="l2">
+    <div class="lesson-header" onclick="toggle('l2')">
+      <div class="lesson-num">02</div>
+      <div><div class="lesson-title">The Photoelectric Effect</div><div class="lesson-sub">Einstein's Nobel Prize — light as particles</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Shine light on metal and electrons pop off. Classical physics said brighter light should eject faster electrons. Wrong — frequency matters, not brightness. Below a threshold frequency, no electrons are ejected no matter how bright the light.</p>
+          <p>Einstein explained this in 1905 by treating light as particles (photons) with energy proportional to frequency. Each electron needs a minimum energy to escape — one photon per electron. This was the definitive proof that light is quantized. It's also what Einstein actually won the Nobel Prize for, not relativity.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Photon</strong> — a quantum of electromagnetic radiation; a particle of light</div>
+          <div class="vocab-item"><strong>Work function</strong> — minimum energy required to eject an electron from a metal</div>
+          <div class="vocab-item"><strong>Threshold frequency</strong> — minimum frequency of light that will eject electrons</div>
+          <div class="vocab-item"><strong>Wave-particle duality</strong> — light (and matter) exhibit both wave and particle properties</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Einstein's Nobel Prize wasn't for relativity — it was for proving light comes in particles. He figured it out by asking why bright light doesn't eject electrons faster than dim light."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="l3">
+    <div class="lesson-header" onclick="toggle('l3')">
+      <div class="lesson-num">03</div>
+      <div><div class="lesson-title">The Schrödinger Equation & Wave Functions</div><div class="lesson-sub">What particles actually are</div></div>
+      <div class="lesson-time">~60 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>De Broglie proposed in 1924 that if light can be a particle, matter can be a wave. Schrödinger gave that wave a mathematical description: the wave function ψ, which encodes the probability of finding a particle in any given location.</p>
+          <p>The wave function doesn't say where the particle is — it says where it might be, and with what probability. Before measurement, a particle exists in a superposition of all possible states. Measurement collapses the wave function to a single outcome. This is not ignorance of the position — the position genuinely doesn't exist until measured.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Wave function (ψ)</strong> — mathematical description of a quantum state; encodes probabilities</div>
+          <div class="vocab-item"><strong>Superposition</strong> — existing in multiple states simultaneously before measurement</div>
+          <div class="vocab-item"><strong>Wavefunction collapse</strong> — reduction to a definite state upon measurement</div>
+          <div class="vocab-item"><strong>Born rule</strong> — probability of outcome = |ψ|²</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The wave function doesn't describe our ignorance of where a particle is — it describes the particle's actual state of not-being-anywhere-definite until something interacts with it."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="l4">
+    <div class="lesson-header" onclick="toggle('l4')">
+      <div class="lesson-num">04</div>
+      <div><div class="lesson-title">Atomic Structure & the Bohr Model</div><div class="lesson-sub">Why atoms don't collapse</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Classical physics said electrons orbiting a nucleus should continuously radiate energy and spiral inward — atoms should collapse in nanoseconds. They don't. Bohr proposed in 1913 that electrons can only occupy specific energy levels, and only emit photons when jumping between them.</p>
+          <p>The modern picture is more nuanced: electrons don't orbit like planets. They exist in probability clouds (orbitals) defined by quantum numbers. The Heisenberg uncertainty principle means you can't know both position and momentum precisely — the electron's "orbit" is fundamentally smeared across space.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Energy level</strong> — discrete allowed energy state of an electron in an atom</div>
+          <div class="vocab-item"><strong>Orbital</strong> — probability cloud describing where an electron is likely to be found</div>
+          <div class="vocab-item"><strong>Quantum numbers</strong> — n, l, m, s — the four numbers that specify an electron's state</div>
+          <div class="vocab-item"><strong>Heisenberg uncertainty</strong> — Δx·Δp ≥ ℏ/2 — position and momentum cannot both be known precisely</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Electrons don't orbit nuclei like planets — they exist as probability clouds. The reason atoms don't collapse is that squeezing an electron into a smaller space increases its kinetic energy, which pushes back."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-label"><span>Phase 2 — Forces & Extreme States</span><span class="phase-name">5 lessons · ~4–5 hrs</span></div>
+
+  <div class="lesson" id="l5">
+    <div class="lesson-header" onclick="toggle('l5')">
+      <div class="lesson-num">05</div>
+      <div><div class="lesson-title">The Standard Model & the Higgs Field</div><div class="lesson-sub">The periodic table of fundamental particles</div></div>
+      <div class="lesson-time">~60 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The Standard Model is the most precisely tested theory in science. It describes 17 fundamental particles: 6 quarks, 6 leptons, 4 force-carrying bosons, and the Higgs boson. Every atom, every interaction you've ever experienced, is built from these.</p>
+          <p>The Higgs field, confirmed in 2012 at CERN, permeates all of space. Particles gain mass by interacting with it — the more strongly they interact, the more massive they are. Photons don't interact with it at all, which is why they have no mass and travel at c.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Fermion</strong> — matter particles (quarks and leptons); obey Pauli exclusion</div>
+          <div class="vocab-item"><strong>Boson</strong> — force-carrying particles; can occupy same state</div>
+          <div class="vocab-item"><strong>Higgs boson</strong> — excitation of the Higgs field; the "particle" of mass</div>
+          <div class="vocab-item"><strong>Gluon</strong> — carrier of the strong force; binds quarks into protons/neutrons</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The Higgs field doesn't give everything mass — it gives elementary particles mass. The mass of a proton is mostly from the energy of gluons binding quarks together, not from the Higgs."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="l6">
+    <div class="lesson-header" onclick="toggle('l6')">
+      <div class="lesson-num">06</div>
+      <div><div class="lesson-title">Matter, Antimatter & Annihilation</div><div class="lesson-sub">Why the universe exists</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Every fundamental particle has an antiparticle with opposite charge. When matter meets antimatter, they annihilate — converting entirely to energy (photons). The Big Bang should have created equal amounts of matter and antimatter. They should have annihilated each other completely. But here we are.</p>
+          <p>The slight asymmetry (roughly one extra matter particle per billion) that allowed the universe to exist is called CP violation. We know it exists. We don't fully understand why it's large enough to produce a universe full of matter. This is one of the deepest unsolved problems in physics.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Antiparticle</strong> — same mass, opposite charge as its matter partner</div>
+          <div class="vocab-item"><strong>Annihilation</strong> — matter-antimatter collision producing photons: E = 2mc²</div>
+          <div class="vocab-item"><strong>CP violation</strong> — asymmetry between matter and antimatter behavior</div>
+          <div class="vocab-item"><strong>Baryon asymmetry</strong> — the unexplained excess of matter over antimatter</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The reason the universe exists instead of nothing is that the Big Bang produced very slightly more matter than antimatter — about one extra particle per billion. We don't know why."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="l7">
+    <div class="lesson-header" onclick="toggle('l7')">
+      <div class="lesson-num">07</div>
+      <div><div class="lesson-title">Superconductivity & Superfluidity</div><div class="lesson-sub">Quantum mechanics at human scale</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Below a critical temperature, some materials lose all electrical resistance — current flows forever without energy loss. This is superconductivity, explained by BCS theory: electrons pair up (Cooper pairs) and behave as bosons, condensing into a single quantum state. The whole macroscopic current flows as one coherent quantum object.</p>
+          <p>Superfluids (like liquid helium below 2.17K) flow with zero viscosity — they can climb up and over the walls of a container. Both phenomena are quantum mechanics operating at scales you can see and touch.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Cooper pair</strong> — bound pair of electrons that carries supercurrent</div>
+          <div class="vocab-item"><strong>BCS theory</strong> — microscopic theory of superconductivity (Bardeen-Cooper-Schrieffer)</div>
+          <div class="vocab-item"><strong>Bose-Einstein condensate</strong> — state where many particles occupy the same quantum ground state</div>
+          <div class="vocab-item"><strong>Meissner effect</strong> — superconductors expel magnetic fields — the basis of magnetic levitation</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"A superconductor isn't just a good conductor — electrons in it pair up and flow as a single quantum object spanning the whole material. Current circulates forever without losing a single joule."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="l8">
+    <div class="lesson-header" onclick="toggle('l8')">
+      <div class="lesson-num">08</div>
+      <div><div class="lesson-title">Radioactive Decay & Nuclear Forces</div><div class="lesson-sub">The strong and weak forces</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The strong nuclear force binds quarks into protons and neutrons, and protons and neutrons into nuclei — it's the strongest force in nature but operates only at subatomic distances. The weak force mediates radioactive decay, allowing one type of quark to change into another (converting a neutron to a proton in beta decay).</p>
+          <p>Radioactive decay is quantum mechanical tunneling — a particle escaping a potential barrier it classically shouldn't be able to cross. Half-life is the time for half a sample to decay, determined purely by quantum probability. You cannot predict when any individual atom decays.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Strong force</strong> — binds quarks; mediated by gluons; confines quarks in hadrons</div>
+          <div class="vocab-item"><strong>Weak force</strong> — mediates radioactive decay; changes quark flavors</div>
+          <div class="vocab-item"><strong>Beta decay</strong> — neutron → proton + electron + antineutrino via weak force</div>
+          <div class="vocab-item"><strong>Quantum tunneling</strong> — particle passing through a barrier it lacks energy to surmount classically</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Radioactive decay is quantum tunneling — the nucleus doesn't have enough energy to eject a particle over the barrier, but quantum mechanics allows it to pass through. The sun runs on this."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="l9">
+    <div class="lesson-header" onclick="toggle('l9')">
+      <div class="lesson-num">09</div>
+      <div><div class="lesson-title">Nuclear Fusion & the Energy of Stars</div><div class="lesson-sub">E = mc² in practice</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>When two light nuclei fuse, the product is slightly lighter than the sum of its parts. The missing mass converts to energy via E = mc². The sun fuses roughly 600 million tons of hydrogen per second, converting about 4 million tons of that to pure energy.</p>
+          <p>Fusion requires overcoming the electromagnetic repulsion between positively charged nuclei — which requires extreme temperatures and pressures. In stars, quantum tunneling does much of the work: protons tunnel through the Coulomb barrier at temperatures lower than classical physics would require. Without tunneling, the sun wouldn't shine.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Mass defect</strong> — difference between mass of nucleus and sum of its parts</div>
+          <div class="vocab-item"><strong>Binding energy</strong> — energy released when nucleus forms; mass defect × c²</div>
+          <div class="vocab-item"><strong>Coulomb barrier</strong> — electromagnetic repulsion nuclei must overcome to fuse</div>
+          <div class="vocab-item"><strong>Proton-proton chain</strong> — primary fusion pathway in stars like the sun</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The sun is cooler than fusion should require — quantum tunneling lets protons fuse at temperatures classical physics says are too low. Without quantum mechanics, there are no stars."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-label"><span>Phase 3 — Technology & Frontiers</span><span class="phase-name">3 lessons · ~3 hrs</span></div>
+
+  <div class="lesson" id="l10">
+    <div class="lesson-header" onclick="toggle('l10')">
+      <div class="lesson-num">10</div>
+      <div><div class="lesson-title">Quantum Computing</div><div class="lesson-sub">Qubits, entanglement, and what it actually means</div></div>
+      <div class="lesson-time">~60 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>A classical bit is 0 or 1. A qubit can be in superposition — both 0 and 1 simultaneously — until measured. Two entangled qubits share a correlated quantum state: measuring one instantly determines the other regardless of distance.</p>
+          <p>Quantum computers don't just try all solutions simultaneously. They use quantum interference to amplify correct answers and cancel wrong ones. They're not faster at everything — they excel at specific problems: factoring large numbers (Shor's algorithm), searching unsorted databases (Grover's algorithm), simulating quantum systems.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Qubit</strong> — quantum bit; can be in superposition of 0 and 1</div>
+          <div class="vocab-item"><strong>Entanglement</strong> — correlated quantum state shared between particles</div>
+          <div class="vocab-item"><strong>Quantum interference</strong> — amplifying correct answers via wave interference</div>
+          <div class="vocab-item"><strong>Decoherence</strong> — loss of quantum state due to environmental interaction; the main engineering challenge</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"A quantum computer isn't faster at everything — it's specifically powerful for problems where you can use quantum interference to cancel wrong answers and amplify the right one."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="l11">
+    <div class="lesson-header" onclick="toggle('l11')">
+      <div class="lesson-num">11</div>
+      <div><div class="lesson-title">Particle Accelerators & the LHC</div><div class="lesson-sub">How we probe the smallest scales</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>To see small things, you need short wavelengths. Short wavelengths mean high energies. The LHC accelerates protons to 99.9999991% of the speed of light and collides them — producing temperatures 100,000 times hotter than the center of the sun for a fraction of a second.</p>
+          <p>The collision energy briefly recreates conditions from the early universe, allowing new particles to materialize from pure energy (E = mc² in reverse). Detectors the size of cathedrals capture the particle showers that follow. The Higgs boson was found this way in 2012 — a particle predicted in 1964, confirmed 48 years later.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Center-of-mass energy</strong> — total energy available to create new particles in a collision</div>
+          <div class="vocab-item"><strong>Cross section</strong> — probability of a particular particle interaction occurring</div>
+          <div class="vocab-item"><strong>Luminosity</strong> — rate of particle collisions per unit area per unit time</div>
+          <div class="vocab-item"><strong>5-sigma threshold</strong> — statistical standard for claiming a discovery in particle physics</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The LHC doesn't smash particles to break them — it converts kinetic energy into mass, briefly recreating conditions from the first trillionth of a second after the Big Bang."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="l12">
+    <div class="lesson-header" onclick="toggle('l12')">
+      <div class="lesson-num">12</div>
+      <div><div class="lesson-title">Quantum Entanglement & "Teleportation"</div><div class="lesson-sub">What spooky action at a distance actually means</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Entangled particles share a quantum state: measuring one instantly affects the other no matter the distance. Einstein called this "spooky action at a distance" and thought it proved quantum mechanics was incomplete. Bell's theorem (1964) and subsequent experiments proved Einstein wrong — the correlations are real and cannot be explained by hidden local variables.</p>
+          <p>Quantum teleportation transfers the quantum state of a particle to another location — but requires a classical communication channel alongside it. It cannot transmit information faster than light. What's teleported is the configuration, not the matter. It's more like faxing than Star Trek.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Bell inequality</strong> — mathematical limit that local hidden variable theories must satisfy; violated by QM</div>
+          <div class="vocab-item"><strong>Bell test</strong> — experiment confirming QM violates local realism</div>
+          <div class="vocab-item"><strong>Quantum teleportation</strong> — transfer of quantum state using entanglement + classical channel</div>
+          <div class="vocab-item"><strong>No-communication theorem</strong> — entanglement cannot transmit information faster than light</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Quantum teleportation is real and has been demonstrated — but it requires a classical communication channel alongside it, so nothing moves faster than light. Bell's theorem proved Einstein wrong about this."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase-label"><span>Phase 4 — Big Picture</span><span class="phase-name">3 lessons · ~3–4 hrs</span></div>
+
+  <div class="lesson" id="l13">
+    <div class="lesson-header" onclick="toggle('l13')">
+      <div class="lesson-num">13</div>
+      <div><div class="lesson-title">String Theory & Extra Dimensions</div><div class="lesson-sub">The most ambitious theory in physics</div></div>
+      <div class="lesson-time">~60 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>String theory proposes that fundamental particles are not points but one-dimensional vibrating strings. Different vibrational modes produce different particles — the "notes" of the string correspond to particle types. It naturally incorporates gravity and could unify quantum mechanics with general relativity.</p>
+          <p>The theory requires 10 or 11 spacetime dimensions, with the extra 6–7 compactified at the Planck scale. The landscape of possible string vacua is estimated at 10^500 — a number so large it suggests the multiverse may be the natural setting for the theory.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>String</strong> — 1D vibrating object whose modes correspond to particle types</div>
+          <div class="vocab-item"><strong>Compactification</strong> — extra dimensions curled up at Planck scale (~10⁻³⁵ m)</div>
+          <div class="vocab-item"><strong>Supersymmetry (SUSY)</strong> — symmetry between fermions and bosons; required by most string theories</div>
+          <div class="vocab-item"><strong>M-theory</strong> — 11-dimensional framework unifying the five string theories</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"String theory's main problem isn't that it's wrong — it's that it's too flexible. It can accommodate almost any observation, which makes it nearly impossible to falsify."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="l14">
+    <div class="lesson-header" onclick="toggle('l14')">
+      <div class="lesson-num">14</div>
+      <div><div class="lesson-title">The Multiverse</div><div class="lesson-sub">How many interpretations of quantum mechanics are there?</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The Copenhagen interpretation says the wave function collapses upon measurement — but what counts as a measurement? The Many-Worlds interpretation (Everett, 1957) avoids this by saying the wave function never collapses: instead, every quantum event causes the universe to branch. All outcomes occur, in separate branches.</p>
+          <p>There are at least four distinct multiverse concepts in modern physics: Level I (beyond our cosmic horizon), Level II (inflation bubbles), Level III (Many-Worlds), Level IV (mathematical structures). They're not all the same idea and shouldn't be conflated.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Copenhagen interpretation</strong> — wave function collapses on measurement; standard textbook view</div>
+          <div class="vocab-item"><strong>Many-Worlds interpretation</strong> — all outcomes occur in branching universal wave function</div>
+          <div class="vocab-item"><strong>Decoherence</strong> — quantum branches become effectively separate due to environmental interaction</div>
+          <div class="vocab-item"><strong>Inflation</strong> — exponential expansion of early universe; may produce bubble universes</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The Many-Worlds interpretation isn't fringe physics — it's taken seriously by many physicists because it's simpler than Copenhagen: you just remove the collapse postulate and accept all the branches."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lesson" id="l15">
+    <div class="lesson-header" onclick="toggle('l15')">
+      <div class="lesson-num">15</div>
+      <div><div class="lesson-title">The Big Bang & Quantum Cosmology</div><div class="lesson-sub">Where quantum physics meets the origin of everything</div></div>
+      <div class="lesson-time">~60 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The cosmic microwave background — thermal radiation left over from 380,000 years after the Big Bang — shows tiny temperature fluctuations. These fluctuations originated as quantum fluctuations in the inflaton field, stretched to cosmic scales by inflation. The large-scale structure of the universe (galaxies, clusters, voids) grew from quantum noise.</p>
+          <p>The first fraction of a second after the Big Bang is a quantum gravity regime — both general relativity and quantum mechanics are needed, and we don't have a working theory. The singularity at t=0 is not a prediction of physics; it's where our current theories break down. What "before" the Big Bang means, if anything, is an open question.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>CMB</strong> — cosmic microwave background; afterglow of the Big Bang</div>
+          <div class="vocab-item"><strong>Inflation</strong> — exponential expansion ~10⁻³⁶ s after Big Bang; explains CMB uniformity</div>
+          <div class="vocab-item"><strong>Quantum gravity</strong> — hypothetical theory unifying QM and general relativity</div>
+          <div class="vocab-item"><strong>Planck epoch</strong> — first 10⁻⁴³ s; where all known physics breaks down</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The large-scale structure of the universe — every galaxy, every cluster — grew from quantum fluctuations that inflation stretched to cosmic scales. The biggest things came from the smallest physics."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div class="resources">
+    <div class="resources-hed">Resources</div>
+    <div class="resource-list">
+      <div class="resource-item"><span><strong>The Feynman Lectures on Physics</strong> — Feynman, Leighton, Sands. The gold standard. Vol. III is quantum mechanics.</span><a href="https://www.feynmanlectures.caltech.edu/" target="_blank">feynmanlectures.caltech.edu</a></div>
+      <div class="resource-item"><span><strong>Something Deeply Hidden</strong> — Sean Carroll. Many-Worlds explained clearly by a working physicist who believes it.</span></div>
+      <div class="resource-item"><span><strong>QED: The Strange Theory of Light and Matter</strong> — Feynman. Quantum electrodynamics without the math.</span></div>
+      <div class="resource-item"><span><strong>PBS Space Time</strong> — YouTube. Rigorous physics content, graduate-level concepts, accessible presentation.</span><a href="https://www.youtube.com/@pbsspacetime" target="_blank">YouTube</a></div>
+      <div class="resource-item"><span><strong>The Theoretical Minimum</strong> — Leonard Susskind. If you want to do the actual math, this series starts from scratch.</span></div>
+      <div class="resource-item"><span><strong>Quantum Country</strong> — Matuschak & Nielsen. Spaced repetition quantum mechanics — unusual but effective.</span><a href="https://quantum.country" target="_blank">quantum.country</a></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/learning/">Learning</a>
+      <a href="/">Home</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// Open lesson from URL hash
+if (window.location.hash) {
+  const el = document.getElementById(window.location.hash.slice(1));
+  if (el) { el.classList.add('open'); el.scrollIntoView({behavior:'smooth', block:'start'}); }
+}
+</script>
+</body>
+</html>
