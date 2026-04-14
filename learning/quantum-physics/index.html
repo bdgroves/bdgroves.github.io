@@ -801,7 +801,8 @@ async function askQuestion() {
     if (data.answer) {
       exchange.innerHTML = `<div class="qa-exchange-q">You asked:</div><div class="qa-exchange-a" style="color:var(--stone);font-style:italic;margin-bottom:0.75rem;">${escapeHtml(question)}</div><div class="qa-exchange-a">${escapeHtml(data.answer)}</div>`;
     } else {
-      exchange.innerHTML += `<div class="qa-exchange-a" style="color:var(--rust);">Something went wrong. Try again.</div>`;
+      const errMsg = data.detail || data.error || 'Something went wrong.';
+      exchange.innerHTML += `<div class="qa-exchange-a" style="color:var(--rust);">Error: ${escapeHtml(errMsg)}</div>`;
     }
   } catch {
     exchange.innerHTML += `<div class="qa-exchange-a" style="color:var(--rust);">Connection error. Worker may not be deployed yet.</div>`;
