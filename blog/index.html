@@ -2,271 +2,321 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Blog — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
-      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
-      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
-    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
-    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+    :root { --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc; --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; --sky:#2a4a6b; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
+    .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--rust); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--rust); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:580px; line-height:1.8; }
+    .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:0 0 0; display:flex; justify-content:space-between; align-items:center; }
+    .section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .section-label a:hover { color:var(--rust); }
 
-    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
-    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
-    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
-    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
-    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
-    nav a:hover { color: var(--rust); }
-    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
-    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+    /* POST ROW */
+    .post-list { display:flex; flex-direction:column; }
+    .post-item { display:grid; grid-template-columns:7rem 1fr; gap:1.5rem; align-items:start; padding:1.5rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.15s; }
+    .post-item:hover { background:var(--cream); margin:0 -1.5rem; padding-left:1.5rem; padding-right:1.5rem; }
+    .post-item:last-child { border-bottom:none; }
+    @media(max-width:600px) { .post-item { grid-template-columns:1fr; gap:0.5rem; } }
 
-    .page-header { max-width: 1400px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom: 1px solid var(--mist); }
-    .page-eyebrow { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--stone); margin-bottom: 0.75rem; }
-    .page-title { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem,5vw,4rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; }
-    .page-title em { font-style: italic; color: var(--rust); }
-    .page-sub { margin-top: 1rem; font-size: 0.95rem; color: var(--stone); max-width: 480px; }
+    .post-meta-col { text-align:right; }
+    @media(max-width:600px) { .post-meta-col { text-align:left; } }
+    .post-date { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); text-transform:uppercase; }
+    .post-read { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--mist); margin-top:0.2rem; }
 
-    .posts-list { max-width: 1400px; margin: 0 auto; padding: clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+    .post-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.35rem; }
+    .post-tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.5rem; text-decoration:none; display:inline-block; transition:border-color 0.15s,color 0.15s; }
+    .post-tag:hover { border-color:var(--gold); color:var(--gold); }
+    .post-title { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; line-height:1.25; margin-bottom:0.4rem; color:var(--ink); }
+    .post-item:hover .post-title { color:var(--rust); }
+    .post-excerpt { font-size:0.85rem; color:var(--stone); line-height:1.65; }
+    .post-arrow { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--gold); margin-top:0.5rem; display:block; }
 
-    .post-row { display: grid; grid-template-columns: auto 1fr; gap: 2rem; padding: 2rem 0; border-bottom: 1px solid var(--mist); text-decoration: none; color: inherit; transition: padding-left 0.2s; }
-    .post-row:hover { padding-left: 0.5rem; }
-    .post-row:hover .post-title { color: var(--rust); }
-    .post-meta-col { text-align: right; min-width: 100px; padding-top: 0.2rem; }
-    .post-date { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; color: var(--stone); text-transform: uppercase; }
-    .post-read { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--mist); margin-top: 0.25rem; }
-    .post-tag { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.4rem; }
-    .post-title { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2vw,1.5rem); font-weight: 700; line-height: 1.25; transition: color 0.2s; margin-bottom: 0.5rem; }
-    .post-excerpt { font-size: 0.875rem; color: var(--stone); line-height: 1.65; }
-    .post-arrow { font-family: 'DM Mono', monospace; font-size: 0.63rem; color: var(--rust); margin-top: 0.75rem; display: block; }
-
-    .post-row-soon { display: grid; grid-template-columns: auto 1fr; gap: 2rem; padding: 2rem 0; border-bottom: 1px solid var(--mist); opacity: 0.45; }
-    .coming-label { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--stone); margin-top: 0.75rem; display: block; letter-spacing: 0.1em; text-transform: uppercase; }
-
-    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
-    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
-    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
-    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
-    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
-    .footer-tagline a:hover { color: var(--gold); }
-    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
-    .footer-links a:hover { color: var(--gold); }
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
   </style>
 </head>
 <body>
-
 <div class="topline"></div>
-
 <header>
   <div class="masthead-inner">
     <a href="/" class="site-name">Brooks Groves</a>
     <nav>
-      <a href="/blog/index.html">Blog</a>
-      <a href="/journal/index.html">Journal</a>
-      <a href="https://github.com/bdgroves" target="_blank">Projects</a>
-      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
-      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
-      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
-      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+      <a href="/writing/">Writing</a>
+      <a href="/tags.html">Tags</a>
+      <a href="/">Home</a>
     </nav>
   </div>
 </header>
 
 <div class="page-header">
-  <p class="page-eyebrow">Writing</p>
-  <h1 class="page-title">The <em>Blog</em></h1>
-  <p class="page-sub">Technical writing on geospatial tools, data pipelines, Python, R, and building things on the internet for free.</p>
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a></p>
+  <h1 class="page-title">📝 <em>Blog</em></h1>
+  <p class="page-sub">Technical writing on GIS, data engineering, Python, and the projects behind the dashboards. Build posts, process notes, and the occasional manifesto about vintage programming languages.</p>
 </div>
 
-<div class="posts-list">
+<div class="page-content">
+  <div class="section-label"><span>All Posts</span><a href="/tags.html">Browse by tag →</a></div>
+  <div class="post-list">
 
-  <a href="/blog/solstice-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Apr 9, 2026</div>
-      <div class="post-read">7 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#Python" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Python</a> · <a href="/tags.html#ephem" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">ephem</a> · <a href="/tags.html#forge3d" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">forge3d</a> · <a href="/tags.html#LiDAR" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">LiDAR</a> · <a href="/tags.html#Archaeology" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Archaeology</a> · <a href="/tags.html#Chaco Canyon" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Chaco Canyon</a> · <a href="/tags.html#Archaeoastronomy" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Archaeoastronomy</a> · <a href="/tags.html#GitHub Actions" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">GitHub Actions</a></p>
-      <h2 class="post-title">☀️ SOLSTICE — Watching the Same Sky Over Chaco Canyon</h2>
-      <p class="post-excerpt">A 1054 CE supernova painted on a canyon wall. Pueblo Bonito's rear wall aligned true north within 0.1°. Casa Rinconada's northeast doorway catching the summer solstice sunrise at 66.5°. A live dashboard watching the same sky over the same canyon, updated every 12 hours.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/solstice-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Apr 9, 2026</div>
+        <div class="post-read">7 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#Archaeology" class="post-tag">Archaeology</a>
+          <a href="/tags.html#Python" class="post-tag">Python</a>
+          <a href="/tags.html#LiDAR" class="post-tag">LiDAR</a>
+          <a href="/tags.html#GitHub%20Actions" class="post-tag">GitHub Actions</a>
+        </div>
+        <h2 class="post-title">☀️ SOLSTICE — Watching the Same Sky Over Chaco Canyon</h2>
+        <p class="post-excerpt">A 1054 CE supernova painted on a canyon wall. Pueblo Bonito's rear wall aligned true north within 0.1°. Casa Rinconada's northeast doorway catching the summer solstice sunrise at 66.5°. A live dashboard watching the same sky over the same canyon, updated every 12 hours.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
-  <a href="/blog/aftershock-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Apr 9, 2026</div>
-      <div class="post-read">7 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#Python" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Python</a> · <a href="/tags.html#GitHub Actions" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">GitHub Actions</a> · <a href="/tags.html#USGS" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">USGS</a> · <a href="/tags.html#Geology" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Geology</a> · <a href="/tags.html#Seismology" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Seismology</a> · <a href="/tags.html#Leaflet" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Leaflet</a> · <a href="/tags.html#Cascadia" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Cascadia</a> · <a href="/tags.html#Tuolumne County" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Tuolumne County</a></p>
-      <h2 class="post-title">🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor</h2>
-      <p class="post-excerpt">Every magnitude 1.5+ earthquake in the US, updated every six hours from USGS ComCat. A dark cinematic map, state deep-dives, Hiroshima equivalent energy readout, and the personal backstory of growing up on the Melones Fault Zone in Tuolumne County.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/aftershock-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Apr 9, 2026</div>
+        <div class="post-read">7 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#Geology" class="post-tag">Geology</a>
+          <a href="/tags.html#USGS" class="post-tag">USGS</a>
+          <a href="/tags.html#Python" class="post-tag">Python</a>
+          <a href="/tags.html#Leaflet" class="post-tag">Leaflet</a>
+        </div>
+        <h2 class="post-title">🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor</h2>
+        <p class="post-excerpt">Every magnitude 1.5+ earthquake in the US, updated every six hours from USGS ComCat. A dark cinematic map, state deep-dives, Hiroshima equivalent energy readout, and the personal backstory of growing up on the Melones Fault Zone in Tuolumne County.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
-  <a href="/blog/dipodomys-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Apr 2026</div>
-      <div class="post-read">7 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#Ecology" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Ecology</a> · <a href="/tags.html#iNaturalist" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">iNaturalist</a> · <a href="/tags.html#Death Valley" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Death Valley</a> · <a href="/tags.html#Citizen Science" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Citizen Science</a> · <a href="/tags.html#Leaflet" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Leaflet</a> · <a href="/tags.html#Kangaroo Rats" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Kangaroo Rats</a> · <a href="/tags.html#Mojave" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Mojave</a></p>
-      <h2 class="post-title">🐾 DIPODOMYS — A Data Portrait of Death Valley's Kangaroo Rats</h2>
-      <p class="post-excerpt">Two kangaroo rat species, one valley, and what citizen science data from iNaturalist reveals about habitat partitioning in the hottest place on Earth. An interactive portrait built on live occurrence data — no cached datasets, no static files.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/dipodomys-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Apr 2026</div>
+        <div class="post-read">6 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#Ecology" class="post-tag">Ecology</a>
+          <a href="/tags.html#iNaturalist" class="post-tag">iNaturalist</a>
+          <a href="/tags.html#Death%20Valley" class="post-tag">Death Valley</a>
+          <a href="/tags.html#Leaflet" class="post-tag">Leaflet</a>
+        </div>
+        <h2 class="post-title">🐾 DIPODOMYS — A Data Portrait of Death Valley's Kangaroo Rats</h2>
+        <p class="post-excerpt">Two kangaroo rat species, one valley, and what citizen science data from iNaturalist reveals about habitat partitioning in the hottest place on Earth. An interactive portrait built on live occurrence data.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
-  <a href="/blog/little-free-pantry-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Apr 2026</div>
-      <div class="post-read">5 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#Community GIS" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Community GIS</a> · <a href="/tags.html#Leaflet" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Leaflet</a> · <a href="/tags.html#Food Access" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Food Access</a> · <a href="/tags.html#Lakewood WA" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Lakewood WA</a> · <a href="/tags.html#Rotary" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Rotary</a> · <a href="/tags.html#Civic Tech" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Civic Tech</a></p>
-      <h2 class="post-title">🏠 Little Free Pantry — Mapping Food Access in Lakewood</h2>
-      <p class="post-excerpt">Interactive Leaflet map for the Lakewood Rotary's Little Free Pantry network — 7 pantries providing 24/7 no-barrier food and hygiene access across Lakewood, Tillicum, and Steilacoom. GIS as community infrastructure.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/little-free-pantry-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Apr 2026</div>
+        <div class="post-read">5 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#Community%20GIS" class="post-tag">Community GIS</a>
+          <a href="/tags.html#Leaflet" class="post-tag">Leaflet</a>
+          <a href="/tags.html#Lakewood%20WA" class="post-tag">Lakewood WA</a>
+          <a href="/tags.html#Civic%20Tech" class="post-tag">Civic Tech</a>
+        </div>
+        <h2 class="post-title">🏠 Little Free Pantry — Mapping Food Access in Lakewood</h2>
+        <p class="post-excerpt">Interactive Leaflet map for the Lakewood Rotary's Little Free Pantry network — 7 pantries providing 24/7 no-barrier food and hygiene access across Lakewood, Tillicum, and Steilacoom. GIS as community infrastructure.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
-  <a href="/blog/sentinel-stockpile-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Apr 7, 2026</div>
-      <div class="post-read">8 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#Python" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Python</a> · <a href="/tags.html#Sentinel-2" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Sentinel-2</a> · <a href="/tags.html#Remote Sensing" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Remote Sensing</a> · <a href="/tags.html#GIS" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">GIS</a> · <a href="/tags.html#Supply Chain" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Supply Chain</a> · <a href="/tags.html#Planetary Computer" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Planetary Computer</a> · <a href="/tags.html#pixi" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">pixi</a></p>
-      <h2 class="post-title">🛰️ Sentinel Stockpile — The Economy You Can See From Space</h2>
-      <p class="post-excerpt">12 months of ESA satellite imagery tracking lumber stockpiles at the Port of Longview, Washington. 47 hectares in July. 5 hectares in January. The Pacific Northwest timber supply chain, measured from orbit using free data and open tools.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/sentinel-stockpile-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Apr 7, 2026</div>
+        <div class="post-read">8 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#Remote%20Sensing" class="post-tag">Remote Sensing</a>
+          <a href="/tags.html#Sentinel-2" class="post-tag">Sentinel-2</a>
+          <a href="/tags.html#GIS" class="post-tag">GIS</a>
+          <a href="/tags.html#Python" class="post-tag">Python</a>
+        </div>
+        <h2 class="post-title">🛰️ Sentinel Stockpile — The Economy You Can See From Space</h2>
+        <p class="post-excerpt">12 months of ESA satellite imagery tracking lumber stockpiles at the Port of Longview, Washington. 47 hectares in July. 5 hectares in January. The Pacific Northwest timber supply chain, measured from orbit using free data and open tools.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
-  <a href="/blog/weather-station-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Apr 7, 2026</div>
-      <div class="post-read">6 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#Python" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Python</a> · <a href="/tags.html#GitHub Actions" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">GitHub Actions</a> · <a href="/tags.html#Open-Meteo" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Open-Meteo</a> · <a href="/tags.html#NWS" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">NWS</a> · <a href="/tags.html#Meteorology" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Meteorology</a> · <a href="/tags.html#Pacific Northwest" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Pacific Northwest</a></p>
-      <h2 class="post-title">🌡️ Weather Station — Four Climates, Zero Dollars, Half a Cup of Coffee</h2>
-      <p class="post-excerpt">A real-time weather dashboard monitoring Lakewood, Groveland, Reno, and Death Valley. Wind compass, pressure trend arrows, NWS alerts, moon phase. Built before the coffee was done.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/weather-station-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Apr 7, 2026</div>
+        <div class="post-read">6 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#Meteorology" class="post-tag">Meteorology</a>
+          <a href="/tags.html#Python" class="post-tag">Python</a>
+          <a href="/tags.html#GitHub%20Actions" class="post-tag">GitHub Actions</a>
+          <a href="/tags.html#Pacific%20Northwest" class="post-tag">Pacific Northwest</a>
+        </div>
+        <h2 class="post-title">🌡️ Weather Station — Four Climates, Zero Dollars, Half a Cup of Coffee</h2>
+        <p class="post-excerpt">A real-time weather dashboard monitoring Lakewood, Groveland, Reno, and Death Valley. Wind compass, pressure trend arrows, NWS alerts, moon phase. Built before the coffee was done.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
-  <a href="/blog/pele-blog-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Apr 2026</div>
-      <div class="post-read">7 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#Python" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Python</a> · <a href="/tags.html#GitHub Actions" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">GitHub Actions</a> · <a href="/tags.html#USGS" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">USGS</a> · <a href="/tags.html#Volcanology" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Volcanology</a> · <a href="/tags.html#Kīlauea" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Kīlauea</a> · <a href="/tags.html#Hawai'i" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Hawai'i</a></p>
-      <h2 class="post-title">🌋 PELE — Building a Live Kīlauea Dashboard for a Birthday Trip</h2>
-      <p class="post-excerpt">43 eruption episodes, a webcam buried under 10 meters of tephra, and a cron job running every 6 hours. Real-time data from USGS HVO, YouTube livestream auto-discovery, and an episodic fountaining log going back to Christmas Eve 2024.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/pele-blog-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Apr 2026</div>
+        <div class="post-read">7 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#Volcanology" class="post-tag">Volcanology</a>
+          <a href="/tags.html#Python" class="post-tag">Python</a>
+          <a href="/tags.html#USGS" class="post-tag">USGS</a>
+          <a href="/tags.html#Kīlauea" class="post-tag">Kīlauea</a>
+        </div>
+        <h2 class="post-title">🌋 PELE — Building a Live Kīlauea Dashboard for a Birthday Trip</h2>
+        <p class="post-excerpt">43 eruption episodes, a webcam buried under 10 meters of tephra, and a cron job running every 6 hours. Real-time data from USGS HVO, YouTube livestream auto-discovery, and an episodic fountaining log going back to Christmas Eve 2024.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
-  <a href="/blog/cascadia-wx-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Apr 2, 2026</div>
-      <div class="post-read">8 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#FORTRAN" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">FORTRAN</a> · <a href="/tags.html#Python" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Python</a> · <a href="/tags.html#SNOTEL" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">SNOTEL</a> · <a href="/tags.html#Meteorology" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Meteorology</a> · <a href="/tags.html#Pacific Northwest" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Pacific Northwest</a></p>
-      <h2 class="post-title">FORTRAN, Snowpack, and the Language the Atmosphere Speaks</h2>
-      <p class="post-excerpt">NWS runs FORTRAN. NCAR runs FORTRAN. ECMWF runs FORTRAN. So does a developer in Lakewood, WA — analyzing Cascade snowpack at 15% of normal, every morning, over coffee.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/cascadia-wx-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Apr 2, 2026</div>
+        <div class="post-read">8 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#FORTRAN" class="post-tag">FORTRAN</a>
+          <a href="/tags.html#Meteorology" class="post-tag">Meteorology</a>
+          <a href="/tags.html#SNOTEL" class="post-tag">SNOTEL</a>
+          <a href="/tags.html#Pacific%20Northwest" class="post-tag">Pacific Northwest</a>
+        </div>
+        <h2 class="post-title">FORTRAN, Snowpack, and the Language the Atmosphere Speaks</h2>
+        <p class="post-excerpt">NWS runs FORTRAN. NCAR runs FORTRAN. ECMWF runs FORTRAN. So does a developer in Lakewood, WA — analyzing Cascade snowpack at 15% of normal, every morning, over coffee.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
-  <a href="/blog/sierra-flow-cobol-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Apr 1, 2026</div>
-      <div class="post-read">8 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#COBOL" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">COBOL</a> · <a href="/tags.html#Python" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Python</a> · <a href="/tags.html#USGS" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">USGS</a> · <a href="/tags.html#Hydrology" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Hydrology</a> · <a href="/tags.html#GitHub Actions" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">GitHub Actions</a></p>
-      <h2 class="post-title">COBOL, Streamflow, and Artemis II</h2>
-      <p class="post-excerpt">A 1959 language fetching live government telemetry, running in a cloud CI/CD pipeline, on the day four humans left Earth's orbit for the first time since 1972.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/sierra-flow-cobol-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Apr 1, 2026</div>
+        <div class="post-read">8 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#COBOL" class="post-tag">COBOL</a>
+          <a href="/tags.html#Hydrology" class="post-tag">Hydrology</a>
+          <a href="/tags.html#USGS" class="post-tag">USGS</a>
+          <a href="/tags.html#Sierra%20Nevada" class="post-tag">Sierra Nevada</a>
+        </div>
+        <h2 class="post-title">COBOL, Streamflow, and Artemis II</h2>
+        <p class="post-excerpt">A 1959 language fetching live government telemetry, running in a cloud CI/CD pipeline, on the day four humans left Earth's orbit for the first time since 1972.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
-  <a href="/blog/forge3d-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Apr 2026</div>
-      <div class="post-read">7 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#Python" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Python</a> · <a href="/tags.html#GIS" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">GIS</a> · <a href="/tags.html#LiDAR" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">LiDAR</a> · <a href="/tags.html#Terrain" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Terrain</a> · <a href="/tags.html#forge3d" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">forge3d</a></p>
-      <h2 class="post-title">Exploring forge3d With Washington LiDAR</h2>
-      <p class="post-excerpt">A new GPU-accelerated terrain renderer built in Rust, shipped as Python wheels. Mount St. Helens, Crater Lake, and what 1-meter LiDAR does to a summit render.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/forge3d-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Apr 2026</div>
+        <div class="post-read">7 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#GIS" class="post-tag">GIS</a>
+          <a href="/tags.html#LiDAR" class="post-tag">LiDAR</a>
+          <a href="/tags.html#forge3d" class="post-tag">forge3d</a>
+          <a href="/tags.html#Python" class="post-tag">Python</a>
+        </div>
+        <h2 class="post-title">Exploring forge3d With Washington LiDAR</h2>
+        <p class="post-excerpt">A new GPU-accelerated terrain renderer built in Rust, shipped as Python wheels. Mount St. Helens, Crater Lake, and what 1-meter LiDAR does to a summit render.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
-  <a href="/blog/pixi-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Mar 31, 2026</div>
-      <div class="post-read">6 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#Python" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Python</a> · <a href="/tags.html#R" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">R</a> · <a href="/tags.html#Environments" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Environments</a> · <a href="/tags.html#pixi" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">pixi</a></p>
-      <h2 class="post-title">Why I Switched to pixi for Managing Python and R Environments</h2>
-      <p class="post-excerpt">After years of conda headaches, a faster and cleaner path to reproducible geospatial work on Windows.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/pixi-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Mar 31, 2026</div>
+        <div class="post-read">5 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#Python" class="post-tag">Python</a>
+          <a href="/tags.html#pixi" class="post-tag">pixi</a>
+          <a href="/tags.html#GIS" class="post-tag">GIS</a>
+          <a href="/tags.html#Environments" class="post-tag">Environments</a>
+        </div>
+        <h2 class="post-title">Why I Switched to pixi for Managing Python and R Environments</h2>
+        <p class="post-excerpt">After years of conda headaches, a faster, more reproducible path to geospatial work. Lockfiles, cross-platform consistency, and no more environment corruption at the worst possible moment.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
-  <a href="/blog/streamflow-post.html" class="post-row">
-    <div class="post-meta-col">
-      <div class="post-date">Mar 18, 2026</div>
-      <div class="post-read">8 min read</div>
-    </div>
-    <div>
-      <p class="post-tag"><a href="/tags.html#Python" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Python</a> · <a href="/tags.html#GitHub Actions" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">GitHub Actions</a> · <a href="/tags.html#USGS" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">USGS</a> · <a href="/tags.html#Hydrology" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='inherit'">Hydrology</a></p>
-      <h2 class="post-title">Building a Live Streamflow Dashboard on a $0 Budget</h2>
-      <p class="post-excerpt">How I built a live Sierra Nevada streamflow monitor using the USGS public API, GitHub Actions for automation, and Leaflet for mapping — with zero infrastructure cost.</p>
-      <span class="post-arrow">Read post →</span>
-    </div>
-  </a>
+    <a href="/blog/streamflow-post.html" class="post-item">
+      <div class="post-meta-col">
+        <div class="post-date">Mar 18, 2026</div>
+        <div class="post-read">6 min read</div>
+      </div>
+      <div>
+        <div class="post-tags">
+          <a href="/tags.html#Hydrology" class="post-tag">Hydrology</a>
+          <a href="/tags.html#USGS" class="post-tag">USGS</a>
+          <a href="/tags.html#GitHub%20Actions" class="post-tag">GitHub Actions</a>
+          <a href="/tags.html#Sierra%20Nevada" class="post-tag">Sierra Nevada</a>
+        </div>
+        <h2 class="post-title">Building a Live Streamflow Dashboard on a $0 Budget</h2>
+        <p class="post-excerpt">GitHub Actions, USGS APIs, and a healthy respect for Pacific snowmelt. How the Sierra Streamflow Monitor became the architectural template for everything that followed.</p>
+        <span class="post-arrow">Read post →</span>
+      </div>
+    </a>
 
+  </div>
 </div>
 
 <footer>
   <div class="footer-inner">
     <div>
       <p class="footer-name">Brooks Groves</p>
-      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
     </div>
     <div class="footer-links">
       <a href="/">Home</a>
-      <a href="/blog/index.html">Blog</a>
+      <a href="/writing/">Writing</a>
       <a href="/tags.html">Tags</a>
-      <a href="/journal/index.html">Journal</a>
-      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
-      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
-      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
-      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
-      <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky</a>
     </div>
     <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
   </div>
 </footer>
-
 </body>
 </html>
