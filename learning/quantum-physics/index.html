@@ -43,7 +43,7 @@ body::before {
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
   pointer-events: none;
-  z-index: 9999;
+  z-index: 1;
   opacity: 0.5;
 }
 
@@ -164,9 +164,12 @@ nav a.boxed:hover { background: var(--ink); color: var(--parchment); border-colo
   border: 1px solid var(--mist);
   padding: 0.3rem 0.7rem;
   display: inline-block;
+  text-decoration: none;
   transition: border-color 0.15s, color 0.15s;
-  cursor: default;
 }
+
+a.tag-pill:hover { border-color: var(--gold); color: var(--gold); cursor: pointer; }
+span.tag-pill { cursor: default; }
 
 .tag-foundation { border-color: var(--westin); color: var(--westin); }
 .tag-history    { border-color: var(--gold);   color: var(--gold); }
@@ -302,18 +305,22 @@ nav a.boxed:hover { background: var(--ink); color: var(--parchment); border-colo
   background: var(--cream);
   border: 1px solid var(--mist);
   overflow: hidden;
-  cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.lesson:hover {
+.lesson:hover .lesson-header {
   border-color: var(--stone);
-  box-shadow: 0 2px 12px rgba(28,26,22,0.08);
+}
+
+.lesson-header:hover {
+  background: rgba(28,26,22,0.03);
 }
 
 .lesson-header {
   display: flex;
   align-items: stretch;
+  cursor: pointer;
+  user-select: none;
 }
 
 .lesson-num {
@@ -848,11 +855,13 @@ footer {
   </div>
 
   <div class="article-tags">
-    <span class="tag-pill tag-foundation">Foundation</span>
-    <span class="tag-pill tag-particle">Particle Physics</span>
-    <span class="tag-pill tag-applied">Applied Physics</span>
-    <span class="tag-pill tag-frontier">Frontier</span>
-    <span class="tag-pill tag-cocktail">🍸 Cocktail-Ready</span>
+    <a href="https://brooksgroves.com/tags.html#Quantum%20Physics" class="tag-pill tag-foundation">Quantum Physics</a>
+    <a href="https://brooksgroves.com/tags.html#Particle%20Physics" class="tag-pill tag-particle">Particle Physics</a>
+    <a href="https://brooksgroves.com/tags.html#Physics" class="tag-pill tag-applied">Physics</a>
+    <a href="https://brooksgroves.com/tags.html#Learning" class="tag-pill" style="border-color:var(--mist);color:var(--stone);">Learning</a>
+    <a href="https://brooksgroves.com/tags.html#Science" class="tag-pill" style="border-color:var(--mist);color:var(--stone);">Science</a>
+    <a href="https://brooksgroves.com/tags.html#Frontier" class="tag-pill tag-frontier">Frontier</a>
+    <a href="https://brooksgroves.com/tags.html#Curriculum" class="tag-pill" style="border-color:var(--mist);color:var(--stone);">Curriculum</a>
   </div>
 
   <!-- Progress -->
@@ -890,11 +899,11 @@ footer {
     <div class="lessons">
 
 ```
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L1</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-foundation">Foundation</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Quantum%20Physics" class="tag-pill tag-foundation">Foundation</a></div>
         <div class="lesson-title">What Is Quantum Physics? The Core Weirdness</div>
         <div class="lesson-desc">The conceptual leap from classical to quantum — why the rules change at small scales.</div>
       </div>
@@ -929,11 +938,11 @@ footer {
     </div>
   </div>
 
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L2</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-history">History</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#History" class="tag-pill tag-history">History</a></div>
         <div class="lesson-title">The Photoelectric Effect: Where It All Started</div>
         <div class="lesson-desc">The 1905 experiment that launched quantum theory — and won Einstein his Nobel Prize (not relativity).</div>
       </div>
@@ -966,11 +975,11 @@ footer {
     </div>
   </div>
 
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L3</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-history">History</span><span class="tag-pill tag-foundation">Foundation</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#History" class="tag-pill tag-history">History</a><a href="https://brooksgroves.com/tags.html#Quantum%20Physics" class="tag-pill tag-foundation">Foundation</a></div>
         <div class="lesson-title">Schrödinger, His Cat, and the Measurement Problem</div>
         <div class="lesson-desc">The thought experiment everyone's heard of — and what it actually means beyond the meme.</div>
       </div>
@@ -1004,11 +1013,11 @@ footer {
     </div>
   </div>
 
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L4</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-foundation">Foundation</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Quantum%20Physics" class="tag-pill tag-foundation">Foundation</a></div>
         <div class="lesson-title">Atom Anatomy: Structure of the Building Blocks</div>
         <div class="lesson-desc">What atoms are actually made of, and why their internal structure is so strange.</div>
       </div>
@@ -1055,11 +1064,11 @@ footer {
     <div class="lessons">
 
 ```
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L5</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-particle">Particle Physics</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Particle%20Physics" class="tag-pill tag-particle">Particle Physics</a></div>
         <div class="lesson-title">The Higgs Boson: The Field That Gives Mass</div>
         <div class="lesson-desc">What the "God particle" actually is, why it took 48 years to find, and what Peter Higgs actually proposed.</div>
       </div>
@@ -1085,11 +1094,11 @@ footer {
     </div>
   </div>
 
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L6</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-particle">Particle Physics</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Particle%20Physics" class="tag-pill tag-particle">Particle Physics</a></div>
         <div class="lesson-title">Matter vs. Antimatter: The Asymmetry That Made Us Possible</div>
         <div class="lesson-desc">Why the Big Bang didn't annihilate itself — and why that's one of the biggest open questions in physics.</div>
       </div>
@@ -1115,11 +1124,11 @@ footer {
     </div>
   </div>
 
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L7</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-applied">Applied Physics</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Applied%20Physics" class="tag-pill tag-applied">Applied Physics</a></div>
         <div class="lesson-title">Superconductors and Extreme Cold: Quantum at Human Scale</div>
         <div class="lesson-desc">How near absolute zero, quantum effects take over and produce genuinely magical material properties.</div>
       </div>
@@ -1145,11 +1154,11 @@ footer {
     </div>
   </div>
 
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L8</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-applied">Applied Physics</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Applied%20Physics" class="tag-pill tag-applied">Applied Physics</a></div>
         <div class="lesson-title">Nuclear Radiation: The Misunderstood Process</div>
         <div class="lesson-desc">Alpha, beta, gamma — what they are, and why nuclear decay is quantum tunneling in action.</div>
       </div>
@@ -1175,11 +1184,11 @@ footer {
     </div>
   </div>
 
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L9</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-applied">Applied Physics</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Applied%20Physics" class="tag-pill tag-applied">Applied Physics</a></div>
         <div class="lesson-title">Fusion Power: JT-60SA, ITER, and the Star in a Bottle</div>
         <div class="lesson-desc">How fusion works, why it's hard, and what the new generation of machines represents.</div>
       </div>
@@ -1226,11 +1235,11 @@ footer {
     <div class="lessons">
 
 ```
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L10</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-applied">Applied Physics</span><span class="tag-pill tag-cocktail">🍸 Party-Ready</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Applied%20Physics" class="tag-pill tag-applied">Applied Physics</a><a href="https://brooksgroves.com/tags.html#Quantum%20Physics" class="tag-pill tag-cocktail">🍸 Party-Ready</a></div>
         <div class="lesson-title">Quantum Computers: How They Actually Work</div>
         <div class="lesson-desc">Beyond the hype — what qubits are, what quantum computers are good at, and what they can't do.</div>
       </div>
@@ -1257,11 +1266,11 @@ footer {
     </div>
   </div>
 
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L11</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-particle">Particle Physics</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Particle%20Physics" class="tag-pill tag-particle">Particle Physics</a></div>
         <div class="lesson-title">The Large Hadron Collider & Its Successor</div>
         <div class="lesson-desc">What the LHC actually does, what it's found, and what the Future Circular Collider would be capable of.</div>
       </div>
@@ -1286,11 +1295,11 @@ footer {
     </div>
   </div>
 
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L12</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-applied">Applied Physics</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Applied%20Physics" class="tag-pill tag-applied">Applied Physics</a></div>
         <div class="lesson-title">Quantum Teleportation: What It Is (and Isn't)</div>
         <div class="lesson-desc">How "teleportation" of quantum states works, and why it can't transmit information faster than light.</div>
       </div>
@@ -1332,11 +1341,11 @@ footer {
     <div class="lessons">
 
 ```
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L13</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-frontier">Frontier</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Frontier" class="tag-pill tag-frontier">Frontier</a></div>
         <div class="lesson-title">String Theory: The Beautiful Unfinished Idea</div>
         <div class="lesson-desc">What string theory actually proposes, why physicists love it, and why it's scientifically controversial.</div>
       </div>
@@ -1362,11 +1371,11 @@ footer {
     </div>
   </div>
 
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L14</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-frontier">Frontier</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Frontier" class="tag-pill tag-frontier">Frontier</a></div>
         <div class="lesson-title">The Multiverse: Evidence, Speculation, and Philosophy</div>
         <div class="lesson-desc">The scientific case for multiple universes — from quantum many-worlds to inflationary cosmology.</div>
       </div>
@@ -1392,11 +1401,11 @@ footer {
     </div>
   </div>
 
-  <div class="lesson" onclick="toggle(this)">
-    <div class="lesson-header">
+  <div class="lesson">
+    <div class="lesson-header" onclick="toggle(this.closest('.lesson'))">
       <div class="lesson-num">L15</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag-pill tag-frontier">Frontier</span><span class="tag-pill tag-history">History</span></div>
+        <div class="lesson-tags"><a href="https://brooksgroves.com/tags.html#Frontier" class="tag-pill tag-frontier">Frontier</a><a href="https://brooksgroves.com/tags.html#History" class="tag-pill tag-history">History</a></div>
         <div class="lesson-title">The Big Bang: What We Know, What We Don't</div>
         <div class="lesson-desc">The elegant explanation for the origin of the observable universe — and what it still doesn't explain.</div>
       </div>
