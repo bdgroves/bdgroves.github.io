@@ -81,7 +81,31 @@
     .resource-item { font-size:0.85rem; color:var(--stone); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:baseline; }
     .resource-item a { color:var(--sky); text-decoration:underline; text-underline-offset:3px; font-size:0.75rem; font-family:'DM Mono',monospace; }
 
-    /* PROGRESS */
+    /* Q&A WIDGET */
+    .qa-widget { border:2px solid var(--ink); margin-top:3rem; }
+    .qa-header { background:var(--ink); color:var(--white); padding:1rem 1.5rem; display:flex; align-items:center; gap:0.75rem; }
+    .qa-header-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; }
+    .qa-header-sub { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:#7a7268; }
+    .qa-body { padding:1.5rem; }
+    .qa-input-row { display:flex; gap:0.75rem; margin-bottom:1rem; }
+    .qa-input { flex:1; border:1px solid var(--mist); background:var(--cream); padding:0.7rem 1rem; font-family:'Libre Baskerville',Georgia,serif; font-size:0.9rem; color:var(--ink); outline:none; resize:none; line-height:1.5; }
+    .qa-input:focus { border-color:var(--gold); }
+    .qa-btn { background:var(--ink); color:var(--white); border:none; padding:0.7rem 1.25rem; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; transition:background 0.2s; white-space:nowrap; align-self:flex-end; }
+    .qa-btn:hover { background:var(--gold); }
+    .qa-btn:disabled { background:var(--mist); cursor:not-allowed; }
+    .qa-answer { display:none; border-top:1px solid var(--mist); padding-top:1.25rem; }
+    .qa-answer.visible { display:block; }
+    .qa-answer-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+    .qa-answer-text { font-size:0.92rem; line-height:1.8; color:var(--ink); white-space:pre-wrap; }
+    .qa-history { display:flex; flex-direction:column; gap:1.25rem; margin-bottom:1rem; max-height:400px; overflow-y:auto; }
+    .qa-exchange { border-left:3px solid var(--mist); padding-left:1rem; }
+    .qa-exchange-q { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--stone); margin-bottom:0.4rem; letter-spacing:0.06em; }
+    .qa-exchange-a { font-size:0.88rem; line-height:1.75; color:var(--ink); }
+    .qa-context { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--mist); margin-bottom:0.75rem; }
+    .qa-spinner { display:inline-block; width:12px; height:12px; border:2px solid var(--mist); border-top-color:var(--gold); border-radius:50%; animation:spin 0.8s linear infinite; margin-right:0.5rem; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+
     .progress-wrap { background:var(--cream); border:1px solid var(--mist); padding:1.25rem 1.5rem; margin-top:1.5rem; }
     .progress-bar-track { height:6px; background:var(--mist); border-radius:3px; margin:0.75rem 0 0.4rem; }
     .progress-bar-fill { height:6px; background:var(--sage); border-radius:3px; transition:width 0.4s ease; width:0%; }
@@ -619,7 +643,27 @@
     </div>
   </div>
 
+  <!-- Q&A WIDGET -->
+  <div class="qa-widget" id="qa-widget">
+    <div class="qa-header">
+      <div>
+        <div class="qa-header-title">⚛️ Ask the Tutor</div>
+        <div class="qa-header-sub">Claude · Quantum Physics Q&A · Powered by Anthropic</div>
+      </div>
+    </div>
+    <div class="qa-body">
+      <div class="qa-context" id="qa-context">Ask anything about quantum physics or the curriculum above.</div>
+      <div class="qa-history" id="qa-history" style="display:none;"></div>
+      <div class="qa-input-row">
+        <textarea class="qa-input" id="qa-input" rows="2" placeholder="e.g. Can you explain wave-particle duality in simple terms? What's the difference between quantum superposition and classical probability?"></textarea>
+        <button class="qa-btn" id="qa-btn" onclick="askQuestion()">Ask →</button>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--mist);">Press Enter to submit · Shift+Enter for new line</div>
+    </div>
+  </div>
+
   <!-- RESOURCES -->
+
   <div class="resources">
     <div class="resources-hed">Resources</div>
     <div class="resource-list">
@@ -708,8 +752,70 @@ if (window.location.hash) {
   if (el) { el.classList.add('open'); el.scrollIntoView({behavior:'smooth', block:'start'}); }
 }
 
-// Init progress on load
-document.addEventListener('DOMContentLoaded', renderProgress);
+// ── Q&A WIDGET ────────────────────────────────────────────────────────────
+// Replace WORKER_URL with your actual Cloudflare Worker URL after deploying
+const WORKER_URL = 'https://tiny-dawn-75f1.bdgroves1970.workers.dev';
+
+let currentLesson = null;
+
+document.querySelectorAll('.lesson-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const title = header.querySelector('.lesson-title')?.textContent;
+    if (title) {
+      currentLesson = title;
+      const ctx = document.getElementById('qa-context');
+      if (ctx) ctx.textContent = `Studying: "${title}" — ask anything about this lesson or quantum physics generally.`;
+    }
+  });
+});
+
+document.getElementById('qa-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askQuestion(); }
+});
+
+async function askQuestion() {
+  const input = document.getElementById('qa-input');
+  const btn = document.getElementById('qa-btn');
+  const history = document.getElementById('qa-history');
+  const question = input?.value?.trim();
+  if (!question) return;
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="qa-spinner"></span>Thinking...';
+  input.value = '';
+  history.style.display = 'flex';
+
+  const exchange = document.createElement('div');
+  exchange.className = 'qa-exchange';
+  exchange.innerHTML = `<div class="qa-exchange-q">You asked:</div><div class="qa-exchange-a" style="color:var(--stone);font-style:italic;">${escapeHtml(question)}</div>`;
+  history.appendChild(exchange);
+  history.scrollTop = history.scrollHeight;
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question, lesson: currentLesson }),
+    });
+    const data = await res.json();
+    if (data.answer) {
+      exchange.innerHTML = `<div class="qa-exchange-q">You asked:</div><div class="qa-exchange-a" style="color:var(--stone);font-style:italic;margin-bottom:0.75rem;">${escapeHtml(question)}</div><div class="qa-exchange-a">${escapeHtml(data.answer)}</div>`;
+    } else {
+      exchange.innerHTML += `<div class="qa-exchange-a" style="color:var(--rust);">Something went wrong. Try again.</div>`;
+    }
+  } catch {
+    exchange.innerHTML += `<div class="qa-exchange-a" style="color:var(--rust);">Connection error. Worker may not be deployed yet.</div>`;
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Ask →';
+  history.scrollTop = history.scrollHeight;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
 </script>
 </body>
 </html>
