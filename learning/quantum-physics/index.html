@@ -81,7 +81,15 @@
     .resource-item { font-size:0.85rem; color:var(--stone); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:baseline; }
     .resource-item a { color:var(--sky); text-decoration:underline; text-underline-offset:3px; font-size:0.75rem; font-family:'DM Mono',monospace; }
 
-    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    /* PROGRESS */
+    .progress-wrap { background:var(--cream); border:1px solid var(--mist); padding:1.25rem 1.5rem; margin-top:1.5rem; }
+    .progress-bar-track { height:6px; background:var(--mist); border-radius:3px; margin:0.75rem 0 0.4rem; }
+    .progress-bar-fill { height:6px; background:var(--sage); border-radius:3px; transition:width 0.4s ease; width:0%; }
+    .progress-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); }
+    .mark-done-btn { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--mist); background:none; color:var(--stone); padding:0.3rem 0.75rem; cursor:pointer; margin-top:1rem; transition:all 0.15s; }
+    .mark-done-btn:hover { border-color:var(--sage); color:var(--sage); }
+
+ padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
     .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
     .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
     .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
@@ -109,6 +117,11 @@
     <div><div class="page-stat-val">15</div><div class="page-stat-lbl">Lessons</div></div>
     <div><div class="page-stat-val">4</div><div class="page-stat-lbl">Phases</div></div>
     <div><div class="page-stat-val">~14 hrs</div><div class="page-stat-lbl">Estimated</div></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label" id="progress-label">0 of 15 lessons complete — 0%</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill"></div></div>
+    <div class="progress-label" style="color:var(--mist);">Progress saved in your browser · <a href="#" onclick="if(confirm('Reset all progress?')){localStorage.removeItem('qp_progress');renderProgress();}return false;" style="color:var(--mist);text-decoration:underline;">Reset</a></div>
   </div>
 </div>
 
@@ -144,6 +157,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"Planck didn't believe quantization was real — he thought it was a mathematical trick to fix a broken equation. Einstein proved it was actually how the universe works."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l1" onclick="markDone('l1')">Mark done</button>
     </div>
   </div>
 
@@ -174,6 +189,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"Einstein's Nobel Prize wasn't for relativity — it was for proving light comes in particles. He figured it out by asking why bright light doesn't eject electrons faster than dim light."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l2" onclick="markDone('l2')">Mark done</button>
     </div>
   </div>
 
@@ -204,6 +221,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"The wave function doesn't describe our ignorance of where a particle is — it describes the particle's actual state of not-being-anywhere-definite until something interacts with it."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l3" onclick="markDone('l3')">Mark done</button>
     </div>
   </div>
 
@@ -234,6 +253,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"Electrons don't orbit nuclei like planets — they exist as probability clouds. The reason atoms don't collapse is that squeezing an electron into a smaller space increases its kinetic energy, which pushes back."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l4" onclick="markDone('l4')">Mark done</button>
     </div>
   </div>
 
@@ -267,6 +288,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"The Higgs field doesn't give everything mass — it gives elementary particles mass. The mass of a proton is mostly from the energy of gluons binding quarks together, not from the Higgs."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l5" onclick="markDone('l5')">Mark done</button>
     </div>
   </div>
 
@@ -297,6 +320,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"The reason the universe exists instead of nothing is that the Big Bang produced very slightly more matter than antimatter — about one extra particle per billion. We don't know why."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l6" onclick="markDone('l6')">Mark done</button>
     </div>
   </div>
 
@@ -327,6 +352,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"A superconductor isn't just a good conductor — electrons in it pair up and flow as a single quantum object spanning the whole material. Current circulates forever without losing a single joule."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l7" onclick="markDone('l7')">Mark done</button>
     </div>
   </div>
 
@@ -357,6 +384,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"Radioactive decay is quantum tunneling — the nucleus doesn't have enough energy to eject a particle over the barrier, but quantum mechanics allows it to pass through. The sun runs on this."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l8" onclick="markDone('l8')">Mark done</button>
     </div>
   </div>
 
@@ -387,6 +416,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"The sun is cooler than fusion should require — quantum tunneling lets protons fuse at temperatures classical physics says are too low. Without quantum mechanics, there are no stars."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l9" onclick="markDone('l9')">Mark done</button>
     </div>
   </div>
 
@@ -420,6 +451,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"A quantum computer isn't faster at everything — it's specifically powerful for problems where you can use quantum interference to cancel wrong answers and amplify the right one."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l10" onclick="markDone('l10')">Mark done</button>
     </div>
   </div>
 
@@ -450,6 +483,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"The LHC doesn't smash particles to break them — it converts kinetic energy into mass, briefly recreating conditions from the first trillionth of a second after the Big Bang."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l11" onclick="markDone('l11')">Mark done</button>
     </div>
   </div>
 
@@ -480,6 +515,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"Quantum teleportation is real and has been demonstrated — but it requires a classical communication channel alongside it, so nothing moves faster than light. Bell's theorem proved Einstein wrong about this."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l12" onclick="markDone('l12')">Mark done</button>
     </div>
   </div>
 
@@ -513,6 +550,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"String theory's main problem isn't that it's wrong — it's that it's too flexible. It can accommodate almost any observation, which makes it nearly impossible to falsify."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l13" onclick="markDone('l13')">Mark done</button>
     </div>
   </div>
 
@@ -543,6 +582,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"The Many-Worlds interpretation isn't fringe physics — it's taken seriously by many physicists because it's simpler than Copenhagen: you just remove the collapse postulate and accept all the branches."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l14" onclick="markDone('l14')">Mark done</button>
     </div>
   </div>
 
@@ -573,6 +614,8 @@
         <div class="cocktail-label">Cocktail Party Line</div>
         <div class="cocktail-line">"The large-scale structure of the universe — every galaxy, every cluster — grew from quantum fluctuations that inflation stretched to cosmic scales. The biggest things came from the smallest physics."</div>
       </div>
+    
+      <button class="mark-done-btn" id="check-l15" onclick="markDone('l15')">Mark done</button>
     </div>
   </div>
 
@@ -606,6 +649,54 @@
 </footer>
 
 <script>
+const PROGRESS_KEY = 'qp_progress';
+const TOTAL = 15;
+
+function getProgress() {
+  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch { return {}; }
+}
+
+function saveProgress(p) {
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); } catch {}
+}
+
+function markDone(id) {
+  const p = getProgress();
+  p[id] = !p[id];
+  saveProgress(p);
+  renderProgress();
+}
+
+function renderProgress() {
+  const p = getProgress();
+  const done = Object.values(p).filter(Boolean).length;
+  const pct = Math.round(done / TOTAL * 100);
+
+  // Update bar
+  const bar = document.getElementById('progress-fill');
+  if (bar) bar.style.width = pct + '%';
+  const label = document.getElementById('progress-label');
+  if (label) label.textContent = `${done} of ${TOTAL} lessons complete — ${pct}%`;
+
+  // Update checkboxes
+  for (let i = 1; i <= TOTAL; i++) {
+    const btn = document.getElementById('check-l' + i);
+    if (btn) {
+      btn.textContent = p['l' + i] ? '✓ Done' : 'Mark done';
+      btn.style.background = p['l' + i] ? 'var(--sage)' : '';
+      btn.style.color = p['l' + i] ? 'var(--white)' : '';
+      btn.style.borderColor = p['l' + i] ? 'var(--sage)' : '';
+    }
+    // Dim completed lessons slightly
+    const lesson = document.getElementById('l' + i);
+    if (lesson && p['l' + i]) {
+      lesson.style.opacity = '0.7';
+    } else if (lesson) {
+      lesson.style.opacity = '1';
+    }
+  }
+}
+
 function toggle(id) {
   const el = document.getElementById(id);
   el.classList.toggle('open');
@@ -616,6 +707,9 @@ if (window.location.hash) {
   const el = document.getElementById(window.location.hash.slice(1));
   if (el) { el.classList.add('open'); el.scrollIntoView({behavior:'smooth', block:'start'}); }
 }
+
+// Init progress on load
+document.addEventListener('DOMContentLoaded', renderProgress);
 </script>
 </body>
 </html>
