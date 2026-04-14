@@ -5,156 +5,293 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Understanding Quantum Physics — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink:     #1c1a16;
+      --parchment: #f5f0e8;
+      --cream:   #ede8dc;
+      --sage:    #4a5c45;
+      --rust:    #8b3a2a;
+      --stone:   #7a7268;
+      --gold:    #c8922a;
+      --mist:    #d6d0c4;
+      --white:   #fdfaf4;
+      --westin:  #1a3a5c;
+    }
 
 ```
-:root {
-  --parchment:     #f5f0e8;
-  --parchment-mid: #ede7d9;
-  --parchment-dark:#e0d8c8;
-  --ink:           #2c2416;
-  --ink-mid:       #4a3f2f;
-  --ink-light:     #7a6f5e;
-  --accent:        #5c3d1e;
-  --accent-light:  #8b5e2e;
-  --rule:          rgba(92,61,30,0.18);
-  --shadow:        rgba(44,36,22,0.12);
-  --quantum:       #2d5a7a;
-  --quantum-light: #e8f0f7;
-  --glow:          #a8cfe8;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
 body {
   background: var(--parchment);
   color: var(--ink);
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-size: 17px;
-  line-height: 1.75;
-  min-height: 100vh;
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
 }
 
+/* grain texture — same as your site */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image:
-    radial-gradient(ellipse at 15% 10%, rgba(180,140,80,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse at 85% 90%, rgba(120,90,40,0.05) 0%, transparent 50%);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
   pointer-events: none;
-  z-index: 0;
+  z-index: 9999;
+  opacity: 0.5;
 }
 
-.page {
-  max-width: 780px;
-  margin: 0 auto;
-  padding: 60px 28px 100px;
-  position: relative;
-  z-index: 1;
+/* ── Top color bar ── */
+.topline {
+  height: 4px;
+  background: linear-gradient(90deg, var(--westin) 0%, var(--gold) 50%, var(--stone) 100%);
 }
 
 /* ── Header ── */
-.site-header {
+header {
+  border-bottom: 2px solid var(--ink);
+  padding: 0 clamp(1.5rem, 5vw, 4rem);
+  position: sticky;
+  top: 0;
+  background: var(--parchment);
+  z-index: 100;
+}
+
+.masthead-inner {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 52px;
-  padding-bottom: 18px;
-  border-bottom: 1px solid var(--rule);
+  gap: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0.75rem 0;
 }
 
 .site-name {
   font-family: 'Playfair Display', serif;
-  font-size: 1.05rem;
-  font-weight: 400;
-  color: var(--ink-mid);
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-weight: 900;
   text-decoration: none;
-}
-.site-name:hover { color: var(--accent); }
-
-.back-link {
-  font-style: italic;
-  font-size: 0.82rem;
-  color: var(--ink-light);
-  text-decoration: none;
-}
-.back-link:hover { color: var(--accent); }
-
-/* ── Page title area ── */
-.eyebrow {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent-light);
-  margin-bottom: 12px;
-}
-
-h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(2.1rem, 4.5vw, 3rem);
-  font-weight: 400;
   color: var(--ink);
-  line-height: 1.2;
-  margin-bottom: 16px;
 }
 
-h1 em { font-style: italic; color: var(--accent); }
+nav { display: flex; gap: clamp(0.8rem, 2.5vw, 2rem); align-items: center; flex-wrap: wrap; }
 
-.page-meta {
+nav a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--stone);
+  transition: color 0.2s;
+}
+nav a:hover { color: var(--rust); }
+nav a.boxed { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+nav a.boxed:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+/* ── Article wrap ── */
+.article-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 5vw, 2rem) clamp(3rem, 6vw, 5rem);
+}
+
+.article-back {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.63rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--stone);
+  display: inline-block;
+  margin-bottom: 2rem;
+  transition: color 0.2s;
+}
+.article-back:hover { color: var(--rust); }
+.article-back::before { content: '← '; }
+
+.article-kicker {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.75rem;
+}
+
+.article-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+}
+
+.article-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--stone);
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.article-tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--mist);
+  margin-bottom: 2.5rem;
+}
+
+.tag-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--stone);
+  border: 1px solid var(--mist);
+  padding: 0.3rem 0.7rem;
+  display: inline-block;
+  transition: border-color 0.15s, color 0.15s;
+  cursor: default;
+}
+
+.tag-foundation { border-color: var(--westin); color: var(--westin); }
+.tag-history    { border-color: var(--gold);   color: var(--gold); }
+.tag-particle   { border-color: #6b3d8a;        color: #6b3d8a; }
+.tag-applied    { border-color: var(--sage);    color: var(--sage); }
+.tag-frontier   { border-color: var(--rust);    color: var(--rust); }
+.tag-cocktail   { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+/* ── Progress bar ── */
+.progress-wrap {
+  margin-bottom: 2.5rem;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.5rem;
+}
+
+.progress-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--stone);
+}
+
+.progress-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--stone);
+  letter-spacing: 0.08em;
+}
+
+.progress-track {
+  height: 3px;
+  background: var(--mist);
+  margin-bottom: 0.6rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--westin);
+  transition: width 0.5s ease;
+  width: 0%;
+}
+
+.phase-pips {
+  display: flex;
+  gap: 6px;
+}
+
+.phase-pip { flex: 1; }
+
+.phase-pip-track {
+  height: 2px;
+  background: var(--mist);
+  margin-bottom: 3px;
+}
+
+.phase-pip-fill {
+  height: 100%;
+  background: var(--gold);
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+.phase-pip-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--stone);
+  text-align: center;
+  display: block;
+}
+
+/* ── Intro blockquote-style ── */
+.intro-block {
+  border-left: 3px solid var(--westin);
+  padding-left: 1.25rem;
+  margin: 0 0 2.5rem;
   font-style: italic;
-  color: var(--ink-light);
-  font-size: 0.95rem;
-  margin-bottom: 40px;
+  color: var(--stone);
+  font-size: 1rem;
+  line-height: 1.75;
 }
+.intro-block strong { font-style: normal; color: var(--ink); font-weight: 700; }
 
-/* ── Intro block ── */
-.intro {
-  background: var(--parchment-mid);
-  border-left: 2px solid var(--accent);
-  padding: 22px 26px;
-  margin-bottom: 52px;
-  font-size: 0.97rem;
-}
-
-.intro strong { color: var(--accent); }
-
-/* ── Phase header ── */
-.phase { margin-bottom: 48px; }
+/* ── Phase headers ── */
+.phase { margin-bottom: 3rem; }
 
 .phase-header {
   display: flex;
   align-items: baseline;
-  gap: 16px;
-  margin-bottom: 22px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--rule);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--mist);
 }
 
-.phase-number {
-  font-size: 0.7rem;
-  font-weight: 600;
+.phase-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--accent-light);
+  color: var(--stone);
   white-space: nowrap;
 }
 
 .phase-title {
   font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
-  font-weight: 400;
+  font-size: 1.4rem;
+  font-weight: 700;
   color: var(--ink);
+  line-height: 1.2;
 }
 
 .phase-time {
   margin-left: auto;
-  font-style: italic;
-  font-size: 0.82rem;
-  color: var(--ink-light);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--stone);
+  letter-spacing: 0.08em;
   white-space: nowrap;
 }
 
@@ -162,16 +299,16 @@ h1 em { font-style: italic; color: var(--accent); }
 .lessons { display: flex; flex-direction: column; gap: 2px; }
 
 .lesson {
-  background: var(--parchment-mid);
-  border: 1px solid var(--parchment-dark);
+  background: var(--cream);
+  border: 1px solid var(--mist);
   overflow: hidden;
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .lesson:hover {
-  border-color: rgba(92,61,30,0.3);
-  box-shadow: 0 3px 16px var(--shadow);
+  border-color: var(--stone);
+  box-shadow: 0 2px 12px rgba(28,26,22,0.08);
 }
 
 .lesson-header {
@@ -180,118 +317,111 @@ h1 em { font-style: italic; color: var(--accent); }
 }
 
 .lesson-num {
-  font-size: 0.72rem;
-  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
   letter-spacing: 0.12em;
   color: var(--parchment);
-  background: var(--accent);
-  padding: 16px 11px;
+  background: var(--ink);
+  padding: 16px 10px;
   writing-mode: vertical-rl;
-  text-orientation: mixed;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 34px;
+  min-width: 32px;
   flex-shrink: 0;
+  transition: background 0.2s;
 }
 
-.lesson-body { padding: 16px 20px; flex: 1; }
+.lesson.done .lesson-num { background: var(--sage); }
 
-.lesson-tags { margin-bottom: 6px; }
-
-.tag {
-  display: inline-block;
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  margin-right: 5px;
-  border: 1px solid var(--parchment-dark);
-  color: var(--ink-light);
+.lesson-body {
+  padding: 14px 18px;
+  flex: 1;
 }
 
-.tag-foundation { background: var(--quantum-light); color: var(--quantum); border-color: #c8dce9; }
-.tag-history    { background: #f7f0e8; color: #7a5c1e; border-color: #e0d0b0; }
-.tag-particle   { background: #f0eaf7; color: #5c3d7a; border-color: #d8c8e9; }
-.tag-applied    { background: #eaf7ee; color: #2d5c3e; border-color: #c0ddc8; }
-.tag-frontier   { background: #f7eae8; color: #7a2d20; border-color: #e0c0bc; }
-.tag-cocktail   { background: var(--accent); color: var(--parchment); border-color: var(--accent); }
+.lesson-tags { margin-bottom: 5px; }
 
 .lesson-title {
   font-family: 'Playfair Display', serif;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--ink);
-  margin-bottom: 4px;
-  line-height: 1.3;
+  line-height: 1.25;
+  margin-bottom: 3px;
 }
 
 .lesson-desc {
-  font-size: 0.88rem;
-  color: var(--ink-mid);
+  font-family: 'Libre Baskerville', serif;
+  font-size: 0.85rem;
+  color: var(--stone);
   line-height: 1.6;
+  font-style: italic;
 }
 
-.toggle {
-  font-size: 1.2rem;
-  color: var(--accent-light);
-  padding: 16px 18px;
+.lesson-toggle {
+  font-family: 'DM Mono', monospace;
+  font-size: 1rem;
+  color: var(--stone);
+  padding: 16px 16px;
   align-self: center;
   opacity: 0.5;
-  transition: transform 0.3s ease, opacity 0.2s;
+  transition: transform 0.3s, opacity 0.2s;
   user-select: none;
   flex-shrink: 0;
 }
-.lesson:hover .toggle { opacity: 1; }
-.lesson.open .toggle  { transform: rotate(45deg); opacity: 1; }
+.lesson:hover .lesson-toggle { opacity: 1; }
+.lesson.open .lesson-toggle  { transform: rotate(45deg); opacity: 1; }
 
-/* ── Lesson expanded content ── */
+/* ── Expanded content ── */
 .lesson-expand {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s ease;
 }
-.lesson-expand.open { max-height: 2400px; }
+.lesson-expand.open { max-height: 2800px; }
 
 .lesson-details {
-  margin-left: 34px;
-  padding: 4px 20px 20px;
-  border-top: 1px dashed var(--parchment-dark);
+  margin-left: 32px;
+  padding: 0 18px 18px;
+  border-top: 1px solid var(--mist);
 }
 
-.detail-block { margin-top: 16px; }
+.detail-block { margin-top: 1.25rem; }
 
 .detail-label {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--accent-light);
-  margin-bottom: 7px;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
 }
 
 .detail-block ul {
-  padding-left: 18px;
+  padding-left: 1.25rem;
   font-size: 0.9rem;
-  color: var(--ink-mid);
-  line-height: 1.7;
+  color: var(--stone);
+  line-height: 1.8;
 }
 
-/* ── Cocktail box ── */
+.detail-block ul li { margin-bottom: 0.25rem; }
+
+/* ── Cocktail box — dark blockquote style ── */
 .cocktail-box {
-  background: var(--accent);
+  background: var(--ink);
   color: var(--parchment);
-  padding: 18px 22px;
-  margin-top: 16px;
+  padding: 1.25rem 1.5rem;
+  margin-top: 1.25rem;
 }
 
-.cocktail-box .detail-label { color: var(--glow); }
+.cocktail-box .detail-label { color: var(--gold); }
 
-.cocktail-box p {
-  font-size: 0.88rem;
-  line-height: 1.65;
-  color: rgba(245,240,232,0.82);
-  margin-bottom: 8px;
+.cocktail-box .setup {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--stone);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.6rem;
 }
 
 .cocktail-box .the-line {
@@ -299,17 +429,223 @@ h1 em { font-style: italic; color: var(--accent); }
   font-style: italic;
   font-size: 1rem;
   color: var(--parchment);
-  border-left: 2px solid var(--glow);
-  padding-left: 14px;
-  line-height: 1.6;
+  line-height: 1.65;
+  border-left: 3px solid var(--gold);
+  padding-left: 1rem;
 }
+
+/* ── Notes ── */
+.notes-wrap { margin-top: 1rem; }
+
+.notes-field {
+  width: 100%;
+  background: var(--parchment);
+  border: 1px solid var(--mist);
+  color: var(--ink);
+  font-family: 'Libre Baskerville', serif;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  padding: 0.65rem 0.875rem;
+  resize: vertical;
+  min-height: 70px;
+  transition: border-color 0.2s;
+}
+.notes-field:focus { outline: none; border-color: var(--stone); }
+.notes-field::placeholder { color: var(--mist); font-style: italic; }
+
+/* ── Complete checkbox ── */
+.check-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--mist);
+}
+
+.check-box {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border: 1px solid var(--stone);
+  background: var(--parchment);
+  cursor: pointer;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.2s;
+}
+.check-box:checked { background: var(--ink); border-color: var(--ink); }
+.check-box:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--parchment);
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.check-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--stone);
+  cursor: pointer;
+  user-select: none;
+}
+
+.completed-stamp {
+  margin-left: auto;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--stone);
+  letter-spacing: 0.08em;
+}
+
+/* ── AI panel ── */
+.ai-panel { margin-top: 1rem; }
+
+.ai-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  background: var(--parchment);
+  border: 1px solid var(--westin);
+  color: var(--westin);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.6rem 0.875rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.ai-toggle-btn:hover { background: #e8eff5; }
+.ai-chevron { margin-left: auto; transition: transform 0.3s; }
+.ai-panel.ai-open .ai-chevron { transform: rotate(180deg); }
+
+.ai-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+  border: 1px solid var(--westin);
+  border-top: none;
+  background: var(--parchment);
+}
+.ai-body.ai-open { max-height: 900px; }
+
+.ai-inner { padding: 1rem; }
+
+.ai-context {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--stone);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+}
+
+.ai-quick-prompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 0.875rem;
+}
+
+.ai-quick {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: var(--stone);
+  background: none;
+  border: 1px solid var(--mist);
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.ai-quick:hover { border-color: var(--westin); color: var(--westin); }
+
+.ai-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 0.75rem;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.ai-msg {
+  font-size: 0.9rem;
+  line-height: 1.75;
+  padding: 0.75rem 1rem;
+}
+
+.ai-msg p { margin-bottom: 0.4rem; }
+.ai-msg p:last-child { margin-bottom: 0; }
+
+.ai-msg.user {
+  background: var(--cream);
+  border-left: 3px solid var(--mist);
+  font-family: 'Libre Baskerville', serif;
+  color: var(--stone);
+  font-style: italic;
+}
+
+.ai-msg.assistant {
+  background: #e8eff5;
+  border-left: 3px solid var(--westin);
+  font-family: 'Libre Baskerville', serif;
+  color: var(--ink);
+}
+
+.ai-msg.loading {
+  background: var(--cream);
+  border-left: 3px solid var(--mist);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--stone);
+  letter-spacing: 0.08em;
+}
+
+.ai-input-row { display: flex; gap: 6px; }
+
+.ai-input {
+  flex: 1;
+  background: var(--cream);
+  border: 1px solid var(--mist);
+  color: var(--ink);
+  font-family: 'Libre Baskerville', serif;
+  font-size: 0.875rem;
+  padding: 0.6rem 0.875rem;
+  transition: border-color 0.2s;
+}
+.ai-input:focus { outline: none; border-color: var(--westin); }
+.ai-input::placeholder { color: var(--mist); font-style: italic; }
+
+.ai-send {
+  background: var(--westin);
+  color: var(--parchment);
+  border: none;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.ai-send:hover { background: #122840; }
+.ai-send:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* ── Milestone ── */
 .milestone {
-  background: var(--accent);
+  background: var(--ink);
   color: var(--parchment);
-  padding: 26px 30px;
-  margin: 36px 0;
+  padding: 1.75rem 2rem;
+  margin: 2.5rem 0;
   position: relative;
   overflow: hidden;
 }
@@ -317,388 +653,165 @@ h1 em { font-style: italic; color: var(--accent); }
 .milestone::after {
   content: '⚛';
   position: absolute;
-  right: 18px;
-  top: 50%;
+  right: 1.5rem; top: 50%;
   transform: translateY(-50%);
-  font-size: 4.5rem;
-  opacity: 0.07;
-  line-height: 1;
+  font-size: 4rem;
+  opacity: 0.06;
 }
 
-.milestone h3 {
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.25em;
+.milestone-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--glow);
-  margin-bottom: 8px;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
 }
 
 .milestone p {
+  font-family: 'Libre Baskerville', serif;
   font-size: 0.95rem;
-  line-height: 1.7;
-  color: rgba(245,240,232,0.88);
+  line-height: 1.75;
+  color: rgba(245,240,232,0.82);
 }
 
 /* ── Resources ── */
 .resources {
-  background: var(--parchment-mid);
-  border: 1px solid var(--parchment-dark);
-  padding: 30px 30px 26px;
-  margin-top: 44px;
+  border-top: 1px solid var(--mist);
+  padding-top: 2.5rem;
+  margin-top: 3rem;
 }
 
 .resources h2 {
   font-family: 'Playfair Display', serif;
-  font-size: 1.45rem;
-  font-weight: 400;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--ink);
-  margin-bottom: 22px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--rule);
+  margin-bottom: 1.5rem;
 }
 
 .resource-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
 }
 
 .resource-card {
-  background: var(--parchment);
-  border: 1px solid var(--parchment-dark);
-  padding: 14px 16px;
+  background: var(--cream);
+  border: 1px solid var(--mist);
+  padding: 0.875rem 1rem;
 }
 
 .resource-type {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--accent-light);
-  margin-bottom: 5px;
+  color: var(--gold);
+  margin-bottom: 0.3rem;
 }
 
 .resource-name {
   font-family: 'Playfair Display', serif;
-  font-size: 0.97rem;
+  font-size: 0.95rem;
+  font-weight: 700;
   color: var(--ink);
-  line-height: 1.35;
-  margin-bottom: 4px;
+  line-height: 1.3;
+  margin-bottom: 0.3rem;
 }
 
 .resource-desc {
-  font-size: 0.82rem;
-  color: var(--ink-light);
+  font-family: 'Libre Baskerville', serif;
+  font-size: 0.78rem;
+  color: var(--stone);
   line-height: 1.55;
 }
 
-/* ── Footer ── */
-footer {
-  margin-top: 72px;
-  padding-top: 22px;
-  border-top: 1px solid var(--rule);
-  text-align: center;
-  font-style: italic;
-  font-size: 0.85rem;
-  color: var(--ink-light);
-}
-
-footer a { color: var(--ink-light); text-decoration: none; }
-footer a:hover { color: var(--accent); }
-
-/* ── Progress bar ── */
-.progress-bar-wrap {
-  margin-bottom: 36px;
-}
-.progress-header {
+/* ── Article footer ── */
+.article-footer {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--ink);
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 8px;
-}
-.progress-label {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent-light);
-}
-.progress-count {
-  font-style: italic;
-  font-size: 0.85rem;
-  color: var(--ink-light);
-}
-.progress-track {
-  height: 6px;
-  background: var(--parchment-dark);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 3px;
-  transition: width 0.5s ease;
-  width: 0%;
-}
-.phase-progress {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-.phase-pip {
-  flex: 1;
-  height: 3px;
-  background: var(--parchment-dark);
-  border-radius: 2px;
-  position: relative;
-}
-.phase-pip-fill {
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  background: var(--accent);
-  border-radius: 2px;
-  transition: width 0.4s ease;
-  width: 0%;
-}
-.phase-pip-label {
-  display: block;
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-light);
-  margin-top: 4px;
-  text-align: center;
-}
-
-/* ── Lesson check + completed state ── */
-.lesson-check-wrap {
-  display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 20px 0 20px;
-  margin-left: 34px;
-}
-.lesson-check {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border: 1.5px solid var(--accent-light);
-  background: var(--parchment);
-  cursor: pointer;
-  flex-shrink: 0;
-  position: relative;
-  transition: background 0.2s, border-color 0.2s;
-}
-.lesson-check:checked {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-.lesson-check:checked::after {
-  content: '✓';
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--parchment);
-  font-size: 10px;
-  font-weight: bold;
-}
-.lesson-check-label {
-  font-size: 0.78rem;
-  font-style: italic;
-  color: var(--ink-light);
-  cursor: pointer;
-  user-select: none;
-}
-.lesson.done .lesson-num {
-  background: #3d6b3a;
-}
-.lesson.done {
-  border-color: rgba(61,107,58,0.3);
-}
-.lesson.done .lesson-title {
-  color: var(--ink-mid);
-}
-.completed-on {
-  font-size: 0.72rem;
-  font-style: italic;
-  color: var(--ink-light);
-  margin-left: auto;
-}
-
-/* ── Notes field ── */
-.notes-wrap {
-  margin: 10px 0 16px 0;
-  padding: 0 20px;
-}
-.notes-label {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent-light);
-  margin-bottom: 5px;
-}
-.notes-field {
-  width: 100%;
-  background: var(--parchment);
-  border: 1px solid var(--parchment-dark);
-  color: var(--ink);
-  font-family: 'Source Serif 4', serif;
-  font-size: 0.88rem;
-  line-height: 1.6;
-  padding: 10px 12px;
-  resize: vertical;
-  min-height: 64px;
-  transition: border-color 0.2s;
-}
-.notes-field:focus {
-  outline: none;
-  border-color: var(--accent-light);
-}
-.notes-field::placeholder { color: var(--ink-light); font-style: italic; }
-
-/* ── AI Go Deeper panel ── */
-.ai-panel {
-  margin: 0 0 16px 0;
-  padding: 0 20px;
-}
-.ai-toggle-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--quantum-light);
-  border: 1px solid #c8dce9;
-  color: var(--quantum);
-  font-family: 'Source Serif 4', serif;
-  font-size: 0.82rem;
-  font-style: italic;
-  padding: 8px 14px;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-  width: 100%;
-  text-align: left;
-}
-.ai-toggle-btn:hover {
-  background: #d8eaf5;
-  border-color: #a8cfe8;
-}
-.ai-toggle-btn .ai-icon { font-size: 1rem; flex-shrink: 0; }
-.ai-toggle-btn .ai-chevron {
-  margin-left: auto;
-  font-style: normal;
-  font-size: 0.7rem;
-  transition: transform 0.3s;
-}
-.ai-panel.ai-open .ai-chevron { transform: rotate(180deg); }
-
-.ai-body {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease;
-  background: var(--parchment);
-  border: 1px solid #c8dce9;
-  border-top: none;
-}
-.ai-body.ai-open { max-height: 800px; }
-
-.ai-inner { padding: 14px 16px; }
-
-.ai-context-note {
-  font-size: 0.78rem;
-  font-style: italic;
-  color: var(--ink-light);
-  margin-bottom: 10px;
-}
-
-.ai-messages {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 12px;
-  max-height: 320px;
-  overflow-y: auto;
-}
-
-.ai-msg {
-  font-size: 0.88rem;
-  line-height: 1.65;
-  padding: 10px 14px;
-}
-.ai-msg.user {
-  background: var(--parchment-mid);
-  border-left: 2px solid var(--accent-light);
-  color: var(--ink-mid);
-  align-self: flex-end;
-  max-width: 90%;
-}
-.ai-msg.assistant {
-  background: var(--quantum-light);
-  border-left: 2px solid var(--quantum);
-  color: var(--ink);
-}
-.ai-msg.loading {
-  background: var(--quantum-light);
-  border-left: 2px solid var(--quantum);
-  color: var(--ink-light);
-  font-style: italic;
-}
-
-.ai-input-row {
-  display: flex;
-  gap: 8px;
-}
-.ai-input {
-  flex: 1;
-  background: var(--parchment-mid);
-  border: 1px solid var(--parchment-dark);
-  color: var(--ink);
-  font-family: 'Source Serif 4', serif;
-  font-size: 0.88rem;
-  padding: 8px 12px;
-  transition: border-color 0.2s;
-}
-.ai-input:focus { outline: none; border-color: var(--quantum); }
-.ai-input::placeholder { color: var(--ink-light); font-style: italic; }
-
-.ai-send-btn {
-  background: var(--quantum);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  font-family: 'Source Serif 4', serif;
-  font-size: 0.82rem;
-  cursor: pointer;
-  transition: background 0.2s;
-  white-space: nowrap;
-}
-.ai-send-btn:hover { background: #1e4060; }
-.ai-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.ai-quick-prompts {
-  display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 10px;
+  gap: 1rem;
 }
-.ai-quick {
-  font-size: 0.75rem;
-  font-style: italic;
-  color: var(--quantum);
-  background: none;
-  border: 1px solid #c8dce9;
-  padding: 3px 9px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.ai-quick:hover { background: var(--quantum-light); }
 
-@media (max-width: 580px) {
-  .page { padding: 36px 18px 72px; }
+.article-footer-author {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--stone);
+  letter-spacing: 0.1em;
+}
+
+.article-footer-nav { display: flex; gap: 1.5rem; }
+
+.article-footer-nav a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--stone);
+  transition: color 0.2s;
+}
+.article-footer-nav a:hover { color: var(--rust); }
+
+/* ── Site footer ── */
+footer {
+  background: var(--ink);
+  color: var(--stone);
+  padding: clamp(2rem, 5vw, 3rem) clamp(1.5rem, 5vw, 4rem);
+  margin-top: 4rem;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.footer-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.footer-tagline {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  color: var(--stone);
+  margin-top: 0.2rem;
+  letter-spacing: 0.08em;
+}
+
+.footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+.footer-tagline a:hover { color: var(--gold); }
+
+.footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+.footer-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.63rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--stone);
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--gold); }
+
+@media (max-width: 600px) {
   .phase-time { display: none; }
   .resource-grid { grid-template-columns: 1fr; }
-  .site-header { flex-direction: column; gap: 8px; }
+  .article-footer { flex-direction: column; }
   .ai-quick-prompts { display: none; }
 }
 ```
@@ -706,42 +819,71 @@ footer a:hover { color: var(--accent); }
   </style>
 </head>
 <body>
-<div class="page">
 
-  <header class="site-header">
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
     <a href="https://brooksgroves.com/" class="site-name">Brooks Groves</a>
-    <a href="https://brooksgroves.com/learning/" class="back-link">← Learning</a>
-  </header>
+    <nav>
+      <a href="https://brooksgroves.com/blog/index.html">Blog</a>
+      <a href="https://brooksgroves.com/learning/">Learning</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="boxed">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
 
-  <div class="eyebrow">Personal Curriculum · Science & Physics</div>
-  <h1>Understanding<br><em>Quantum Physics</em></h1>
-  <p class="page-meta">15 lessons · 4 phases · ~12–16 hours · from curious layperson to confident conversationalist</p>
+<div class="article-wrap">
 
-  <div class="intro">
-    <strong>How to use this curriculum:</strong> Click any lesson to expand it. Each one covers core concepts, key vocabulary, and a <em>Cocktail Party Line</em>. Check a lesson off when you feel it, add notes, and use <em>Go Deeper</em> to ask follow-up questions. Progress saves automatically in your browser.
+<a href="https://brooksgroves.com/learning/" class="article-back">Learning</a>
+
+  <p class="article-kicker">Personal Curriculum · Science & Physics · 2026</p>
+
+  <h1 class="article-title">⚛️ Understanding Quantum Physics</h1>
+
+  <div class="article-meta">
+    <span>Brooks Groves</span>
+    <span>15 Lessons · 4 Phases</span>
+    <span>~12–16 Hours · Progress saves in browser</span>
   </div>
 
-  <div class="progress-bar-wrap">
+  <div class="article-tags">
+    <span class="tag-pill tag-foundation">Foundation</span>
+    <span class="tag-pill tag-particle">Particle Physics</span>
+    <span class="tag-pill tag-applied">Applied Physics</span>
+    <span class="tag-pill tag-frontier">Frontier</span>
+    <span class="tag-pill tag-cocktail">🍸 Cocktail-Ready</span>
+  </div>
+
+  <!-- Progress -->
+
+  <div class="progress-wrap">
     <div class="progress-header">
-      <span class="progress-label">Overall Progress</span>
+      <span class="progress-label">Progress</span>
       <span class="progress-count" id="progress-count">0 of 15 lessons complete</span>
     </div>
     <div class="progress-track">
       <div class="progress-fill" id="progress-fill"></div>
     </div>
-    <div class="phase-progress">
-      <div class="phase-pip"><div class="phase-pip-fill" id="pip-1"></div><span class="phase-pip-label">Phase 1</span></div>
-      <div class="phase-pip"><div class="phase-pip-fill" id="pip-2"></div><span class="phase-pip-label">Phase 2</span></div>
-      <div class="phase-pip"><div class="phase-pip-fill" id="pip-3"></div><span class="phase-pip-label">Phase 3</span></div>
-      <div class="phase-pip"><div class="phase-pip-fill" id="pip-4"></div><span class="phase-pip-label">Phase 4</span></div>
+    <div class="phase-pips">
+      <div class="phase-pip"><div class="phase-pip-track"><div class="phase-pip-fill" id="pip-1"></div></div><span class="phase-pip-label">Phase 1</span></div>
+      <div class="phase-pip"><div class="phase-pip-track"><div class="phase-pip-fill" id="pip-2"></div></div><span class="phase-pip-label">Phase 2</span></div>
+      <div class="phase-pip"><div class="phase-pip-track"><div class="phase-pip-fill" id="pip-3"></div></div><span class="phase-pip-label">Phase 3</span></div>
+      <div class="phase-pip"><div class="phase-pip-track"><div class="phase-pip-fill" id="pip-4"></div></div><span class="phase-pip-label">Phase 4</span></div>
     </div>
   </div>
+
+  <!-- Intro -->
+
+  <blockquote class="intro-block">
+    <strong>How to use this:</strong> Click any lesson to expand it. Each covers core concepts, key vocabulary, and a <em>Cocktail Party Line</em> — the one precise thing to say. Check a lesson off when it clicks, add notes, and hit <em>Go Deeper</em> to ask the AI tutor questions tuned to that specific lesson.
+  </blockquote>
 
   <!-- ═══ PHASE 1 ═══ -->
 
   <div class="phase">
     <div class="phase-header">
-      <span class="phase-number">Phase 01</span>
+      <span class="phase-num">Phase 01</span>
       <span class="phase-title">The Quantum Foundation</span>
       <span class="phase-time">~3–4 hours</span>
     </div>
@@ -752,11 +894,11 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L1</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-foundation">Foundation</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-foundation">Foundation</span></div>
         <div class="lesson-title">What Is Quantum Physics? The Core Weirdness</div>
-        <div class="lesson-desc">The conceptual leap from classical to quantum: why the rules change at small scales, and what that actually means.</div>
+        <div class="lesson-desc">The conceptual leap from classical to quantum — why the rules change at small scales.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
@@ -781,7 +923,6 @@ footer a:hover { color: var(--accent); }
         </div>
         <div class="cocktail-box">
           <div class="detail-label">🍸 Cocktail Party Line</div>
-          <p>If someone asks what quantum physics is really about:</p>
           <div class="the-line">"The core shock of quantum mechanics is that reality at small scales is genuinely probabilistic — not just uncertain because we lack information, but fundamentally, irreducibly random. Einstein spent years trying to prove it wrong. He lost."</div>
         </div>
       </div>
@@ -792,20 +933,20 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L2</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-history">History</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-history">History</span></div>
         <div class="lesson-title">The Photoelectric Effect: Where It All Started</div>
         <div class="lesson-desc">The 1905 experiment that launched quantum theory — and won Einstein his Nobel Prize (not relativity).</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
         <div class="detail-block">
           <div class="detail-label">Core Concepts</div>
           <ul>
-            <li>Classical physics predicted light intensity would determine electron ejection from metal — it didn't work that way</li>
+            <li>Classical physics predicted light intensity would release electrons proportionally — it didn't work that way</li>
             <li>Einstein proposed light travels in discrete packets (photons), each with energy proportional to frequency</li>
-            <li>This was the first proof that energy is quantized — the birth of quantum theory</li>
+            <li>First proof that energy is quantized — the birth of quantum theory</li>
             <li>Below a certain frequency, no electrons eject regardless of brightness — the threshold effect</li>
           </ul>
         </div>
@@ -829,22 +970,22 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L3</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-history">History</span><span class="tag tag-foundation">Foundation</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-history">History</span><span class="tag-pill tag-foundation">Foundation</span></div>
         <div class="lesson-title">Schrödinger, His Cat, and the Measurement Problem</div>
         <div class="lesson-desc">The thought experiment everyone's heard of — and what it actually means beyond the meme.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
         <div class="detail-block">
           <div class="detail-label">Core Concepts</div>
           <ul>
-            <li>Schrödinger's cat was a <em>reductio ad absurdum</em> — an argument <em>against</em> the Copenhagen Interpretation, not an endorsement of it</li>
-            <li>Copenhagen Interpretation: quantum systems exist in superposition until observed; measurement causes wavefunction collapse</li>
+            <li>Schrödinger's cat was a <em>reductio ad absurdum</em> — an argument <em>against</em> the Copenhagen Interpretation, not an endorsement</li>
+            <li>Copenhagen: quantum systems exist in superposition until observed; measurement causes wavefunction collapse</li>
             <li>The paradox asks: does superposition scale up? Can a macroscopic object be "both dead and alive"?</li>
             <li>Decoherence: why quantum weirdness vanishes at human scales — the environment constantly "measures" large objects</li>
-            <li>Many-worlds: the alternative — no collapse, just branching universes at every quantum event</li>
+            <li>Many-worlds: no collapse, just branching universes at every quantum event</li>
           </ul>
         </div>
         <div class="detail-block">
@@ -857,7 +998,7 @@ footer a:hover { color: var(--accent); }
         </div>
         <div class="cocktail-box">
           <div class="detail-label">🍸 Cocktail Party Line</div>
-          <div class="the-line">"Schrödinger's cat was actually Schrödinger being sarcastic. He invented it to mock the Copenhagen Interpretation — to show how absurd it is to apply quantum superposition at large scales. The irony is it became the most famous illustration of the very thing he hated."</div>
+          <div class="the-line">"Schrödinger's cat was Schrödinger being sarcastic. He invented it to mock the Copenhagen Interpretation — to show how absurd it is to apply quantum superposition at large scales. The irony is it became the most famous illustration of the very thing he hated."</div>
         </div>
       </div>
     </div>
@@ -867,19 +1008,19 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L4</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-foundation">Foundation</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-foundation">Foundation</span></div>
         <div class="lesson-title">Atom Anatomy: Structure of the Building Blocks</div>
         <div class="lesson-desc">What atoms are actually made of, and why their internal structure is so strange.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
         <div class="detail-block">
           <div class="detail-label">Core Concepts</div>
           <ul>
-            <li>Nucleus: protons (positive) + neutrons (neutral); surrounded by a cloud of electrons</li>
-            <li>Electrons don't orbit like planets — they occupy probabilistic "orbitals" defined by wavefunctions</li>
+            <li>Nucleus: protons (positive) + neutrons (neutral); surrounded by a probabilistic cloud of electrons</li>
+            <li>Electrons don't orbit like planets — they occupy "orbitals" defined by wavefunctions</li>
             <li>Quantum numbers: n (energy level), l (shape), m (orientation), s (spin)</li>
             <li>Pauli exclusion principle: no two electrons can share the same quantum state — this is why matter is solid</li>
             <li>The strong nuclear force: what holds protons together despite electrostatic repulsion</li>
@@ -896,18 +1037,18 @@ footer a:hover { color: var(--accent); }
 </div>
 ```
 
-  </div>
+  </div><!-- /phase 1 -->
 
   <div class="milestone">
-    <h3>Phase 1 Complete — Checkpoint</h3>
-    <p>You now understand the conceptual heart of quantum physics: quantization, superposition, the measurement problem, and atomic structure. You can hold your own in any general quantum conversation. Phase 2 goes deeper into forces and phenomena.</p>
+    <div class="milestone-label">Phase 1 Complete — Checkpoint</div>
+    <p>You now have the conceptual foundation: quantization, superposition, the measurement problem, and atomic structure. You can hold your own in any general quantum conversation. Phase 2 goes deeper into forces and phenomena.</p>
   </div>
 
   <!-- ═══ PHASE 2 ═══ -->
 
   <div class="phase">
     <div class="phase-header">
-      <span class="phase-number">Phase 02</span>
+      <span class="phase-num">Phase 02</span>
       <span class="phase-title">Forces, Fields & Extreme States</span>
       <span class="phase-time">~4–5 hours</span>
     </div>
@@ -918,35 +1059,27 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L5</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-particle">Particle Physics</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-particle">Particle Physics</span></div>
         <div class="lesson-title">The Higgs Boson: The Field That Gives Mass</div>
         <div class="lesson-desc">What the "God particle" actually is, why it took 48 years to find, and what Peter Higgs actually proposed.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
         <div class="detail-block">
           <div class="detail-label">Core Concepts</div>
           <ul>
-            <li>The Higgs field permeates all of space; particles acquire mass by interacting with it — like moving through molasses</li>
-            <li>The Higgs boson is the particle associated with this field (every quantum field has a corresponding particle)</li>
-            <li>Without the Higgs mechanism, all particles would be massless and travel at light speed — atoms couldn't form</li>
+            <li>The Higgs field permeates all of space; particles acquire mass by interacting with it</li>
+            <li>The Higgs boson is the particle associated with this field — every quantum field has a corresponding particle</li>
+            <li>Without the Higgs mechanism, all particles would be massless — atoms couldn't form</li>
             <li>Discovered at CERN's LHC in 2012; the final missing piece of the Standard Model</li>
-            <li>Peter Higgs proposed this in 1964; lived to see confirmation in 2012, died in 2024</li>
-          </ul>
-        </div>
-        <div class="detail-block">
-          <div class="detail-label">Key Vocabulary</div>
-          <ul>
-            <li><strong>Higgs field</strong> — a quantum field pervading all space that gives particles mass</li>
-            <li><strong>Standard Model</strong> — the current theory of fundamental particles and forces</li>
-            <li><strong>Spontaneous symmetry breaking</strong> — the mechanism that activates the Higgs field</li>
+            <li>Peter Higgs proposed this in 1964; lived to see confirmation, died in 2024</li>
           </ul>
         </div>
         <div class="cocktail-box">
           <div class="detail-label">🍸 Cocktail Party Line</div>
-          <div class="the-line">"The Higgs boson isn't what gives particles mass — the Higgs <em>field</em> does. The boson is just a ripple in that field, the way a photon is a ripple in the electromagnetic field. The 2012 discovery was really confirmation the field exists. The physicists hated 'God particle.'"</div>
+          <div class="the-line">"The Higgs boson isn't what gives particles mass — the Higgs field does. The boson is just a ripple in that field, the way a photon is a ripple in the electromagnetic field. The 2012 discovery was really confirmation the field exists. The physicists hated 'God particle.'"</div>
         </div>
       </div>
     </div>
@@ -956,11 +1089,11 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L6</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-particle">Particle Physics</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-particle">Particle Physics</span></div>
         <div class="lesson-title">Matter vs. Antimatter: The Asymmetry That Made Us Possible</div>
         <div class="lesson-desc">Why the Big Bang didn't annihilate itself — and why that's one of the biggest open questions in physics.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
@@ -970,8 +1103,8 @@ footer a:hover { color: var(--accent); }
             <li>Every particle has an antimatter partner with equal mass but opposite charge</li>
             <li>When matter and antimatter meet, they annihilate into pure energy (E=mc²)</li>
             <li>The Big Bang should have produced equal amounts — they should have annihilated completely</li>
-            <li>We exist because of a tiny asymmetry: roughly 1 extra matter particle per billion annihilation pairs</li>
-            <li>CP violation partially confirmed but the full explanation remains unsolved</li>
+            <li>We exist because of a tiny asymmetry: ~1 extra matter particle per billion annihilation pairs</li>
+            <li>CP violation partially confirmed; the full explanation remains unsolved</li>
           </ul>
         </div>
         <div class="cocktail-box">
@@ -986,11 +1119,11 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L7</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-applied">Applied Physics</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-applied">Applied Physics</span></div>
         <div class="lesson-title">Superconductors and Extreme Cold: Quantum at Human Scale</div>
         <div class="lesson-desc">How near absolute zero, quantum effects take over and produce genuinely magical material properties.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
@@ -998,8 +1131,8 @@ footer a:hover { color: var(--accent); }
           <div class="detail-label">Core Concepts</div>
           <ul>
             <li>Below a critical temperature, electrical resistance drops to exactly zero — no energy loss</li>
-            <li>Cooper pairs: electrons pair up and form a quantum coherent state (a Bose-Einstein condensate of pairs)</li>
-            <li>Meissner effect: superconductors expel magnetic fields completely — enabling levitation</li>
+            <li>Cooper pairs: electrons pair up and form a quantum coherent state</li>
+            <li>Meissner effect: superconductors expel magnetic fields completely, enabling levitation</li>
             <li>Absolute zero (0 K, −273.15°C) is theoretically unreachable; we've gotten within billionths of a degree</li>
             <li>Bose-Einstein condensate: at extreme cold, particles lose individual identity and behave as one quantum entity</li>
           </ul>
@@ -1016,11 +1149,11 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L8</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-applied">Applied Physics</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-applied">Applied Physics</span></div>
         <div class="lesson-title">Nuclear Radiation: The Misunderstood Process</div>
-        <div class="lesson-desc">Alpha, beta, gamma — what they actually are, why nuclear decay is quantum tunneling in action.</div>
+        <div class="lesson-desc">Alpha, beta, gamma — what they are, and why nuclear decay is quantum tunneling in action.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
@@ -1029,9 +1162,9 @@ footer a:hover { color: var(--accent); }
           <ul>
             <li>Alpha decay: nucleus ejects 2 protons + 2 neutrons (helium nucleus); stopped by paper</li>
             <li>Beta decay: neutron converts to proton, ejecting an electron and antineutrino</li>
-            <li>Gamma: pure energy photons emitted after nuclear transitions</li>
-            <li>Quantum tunneling: alpha particles escape the nucleus by tunneling through an energy barrier they classically couldn't cross</li>
-            <li>Half-life: statistically predictable but individually random — each nucleus decays independently</li>
+            <li>Gamma: pure energy photons emitted after nuclear transitions; penetrating</li>
+            <li>Quantum tunneling: alpha particles escape by tunneling through an energy barrier classically impassable</li>
+            <li>Half-life: statistically predictable but individually random for each nucleus</li>
           </ul>
         </div>
         <div class="cocktail-box">
@@ -1046,27 +1179,27 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L9</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-applied">Applied Physics</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-applied">Applied Physics</span></div>
         <div class="lesson-title">Fusion Power: JT-60SA, ITER, and the Star in a Bottle</div>
-        <div class="lesson-desc">How fusion works, why it's hard, and what the new generation of machines actually represents.</div>
+        <div class="lesson-desc">How fusion works, why it's hard, and what the new generation of machines represents.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
         <div class="detail-block">
           <div class="detail-label">Core Concepts</div>
           <ul>
-            <li>Fusion: light nuclei (deuterium + tritium) fuse into helium, releasing enormous energy — the sun's power source</li>
-            <li>Challenge: plasma must reach ~100 million°C — hotter than the sun's core — to overcome electrostatic repulsion</li>
-            <li>Tokamak: donut-shaped magnetic confinement device; JT-60SA (Japan) is currently the world's largest operational tokamak</li>
+            <li>Fusion: deuterium + tritium fuse into helium, releasing enormous energy — the sun's power source</li>
+            <li>Challenge: plasma must reach ~100 million°C to overcome electrostatic repulsion</li>
+            <li>Tokamak: donut-shaped magnetic confinement device; JT-60SA (Japan) is the world's largest operating tokamak</li>
             <li>ITER (France): designed to achieve Q>1 (more energy out than in)</li>
             <li>Quantum tunneling helps: fusion occurs at lower temperatures than classical physics would require</li>
           </ul>
         </div>
         <div class="cocktail-box">
           <div class="detail-label">🍸 Cocktail Party Line</div>
-          <div class="the-line">"Fusion has been '30 years away' for 70 years. But ITER is different — it's not a proof of concept, it's a proof of engineering. JT-60SA in Japan lit up in 2023 and is the largest operating tokamak today. We just haven't crossed the Q>1 threshold in a sustained way. Yet."</div>
+          <div class="the-line">"Fusion has been '30 years away' for 70 years. But ITER is different — it's a proof of engineering, not just concept. JT-60SA in Japan lit up in 2023 and is the largest operating tokamak today. We just haven't crossed Q>1 in a sustained way. Yet."</div>
         </div>
       </div>
     </div>
@@ -1075,18 +1208,18 @@ footer a:hover { color: var(--accent); }
 </div>
 ```
 
-  </div>
+  </div><!-- /phase 2 -->
 
   <div class="milestone">
-    <h3>Phase 2 Complete — Checkpoint</h3>
-    <p>You now understand forces, fields, extreme states, and the practical applications of quantum physics — from the Higgs field to superconductors to fusion energy. Phase 3 moves into technology and frontier research.</p>
+    <div class="milestone-label">Phase 2 Complete — Checkpoint</div>
+    <p>Forces, fields, extreme states, and real applications — from the Higgs field to superconductors to fusion. Phase 3 moves into technology and frontier research.</p>
   </div>
 
   <!-- ═══ PHASE 3 ═══ -->
 
   <div class="phase">
     <div class="phase-header">
-      <span class="phase-number">Phase 03</span>
+      <span class="phase-num">Phase 03</span>
       <span class="phase-title">Technology & Frontiers</span>
       <span class="phase-time">~3–4 hours</span>
     </div>
@@ -1097,11 +1230,11 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L10</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-applied">Applied Physics</span><span class="tag tag-cocktail">🍸 Party-Ready</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-applied">Applied Physics</span><span class="tag-pill tag-cocktail">🍸 Party-Ready</span></div>
         <div class="lesson-title">Quantum Computers: How They Actually Work</div>
-        <div class="lesson-desc">Beyond the hype — what qubits are, what quantum computers are genuinely good at, and what they can't do.</div>
+        <div class="lesson-desc">Beyond the hype — what qubits are, what quantum computers are good at, and what they can't do.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
@@ -1110,24 +1243,15 @@ footer a:hover { color: var(--accent); }
           <ul>
             <li>Classical bit: 0 or 1. Qubit: superposition of 0 and 1 simultaneously until measured</li>
             <li>Entanglement: qubits correlated such that measuring one instantly determines the other's state</li>
-            <li>A quantum computer with n qubits explores 2ⁿ states simultaneously</li>
+            <li>A quantum computer with n qubits can explore 2ⁿ states simultaneously</li>
             <li>Decoherence: the engineering challenge — qubits collapse when disturbed by environment</li>
-            <li>Good at: optimization, cryptography breaking (Shor's algorithm), simulating quantum systems</li>
-            <li>Not good at: general-purpose computing, anything you use a laptop for today</li>
-          </ul>
-        </div>
-        <div class="detail-block">
-          <div class="detail-label">Key Vocabulary</div>
-          <ul>
-            <li><strong>Qubit</strong> — quantum bit; can be 0, 1, or superposition of both</li>
-            <li><strong>Entanglement</strong> — quantum correlation between particles across any distance</li>
-            <li><strong>Shor's algorithm</strong> — quantum algorithm that factors large numbers exponentially faster, breaking RSA encryption</li>
-            <li><strong>Quantum supremacy</strong> — a quantum computer outperforming any classical computer on a specific task</li>
+            <li>Good at: optimization, breaking cryptography (Shor's algorithm), simulating quantum systems</li>
+            <li>Not good at: general computing, anything you use a laptop for today</li>
           </ul>
         </div>
         <div class="cocktail-box">
           <div class="detail-label">🍸 Cocktail Party Line</div>
-          <div class="the-line">"Quantum computers aren't just faster classical computers — they're differently shaped. Exponentially better at specific problems: factoring huge numbers, simulating molecules for drug discovery, optimization. But they'll never replace your laptop for anything you do today. They solve a different category of problem entirely."</div>
+          <div class="the-line">"Quantum computers aren't just faster classical computers — they're differently shaped. Exponentially better at specific problems: factoring huge numbers, simulating molecules for drug discovery, optimization. But they'll never replace your laptop. They solve a different category of problem entirely."</div>
         </div>
       </div>
     </div>
@@ -1137,26 +1261,26 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L11</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-particle">Particle Physics</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-particle">Particle Physics</span></div>
         <div class="lesson-title">The Large Hadron Collider & Its Successor</div>
         <div class="lesson-desc">What the LHC actually does, what it's found, and what the Future Circular Collider would be capable of.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
         <div class="detail-block">
           <div class="detail-label">Core Concepts</div>
           <ul>
-            <li>The LHC accelerates protons to 99.9999991% the speed of light and collides them — recreating conditions microseconds after the Big Bang</li>
-            <li>Located in a 27km tunnel under the Swiss/French border; the most complex machine ever built</li>
+            <li>LHC accelerates protons to 99.9999991% light speed and collides them — recreating early-universe conditions</li>
+            <li>27km tunnel under the Swiss/French border; the most complex machine ever built</li>
             <li>Key discovery: Higgs boson (2012); continues searching for supersymmetry, dark matter, extra dimensions</li>
-            <li>Future Circular Collider (FCC): proposed 91km ring, 6× LHC's energy; could cost €20 billion</li>
+            <li>Future Circular Collider (FCC): proposed 91km ring, 6× the LHC's energy</li>
           </ul>
         </div>
         <div class="cocktail-box">
           <div class="detail-label">🍸 Cocktail Party Line</div>
-          <div class="the-line">"The LHC is essentially a time machine — not forward or backward, but inward. When protons collide at those energies, the debris recreates the particle soup of the early universe, and detectors the size of cathedrals photograph it. The proposed successor would be four times larger and probe energies we've never reached."</div>
+          <div class="the-line">"The LHC is essentially a time machine — not forward or backward, but inward. When protons collide at those energies, the debris recreates the particle soup of the early universe, and detectors the size of cathedrals photograph it. The proposed successor would be four times larger."</div>
         </div>
       </div>
     </div>
@@ -1166,18 +1290,18 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L12</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-applied">Applied Physics</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-applied">Applied Physics</span></div>
         <div class="lesson-title">Quantum Teleportation: What It Is (and Isn't)</div>
-        <div class="lesson-desc">How "teleportation" of quantum states actually works, and why it can't transmit information faster than light.</div>
+        <div class="lesson-desc">How "teleportation" of quantum states works, and why it can't transmit information faster than light.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
         <div class="detail-block">
           <div class="detail-label">Core Concepts</div>
           <ul>
-            <li>Quantum teleportation transfers the complete quantum state of a particle to another location using entanglement</li>
+            <li>Quantum teleportation transfers the complete quantum state of a particle using entanglement</li>
             <li>No physical matter travels — only quantum information</li>
             <li>Requires a classical communication channel to complete; cannot exceed light speed</li>
             <li>Demonstrated with photons, atoms, and across fiber optic networks</li>
@@ -1186,7 +1310,7 @@ footer a:hover { color: var(--accent); }
         </div>
         <div class="cocktail-box">
           <div class="detail-label">🍸 Cocktail Party Line</div>
-          <div class="the-line">"Quantum teleportation is real and we do it in labs. But it's not Star Trek — no matter moves. What teleports is the quantum state of a particle: its spin, polarization, all its properties. The catch is you still need a classical channel to complete it. Einstein's speed limit survives."</div>
+          <div class="the-line">"Quantum teleportation is real and we do it in labs. But it's not Star Trek — no matter moves. What teleports is the quantum state of a particle: its spin, polarization, all its properties. You still need a classical channel to complete it. Einstein's speed limit survives."</div>
         </div>
       </div>
     </div>
@@ -1195,13 +1319,13 @@ footer a:hover { color: var(--accent); }
 </div>
 ```
 
-  </div>
+  </div><!-- /phase 3 -->
 
   <!-- ═══ PHASE 4 ═══ -->
 
   <div class="phase">
     <div class="phase-header">
-      <span class="phase-number">Phase 04</span>
+      <span class="phase-num">Phase 04</span>
       <span class="phase-title">The Big Picture: Cosmology & Frontier Theory</span>
       <span class="phase-time">~2–3 hours</span>
     </div>
@@ -1212,11 +1336,11 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L13</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-frontier">Frontier</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-frontier">Frontier</span></div>
         <div class="lesson-title">String Theory: The Beautiful Unfinished Idea</div>
         <div class="lesson-desc">What string theory actually proposes, why physicists love it, and why it's scientifically controversial.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
@@ -1224,10 +1348,10 @@ footer a:hover { color: var(--accent); }
           <div class="detail-label">Core Concepts</div>
           <ul>
             <li>The central problem: quantum mechanics and general relativity are both wildly successful — and mutually incompatible</li>
-            <li>String theory proposes all fundamental particles are different vibrational modes of 1-dimensional "strings"</li>
-            <li>Requires 10 or 11 dimensions; extra dimensions are "compactified" — curled up too small to detect</li>
-            <li>Makes no unique testable predictions yet — the major scientific criticism</li>
-            <li>Has generated enormous mathematical insights regardless of physical truth (mirror symmetry, AdS/CFT duality)</li>
+            <li>String theory: all fundamental particles are different vibrational modes of 1-dimensional "strings"</li>
+            <li>Requires 10 or 11 dimensions; extra dimensions "compactified" too small to detect</li>
+            <li>Makes no unique testable predictions yet — the central scientific criticism</li>
+            <li>Has generated enormous mathematical insights regardless of physical truth</li>
           </ul>
         </div>
         <div class="cocktail-box">
@@ -1242,11 +1366,11 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L14</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-frontier">Frontier</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-frontier">Frontier</span></div>
         <div class="lesson-title">The Multiverse: Evidence, Speculation, and Philosophy</div>
-        <div class="lesson-desc">The scientific case (and caveats) for multiple universes — from quantum many-worlds to inflationary cosmology.</div>
+        <div class="lesson-desc">The scientific case for multiple universes — from quantum many-worlds to inflationary cosmology.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
@@ -1256,13 +1380,13 @@ footer a:hover { color: var(--accent); }
             <li>Type I: other regions beyond our cosmic horizon — same physics, different initial conditions</li>
             <li>Type II: bubble universes from eternal inflation — regions where inflation stopped at different times</li>
             <li>Type III: many-worlds — every quantum event spawns branching universes</li>
-            <li>Type IV: mathematical universes — all consistent mathematical structures exist as physical realities</li>
-            <li>The testability problem: if other universes are causally disconnected, can we ever verify them?</li>
+            <li>Type IV: all consistent mathematical structures exist as physical realities (Tegmark)</li>
+            <li>The testability problem: causally disconnected universes may be impossible to verify</li>
           </ul>
         </div>
         <div class="cocktail-box">
           <div class="detail-label">🍸 Cocktail Party Line</div>
-          <div class="the-line">"There are at least four different scientific theories called 'the multiverse' — and they're not the same idea. Cosmological inflation almost mathematically requires a multiverse of bubble universes. Many-worlds requires a completely different kind. Whether either is 'real' in a meaningful sense — that's where physics shades into philosophy."</div>
+          <div class="the-line">"There are at least four different scientific theories called 'the multiverse' and they're not the same idea. Inflationary cosmology almost mathematically requires bubble universes. Many-worlds requires a completely different kind. Whether either is 'real' — that's where physics shades into philosophy."</div>
         </div>
       </div>
     </div>
@@ -1272,18 +1396,18 @@ footer a:hover { color: var(--accent); }
     <div class="lesson-header">
       <div class="lesson-num">L15</div>
       <div class="lesson-body">
-        <div class="lesson-tags"><span class="tag tag-frontier">Frontier</span><span class="tag tag-history">History</span></div>
+        <div class="lesson-tags"><span class="tag-pill tag-frontier">Frontier</span><span class="tag-pill tag-history">History</span></div>
         <div class="lesson-title">The Big Bang: What We Know, What We Don't</div>
         <div class="lesson-desc">The elegant explanation for the origin of the observable universe — and what it still doesn't explain.</div>
       </div>
-      <div class="toggle">+</div>
+      <div class="lesson-toggle">+</div>
     </div>
     <div class="lesson-expand">
       <div class="lesson-details">
         <div class="detail-block">
           <div class="detail-label">Core Concepts</div>
           <ul>
-            <li>~13.8 billion years ago, the observable universe was in an extremely hot, dense state — not an explosion in space, but an expansion of space itself</li>
+            <li>~13.8 billion years ago the universe was extremely hot and dense — not an explosion in space, but an expansion of space itself</li>
             <li>Evidence: cosmic microwave background (CMB), Hubble's redshift, abundance of light elements</li>
             <li>Cosmic inflation: exponential expansion in the first 10⁻³² seconds explains the horizon and flatness problems</li>
             <li>What we don't know: what caused it, what happened at t=0, whether anything preceded it</li>
@@ -1292,7 +1416,7 @@ footer a:hover { color: var(--accent); }
         </div>
         <div class="cocktail-box">
           <div class="detail-label">🍸 Cocktail Party Line</div>
-          <div class="the-line">"The Big Bang model is overwhelmingly well-supported — the CMB is essentially a photograph of the universe 380,000 years after it began. But cosmologists will tell you: we understand the universe from t=10⁻³² seconds onward. What triggered it, and what happened before that, is genuinely unknown. Physics stops at t=0."</div>
+          <div class="the-line">"The Big Bang model is overwhelmingly well-supported — the CMB is essentially a photograph of the universe 380,000 years after it began. But cosmologists will tell you: we understand the universe from t=10⁻³² seconds onward. What triggered it is genuinely unknown. Physics stops at t=0."</div>
         </div>
       </div>
     </div>
@@ -1301,36 +1425,36 @@ footer a:hover { color: var(--accent); }
 </div>
 ```
 
-  </div>
+  </div><!-- /phase 4 -->
 
   <div class="milestone">
-    <h3>Curriculum Complete</h3>
+    <div class="milestone-label">Curriculum Complete</div>
     <p>You now have a coherent framework spanning quantum foundations, particle physics, condensed matter, fusion, quantum computing, and cosmology — understanding not just the conclusions, but the reasoning. Go find that Caltech party.</p>
   </div>
 
   <!-- Resources -->
 
   <div class="resources">
-    <h2>Recommended Resources</h2>
+    <h2>Further Reading</h2>
     <div class="resource-grid">
       <div class="resource-card">
         <div class="resource-type">Book · Accessible</div>
-        <div class="resource-name">Six Easy Pieces — Richard Feynman</div>
-        <div class="resource-desc">The gold standard. Feynman taught at Caltech; this is his introductory lectures distilled.</div>
+        <div class="resource-name">Six Easy Pieces — Feynman</div>
+        <div class="resource-desc">The gold standard. Feynman taught at Caltech. His introductory lectures distilled.</div>
       </div>
       <div class="resource-card">
         <div class="resource-type">Book · Narrative</div>
-        <div class="resource-name">The Quantum World — Kenneth Ford</div>
-        <div class="resource-desc">Conceptual depth without the math. Quantum weirdness through real physics history.</div>
+        <div class="resource-name">The Quantum World — Ford</div>
+        <div class="resource-desc">Conceptual depth without the math. Quantum weirdness through physics history.</div>
       </div>
       <div class="resource-card">
         <div class="resource-type">Video · Free</div>
-        <div class="resource-name">PBS Space Time (YouTube)</div>
-        <div class="resource-desc">Graduate-level rigor made watchable. Best quantum physics channel on the internet.</div>
+        <div class="resource-name">PBS Space Time</div>
+        <div class="resource-desc">Graduate-level rigor made watchable. Best quantum channel on the internet.</div>
       </div>
       <div class="resource-card">
         <div class="resource-type">Book · Deeper</div>
-        <div class="resource-name">Something Deeply Hidden — Sean Carroll</div>
+        <div class="resource-name">Something Deeply Hidden — Carroll</div>
         <div class="resource-desc">The best modern defense of Many-Worlds. Beautifully written.</div>
       </div>
       <div class="resource-card">
@@ -1341,206 +1465,186 @@ footer a:hover { color: var(--accent); }
       <div class="resource-card">
         <div class="resource-type">Book · History</div>
         <div class="resource-name">The Making of the Atomic Bomb — Rhodes</div>
-        <div class="resource-desc">Pulitzer-winning narrative. The human story of quantum physics in action.</div>
+        <div class="resource-desc">Pulitzer-winning narrative. The human story of quantum physics.</div>
       </div>
     </div>
   </div>
 
-  <footer>
-    <a href="https://brooksgroves.com/">Brooks Groves</a> · <a href="https://brooksgroves.com/learning/">← Learning</a>
-  </footer>
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · brooksgroves.com</span>
+    <div class="article-footer-nav">
+      <a href="https://brooksgroves.com/learning/">← All Curricula</a>
+      <a href="https://brooksgroves.com/">Home</a>
+    </div>
+  </div>
 
-</div>
+</div><!-- /article-wrap -->
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="https://brooksgroves.com/">Home</a>
+      <a href="https://brooksgroves.com/blog/index.html">Blog</a>
+      <a href="https://brooksgroves.com/learning/">Learning</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
 
 <script>
-  // ── Lesson metadata ──────────────────────────────────────────────────────
+  // ── Config ────────────────────────────────────────────────────────────────
+  // After deploying your Cloudflare Worker, replace the URL below.
+  // See cloudflare-worker.js for setup instructions.
+  const PROXY_URL   = 'https://brooksgroves-ai.YOURSUBDOMAIN.workers.dev';
+  const STORAGE_KEY = 'qp-progress-v1';
+
   const LESSONS = {
-    'L1':  { phase: 1, title: 'What Is Quantum Physics? The Core Weirdness' },
-    'L2':  { phase: 1, title: 'The Photoelectric Effect: Where It All Started' },
-    'L3':  { phase: 1, title: 'Schrödinger, His Cat, and the Measurement Problem' },
-    'L4':  { phase: 1, title: 'Atom Anatomy: Structure of the Building Blocks' },
-    'L5':  { phase: 2, title: 'The Higgs Boson: The Field That Gives Mass' },
-    'L6':  { phase: 2, title: 'Matter vs. Antimatter' },
-    'L7':  { phase: 2, title: 'Superconductors and Extreme Cold' },
-    'L8':  { phase: 2, title: 'Nuclear Radiation: The Misunderstood Process' },
-    'L9':  { phase: 2, title: 'Fusion Power: JT-60SA, ITER, and the Star in a Bottle' },
-    'L10': { phase: 3, title: 'Quantum Computers: How They Actually Work' },
-    'L11': { phase: 3, title: 'The Large Hadron Collider & Its Successor' },
-    'L12': { phase: 3, title: 'Quantum Teleportation: What It Is (and Isn\'t)' },
-    'L13': { phase: 4, title: 'String Theory: The Beautiful Unfinished Idea' },
-    'L14': { phase: 4, title: 'The Multiverse: Evidence, Speculation, and Philosophy' },
-    'L15': { phase: 4, title: 'The Big Bang: What We Know, What We Don\'t' },
+    'L1':  { phase:1, title:'What Is Quantum Physics? The Core Weirdness' },
+    'L2':  { phase:1, title:'The Photoelectric Effect: Where It All Started' },
+    'L3':  { phase:1, title:'Schrödinger, His Cat, and the Measurement Problem' },
+    'L4':  { phase:1, title:'Atom Anatomy: Structure of the Building Blocks' },
+    'L5':  { phase:2, title:'The Higgs Boson: The Field That Gives Mass' },
+    'L6':  { phase:2, title:'Matter vs. Antimatter' },
+    'L7':  { phase:2, title:'Superconductors and Extreme Cold' },
+    'L8':  { phase:2, title:'Nuclear Radiation: The Misunderstood Process' },
+    'L9':  { phase:2, title:'Fusion Power: JT-60SA, ITER, and the Star in a Bottle' },
+    'L10': { phase:3, title:'Quantum Computers: How They Actually Work' },
+    'L11': { phase:3, title:'The Large Hadron Collider & Its Successor' },
+    'L12': { phase:3, title:'Quantum Teleportation: What It Is (and Isn\'t)' },
+    'L13': { phase:4, title:'String Theory: The Beautiful Unfinished Idea' },
+    'L14': { phase:4, title:'The Multiverse: Evidence, Speculation, and Philosophy' },
+    'L15': { phase:4, title:'The Big Bang: What We Know, What We Don\'t' },
   };
-  const PHASE_COUNTS = { 1: 4, 2: 5, 3: 3, 4: 3 };
-  const STORAGE_KEY = 'quantum-progress-v1';
+  const PHASE_COUNTS = { 1:4, 2:5, 3:3, 4:3 };
 
-  // ── Storage helpers ───────────────────────────────────────────────────────
-  function loadProgress() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
-    catch { return {}; }
-  }
-  function saveProgress(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  }
+  const QUICK = {
+    'L1':  ['Give me an analogy for superposition','Why did Einstein hate this?','What\'s a wavefunction in plain English?'],
+    'L2':  ['Why does frequency matter more than brightness?','How does this connect to solar panels?','Explain the threshold effect simply'],
+    'L3':  ['What did Schrödinger actually believe?','Explain decoherence like I\'m a GIS analyst','Copenhagen vs Many-Worlds — which is winning?'],
+    'L4':  ['Why does Pauli exclusion make matter solid?','What are orbital shapes in plain English?','What holds the nucleus together?'],
+    'L5':  ['What\'s spontaneous symmetry breaking?','Why did physicists hate \'God particle\'?','What does the Higgs field feel like to a particle?'],
+    'L6':  ['What is CP violation exactly?','Could we make antimatter fuel?','How much antimatter is in a banana?'],
+    'L7':  ['How does levitation work from superconductors?','What are Cooper pairs actually doing?','How cold is a Bose-Einstein condensate?'],
+    'L8':  ['How does quantum tunneling enable decay?','Ionizing vs non-ionizing radiation?','Is radon in my basement dangerous?'],
+    'L9':  ['What is plasma and why is it hard to contain?','How does tunneling help fusion happen?','What\'s the difference between ITER and NIF?'],
+    'L10': ['Explain Shor\'s algorithm simply','Will quantum computers break my passwords?','What is quantum decoherence in a chip?'],
+    'L11': ['What happens when protons collide?','What is supersymmetry?','How big would the FCC be?'],
+    'L12': ['How does entanglement enable teleportation?','Why can\'t this be faster-than-light?','What\'s quantum key distribution?'],
+    'L13': ['What are the extra dimensions in string theory?','Why can\'t we test string theory?','What is AdS/CFT duality?'],
+    'L14': ['Which multiverse theory has the most evidence?','Is the multiverse falsifiable?','What does Tegmark actually claim?'],
+    'L15': ['What is the CMB exactly?','What happened before the Big Bang?','What is dark energy doing to the universe?'],
+  };
 
-  // ── Progress bar update ───────────────────────────────────────────────────
-  function updateProgressBar() {
-    const data = loadProgress();
+  const aiHistory = {};
+  const load = () => { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; } };
+  const save = d  => localStorage.setItem(STORAGE_KEY, JSON.stringify(d));
+
+  // ── Progress ──────────────────────────────────────────────────────────────
+  function updateProgress() {
+    const d = load();
     const total = Object.keys(LESSONS).length;
-    const done  = Object.keys(LESSONS).filter(id => data[id]?.completed).length;
-    const pct   = Math.round((done / total) * 100);
-
-    document.getElementById('progress-fill').style.width  = pct + '%';
+    const done  = Object.keys(LESSONS).filter(id => d[id]?.done).length;
+    document.getElementById('progress-fill').style.width = (done / total * 100) + '%';
     document.getElementById('progress-count').textContent = `${done} of ${total} lessons complete`;
-
     for (let p = 1; p <= 4; p++) {
-      const ids    = Object.keys(LESSONS).filter(id => LESSONS[id].phase === p);
-      const pDone  = ids.filter(id => data[id]?.completed).length;
-      const pPct   = Math.round((pDone / PHASE_COUNTS[p]) * 100);
-      document.getElementById(`pip-${p}`).style.width = pPct + '%';
+      const ids   = Object.keys(LESSONS).filter(id => LESSONS[id].phase === p);
+      const pDone = ids.filter(id => d[id]?.done).length;
+      document.getElementById(`pip-${p}`).style.width = (pDone / PHASE_COUNTS[p] * 100) + '%';
     }
   }
 
-  // ── Toggle expand ─────────────────────────────────────────────────────────
+  // ── Toggle lesson ─────────────────────────────────────────────────────────
   function toggle(el) {
-    const expand = el.querySelector('.lesson-expand');
-    const open   = el.classList.toggle('open');
-    expand.classList.toggle('open', open);
+    const exp  = el.querySelector('.lesson-expand');
+    const open = el.classList.toggle('open');
+    exp.classList.toggle('open', open);
   }
 
-  // ── AI history per lesson ─────────────────────────────────────────────────
-  const aiHistory = {};
-
-  // ── Build quick prompts per lesson ────────────────────────────────────────
-  const QUICK_PROMPTS = {
-    'L1':  ['Give me an analogy for superposition', 'Why did Einstein hate this?', 'What\'s a wavefunction in plain English?'],
-    'L2':  ['Explain the threshold effect simply', 'How does this connect to solar panels?', 'Why does frequency matter more than brightness?'],
-    'L3':  ['What did Schrödinger actually believe?', 'Explain decoherence like I\'m a GIS analyst', 'What\'s the difference between Copenhagen and Many-Worlds?'],
-    'L4':  ['Draw me the orbital shapes in words', 'Why does Pauli exclusion make matter solid?', 'What holds the nucleus together?'],
-    'L5':  ['What\'s spontaneous symmetry breaking?', 'Why is it called the God particle?', 'What does the Higgs field feel like to a particle?'],
-    'L6':  ['What is CP violation exactly?', 'Could we ever make antimatter fuel?', 'How do we detect antimatter in labs?'],
-    'L7':  ['How does levitation work from superconductors?', 'What are Cooper pairs actually doing?', 'How cold is a BEC?'],
-    'L8':  ['How does quantum tunneling enable nuclear decay?', 'What\'s the difference between ionizing and non-ionizing radiation?', 'Is radon in my basement dangerous?'],
-    'L9':  ['What is plasma and why is it hard to contain?', 'How does quantum tunneling help fusion?', 'What\'s the difference between ITER and NIF?'],
-    'L10': ['Explain Shor\'s algorithm simply', 'What\'s quantum decoherence in a chip?', 'Will quantum computers break my passwords?'],
-    'L11': ['What happens when protons collide?', 'How big is the FCC going to be?', 'What is supersymmetry and have we found it?'],
-    'L12': ['How does entanglement enable teleportation?', 'Why can\'t this be used for FTL communication?', 'What\'s quantum key distribution?'],
-    'L13': ['What are the extra dimensions in string theory?', 'Why can\'t we test string theory?', 'What is AdS/CFT duality?'],
-    'L14': ['Which multiverse theory has the most evidence?', 'Is the multiverse falsifiable?', 'What does Max Tegmark actually claim?'],
-    'L15': ['What is the CMB exactly?', 'What happened before the Big Bang?', 'What is dark energy doing to the universe?'],
-  };
-
-  // ── Inject interactive blocks into all lessons ────────────────────────────
-  function injectLessonInteractivity() {
-    const data = loadProgress();
-
-    document.querySelectorAll('.lesson').forEach(lessonEl => {
-      const numEl = lessonEl.querySelector('.lesson-num');
+  // ── Init — inject notes + checkbox + AI panel into each lesson ────────────
+  function init() {
+    const d = load();
+    document.querySelectorAll('.lesson').forEach(lesson => {
+      const numEl = lesson.querySelector('.lesson-num');
       if (!numEl) return;
-      const id = numEl.textContent.trim(); // e.g. "L1"
+      const id = numEl.textContent.trim();
       if (!LESSONS[id]) return;
-
-      const details = lessonEl.querySelector('.lesson-details');
+      const details = lesson.querySelector('.lesson-details');
       if (!details) return;
 
-      // Mark as done if saved
-      if (data[id]?.completed) {
-        lessonEl.classList.add('done');
-        numEl.textContent = '✓';
-      }
+      if (d[id]?.done) { lesson.classList.add('done'); numEl.textContent = '✓'; }
 
-      // ── Notes ──
-      const notesWrap = document.createElement('div');
-      notesWrap.className = 'notes-wrap';
-      notesWrap.innerHTML = `
-        <div class="detail-label notes-label">My Notes</div>
-        <textarea class="notes-field" placeholder="Jot anything down — connections, questions, things that clicked…" data-lesson="${id}">${data[id]?.notes || ''}</textarea>`;
+      // Notes
+      const nw = document.createElement('div');
+      nw.className = 'notes-wrap';
+      nw.innerHTML = `<div class="detail-label" style="margin-bottom:5px">My Notes</div>
+        <textarea class="notes-field" placeholder="Jot anything — connections, questions, what clicked…">${d[id]?.notes || ''}</textarea>`;
 
 ```
-  details.appendChild(notesWrap);
-
-  const notesField = notesWrap.querySelector('.notes-field');
-  notesField.addEventListener('input', () => {
-    const d = loadProgress();
-    if (!d[id]) d[id] = {};
-    d[id].notes = notesField.value;
-    saveProgress(d);
+  details.appendChild(nw);
+  nw.querySelector('textarea').addEventListener('input', e => {
+    const dd = load(); if (!dd[id]) dd[id] = {};
+    dd[id].notes = e.target.value; save(dd);
   });
 
-  // ── Check complete ──
-  const checkWrap = document.createElement('div');
-  checkWrap.className = 'lesson-check-wrap';
-  const isChecked = data[id]?.completed ? 'checked' : '';
-  const completedDate = data[id]?.completedOn ? `<span class="completed-on">Completed ${data[id].completedOn}</span>` : '';
-  checkWrap.innerHTML = `
-    <input type="checkbox" class="lesson-check" id="check-${id}" ${isChecked} data-lesson="${id}">
-    <label class="lesson-check-label" for="check-${id}">Mark lesson complete</label>
-    ${completedDate}`;
-  details.appendChild(checkWrap);
-
-  const checkbox = checkWrap.querySelector('.lesson-check');
-  checkbox.addEventListener('change', (e) => {
+  // Checkbox
+  const cw = document.createElement('div');
+  cw.className = 'check-wrap';
+  cw.innerHTML = `
+    <input type="checkbox" class="check-box" id="chk-${id}" ${d[id]?.done ? 'checked' : ''}>
+    <label class="check-label" for="chk-${id}">Mark complete</label>
+    ${d[id]?.doneOn ? `<span class="completed-stamp">Completed ${d[id].doneOn}</span>` : ''}`;
+  details.appendChild(cw);
+  cw.querySelector('input').addEventListener('change', e => {
     e.stopPropagation();
-    const d = loadProgress();
-    if (!d[id]) d[id] = {};
-    if (checkbox.checked) {
-      d[id].completed  = true;
-      d[id].completedOn = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      lessonEl.classList.add('done');
-      numEl.textContent = '✓';
-      // Update the completed-on span
-      let span = checkWrap.querySelector('.completed-on');
-      if (!span) {
-        span = document.createElement('span');
-        span.className = 'completed-on';
-        checkWrap.appendChild(span);
-      }
-      span.textContent = `Completed ${d[id].completedOn}`;
+    const dd = load(); if (!dd[id]) dd[id] = {};
+    if (e.target.checked) {
+      dd[id].done   = true;
+      dd[id].doneOn = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+      lesson.classList.add('done'); numEl.textContent = '✓';
+      let s = cw.querySelector('.completed-stamp');
+      if (!s) { s = document.createElement('span'); s.className = 'completed-stamp'; cw.appendChild(s); }
+      s.textContent = `Completed ${dd[id].doneOn}`;
     } else {
-      d[id].completed  = false;
-      d[id].completedOn = null;
-      lessonEl.classList.remove('done');
-      numEl.textContent = id;
-      const span = checkWrap.querySelector('.completed-on');
-      if (span) span.remove();
+      dd[id].done = false; dd[id].doneOn = null;
+      lesson.classList.remove('done'); numEl.textContent = id;
+      const s = cw.querySelector('.completed-stamp'); if (s) s.remove();
     }
-    saveProgress(d);
-    updateProgressBar();
+    save(dd); updateProgress();
   });
 
-  // ── AI panel ──
-  const quickPrompts = QUICK_PROMPTS[id] || [];
-  const aiPanel = document.createElement('div');
-  aiPanel.className = 'ai-panel';
-  aiPanel.dataset.lesson = id;
-  aiPanel.innerHTML = `
+  // AI panel
+  const ap = document.createElement('div');
+  ap.className = 'ai-panel';
+  ap.innerHTML = `
     <button class="ai-toggle-btn" onclick="toggleAI(this)">
-      <span class="ai-icon">⚛</span>
-      Go Deeper — ask a follow-up question
+      ⚛ Go Deeper — ask the AI tutor about this lesson
       <span class="ai-chevron">▼</span>
     </button>
     <div class="ai-body">
       <div class="ai-inner">
-        <p class="ai-context-note">AI tutor for: <em>${LESSONS[id].title}</em></p>
+        <p class="ai-context">Context: ${LESSONS[id].title}</p>
         <div class="ai-quick-prompts">
-          ${quickPrompts.map(q => `<button class="ai-quick" onclick="quickPrompt(this, '${id}')">${q}</button>`).join('')}
+          ${(QUICK[id]||[]).map(q => `<button class="ai-quick" onclick="quickPrompt(this,'${id}')">${q}</button>`).join('')}
         </div>
-        <div class="ai-messages" id="ai-msgs-${id}"></div>
+        <div class="ai-messages" id="msgs-${id}"></div>
         <div class="ai-input-row">
-          <input class="ai-input" id="ai-input-${id}" type="text" placeholder="Ask anything about this lesson…" onkeydown="if(event.key==='Enter')sendAI('${id}')">
-          <button class="ai-send-btn" id="ai-send-${id}" onclick="sendAI('${id}')">Ask →</button>
+          <input class="ai-input" id="inp-${id}" type="text" placeholder="Ask anything about this lesson…" onkeydown="if(event.key==='Enter')sendAI('${id}')">
+          <button class="ai-send" id="snd-${id}" onclick="sendAI('${id}')">Ask →</button>
         </div>
       </div>
     </div>`;
-  details.appendChild(aiPanel);
+  details.appendChild(ap);
 });
-
-updateProgressBar();
+updateProgress();
 ```
 
 }
 
-// ── Toggle AI panel ───────────────────────────────────────────────────────
 function toggleAI(btn) {
 const panel = btn.closest(’.ai-panel’);
 const body  = panel.querySelector(’.ai-body’);
@@ -1548,88 +1652,63 @@ panel.classList.toggle(‘ai-open’);
 body.classList.toggle(‘ai-open’);
 }
 
-// ── Quick prompt ──────────────────────────────────────────────────────────
 function quickPrompt(btn, id) {
-const input = document.getElementById(`ai-input-${id}`);
-input.value = btn.textContent;
+document.getElementById(`inp-${id}`).value = btn.textContent;
 sendAI(id);
 }
 
-// ── Send message to Claude API ────────────────────────────────────────────
 async function sendAI(id) {
-const input   = document.getElementById(`ai-input-${id}`);
-const sendBtn = document.getElementById(`ai-send-${id}`);
-const msgs    = document.getElementById(`ai-msgs-${id}`);
-const text    = input.value.trim();
+const inp  = document.getElementById(`inp-${id}`);
+const snd  = document.getElementById(`snd-${id}`);
+const msgs = document.getElementById(`msgs-${id}`);
+const text = inp.value.trim();
 if (!text) return;
-
-```
-input.value   = '';
-sendBtn.disabled = true;
-
-// Add user message
-appendMsg(msgs, 'user', text);
-const loadingEl = appendMsg(msgs, 'loading', 'Thinking…');
-
-// Build history
+inp.value = ‘’; snd.disabled = true;
+addMsg(msgs, ‘user’, text);
+const loading = addMsg(msgs, ‘loading’, ‘thinking…’);
 if (!aiHistory[id]) aiHistory[id] = [];
-aiHistory[id].push({ role: 'user', content: text });
-
-const systemPrompt = `You are a quantum physics tutor embedded in a personal study curriculum. The student is currently studying the lesson: "${LESSONS[id].title}". 
-```
-
-Their background: GIS Analyst and Data Scientist at Zillow, strong quantitative background, molecular biology research history, Pacific Northwest based. They are comfortable with data, maps, sensors, and pipelines — use those kinds of analogies when helpful.
-
-Keep responses focused, clear, and conversational. 2-4 paragraphs max. Use plain language but don’t oversimplify. If a concept connects to their GIS/data world, make that connection. End with a thought-provoking follow-up question if natural.`;
+aiHistory[id].push({ role:‘user’, content:text });
 
 ```
-// ── Proxy URL — deploy the Cloudflare Worker then set this ──
-const PROXY_URL = 'https://brooksgroves-ai.YOURSUBDOMAIN.workers.dev';
+const system = `You are a quantum physics tutor embedded in a personal study curriculum at brooksgroves.com. The student is on lesson: "${LESSONS[id].title}".
+```
 
+Student: Brooks Groves. GIS Analyst and Data Scientist at Zillow, Lakewood WA. Molecular biology research background (UNR, UCT Cape Town). Expert with data pipelines, spatial analysis, sensors, GitHub Actions, APIs. Very quantitative. Pacific Northwest based.
+
+Style: focused, conversational, 2–4 paragraphs. Don’t oversimplify but use plain language. When a concept maps naturally to data pipelines, spatial analysis, sensor networks, or API-driven systems — make that connection. It will click faster. End with a thought-provoking follow-up question when natural.`;
+
+```
 try {
-  const response = await fetch(PROXY_URL, {
+  const res  = await fetch(PROXY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: aiHistory[id]
-    })
+    body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, system, messages:aiHistory[id] })
   });
-
-  const data = await response.json();
-  const reply = data?.content?.[0]?.text || 'No response received.';
-
-  aiHistory[id].push({ role: 'assistant', content: reply });
-
-  loadingEl.remove();
-  appendMsg(msgs, 'assistant', reply);
-
+  const data  = await res.json();
+  const reply = data?.content?.[0]?.text || 'No response — check Worker URL in PROXY_URL.';
+  aiHistory[id].push({ role:'assistant', content:reply });
+  loading.remove();
+  addMsg(msgs, 'assistant', reply);
 } catch (err) {
-  loadingEl.remove();
-  appendMsg(msgs, 'assistant', 'Something went wrong — check your API key or connection and try again.');
+  loading.remove();
+  addMsg(msgs, 'assistant', `Connection error. Make sure the Cloudflare Worker is deployed and PROXY_URL is set.\n\n${err.message}`);
 }
-
-sendBtn.disabled = false;
-msgs.scrollTop   = msgs.scrollHeight;
+snd.disabled = false;
+msgs.scrollTop = msgs.scrollHeight;
 ```
 
 }
 
-// ── Append a message bubble ───────────────────────────────────────────────
-function appendMsg(container, type, text) {
+function addMsg(container, type, text) {
 const el = document.createElement(‘div’);
 el.className = `ai-msg ${type}`;
-// Render newlines as paragraphs
-el.innerHTML = text.split(’\n\n’).map(p => `<p style="margin-bottom:6px">${p.replace(/\n/g,'<br>')}</p>`).join(’’);
+el.innerHTML = text.split(’\n\n’).map(p => `<p>${p.replace(/\n/g,'<br>')}</p>`).join(’’);
 container.appendChild(el);
 container.scrollTop = container.scrollHeight;
 return el;
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────
-document.addEventListener(‘DOMContentLoaded’, injectLessonInteractivity);
+document.addEventListener(‘DOMContentLoaded’, init);
 </script>
 
 </body>
