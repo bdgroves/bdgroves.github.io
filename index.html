@@ -38,9 +38,9 @@
     .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.6rem; border-bottom:2px solid var(--ink); margin-bottom:0; }
 
     .journal-list { display:flex; flex-direction:column; }
-    .journal-item { display:grid; grid-template-columns:auto 1fr; gap:0 2rem; padding:1.5rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:padding-left 0.2s; align-items:start; }
-    .journal-item:hover { padding-left:0.4rem; }
-    .journal-item:hover .journal-hed { color:var(--rust); }
+    .journal-item { display:block; padding:1.5rem 0; border-bottom:1px solid var(--mist); }
+    
+    .journal-hed-link:hover .journal-hed { color:var(--rust); }
     .journal-date-col { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); white-space:nowrap; padding-top:0.2rem; min-width:100px; }
     .journal-date-month { text-transform:uppercase; letter-spacing:0.12em; }
     .journal-date-year { color:var(--mist); display:block; margin-top:0.1rem; }
@@ -92,13 +92,17 @@
   <div class="journal-list">
 
     <!-- CANNON BEACH — LIVE -->
-    <a href="/cannon-beach.html" class="journal-item">
-      <div class="journal-date-col">
-        <div class="journal-date-month">Mar 29</div>
-        <span class="journal-date-year">2026</span>
+    <div class="journal-item">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.3rem">
+        <div class="journal-tag"></div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone)">Mar 29 2026</div>
       </div>
-      <div>
-        <div class="journal-tag"><a href="https://brooksgroves.com/tags.html#Travel" style="color:var(--gold);text-decoration:none;">Travel</a> · <a href="https://brooksgroves.com/tags.html#Oregon%20Coast" style="color:var(--gold);text-decoration:none;">Oregon Coast</a></div>
+      <a href="/cannon-beach.html" class="journal-hed-link" style="text-decoration:none;color:inherit;display:block">
+        <h2 class="journal-hed"></h2>
+      </a>
+      <p class="journal-dek"></p>
+      <a href="/cannon-beach.html" class="journal-read">Read entry →</a>
+    </div> · <a href="https://brooksgroves.com/tags.html#Oregon%20Coast" style="color:var(--gold);text-decoration:none;">Oregon Coast</a></div>
         <h2 class="journal-hed">Cannon Beach — Tide Pools, Dogs, and the Goonies Coast</h2>
         <p class="journal-dek">Haystack Rock at low tide. Mussels older than comprehension. A disco dog with a green light. Fort George beers in Astoria. Sitting somewhere between the tide and a new website.</p>
         <span class="journal-read">Read entry →</span>
