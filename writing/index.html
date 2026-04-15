@@ -9,24 +9,17 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
-      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
-      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; --sky:#2a4a6b;
-    }
+    :root { --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc; --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    html { scroll-behavior:smooth; }
     body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
     body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
     .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
-
     header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
-    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
     .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
-    nav { display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap; }
-    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
     nav a:hover { color:var(--rust); }
-
     .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
     .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
     .page-eyebrow a { color:var(--stone); text-decoration:none; }
@@ -34,39 +27,35 @@
     .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
     .page-title em { font-style:italic; color:var(--rust); }
     .page-sub { font-size:0.975rem; color:var(--stone); max-width:580px; line-height:1.8; }
-
     .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
 
-    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1.5rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 0; display:flex; justify-content:space-between; align-items:center; }
     .section-label:first-child { margin-top:0; }
-    .section-label .section-note { font-size:0.55rem; color:var(--mist); letter-spacing:0.1em; }
+    .section-note { font-size:0.55rem; color:var(--mist); }
 
-    /* WRITING ROWS */
+    /* WRITING ROWS — same pattern as blog index */
     .writing-list { display:flex; flex-direction:column; }
-    .writing-item { display:grid; grid-template-columns:1fr auto; gap:2rem; align-items:start; padding:1.5rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.15s; }
-    .writing-item:hover { background:var(--cream); margin:0 -1.5rem; padding-left:1.5rem; padding-right:1.5rem; }
+    .writing-item { padding:1.5rem 0; border-bottom:1px solid var(--mist); }
     .writing-item:last-child { border-bottom:none; }
-    @media(max-width:600px) { .writing-item { grid-template-columns:1fr; gap:0.5rem; } }
-
-    .writing-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.35rem; }
-    .writing-hed { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; line-height:1.25; margin-bottom:0.4rem; color:var(--ink); }
-    .writing-item:hover .writing-hed { color:var(--rust); }
-    .writing-dek { font-size:0.85rem; color:var(--stone); line-height:1.65; margin-bottom:0.6rem; }
-    .writing-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.5rem; }
-    .tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.2rem 0.55rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
-    .tag:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
-
-    .writing-meta { text-align:right; }
-    .writing-year { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--stone); }
-    .writing-pub { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--mist); margin-top:0.25rem; line-height:1.6; }
-    .lock-badge { display:inline-flex; align-items:center; gap:0.3rem; font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.5rem; margin-top:0.5rem; }
-
-    /* FEATURED LONG READ */
     .writing-item.featured { border-left:3px solid var(--gold); padding-left:1.25rem; }
-    .writing-item.featured:hover { margin-left:-1.5rem; padding-left:2.75rem; }
+
+    .writing-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.6rem; }
+    .writing-tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.2rem 0.55rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .writing-tag:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+    .writing-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:0.35rem; }
+
+    .writing-title-link { text-decoration:none; color:inherit; display:block; margin-bottom:0.4rem; }
+    .writing-hed { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; line-height:1.25; color:var(--ink); transition:color 0.15s; }
+    .writing-title-link:hover .writing-hed { color:var(--rust); }
+
+    .writing-dek { font-size:0.875rem; color:var(--stone); line-height:1.65; margin-bottom:0.5rem; }
+    .writing-read { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); text-decoration:none; display:inline-block; }
+    .writing-read:hover { color:var(--rust); }
+    .writing-meta-line { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--mist); margin-top:0.3rem; }
 
     footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
-    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
     .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
     .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
     .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
@@ -80,7 +69,7 @@
   <div class="masthead-inner">
     <a href="/" class="site-name">Brooks Groves</a>
     <nav>
-      <a href="/blog/index.html">Blog</a>
+      <a href="/blog/">Blog</a>
       <a href="/tags.html">Tags</a>
       <a href="/">Home</a>
     </nav>
@@ -101,73 +90,60 @@
     <span class="section-note">🔒 Password protected</span>
   </div>
   <div class="writing-list">
-    <a href="https://journal.brooksgroves.com/myles.html" class="writing-item featured">
-      <div>
-        <div class="writing-kicker">Literary Fiction · Long Read · 25 min</div>
-        <div class="writing-hed">🦆 Myles</div>
-        <div class="writing-dek">One rubber duck. The American West. Every duck tells the same story. A lyric narrative following a rubber duck through Death Valley, Mono Lake, the Rubicon Trail, the Cascades, and into the Canadian Rockies. A meditation on movement, impermanence, and what objects carry that they cannot understand.</div>
-        <div class="writing-tags">
-          <a href="/tags.html#Fiction" class="tag">Fiction</a>
-          <a href="/tags.html#Long%20Read" class="tag">Long Read</a>
-          <a href="/tags.html#American%20West" class="tag">American West</a>
-          <a href="/tags.html#Jeep" class="tag">Jeep</a>
-          <a href="/tags.html#Death%20Valley" class="tag">Death Valley</a>
-          <a href="/tags.html#Nature%20Writing" class="tag">Nature Writing</a>
-          <a href="/tags.html#Road" class="tag">Road</a>
-        </div>
-        <div class="lock-badge">🔒 Request access</div>
+
+    <div class="writing-item featured">
+      <div class="writing-tags">
+        <a href="/tags.html#Fiction" class="writing-tag">Fiction</a>
+        <a href="/tags.html#Long%20Read" class="writing-tag">Long Read</a>
+        <a href="/tags.html#American%20West" class="writing-tag">American West</a>
+        <a href="/tags.html#Death%20Valley" class="writing-tag">Death Valley</a>
+        <a href="/tags.html#Nature%20Writing" class="writing-tag">Nature Writing</a>
       </div>
-      <div class="writing-meta">
-        <div class="writing-year">2025</div>
-        <div class="writing-pub">journal.brooksgroves.com</div>
-      </div>
-    </a>
+      <div class="writing-kicker">Literary Fiction · ~25 min read · 🔒 journal.brooksgroves.com</div>
+      <a href="https://journal.brooksgroves.com/myles.html" class="writing-title-link">
+        <h2 class="writing-hed">🦆 Myles</h2>
+      </a>
+      <p class="writing-dek">One rubber duck. The American West. Every duck tells the same story. A lyric narrative following a rubber duck through Death Valley, Mono Lake, the Rubicon Trail, the Cascades, and into the Canadian Rockies. A meditation on movement, impermanence, and what objects carry that they cannot understand.</p>
+      <a href="https://journal.brooksgroves.com/myles.html" class="writing-read">Read →</a>
+    </div>
+
   </div>
 
   <!-- MEMOIR & ESSAYS -->
   <div class="section-label"><span>Memoir &amp; Essays</span></div>
   <div class="writing-list">
 
-    <a href="/writing/cow-palace-nye-1991.html" class="writing-item">
-      <div>
-        <div class="writing-kicker">Memoir · Concert · New Year's Eve 1991</div>
-        <div class="writing-hed">The Night the Cow Palace Changed Everything</div>
-        <div class="writing-dek">New Year's Eve, 1991. Four guys drove over Donner Pass in a snowstorm to see the Chili Peppers. Pearl Jam and Nirvana were opening. Nobody knew it yet, but the world was about to change.</div>
-        <div class="writing-tags">
-          <a href="/tags.html#Memoir" class="tag">Memoir</a>
-          <a href="/tags.html#Music" class="tag">Music</a>
-          <a href="/tags.html#Concerts" class="tag">Concerts</a>
-          <a href="/tags.html#Red%20Hot%20Chili%20Peppers" class="tag">RHCP</a>
-          <a href="/tags.html#Nirvana" class="tag">Nirvana</a>
-          <a href="/tags.html#Pearl%20Jam" class="tag">Pearl Jam</a>
-          <a href="/tags.html#1990s" class="tag">1991</a>
-          <a href="/tags.html#Reno" class="tag">Reno</a>
-        </div>
+    <div class="writing-item">
+      <div class="writing-tags">
+        <a href="/tags.html#Memoir" class="writing-tag">Memoir</a>
+        <a href="/tags.html#Music" class="writing-tag">Music</a>
+        <a href="/tags.html#Concerts" class="writing-tag">Concerts</a>
+        <a href="/tags.html#Nirvana" class="writing-tag">Nirvana</a>
+        <a href="/tags.html#Pearl%20Jam" class="writing-tag">Pearl Jam</a>
+        <a href="/tags.html#1990s" class="writing-tag">1990s</a>
       </div>
-      <div class="writing-meta">
-        <div class="writing-year">2026</div>
-        <div class="writing-pub">~12 min read</div>
-        <div class="writing-pub">About Dec 31, 1991</div>
-      </div>
-    </a>
+      <div class="writing-kicker">Memoir · Concert · New Year's Eve 1991 · ~12 min read</div>
+      <a href="/writing/cow-palace-nye-1991.html" class="writing-title-link">
+        <h2 class="writing-hed">The Night the Cow Palace Changed Everything</h2>
+      </a>
+      <p class="writing-dek">New Year's Eve, 1991. Four guys drove over Donner Pass in a snowstorm to see the Chili Peppers. Pearl Jam and Nirvana were opening. Nobody knew it yet, but the world was about to change.</p>
+      <a href="/writing/cow-palace-nye-1991.html" class="writing-read">Read →</a>
+    </div>
 
-    <a href="/writing/draught-south-land.html" class="writing-item">
-      <div>
-        <div class="writing-kicker">Book Review · Cartography</div>
-        <div class="writing-hed">Review: <em>A Draught of the South Land</em></div>
-        <div class="writing-dek">Paul Moon's meticulous account of how cartography shaped New Zealand's encounter with European powers — from the VOC's strategic maps to Cook's empirical surveys and the enduring legacy of both on modern land rights.</div>
-        <div class="writing-tags">
-          <a href="/tags.html#Cartography" class="tag">Cartography</a>
-          <a href="/tags.html#Book%20Review" class="tag">Book Review</a>
-          <a href="/tags.html#Cartographic%20Perspectives" class="tag">Cartographic Perspectives</a>
-        </div>
+    <div class="writing-item">
+      <div class="writing-tags">
+        <a href="/tags.html#Book%20Review" class="writing-tag">Book Review</a>
+        <a href="/tags.html#Cartography" class="writing-tag">Cartography</a>
+        <a href="/tags.html#New%20Zealand" class="writing-tag">New Zealand</a>
+        <a href="/tags.html#Pacific%20Northwest" class="writing-tag">Pacific Northwest</a>
       </div>
-      <div class="writing-meta">
-        <div class="writing-year">2025</div>
-        <div class="writing-pub">~8 min read</div>
-        <div class="writing-pub">Cartographic Perspectives · No. 105</div>
-      </div>
-    </a>
+      <div class="writing-kicker">Book Review · Cartographic Perspectives No. 105 · ~8 min read</div>
+      <a href="/writing/draught-south-land.html" class="writing-title-link">
+        <h2 class="writing-hed">A Draught of the South Land</h2>
+      </a>
+      <p class="writing-dek">Paul Moon's meticulous account of how cartography shaped New Zealand's encounter with European powers — from the VOC's strategic maps to Cook's empirical surveys and the enduring legacy of both on modern land rights.</p>
+      <a href="/writing/draught-south-land.html" class="writing-read">Read →</a>
+    </div>
 
   </div>
 
@@ -177,78 +153,65 @@
     <span class="section-note">🔒 Password protected</span>
   </div>
   <div class="writing-list">
-    <a href="https://westin.brooksgroves.com" class="writing-item">
-      <div>
-        <div class="writing-kicker">Memoir · Hotel Life · 1997–2018</div>
-        <div class="writing-hed">🏨 Stories from the Westin Seattle</div>
-        <div class="writing-dek">9 dispatches from 21 years as bell captain. Saudi royals, philosophers, Dom Pérignon at midnight, live animals in the freight elevator, and the particular education of a man who spent two decades watching people arrive and depart.</div>
-        <div class="writing-tags">
-          <a href="/tags.html#Westin%20Stories" class="tag">Westin Stories</a>
-          <a href="/tags.html#Memoir" class="tag">Memoir</a>
-          <a href="/tags.html#Seattle" class="tag">Seattle</a>
-          <a href="/tags.html#Bell%20Captain" class="tag">Bell Captain</a>
-          <a href="/tags.html#Hospitality" class="tag">Hospitality</a>
-          <a href="/tags.html#1990s" class="tag">1990s</a>
-        </div>
-        <div class="lock-badge">🔒 Request access</div>
+
+    <div class="writing-item">
+      <div class="writing-tags">
+        <a href="/tags.html#Memoir" class="writing-tag">Memoir</a>
+        <a href="/tags.html#Seattle" class="writing-tag">Seattle</a>
+        <a href="/tags.html#Bell%20Captain" class="writing-tag">Bell Captain</a>
+        <a href="/tags.html#Hospitality" class="writing-tag">Hospitality</a>
+        <a href="/tags.html#1990s" class="writing-tag">1990s</a>
       </div>
-      <div class="writing-meta">
-        <div class="writing-year">1997–2018</div>
-        <div class="writing-pub">11 stories</div>
-        <div class="writing-pub">westin.brooksgroves.com</div>
-      </div>
-    </a>
+      <div class="writing-kicker">Memoir · Hotel Life · 1997–2018 · 11 stories · 🔒 westin.brooksgroves.com</div>
+      <a href="https://westin.brooksgroves.com" class="writing-title-link">
+        <h2 class="writing-hed">🏨 Stories from the Westin Seattle</h2>
+      </a>
+      <p class="writing-dek">Nine hundred rooms breathing. Elevators humming like they've got secrets. 21 years as bell captain — Saudi royals, live animals in freight elevators, wrestling in the cantina, and the sound the building made at 2:17 AM when the lobby went quiet and the Modest Mouse started.</p>
+      <a href="https://westin.brooksgroves.com" class="writing-read">Read stories →</a>
+    </div>
+
   </div>
 
-  <!-- FIELD NOTES & JOURNAL -->
+  <!-- FIELD NOTES -->
   <div class="section-label"><span>Field Notes &amp; Journal</span></div>
   <div class="writing-list">
 
-    <a href="https://journal.brooksgroves.com/cannon-beach.html" class="writing-item">
-      <div>
-        <div class="writing-kicker">Field Notes · Oregon Coast · March 2026</div>
-        <div class="writing-hed">Cannon Beach — Tide Pools, Fort George, and the Long Way Home</div>
-        <div class="writing-dek">A weekend on the Oregon coast. Haystack Rock at low tide, the geology of basalt sea stacks, Fort George Brewing in Astoria, and what it means to find a place that feels like it belongs to you.</div>
-        <div class="writing-tags">
-          <a href="/tags.html#Journal" class="tag">Journal</a>
-          <a href="/tags.html#Oregon%20Coast" class="tag">Oregon Coast</a>
-          <a href="/tags.html#Pacific%20Northwest" class="tag">Pacific Northwest</a>
-          <a href="/tags.html#Field%20Notes" class="tag">Field Notes</a>
-          <a href="/tags.html#Fort%20George" class="tag">Fort George</a>
-          <a href="/tags.html#Travel" class="tag">Travel</a>
-        </div>
+    <div class="writing-item">
+      <div class="writing-tags">
+        <a href="/tags.html#Travel" class="writing-tag">Travel</a>
+        <a href="/tags.html#Oregon%20Coast" class="writing-tag">Oregon Coast</a>
+        <a href="/tags.html#Field%20Notes" class="writing-tag">Field Notes</a>
+        <a href="/tags.html#Fort%20George" class="writing-tag">Fort George</a>
       </div>
-      <div class="writing-meta">
-        <div class="writing-year">Mar 2026</div>
-        <div class="writing-pub">~10 min read</div>
-        <div class="writing-pub">journal.brooksgroves.com</div>
-      </div>
-    </a>
+      <div class="writing-kicker">Field Notes · Oregon Coast · March 2026 · ~10 min read</div>
+      <a href="https://journal.brooksgroves.com/cannon-beach.html" class="writing-title-link">
+        <h2 class="writing-hed">Cannon Beach — Tide Pools, Dogs, and the Goonies Coast</h2>
+      </a>
+      <p class="writing-dek">Haystack Rock at low tide. Mussels older than comprehension. A disco dog with a green light. Fort George beers in Astoria. Sitting somewhere between the tide and a new website.</p>
+      <a href="https://journal.brooksgroves.com/cannon-beach.html" class="writing-read">Read →</a>
+    </div>
 
   </div>
 
   <!-- TECHNICAL BLOG -->
   <div class="section-label"><span>Technical Blog</span></div>
   <div class="writing-list">
-    <a href="/blog/index.html" class="writing-item">
-      <div>
-        <div class="writing-kicker">Blog · Data Engineering · GIS · Python</div>
-        <div class="writing-hed">All Technical Posts →</div>
-        <div class="writing-dek">Terrain rendering with forge3d, Python environments with pixi, Sierra streamflow dashboards, COBOL in 2026, live Kīlauea eruption tracking, archaeoastronomy at Chaco Canyon, and more.</div>
-        <div class="writing-tags">
-          <a href="/tags.html#Python" class="tag">Python</a>
-          <a href="/tags.html#GIS" class="tag">GIS</a>
-          <a href="/tags.html#GitHub%20Actions" class="tag">GitHub Actions</a>
-          <a href="/tags.html#USGS" class="tag">USGS</a>
-          <a href="/tags.html#Leaflet" class="tag">Leaflet</a>
-        </div>
+
+    <div class="writing-item">
+      <div class="writing-tags">
+        <a href="/tags.html#GIS" class="writing-tag">GIS</a>
+        <a href="/tags.html#Python" class="writing-tag">Python</a>
+        <a href="/tags.html#GitHub%20Actions" class="writing-tag">GitHub Actions</a>
+        <a href="/tags.html#Remote%20Sensing" class="writing-tag">Remote Sensing</a>
       </div>
-      <div class="writing-meta">
-        <div class="writing-year">2025–26</div>
-        <div class="writing-pub">12 posts</div>
-        <div class="writing-pub">brooksgroves.com/blog</div>
-      </div>
-    </a>
+      <div class="writing-kicker">Blog · Data Engineering · GIS · Python · 12 posts</div>
+      <a href="/blog/" class="writing-title-link">
+        <h2 class="writing-hed">All Technical Posts →</h2>
+      </a>
+      <p class="writing-dek">Terrain rendering with forge3d, Python environments with pixi, Sierra streamflow dashboards, COBOL in 2026, live Kīlauea eruption tracking, archaeoastronomy at Chaco Canyon, and more.</p>
+      <a href="/blog/" class="writing-read">Browse all posts →</a>
+    </div>
+
   </div>
 
 </div>
@@ -261,7 +224,7 @@
     </div>
     <div class="footer-links">
       <a href="/">Home</a>
-      <a href="/blog/index.html">Blog</a>
+      <a href="/blog/">Blog</a>
       <a href="/tags.html">Tags</a>
     </div>
     <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
