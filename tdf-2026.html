@@ -9,66 +9,68 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink:#1a1a1a; --bg:#f8f6f2; --cream:#f0ece4;
-      --stone:#6b6560; --mist:#d4cec6; --white:#fefcf8;
-      --pink:#f0a500; --pink-light:#ffc74a; --pink-muted:#fff8e6;
-      --gold:#c8922a; --green:#2d6a4f; --blue:#1d3557;
-      --summit:#8b1a2e; --sprint:#1d4e89; --itt:#4a5240; --hilly:#5c4a2a;
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --pink:#e40046; --pink-light:#ff6b95; --pink-muted:#fce8ee;
+      --green:#2d6a4f; --summit:#8b1a2e; --sprint:#1d4e89; --itt:#4a5240; --hilly:#5c4a2a;
     }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    body { background:var(--bg); color:var(--ink); font-family:'Inter',sans-serif; font-size:15px; line-height:1.6; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
 
-    /* TOP STRIPE */
-    .topline { height:5px; background:linear-gradient(90deg, var(--pink) 0%, var(--pink-light) 50%, var(--gold) 100%); }
-
-    /* NAV */
-    nav { background:var(--ink); padding:0.6rem 2rem; display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;  position:sticky; top:0; z-index:100; }
-    .nav-home { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:#888; text-decoration:none; }
-    .nav-home:hover { color:var(--pink-light); }
-    .nav-title { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:#888; }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
 
     /* HERO */
-    .hero { background:var(--ink); color:var(--white); padding:3rem 2rem 2.5rem; border-bottom:3px solid var(--pink); }
+    .hero { background:var(--ink); color:var(--white); padding:3rem clamp(1.5rem,5vw,4rem) 2.5rem; border-bottom:3px solid var(--pink); }
     .hero-inner { max-width:1000px; margin:0 auto; }
-    .hero-eyebrow { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--pink-light); margin-bottom:0.5rem; }
+    .hero-eyebrow { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--pink-light); margin-bottom:0.5rem; }
     .hero-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; line-height:1.05; }
     .hero-title span { color:var(--pink); }
     .hero-sub { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; color:#888; margin-top:0.75rem; }
     .hero-stats { display:flex; gap:2rem; flex-wrap:wrap; margin-top:1.5rem; padding-top:1.5rem; border-top:1px solid #333; }
-    .hero-stat { }
     .hero-stat-val { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:var(--white); }
-    .hero-stat-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:#666; margin-top:0.15rem; }
+    .hero-stat-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.12em; text-transform:uppercase; color:#666; margin-top:0.15rem; }
 
     /* MAIN LAYOUT */
-    .main { max-width:1000px; margin:0 auto; padding:2rem; display:grid; grid-template-columns:1fr 300px; gap:2rem; align-items:start; }
+    .main { max-width:1000px; margin:0 auto; padding:2rem clamp(1.5rem,5vw,4rem); display:grid; grid-template-columns:1fr 300px; gap:2.5rem; align-items:start; }
     @media(max-width:750px) { .main { grid-template-columns:1fr; } }
 
     /* SECTION HEADERS */
     .section-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--pink); border-bottom:2px solid var(--pink); padding-bottom:0.4rem; margin-bottom:1.25rem; }
 
     /* STAGE LIST */
-    .stage-list { display:flex; flex-direction:column; gap:0; }
+    .stage-list { display:flex; flex-direction:column; }
     .stage-item { border-bottom:1px solid var(--mist); padding:1rem 0; display:grid; grid-template-columns:40px 80px 1fr auto; gap:0.75rem; align-items:start; cursor:pointer; transition:background 0.1s; }
     .stage-item:hover { background:var(--cream); margin:0 -0.5rem; padding-left:0.5rem; padding-right:0.5rem; }
+    .stage-item:last-child { border-bottom:none; }
     .stage-item.rest { opacity:0.4; cursor:default; }
     .stage-item.rest:hover { background:transparent; margin:0; padding:1rem 0; }
     .stage-num { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:500; color:var(--stone); padding-top:0.1rem; }
     .stage-date { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); padding-top:0.15rem; }
-    .stage-body { }
-    .stage-route { font-weight:600; font-size:0.9rem; color:var(--ink); }
-    .stage-desc-short { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; line-height:1.5; }
+    .stage-route { font-family:'Playfair Display',serif; font-weight:700; font-size:0.9rem; color:var(--ink); }
+    .stage-desc-short { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; line-height:1.5; font-family:'Libre Baskerville',serif; }
     .stage-climbs { display:flex; flex-wrap:wrap; gap:0.3rem; margin-top:0.4rem; }
-    .climb-tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.06em; background:var(--cream); border:1px solid var(--mist); color:var(--stone); padding:0.15rem 0.5rem; }
+    .climb-tag { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.06em; background:var(--cream); border:1px solid var(--mist); border-radius:3px; color:var(--stone); padding:0.15rem 0.45rem; }
     .stage-right { text-align:right; }
     .stage-km { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--stone); }
     .stage-elev { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:0.15rem; }
-    .stage-type { display:inline-block; font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.2rem 0.5rem; margin-top:0.3rem; }
+    .stage-type { display:inline-block; font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.18rem 0.45rem; margin-top:0.3rem; border-radius:3px; }
     .type-sprint { background:#dbeafe; color:var(--sprint); }
     .type-hilly { background:#fef3c7; color:var(--hilly); }
     .type-mountain { background:#fee2e2; color:var(--summit); }
     .type-summit { background:var(--pink-muted); color:var(--pink); }
     .type-itt { background:#dcfce7; color:var(--green); }
     .stage-winner { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--green); margin-top:0.3rem; font-weight:500; }
+    .stage-counter { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); margin-bottom:1rem; }
+    .stage-pcs-link { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--pink); border:1px solid var(--pink); padding:0.25rem 0.6rem; }
+    .stage-pcs-link:hover { background:var(--pink); color:white; }
 
     /* SIDEBAR */
     .sidebar { display:flex; flex-direction:column; gap:1.5rem; }
@@ -76,47 +78,56 @@
 
     /* GC TABLE */
     .gc-table { width:100%; border-collapse:collapse; }
-    .gc-table th { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); padding:0.3rem 0; border-bottom:1px solid var(--mist); text-align:left; }
+    .gc-table th { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); padding:0.3rem 0; border-bottom:1px solid var(--mist); text-align:left; }
     .gc-table td { font-size:0.82rem; padding:0.5rem 0; border-bottom:1px solid var(--mist); }
     .gc-table tr:last-child td { border-bottom:none; }
     .gc-pos { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--stone); width:24px; }
-    .gc-name { font-weight:600; }
-    .gc-team { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); display:block; }
-    .gc-time { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--stone); text-align:right; }
+    .gc-name { font-weight:700; font-family:'Playfair Display',serif; }
+    .gc-team { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); display:block; font-weight:400; }
+    .gc-time { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); text-align:right; }
     .gc-empty { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--mist); padding:1rem 0; text-align:center; }
 
     /* JERSEYS */
     .jerseys { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
     .jersey-card { background:var(--cream); padding:0.75rem; text-align:center; }
     .jersey-icon { font-size:1.4rem; }
-    .jersey-label { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); margin-top:0.2rem; }
-    .jersey-holder { font-size:0.78rem; font-weight:600; margin-top:0.2rem; color:var(--ink); }
+    .jersey-label { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); margin-top:0.2rem; }
+    .jersey-holder { font-family:'Playfair Display',serif; font-size:0.78rem; font-weight:700; margin-top:0.2rem; color:var(--ink); }
     .jersey-holder.empty { color:var(--mist); font-weight:400; font-style:italic; }
 
-    /* PROFILE SCORE BAR */
+    /* KEY STAGES */
+    .key-stage { padding-bottom:0.75rem; border-bottom:1px solid var(--mist); margin-bottom:0.75rem; }
+    .key-stage:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .key-stage-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--pink); }
+    .key-stage-name { font-family:'Playfair Display',serif; font-weight:700; font-size:0.88rem; margin-top:0.15rem; }
+    .key-stage-desc { font-size:0.75rem; color:var(--stone); margin-top:0.1rem; line-height:1.5; }
 
-    /* STAGE COUNT */
-    .stage-counter { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); margin-bottom:1rem; }
-    .stage-pcs-link { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--pink); border:1px solid var(--pink); padding:0.25rem 0.6rem; }
-    .stage-pcs-link:hover { background:var(--pink); color:white; }
-    @media(max-width:500px) { .stage-imgs { grid-template-columns:1fr; } }
-
-    footer { background:var(--ink); color:#555; padding:2rem; margin-top:3rem; text-align:center; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; }
-    footer a { color:#888; text-decoration:none; }
-    footer a:hover { color:var(--pink-light); }
+    footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
   </style>
 </head>
 <body>
 <div class="topline"></div>
-<nav>
-  <a href="https://brooksgroves.com" class="nav-home">← brooksgroves.com</a>
-  <span class="nav-title">Cycling · Tour de France 2026</span>
-</nav>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/sports.html">← Sports &amp; Beer</a>
+      <a href="/tags.html">Tags</a>
+      <a href="/">Home</a>
+    </nav>
+  </div>
+</header>
 
 <div class="hero">
   <div class="hero-inner">
     <div class="hero-eyebrow">113th Edition · July 4–26, 2026</div>
-    <h1 class="hero-title">Tour de France <span>2026</span></h1>
+    <h1 class="hero-title">🇫🇷 Tour de France <span>2026</span></h1>
     <p class="hero-sub">Barcelona, Spain → Paris, France · 21 stages · 2 rest days</p>
     <div class="hero-stats">
       <div class="hero-stat">
@@ -193,26 +204,10 @@
     <div class="sidebar-card">
       <div class="section-head">Stages to Watch</div>
       <div style="display:flex;flex-direction:column;gap:0.75rem;">
-        <div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink);">Stage 6 · Jul 9</div>
-          <div style="font-weight:600;font-size:0.85rem;margin-top:0.1rem;">Cirque de Gavarnie</div>
-          <div style="font-size:0.75rem;color:var(--stone);">Aspin + Tourmalet · First big Pyrenean summit</div>
-        </div>
-        <div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink);">Stage 15 · Jul 19</div>
-          <div style="font-weight:600;font-size:0.85rem;margin-top:0.1rem;">Plateau de Solaison</div>
-          <div style="font-size:0.75rem;color:var(--stone);">Tour debut · 11.6km, 8.9% · Long sections at 11%</div>
-        </div>
-        <div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink);">Stage 19 · Jul 24</div>
-          <div style="font-weight:600;font-size:0.85rem;margin-top:0.1rem;">Alpe d'Huez I</div>
-          <div style="font-size:0.75rem;color:var(--stone);">Classic 21 bends · 13.8km · First time since 2022</div>
-        </div>
-        <div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink);">Stage 20 · Jul 25</div>
-          <div style="font-weight:600;font-size:0.85rem;margin-top:0.1rem;">Queen Stage · Alpe d'Huez II</div>
-          <div style="font-size:0.75rem;color:var(--stone);">5,600m · Croix de Fer · Galibier · Sarenne · GC decider</div>
-        </div>
+        <div class="key-stage"><div class="key-stage-label">Stage 6 · Jul 9</div><div class="key-stage-name">Cirque de Gavarnie</div><div class="key-stage-desc">Aspin + Tourmalet · First big Pyrenean summit</div></div>
+        <div class="key-stage"><div class="key-stage-label">Stage 15 · Jul 19</div><div class="key-stage-name">Plateau de Solaison</div><div class="key-stage-desc">Tour debut · 11.6km, 8.9% · Long sections at 11%</div></div>
+        <div class="key-stage"><div class="key-stage-label">Stage 19 · Jul 24</div><div class="key-stage-name">Alpe d'Huez I</div><div class="key-stage-desc">Classic 21 bends · 13.8km · First time since 2022</div></div>
+        <div class="key-stage"><div class="key-stage-label">Stage 20 · Jul 25</div><div class="key-stage-name">Queen Stage · Alpe d'Huez II</div><div class="key-stage-desc">5,600m · Croix de Fer · Galibier · Sarenne · GC decider</div></div>
       </div>
     </div>
 
@@ -226,7 +221,16 @@
 </div>
 
 <footer>
-  <a href="https://brooksgroves.com">brooksgroves.com</a> · Tour de France 2026 · Data updated manually during race · Stage data from letour.fr &amp; procyclingstats.com
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">Stage data from letour.fr & procyclingstats.com</p>
+    </div>
+    <div class="footer-links">
+      <a href="/sports.html">Sports &amp; Beer</a>
+      <a href="/">Home</a>
+    </div>
+  </div>
 </footer>
 
 <script>
