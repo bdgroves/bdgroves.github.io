@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+(function() {
+  if (sessionStorage.getItem('y2k_auth') === 'true') return;
+  document.documentElement.style.visibility = 'hidden';
+  function buildGate() {
+    var o = document.createElement('div');
+    o.id = 'gate-overlay';
+    o.innerHTML = '<div style="position:fixed;inset:0;background:#1c1a16;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:Georgia,serif;"><div style="text-align:center;padding:3rem;max-width:380px;width:90%;"><div style="font-family:monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#7a7268;margin-bottom:1rem;">Private Archive</div><div style="font-size:1.8rem;font-weight:700;color:#f5f0e8;margin-bottom:0.5rem;">Brooks Groves</div><div style="font-size:0.85rem;color:#7a7268;margin-bottom:2rem;">Password required</div><input id="gate-pw" type="password" placeholder="Enter password" style="width:100%;padding:0.75rem 1rem;background:#2a2826;border:1px solid #3a3836;color:#f5f0e8;font-size:1rem;outline:none;margin-bottom:0.75rem;box-sizing:border-box;"/><div id="gate-err" style="color:#e40046;font-size:0.75rem;margin-bottom:0.75rem;min-height:1rem;"></div><button id="gate-btn" style="width:100%;padding:0.75rem;background:#2a4a7a;border:none;color:#f5f0e8;font-size:0.9rem;cursor:pointer;letter-spacing:0.05em;">Enter</button></div></div>';
+    document.body.appendChild(o);
+    document.documentElement.style.visibility = 'visible';
+    var inp = document.getElementById('gate-pw');
+    inp.focus();
+    function tryPw() {
+      var pw = inp.value;
+      if (!pw) { document.getElementById('gate-err').textContent = 'Please enter the password.'; return; }
+      if (pw === 'Starwood') {
+        sessionStorage.setItem('y2k_auth', 'true');
+        document.getElementById('gate-overlay').remove();
+      } else {
+        document.getElementById('gate-err').textContent = 'Incorrect password.';
+        inp.value = ''; inp.focus();
+      }
+    }
+    document.getElementById('gate-btn').addEventListener('click', tryPw);
+    inp.addEventListener('keydown', function(e) { if (e.key === 'Enter') tryPw(); });
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', buildGate); }
+  else { buildGate(); }
+})();
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎆 New Year's Eve · All Hands — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4;
+      --westin:#1a3a5c;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--westin) 0%,var(--gold) 50%,var(--stone) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--rust); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; transition:color 0.2s; }
+    .article-back:hover { color:var(--rust); }
+    .article-num { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--westin); margin-bottom:0.4rem; }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); line-height:1.2; color:var(--westin); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body blockquote { border-left:3px solid var(--westin); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body strong { font-weight:700; }
+    .article-body em { font-style:italic; }
+    /* Money counting effect */
+    .count-down { font-family:'DM Mono',monospace; font-size:0.9rem; color:var(--westin); line-height:2; margin:1.5rem 0 1.5rem 1.5rem; }
+    .count-down span { display:block; }
+    .radio-code { font-family:'DM Mono',monospace; background:var(--ink); color:var(--gold); padding:0.15rem 0.5rem; font-size:0.85rem; letter-spacing:0.08em; }
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .article-footer-nav a:hover { color:var(--rust); }
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+  
+    #gate { position:fixed; inset:0; background:var(--parchment); z-index:10000; display:flex; align-items:center; justify-content:center; }
+    .gate-box { border:2px solid var(--ink); padding:3rem; max-width:360px; width:90%; text-align:center; }
+    .gate-title { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; margin-bottom:0.5rem; }
+    .gate-sub { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1.5rem; }
+    .gate-input { width:100%; border:1px solid var(--mist); background:var(--cream); padding:0.6rem 0.8rem; font-family:'DM Mono',monospace; font-size:0.9rem; text-align:center; letter-spacing:0.2em; margin-bottom:0.75rem; outline:none; }
+    .gate-input:focus { border-color:var(--gold); }
+    .gate-btn { width:100%; background:var(--ink); color:var(--white); border:none; padding:0.7rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; }
+    .gate-btn:hover { background:var(--gold); }
+    .gate-err { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust,#8b3a2a); margin-top:0.5rem; display:none; }
+
+  </style>
+</head>
+<body>
+
+  <div id="gate">
+    <div class="gate-box">
+      <div class="gate-title">🏨 Westin Stories</div>
+      <div class="gate-sub">Brooks Groves · Private</div>
+      <input type="password" class="gate-input" id="pw" placeholder="Password" onkeydown="if(event.key==='Enter')check()">
+      <button class="gate-btn" onclick="check()">Enter</button>
+      <div class="gate-err" id="err">Incorrect password</div>
+    </div>
+  </div>
+  <script>
+    const KEY = 'westin_auth';
+    if (sessionStorage.getItem(KEY) === 'true') document.getElementById('gate').style.display = 'none';
+    function check() {
+      const pw = document.getElementById('pw').value.trim();
+      if (pw.toLowerCase() === 'starwood') {
+        sessionStorage.setItem(KEY, 'true');
+        document.getElementById('gate').style.display = 'none';
+      } else {
+        document.getElementById('err').style.display = 'block';
+      }
+    }
+  </script>
+
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="https://westin.brooksgroves.com" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://westin.brooksgroves.com">Westin</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="https://westin.brooksgroves.com" class="article-back">← Stories from the Westin Seattle</a>
+  <div class="article-num">The Westin Years · Story 09</div>
+  <p class="article-kicker">New Year's Eve · All Hands · Late 1990s–2000s</p>
+  <h1 class="article-title">🎆 Turn and Burn</h1>
+  <div class="article-meta">
+    <span>Brooks Groves</span>
+    <span>Westin Seattle · 1997–2018</span>
+    <span>Call sign: 940</span>
+  </div>
+  <div class="article-tags">
+    <a href="https://brooksgroves.com/tags.html#Bell%20Captain" class="article-tag-pill">Bell Captain</a>
+    <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="article-tag-pill">Westin Stories</a>
+    <a href="https://brooksgroves.com/tags.html#Seattle" class="article-tag-pill">Seattle</a>
+    <a href="https://brooksgroves.com/tags.html#Hospitality" class="article-tag-pill">Hospitality</a>
+    <a href="https://brooksgroves.com/tags.html#New%20Years%20Eve" class="article-tag-pill">New Years Eve</a>
+    <a href="https://brooksgroves.com/tags.html#1990s" class="article-tag-pill">1990s</a>
+    <a href="https://brooksgroves.com/tags.html#New%20Year%27s%20Eve" class="article-tag-pill">New Year's Eve</a>
+    <a href="https://brooksgroves.com/tags.html#All%20Hands" class="article-tag-pill">All Hands</a>
+    <a href="https://brooksgroves.com/tags.html#Late%201990s–2000s" class="article-tag-pill">Late 1990s–2000s</a>
+    <a href="https://brooksgroves.com/tags.html#Quick%20Turn" class="article-tag-pill">Quick Turn</a>
+    <a href="https://brooksgroves.com/tags.html#Room%20Service" class="article-tag-pill">Room Service</a>
+  </div>
+
+  <div class="article-body">
+
+    <p>New Year's Eve at the Westin Seattle wasn't a shift.</p>
+    <p>It was an event.</p>
+    <p>Nine hundred rooms checking out. Nine hundred rooms checking back in. Same day. Same building. Same crew.</p>
+    <p>They called it a quick turn.</p>
+    <p>We called it a turn and burn.</p>
+    <p>Because that building — those two giant cylindrical towers, which from the outside look exactly like a pair of paper towel rolls someone left on 5th Avenue — would light up like something out of <em>Battlestar Galactica</em>. Systems overloaded. Crew at max capacity. Everyone just trying to keep the whole thing from drifting off into space.</p>
+
+    <h2>The Build</h2>
+
+    <p>By late afternoon, it started.</p>
+    <p>Cars wrapped around the block. Valets running point like air traffic controllers. Doors swinging open nonstop — cold Seattle air mixing with perfume, cologne, champagne, and money.</p>
+    <p>Guests stepping out like it was a movie premiere. Tuxedos. Evening gowns. Fur coats. Dresses that probably cost more than my car. Everyone better dressed than you. Everyone already a little buzzed. Everyone planning to get absolutely wrecked.</p>
+    <p>And we were there in uniform, trying to keep it all moving.</p>
+    <p>Bell carts stacked high — luggage going out, luggage coming in, all at once. No clean direction. Just flow. Inside, the hotel stopped being a hotel. It became a system.</p>
+    <p>Elevators packed. Every button lit. You'd get in on 4, stop at 5, 6, 7, 8… all the way up. People laughing, spilling drinks, holding heels, holding each other. Room service trays started showing up early. Then more. Then everywhere. Like the tide coming in.</p>
+
+    <h2>Prep Work</h2>
+
+    <p>Days leading up to it, we tried to prepare. We stocked everything. Wine glasses stacked to the ceiling. Silverware in bins. Liquor locked and loaded.</p>
+    <p>You'd polish glassware until your hands went numb. Fold napkins until time stopped meaning anything. Reset salt and pepper shakers like it was some kind of meditation exercise.</p>
+    <p>It gave you the illusion of control.</p>
+    <p>You did not have control.</p>
+
+    <h2>The Hotel, Back Then</h2>
+
+    <p>Back then, the views were wide open. The Space Needle, right there. Clean sightlines. No towers blocking it. No glass walls closing in. Before the city grew up. Before everything got built out.</p>
+    <p>This part of Seattle felt different — more open, less crowded. The Westin stood above it all like command central. By the time later years rolled around, the skyline filled in. Buildings everywhere. Amazon moving in, taking over the neighborhood.</p>
+    <p>But back then? On New Year's Eve? It felt like the center of everything.</p>
+
+    <h2>The Suite Break</h2>
+
+    <p>Management always held a suite for staff. Not really as a perk — more like strategy. If we didn't occupy it, someone else would destroy it.</p>
+    <p>If you could steal two minutes, you'd slip in there, catch the fireworks over the Space Needle, just to remind yourself: <em>Oh right. It's New Year's Eve.</em></p>
+    <p>Then it was back into the machine.</p>
+
+    <h2>The Dom Run</h2>
+
+    <p>One year, I got a call up to a suite. Russian group. Organized. Quiet. You could feel it immediately — this wasn't a loud party. This was structured. Hierarchy. Eyes on everything.</p>
+    <p>They wanted champagne. Not a bottle. Not a case. A lot. Dom Pérignon. So I went down into main liquor storage — the good stuff — and started loading up. One case turned into two. Ended up being twelve bottles. At that point I was basically running a mobile champagne operation through the hotel. You don't forget that kind of walk — through the lobby, into the elevators, people staring, trying not to crash into anything.</p>
+    <p>I got to the suite. Inside — calm. Too calm. Everyone watching. Nobody wasted. Not yet. There was a kid in a tracksuit. Young. But clearly not just a kid. He looked at me, then started peeling off hundred-dollar bills.</p>
+
+    <div class="count-down">
+      <span>One.</span>
+      <span>Two.</span>
+      <span>Three.</span>
+      <span>Four…</span>
+    </div>
+
+    <p>Slow. Deliberate. Like he'd done it a thousand times. The bill was about $1,500 — before tax, before anything extra. He counted it out exactly. Then paused. Looked at me again. Peeled off a few more hundreds. Just like that. Tip. No smile. No speech. Just business.</p>
+    <p>One of the biggest tips I ever got.</p>
+    <p>Also one of the few times I thought: <em>Yeah… I'm going to go ahead and leave now.</em></p>
+    <p>They were partying like it was 1999. I made my exit like it wasn't.</p>
+
+    <h2>Midnight</h2>
+
+    <p>Right before midnight, the whole building tightened. You could feel it. Like pressure building. Then the countdown hit.</p>
+    <p>Fireworks over the Space Needle. Light flashing across the glass. People cheering from balconies, from hallways, from rooms they maybe weren't supposed to be in. For a few minutes, everything paused. Like the entire hotel took a breath.</p>
+
+    <h2>Turn and Burn</h2>
+
+    <p>About an hour later? Game on.</p>
+    <p>Now it's checkout. Nine hundred rooms out. Nine hundred coming back in. Turn and burn.</p>
+    <p>The hotel looked like it lost a fight. Room service trays everywhere — hallways, corners, random floors. Wine glasses scattered like evidence. Towels, linens, carts just parked and abandoned. You'd find stuff days later. Sometimes a week. Security running nonstop. Every situation you can imagine. Police and paramedics moving through like it was routine — because it was. At that size, on that night, the hotel wasn't a hotel. It was a city.</p>
+
+    <h2>The Aftermath</h2>
+
+    <p>By the end, we were destroyed. Running on adrenaline, caffeine, and bad decisions. Some years I worked 24 hours straight. At a certain point the clock stops mattering. You're just part of the system now.</p>
+    <p>But the money? The money was real. Cash tips stacked fast. Rolls of hundred-dollar bills sitting on the nightstand at home like it was normal. Overtime on top — union rates, time and a half, double time. It added up. Then the paycheck hit. And the taxes hit harder. You'd look at it and just laugh.</p>
+    <p>Yeah. That night was never about the check.</p>
+
+    <h2>Reset</h2>
+
+    <p>Eventually, the tide went back out. Party crowd gone. Rooms reset. Trays recovered. Glassware mostly accounted for. The hotel settled back into itself. Maybe a conference next week. Something quiet. Something polite. Like none of it ever happened.</p>
+
+    <hr>
+
+    <p>But for one night every year, that place turned into something else. A machine. A storm. A spaceship barely holding orbit.</p>
+    <p>Turn and burn.</p>
+    <p>And we were right there, keeping it from flying apart.</p>
+
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · <span class="radio-code">940</span> · Westin Seattle</span>
+    <div class="article-footer-nav">
+      <a href="/westin/kerouac-and-coffee.html">← Kerouac &amp; Coffee</a>
+      <a href="https://westin.brooksgroves.com">All Stories</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="https://westin.brooksgroves.com">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://westin.brooksgroves.com">Westin Stories</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

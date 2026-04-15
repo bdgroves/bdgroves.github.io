@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Graveyard Radio — Brooks Groves</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; --sky:#2a4a6b;
+      --y2k:#2a4a7a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.85; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+
+    /* GATE */
+    #gate { position:fixed; inset:0; background:var(--parchment); z-index:1000; display:flex; align-items:center; justify-content:center; }
+    .gate-box { border:2px solid var(--ink); padding:3rem 2.5rem; max-width:380px; width:90%; text-align:center; }
+    .gate-title { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; margin-bottom:0.25rem; }
+    .gate-sub { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.5rem; }
+    .gate-rule { width:40px; height:1px; background:var(--mist); margin:1rem auto 1.25rem; }
+    .gate-input { width:100%; border:1px solid var(--mist); background:var(--cream); padding:0.7rem 1rem; font-family:'DM Mono',monospace; font-size:0.9rem; text-align:center; letter-spacing:0.2em; margin-bottom:0.75rem; outline:none; color:var(--ink); }
+    .gate-input:focus { border-color:var(--gold); }
+    .gate-btn { width:100%; background:var(--ink); color:var(--white); border:none; padding:0.75rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; transition:background 0.2s; }
+    .gate-btn:hover { background:var(--gold); }
+    .gate-err { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.5rem; min-height:1rem; }
+
+    /* HEADER */
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:rgba(245,240,232,0.97); backdrop-filter:blur(8px); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:860px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
+
+    /* ARTICLE */
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--rust); }
+    .article-num { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.4rem; }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2.2rem,5vw,3.5rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+    /* BODY */
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.5rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.08em; color:var(--gold); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; margin:2.5rem 0 1rem; color:var(--rust); }
+    .article-body h2.time { font-family:'DM Mono',monospace; font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); font-weight:400; margin:3rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body a { color:var(--sky); text-decoration:underline; text-underline-offset:3px; }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+
+    /* PLAYLIST BLOCK */
+    .playlist { background:var(--ink); color:#e8e4d8; padding:1.5rem 2rem; margin:1.5rem 0 2rem; border-left:3px solid var(--gold); }
+    .playlist-label { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
+    .playlist-sub { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:#7a7268; margin-bottom:0.75rem; font-style:italic; }
+    .playlist ul { list-style:none; display:flex; flex-direction:column; gap:0.5rem; }
+    .playlist li { font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.06em; color:#e8e4d8; padding-left:1.25rem; position:relative; line-height:1.5; }
+    .playlist li::before { content:'▶'; position:absolute; left:0; color:var(--gold); font-size:0.55rem; top:0.2rem; }
+    .playlist li span { color:#7a7268; font-size:0.65rem; }
+
+    /* PULLQUOTE */
+    .pullquote { border-left:3px solid var(--gold); padding:1rem 1.5rem; margin:2rem 0; font-family:'Playfair Display',serif; font-style:italic; font-size:1.1rem; color:var(--stone); line-height:1.7; }
+
+    /* RECORD MOMENT */
+    .record-moment { text-align:center; padding:2rem 0; margin:2rem 0; border-top:1px solid var(--mist); border-bottom:1px solid var(--mist); }
+    .record-moment p { font-family:'Playfair Display',serif; font-style:italic; font-size:1.15rem; color:var(--stone); line-height:1.7; margin-bottom:0.5rem; }
+    .record-moment p:last-child { margin-bottom:0; }
+    .record-time { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.2em; color:var(--gold); margin-bottom:0.75rem; display:block; }
+
+    /* DEPARTMENT BLOCK */
+    .dept-block { border:1px solid var(--mist); padding:1.25rem 1.5rem; margin:1.5rem 0; }
+    .dept-name { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; padding-bottom:0.5rem; border-bottom:1px solid var(--mist); }
+    .dept-block ul { list-style:none; display:flex; flex-direction:column; gap:0.3rem; margin-bottom:0.75rem; }
+    .dept-block li { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.06em; color:var(--stone); padding-left:1rem; position:relative; }
+    .dept-block li::before { content:'—'; position:absolute; left:0; color:var(--mist); }
+    .dept-note { font-size:0.82rem; color:var(--stone); font-style:italic; line-height:1.6; margin-top:0.5rem; }
+
+    /* ARTICLE FOOTER */
+    .article-footer { margin-top:3rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--rust); }
+
+    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:860px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-link:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="gate-box">
+    <div class="gate-title">🏨 Westin Stories</div>
+    <div class="gate-rule"></div>
+    <div class="gate-sub">Private · Password Required</div>
+    <input type="password" class="gate-input" id="pw-input" placeholder="Password" autocomplete="off">
+    <button class="gate-btn" onclick="checkPassword()">Enter →</button>
+    <div class="gate-err" id="gate-error"></div>
+  </div>
+</div>
+
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">🏨 Westin Stories</a>
+    <nav>
+      <a href="/">All Stories</a>
+      <a href="https://brooksgroves.com">brooksgroves.com ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/" class="article-back">← All Stories</a>
+  <div class="article-num">The Westin Years · Story 10</div>
+  <p class="article-kicker">Seattle · Graveyard Shift · 1997 · Music</p>
+  <h1 class="article-title">📻 Graveyard Radio</h1>
+  <div class="article-meta">
+    <span>1997</span>
+    <span>Brooks Groves</span>
+    <span>The Westin Seattle</span>
+  </div>
+  <div class="article-tags">
+    <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="article-tag-pill">Westin Stories</a>
+    <a href="https://brooksgroves.com/tags.html#Seattle" class="article-tag-pill">Seattle</a>
+    <a href="https://brooksgroves.com/tags.html#Hospitality" class="article-tag-pill">Hospitality</a>
+    <a href="https://brooksgroves.com/tags.html#Bell%20Captain" class="article-tag-pill">Bell Captain</a>
+    <a href="https://brooksgroves.com/tags.html#1990s" class="article-tag-pill">1990s</a>
+    <a href="https://brooksgroves.com/tags.html#Music" class="article-tag-pill">Music</a>
+    <a href="https://brooksgroves.com/tags.html#Graveyard" class="article-tag-pill">Graveyard</a>
+    <a href="https://brooksgroves.com/tags.html#Modest%20Mouse" class="article-tag-pill">Modest Mouse</a>
+  </div>
+
+  <div class="article-body">
+
+    <p>You don't really arrive at graveyard shift at the Westin Seattle. You get absorbed into it.</p>
+
+    <p>Nine hundred rooms breathing. Elevators humming like they've got secrets. Two towers watching the city like twin sentries — later immortalized on the cover of <em><a href="https://en.wikipedia.org/wiki/The_Lonesome_Crowded_West" target="_blank">The Lonesome Crowded West</a></em>, because of course they were. But you don't know that yet.</p>
+
+    <p>It's 1997-ish. You're new. Graveyard. Still figuring out where the coffee lives and which guests tip and which ones talk too much.</p>
+
+    <p>What you do know is the music.</p>
+
+    <h2>The Tape Starts Rolling</h2>
+
+    <p>It begins the same way every double shift does — someone, probably a bellman with a Discman clipped to his belt, hits play. The bags are flying. Town cars are idling. Someone important is pretending not to notice the rain.</p>
+
+    <p>The bellman — let's call him Mike — knows every shortcut in the building. Moves like he's part of the infrastructure. He's got that Seattle calm, but underneath it there's distortion. Like a guitar about to feedback.</p>
+
+    <div class="playlist">
+      <div class="playlist-label">Bell Desk · Arrival Energy</div>
+      <div class="playlist-sub">Front line. Bags flying. Town cars in the drive. Someone important pretending not to notice the rain.</div>
+      <ul>
+        <li>Pearl Jam — <span>"Corduroy"</span></li>
+        <li>Soundgarden — <span>"Rusty Cage"</span></li>
+        <li>Nirvana — <span>"Aneurysm"</span></li>
+        <li>Alice in Chains — <span>"Would?"</span></li>
+        <li>Mudhoney — <span>"Touch Me I'm Sick"</span></li>
+        <li>The Presidents of the United States of America — <span>"Lump"</span></li>
+        <li>The Presidents of the United States of America — <span>"Peaches"</span></li>
+        <li>Harvey Danger — <span>"Flagpole Sitta"</span></li>
+      </ul>
+    </div>
+
+    <p>Mike leans over to you somewhere around 10pm, when the lobby is still moving and you still think you understand the rhythm of the place.</p>
+
+    <div class="pullquote">"Stick around. Around 2AM… it changes."</div>
+
+    <h2 class="time">Midnight to 2AM — The Shift Settles</h2>
+
+    <p>The lobby softens. The suits thin out. The weird shows up.</p>
+
+    <p>A delayed flight crew. A couple arguing quietly near the bar. A guy who definitely shouldn't be wearing sunglasses indoors. The night manager does a slow orbit of the lobby, touching nothing, checking everything.</p>
+
+    <p>This is when the Front Desk takes over the aux cord. The energy drops from distortion to reverb. The room gets bigger.</p>
+
+    <div class="playlist">
+      <div class="playlist-label">Front Desk · Low Light, Thinking Music</div>
+      <div class="playlist-sub">Midnight to 2AM. The lobby empties. The city exhales. Everyone left is either arriving, leaving, or avoiding something.</div>
+      <ul>
+        <li>Radiohead — <span>"Fake Plastic Trees"</span></li>
+        <li>Mazzy Star — <span>"Fade Into You"</span></li>
+        <li>Portishead — <span>"Sour Times"</span></li>
+        <li>Jeff Buckley — <span>"Last Goodbye"</span></li>
+        <li>Elliott Smith — <span>"Between the Bars"</span></li>
+        <li>Morphine — <span>"Buena"</span></li>
+        <li>PJ Harvey — <span>"Down by the Water"</span></li>
+      </ul>
+    </div>
+
+    <p>You start to understand something. This isn't just a hotel. It's a crossroads. Everyone passing through is either arriving at something, leaving something, or actively not dealing with something. The lobby at 1am is the most honest room in the city.</p>
+
+    <div class="record-moment">
+      <span class="record-time">2:17 AM</span>
+      <p>The lobby is empty.</p>
+      <p>The elevators pause.</p>
+      <p>Even the city outside feels like it's holding its breath.</p>
+    </div>
+
+    <h2>2:17 AM — The Pivot</h2>
+
+    <p>There's always a moment. Usually around 2:17 AM. The exact time doesn't matter — it's always exactly then. The lobby is empty, the elevators have gone quiet, and the building itself seems to take a breath.</p>
+
+    <p>That's when someone puts on <em>The Lonesome Crowded West</em>.</p>
+
+    <div class="playlist">
+      <div class="playlist-label">The 2:17 AM Rotation</div>
+      <div class="playlist-sub">The pivot. The moment the shift becomes something else. Start here and don't stop.</div>
+      <ul>
+        <li>Modest Mouse — <span>"Trailer Trash"</span></li>
+        <li>Modest Mouse — <span>"Teeth Like God's Shoeshine"</span></li>
+        <li>Modest Mouse — <span>"Cowboy Dan"</span></li>
+        <li>Built to Spill — <span>"Randy Described Eternity"</span></li>
+        <li>Sebadoh — <span>"Rebound"</span></li>
+        <li>Pavement — <span>"Cut Your Hair"</span></li>
+      </ul>
+    </div>
+
+    <p>And suddenly it clicks.</p>
+
+    <p>Because that album — <em>The Lonesome Crowded West</em> — it <em>is</em> this place. Lonely, crowded, sprawling, a little broken, a little beautiful. Released in 1997, right when this version of Seattle was peaking and fraying at the edges simultaneously. Modest Mouse out of Issaquah, writing about the exact city you're standing in.</p>
+
+    <p>And those towers on the cover.</p>
+
+    <p>You look up through the lobby glass. There they are.</p>
+
+    <div class="pullquote">You're inside the album now. You just didn't know it until this exact moment, at 2:17 AM, standing in the lobby of a 900-room hotel with a Discman and nowhere else to be.</div>
+
+    <h2>The Other Departments Had Their Own Sound</h2>
+
+    <p>That's the thing about graveyard at a hotel this size. You're never actually alone. The building is alive with people you never see — each department running its own frequency.</p>
+
+    <div class="dept-block">
+      <div class="dept-name">Housekeeping · Early Morning Reset Crew · 4AM</div>
+      <ul>
+        <li>The Cranberries</li>
+        <li>No Doubt</li>
+        <li>Quiet sing-alongs in the service corridors</li>
+        <li>The rhythm of carts as percussion</li>
+      </ul>
+      <p class="dept-note">They see everything. They say nothing. They're the ones who actually know what goes on in this building, room by room, floor by floor. The service elevator is their world and they run it with a quiet efficiency that makes the front-of-house look like improv theater.</p>
+    </div>
+
+    <div class="dept-block">
+      <div class="dept-name">Engineering · Basement · 3AM Fixes</div>
+      <ul>
+        <li>Tool</li>
+        <li>Nine Inch Nails</li>
+        <li>Metallica</li>
+        <li>Whatever is loud enough to think clearly to</li>
+      </ul>
+      <p class="dept-note">They're the ones keeping the building alive while everyone else pretends it runs itself. A boiler issue at 3am. A guest calling about a noise in the wall. They move through the guts of the building with flashlights and radios, solving problems that the guests will never know existed.</p>
+    </div>
+
+    <div class="dept-block">
+      <div class="dept-name">Night Audit · The Quiet Controllers</div>
+      <ul>
+        <li>Massive Attack</li>
+        <li>Aphex Twin</li>
+        <li>Tricky</li>
+        <li>Spreadsheet glow. Printer chatter. End-of-day becoming next-day.</li>
+      </ul>
+      <p class="dept-note">They understand time differently than anyone else in the building. Yesterday becomes today on their watch. They're the ones who know the actual numbers — occupancy, revenue, the gap between what was projected and what happened. The lobby could be on fire and they'd still be running the close.</p>
+    </div>
+
+    <div class="dept-block">
+      <div class="dept-name">The Minibar Guy · Category: Unknown</div>
+      <ul>
+        <li>Subhumans</li>
+        <li>Dead Kennedys</li>
+        <li>The Exploited</li>
+        <li>Whatever was on the patch on his jacket</li>
+      </ul>
+      <p class="dept-note">He stocked minibars during the day and wore his Subhumans jacket after his shift. Never said much. Moved through the building like someone who had made peace with the fundamental absurdity of the arrangement — restocking tiny bottles of Johnnie Walker in rooms that cost $300 a night, then clocking out and listening to UK82 hardcore on the bus home. He was, in some ways, the most honest person in the building. Strange dude. Good strange.</p>
+    </div>
+
+    <h2>The SoCal Contingent</h2>
+
+    <p>Not everyone came to Seattle from Seattle. You came up from SoCal, and you brought the third wave ska with you — the stuff that was everywhere in Southern California in the mid-90s and hadn't quite made it all the way north yet. Reel Big Fish. Sublime. No Doubt before they went full mainstream. The Mighty Mighty Bosstones. Operation Ivy.</p>
+
+    <p>It sounded wrong at first, next to the flannel and the distortion. Too bright. Too fast. Too much brass. But at 3am in a hotel lobby, when the graveyard shift has fully settled and the city is in its deepest quiet, the upstroke of a ska guitar has a specific energy that nothing else matches. It keeps you moving. It keeps you present. It is, physiologically, the opposite of falling asleep on the job.</p>
+
+    <div class="playlist">
+      <div class="playlist-label">The SoCal Import · Third Wave Ska</div>
+      <div class="playlist-sub">You brought this up from Southern California. It had no business being in a Seattle hotel at 3am. It worked anyway.</div>
+      <ul>
+        <li>Reel Big Fish — <span>"Sell Out"</span></li>
+        <li>Sublime — <span>"What I Got"</span></li>
+        <li>No Doubt — <span>"Spiderwebs"</span></li>
+        <li>The Mighty Mighty Bosstones — <span>"The Impression That I Get"</span></li>
+        <li>Operation Ivy — <span>"Sound System"</span></li>
+        <li>Goldfinger — <span>"Here in Your Bedroom"</span></li>
+        <li>Save Ferris — <span>"Come On Eileen"</span></li>
+      </ul>
+    </div>
+
+    <p>The minibar guy, the one time he heard it coming out of the back-of-house speakers, stopped in the hallway, listened for about ten seconds, and gave a single slow nod. Then he kept walking. That was the highest endorsement available from that particular source.</p>
+
+    <h2 class="time">5:30 AM — The Fade</h2>
+
+    <p>Coffee comes back. First flights start leaving SeaTac. The city wakes up like nothing happened.</p>
+
+    <p>The bellman rotation changes. New faces, pressed uniforms, the morning energy coming in hot with its espresso and its optimism. They don't know what just happened in here. They don't need to.</p>
+
+    <div class="playlist">
+      <div class="playlist-label">The Handoff · 5:30 AM</div>
+      <div class="playlist-sub">The shift ends. The city picks up again. You know something they don't.</div>
+      <ul>
+        <li>R.E.M. — <span>"Nightswimming"</span></li>
+        <li>Beck — <span>"Ramshackle"</span></li>
+        <li>Wilco — <span>"Passenger Side"</span></li>
+        <li>Son Volt — <span>"Windfall"</span></li>
+        <li>Whiskeytown — <span>"Houses on the Hill"</span></li>
+      </ul>
+    </div>
+
+    <p>You walk out into the Seattle morning. The two towers are still there, of course. They're always there. But now you know what they are.</p>
+
+    <p>Because somewhere between check-ins and silence, between "Rusty Cage" and "Trailer Trash," between the flight crew at midnight and the coffee at 5:30 — you became part of it. Not the hotel exactly. The thing the hotel was made of. The crossroads. The frequency.</p>
+
+    <hr>
+
+    <p>Years later, someone finds that album again. Sees those towers on the cover. Remembers a night shift they never wrote down — the specific quality of the lobby at 2:17 AM, the sound of a Discman through cheap speakers, the moment the building went quiet and then the Modest Mouse started and the whole thing clicked into place.</p>
+
+    <p>That's how these stories work.</p>
+
+    <p>You don't leave the Westin.</p>
+
+    <p>You just check out for a while — until the playlist starts again.</p>
+
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · Seattle · 1997</span>
+    <div class="article-footer-nav">
+      <a href="/new-years-eve.html">← Turn and Burn</a>
+      <a href="/">All Stories</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">westin.brooksgroves.com · Private</p>
+    </div>
+    <a href="https://brooksgroves.com" class="footer-link">brooksgroves.com ↗</a>
+  </div>
+</footer>
+
+<script>
+  const PASSWORD = 'starwood';
+  const KEY = 'westin_auth';
+  if (sessionStorage.getItem(KEY) === 'true') document.getElementById('gate').style.display = 'none';
+  function checkPassword() {
+    const pw = document.getElementById('pw-input').value.trim();
+    if (pw.toLowerCase() === PASSWORD) {
+      sessionStorage.setItem(KEY, 'true');
+      document.getElementById('gate').style.display = 'none';
+    } else {
+      document.getElementById('gate-error').textContent = 'Incorrect password.';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
+  }
+  document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
+</script>
+</body>
+</html>
