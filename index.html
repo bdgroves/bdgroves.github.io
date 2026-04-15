@@ -3,258 +3,114 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Westin Stories — Brooks Groves</title>
-  <meta name="robots" content="noindex">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <title>Journal — Brooks Groves</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
-    :root { --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc; --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; }
+    :root { --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc; --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sage:#4a5c45; }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-    html { scroll-behavior:smooth; }
-    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; }
     body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
-    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 100%); }
-    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
-    .masthead-inner { display:flex; align-items:center; justify-content:space-between; max-width:860px; margin:0 auto; padding:0.75rem 0; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--sage) 0%,var(--gold) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; max-width:1200px; margin:0 auto; padding:0.75rem 0; }
     .site-name { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:900; text-decoration:none; color:var(--ink); }
     .back-link { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
-    .back-link:hover { color:var(--rust); }
-
-    .page-header { max-width:860px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .back-link:hover { color:var(--sage); }
+    .page-wrap { max-width:800px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem); }
     .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
     .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.75rem; }
-    .page-title em { font-style:italic; color:var(--rust); }
-    .page-sub { font-size:0.95rem; color:var(--stone); max-width:580px; line-height:1.8; }
-
-    .page-content { max-width:860px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
-    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:0; }
-
-    /* STORY LIST */
-    .story-list { display:flex; flex-direction:column; }
-    .story-item { display:grid; grid-template-columns:3.5rem 1fr auto; gap:1rem; align-items:baseline; padding:1.1rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.1s; }
-    .story-item:hover { background:var(--cream); margin:0 -1rem; padding-left:1rem; padding-right:1rem; }
-    .story-item:last-child { border-bottom:none; }
-    .story-num { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--mist); padding-top:0.15rem; }
-    .story-title { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; margin-bottom:0.15rem; }
-    .story-item:hover .story-title { color:var(--rust); }
-    .story-sub { font-size:0.78rem; color:var(--stone); }
-    .story-meta { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--mist); text-align:right; white-space:nowrap; }
-    .story-arrow { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); }
-
-    /* TAGS */
-    .story-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.4rem; }
-    .story-tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.15rem 0.5rem; border-radius:4px; text-decoration:none; transition:background 0.15s,border-color 0.15s,color 0.15s; }
-    .story-tag:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
-
-    /* DISCLAIMER */
-    .disclaimer { border:1px solid var(--mist); border-left:3px solid var(--stone); padding:1.25rem 1.5rem; margin-top:3rem; background:var(--cream); }
-    .disclaimer-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--stone); margin-bottom:0.5rem; }
-    .disclaimer p { font-size:0.78rem; color:var(--stone); line-height:1.7; font-style:italic; }
-
-    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
-    .footer-inner { max-width:860px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .page-title em { font-style:italic; color:var(--sage); }
+    .page-sub { font-size:0.95rem; color:var(--stone); max-width:580px; line-height:1.8; margin-bottom:3rem; }
+    .year-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.5rem; border-bottom:2px solid var(--ink); margin:2rem 0 1rem; }
+    .entry-list { display:flex; flex-direction:column; gap:0; }
+    .entry-item { display:grid; grid-template-columns:6rem 1fr auto; gap:1rem; align-items:baseline; padding:1rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.1s; }
+    .entry-item:hover { background:var(--cream); margin:0 -1rem; padding-left:1rem; padding-right:1rem; }
+    .entry-date { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); }
+    .entry-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; }
+    .entry-dek { font-size:0.78rem; color:var(--stone); margin-top:0.15rem; }
+    .entry-arrow { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--sage); }
+    footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; text-align:center; }
     .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
-    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
-    .footer-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
-    .footer-link:hover { color:var(--gold); }
+    .footer-sub { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.25rem; }
+  
+    #gate { position:fixed; inset:0; background:var(--parchment); z-index:10000; display:flex; align-items:center; justify-content:center; }
+    .gate-box { border:2px solid var(--ink); padding:3rem; max-width:360px; width:90%; text-align:center; }
+    .gate-title { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; margin-bottom:0.5rem; }
+    .gate-sub { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1.5rem; }
+    .gate-input { width:100%; border:1px solid var(--mist); background:var(--cream); padding:0.6rem 0.8rem; font-family:'DM Mono',monospace; font-size:0.9rem; text-align:center; letter-spacing:0.2em; margin-bottom:0.75rem; outline:none; }
+    .gate-input:focus { border-color:var(--gold); }
+    .gate-btn { width:100%; background:var(--ink); color:var(--white); border:none; padding:0.7rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; }
+    .gate-btn:hover { background:var(--gold); }
+    .gate-err { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust,#8b3a2a); margin-top:0.5rem; display:none; }
+
   </style>
 </head>
 <body>
+
+  <div id="gate">
+    <div class="gate-box">
+      <div class="gate-title">📓 Journal</div>
+      <div class="gate-sub">Brooks Groves · Private</div>
+      <input type="password" class="gate-input" id="pw" placeholder="Password" onkeydown="if(event.key==='Enter')check()">
+      <button class="gate-btn" onclick="check()">Enter</button>
+      <div class="gate-err" id="err">Incorrect password</div>
+    </div>
+  </div>
+  <script>
+    const KEY = 'journal_auth';
+    if (sessionStorage.getItem(KEY) === 'true') document.getElementById('gate').style.display = 'none';
+    function check() {
+      const pw = document.getElementById('pw').value.trim();
+      if (pw.toLowerCase() === 'cascade') {
+        sessionStorage.setItem(KEY, 'true');
+        document.getElementById('gate').style.display = 'none';
+      } else {
+        document.getElementById('err').style.display = 'block';
+      }
+    }
+  </script>
+
 <div class="topline"></div>
 <header>
   <div class="masthead-inner">
-    <a href="/" class="site-name">🏨 Westin Stories</a>
+    <a href="https://journal.brooksgroves.com" class="site-name">📓 Journal</a>
     <a href="https://brooksgroves.com" class="back-link">← brooksgroves.com</a>
   </div>
 </header>
+<div class="page-wrap">
+  <p class="page-eyebrow">Brooks Groves · Pacific Northwest</p>
+  <h1 class="page-title"><em>Journal</em></h1>
+  <p class="page-sub">Field notes, travel writing, and dispatches from wherever the road goes. Some of it is about places. Most of it is about what you notice when you're paying attention.</p>
 
-<div class="page-header">
-  <p class="page-eyebrow">Brooks Groves · 1997–2018 · Private Archive</p>
-  <h1 class="page-title">Stories from the <em>Westin Seattle</em></h1>
-  <p class="page-sub">Twenty-one years as bell captain at one of Seattle's landmark hotels. These are the stories that didn't make it into the official record — the ones that happened in the service corridors, the Cantina, and the lobby at 2:17 AM.</p>
-</div>
-
-<div class="page-content">
-  <div class="section-label">11 Stories · Password: starwood</div>
-  <div class="story-list">
-
-    <a href="how-i-got-the-job.html" class="story-item">
-      <div class="story-num">01</div>
+  <div class="year-label">2026</div>
+  <div class="entry-list">
+    <a href="myles.html" class="entry-item">
+      <div class="entry-date">Apr 2025</div>
       <div>
-        <div class="story-title">🎒 How I Got the Job</div>
-        <div class="story-sub">Walking into the Westin Seattle in 1997</div>
-        <div class="story-tags">
-          <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="story-tag">Westin Stories</a>
-          <a href="https://brooksgroves.com/tags.html#Seattle" class="story-tag">Seattle</a>
-          <a href="https://brooksgroves.com/tags.html#1990s" class="story-tag">1990s</a>
-          <a href="https://brooksgroves.com/tags.html#Bell%20Captain" class="story-tag">Bell Captain</a>
-        </div>
+        <div class="entry-title">🦆 Myles</div>
+        <div class="entry-dek">One rubber duck. The American West. Every duck tells the same story. · 🔒 Protected</div>
       </div>
-      <div class="story-arrow">→</div>
+      <div class="entry-arrow">→</div>
     </a>
-
-    <a href="940-to-base.html" class="story-item">
-      <div class="story-num">02</div>
+    <a href="cannon-beach.html" class="entry-item">
+      <div class="entry-date">Mar 29, 2026</div>
       <div>
-        <div class="story-title">📻 940 to Base — Radio Check</div>
-        <div class="story-sub">The language of the bell desk</div>
-        <div class="story-tags">
-          <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="story-tag">Westin Stories</a>
-          <a href="https://brooksgroves.com/tags.html#Bell%20Captain" class="story-tag">Bell Captain</a>
-          <a href="https://brooksgroves.com/tags.html#Radio" class="story-tag">Radio</a>
-        </div>
+        <div class="entry-title">Cannon Beach — Tide Pools, Dogs, and the Goonies Coast</div>
+        <div class="entry-dek">Sitting somewhere between the tide and a new website. Not a bad Saturday.</div>
       </div>
-      <div class="story-arrow">→</div>
+      <div class="entry-arrow">→</div>
     </a>
-
-    <a href="beanie-baby-mountain.html" class="story-item">
-      <div class="story-num">03</div>
-      <div>
-        <div class="story-title">🐪👑🧸 The Saudi Beanie Baby Mountain</div>
-        <div class="story-sub">The Saudi royal family arrives</div>
-        <div class="story-tags">
-          <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="story-tag">Westin Stories</a>
-          <a href="https://brooksgroves.com/tags.html#Saudi%20Arabia" class="story-tag">Saudi Arabia</a>
-          <a href="https://brooksgroves.com/tags.html#VIP" class="story-tag">VIP</a>
-        </div>
-      </div>
-      <div class="story-arrow">→</div>
-    </a>
-
-    <a href="coffee-license.html" class="story-item">
-      <div class="story-num">04</div>
-      <div>
-        <div class="story-title">☕ The Coffee License Fiasco</div>
-        <div class="story-sub">What it takes to make coffee at the Westin</div>
-        <div class="story-tags">
-          <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="story-tag">Westin Stories</a>
-          <a href="https://brooksgroves.com/tags.html#Graveyard" class="story-tag">Graveyard</a>
-          <a href="https://brooksgroves.com/tags.html#Licensing" class="story-tag">Licensing</a>
-        </div>
-      </div>
-      <div class="story-arrow">→</div>
-    </a>
-
-    <a href="gator-in-a-box.html" class="story-item">
-      <div class="story-num">05</div>
-      <div>
-        <div class="story-title">🐊 Gator in a Box</div>
-        <div class="story-sub">A package arrives at the bell desk</div>
-        <div class="story-tags">
-          <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="story-tag">Westin Stories</a>
-          <a href="https://brooksgroves.com/tags.html#Bell%20Captain" class="story-tag">Bell Captain</a>
-          <a href="https://brooksgroves.com/tags.html#Live%20Animal" class="story-tag">Live Animal</a>
-        </div>
-      </div>
-      <div class="story-arrow">→</div>
-    </a>
-
-    <a href="kerouac-and-coffee.html" class="story-item">
-      <div class="story-num">06</div>
-      <div>
-        <div class="story-title">☕ Coffee, Kerouac, and the North Cascades</div>
-        <div class="story-sub">Reading on the graveyard shift</div>
-        <div class="story-tags">
-          <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="story-tag">Westin Stories</a>
-          <a href="https://brooksgroves.com/tags.html#Books" class="story-tag">Books</a>
-          <a href="https://brooksgroves.com/tags.html#Graveyard" class="story-tag">Graveyard</a>
-          <a href="https://brooksgroves.com/tags.html#North%20Cascades" class="story-tag">North Cascades</a>
-        </div>
-      </div>
-      <div class="story-arrow">→</div>
-    </a>
-
-    <a href="milkshake-license.html" class="story-item">
-      <div class="story-num">07</div>
-      <div>
-        <div class="story-title">🥤 The Milkshake License Incident</div>
-        <div class="story-sub">Room service at 3am</div>
-        <div class="story-tags">
-          <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="story-tag">Westin Stories</a>
-          <a href="https://brooksgroves.com/tags.html#Room%20Service" class="story-tag">Room Service</a>
-          <a href="https://brooksgroves.com/tags.html#Licensing" class="story-tag">Licensing</a>
-        </div>
-      </div>
-      <div class="story-arrow">→</div>
-    </a>
-
-    <a href="tolstoy-at-3am.html" class="story-item">
-      <div class="story-num">08</div>
-      <div>
-        <div class="story-title">📚 Tolstoy at 3am</div>
-        <div class="story-sub">War and Peace on graveyard</div>
-        <div class="story-tags">
-          <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="story-tag">Westin Stories</a>
-          <a href="https://brooksgroves.com/tags.html#Books" class="story-tag">Books</a>
-          <a href="https://brooksgroves.com/tags.html#Literature" class="story-tag">Literature</a>
-          <a href="https://brooksgroves.com/tags.html#Graveyard%20Shift" class="story-tag">Graveyard Shift</a>
-        </div>
-      </div>
-      <div class="story-arrow">→</div>
-    </a>
-
-    <a href="new-years-eve.html" class="story-item">
-      <div class="story-num">09</div>
-      <div>
-        <div class="story-title">🥂 Turn and Burn</div>
-        <div class="story-sub">New Year's Eve · 900 rooms · one night</div>
-        <div class="story-tags">
-          <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="story-tag">Westin Stories</a>
-          <a href="https://brooksgroves.com/tags.html#New%20Years%20Eve" class="story-tag">New Years Eve</a>
-          <a href="https://brooksgroves.com/tags.html#Service%20Express" class="story-tag">Service Express</a>
-        </div>
-      </div>
-      <div class="story-arrow">→</div>
-    </a>
-
-    <a href="graveyard-radio.html" class="story-item">
-      <div class="story-num">10</div>
-      <div>
-        <div class="story-title">📻 Graveyard Radio</div>
-        <div class="story-sub">The 2:17 AM moment. The Modest Mouse connection. Seattle 1997.</div>
-        <div class="story-tags">
-          <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="story-tag">Westin Stories</a>
-          <a href="https://brooksgroves.com/tags.html#Music" class="story-tag">Music</a>
-          <a href="https://brooksgroves.com/tags.html#1990s" class="story-tag">1990s</a>
-          <a href="https://brooksgroves.com/tags.html#Modest%20Mouse" class="story-tag">Modest Mouse</a>
-        </div>
-      </div>
-      <div class="story-arrow">→</div>
-    </a>
-
-    <a href="cantina-wrestling.html" class="story-item">
-      <div class="story-num">11</div>
-      <div>
-        <div class="story-title">🤼 Monday Night at the Cantina</div>
-        <div class="story-sub">Marco, the volume knob, and the night accounting came downstairs</div>
-        <div class="story-tags">
-          <a href="https://brooksgroves.com/tags.html#Westin%20Stories" class="story-tag">Westin Stories</a>
-          <a href="https://brooksgroves.com/tags.html#Bell%20Captain" class="story-tag">Bell Captain</a>
-          <a href="https://brooksgroves.com/tags.html#The%20Westin" class="story-tag">The Cantina</a>
-        </div>
-      </div>
-      <div class="story-arrow">→</div>
-    </a>
-
   </div>
 
-  <div class="disclaimer">
-    <div class="disclaimer-label">A note on these stories</div>
-    <p>These are personal memoirs drawn from memory of events that occurred between 1997 and 2018 at The Westin Seattle. Names of colleagues have been changed or omitted. Some details have been compressed or reconstructed from memory. These stories reflect my own recollections and perspectives — they are not statements of fact about any institution or individual, and are not affiliated with or endorsed by The Westin Hotels & Resorts, Marriott International, or any related entity. Any resemblance to specific individuals beyond the author is coincidental.</p>
+  <div style="margin-top:3rem;padding:1.5rem;border:1px solid var(--mist);font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);line-height:1.8;">
+    More entries coming. The road keeps moving.
   </div>
-
 </div>
-
 <footer>
-  <div class="footer-inner">
-    <div>
-      <p class="footer-name">Brooks Groves</p>
-      <p class="footer-tagline">westin.brooksgroves.com · Private</p>
-    </div>
-    <a href="https://brooksgroves.com" class="footer-link">brooksgroves.com ↗</a>
-  </div>
+  <p class="footer-name">Brooks Groves</p>
+  <p class="footer-sub">journal.brooksgroves.com · Private</p>
 </footer>
 </body>
 </html>
