@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volcanology — Learning — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --lava:#c0392b; --magma:#e67e22; --obsidian:#2c2c2c;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--lava) 0%,var(--magma) 50%,var(--gold) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
+
+    .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--rust); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--lava); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+    .page-stats { display:flex; gap:2rem; margin-top:1.5rem; flex-wrap:wrap; }
+    .page-stat-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--lava); }
+    .page-stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
+
+    .progress-wrap { background:var(--cream); border:1px solid var(--mist); padding:1.25rem 1.5rem; margin-top:1.5rem; }
+    .progress-bar-track { height:6px; background:var(--mist); border-radius:3px; margin:0.75rem 0 0.4rem; }
+    .progress-bar-fill { height:6px; background:var(--lava); border-radius:3px; transition:width 0.4s ease; width:0%; }
+    .progress-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); }
+
+    .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .phase-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1.25rem; display:flex; justify-content:space-between; }
+    .phase-label:first-child { margin-top:0; }
+    .phase-name { color:var(--lava); }
+
+    .lesson { border:1px solid var(--mist); margin-bottom:0.75rem; }
+    .lesson-header { padding:1.1rem 1.25rem; cursor:pointer; display:grid; grid-template-columns:2.5rem 1fr auto; gap:0.75rem; align-items:start; transition:background 0.15s; }
+    .lesson-header:hover { background:var(--cream); }
+    .lesson-num { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--stone); padding-top:0.1rem; }
+    .lesson-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.3; }
+    .lesson-sub { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; font-family:'Libre Baskerville',serif; font-style:italic; }
+    .lesson-time { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); text-align:right; white-space:nowrap; padding-top:0.2rem; }
+    .lesson-expand { display:none; padding:1.25rem 1.5rem; border-top:1px solid var(--mist); background:var(--cream); }
+    .lesson.open .lesson-expand { display:block; }
+    .lesson.open .lesson-header { background:var(--cream); }
+    .lesson.done .lesson-num { color:var(--sage); }
+    .lesson.done .lesson-num::after { content:' ✓'; }
+
+    .expand-section { margin-bottom:1.25rem; }
+    .expand-section:last-child { margin-bottom:0; }
+    .expand-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--lava); margin-bottom:0.5rem; }
+    .expand-body { font-size:0.88rem; line-height:1.75; color:var(--stone); }
+    .expand-body p { margin-bottom:0.6rem; }
+    .expand-body p:last-child { margin-bottom:0; }
+
+    .cocktail-box { background:var(--obsidian); color:#e8e4d8; padding:1rem 1.25rem; margin-top:1rem; border-left:3px solid var(--magma); }
+    .cocktail-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--magma); margin-bottom:0.4rem; }
+    .cocktail-line { font-size:0.88rem; font-style:italic; line-height:1.7; }
+
+    .vocab-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .vocab-grid { grid-template-columns:1fr; } }
+    .vocab-item { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    .vocab-item strong { color:var(--ink); font-weight:700; }
+
+    /* HAWAII CALLOUT */
+    .hawaii-box { background:var(--cream); border-left:3px solid var(--gold); padding:1rem 1.25rem; margin-top:1rem; }
+    .hawaii-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.4rem; }
+    .hawaii-text { font-size:0.85rem; line-height:1.7; color:var(--stone); }
+
+    .resources { border:1px solid var(--mist); padding:1.75rem; margin-top:3rem; }
+    .resources-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:var(--lava); }
+    .resource-list { display:flex; flex-direction:column; gap:0.6rem; }
+    .resource-item { font-size:0.85rem; color:var(--stone); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:baseline; }
+    .resource-item a { color:var(--rust); text-decoration:underline; text-underline-offset:3px; font-size:0.75rem; font-family:'DM Mono',monospace; }
+
+    .mark-done-btn { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--mist); background:none; color:var(--stone); padding:0.3rem 0.75rem; cursor:pointer; margin-top:1rem; transition:all 0.15s; }
+    .mark-done-btn:hover { border-color:var(--sage); color:var(--sage); }
+    .mark-done-btn.done { border-color:var(--sage); color:var(--sage); }
+
+    .qa-widget { border:2px solid var(--ink); margin-top:3rem; }
+    .qa-header { background:var(--obsidian); color:var(--white); padding:1rem 1.5rem; display:flex; align-items:center; gap:0.75rem; }
+    .qa-header-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; }
+    .qa-header-sub { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:#888; }
+    .qa-body { padding:1.5rem; }
+    .qa-input-row { display:flex; gap:0.75rem; margin-bottom:1rem; }
+    .qa-input { flex:1; border:1px solid var(--mist); background:var(--cream); padding:0.7rem 1rem; font-family:'Libre Baskerville',Georgia,serif; font-size:0.9rem; color:var(--ink); outline:none; resize:none; line-height:1.5; }
+    .qa-input:focus { border-color:var(--gold); }
+    .qa-btn { background:var(--obsidian); color:var(--white); border:none; padding:0.7rem 1.25rem; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; cursor:pointer; transition:background 0.2s; white-space:nowrap; align-self:flex-end; }
+    .qa-btn:hover { background:var(--lava); }
+    .qa-btn:disabled { background:var(--mist); cursor:not-allowed; }
+    .qa-history { display:flex; flex-direction:column; gap:1.25rem; margin-bottom:1rem; max-height:400px; overflow-y:auto; }
+    .qa-exchange { border-left:3px solid var(--mist); padding-left:1rem; }
+    .qa-exchange-q { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--stone); margin-bottom:0.4rem; letter-spacing:0.06em; }
+    .qa-exchange-a { font-size:0.88rem; line-height:1.75; color:var(--ink); }
+    .qa-context { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--mist); margin-bottom:0.75rem; }
+    .qa-spinner { display:inline-block; width:12px; height:12px; border:2px solid var(--mist); border-top-color:var(--gold); border-radius:50%; animation:spin 0.8s linear infinite; margin-right:0.5rem; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/learning/">Learning</a>
+      <a href="/">Home</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/learning/">Learning</a></p>
+  <h1 class="page-title">Volcanology</h1>
+  <p class="page-sub">How the planet bleeds. From mantle convection to lava tube systems, eruption styles to volcanic hazards — 16 lessons across 4 phases. Built before a birthday trip to Kilauea in May 2026.</p>
+  <div class="page-stats">
+    <div><div class="page-stat-val">16</div><div class="page-stat-lbl">Lessons</div></div>
+    <div><div class="page-stat-val">4</div><div class="page-stat-lbl">Phases</div></div>
+    <div><div class="page-stat-val">~15 hrs</div><div class="page-stat-lbl">Estimated</div></div>
+    <div><div class="page-stat-val">May 15</div><div class="page-stat-lbl">Hawaii Trip</div></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label" id="progress-label">0 of 16 lessons complete — 0%</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-fill"></div></div>
+    <div class="progress-label" style="color:var(--mist);">Progress saved in your browser · <a href="#" onclick="if(confirm('Reset all progress?')){localStorage.removeItem('vol_progress');renderProgress();}return false;" style="color:var(--mist);text-decoration:underline;">Reset</a></div>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <!-- PHASE 1 -->
+  <div class="phase-label"><span>Phase 1 — The Engine Below</span><span class="phase-name">4 lessons · ~3–4 hrs</span></div>
+
+  <div class="lesson" id="l1">
+    <div class="lesson-header" onclick="toggle('l1')">
+      <div class="lesson-num">01</div>
+      <div><div class="lesson-title">Plate Tectonics and Volcanic Origins</div><div class="lesson-sub">Why volcanoes exist where they do</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Earth's crust is divided into tectonic plates floating on the semi-molten asthenosphere. Volcanoes form in three tectonic settings: divergent boundaries (plates pulling apart, like Iceland and the Mid-Atlantic Ridge), convergent boundaries (one plate subducting beneath another, like the Cascades and the Andes), and hotspots (mantle plumes punching through the middle of a plate, like Hawaii).</p>
+          <p>Each setting produces chemically distinct magma with different eruption styles. Subduction volcanoes tend to be explosive because the descending oceanic crust carries water, which lowers the melting point of rock and generates silica-rich, gas-charged magma. Hotspot and rift volcanoes tend to produce fluid basaltic lava with less explosive character — which is why you can stand near a Kilauea eruption and live.</p>
+          <p>The Pacific Ring of Fire — running from the Andes through Central America, the Cascades, Alaska, Japan, and the Philippines — marks the subduction zones where oceanic plates dive beneath continental ones. About 75% of the world's active volcanoes sit on this ring.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Tectonic plate</strong> — a rigid section of Earth's lithosphere in slow motion</div>
+          <div class="vocab-item"><strong>Asthenosphere</strong> — the semi-molten upper mantle the plates ride on</div>
+          <div class="vocab-item"><strong>Subduction zone</strong> — where one plate dives beneath another, generating explosive volcanism</div>
+          <div class="vocab-item"><strong>Hotspot</strong> — a mantle plume fixed in position while a plate moves over it; creates island chains</div>
+          <div class="vocab-item"><strong>Divergent boundary</strong> — plates pulling apart; produces basaltic, generally non-explosive eruptions</div>
+          <div class="vocab-item"><strong>Ring of Fire</strong> — the belt of subduction-zone volcanoes encircling the Pacific</div>
+        </div>
+      </div>
+      <div class="hawaii-box">
+        <div class="hawaii-label">Hawaii Connection</div>
+        <div class="hawaii-text">The Hawaiian Islands formed as the Pacific Plate moved northwest over a stationary mantle hotspot. Kilauea sits over the hotspot now — that's why it erupts almost continuously. In a few hundred thousand years, the Big Island will drift away and a new island (Loihi Seamount, already building on the seafloor 22 miles southeast) will take its place.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Hawaii exists because the Pacific Plate is slowly crawling northwest over a fixed hot spot in the mantle. Kilauea is gentle because hotspot magma is low in silica and gas — it flows instead of explodes. The Cascades are the opposite: subducted oceanic crust releases water that makes magma explosive. That's why Mount St. Helens blew sideways and Kilauea just... oozes."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l1" onclick="markDone('l1')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l2">
+    <div class="lesson-header" onclick="toggle('l2')">
+      <div class="lesson-num">02</div>
+      <div><div class="lesson-title">Magma: Composition, Temperature, Viscosity</div><div class="lesson-sub">Why chemistry determines eruption style</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Magma is molten rock plus dissolved gases, and its composition determines almost everything about how a volcano behaves. The key variable is silica (SiO2) content. High-silica (rhyolitic) magma is thick and viscous, traps gas, and erupts explosively. Low-silica (basaltic) magma is fluid, lets gas escape gradually, and produces lava flows. In between are andesite and dacite — the composition of most Cascade volcanoes.</p>
+          <p>Temperature matters too. Basaltic magma erupts at 1000–1200°C. Rhyolitic magma at 700–850°C. Hotter magma is more fluid. Dissolved water and CO2 lower the melting point of rock — which is why subducted oceanic crust (wet from the ocean floor) melts when it sinks, feeding the Ring of Fire.</p>
+          <p>Viscosity is the single most important factor in volcanic hazard assessment. A low-viscosity basaltic lava flow moves at walking pace. A high-viscosity rhyolitic dome can fail catastrophically without warning.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Basalt</strong> — low-silica (~50% SiO2), high-temp, fluid; Hawaii, Iceland, ocean floors</div>
+          <div class="vocab-item"><strong>Rhyolite</strong> — high-silica (~70% SiO2), viscous, explosive; Yellowstone, Taupo</div>
+          <div class="vocab-item"><strong>Andesite</strong> — intermediate; the dominant rock of the Cascades and Andes</div>
+          <div class="vocab-item"><strong>Viscosity</strong> — resistance to flow; controls whether magma erupts explosively or effusively</div>
+          <div class="vocab-item"><strong>Volatile</strong> — dissolved gas (H2O, CO2, SO2) in magma; exsolves as pressure drops</div>
+          <div class="vocab-item"><strong>Effusive</strong> — flowing lava eruption (low viscosity); contrasts with explosive eruption</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Silica content is destiny for a volcano. Basalt is like hot syrup — gases bubble out gently, lava flows. Rhyolite is like cold peanut butter — gases can't escape, pressure builds, and when it finally goes it's catastrophic. Kilauea is basically basalt soup. Yellowstone is sitting on a rhyolite supervolcano."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l2" onclick="markDone('l2')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l3">
+    <div class="lesson-header" onclick="toggle('l3')">
+      <div class="lesson-num">03</div>
+      <div><div class="lesson-title">How Magma Forms and Rises</div><div class="lesson-sub">Partial melting, magma chambers, and the path to the surface</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Rock melts in three ways: adding heat (rare), reducing pressure (decompression melting — the main mechanism at rifts and hotspots), or adding water (flux melting — the mechanism at subduction zones). The mantle is mostly solid; it takes specific conditions to push rock past its melting point.</p>
+          <p>Once formed, magma is less dense than surrounding rock and rises buoyantly, pooling in magma chambers — reservoirs of partially molten rock and crystals, typically 3–10 km below the surface. Magma chambers are not lakes of liquid fire. They're more like crystal mush with some liquid pockets, and they can persist for thousands to millions of years.</p>
+          <p>From the chamber, magma rises through conduits and dikes (vertical sheet intrusions) toward the surface. Seismographs can track this movement — earthquake swarms and harmonic tremor are the telltale signs that magma is on the move, which is why HVO monitors seismicity so closely at Kilauea.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Decompression melting</strong> — rock melts as pressure drops when it rises; drives rift and hotspot volcanism</div>
+          <div class="vocab-item"><strong>Flux melting</strong> — water from subducted crust lowers melting point; drives arc volcanism</div>
+          <div class="vocab-item"><strong>Magma chamber</strong> — subsurface reservoir; mostly crystal mush, not liquid</div>
+          <div class="vocab-item"><strong>Dike</strong> — a vertical sheet of magma intruded into surrounding rock</div>
+          <div class="vocab-item"><strong>Harmonic tremor</strong> — continuous low-frequency seismicity caused by fluid movement in conduits</div>
+          <div class="vocab-item"><strong>Crystal fractionation</strong> — as magma cools, crystals form and sink, changing the remaining melt composition</div>
+        </div>
+      </div>
+      <div class="hawaii-box">
+        <div class="hawaii-label">Hawaii Connection</div>
+        <div class="hawaii-text">Kilauea has a shallow summit magma reservoir (Halemaumau) and a series of rift zones extending east and southwest. The 2018 eruption in Leilani Estates happened when magma drained from the summit and travelled 40km down the East Rift Zone, erupting through new fissures in a residential neighborhood. Monitoring the rift zones is as important as monitoring the summit.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"A magma chamber isn't a lake of lava — it's more like a giant sponge of crystals with liquid squeezed between them. When volcanologists talk about a magma chamber 'recharging,' they mean fresh hot magma from deep in the mantle is pushing into the bottom of that sponge. You can feel it happen — the ground swells and small earthquakes start clustering below the volcano."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l3" onclick="markDone('l3')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l4">
+    <div class="lesson-header" onclick="toggle('l4')">
+      <div class="lesson-num">04</div>
+      <div><div class="lesson-title">Volcano Morphology — Shape as History</div><div class="lesson-sub">What a volcano's form tells you about its past</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Volcano shape records eruption history. Shield volcanoes (like Kilauea and Mauna Loa) form from thousands of low-viscosity basaltic flows that spread wide and thin — broad, gentle-sloped, resembling a warrior's shield lying flat. Stratovolcanoes (like Rainier, Fuji, St. Helens) alternate between explosive pyroclastic deposits and lava flows, building steep, symmetrical cones. Cinder cones are small, steep, and short-lived — built from a single eruptive episode of scoria and ash.</p>
+          <p>Calderas form when a magma chamber empties rapidly and the overlying rock collapses. Halemaumau Crater at Kilauea's summit is a caldera within a caldera. Crater Lake in Oregon sits in a caldera formed by the catastrophic collapse of Mount Mazama 7,700 years ago — an eruption 40 times larger than St. Helens 1980 that the Klamath people witnessed and recorded in oral tradition.</p>
+          <p>Lava domes — masses of viscous lava extruded slowly — are some of the most dangerous volcanic features. They can collapse without warning, generating pyroclastic flows. The dome that rebuilt inside St. Helens after 1980 is a textbook example.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Shield volcano</strong> — broad, gentle slopes from fluid basaltic flows; Hawaii, Iceland</div>
+          <div class="vocab-item"><strong>Stratovolcano</strong> — steep cone from alternating lava and pyroclastics; Cascades, Andes, Japan</div>
+          <div class="vocab-item"><strong>Caldera</strong> — summit collapse depression after magma chamber drainage</div>
+          <div class="vocab-item"><strong>Cinder cone</strong> — small steep cone from a single scoria-rich eruptive episode</div>
+          <div class="vocab-item"><strong>Lava dome</strong> — viscous plug extruded into a vent; collapse risk generates pyroclastic flows</div>
+          <div class="vocab-item"><strong>Maar</strong> — shallow explosion crater from magma-water interaction; often fills with a lake</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"You can read a volcano's personality from its shape. Kilauea is flat and wide — it oozes. Rainier is steep and symmetrical — it explodes. Crater Lake is a hole in the ground — it used to be a stratovolcano that erupted so violently it collapsed into itself. The Klamath tribes saw that happen 7,700 years ago and described it as a battle between two gods."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l4" onclick="markDone('l4')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-label"><span>Phase 2 — Eruption Types and Products</span><span class="phase-name">4 lessons · ~4 hrs</span></div>
+
+  <div class="lesson" id="l5">
+    <div class="lesson-header" onclick="toggle('l5')">
+      <div class="lesson-num">05</div>
+      <div><div class="lesson-title">Effusive Eruptions — Lava Flows and Tube Systems</div><div class="lesson-sub">How basaltic lava travels and where it goes</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Effusive eruptions produce lava flows rather than explosive columns. Basaltic lava erupts at 1100–1200°C and can flow at up to 35 km/h on steep slopes, though most flows move much slower. Two main textures: pahoehoe (smooth, ropy, forms when lava moves slowly and the surface chills into a flexible skin) and a'a (rough, clinkery, forms when lava moves fast and the surface breaks up).</p>
+          <p>Lava tubes are the key to how lava travels long distances. When a pahoehoe flow's surface solidifies into an insulating crust, lava continues moving through the interior — a tube. Tube-fed flows can travel 50–100 km from the vent while remaining hot enough to flow. Kilauea's flows reached the ocean through tube systems during the 1983–2018 Pu'u O'o eruption. Walking through a drained lava tube (like Thurston Lava Tube at Hawaii Volcanoes National Park) is walking through the plumbing of a former eruption.</p>
+          <p>Where lava meets the ocean, a violent interaction produces laze — a corrosive steam plume containing hydrochloric acid and tiny volcanic glass particles. Not something to stand in.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Pahoehoe</strong> — smooth, ropy lava formed from slow-moving, crusted-over flow</div>
+          <div class="vocab-item"><strong>A'a</strong> — rough, clinkery lava from fast-moving, churning flow</div>
+          <div class="vocab-item"><strong>Lava tube</strong> — tunnel formed when lava flow surface solidifies while interior drains</div>
+          <div class="vocab-item"><strong>Laze</strong> — toxic steam plume from lava-ocean interaction; contains HCl and volcanic glass</div>
+          <div class="vocab-item"><strong>Fissure eruption</strong> — lava erupts from a linear crack rather than a central vent</div>
+          <div class="vocab-item"><strong>Lava delta</strong> — flat bench where lava enters the ocean and builds new land; geologically unstable</div>
+        </div>
+      </div>
+      <div class="hawaii-box">
+        <div class="hawaii-label">Hawaii Connection</div>
+        <div class="hawaii-text">Thurston Lava Tube (Nahuku) at Hawaii Volcanoes National Park is one of the most accessible lava tubes in the world — a 500-year-old tube from a Kilauea eruption, 10 meters wide and 500 meters long. The 2018 eruption added 3.5 square kilometers of new land where lava entered the ocean at Kapoho Bay, burying a beloved snorkeling area under 24 meters of lava.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Lava tubes are why Hawaiian lava can travel 50 miles without cooling down. The outside solidifies into an insulating shell, and the inside stays at over 1000 degrees. Thurston Lava Tube at the park is literally the hallway of an old eruption. When lava hits the ocean it creates laze — a steam cloud with hydrochloric acid in it. Beautiful from a distance, dangerous up close."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l5" onclick="markDone('l5')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l6">
+    <div class="lesson-header" onclick="toggle('l6')">
+      <div class="lesson-num">06</div>
+      <div><div class="lesson-title">Explosive Eruptions — Pyroclastics, Columns, and Flows</div><div class="lesson-sub">When pressure wins</div></div>
+      <div class="lesson-time">~55 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Explosive eruptions happen when dissolved gases in viscous magma can't escape gradually — pressure builds until the magma fragments violently. The eruption column can reach 30–45 km into the stratosphere, injecting SO2 that forms sulfuric acid aerosols and can cool global temperatures for years. The 1991 Pinatubo eruption lowered global temperature by 0.5°C for two years.</p>
+          <p>Pyroclastic density currents (PDCs) — also called pyroclastic flows — are the deadliest volcanic phenomenon. A mixture of hot gas and fragmented rock, they travel at 100–700 km/h at temperatures of 300–800°C. They hug the ground, flow around terrain, and are completely unsurvivable. Pompeii and Herculaneum were destroyed by PDCs from Vesuvius in 79 AD. The 1902 eruption of Mont Pelee killed all but one of the 30,000 residents of Saint-Pierre in minutes.</p>
+          <p>The Volcanic Explosivity Index (VEI) is a logarithmic scale from 0 to 8. Kilauea is typically VEI 0–1. St. Helens 1980 was VEI 5. Pinatubo 1991 was VEI 6. Tambora 1815 was VEI 7 and caused the "Year Without a Summer." A VEI 8 supervolcano eruption hasn't occurred in 26,700 years.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Pyroclastic density current</strong> — fast-moving avalanche of hot gas and rock; unsurvivable</div>
+          <div class="vocab-item"><strong>Tephra</strong> — all solid material ejected in an eruption (ash, lapilli, bombs)</div>
+          <div class="vocab-item"><strong>Volcanic ash</strong> — tiny glass and rock fragments under 2mm; can collapse roofs, destroy engines</div>
+          <div class="vocab-item"><strong>VEI</strong> — Volcanic Explosivity Index; logarithmic scale 0–8</div>
+          <div class="vocab-item"><strong>Plinian eruption</strong> — tall sustained eruption column; named for Pliny the Younger's account of Vesuvius 79 AD</div>
+          <div class="vocab-item"><strong>Ignimbrite</strong> — rock formed from cooled pyroclastic density current deposits</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Pyroclastic flows are the reason no one survived near Pompeii. They're not slow-moving lava — they're avalanches of superheated gas and rock traveling at 700 kilometers an hour. You can't outrun them, you can't shelter from them. The only safe place is somewhere they can't reach. That's the whole point of evacuation zones."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l6" onclick="markDone('l6')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l7">
+    <div class="lesson-header" onclick="toggle('l7')">
+      <div class="lesson-num">07</div>
+      <div><div class="lesson-title">Volcanic Gases and Their Effects</div><div class="lesson-sub">SO2, CO2, vog, and the chemistry of the air around a volcano</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Volcanoes emit water vapor (the majority), CO2, SO2, H2S, HCl, and HF. Most are harmless at low concentrations but lethal at high ones. CO2 is heavier than air and can pool in low-lying areas — in 1986, CO2 released from Lake Nyos (a volcanic crater lake in Cameroon) suffocated 1,746 people and 3,500 livestock overnight.</p>
+          <p>SO2 reacts with water and oxygen to form sulfuric acid aerosols. In Hawaii this creates "vog" — volcanic smog — that blankets the downwind side of the island, particularly affecting people with respiratory conditions. During high-emission periods, vog from Kilauea is visible from space and affects air quality in Kona and Waimea.</p>
+          <p>Gas monitoring is one of the most powerful eruption forecasting tools. An increase in SO2 emission rate signals that fresh, gas-rich magma is ascending. HVO monitors SO2 continuously — the spike from hundreds to thousands of tonnes per day in 2018 was one of the key indicators of the major eruption to come.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Vog</strong> — volcanic smog; SO2 + water + sunlight = sulfuric acid aerosol haze</div>
+          <div class="vocab-item"><strong>SO2</strong> — sulfur dioxide; key eruption indicator gas; forms acid rain and aerosols</div>
+          <div class="vocab-item"><strong>CO2</strong> — carbon dioxide; heavier than air; can asphyxiate in low-lying areas</div>
+          <div class="vocab-item"><strong>Limnic eruption</strong> — sudden CO2 degassing from a volcanic crater lake; rare but lethal</div>
+          <div class="vocab-item"><strong>COSPEC / DOAS</strong> — instruments for measuring SO2 flux from volcanic plumes</div>
+          <div class="vocab-item"><strong>Laze</strong> — hydrochloric acid + glass particles; produced when lava enters ocean</div>
+        </div>
+      </div>
+      <div class="hawaii-box">
+        <div class="hawaii-label">Hawaii Connection</div>
+        <div class="hawaii-text">Vog is a chronic issue on the Big Island, particularly on the Kona coast downwind of Kilauea. During high-emission periods, vog causes respiratory problems, headaches, and eye irritation. The Hawaii Department of Health issues vog advisories and air quality alerts. When visiting Hawaii Volcanoes National Park, SO2 levels at the summit can be dangerously high when winds are light — HVO posts real-time air quality data.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Gas monitoring is how volcanologists predict eruptions. When SO2 emissions spike — from hundreds to thousands of tonnes a day — it means fresh magma is rising and degassing. It's like the volcano's exhale getting faster and deeper before it does something dramatic. In 2018, HVO tracked the SO2 spike for weeks before Kilauea's rift zone eruption destroyed 700 homes."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l7" onclick="markDone('l7')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l8">
+    <div class="lesson-header" onclick="toggle('l8')">
+      <div class="lesson-num">08</div>
+      <div><div class="lesson-title">Lahars, Tsunamis, and Secondary Hazards</div><div class="lesson-sub">The dangers that follow an eruption</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Lahars are volcanic mudflows — mixtures of water and volcanic debris that behave like wet concrete. They're triggered by eruptions melting ice and snow, heavy rainfall on loose ash deposits, or crater lake breakouts. They travel down river valleys at 20–40 km/h and can travel hundreds of kilometers from the volcano long after an eruption has ended. The 1985 Nevado del Ruiz eruption killed 23,000 people — not from lava, but from lahars that buried the town of Armero 74km from the summit.</p>
+          <p>Rainier is arguably the most lahar-dangerous volcano in the US. Its ice and glacier cover exceeds that of all other Cascade volcanoes combined. A major eruption or even a large collapse without eruption could send lahars down the Puyallup, Carbon, and White River valleys — directly toward the greater Tacoma and Auburn metro areas where hundreds of thousands of people live. This is not a distant threat. The lahar hazard maps are available from USGS.</p>
+          <p>Volcanic tsunamis are generated by flank collapses — when a volcano's destabilized outer flank slides into the ocean. The 1883 Krakatau flank collapse generated a tsunami that killed 36,000 people. Hawaiian volcanoes have the largest documented submarine landslides on Earth.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Lahar</strong> — volcanic mudflow; behaves like wet concrete; follows river valleys</div>
+          <div class="vocab-item"><strong>Jökulhlaup</strong> — glacial outburst flood triggered by subglacial eruption; Iceland-specific term</div>
+          <div class="vocab-item"><strong>Sector collapse</strong> — catastrophic flank failure; St. Helens 1980 was a sector collapse</div>
+          <div class="vocab-item"><strong>Volcanic tsunami</strong> — ocean wave from flank collapse, caldera collapse, or underwater eruption</div>
+          <div class="vocab-item"><strong>Ballistic</strong> — large rock fragments ejected by explosion; can travel several km from vent</div>
+          <div class="vocab-item"><strong>Volcanic winter</strong> — global cooling from stratospheric aerosols blocking sunlight</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The biggest volcanic hazard for Tacoma and Seattle isn't lava — it's lahars from Rainier. The mountain is covered in glaciers. If it erupts, or even just destabilizes, a wall of wet concrete moves down the river valleys at highway speed. The USGS lahar hazard maps show it reaching populated areas within an hour. That's why they installed lahar warning sirens in the Puyallup valley."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l8" onclick="markDone('l8')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-label"><span>Phase 3 — Monitoring, Forecasting, and Famous Eruptions</span><span class="phase-name">4 lessons · ~4 hrs</span></div>
+
+  <div class="lesson" id="l9">
+    <div class="lesson-header" onclick="toggle('l9')">
+      <div class="lesson-num">09</div>
+      <div><div class="lesson-title">Volcano Monitoring — How We Watch</div><div class="lesson-sub">Seismology, geodesy, gas monitoring, and remote sensing</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Modern volcano monitoring uses four main tools. Seismology tracks earthquakes caused by magma movement, rock fracturing, and fluid flow through conduits. Harmonic tremor — a continuous low-frequency vibration — is a reliable signal of magma or gas moving through narrow cracks. Earthquake swarm location and depth profiles reveal the path magma is taking.</p>
+          <p>Geodesy measures ground deformation. GPS networks, tiltmeters, and InSAR (satellite radar interferometry) track inflation and deflation of the volcano. When a magma chamber fills, the ground above inflates — sometimes visibly. Kilauea's summit deflated by meters during the 2018 eruption as magma drained toward the east rift zone.</p>
+          <p>Gas monitoring (SO2 flux, CO2/SO2 ratios) tracks degassing from rising magma. Webcam networks provide continuous visual monitoring. Satellite thermal imaging detects heat anomalies before eruptions. USGS Hawaiian Volcano Observatory (HVO) integrates all of these into a continuous real-time picture of Kilauea's activity — the data that feeds the PELE dashboard.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Harmonic tremor</strong> — rhythmic seismic signal from fluid moving through cracks</div>
+          <div class="vocab-item"><strong>InSAR</strong> — satellite radar that measures millimeter-scale ground deformation</div>
+          <div class="vocab-item"><strong>Tiltmeter</strong> — instrument measuring ground tilt from magma inflation/deflation</div>
+          <div class="vocab-item"><strong>Alert level</strong> — USGS scale: Normal, Advisory, Watch, Warning for volcanoes</div>
+          <div class="vocab-item"><strong>HVO</strong> — Hawaiian Volcano Observatory; monitors Kilauea and Mauna Loa</div>
+          <div class="vocab-item"><strong>VAAC</strong> — Volcanic Ash Advisory Centre; coordinates ash cloud warnings for aviation</div>
+        </div>
+      </div>
+      <div class="hawaii-box">
+        <div class="hawaii-label">Hawaii Connection</div>
+        <div class="hawaii-text">HVO operates one of the most sophisticated volcano monitoring networks in the world — over 60 seismometers, a GPS network, tiltmeters, webcams at key vents, continuous SO2 monitoring, and a lava lake camera at Halemaumau. All of this data is publicly available in near-real-time. The PELE dashboard at brooksgroves.com/PELE pulls from HVO's public data feeds.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Volcanologists can't predict eruptions the way meteorologists predict rain — but they can tell when a volcano is waking up. Ground swelling, earthquake swarms, SO2 spikes, harmonic tremor — each one is a signal. Kilauea in 2018 gave weeks of warning before the rift zone eruption. The people who ignored the warning and stayed lost their homes. The people who evacuated lost their homes but lived."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l9" onclick="markDone('l9')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l10">
+    <div class="lesson-header" onclick="toggle('l10')">
+      <div class="lesson-num">10</div>
+      <div><div class="lesson-title">Kilauea — The World's Most Studied Volcano</div><div class="lesson-sub">Geology, history, and the ongoing eruption</div></div>
+      <div class="lesson-time">~60 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Kilauea is a shield volcano on the southeastern flank of Mauna Loa, sitting directly over the Hawaiian hotspot. It is the most active volcano on Earth by almost any measure, and has been in near-continuous eruption since 1983. The current eruption episode (beginning December 23, 2024) is the 43rd episode of renewed activity since the 2018 collapse.</p>
+          <p>Kilauea's structure: a summit caldera containing Halemaumau crater (where the lava lake and current eruptions occur), a Southwest Rift Zone, and an East Rift Zone (where the 1983–2018 Pu'u O'o eruption occurred and where the 2018 disaster unfolded). The summit and rift zones are connected by a plumbing system that HVO monitors continuously.</p>
+          <p>The 2018 eruption was transformative. The summit collapsed dramatically over two months — Halemaumau widened from 0.8 km to 1.6 km and deepened by 500 meters as magma drained toward the lower East Rift Zone. Fissure 8 in Leilani Estates erupted for months, destroying 700 homes and burying Kapoho Bay. The collapse also triggered a magnitude 6.9 earthquake. Then, in late 2020, lava returned to the summit and the lava lake reformed — the eruption sequence that has continued into 2025–26.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Halemaumau</strong> — the crater within Kilauea's summit caldera; current eruption site</div>
+          <div class="vocab-item"><strong>East Rift Zone</strong> — linear volcanic feature extending 125km east; site of 2018 eruption</div>
+          <div class="vocab-item"><strong>Pu'u O'o</strong> — cone that erupted 1983–2018; longest rift zone eruption in Kilauea history</div>
+          <div class="vocab-item"><strong>Summit collapse</strong> — 2018 event; caldera widened and deepened by 500m over 2 months</div>
+          <div class="vocab-item"><strong>Fissure 8</strong> — 2018 eruption vent in Leilani Estates; destroyed 700 homes</div>
+          <div class="vocab-item"><strong>Episode</strong> — HVO term for a distinct eruptive phase; current is Episode 43+ (began Dec 2024)</div>
+        </div>
+      </div>
+      <div class="hawaii-box">
+        <div class="hawaii-label">Hawaii Connection — What You'll See in May 2026</div>
+        <div class="hawaii-text">Hawaii Volcanoes National Park offers views of Kilauea's ongoing eruption from multiple overlooks. Kilauea Overlook and Uekahuna overlook the summit caldera and Halemaumau. The Chain of Craters Road descends the East Rift Zone to sea level, passing historic lava flows. After dark, glow from the active lava lake is visible for miles. Check HVO's eruption status page before visiting — activity can change daily.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Kilauea has been erupting almost continuously since 1983. The 2018 eruption was different — the summit collapsed so dramatically it triggered magnitude 6.9 earthquakes, and lava came up through someone's backyard in Leilani Estates and didn't stop for months. 700 homes gone. A bay filled in. Then in 2020 the lava lake came back. It's been erupting again ever since. That's what we're going to go see."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l10" onclick="markDone('l10')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l11">
+    <div class="lesson-header" onclick="toggle('l11')">
+      <div class="lesson-num">11</div>
+      <div><div class="lesson-title">The Cascade Volcanic Arc</div><div class="lesson-sub">Rainier, St. Helens, Hood, Baker — our backyard volcanoes</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The Cascade Volcanic Arc runs from Lassen Peak in northern California to Mount Garibaldi in British Columbia — 18 major volcanic centers formed by subduction of the Juan de Fuca Plate beneath North America. All are stratovolcanoes capable of explosive eruptions, and most have erupted within the past 4,000 years. Several are actively monitored for signs of unrest.</p>
+          <p>Mount St. Helens (1980): The most well-documented volcanic eruption in US history. A magnitude 5.1 earthquake triggered a massive sector collapse — the north flank slid away in seconds, depressurizing the magma chamber and triggering a lateral blast that flattened 600 km2 of forest in three minutes. The eruption column reached 24km. 57 people died. Volcanology was transformed by what scientists learned. St. Helens has been rebuilding its dome ever since and had a significant eruptive episode in 2004–2008.</p>
+          <p>Mount Rainier is the volcano that keeps emergency managers up at night. It's the most glaciated peak in the lower 48, sitting less than 100km from Seattle and Tacoma. A major lahar could reach populated areas in 30–60 minutes. USGS lahar hazard maps are sobering. The Rainier Snowpack dashboard at bdgroves.github.io/rainier-snowpack tracks the snowpack that could fuel those lahars.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Juan de Fuca Plate</strong> — small oceanic plate subducting beneath the Pacific Northwest</div>
+          <div class="vocab-item"><strong>Cascadia Subduction Zone</strong> — megathrust fault off the PNW coast; source of both earthquakes and arc volcanism</div>
+          <div class="vocab-item"><strong>Lateral blast</strong> — horizontally directed explosive eruption; St. Helens 1980</div>
+          <div class="vocab-item"><strong>Dome-building eruption</strong> — slow extrusion of viscous lava; collapse risk; St. Helens 2004–08</div>
+          <div class="vocab-item"><strong>Fumarole</strong> — volcanic vent emitting steam and gas; sign of hydrothermal activity</div>
+          <div class="vocab-item"><strong>Hydrothermal system</strong> — groundwater heated by volcanic activity; weakens volcano structure over time</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"St. Helens 1980 didn't erupt upward first — the whole north flank slid off like a landslide, and the depressurized magma chamber exploded sideways. The lateral blast traveled at 480 km/h and flattened 600 square kilometers of forest in three minutes. David Johnston, the USGS volcanologist who radioed 'Vancouver, Vancouver, this is it,' was 10km from the summit. It wasn't far enough."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l11" onclick="markDone('l11')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l12">
+    <div class="lesson-header" onclick="toggle('l12')">
+      <div class="lesson-num">12</div>
+      <div><div class="lesson-title">Supervolcanoes and Mass Extinction Events</div><div class="lesson-sub">Yellowstone, Toba, and the eruptions that changed everything</div></div>
+      <div class="lesson-time">~55 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>A supervolcano is informally defined as a volcano capable of a VEI 8 eruption — ejecting more than 1,000 km3 of material. These events are geologically rare but civilization-ending in scale. The Yellowstone Caldera has erupted three times in the past 2.1 million years (VEI 8, 8, and 7). The last was 640,000 years ago. Yellowstone is not "overdue" — that's not how volcanic systems work — but it is actively monitored by USGS and is genuinely restless, with frequent earthquake swarms and ground deformation.</p>
+          <p>The Toba eruption (~74,000 years ago, Sumatra) was a VEI 8 that may have caused a global volcanic winter lasting years, reducing global temperatures by 3–5°C. Some genetic evidence suggests the human population may have bottlenecked to as few as 10,000 individuals around this time, though this remains debated.</p>
+          <p>Flood basalt provinces — like the Deccan Traps (India) and Siberian Traps — are not traditional eruptions but sustained volcanic episodes lasting millions of years, releasing enormous volumes of CO2 and SO2. The Deccan Traps erupted around the same time as the Chicxulub impact (66 Ma) and may have contributed to the end-Cretaceous mass extinction. The Siberian Traps are linked to the end-Permian mass extinction — the largest in Earth history, killing ~96% of marine species.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Supervolcano</strong> — informal term for a VEI 8 capable system; Yellowstone, Taupo, Toba</div>
+          <div class="vocab-item"><strong>Flood basalt</strong> — vast outpouring of low-viscosity basalt over millions of years</div>
+          <div class="vocab-item"><strong>Toba catastrophe theory</strong> — hypothesis that the Toba eruption nearly extinguished Homo sapiens</div>
+          <div class="vocab-item"><strong>Ignimbrite</strong> — welded rock from pyroclastic flows; supervolcano eruptions produce it by the hundreds of km3</div>
+          <div class="vocab-item"><strong>Resurgent caldera</strong> — caldera that re-domes after eruption due to continued magma intrusion; Yellowstone</div>
+          <div class="vocab-item"><strong>VEI 8</strong> — largest eruption category; >1,000 km3 ejected; last occurred 26,700 years ago</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Yellowstone has erupted three times as a supervolcano. The last time, 640,000 years ago, it deposited ash across half of North America. It's not going to erupt tomorrow — volcanologists would see years of warning signs first — but it's genuinely active. The ground there rises and falls by centimeters every year. The thermal features are powered by a magma system that's been simmering for millions of years."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l12" onclick="markDone('l12')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase-label"><span>Phase 4 — Volcanoes and Civilization</span><span class="phase-name">4 lessons · ~4 hrs</span></div>
+
+  <div class="lesson" id="l13">
+    <div class="lesson-header" onclick="toggle('l13')">
+      <div class="lesson-num">13</div>
+      <div><div class="lesson-title">Volcanoes and Human History</div><div class="lesson-sub">Pompeii, Tambora, Laki, and the eruptions that shaped civilization</div></div>
+      <div class="lesson-time">~55 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Vesuvius 79 AD buried Pompeii and Herculaneum under 4–6 meters of ash and pyroclastic surge deposits, preserving a snapshot of Roman life so complete that we know what people were eating when they died. Pliny the Younger's letters to Tacitus are the first scientific eyewitness account of a volcanic eruption — and the eruption style is still called "Plinian" today.</p>
+          <p>Tambora 1815 (VEI 7, Sumbawa, Indonesia) killed 71,000 directly and caused the "Year Without a Summer" in 1816 through global cooling. Crop failures across North America and Europe led to food riots, famine, and mass migration. It's the largest eruption in recorded human history. Mary Shelley, stuck indoors at Lake Geneva that summer, wrote Frankenstein.</p>
+          <p>The 1783 Laki fissure eruption in Iceland lasted 8 months, released 120 megatons of SO2, poisoned livestock across Iceland (killing 80% of sheep, triggering famine that killed 25% of Iceland's population), and caused a sulfuric acid haze across Europe that summer. Benjamin Franklin, in Paris as US ambassador, wrote the first scientific paper connecting unusual cold weather to the volcanic haze — one of the earliest examples of climate science.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Plinian eruption</strong> — sustained high column; named for Pliny the Younger's Vesuvius account</div>
+          <div class="vocab-item"><strong>Year Without a Summer</strong> — 1816 global cooling from Tambora 1815; "eighteen hundred and froze to death"</div>
+          <div class="vocab-item"><strong>Laki</strong> — 1783 Icelandic fissure eruption; 8 months; transformed European climate</div>
+          <div class="vocab-item"><strong>Tephra stratigraphy</strong> — reading volcanic ash layers in ice cores and lake sediments as a historical record</div>
+          <div class="vocab-item"><strong>Pliny the Younger</strong> — Roman author; wrote the first eyewitness account of a volcanic eruption (Vesuvius 79 AD)</div>
+          <div class="vocab-item"><strong>Volcanic winter</strong> — multi-year global cooling from stratospheric aerosols</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The 1815 Tambora eruption caused the 'Year Without a Summer' — 1816 had snow in June in New England, crop failures across Europe, famine, riots. Mary Shelley was stuck inside at Lake Geneva that summer and wrote Frankenstein. Benjamin Franklin had already figured out in 1784 that volcanoes could change climate, watching the Laki eruption's haze from Paris. Climate science is older than people think."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l13" onclick="markDone('l13')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l14">
+    <div class="lesson-header" onclick="toggle('l14')">
+      <div class="lesson-num">14</div>
+      <div><div class="lesson-title">Hawaiian Volcanism and Culture</div><div class="lesson-sub">Pele, ahupua'a, and what the land means to Native Hawaiians</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>In Native Hawaiian tradition, Pele is the goddess of volcanoes — creator of the islands, living in the fire of Halemaumau. The ongoing eruption at Kilauea's summit is not a geological event to be observed but an expression of the divine, and the land itself (aina) is living. Approaching volcanic features with reverence rather than as tourist attractions matters — and is the reason HVO and the National Park Service emphasize cultural sensitivity alongside hazard information.</p>
+          <p>The ahupua'a system divided Hawaiian land into wedge-shaped sections running from mountain summit to ocean, ensuring communities had access to all ecological zones. Volcanic soil (andisol, formed from weathered basalt) is extraordinarily fertile — some of the most productive agricultural land in the Hawaiian Islands sits on old lava fields. The integration of volcanic landscape into food systems and spiritual practice represents millennia of adaptation to living on an active volcano.</p>
+          <p>The 2018 eruption destroyed communities that had been living on land granted to Native Hawaiians by the state after the overthrow of the Hawaiian Kingdom. The intersection of volcanic hazard, land rights, and indigenous sovereignty is still actively contested on the Big Island — particularly around the proposed Thirty Meter Telescope on Mauna Kea, which many Native Hawaiians consider sacred.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Pele</strong> — Hawaiian goddess of volcanoes; associated with Halemaumau Crater</div>
+          <div class="vocab-item"><strong>Aina</strong> — land; in Hawaiian culture, a living entity with spiritual significance</div>
+          <div class="vocab-item"><strong>Ahupua'a</strong> — traditional Hawaiian land division from mountain to sea</div>
+          <div class="vocab-item"><strong>Andisol</strong> — highly fertile volcanic soil formed from weathered basalt ash</div>
+          <div class="vocab-item"><strong>Kipuka</strong> — island of older vegetation surrounded by newer lava flows; biodiversity hotspot</div>
+          <div class="vocab-item"><strong>Lava haze (laze)</strong> — steam and acid from lava-ocean interaction; culturally and physically hazardous</div>
+        </div>
+      </div>
+      <div class="hawaii-box">
+        <div class="hawaii-label">Hawaii Connection</div>
+        <div class="hawaii-text">When visiting Hawaii Volcanoes National Park, the park asks visitors to be aware that this is sacred land for Native Hawaiians. Do not remove rocks (it is illegal and considered deeply disrespectful). Stay on marked trails. The visitor center has excellent exhibits on Hawaiian cultural connections to the volcano. The name of the park's central caldera — Halemaumau, "House of the Maile Fern" — reflects millennia of human relationship with this place.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"For Native Hawaiians, Pele isn't a metaphor — she is the volcano. Halemaumau is her home. The 2018 eruption that destroyed those neighborhoods was understood by many Hawaiians as Pele reclaiming her land. The scientific explanation and the cultural explanation are describing the same event from different frameworks. The park asks you to engage with both."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l14" onclick="markDone('l14')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l15">
+    <div class="lesson-header" onclick="toggle('l15')">
+      <div class="lesson-num">15</div>
+      <div><div class="lesson-title">Volcanoes and Climate — Long-Term Connections</div><div class="lesson-sub">CO2, the carbon cycle, and Earth's thermostat</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Over geological timescales, volcanism is the primary source of CO2 in the atmosphere — outgassing from the mantle through mid-ocean ridges, hotspots, and arc volcanoes has maintained a habitable atmosphere for 4 billion years. The balance between volcanic CO2 input and silicate weathering (which draws CO2 back down through chemical reactions with rock) is Earth's long-term thermostat — the carbonate-silicate cycle.</p>
+          <p>On shorter timescales, large eruptions cool the climate by injecting SO2 into the stratosphere, where it forms sulfuric acid aerosols that reflect sunlight. This effect lasts 1–3 years. Pinatubo 1991 cooled Earth by 0.5°C for two years. The 1815 Tambora eruption caused 3 years of cooling. Ice cores from Greenland and Antarctica record every major eruption of the past 800,000 years as sulfate spikes — a global archive of volcanic history.</p>
+          <p>Current volcanic CO2 emissions are about 200–300 million tonnes per year — roughly 1% of human emissions (37 billion tonnes/year). The idea that "volcanoes emit more CO2 than humans" is not supported by data. Human emissions are 100x greater than all volcanic activity combined.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Carbonate-silicate cycle</strong> — Earth's long-term CO2 thermostat; balances volcanic outgassing with weathering</div>
+          <div class="vocab-item"><strong>Stratospheric aerosol</strong> — SO2-derived sulfate particles that reflect sunlight; cause short-term cooling</div>
+          <div class="vocab-item"><strong>Ice core record</strong> — sulfate layers in ice record every major eruption; global volcanic archive</div>
+          <div class="vocab-item"><strong>Silicate weathering</strong> — CO2 reacts with silicate rocks, drawing it from the atmosphere over millennia</div>
+          <div class="vocab-item"><strong>Degassing</strong> — volcanic release of dissolved gases from magma</div>
+          <div class="vocab-item"><strong>Radiative forcing</strong> — change in energy balance; volcanic aerosols cause negative forcing (cooling)</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"You've probably heard that volcanoes emit more CO2 than humans — that's wrong by a factor of 100. All volcanic activity combined emits about 200 million tonnes a year. Humans emit 37 billion. But volcanically, it's the sulfur that matters on short timescales — Pinatubo's SO2 cooled the planet by half a degree for two years. Every major eruption is recorded as a sulfate spike in ice cores going back 800,000 years."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l15" onclick="markDone('l15')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l16">
+    <div class="lesson-header" onclick="toggle('l16')">
+      <div class="lesson-num">16</div>
+      <div><div class="lesson-title">Field Guide — What to Look For at Hawaii Volcanoes National Park</div><div class="lesson-sub">Reading the landscape before your May 2026 visit</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Hawaii Volcanoes National Park covers 334,000 acres from sea level to the summit of Mauna Loa at 4,170m. The park contains two of the world's most active volcanoes, and the landscape is a readable geological record spanning hundreds of thousands of years. Knowing what you're looking at changes the experience completely.</p>
+          <p>Key features: Kilauea Caldera and Halemaumau Crater (the active summit eruption site — check current conditions before visiting; SO2 levels can close the overlook). Kilauea Iki Crater (the site of a 1959 eruption that produced the highest lava fountains in recorded Hawaiian history — 580 meters; you can hike across the solidified lava lake floor). Chain of Craters Road (19 miles descending the East Rift Zone, passing 1969–74 eruption sites, ending at an old lava delta). Thurston Lava Tube / Nahuku (a drained 500-year-old lava tube). Pu'u Loa petroglyphs (over 23,000 ancient Hawaiian rock carvings on old lava fields).</p>
+          <p>What to look for: pahoehoe vs a'a lava textures everywhere. Hornitos — small spatter cones on pahoehoe surfaces, formed by gas explosions through a solidified crust. Lava tree molds — hollow vertical cylinders where lava flowed around tree trunks, chilled against the bark, and the tree burned away. Kipuka — islands of old vegetation surrounded by newer lava. Sulfur banks (Haemaumau adjacent) — yellow sulfur crystal deposits at fumaroles.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Sites</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Halemaumau Overlook</strong> — current active eruption; check SO2 levels; night glow visible for miles</div>
+          <div class="vocab-item"><strong>Kilauea Iki Trail</strong> — 4-mile loop; cross solidified lava lake from 1959 eruption</div>
+          <div class="vocab-item"><strong>Chain of Craters Road</strong> — 19-mile descent through rift zone eruption history to the coast</div>
+          <div class="vocab-item"><strong>Thurston Lava Tube</strong> — walk through drained 500-year-old lava tube plumbing</div>
+          <div class="vocab-item"><strong>Pu'u Loa petroglyphs</strong> — 23,000+ carvings on old lava; 1.5-mile round trip</div>
+          <div class="vocab-item"><strong>Jaggar Museum site</strong> — former HVO headquarters; overlook above Halemaumau</div>
+        </div>
+      </div>
+      <div class="hawaii-box">
+        <div class="hawaii-label">Before You Go</div>
+        <div class="hawaii-text">Check HVO's eruption status at volcanoes.usgs.gov — conditions change daily. The park's SO2 page shows current air quality at all overlooks. Download the NPS Hawaii Volcanoes app. Bring water — the summit is at 1,200m and sun exposure is intense. For night viewing of the lava lake glow, arrive at dusk at Kilauea Overlook or Uekahuna (when open). The PELE dashboard at brooksgroves.com/PELE has current HVO data, webcam links, and eruption log.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Kilauea Iki erupted in 1959 with lava fountains 580 meters high — the tallest ever recorded in Hawaii. The lava lake on the crater floor took 35 years to solidify. You can hike across it now. The crust is solid but the temperature a meter down is still hundreds of degrees. You're literally walking on the roof of a cooling lava lake."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l16" onclick="markDone('l16')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div class="resources">
+    <div class="resources-hed">Further Reading & Resources</div>
+    <div class="resource-list">
+      <div class="resource-item"><span>USGS Hawaiian Volcano Observatory — real-time Kilauea monitoring data</span><a href="https://volcanoes.usgs.gov/observatories/hvo/" target="_blank">volcanoes.usgs.gov ↗</a></div>
+      <div class="resource-item"><span>PELE Dashboard — brooksgroves.com live Kilauea tracker</span><a href="https://brooksgroves.com/PELE/" target="_blank">brooksgroves.com/PELE ↗</a></div>
+      <div class="resource-item"><span>NPS Hawaii Volcanoes National Park — current conditions, trail status</span><a href="https://www.nps.gov/havo/" target="_blank">nps.gov/havo ↗</a></div>
+      <div class="resource-item"><span><em>Volcanoes of the World</em> — Simkin & Siebert; comprehensive catalog</span><a href="https://volcano.si.edu" target="_blank">volcano.si.edu ↗</a></div>
+      <div class="resource-item"><span>Global Volcanism Program — Smithsonian Institution eruption database</span><a href="https://volcano.si.edu" target="_blank">volcano.si.edu ↗</a></div>
+      <div class="resource-item"><span>USGS Volcano Hazards Program — all US volcanoes, monitoring, hazard maps</span><a href="https://www.usgs.gov/programs/VHP" target="_blank">usgs.gov/VHP ↗</a></div>
+      <div class="resource-item"><span>Cascades Volcano Observatory — Rainier, St. Helens, Hood monitoring</span><a href="https://www.usgs.gov/observatories/cvo" target="_blank">usgs.gov/CVO ↗</a></div>
+      <div class="resource-item"><span><em>Fire on the Mountain</em> — John Seawright; St. Helens 1980 narrative account</span><span>Book</span></div>
+      <div class="resource-item"><span>Yellowstone Volcano Observatory</span><a href="https://www.usgs.gov/observatories/yvo" target="_blank">usgs.gov/YVO ↗</a></div>
+    </div>
+  </div>
+
+  <!-- AI TUTOR -->
+  <div class="qa-widget">
+    <div class="qa-header">
+      <div>
+        <div class="qa-header-title">Volcanology Tutor</div>
+        <div class="qa-header-sub">Ask anything about volcanology, eruptions, Hawaii, or the Cascades</div>
+      </div>
+    </div>
+    <div class="qa-body">
+      <div class="qa-context" id="qa-context">No lesson open — ask any volcanology question</div>
+      <div class="qa-history" id="qa-history"></div>
+      <div class="qa-input-row">
+        <textarea class="qa-input" id="qa-input" rows="2" placeholder="Why does Kilauea erupt so often? What makes a pyroclastic flow deadly? What will I see at the park?"></textarea>
+        <button class="qa-btn" id="qa-btn" onclick="askQuestion()">Ask</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;color:var(--white);">Brooks Groves</p>
+      <p style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--stone);margin-top:0.2rem;">Volcanology curriculum — built before Hawaii trip May 2026</p>
+    </div>
+    <div class="footer-links">
+      <a href="/learning/">Learning</a>
+      <a href="/PELE/">PELE Dashboard</a>
+      <a href="/">Home</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const TOTAL = 16;
+  const STORAGE_KEY = 'vol_progress';
+
+  function getProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch(e) { return {}; }
+  }
+
+  function saveProgress(p) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+  }
+
+  function renderProgress() {
+    const p = getProgress();
+    const done = Object.values(p).filter(Boolean).length;
+    const pct = Math.round((done / TOTAL) * 100);
+    document.getElementById('progress-label').textContent = `${done} of ${TOTAL} lessons complete — ${pct}%`;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    for (let i = 1; i <= TOTAL; i++) {
+      const el = document.getElementById('l' + i);
+      const btn = document.getElementById('check-l' + i);
+      if (!el) continue;
+      if (p['l' + i]) {
+        el.classList.add('done');
+        if (btn) { btn.textContent = 'Done'; btn.classList.add('done'); }
+      } else {
+        el.classList.remove('done');
+        if (btn) { btn.textContent = 'Mark done'; btn.classList.remove('done'); }
+      }
+    }
+  }
+
+  function toggle(id) {
+    const el = document.getElementById(id);
+    const wasOpen = el.classList.contains('open');
+    document.querySelectorAll('.lesson.open').forEach(l => l.classList.remove('open'));
+    if (!wasOpen) {
+      el.classList.add('open');
+      const title = el.querySelector('.lesson-title').textContent;
+      document.getElementById('qa-context').textContent = 'Current lesson: ' + title;
+    } else {
+      document.getElementById('qa-context').textContent = 'No lesson open — ask any volcanology question';
+    }
+  }
+
+  function markDone(id) {
+    const p = getProgress();
+    p[id] = !p[id];
+    saveProgress(p);
+    renderProgress();
+  }
+
+  // AI Tutor
+  let qaHistory = [];
+
+  function getOpenLesson() {
+    const open = document.querySelector('.lesson.open');
+    if (!open) return null;
+    return open.querySelector('.lesson-title')?.textContent || null;
+  }
+
+  async function askQuestion() {
+    const input = document.getElementById('qa-input');
+    const btn = document.getElementById('qa-btn');
+    const question = input.value.trim();
+    if (!question) return;
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="qa-spinner"></span>';
+    input.value = '';
+
+    const openLesson = getOpenLesson();
+    const context = openLesson
+      ? `The student is currently studying the lesson "${openLesson}" in a volcanology curriculum covering plate tectonics, magma composition, eruption types, volcanic hazards, monitoring, and famous eruptions including Kilauea, Mount St. Helens, Tambora, and Yellowstone. The student is preparing for a trip to Hawaii Volcanoes National Park in May 2026 to see an active Kilauea eruption.`
+      : `The student is working through a volcanology curriculum covering plate tectonics, magma composition, eruption types, volcanic hazards, monitoring, and famous eruptions including Kilauea, Mount St. Helens, Tambora, and Yellowstone. They are preparing for a trip to Hawaii Volcanoes National Park in May 2026.`;
+
+    const messages = [
+      ...qaHistory,
+      { role: 'user', content: question }
+    ];
+
+    try {
+      const response = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system: `You are a volcanology tutor for Brooks Groves, a GIS analyst and data scientist with a background in molecular biology and a deep interest in earth sciences. ${context} Answer clearly and engagingly — use specific examples, numbers, and place names. Connect answers to the Pacific Northwest and Hawaii when relevant. Keep answers focused, around 150-250 words. Use plain text, no markdown formatting.`,
+          messages,
+          model: 'claude-sonnet-4-5',
+          max_tokens: 1000
+        })
+      });
+
+      const data = await response.json();
+      const answer = data.content?.[0]?.text || 'No response received.';
+
+      qaHistory.push({ role: 'user', content: question });
+      qaHistory.push({ role: 'assistant', content: answer });
+      if (qaHistory.length > 12) qaHistory = qaHistory.slice(-12);
+
+      const historyEl = document.getElementById('qa-history');
+      const exchange = document.createElement('div');
+      exchange.className = 'qa-exchange';
+      exchange.innerHTML = `<div class="qa-exchange-q">You asked: ${question}</div><div class="qa-exchange-a">${answer}</div>`;
+      historyEl.appendChild(exchange);
+      historyEl.scrollTop = historyEl.scrollHeight;
+
+    } catch(e) {
+      const historyEl = document.getElementById('qa-history');
+      const exchange = document.createElement('div');
+      exchange.className = 'qa-exchange';
+      exchange.innerHTML = `<div class="qa-exchange-q">You asked: ${question}</div><div class="qa-exchange-a" style="color:var(--rust);">Connection error — check your internet and try again.</div>`;
+      historyEl.appendChild(exchange);
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Ask';
+  }
+
+  document.getElementById('qa-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askQuestion(); }
+  });
+
+  renderProgress();
+</script>
+</body>
+</html>
