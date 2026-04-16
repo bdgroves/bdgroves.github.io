@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brooks Groves — Developer · Geospatial · Pacific Northwest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sky:#5a7a8a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+
+    .weather-bar { background:var(--ink); padding:0.5rem clamp(1rem,4vw,3rem); overflow-x:auto; }
+    .weather-bar-inner { max-width:1400px; margin:0 auto; display:flex; gap:1.5rem; align-items:center; flex-wrap:nowrap; min-width:max-content; }
+    .wx-loc { display:flex; align-items:center; gap:0.4rem; white-space:nowrap; }
+    .wx-icon { font-size:0.95rem; }
+    .wx-place { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); }
+    .wx-temp { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); margin-left:0.25rem; }
+    .wx-cond { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); letter-spacing:0.05em; margin-left:0.15rem; }
+    .wx-forecast { display:flex; gap:0.6rem; margin-left:0.4rem; }
+    .wx-day { text-align:center; }
+    .wx-dow { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); }
+    .wx-hi { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--mist); }
+    .wx-rain { font-family:'DM Mono',monospace; font-size:0.45rem; color:var(--sky); }
+    .wx-divider { width:1px; height:1.6rem; background:#333; flex-shrink:0; }
+    .wx-updated { font-family:'DM Mono',monospace; font-size:0.48rem; color:#3a3a3a; margin-left:auto; letter-spacing:0.08em; white-space:nowrap; padding-left:1rem; }
+
+    .masthead { border-bottom:3px solid var(--ink); padding:1.25rem clamp(1rem,4vw,3rem) 0; background:var(--parchment); }
+    .masthead-top { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding-bottom:1rem; border-bottom:1px solid var(--mist); }
+    .masthead-meta { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.1em; }
+    .site-nameplate { font-family:'Playfair Display',serif; font-size:clamp(2rem,6vw,3.5rem); font-weight:900; letter-spacing:-0.02em; text-decoration:none; color:var(--ink); display:block; text-align:center; line-height:1; }
+    .site-tagline { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); text-align:center; margin-top:0.4rem; padding-bottom:1rem; }
+
+    .section-nav { max-width:1400px; margin:0 auto; display:flex; align-items:center; position:relative; }
+    .section-nav-item { position:relative; }
+    .section-nav-btn { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; background:none; border:none; cursor:pointer; padding:0.7rem 1rem; color:var(--stone); transition:color 0.2s; white-space:nowrap; display:flex; align-items:center; gap:0.3rem; }
+    .section-nav-btn:hover { color:var(--ink); }
+    .section-nav-btn svg { width:8px; height:8px; fill:currentColor; transition:transform 0.2s; }
+    .section-nav-item:hover .section-nav-btn svg { transform:rotate(180deg); }
+    .dropdown { display:none; position:absolute; top:100%; left:0; background:var(--ink); min-width:220px; z-index:300; border-top:2px solid var(--rust); }
+    .section-nav-item:hover .dropdown { display:block; }
+    .dropdown a { display:block; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); padding:0.75rem 1.25rem; border-bottom:1px solid #2a2a26; transition:color 0.15s,background 0.15s; }
+    .dropdown a:hover { color:var(--gold); background:#222; }
+    .dropdown-label { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.2em; text-transform:uppercase; color:#3a3a36; padding:0.75rem 1.25rem 0.25rem; }
+    .dropdown a.dim { opacity:0.45; }
+    .dropdown a.dim:hover { opacity:1; }
+
+    .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+    .hamburger span { display:block; width:22px; height:2px; background:var(--ink); transition:all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity:0; }
+    .hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+    .mobile-nav { display:flex; position:fixed; top:0; right:0; bottom:0; width:290px; background:var(--ink); z-index:500; padding:5rem 2rem 2rem; flex-direction:column; gap:0; transform:translateX(100%); transition:transform 0.3s ease; overflow-y:auto; }
+    .mobile-nav.open { transform:translateX(0); }
+    .mobile-nav a { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.14em; text-transform:uppercase; text-decoration:none; color:var(--stone); padding:0.85rem 0; border-bottom:1px solid #2a2a26; transition:color 0.2s; display:block; }
+    .mobile-nav a:hover { color:var(--gold); }
+    .mobile-nav a.dim { opacity:0.4; }
+    .mobile-nav .nav-section { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.2em; text-transform:uppercase; color:#3a3a36; padding:1.25rem 0 0.35rem; }
+    .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:400; }
+    .overlay.open { display:block; }
+    @media(max-width:768px) { .section-nav { display:none; } .hamburger { display:flex; } }
+
+    .page { max-width:1400px; margin:0 auto; padding:0 clamp(1rem,4vw,3rem); }
+
+    .lead-section { padding:2rem 0; border-bottom:1px solid var(--mist); }
+    .lead-section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
+    .lead-section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .lead-section-label a:hover { color:var(--rust); }
+    .lead-grid { display:grid; grid-template-columns:3fr 2fr; gap:0; border:1px solid var(--mist); }
+    @media(max-width:768px) { .lead-grid { grid-template-columns:1fr; } }
+    .lead-story { padding:2rem; border-right:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; }
+    .lead-story:hover { background:var(--cream); }
+    .lead-story::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); display:block; margin-bottom:0.75rem; }
+    .lead-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .lead-hed { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .lead-hed em { font-style:italic; color:var(--rust); }
+    .lead-dek { font-size:0.95rem; color:var(--stone); line-height:1.75; }
+    .lead-quote { border-left:3px solid var(--rust); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.9rem; color:var(--stone); }
+    .lead-stack { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
+    .stack-pill { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.6rem; }
+    .lead-link { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--rust); margin-top:1.25rem; display:block; }
+    .support-stories { display:flex; flex-direction:column; }
+    .support-story { padding:1.25rem 1.5rem; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; flex:1; }
+    .support-story:last-child { border-bottom:none; }
+    .support-story:hover { background:var(--cream); }
+    .support-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.3rem; }
+    .support-hed { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; line-height:1.25; margin-bottom:0.35rem; }
+    .support-story:hover .support-hed { color:var(--rust); }
+    .support-dek { font-size:0.8rem; color:var(--stone); line-height:1.6; }
+    .support-link { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.5rem; display:block; }
+
+    .ologies-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:0; border:1px solid var(--mist); }
+    @media(max-width:680px) { .ologies-grid { grid-template-columns:1fr; } }
+    .ology-card { padding:1.75rem; border-right:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; position:relative; overflow:hidden; }
+    .ology-card:last-child { border-right:none; }
+    @media(max-width:1100px) { .ologies-grid { grid-template-columns:repeat(3,1fr); } }
+    @media(max-width:560px) { .ologies-grid { grid-template-columns:1fr 1fr; } }
+    .ology-card:hover { background:var(--cream); }
+    .ology-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; transform:scaleX(0); transform-origin:left; transition:transform 0.3s; }
+    .ology-card.met::after { background:var(--sky); }
+    .ology-card.hyd::after { background:var(--sage); }
+    .ology-card.geo::after { background:var(--rust); }
+    .ology-card.vol::after { background:#c0392b; }
+    .ology-card.eco::after { background:#4a5c45; }
+    .ology-card.geo2::after { background:#c0392b; }
+    .ology-card.geo2::after { background:#6b3a2a; }
+    .ology-card.arch::after { background:#8b6914; }
+    .ology-card:hover::after { transform:scaleX(1); }
+    .ology-icon { font-size:1.75rem; margin-bottom:0.75rem; display:block; }
+    .ology-name { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:900; margin-bottom:0.5rem; }
+    .ology-desc { font-size:0.82rem; color:var(--stone); line-height:1.65; }
+    .ology-projects { margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--gold); letter-spacing:0.08em; }
+    .ology-link { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.75rem; display:block; }
+
+    .below-fold { display:grid; grid-template-columns:2fr 3fr; gap:0; border-top:1px solid var(--mist); padding:2rem 0; }
+    @media(max-width:768px) { .below-fold { grid-template-columns:1fr; } }
+    .below-col { padding:0 2rem 0 0; }
+    .below-col:last-child { padding:0 0 0 2rem; border-left:1px solid var(--mist); }
+    @media(max-width:768px) { .below-col { padding:1.5rem 0 !important; border-left:none !important; border-top:1px solid var(--mist); } }
+    .col-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.6rem; border-bottom:2px solid var(--ink); margin-bottom:1rem; display:flex; justify-content:space-between; }
+    .col-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .col-label a:hover { color:var(--rust); }
+    .writing-item { padding:0.9rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; border-radius:3px; transition:background 0.15s; }
+    .writing-item:hover { background:var(--cream); margin:0 -0.75rem; padding-left:0.75rem; padding-right:0.75rem; }
+    .writing-item:hover .writing-hed { color:var(--rust); }
+    .writing-type { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:0.1rem; }
+    .writing-date { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.08em; color:var(--stone); }
+    .writing-hed { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; line-height:1.3; transition:color 0.2s; }
+    .writing-dek { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; line-height:1.55; }
+    .book-item { display:flex; gap:0.75rem; padding:0.85rem 0; border-bottom:1px solid var(--mist); align-items:flex-start; text-decoration:none; color:inherit; transition:padding-left 0.2s; }
+    .book-item:hover { padding-left:0.3rem; }
+    .book-item:hover .book-title { color:var(--rust); }
+    .book-cover { width:40px; min-width:40px; height:58px; object-fit:cover; border-radius:1px; box-shadow:2px 2px 5px rgba(0,0,0,0.15); }
+    .book-cover-placeholder { width:40px; min-width:40px; height:58px; background:var(--sage); border-radius:1px; opacity:0.3; }
+    .book-title { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; line-height:1.3; transition:color 0.2s; }
+    .book-author { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.08em; color:var(--stone); margin-top:0.15rem; text-transform:uppercase; }
+    .book-status { font-size:0.7rem; font-style:italic; margin-top:0.1rem; }
+    .book-status.reading { color:var(--gold); }
+    .book-status.done { color:var(--sage); }
+    .book-loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); padding:1rem 0; }
+    .goodreads-link { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .goodreads-link:hover { color:var(--rust); }
+
+    .sports-section { padding:2rem 0; border-top:1px solid var(--mist); }
+    .sports-tabs { display:flex; margin-bottom:1.5rem; border-bottom:1px solid var(--mist); flex-wrap:wrap; }
+    .tab-btn { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; background:none; border:none; cursor:pointer; padding:0.5rem 0.9rem; color:var(--stone); border-bottom:2px solid transparent; margin-bottom:-1px; transition:color 0.2s; }
+    .tab-btn.active { color:var(--ink); border-bottom-color:var(--rust); }
+    .tab-btn:hover { color:var(--ink); }
+    .sport-panel { display:none; }
+    .sport-panel.active { display:block; }
+    .sports-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; }
+    @media(max-width:680px){ .sports-grid { grid-template-columns:1fr; gap:1.5rem; } }
+    .game-row { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; padding:0.7rem 0; border-bottom:1px solid var(--mist); gap:0.5rem; }
+    .team-home { text-align:right; }
+    .team-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:600; }
+    .team-name.winner { color:var(--ink); }
+    .team-name.loser { color:var(--stone); }
+    .game-score-block { text-align:center; min-width:68px; }
+    .score-line { font-family:'DM Mono',monospace; font-size:0.95rem; letter-spacing:0.05em; }
+    .score-status { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-top:0.1rem; }
+    .score-status.live { color:var(--rust); }
+    .score-status.final { color:var(--stone); }
+    .score-status.sched { color:var(--gold); }
+    .live-dot { display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--rust); margin-right:3px; vertical-align:middle; animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .race-row { display:flex; align-items:baseline; justify-content:space-between; padding:0.7rem 0; border-bottom:1px solid var(--mist); gap:1rem; }
+    .race-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:600; }
+    .race-leader { font-style:italic; color:var(--gold); font-size:0.75rem; margin-top:0.1rem; }
+    .race-meta { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); letter-spacing:0.08em; text-align:right; flex-shrink:0; }
+    .race-meta span { display:block; }
+    .sport-note { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); padding-top:0.5rem; letter-spacing:0.08em; }
+    .standings-grid { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); }
+    .standings-title { font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); padding-bottom:0.4rem; border-bottom:1px solid var(--mist); margin-bottom:0.4rem; }
+    .standings-header { display:grid; grid-template-columns:1fr auto auto auto; gap:0.25rem 0.75rem; padding-bottom:0.3rem; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; }
+    .standings-row { display:grid; grid-template-columns:1fr auto auto auto; gap:0.25rem 0.75rem; padding:0.3rem 0; border-bottom:1px solid var(--mist); font-size:0.6rem; }
+    .standings-row.highlight { color:var(--ink); font-weight:bold; }
+    .gb-pos { color:var(--sage); }
+    .gb-neg { color:var(--rust); }
+    .beer-item { display:flex; align-items:flex-start; gap:0.75rem; padding:0.85rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:padding-left 0.2s; }
+    .beer-item:hover { padding-left:0.3rem; }
+    .beer-item:hover .beer-name { color:var(--rust); }
+    .beer-thumb { width:36px; min-width:36px; height:36px; object-fit:cover; border-radius:2px; }
+    .beer-thumb-placeholder { width:36px; min-width:36px; height:36px; background:var(--mist); border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0; }
+    .beer-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; transition:color 0.2s; }
+    .beer-brewery { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); text-transform:uppercase; margin-top:0.1rem; }
+    .beer-comment { font-size:0.72rem; color:var(--stone); font-style:italic; margin-top:0.15rem; }
+    .beer-date { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--mist); margin-top:0.1rem; }
+    .untappd-link { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .untappd-link:hover { color:var(--gold); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,4vw,3rem) clamp(1rem,4vw,3rem); margin-top:3rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+    hr.rule { border:none; border-top:1px solid var(--mist); margin:0; }
+    .fade-in { opacity:0; transform:translateY(12px); animation:fadeIn 0.5s forwards; }
+    @keyframes fadeIn { to{opacity:1;transform:translateY(0);} }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+<div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+<!-- MOBILE DRAWER -->
+<nav class="mobile-nav" id="mobileNav">
+  <div class="nav-section">Projects</div>
+  <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">❄️ Rainier Snowpack</a>
+  <a href="https://bdgroves.github.io/lahar-watch" target="_blank">🌋 lahar-watch</a>
+  <a href="https://bdgroves.github.io/solstice" target="_blank">☀️ SOLSTICE</a>
+  <a href="https://bdgroves.github.io/aftershock" target="_blank">🌍 AFTERSHOCK</a>
+  <a href="https://bdgroves.github.io/PELE" target="_blank">🌋 PELE</a>
+  <a href="https://bdgroves.github.io/weather-station" target="_blank">🌡️ Weather Station</a>
+  <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank">🛰️ Sentinel Stockpile</a>
+  <a href="https://bdgroves.github.io/dipodomys" target="_blank">🐾 DIPODOMYS</a>
+  <a href="https://bdgroves.github.io/aftershock" target="_blank">🌍 AFTERSHOCK</a>
+  <a href="https://bdgroves.github.io/EDGAR" target="_blank">⚾ EDGAR</a>
+  <a href="/little-free-pantry" target="_blank">🏠 Little Free Pantry</a>
+  <a href="https://bdgroves.github.io/ridgeline" target="_blank">🔥 RIDGELINE</a>
+  <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank">💧 Sierra Streamflow</a>
+  <a href="https://bdgroves.github.io/wildfire-response-gaps" target="_blank">🔥 Wildfire Response Gaps</a>
+  <a href="https://github.com/bdgroves/Project-PaleoWave" target="_blank">🌊 PaleoWave</a>
+  <a href="https://github.com/bdgroves/project_ice_wave" target="_blank">🦣 IceWave</a>
+  <a href="https://bdgroves.github.io/sierra-flow-cobol/" target="_blank">📟 sierra-flow-cobol</a>
+  <a href="https://bdgroves.github.io/cascadia-wx/" target="_blank">🌨 cascadia-wx</a>
+  <a href="https://github.com/bdgroves" target="_blank">All on GitHub</a>
+  <div class="nav-section">Learning</div>
+  <a href="/learning/">📚 All Topics</a>
+  <a href="/learning/quantum-physics/">⚛️ Quantum Physics</a>
+  <a href="/learning/volcanology/">🌋 Volcanology</a>
+  <div class="nav-section">Ologies</div>
+  <a href="/meteorology.html">🌩 Meteorology</a>
+  <a href="/hydrology.html">💧 Hydrology</a>
+  <a href="/geospatial.html">🗺 Geospatial</a>
+  <a href="/volcanology.html">🌋 Volcanology</a>
+  <a href="/paleontology.html">🦕 Paleontology</a>
+  <a href="/ecology.html">🌿 Ecology</a>
+  <a href="/geology.html">🪨 Geology</a>
+  <a href="/archaeology.html">🏺 Archaeology</a>
+  <div class="nav-section">Writing</div>
+  <a href="/writing/index.html">✍️ All Writing</a>
+        <a href="https://memoir.brooksgroves.com">📖 Memoir</a>
+  <a href="/blog/index.html">Blog</a>
+  <a href="https://journal.brooksgroves.com">Journal</a>
+  <a href="https://westin.brooksgroves.com">🏨 Westin Stories</a>
+  <a href="https://y2k.brooksgroves.com" target="_blank">🔒 Y2K Archive</a>
+  <div class="nav-section">Personal</div>
+  <a href="/about.html">About</a>
+  <a href="https://memoir.brooksgroves.com">Memoir</a>
+  <a href="/concerts.html">Concerts</a>
+  <a href="/maps.html">Maps</a>
+  <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+  <a href="/sports.html">Sports &amp; Beer</a>
+  <div class="nav-section">Connect</div>
+  <a href="https://github.com/bdgroves" target="_blank">GitHub ↗</a>
+  <a href="https://x.com/bdgroves" target="_blank">X / Twitter ↗</a>
+  <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn ↗</a>
+  <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads ↗</a>
+  <a href="https://www.strava.com/athletes/59148" target="_blank">Strava ↗</a>
+  <a href="https://untappd.com/user/bdgroves" target="_blank">Untappd ↗</a>
+  <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky ↗</a>
+</nav>
+
+<!-- WEATHER BAR -->
+<div class="weather-bar">
+  <div class="weather-bar-inner">
+    <div class="wx-loc">
+      <span class="wx-icon" id="icon-lakewood">🌡️</span>
+      <span class="wx-place">Lakewood WA</span>
+      <span class="wx-temp" id="temp-lakewood">--°</span>
+      <span class="wx-cond" id="cond-lakewood"></span>
+    </div>
+    <div class="wx-forecast" id="forecast-lakewood"></div>
+    <div class="wx-divider"></div>
+    <div class="wx-loc">
+      <span class="wx-icon" id="icon-groveland">🌡️</span>
+      <span class="wx-place">Groveland CA</span>
+      <span class="wx-temp" id="temp-groveland">--°</span>
+      <span class="wx-cond" id="cond-groveland"></span>
+    </div>
+    <div class="wx-forecast" id="forecast-groveland"></div>
+    <div class="wx-divider"></div>
+    <div class="wx-loc">
+      <span class="wx-icon" id="icon-deathvalley">🔥</span>
+      <span class="wx-place">Death Valley CA</span>
+      <span class="wx-temp" id="temp-deathvalley">--°</span>
+      <span class="wx-cond" id="cond-deathvalley"></span>
+    </div>
+    <div class="wx-forecast" id="forecast-deathvalley"></div>
+    <span class="wx-updated" id="weather-updated">via NWS</span>
+    <span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:#888;margin-left:0.75rem;white-space:nowrap;" id="local-clock"></span>
+  </div>
+</div>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-top">
+    <div class="masthead-meta" id="masthead-date"></div>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <a href="/" class="site-nameplate fade-in">Brooks Groves</a>
+  <p class="site-tagline">Developer · Geospatial · Pacific Northwest</p>
+  <nav class="section-nav">
+
+    <div class="section-nav-item">
+      <button class="section-nav-btn">Projects <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
+      <div class="dropdown">
+        <div class="dropdown-label">Featured</div>
+        <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">❄️ Rainier Snowpack</a>
+        <a href="https://bdgroves.github.io/lahar-watch" target="_blank">🌋 lahar-watch</a>
+        <a href="https://bdgroves.github.io/PELE" target="_blank">🌋 PELE</a>
+        <a href="https://bdgroves.github.io/solstice" target="_blank">☀️ SOLSTICE</a>
+        <a href="https://bdgroves.github.io/aftershock" target="_blank">🌍 AFTERSHOCK</a>
+        <a href="https://bdgroves.github.io/weather-station" target="_blank">🌡️ Weather Station</a>
+        <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank">🛰️ Sentinel Stockpile</a>
+        <a href="https://bdgroves.github.io/dipodomys" target="_blank">🐾 DIPODOMYS</a>
+        <a href="https://bdgroves.github.io/EDGAR" target="_blank">⚾ EDGAR</a>
+  <a href="/little-free-pantry" target="_blank">🏠 Little Free Pantry</a>
+        <a href="https://bdgroves.github.io/ridgeline" target="_blank">🔥 RIDGELINE</a>
+        <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank">💧 Sierra Streamflow</a>
+        <a href="https://bdgroves.github.io/wildfire-response-gaps" target="_blank">🔥 Wildfire Response Gaps</a>
+        <a href="https://github.com/bdgroves/Project-PaleoWave" target="_blank">🌊 PaleoWave</a>
+        <a href="https://github.com/bdgroves/project_ice_wave" target="_blank">🦣 IceWave</a>
+        <a href="https://bdgroves.github.io/project-kiva" target="_blank">🏜 Project Kiva</a>
+        <a href="https://github.com/bdgroves/streamchaser" target="_blank">〰 streamchaser</a>
+        <a href="https://bdgroves.github.io/sierra-flow-cobol/" target="_blank">📟 sierra-flow-cobol</a>
+        <a href="https://bdgroves.github.io/cascadia-wx/" target="_blank">🌨 cascadia-wx</a>
+        <div class="dropdown-label">More</div>
+        <a href="https://github.com/bdgroves" target="_blank">All on GitHub ↗</a>
+      </div>
+    </div>
+
+    <div class="section-nav-item">
+      <button class="section-nav-btn">Learning <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
+      <div class="dropdown">
+        <div class="dropdown-label">Curricula</div>
+        <a href="/learning/">📚 All Topics</a>
+        <a href="/learning/quantum-physics/">⚛️ Quantum Physics</a>
+        <a href="/learning/volcanology/">🌋 Volcanology</a>
+        <div class="dropdown-label">Coming Soon</div>
+        <a href="/learning/" class="dim">🌌 Cosmology</a>
+        <a href="/learning/" class="dim">🎵 Music Underground 1985–95</a>
+        <a href="/learning/" class="dim">🏺 Ancestral Puebloans</a>
+      </div>
+    </div>
+
+    <div class="section-nav-item">
+      <button class="section-nav-btn">Ologies <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
+      <div class="dropdown">
+        <div class="dropdown-label">Active</div>
+        <a href="/meteorology.html">🌩 Meteorology</a>
+        <a href="/hydrology.html">💧 Hydrology</a>
+        <a href="/geospatial.html">🗺 Geospatial</a>
+        <a href="/volcanology.html">🌋 Volcanology</a>
+        <a href="/paleontology.html">🦕 Paleontology</a>
+        <a href="/ecology.html">🌿 Ecology</a>
+        <a href="/geology.html">🪨 Geology</a>
+        <a href="/archaeology.html">🏺 Archaeology</a>
+      </div>
+    </div>
+
+    <div class="section-nav-item">
+      <button class="section-nav-btn">Writing <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
+      <div class="dropdown">
+        <a href="/writing/index.html">✍️ All Writing</a>
+        <a href="https://memoir.brooksgroves.com">📖 Memoir</a>
+        <div class="dropdown-label">Sections</div>
+        <a href="/blog/index.html">Blog</a>
+        <a href="https://journal.brooksgroves.com">Journal</a>
+        <a href="https://westin.brooksgroves.com">🏨 Westin Stories</a>
+        <a href="https://y2k.brooksgroves.com" target="_blank">🔒 Y2K Archive</a>
+      </div>
+    </div>
+
+    <div class="section-nav-item">
+      <button class="section-nav-btn">Personal <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
+      <div class="dropdown">
+        <a href="/about.html">About</a>
+        <a href="https://memoir.brooksgroves.com">Memoir</a>
+        <a href="/concerts.html">Concerts</a>
+        <a href="/maps.html">Maps</a>
+        <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+        <a href="/sports.html">Sports &amp; Beer</a>
+      </div>
+    </div>
+
+    <div class="section-nav-item">
+      <button class="section-nav-btn">Connect <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
+      <div class="dropdown">
+        <a href="https://github.com/bdgroves" target="_blank">GitHub ↗</a>
+        <a href="https://x.com/bdgroves" target="_blank">X / Twitter ↗</a>
+        <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn ↗</a>
+        <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads ↗</a>
+        <a href="https://www.strava.com/athletes/59148" target="_blank">Strava ↗</a>
+        <a href="https://untappd.com/user/bdgroves" target="_blank">Untappd ↗</a>
+        <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky ↗</a>
+      </div>
+    </div>
+
+  </nav>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- PROJECTS LEAD -->
+  <div class="lead-section">
+    <div class="lead-section-label">
+      <span>Featured Projects</span>
+      <a href="https://github.com/bdgroves" target="_blank">All on GitHub →</a>
+    </div>
+    <div class="lead-grid">
+      <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank" class="lead-story">
+        <p class="lead-kicker">Snowpack · SNOTEL · NASA MODIS · Cascades</p>
+        <h1 class="lead-hed">❄️ STORM CHASER:<br><em>Rainier</em></h1>
+        <p class="lead-dek">Automated Mt. Rainier snowpack monitoring pulling 7 SNOTEL ground stations and NASA MODIS satellite data hourly. Nine dashboard panels track basin SWE, melt alerts, freeze-thaw cycles, and live NPS webcams. The pipeline runs every hour, forever, without human intervention.</p>
+        <blockquote class="lead-quote">"You don't chase the mountain. The mountain chases you."</blockquote>
+        <div class="lead-stack">
+          <span class="stack-pill">Python</span>
+          <span class="stack-pill">R</span>
+          <span class="stack-pill">GitHub Actions</span>
+          <span class="stack-pill">NASA Earthdata</span>
+          <span class="stack-pill">NRCS SNOTEL</span>
+          <span class="stack-pill">NPS Webcam</span>
+        </div>
+        <span class="lead-link">View live dashboard →</span>
+      </a>
+      <div class="support-stories">
+        <a href="https://bdgroves.github.io/EDGAR" target="_blank" class="support-story">
+          <p class="support-kicker">Baseball · Mariners · MLB Stats API</p>
+          <h3 class="support-hed">⚾ EDGAR — Mariners Analytics</h3>
+          <p class="support-dek">Automated daily Mariners & Rainiers stats dashboard. Spray charts, pitch movement, live scores. Launched Opening Day 2026.</p>
+          <span class="support-link">View dashboard →</span>
+        </a>
+        <a href="https://bdgroves.github.io/ridgeline" target="_blank" class="support-story">
+          <p class="support-kicker">WUI · Search & Rescue · Phoenix FD</p>
+          <h3 class="support-hed">🔥 RIDGELINE — WUI Call Volume</h3>
+          <p class="support-dek">86K+ Phoenix Fire Department dispatch incidents. Behavioral cluster analysis, interactive maps, CI/CD pipeline.</p>
+          <span class="support-link">View project →</span>
+        </a>
+        <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank" class="support-story">
+          <p class="support-kicker">Hydrology · Sierra Nevada · USGS</p>
+          <h3 class="support-hed">💧 Sierra Streamflow Monitor</h3>
+          <p class="support-dek">8 USGS stream gages across Sierra Nevada watersheds. Historical spaghetti charts, Leaflet map, weekly cron.</p>
+          <span class="support-link">View dashboard →</span>
+        </a>
+        <a href="https://bdgroves.github.io/PELE" target="_blank" class="support-story">
+          <p class="support-kicker">Volcanology · Kīlauea · USGS HVO</p>
+          <h3 class="support-hed">🌋 PELE — Hawai'i Volcanoes Dashboard</h3>
+          <p class="support-dek">Live Kīlauea eruption tracker. Real-time earthquakes, HVO webcams, alert levels, episodic fountaining log. Updated every 6 hours.</p>
+          <span class="support-link">View dashboard →</span>
+        </a>
+        <a href="https://bdgroves.github.io/weather-station" target="_blank" class="support-story">
+          <p class="support-kicker">Meteorology · Open-Meteo · NWS · 4 Stations</p>
+          <h3 class="support-hed">🌡️ Weather Station</h3>
+          <p class="support-dek">High-end weather dashboard monitoring Lakewood WA, Groveland CA, Reno NV, and Death Valley. Wind compass, pressure trends, NWS alerts, moon phase. Updates every 15 min.</p>
+          <span class="support-link">View dashboard →</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- OLOGIES -->
+  <div class="lead-section">
+    <div class="lead-section-label">
+      <span>The Ologies</span>
+      <a href="/construction.html">More coming →</a>
+    </div>
+    <div class="ologies-grid">
+      <a href="/meteorology.html" class="ology-card met">
+        <span class="ology-icon">🌩</span>
+        <h3 class="ology-name">Meteorology</h3>
+        <p class="ology-desc">Weather data pipelines, atmospheric analysis, and forecast automation across the Pacific Northwest and California.</p>
+        <p class="ology-projects">Weather Station · CASCADIA-WX · NWS API</p>
+        <span class="ology-link">Explore →</span>
+      </a>
+      <a href="/hydrology.html" class="ology-card hyd">
+        <span class="ology-icon">💧</span>
+        <h3 class="ology-name">Hydrology</h3>
+        <p class="ology-desc">Streamflow monitoring, snowpack analysis, and water resource tracking across Sierra Nevada and Cascade watersheds.</p>
+        <p class="ology-projects">Rainier Snowpack · Sierra Streamflow · SNOTEL</p>
+        <span class="ology-link">Explore →</span>
+      </a>
+      <a href="/geospatial.html" class="ology-card geo">
+        <span class="ology-icon">🗺</span>
+        <h3 class="ology-name">Geospatial</h3>
+        <p class="ology-desc">LiDAR, remote sensing, GIS pipelines, and spatial analysis. QGIS, Python, R, and real-world field data.</p>
+        <p class="ology-projects">Sentinel Stockpile · Project Kiva · RIDGELINE</p>
+        <span class="ology-link">Explore →</span>
+      </a>
+      <a href="/volcanology.html" class="ology-card vol">
+        <span class="ology-icon">🌋</span>
+        <h3 class="ology-name">Volcanology</h3>
+        <p class="ology-desc">Live eruption monitoring, lahar hazard tracking, and seismic analysis across Hawaiʻi and the Pacific Northwest.</p>
+        <p class="ology-projects">PELE · lahar-watch · USGS HVO</p>
+        <span class="ology-link">Explore →</span>
+      </a>
+      <a href="/ecology.html" class="ology-card eco">
+        <span class="ology-icon">🌿</span>
+        <h3 class="ology-name">Ecology</h3>
+        <p class="ology-desc">Species distributions, community dynamics, and the data infrastructure of biodiversity science. Desert to rainforest.</p>
+        <p class="ology-projects">DIPODOMYS · desert-ecostats · iNaturalist</p>
+        <span class="ology-link">Explore →</span>
+      </a>
+      <a href="/geology.html" class="ology-card geo2">
+        <span class="ology-icon">🪨</span>
+        <h3 class="ology-name">Geology</h3>
+        <p class="ology-desc">Seismic monitoring, fault systems, and earth structure. From the Melones Fault Zone to the Cascadia Subduction Zone.</p>
+        <p class="ology-projects">AFTERSHOCK · USGS ComCat · Cascadia</p>
+        <span class="ology-link">Explore →</span>
+      </a>
+      <a href="/archaeology.html" class="ology-card arch">
+        <span class="ology-icon">🏺</span>
+        <h3 class="ology-name">Archaeology</h3>
+        <p class="ology-desc">Archaeoastronomy, remote sensing, and the ancient built world. Chaco Canyon's great houses and the sky they were built to track.</p>
+        <p class="ology-projects">SOLSTICE · Project Kiva · Chaco</p>
+        <span class="ology-link">Explore →</span>
+      </a>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <!-- WRITING + READING -->
+  <div class="below-fold">
+    <div class="below-col">
+      <div class="col-label">
+        <span>Writing</span>
+        <div style="display:flex;gap:1rem;">
+          <a href="/tags.html">Tags →</a>
+          <a href="/blog/index.html">All →</a>
+        </div>
+      </div>
+      <a href="https://westin.brooksgroves.com/graveyard-radio.html" class="writing-item">
+        <div class="writing-type">Westin Stories · Music · 1997 · 🔒</div>
+        <div class="writing-date">2026</div>
+        <div class="writing-hed">📻 Graveyard Radio</div>
+        <div class="writing-dek">The 2:17 AM moment. The Modest Mouse connection. The sound the Westin Seattle made at night in 1997, department by department.</div>
+      </a>
+      <a href="https://memoir.brooksgroves.com" class="writing-item">
+        <div class="writing-type">Memoir · Bay Area · 1990s</div>
+        <div class="writing-date">2026</div>
+        <div class="writing-hed">Memoir — The Bay Area Years</div>
+        <div class="writing-dek">The Midtown. The Cow Palace. San Francisco in the early 90s. The years before Seattle, written down.</div>
+      </a>
+      <a href="https://journal.brooksgroves.com/myles.html" class="writing-item">
+        <div class="writing-type">Long Read · Fiction · 🔒</div>
+        <div class="writing-date">April 2025</div>
+        <div class="writing-hed">🦆 Myles</div>
+        <div class="writing-dek">One rubber duck. The American West. Every duck tells the same story. A lyric narrative through Death Valley, Mono Lake, and the Rubicon Trail.</div>
+      </a>
+      <a href="/blog/solstice-post.html" class="writing-item">
+        <div class="writing-type">Blog · Archaeology</div>
+        <div class="writing-date">April 2026</div>
+        <div class="writing-hed">☀️ SOLSTICE — Watching the Same Sky Over Chaco Canyon</div>
+        <div class="writing-dek">A 1054 CE supernova, Pueblo Bonito's true-north wall, and a live dashboard tracking the summer solstice alignment at Casa Rinconada.</div>
+      </a>
+      <a href="/blog/aftershock-post.html" class="writing-item">
+        <div class="writing-type">Blog · Geology</div>
+        <div class="writing-date">April 2026</div>
+        <div class="writing-hed">🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor</div>
+        <div class="writing-dek">Growing up on the Melones Fault Zone. Loma Prieta 1989. A live seismic dashboard from a USGS public API and a GitHub Actions cron job.</div>
+      </a>
+      <a href="/blog/dipodomys-post.html" class="writing-item">
+        <div class="writing-type">Blog · Ecology</div>
+        <div class="writing-date">April 2026</div>
+        <div class="writing-hed">🐾 DIPODOMYS — A Data Portrait of Death Valley's Kangaroo Rats</div>
+        <div class="writing-dek">Live iNaturalist data, two species, one valley. What citizen science reveals about habitat partitioning at the hottest place on Earth.</div>
+      </a>
+      <a href="/blog/little-free-pantry-post.html" class="writing-item">
+        <div class="writing-type">Community GIS · Civic Tech</div>
+        <div class="writing-date">April 2026</div>
+        <div class="writing-hed">🏠 Little Free Pantry — Mapping Food Access in Lakewood</div>
+        <div class="writing-dek">Interactive map for the Lakewood Rotary's 7-pantry network. 24/7 no-barrier food access across South Sound communities. GIS where it matters most.</div>
+      </a>
+      <a href="/blog/sentinel-stockpile-post.html" class="writing-item">
+        <div class="writing-type">Blog · Remote Sensing · GIS</div>
+        <div class="writing-date">April 2026</div>
+        <div class="writing-hed">🛰️ Sentinel Stockpile — The Economy You Can See From Space</div>
+        <div class="writing-dek">12 months of Sentinel-2 satellite imagery tracking lumber stockpiles at the Port of Longview. The Pacific Northwest supply chain, pixel by pixel, from 500 miles up.</div>
+      </a>
+
+    </div>
+    <div class="below-col">
+      <div class="col-label">
+        <span>Reading</span>
+        <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads →</a>
+      </div>
+      <div id="reading-list"><p class="book-loading">Loading from Goodreads…</p></div>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank" class="goodreads-link">View all 982 books →</a>
+    </div>
+  </div>
+
+  <hr class="rule">
+
+  <!-- SPORTS + BEER -->
+  <div style="padding:2rem 0;border-top:1px solid var(--mist);">
+    <div class="lead-section-label" style="margin-bottom:1.25rem;">
+      <span>Sports &amp; Beer</span>
+      <a href="/sports.html" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;">View all →</a>
+    </div>
+    <p style="font-size:0.875rem;color:var(--stone);line-height:1.7;max-width:480px;">Mariners scores, AL West standings, pro cycling results, Seahawks, and recent Untappd check-ins. All in one place.</p>
+    <a href="/sports.html" style="display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;color:var(--gold);">Sports &amp; Beer →</a>
+  </div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://journal.brooksgroves.com">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="https://www.strava.com/athletes/59148" target="_blank">Strava</a>
+      <a href="https://untappd.com/user/bdgroves" target="_blank">Untappd</a>
+      <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+    <!-- v2 -->
+  </div>
+</footer>
+
+<script>
+  document.getElementById('masthead-date').textContent =
+    new Date().toLocaleDateString('en-US', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+  // Live clock in weather bar — user's local time, ticks every second
+  function updateClock() {
+    const now = new Date();
+    const el = document.getElementById('local-clock');
+    if (el) el.textContent = now.toLocaleTimeString('en-US', {
+      hour: 'numeric', minute: '2-digit', second: '2-digit',
+      timeZoneName: 'short'
+    });
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  function toggleMenu() {
+    document.getElementById('mobileNav').classList.toggle('open');
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('open');
+  }
+  function closeMenu() {
+    document.getElementById('mobileNav').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('overlay').classList.remove('open');
+  }
+  function showTab(id, btn) {
+    document.querySelectorAll('.sport-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  async function loadWeather() {
+    try {
+      const res = await fetch('/weather.json?t=' + Date.now());
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      function applyLoc(key, id) {
+        if (!data[key]) return;
+        const w = data[key];
+        document.getElementById('icon-' + id).textContent = w.emoji;
+        document.getElementById('temp-' + id).textContent = w.temp + '°';
+        document.getElementById('cond-' + id).textContent = '· ' + w.condition;
+        const fc = document.getElementById('forecast-' + id);
+        if (fc) fc.innerHTML = w.forecast.map(d =>
+          `<div class="wx-day"><div class="wx-dow">${d.name}</div><div class="wx-hi">${d.high}°</div><div class="wx-rain">${d.precip}%</div></div>`
+        ).join('');
+      }
+      applyLoc('lakewood', 'lakewood');
+      applyLoc('groveland', 'groveland');
+      applyLoc('deathvalley', 'deathvalley');
+      if (data.updated) {
+        const d = new Date(data.updated);
+        // Format in user's local timezone
+        document.getElementById('weather-updated').textContent =
+          'NWS · ' + d.toLocaleDateString('en-US', {month:'short', day:'numeric'}) +
+          ' ' + d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', timeZoneName:'short'});
+      }
+    } catch(e) {
+      document.getElementById('icon-lakewood').textContent = '⛅';
+      document.getElementById('temp-lakewood').textContent = '34°';
+      document.getElementById('cond-lakewood').textContent = '· Mostly Cloudy';
+      document.getElementById('icon-groveland').textContent = '🌧';
+      document.getElementById('temp-groveland').textContent = '55°';
+      document.getElementById('cond-groveland').textContent = '· Chance Rain';
+      document.getElementById('icon-deathvalley').textContent = '🔥';
+      document.getElementById('temp-deathvalley').textContent = '73°';
+      document.getElementById('cond-deathvalley').textContent = '· Sunny';
+    }
+  }
+
+  function renderGames(el, games) {
+    if (!games.length) {
+      el.innerHTML = '<p class="sport-note">No Mariners games found. Check back soon.</p>';
+      return;
+    }
+    const order = { 'Live': 0, 'Final': 1, 'Preview': 2 };
+    games.sort((a, b) => (order[a.status.abstractGameState] || 2) - (order[b.status.abstractGameState] || 2));
+    el.innerHTML = games.slice(0, 4).map(g => {
+      const status = g.status.abstractGameState;
+      const home = g.teams.home;
+      const away = g.teams.away;
+      const isSEAHome = home.team.id === 136;
+      const seaTeam = isSEAHome ? home : away;
+      const oppTeam = isSEAHome ? away : home;
+      const seaScore = seaTeam.score ?? '--';
+      const oppScore = oppTeam.score ?? '--';
+      const seaWin = status !== 'Preview' && Number(seaScore) > Number(oppScore);
+      const oppWin = status !== 'Preview' && Number(oppScore) > Number(seaScore);
+      const oppName = oppTeam.team?.teamName || oppTeam.team?.name?.split(' ').slice(-1)[0] || 'Opponent';
+      const oppAbbr = oppTeam.team?.abbreviation || '';
+      let statusLabel = '', statusClass = 'sched';
+      if (status === 'Final') {
+        statusLabel = 'Final · ' + new Date(g.gameDate).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+        statusClass = 'final';
+      } else if (status === 'Live') {
+        const inning = g.linescore?.currentInningOrdinal || '';
+        statusLabel = `<span class="live-dot"></span>${inning}`;
+        statusClass = 'live';
+      } else {
+        const t = new Date(g.gameDate);
+        statusLabel = t.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'}) +
+          ' · ' + t.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'});
+        statusClass = 'sched';
+      }
+      const scoreDisplay = status === 'Preview'
+        ? `<span class="score-line">vs ${oppAbbr}</span>`
+        : `<span class="score-line">${isSEAHome ? seaScore : oppScore} · ${isSEAHome ? oppScore : seaScore}</span>`;
+      const leftTeam = isSEAHome ? 'Seattle' : oppName;
+      const rightTeam = isSEAHome ? oppName : 'Seattle';
+      const leftWin = isSEAHome ? seaWin : oppWin;
+      const rightWin = isSEAHome ? oppWin : seaWin;
+      return `<div class="game-row">
+        <div class="team-home"><div class="team-name ${status !== 'Preview' ? (leftWin ? 'winner' : 'loser') : ''}">${leftTeam}</div></div>
+        <div class="game-score-block">${scoreDisplay}<span class="score-status ${statusClass}">${statusLabel}</span></div>
+        <div class="team-away"><div class="team-name ${status !== 'Preview' ? (rightWin ? 'winner' : 'loser') : ''}">${rightTeam}</div></div>
+      </div>`;
+    }).join('');
+  }
+
+  async function loadMLB() {
+    const el = document.getElementById('mlb-scores');
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+      const [r1, r2] = await Promise.all([
+        fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId=136&date=${today}&hydrate=linescore`),
+        fetch(`https://statsapi.mlb.com/api/v1/schedule?sportId=1&teamId=136&date=${yesterday}&hydrate=linescore`)
+      ]);
+      const [d1, d2] = await Promise.all([r1.json(), r2.json()]);
+      renderGames(el, [...(d1.dates?.[0]?.games || []), ...(d2.dates?.[0]?.games || [])]);
+    } catch(e) {
+      el.innerHTML = `<div class="game-row">
+        <div class="team-home"><div class="team-name winner">Seattle</div></div>
+        <div class="game-score-block"><span class="score-line">8 · 0</span><span class="score-status final">Final · Mar 29</span></div>
+        <div class="team-away"><div class="team-name loser">Cleveland</div></div>
+      </div>`;
+    }
+  }
+
+  async function loadBooks() {
+    const el = document.getElementById('reading-list');
+    try {
+      const res = await fetch('/books.json?t=' + Date.now());
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      const books = [
+        ...data.currently_reading.map(b => ({...b, status:'reading'})),
+        ...data.recently_read.slice(0,4).map(b => ({...b, status:'done'}))
+      ];
+      if (!books.length) throw new Error();
+      el.innerHTML = books.map(b => `
+        <a href="${b.link||'#'}" target="_blank" class="book-item">
+          ${b.image ? `<img src="${b.image}" class="book-cover" alt="" loading="lazy">` : `<div class="book-cover-placeholder"></div>`}
+          <div>
+            <p class="book-title">${b.title}</p>
+            <p class="book-author">${b.author}</p>
+            <p class="book-status ${b.status}">${b.status==='reading' ? 'Currently reading' : 'Recently finished'}</p>
+          </div>
+        </a>`).join('');
+    } catch(e) {
+      el.innerHTML = `<a href="https://www.goodreads.com/book/show/40406806-coders" target="_blank" class="book-item">
+        <div class="book-cover-placeholder"></div>
+        <div><p class="book-title">Coders</p><p class="book-author">Clive Thompson</p><p class="book-status reading">Currently reading</p></div>
+      </a>`;
+    }
+  }
+
+  async function loadBeers() {
+    const el = document.getElementById('beer-list');
+    try {
+      const res = await fetch('/beers.json?t=' + Date.now());
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      const beers = data.checkins.slice(0, 4);
+      if (!beers.length) throw new Error();
+      el.innerHTML = `<div class="sports-grid">` + beers.map(b => {
+        const match = b.title.match(/drinking an? (.+?) by\s+(.+?) at/);
+        const beerName = match ? match[1].trim() : b.title;
+        const brewery = match ? match[2].trim() : '';
+        const date = new Date(b.date).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+        return `<a href="${b.link}" target="_blank" class="beer-item">
+          ${b.image ? `<img src="${b.image}" class="beer-thumb" alt="">` : `<div class="beer-thumb-placeholder">🍺</div>`}
+          <div style="flex:1;">
+            <p class="beer-name">${beerName}</p>
+            <p class="beer-brewery">${brewery}</p>
+            ${b.description ? `<p class="beer-comment">"${b.description}"</p>` : ''}
+            <p class="beer-date">${date}</p>
+          </div>
+        </a>`;
+      }).join('') + `</div>`;
+    } catch(e) {
+      el.innerHTML = '<p class="sport-note">Check back soon for recent check-ins.</p>';
+    }
+  }
+
+  // ── CYCLING ──
+  async function loadCycling() {
+    const el = document.getElementById('cycling-races');
+    try {
+      const res = await fetch('/cycling.json?t=' + Date.now());
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      const races = data.races;
+
+      // Show: recent finals (last 6) + any live + next 5 upcoming
+      const finals = races.filter(r => r.status === 'final').slice(-6);
+      const live = races.filter(r => r.status === 'live');
+      const upcoming = races.filter(r => r.status === 'upcoming').slice(0, 5);
+      const display = [...finals, ...live, ...upcoming];
+
+      // RACES
+      let html = display.map(r => {
+        const isMonument = r.category === 'Monument' || r.category === 'Grand Tour';
+        const nameStyle = isMonument ? 'font-weight:900;' : '';
+        let leader = '', statusClass = 'sched', statusLabel = '';
+
+        if (r.status === 'final') {
+          statusClass = 'final';
+          statusLabel = 'Final';
+          if (r.winner) {
+            leader = `<p class="race-leader">${r.winner}${r.team ? ' · ' + r.team : ''}</p>`;
+          }
+          if (r.notes) leader += `<p class="race-leader" style="color:var(--stone);font-style:normal;font-size:0.72rem;">${r.notes}</p>`;
+        } else if (r.status === 'live') {
+          statusClass = 'live';
+          statusLabel = '<span class="live-dot"></span>Live';
+          leader = `<p class="race-leader" style="color:var(--rust);">Racing now</p>`;
+        } else {
+          statusClass = 'sched';
+          statusLabel = r.days_away === 0 ? 'Today' :
+                        r.days_away === 1 ? 'Tomorrow' :
+                        r.days_away ? `${r.days_away} days` : 'Upcoming';
+          if (r.notes) leader = `<p class="race-leader" style="color:var(--stone);font-style:normal;">${r.notes}</p>`;
+        }
+
+        const dateObj = new Date(r.date + 'T12:00:00');
+        const dateStr = dateObj.toLocaleDateString('en-US', {month:'short', day:'numeric'});
+
+        return `<div class="race-row">
+          <div>
+            <p class="race-name" style="${nameStyle}">${r.emoji} ${r.name} <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--stone);font-weight:normal;">${r.category}</span></p>
+            ${leader}
+          </div>
+          <div class="race-meta">
+            <span>${dateStr}</span>
+            <span class="score-status ${statusClass}">${statusLabel}</span>
+          </div>
+        </div>`;
+      }).join('');
+
+      // RIDER SPOTLIGHT
+      if (data.riders && data.riders.length) {
+        html += `<div style="margin-top:1.5rem;padding-top:1rem;border-top:2px solid var(--ink);">
+          <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);padding-bottom:0.6rem;margin-bottom:0.75rem;">2026 Rider Spotlight</div>`;
+
+        data.riders.forEach(rider => {
+          if (!rider.fetched) return;
+          const recentHTML = (rider.recent_results || []).slice(0, 4).map(r => {
+            // Clean up race name — strip classification suffixes
+            const raceName = (r.race || '').replace(/Mountains classification|Points classification|Youth classification/g, '').replace(/\s+/g, ' ').trim();
+            const isWin = r.result == 1;
+            return `<span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);display:inline-block;margin-bottom:0.15rem;">
+              <span style="color:${isWin ? 'var(--gold)' : 'var(--stone)'};">${isWin ? '🏆' : r.result}</span>
+              ${raceName}
+            </span>`;
+          }).join('<br>');
+
+          html += `<div style="padding:0.75rem 0;border-bottom:1px solid var(--mist);">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.35rem;">
+              <span style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;">${rider.flag} ${rider.name}</span>
+              <span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);">${rider.team || ''}</span>
+            </div>
+            <div style="display:flex;gap:1.5rem;margin-bottom:0.5rem;">
+              <div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);">2026 Wins</div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--gold);">${rider.wins_2026 || 0}</div>
+              </div>
+              ${rider.pcs_ranking ? `<div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);">PCS Rank</div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--ink);">#${rider.pcs_ranking}</div>
+              </div>` : ''}
+              ${rider.pcs_points ? `<div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);">Points 2026</div>
+                <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:900;color:var(--sky);">${rider.pcs_points}</div>
+              </div>` : ''}
+            </div>
+            ${recentHTML ? `<div style="margin-top:0.35rem;">${recentHTML}</div>` : ''}
+          </div>`;
+        });
+
+        html += `</div>`;
+      }
+
+      if (data.watch) {
+        html += `<p class="sport-note" style="margin-top:0.75rem;">👀 ${data.watch}</p>`;
+      }
+
+      el.innerHTML = html;
+
+    } catch(e) {
+      el.innerHTML = `<p class="sport-note">Cycling data loading… check back soon.</p>`;
+    }
+  }
+
+  async function loadStandings() {
+    const el = document.getElementById('mlb-standings');
+    try {
+      // League 103 = AL, divisionId 200 = AL West
+      const res = await fetch('https://statsapi.mlb.com/api/v1/standings?leagueId=103&season=2026&standingsTypes=regularSeason');
+      const data = await res.json();
+      const alWest = data.records?.find(r => r.division?.id === 200);
+      if (!alWest) throw new Error('no AL West data');
+
+      const rows = alWest.teamRecords.map(t => {
+        const name = t.team.name.replace('Los Angeles', 'LA').replace('Seattle Mariners', 'Seattle').replace('Houston Astros', 'Houston').replace('Texas Rangers', 'Texas').replace('Los Angeles Angels', 'LA Angels');
+        const isSEA = t.team.id === 136;
+        const gb = t.gamesBack === '-' ? '—' : t.gamesBack;
+        const gbClass = gb === '—' ? 'gb-pos' : parseFloat(gb) > 2 ? 'gb-neg' : '';
+        return `<div class="standings-row${isSEA ? ' highlight' : ''}">
+          <span>${name}</span>
+          <span>${t.wins}</span>
+          <span>${t.losses}</span>
+          <span class="${gbClass}">${gb}</span>
+        </div>`;
+      }).join('');
+
+      el.innerHTML = `<div class="standings-grid">
+        <div class="standings-title">AL West Standings</div>
+        <div class="standings-header"><span>Team</span><span>W</span><span>L</span><span>GB</span></div>
+        ${rows}
+      </div>
+      <p class="sport-note" style="margin-top:0.75rem;">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>`;
+    } catch(e) {
+      // Fallback to hardcoded if API fails
+      el.innerHTML = `<div class="standings-grid">
+        <div class="standings-title">AL West Standings</div>
+        <div class="standings-header"><span>Team</span><span>W</span><span>L</span><span>GB</span></div>
+        <div class="standings-row"><span>Houston</span><span>4</span><span>2</span><span class="gb-pos">—</span></div>
+        <div class="standings-row"><span>Texas</span><span>4</span><span>2</span><span class="gb-pos">—</span></div>
+        <div class="standings-row"><span>LA Angels</span><span>3</span><span>3</span><span>1</span></div>
+        <div class="standings-row highlight"><span>Seattle</span><span>3</span><span>3</span><span>1</span></div>
+        <div class="standings-row"><span>Athletics</span><span>1</span><span>5</span><span class="gb-neg">3</span></div>
+      </div>
+      <p class="sport-note" style="margin-top:0.75rem;">→ <a href="https://bdgroves.github.io/EDGAR" target="_blank" style="color:var(--gold);text-decoration:none;">Full stats on EDGAR ↗</a></p>`;
+    }
+  }
+
+  loadWeather();
+  loadMLB();
+  loadStandings();
+  loadBooks();
+  loadBeers();
+  loadCycling();
+  loadCyclingNews();
+  setInterval(() => { if (!document.hidden) { loadMLB(); loadStandings(); } }, 5 * 60 * 1000);
+
+async function loadCyclingNews() {
+  const el = document.getElementById('cycling-news');
+  if (!el) return;
+  try {
+    const RSS_URL = encodeURIComponent('https://www.cyclingnews.com/rss/news/');
+    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${RSS_URL}&count=6`);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    if (data.status !== 'ok' || !data.items?.length) throw new Error();
+    el.innerHTML = data.items.map(item => {
+      const date = new Date(item.pubDate).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+      const desc = item.description.replace(/<[^>]+>/g, '').slice(0, 100).trim();
+      return `<a href="${item.link}" target="_blank" style="display:block;padding:0.55rem 0;border-bottom:1px solid var(--mist);text-decoration:none;color:inherit;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);margin-bottom:0.1rem;">${date}</div>
+        <div style="font-size:0.82rem;font-weight:600;line-height:1.4;">${item.title}</div>
+        ${desc ? `<div style="font-size:0.74rem;color:var(--stone);margin-top:0.1rem;line-height:1.45;">${desc}…</div>` : ''}
+      </a>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = `
+      <a href="https://www.cyclingnews.com/races/paris-roubaix-2026/" target="_blank" style="display:block;padding:0.5rem 0;border-bottom:1px solid var(--mist);text-decoration:none;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">Coverage</div>
+        <div style="font-size:0.82rem;font-weight:600;">Paris-Roubaix 2026 — Cyclingnews</div>
+      </a>
+      <a href="https://www.cyclingnews.com/races/giro-d-italia-2026/" target="_blank" style="display:block;padding:0.5rem 0;border-bottom:1px solid var(--mist);text-decoration:none;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">Upcoming</div>
+        <div style="font-size:0.82rem;font-weight:600;">Giro d'Italia 2026 — Cyclingnews</div>
+      </a>
+      <a href="https://www.cyclingnews.com" target="_blank" style="display:block;padding:0.5rem 0;text-decoration:none;">
+        <div style="font-size:0.78rem;color:var(--stone);">All cycling news → cyclingnews.com</div>
+      </a>`;
+  }
+}
+</script>
+
+</body>
+</html>
