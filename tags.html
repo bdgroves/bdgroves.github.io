@@ -9,58 +9,46 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
-      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
-      --rust:#8b3a2a; --white:#fdfaf4; --sage:#4a5c45;
-    }
+    :root { --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc; --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4; --rust:#8b3a2a; --white:#fdfaf4; --sage:#4a5c45; }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     html { scroll-behavior:smooth; }
     body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
     body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
     .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
-
     header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
-    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
     .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
-    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav { display:flex; gap:1.5rem; }
     nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
     nav a:hover { color:var(--rust); }
-
     .page-wrap { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem); }
     .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
     .page-eyebrow a { color:var(--stone); text-decoration:none; }
     .page-eyebrow a:hover { color:var(--rust); }
     .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; letter-spacing:-0.02em; margin-bottom:0.5rem; }
-    .page-sub { font-size:0.9rem; color:var(--stone); margin-bottom:2.5rem; }
-
-    /* TAG CLOUD */
-    .tag-cloud { display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:3rem; padding-bottom:2rem; border-bottom:2px solid var(--ink); }
-    .tag-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; background:none; border:1px solid var(--mist); padding:0.35rem 0.8rem; cursor:pointer; color:var(--stone); transition:all 0.15s; }
-    .tag-btn:hover { border-color:var(--gold); color:var(--gold); }
+    .page-title em { font-style:italic; color:var(--rust); }
+    .page-sub { font-size:0.9rem; color:var(--stone); margin-bottom:2.5rem; max-width:600px; line-height:1.8; }
+    .tag-cloud { display:flex; flex-wrap:wrap; gap:0.4rem; margin-bottom:3rem; padding-bottom:2rem; border-bottom:2px solid var(--ink); }
+    .tag-btn { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.08em; text-transform:uppercase; background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; cursor:pointer; color:var(--stone); transition:all 0.15s; }
+    .tag-btn:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
     .tag-btn.active { background:var(--ink); color:var(--white); border-color:var(--ink); }
-    .tag-btn .tag-count { font-size:0.55rem; opacity:0.7; margin-left:0.3rem; }
-
-    /* RESULTS */
+    .tag-count { font-size:0.5rem; opacity:0.7; margin-left:0.25rem; }
     .results-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:1rem; }
     .results-label span { color:var(--gold); }
-
-    .post-list { display:flex; flex-direction:column; gap:0; }
+    .post-list { display:flex; flex-direction:column; }
     .post-item { padding:1.1rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.1s; }
     .post-item:hover { background:var(--cream); margin:0 -1rem; padding-left:1rem; padding-right:1rem; }
     .post-item:last-child { border-bottom:none; }
-    .post-item-tags { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:0.2rem; }
+    .post-item-tags { font-family:'DM Mono',monospace; font-size:0.56rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:0.2rem; }
     .post-item-title { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; margin-bottom:0.2rem; line-height:1.35; }
     .post-item-dek { font-size:0.82rem; color:var(--stone); line-height:1.55; }
-    .post-item-date { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:0.25rem; }
-
+    .post-item-date { font-family:'DM Mono',monospace; font-size:0.56rem; color:var(--mist); margin-top:0.25rem; }
     .no-results { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--stone); padding:2rem 0; }
-
     footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
-    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
     .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
     .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
-    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
     .footer-links a:hover { color:var(--gold); }
   </style>
 </head>
@@ -78,12 +66,10 @@
 
 <div class="page-wrap">
   <p class="page-eyebrow"><a href="/">Brooks Groves</a></p>
-  <h1 class="page-title">Browse by Tag</h1>
-  <p class="page-sub">Click any tag to filter posts. Click again to clear.</p>
-
+  <h1 class="page-title">Browse by <em>Tag</em></h1>
+  <p class="page-sub">Everything on the site — blog, memoir, westin stories, journal, learning, sports, Y2K archive — browsable by tag. Click any tag to filter. Click again to clear.</p>
   <div class="tag-cloud" id="tagCloud"></div>
-
-  <div class="results-label" id="resultsLabel">All posts</div>
+  <div class="results-label" id="resultsLabel">All entries</div>
   <div class="post-list" id="postList"></div>
 </div>
 
@@ -94,6 +80,7 @@
     </div>
     <div class="footer-links">
       <a href="/">Home</a>
+      <a href="/writing/">Writing</a>
       <a href="/blog/">Blog</a>
     </div>
   </div>
@@ -102,180 +89,808 @@
 <script>
 const POSTS = [
   {
-    url: '/blog/solstice-post.html',
-    title: '☀️ SOLSTICE — Watching the Same Sky Over Chaco Canyon',
-    dek: 'A 1054 CE supernova, Pueblo Bonito\'s true-north wall, and a live dashboard tracking the summer solstice alignment at Casa Rinconada.',
-    date: 'April 2026',
-    tags: ['Archaeology','Archaeoastronomy','Chaco Canyon','Python','ephem','forge3d','LiDAR','GitHub Actions','Southwest','New Mexico']
+    "url": "/blog/solstice-post.html",
+    "title": "SOLSTICE — Watching the Same Sky Over Chaco Canyon",
+    "dek": "A 1054 CE supernova, Pueblo Bonito's true-north wall, and a live dashboard tracking the summer solstice alignment at Casa Rinconada.",
+    "date": "April 2026",
+    "tags": [
+      "Archaeology",
+      "Archaeoastronomy",
+      "Chaco Canyon",
+      "Python",
+      "LiDAR",
+      "GitHub Actions",
+      "Southwest",
+      "GIS"
+    ]
   },
   {
-    url: '/blog/aftershock-post.html',
-    title: '🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor',
-    dek: 'Growing up on the Melones Fault Zone. Loma Prieta 1989. A live seismic dashboard from a USGS public API and a GitHub Actions cron job.',
-    date: 'April 2026',
-    tags: ['Geology','Seismology','USGS','Python','Leaflet','Cascadia','Tuolumne County','Sierra Nevada','GitHub Actions']
+    "url": "/blog/aftershock-post.html",
+    "title": "AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor",
+    "dek": "Growing up on the Melones Fault Zone. Loma Prieta 1989. A live seismic dashboard from USGS and GitHub Actions.",
+    "date": "April 2026",
+    "tags": [
+      "Geology",
+      "Seismology",
+      "USGS",
+      "Python",
+      "Leaflet",
+      "Cascadia",
+      "Tuolumne County",
+      "Sierra Nevada",
+      "GitHub Actions"
+    ]
   },
   {
-    url: '/blog/dipodomys-post.html',
-    title: '🐾 DIPODOMYS — A Data Portrait of Death Valley\'s Kangaroo Rats',
-    dek: 'Live iNaturalist data, two species, one valley. What citizen science reveals about habitat partitioning at the hottest place on Earth.',
-    date: 'April 2026',
-    tags: ['Ecology','iNaturalist','Death Valley','Citizen Science','Leaflet','Mojave','California','Desert']
+    "url": "/blog/dipodomys-post.html",
+    "title": "DIPODOMYS — Death Valley Kangaroo Rats",
+    "dek": "Live iNaturalist data, two species, one valley. Citizen science and habitat partitioning in the hottest place on Earth.",
+    "date": "April 2026",
+    "tags": [
+      "Ecology",
+      "iNaturalist",
+      "Death Valley",
+      "Citizen Science",
+      "Leaflet",
+      "California",
+      "Desert"
+    ]
   },
   {
-    url: '/blog/little-free-pantry-post.html',
-    title: '🏠 Little Free Pantry — Mapping Food Access in Lakewood',
-    dek: 'Interactive map for the Lakewood Rotary\'s 7-pantry network. 24/7 no-barrier food access across South Sound communities.',
-    date: 'April 2026',
-    tags: ['Community GIS','Leaflet','Food Access','Lakewood WA','Rotary','Civic Tech','Pacific Northwest']
+    "url": "/blog/little-free-pantry-post.html",
+    "title": "Little Free Pantry — Mapping Food Access in Lakewood",
+    "dek": "Interactive map for the Lakewood Rotary pantry network. 24/7 no-barrier food access across South Sound communities.",
+    "date": "April 2026",
+    "tags": [
+      "Community GIS",
+      "Leaflet",
+      "Food Access",
+      "Lakewood WA",
+      "Civic Tech",
+      "Pacific Northwest"
+    ]
   },
   {
-    url: '/blog/sentinel-stockpile-post.html',
-    title: '🛰️ Sentinel Stockpile — The Economy You Can See From Space',
-    dek: '12 months of Sentinel-2 satellite imagery tracking lumber stockpiles at the Port of Longview.',
-    date: 'April 2026',
-    tags: ['Remote Sensing','GIS','Sentinel-2','Python','Supply Chain','Columbia River','Pacific Northwest','pixi']
+    "url": "/blog/sentinel-stockpile-post.html",
+    "title": "Sentinel Stockpile — The Economy You Can See From Space",
+    "dek": "12 months of Sentinel-2 imagery tracking lumber stockpiles at the Port of Longview.",
+    "date": "April 2026",
+    "tags": [
+      "Remote Sensing",
+      "GIS",
+      "Sentinel-2",
+      "Python",
+      "Supply Chain",
+      "Pacific Northwest",
+      "pixi"
+    ]
   },
   {
-    url: '/blog/weather-station-post.html',
-    title: '🌡️ Weather Station — Four Climates, Zero Dollars, Half a Cup of Coffee',
-    dek: 'A real-time weather dashboard monitoring the Pacific Northwest to Death Valley.',
-    date: 'April 2026',
-    tags: ['Meteorology','Python','GitHub Actions','Open-Meteo','NWS','Pacific Northwest','Death Valley','Groveland','Reno']
+    "url": "/blog/weather-station-post.html",
+    "title": "Weather Station — Four Climates, Zero Dollars",
+    "dek": "Real-time dashboard monitoring Lakewood, Groveland, Reno, and Death Valley.",
+    "date": "April 2026",
+    "tags": [
+      "Meteorology",
+      "Python",
+      "GitHub Actions",
+      "Open-Meteo",
+      "NWS",
+      "Pacific Northwest",
+      "Death Valley",
+      "Groveland",
+      "Reno"
+    ]
   },
   {
-    url: '/blog/pele-blog-post.html',
-    title: '🌋 PELE — Building a Live Kīlauea Dashboard for a Birthday Trip',
-    dek: '43 eruption episodes, a buried webcam, and a cron job. Real data from USGS HVO, served six times a day.',
-    date: 'April 2026',
-    tags: ['Volcanology','Python','GitHub Actions','USGS','Kīlauea','Hawaii','Episodic Eruption']
+    "url": "/blog/pele-blog-post.html",
+    "title": "PELE — Building a Live Kilauea Dashboard",
+    "dek": "43 eruption episodes, a buried webcam, and a cron job. Real data from USGS HVO, six times a day.",
+    "date": "April 2026",
+    "tags": [
+      "Volcanology",
+      "Python",
+      "GitHub Actions",
+      "USGS",
+      "Kilauea",
+      "Hawaii"
+    ]
   },
   {
-    url: '/blog/cascadia-wx-post.html',
-    title: 'FORTRAN, Snowpack, and the Language the Atmosphere Speaks',
-    dek: 'The Cascades are at 15% of normal snowpack. FORTRAN has been computing the atmosphere for 75 years.',
-    date: 'April 2, 2026',
-    tags: ['Meteorology','FORTRAN','Python','SNOTEL','Pacific Northwest','Cascades','Snowpack']
+    "url": "/blog/cascadia-wx-post.html",
+    "title": "FORTRAN, Snowpack, and the Language the Atmosphere Speaks",
+    "dek": "The Cascades at 15% of normal snowpack. FORTRAN has been computing the atmosphere for 75 years.",
+    "date": "April 2026",
+    "tags": [
+      "Meteorology",
+      "FORTRAN",
+      "Python",
+      "SNOTEL",
+      "Pacific Northwest",
+      "Cascades",
+      "Snowpack"
+    ]
   },
   {
-    url: '/blog/sierra-flow-cobol-post.html',
-    title: 'COBOL, Streamflow, and Artemis II',
-    dek: 'A 1959 language fetching live USGS telemetry on the day four humans left Earth\'s orbit.',
-    date: 'April 1, 2026',
-    tags: ['Hydrology','COBOL','Python','USGS','Sierra Nevada','Streamflow','GitHub Actions']
+    "url": "/blog/sierra-flow-cobol-post.html",
+    "title": "COBOL, Streamflow, and Artemis II",
+    "dek": "A 1959 language fetching live USGS telemetry on the day four humans left orbit.",
+    "date": "April 2026",
+    "tags": [
+      "Hydrology",
+      "COBOL",
+      "Python",
+      "USGS",
+      "Sierra Nevada",
+      "Streamflow",
+      "GitHub Actions"
+    ]
   },
   {
-    url: '/blog/forge3d-post.html',
-    title: 'Exploring forge3d With Washington LiDAR',
-    dek: 'A GPU-accelerated terrain renderer in Python. Mount St. Helens, Crater Lake, and what 1-meter LiDAR does to a summit.',
-    date: 'April 2026',
-    tags: ['GIS','LiDAR','forge3d','Python','Terrain','Pacific Northwest','Washington']
+    "url": "/blog/forge3d-post.html",
+    "title": "Exploring forge3d With Washington LiDAR",
+    "dek": "A GPU-accelerated terrain renderer in Python. Mount St. Helens, Crater Lake, and 1-meter LiDAR.",
+    "date": "April 2026",
+    "tags": [
+      "GIS",
+      "LiDAR",
+      "forge3d",
+      "Python",
+      "Terrain",
+      "Pacific Northwest",
+      "Washington"
+    ]
   },
   {
-    url: '/blog/pixi-post.html',
-    title: 'Why I Switched to pixi for Managing Python and R Environments',
-    dek: 'After years of conda headaches, a cleaner path to reproducible geospatial work.',
-    date: 'March 31, 2026',
-    tags: ['Python','R','pixi','GIS','Environments','Reproducibility']
+    "url": "/blog/pixi-post.html",
+    "title": "Why I Switched to pixi for Python and R Environments",
+    "dek": "After years of conda headaches, a cleaner path to reproducible geospatial work.",
+    "date": "March 2026",
+    "tags": [
+      "Python",
+      "R",
+      "pixi",
+      "GIS",
+      "Environments",
+      "Reproducibility"
+    ]
   },
   {
-    url: '/blog/streamflow-post.html',
-    title: 'Building a Live Streamflow Dashboard on a $0 Budget',
-    dek: 'GitHub Actions, USGS APIs, and a healthy respect for Pacific snowmelt.',
-    date: 'March 18, 2026',
-    tags: ['Hydrology','Python','USGS','GitHub Actions','Sierra Nevada','Streamflow']
+    "url": "/blog/streamflow-post.html",
+    "title": "Building a Live Streamflow Dashboard on Zero Budget",
+    "dek": "GitHub Actions, USGS APIs, and a healthy respect for Pacific snowmelt.",
+    "date": "March 2026",
+    "tags": [
+      "Hydrology",
+      "Python",
+      "USGS",
+      "GitHub Actions",
+      "Sierra Nevada",
+      "Streamflow"
+    ]
   },
   {
-    url: 'https://memoir.brooksgroves.com/cow-palace-nye-1991.html',
-    title: 'Cow Palace, NYE 1991 — RHCP / Nirvana / Pearl Jam',
-    dek: 'Drove over Donner Pass in a snowstorm. Locked eyes with Anthony Kiedis. Eddie Vedder dove into the crowd.',
-    date: '2026',
-    tags: ['Memoir','Music','Concerts','San Francisco','1990s','Nevada Neil','Pearl Jam','Nirvana','Red Hot Chili Peppers']
+    "url": "https://memoir.brooksgroves.com/the-midtown.html",
+    "title": "The Midtown",
+    "dek": "A dark bar in the Lower Haight, a best friend from Groveland, cheap beer, and the most unresolvable argument in the galaxy.",
+    "date": "2026",
+    "tags": [
+      "Memoir",
+      "San Francisco",
+      "1990s",
+      "Groveland",
+      "Friendship",
+      "Star Wars"
+    ]
   },
   {
-    url: '/writing/draught-south-land.html',
-    title: 'Book Review: Draught of the South Land',
-    dek: 'Review of Paul Moon\'s historical work. Published in Cartographic Perspectives No. 105, 2025.',
-    date: '2025',
-    tags: ['Writing','Book Review','Cartography','Cartographic Perspectives']
+    "url": "https://memoir.brooksgroves.com/cow-palace-nye-1991.html",
+    "title": "The Night the Cow Palace Changed Everything",
+    "dek": "New Years Eve 1991. RHCP, Nirvana, Pearl Jam. The Cow Palace. The night the 90s started in earnest.",
+    "date": "2026",
+    "tags": [
+      "Memoir",
+      "Music",
+      "Concerts",
+      "RHCP",
+      "Nirvana",
+      "Pearl Jam",
+      "1990s",
+      "San Francisco"
+    ]
   },
-  // JOURNAL
-  { url: 'https://journal.brooksgroves.com/myles.html', title: '🦆 Myles', dek: 'One rubber duck. The American West. Every duck tells the same story. A lyric narrative through Death Valley, Mono Lake, the Rubicon Trail, and the Canadian Rockies.', date: 'April 2025', tags: ['Fiction','Long Read','American West','Jeep','Road','Nature Writing','Death Valley','Memoir','Pacific Northwest'] },
-  { url: 'https://journal.brooksgroves.com/cannon-beach.html', title: 'Cannon Beach — Tide Pools, Dogs, and the Goonies Coast', dek: 'Sitting somewhere between the tide and a new website. Not a bad Saturday on the Oregon Coast.', date: 'March 29, 2026', tags: ['Journal','Oregon Coast','Travel','Pacific Northwest','Field Notes','Fort George','GISP','March 2026'] },
-  // WESTIN STORIES
-  { url: 'https://brooksgroves.com/blog/solstice-post.html', title: '☀️ SOLSTICE — Watching the Same Sky Over Chaco Canyon', dek: 'A 1054 CE supernova painted on a canyon wall. Pueblo Bonito aligned true north within 0.1°. A live dashboard watching the same sky over Chaco Canyon, updated every 12 hours.', date: '2026', tags: ['Archaeology', 'Archaeoastronomy', 'Chaco Canyon', 'Python', 'ephem', 'forge3d', 'LiDAR', 'GitHub Actions', 'Southwest', 'New Mexico'] },
-  { url: 'https://brooksgroves.com/blog/aftershock-post.html', title: '🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor', dek: 'Every magnitude 1.5+ earthquake in the US, updated every six hours. Dark cinematic map, state deep-dives, Hiroshima energy readout, growing up on the Melones Fault Zone.', date: '2026', tags: ['Geology', 'Seismology', 'USGS', 'Python', 'Leaflet', 'Cascadia', 'Tuolumne County', 'Sierra Nevada', 'GitHub Actions'] },
-  { url: 'https://brooksgroves.com/blog/dipodomys-post.html', title: '🐾 DIPODOMYS — A Data Portrait of Death Valley\'s Kangaroo Rats', dek: 'Two kangaroo rat species, one valley, and what citizen science data reveals about habitat partitioning in the hottest place on Earth.', date: '2026', tags: ['Ecology', 'iNaturalist', 'Death Valley', 'Citizen Science', 'Leaflet', 'Mojave', 'California', 'Desert'] },
-  { url: 'https://brooksgroves.com/blog/little-free-pantry-post.html', title: '🏠 Little Free Pantry — Mapping Food Access in Lakewood', dek: '7 pantries providing 24/7 no-barrier food access across Lakewood. GIS as community infrastructure.', date: '2026', tags: ['Community GIS', 'Leaflet', 'Food Access', 'Lakewood WA', 'Rotary', 'Civic Tech', 'Pacific Northwest'] },
-  { url: 'https://brooksgroves.com/blog/sentinel-stockpile-post.html', title: '🛰️ Sentinel Stockpile — The Economy You Can See From Space', dek: '12 months of ESA satellite imagery tracking lumber stockpiles at the Port of Longview. The Pacific Northwest timber supply chain, measured from orbit.', date: '2026', tags: ['Remote Sensing', 'GIS', 'Sentinel-2', 'Python', 'Supply Chain', 'Columbia River', 'Pacific Northwest', 'pixi'] },
-  { url: 'https://brooksgroves.com/blog/weather-station-post.html', title: '🌡️ Weather Station — Four Climates, Zero Dollars, Half a Cup of Coffee', dek: 'Real-time dashboard monitoring Lakewood, Groveland, Reno, and Death Valley. Wind compass, pressure arrows, NWS alerts, moon phase.', date: '2026', tags: ['Meteorology', 'Python', 'GitHub Actions', 'Open-Meteo', 'NWS', 'Pacific Northwest', 'Death Valley', 'Groveland', 'Reno'] },
-  { url: 'https://brooksgroves.com/blog/pele-blog-post.html', title: '🌋 PELE — Building a Live Kīlauea Dashboard for a Birthday Trip', dek: '43 eruption episodes, a webcam buried under 10 meters of tephra, and a cron job running every 6 hours. Real-time data from USGS HVO.', date: '2026', tags: ['Volcanology', 'Python', 'GitHub Actions', 'USGS', 'Kīlauea', 'Hawaii', 'Episodic Eruption'] },
-  { url: 'https://brooksgroves.com/blog/cascadia-wx-post.html', title: 'FORTRAN, Snowpack, and the Language the Atmosphere Speaks', dek: 'NWS runs FORTRAN. NCAR runs FORTRAN. So does a developer in Lakewood — analyzing Cascade snowpack at 15% of normal, every morning, over coffee.', date: '2026', tags: ['Meteorology', 'FORTRAN', 'Python', 'SNOTEL', 'Pacific Northwest', 'Cascades', 'Snowpack'] },
-  { url: 'https://brooksgroves.com/blog/sierra-flow-cobol-post.html', title: 'COBOL, Streamflow, and Artemis II', dek: 'A 1959 language fetching live government telemetry, on the day four humans left Earth\'s orbit for the first time since 1972.', date: '2026', tags: ['Hydrology', 'COBOL', 'Python', 'USGS', 'Sierra Nevada', 'Streamflow', 'GitHub Actions'] },
-  { url: 'https://brooksgroves.com/blog/forge3d-post.html', title: 'Exploring forge3d With Washington LiDAR', dek: 'A GPU-accelerated terrain renderer built in Rust, shipped as Python wheels. Mount St. Helens, Crater Lake, and what 1-meter LiDAR does to a summit render.', date: '2026', tags: ['GIS', 'LiDAR', 'forge3d', 'Python', 'Terrain', 'Pacific Northwest', 'Washington'] },
-  { url: 'https://brooksgroves.com/blog/pixi-post.html', title: 'Why I Switched to pixi for Managing Python and R Environments', dek: 'After years of conda headaches, a faster more reproducible path to geospatial work. Lockfiles, cross-platform consistency.', date: '2026', tags: ['Python', 'R', 'pixi', 'GIS', 'Environments', 'Reproducibility'] },
-  { url: 'https://brooksgroves.com/blog/streamflow-post.html', title: 'Building a Live Streamflow Dashboard on a $0 Budget', dek: 'GitHub Actions, USGS APIs, and a healthy respect for Pacific snowmelt. How the Sierra Streamflow Monitor became the template for everything.', date: '2026', tags: ['Hydrology', 'Python', 'USGS', 'GitHub Actions', 'Sierra Nevada', 'Streamflow'] },
-  { url: 'https://memoir.brooksgroves.com', title: 'Memoir — Brooks Groves', dek: 'Personal essays and dispatches from the years before Seattle. The Sierra Nevada, Reno, San Francisco, the early 90s. The Midtown and the Cow Palace and whatever comes next.', date: '2026', tags: ['Memoir','San Francisco','1990s','Groveland','Personal Archive'] },
-  { url: 'https://memoir.brooksgroves.com/the-midtown.html', title: 'The Midtown', dek: 'A dark bar in the Lower Haight, a best friend from Groveland, cheap beer, the Lucasfilm creature designer, and the R2-D2 sabotage debate. Early 1990s memoir.', date: '2026', tags: ['Memoir','San Francisco','1990s','Groveland','Friendship','Star Wars'] },
-  { url: 'https://memoir.brooksgroves.com/cow-palace-nye-1991.html', title: '🎸 The Night the Cow Palace Changed Everything', dek: 'New Year\'s Eve 1991. RHCP, Nirvana, Pearl Jam. The Cow Palace. The night the 90s started in earnest.', date: '2026', tags: ['Memoir','Music','Concerts','RHCP','Nirvana','Pearl Jam','1990s','San Francisco'] },
-  { url: 'https://brooksgroves.com/writing/draught-south-land.html', title: 'A Draught of the South Land — Book Review', dek: 'Review of Paul Moon\'s A Draught of the South Land, published in Cartographic Perspectives No. 105.', date: '2025', tags: ['Book Review','Cartography','Pacific Northwest','New Zealand','Maps'] },
-  { url: 'https://brooksgroves.com/giro-2026.html', title: '🇮🇹 Giro d'Italia 2026 Stage Tracker', dek: '109th edition. Nessebar, Bulgaria to Rome. 21 stages, 7 summit finishes, 3,459km. Stage-by-stage tracker with GC standings, jersey holders, and key climbs.', date: '2026', tags: ['Pro Cycling','Giro d'Italia','Grand Tour','Italy','Stage Tracker'] },
-  { url: 'https://brooksgroves.com/tdf-2026.html', title: '🇫🇷 Tour de France 2026 Stage Tracker', dek: '113th edition. Barcelona to Paris. 21 stages. Stage-by-stage tracker with GC standings, jersey holders, and key climbs.', date: '2026', tags: ['Pro Cycling','Tour de France','Grand Tour','France','Stage Tracker'] },
-  { url: 'https://brooksgroves.com/vuelta-2026.html', title: '🇪🇸 Vuelta a España 2026 Stage Tracker', dek: '81st edition. Monaco to Granada. 21 stages. Stage-by-stage tracker with GC standings, jersey holders, and key climbs.', date: '2026', tags: ['Pro Cycling','Vuelta a España','Grand Tour','Spain','Stage Tracker'] },
-  { url: 'https://brooksgroves.com/sports.html', title: '⚾🚴🍺 Sports & Beer', dek: 'Mariners scores and AL West standings, pro cycling results, Seahawks, triathlon and running events, Strava training data, and recent Untappd beer check-ins.', date: '2026', tags: ['Baseball','Mariners','NFL','Seahawks','Pro Cycling','Triathlon','Running','Beer','Strava','Sports'] },
-  { url: 'https://westin.brooksgroves.com/cantina-wrestling.html', title: '🤼 Monday Night at the Cantina', dek: 'Marco and the volume knob. The quiet front desk lady who really wanted to body slam a platinum guest. The night accounting came downstairs.', date: '2026', tags: ['Westin Stories','Seattle','Hospitality','Bell Captain','The Westin','Graveyard','Quick Turn'] },
-  { url: 'https://westin.brooksgroves.com/graveyard-radio.html', title: '📻 Graveyard Radio', dek: 'The 2:17 AM moment. The Modest Mouse connection. The bellman with the Discman. The sound the Westin Seattle made at night in 1997.', date: '2026', tags: ['Westin Stories','Seattle','Hospitality','Bell Captain','1990s','Music','Graveyard','Modest Mouse'] },
-  { url: 'https://westin.brooksgroves.com/how-i-got-the-job.html', title: 'How I Got the Job', dek: 'Walking into the Westin Seattle in 1997. How a molecular biologist became a bell captain.', date: '2026', tags: ['Westin Stories','Seattle','Hospitality','Bell Captain','1990s','Origin Story','Bellman'] },
-  { url: 'https://westin.brooksgroves.com/940-to-base.html', title: '940 to Base — Radio Check', dek: 'The Westin Seattle radio dispatch system and the language of the bell desk.', date: '2026', tags: ['Westin Stories','Seattle','Hospitality','Bell Captain','1990s','Radio','Initiation'] },
-  { url: 'https://westin.brooksgroves.com/beanie-baby-mountain.html', title: 'The Saudi Beanie Baby Mountain', dek: 'The Saudi royal family arrives. So do thirty thousand Beanie Babies.', date: '2026', tags: ['Westin Stories','Seattle','Hospitality','Bell Captain','1990s','Saudi Arabia','Saudi Royal Family','VIP','Presidential Suite'] },
-  { url: 'https://westin.brooksgroves.com/coffee-license.html', title: 'The Coffee License Fiasco', dek: 'What it takes to make coffee at the Westin Seattle.', date: '2026', tags: ['Westin Stories','Seattle','Hospitality','Bell Captain','Graveyard','Licensing'] },
-  { url: 'https://westin.brooksgroves.com/gator-in-a-box.html', title: 'Gator in a Box', dek: 'A package arrives at the bell desk. Nobody asks what is in it.', date: '2026', tags: ['Westin Stories','Seattle','Hospitality','Bell Captain','Graveyard','Live Animal','Room 3242'] },
-  { url: 'https://westin.brooksgroves.com/kerouac-and-coffee.html', title: 'Coffee, Kerouac, and the North Cascades', dek: 'Reading on the graveyard shift at the Westin Seattle.', date: '2026', tags: ['Westin Stories','Seattle','Hospitality','Bell Captain','Books','North Cascades','Kerouac','Big Sur','Graveyard'] },
-  { url: 'https://westin.brooksgroves.com/milkshake-license.html', title: 'The Milkshake License Incident', dek: 'Room service at 3am and the rules nobody told you about.', date: '2026', tags: ['Westin Stories','Seattle','Hospitality','Bell Captain','Room Service','Graveyard','Licensing'] },
-  { url: 'https://westin.brooksgroves.com/tolstoy-at-3am.html', title: 'Tolstoy at 3am', dek: 'The graveyard shift, great literature, and the quiet of the Westin lobby at 3am.', date: '2026', tags: ['Westin Stories','Seattle','Hospitality','Bell Captain','Books','Literature','Tolstoy','Graveyard Shift'] },
-  { url: 'https://westin.brooksgroves.com/new-years-eve.html', title: 'Turn and Burn — New Years Eve', dek: '900 rooms, one night, Dom Perignon, hundred dollar bills, and midnight fireworks from the 28th floor.', date: '2026', tags: ['Westin Stories','Seattle','Hospitality','New Years Eve','1990s','Bell Captain','Quick Turn','Service Express'] },
-  // Y2K ARCHIVE — individual entries
-  { url: 'https://y2k.brooksgroves.com/entries/summer-2000', title: 'Summer 2000', dek: 'Mt. Adams, The Westin, and a summer in Seattle at the turn of the millennium.', date: 'Summer 2000', tags: ['Y2K Archive','Journal','Seattle','Mt. Adams','The Westin','Running','1999-2001','2000'] },
-  { url: 'https://y2k.brooksgroves.com/entries/sep-2000', title: 'September 2000', dek: 'Running, the Olympics, and graveyard shifts at the Westin.', date: 'Sep 2000', tags: ['Y2K Archive','Journal','Seattle','Running','Marathon','The Westin','Olympics','1999-2001','2000'] },
-  { url: 'https://y2k.brooksgroves.com/entries/oktober-2000', title: 'Oktober 2000', dek: 'Marathon, Mariners, and the bell desk in autumn.', date: 'Oct 2000', tags: ['Y2K Archive','Journal','Seattle','Marathon','Mariners','Baseball','Westin','1999-2001','2000'] },
-  { url: 'https://y2k.brooksgroves.com/entries/nov-2000', title: 'November 2000', dek: 'Amsterdam, Cannabis Cup, and Election 2000.', date: 'Nov 2000', tags: ['Y2K Archive','Journal','Seattle','Amsterdam','Cannabis Cup','Election 2000','Marathon','1999-2001','2000'] },
-  { url: 'https://y2k.brooksgroves.com/entries/dec-2000', title: 'December 2000', dek: 'T.S. Eliot and end of year in Seattle.', date: 'Dec 2000', tags: ['Y2K Archive','Journal','Seattle','T.S. Eliot','End of Year','Year in Review','1999-2001','2000'] },
-  { url: 'https://y2k.brooksgroves.com/entries/jan-2001', title: 'January 2001', dek: 'Training, triathlon, Vancouver hockey.', date: 'Jan 2001', tags: ['Y2K Archive','Journal','Seattle','Training','Triathlon','Vancouver','Hockey','1999-2001','2001'] },
-  { url: 'https://y2k.brooksgroves.com/entries/feb-2001', title: 'February 2001', dek: 'Training and triathlon prep in Seattle.', date: 'Feb 2001', tags: ['Y2K Archive','Journal','Seattle','Training','Triathlon','1999-2001','2001'] },
-  { url: 'https://y2k.brooksgroves.com/entries/mar-2001', title: 'March 2001', dek: 'The Nisqually earthquake, triathlon, and the first geocaches.', date: 'Mar 2001', tags: ['Y2K Archive','Journal','Seattle','Earthquake','Triathlon','Geocaching','Vancouver','1999-2001','2001'] },
-  { url: 'https://y2k.brooksgroves.com/entries/apr-2001', title: 'April 2001', dek: 'Arizona, triathlon, geocaching, new bike.', date: 'Apr 2001', tags: ['Y2K Archive','Journal','Seattle','Arizona','Triathlon','Geocaching','New Bike','1999-2001','2001'] },
-  { url: 'https://y2k.brooksgroves.com/entries/may-2001', title: 'May 2001', dek: 'Birthday, grandmother, triathlon, Mariners.', date: 'May 2001', tags: ['Y2K Archive','Journal','Seattle','Birthday','Grandmother','Triathlon','Geocaching','Mariners','1999-2001','2001'] },
-  { url: 'https://y2k.brooksgroves.com/entries/jun-2001', title: 'June 2001', dek: 'Triathlon, geocaching, Mariners magic summer.', date: 'Jun 2001', tags: ['Y2K Archive','Journal','Seattle','Triathlon','Geocaching','Mariners','Mountains','1999-2001','2001'] },
-  { url: 'https://y2k.brooksgroves.com/entries/jul-2001', title: 'July 2001', dek: 'Triathlon, Lake Tahoe, baseball.', date: 'Jul 2001', tags: ['Y2K Archive','Journal','Seattle','Triathlon','Tahoe','Baseball','Geocaching','1999-2001','2001'] },
-  { url: 'https://y2k.brooksgroves.com/entries/aug-2001', title: 'August 2001', dek: 'Mountain biking, Tahoe, Hempfest. Before everything changed.', date: 'Aug 2001', tags: ['Y2K Archive','Journal','Seattle','Mountain Biking','Tahoe','The Westin','Hempfest','1999-2001','2001'] },
-  { url: 'https://y2k.brooksgroves.com/entries/sep-2001', title: 'September 2001', dek: 'September 11. Aftermath. Mariners. Unemployment.', date: 'Sep 2001', tags: ['Y2K Archive','Journal','Seattle','September 11','Aftermath','Mariners','Unemployment','1999-2001','2001'] },
-  { url: 'https://y2k.brooksgroves.com/entries/nov-2001', title: 'November 2001', dek: 'Post-9/11 Seattle. WTO anniversary. Midnight Oil.', date: 'Nov 2001', tags: ['Y2K Archive','Journal','Seattle','Post-9/11','WTO','Midnight Oil','Rugby','1999-2001','2001'] },
-  { url: 'https://y2k.brooksgroves.com/entries/dec-2001', title: 'December 2001', dek: 'Vancouver, hockey, Amsterdam, year in review.', date: 'Dec 2001', tags: ['Y2K Archive','Journal','Seattle','Vancouver','Hockey','Amsterdam','Year in Review','1999-2001','2001'] },
-  { url: 'https://y2k.brooksgroves.com/entries/jan-2002', title: 'January 2002', dek: 'Amsterdam, Luxembourg, the Euro launches.', date: 'Jan 2002', tags: ['Y2K Archive','Journal','Seattle','Amsterdam','Luxembourg','The Euro','Olympics','Geocaching','1999-2001','2002'] },
-  { url: 'https://y2k.brooksgroves.com/entries/feb-2002', title: 'February 2002', dek: 'Winter Olympics, Mardi Gras, training.', date: 'Feb 2002', tags: ['Y2K Archive','Journal','Seattle','Winter Olympics','Mardi Gras','Geocaching','Training','1999-2001','2002'] },
-  { url: 'https://y2k.brooksgroves.com/entries/mar-2002', title: 'March 2002', dek: 'Six months after 9/11. The Westin. Geocaching.', date: 'Mar 2002', tags: ['Y2K Archive','Journal','Seattle','9/11 Six Months','Training','The Westin','Geocaching','1999-2001','2002'] },
-  { url: 'https://y2k.brooksgroves.com/entries/may-2002', title: 'May 2002', dek: 'New apartment, birthday, Mariners.', date: 'May 2002', tags: ['Y2K Archive','Journal','Seattle','New Apartment','Birthday','Geocaching','Mariners','1999-2001','2002'] },
-  { url: 'https://y2k.brooksgroves.com/entries/coda-2004', title: 'Coda: 2004–2005', dek: 'The gap years. Seattle. The end of one chapter.', date: '2004–2005', tags: ['Y2K Archive','Journal','Seattle','Coda','The Gap','2004–2005'] },
+  {
+    "url": "https://journal.brooksgroves.com/myles.html",
+    "title": "Myles",
+    "dek": "One rubber duck. The American West. A lyric narrative through Death Valley, Mono Lake, the Rubicon Trail.",
+    "date": "2025",
+    "tags": [
+      "Fiction",
+      "Long Read",
+      "American West",
+      "Death Valley",
+      "Nature Writing",
+      "Pacific Northwest"
+    ]
+  },
+  {
+    "url": "https://journal.brooksgroves.com/cannon-beach.html",
+    "title": "Cannon Beach — Tide Pools and the Goonies Coast",
+    "dek": "Haystack Rock at low tide. Fort George beers in Astoria. A Saturday on the Oregon Coast.",
+    "date": "March 2026",
+    "tags": [
+      "Journal",
+      "Oregon Coast",
+      "Travel",
+      "Pacific Northwest",
+      "Field Notes",
+      "Fort George"
+    ]
+  },
+  {
+    "url": "/writing/draught-south-land.html",
+    "title": "A Draught of the South Land — Book Review",
+    "dek": "Review of Paul Moon on cartography in New Zealand. Cartographic Perspectives No. 105.",
+    "date": "2025",
+    "tags": [
+      "Book Review",
+      "Cartography",
+      "New Zealand",
+      "Maps",
+      "Cartographic Perspectives"
+    ]
+  },
+  {
+    "url": "https://westin.brooksgroves.com/cantina-wrestling.html",
+    "title": "Monday Night at the Cantina",
+    "dek": "Marco and the volume knob. The accounting lady. Night accounting came downstairs.",
+    "date": "2026",
+    "tags": [
+      "Westin Stories",
+      "Seattle",
+      "Hospitality",
+      "Bell Captain",
+      "The Cantina"
+    ]
+  },
+  {
+    "url": "https://westin.brooksgroves.com/graveyard-radio.html",
+    "title": "Graveyard Radio",
+    "dek": "The 2:17 AM moment. The Modest Mouse connection. The sound the Westin Seattle made at night in 1997.",
+    "date": "2026",
+    "tags": [
+      "Westin Stories",
+      "Seattle",
+      "Hospitality",
+      "Bell Captain",
+      "1990s",
+      "Music",
+      "Modest Mouse"
+    ]
+  },
+  {
+    "url": "https://westin.brooksgroves.com/how-i-got-the-job.html",
+    "title": "How I Got the Job",
+    "dek": "Walking into the Westin Seattle in 1997. How a molecular biologist became a bell captain.",
+    "date": "2026",
+    "tags": [
+      "Westin Stories",
+      "Seattle",
+      "Hospitality",
+      "Bell Captain",
+      "1990s"
+    ]
+  },
+  {
+    "url": "https://westin.brooksgroves.com/940-to-base.html",
+    "title": "940 to Base — Radio Check",
+    "dek": "The Westin Seattle radio dispatch system and the language of the bell desk.",
+    "date": "2026",
+    "tags": [
+      "Westin Stories",
+      "Seattle",
+      "Hospitality",
+      "Bell Captain",
+      "Radio"
+    ]
+  },
+  {
+    "url": "https://westin.brooksgroves.com/beanie-baby-mountain.html",
+    "title": "The Saudi Beanie Baby Mountain",
+    "dek": "The Saudi royal family arrives. So do thirty thousand Beanie Babies.",
+    "date": "2026",
+    "tags": [
+      "Westin Stories",
+      "Seattle",
+      "Hospitality",
+      "Bell Captain",
+      "Saudi Arabia",
+      "VIP"
+    ]
+  },
+  {
+    "url": "https://westin.brooksgroves.com/coffee-license.html",
+    "title": "The Coffee License Fiasco",
+    "dek": "What it takes to make coffee at the Westin Seattle.",
+    "date": "2026",
+    "tags": [
+      "Westin Stories",
+      "Seattle",
+      "Hospitality",
+      "Bell Captain",
+      "Graveyard",
+      "Licensing"
+    ]
+  },
+  {
+    "url": "https://westin.brooksgroves.com/gator-in-a-box.html",
+    "title": "Gator in a Box",
+    "dek": "A package arrives at the bell desk. Nobody asks what is in it.",
+    "date": "2026",
+    "tags": [
+      "Westin Stories",
+      "Seattle",
+      "Hospitality",
+      "Bell Captain",
+      "Live Animal"
+    ]
+  },
+  {
+    "url": "https://westin.brooksgroves.com/kerouac-and-coffee.html",
+    "title": "Coffee, Kerouac, and the North Cascades",
+    "dek": "Reading on the graveyard shift at the Westin Seattle.",
+    "date": "2026",
+    "tags": [
+      "Westin Stories",
+      "Seattle",
+      "Hospitality",
+      "Bell Captain",
+      "Books",
+      "North Cascades",
+      "Kerouac"
+    ]
+  },
+  {
+    "url": "https://westin.brooksgroves.com/milkshake-license.html",
+    "title": "The Milkshake License Incident",
+    "dek": "Room service at 3am and the rules nobody told you about.",
+    "date": "2026",
+    "tags": [
+      "Westin Stories",
+      "Seattle",
+      "Hospitality",
+      "Bell Captain",
+      "Room Service",
+      "Licensing"
+    ]
+  },
+  {
+    "url": "https://westin.brooksgroves.com/tolstoy-at-3am.html",
+    "title": "Tolstoy at 3am",
+    "dek": "The graveyard shift, great literature, and the quiet of the Westin lobby at 3am.",
+    "date": "2026",
+    "tags": [
+      "Westin Stories",
+      "Seattle",
+      "Hospitality",
+      "Bell Captain",
+      "Books",
+      "Literature",
+      "Tolstoy"
+    ]
+  },
+  {
+    "url": "https://westin.brooksgroves.com/new-years-eve.html",
+    "title": "Turn and Burn — New Years Eve",
+    "dek": "900 rooms, one night, Dom Perignon, hundred dollar bills, and midnight fireworks from the 28th floor.",
+    "date": "2026",
+    "tags": [
+      "Westin Stories",
+      "Seattle",
+      "Hospitality",
+      "New Years Eve",
+      "1990s",
+      "Bell Captain"
+    ]
+  },
+  {
+    "url": "/learning/quantum-physics/",
+    "title": "Quantum Physics Curriculum",
+    "dek": "The actual science. 15 lessons from the photoelectric effect to the multiverse.",
+    "date": "2026",
+    "tags": [
+      "Learning",
+      "Quantum Physics",
+      "Science",
+      "Physics"
+    ]
+  },
+  {
+    "url": "/learning/volcanology/",
+    "title": "Volcanology Curriculum",
+    "dek": "16 lessons on plate tectonics, magma, eruption types, Kilauea, the Cascades, and supervolcanoes.",
+    "date": "2026",
+    "tags": [
+      "Learning",
+      "Volcanology",
+      "Geology",
+      "Kilauea",
+      "Hawaii",
+      "Cascades"
+    ]
+  },
+  {
+    "url": "/sports.html",
+    "title": "Sports and Beer",
+    "dek": "Mariners, AL West standings, pro cycling, Seahawks, triathlon, Strava training, and Untappd check-ins.",
+    "date": "2026",
+    "tags": [
+      "Baseball",
+      "Mariners",
+      "NFL",
+      "Seahawks",
+      "Pro Cycling",
+      "Triathlon",
+      "Running",
+      "Beer",
+      "Strava"
+    ]
+  },
+  {
+    "url": "/giro-2026.html",
+    "title": "Giro d Italia 2026 Stage Tracker",
+    "dek": "109th edition. Bulgaria to Rome. 21 stages.",
+    "date": "2026",
+    "tags": [
+      "Pro Cycling",
+      "Grand Tour",
+      "Italy",
+      "Stage Tracker"
+    ]
+  },
+  {
+    "url": "/tdf-2026.html",
+    "title": "Tour de France 2026 Stage Tracker",
+    "dek": "113th edition. Barcelona to Paris. 21 stages.",
+    "date": "2026",
+    "tags": [
+      "Pro Cycling",
+      "Grand Tour",
+      "France",
+      "Stage Tracker"
+    ]
+  },
+  {
+    "url": "/vuelta-2026.html",
+    "title": "Vuelta a Espana 2026 Stage Tracker",
+    "dek": "81st edition. Monaco to Granada. 21 stages.",
+    "date": "2026",
+    "tags": [
+      "Pro Cycling",
+      "Grand Tour",
+      "Spain",
+      "Stage Tracker"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/summer-2000",
+    "title": "Summer 2000",
+    "dek": "Mt. Adams, The Westin, and a summer in Seattle at the turn of the millennium.",
+    "date": "Summer 2000",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Mt. Adams",
+      "Running",
+      "2000"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/sep-2000",
+    "title": "September 2000",
+    "dek": "Running, the Olympics, and graveyard shifts at the Westin.",
+    "date": "Sep 2000",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Running",
+      "Marathon",
+      "Olympics",
+      "2000"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/oktober-2000",
+    "title": "Oktober 2000",
+    "dek": "Marathon, Mariners, and the bell desk in autumn.",
+    "date": "Oct 2000",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Marathon",
+      "Mariners",
+      "Baseball",
+      "2000"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/nov-2000",
+    "title": "November 2000",
+    "dek": "Amsterdam, Cannabis Cup, and Election 2000.",
+    "date": "Nov 2000",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Amsterdam",
+      "Election 2000",
+      "2000"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/dec-2000",
+    "title": "December 2000",
+    "dek": "T.S. Eliot and end of year in Seattle.",
+    "date": "Dec 2000",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "End of Year",
+      "2000"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/jan-2001",
+    "title": "January 2001",
+    "dek": "Training, triathlon, Vancouver hockey.",
+    "date": "Jan 2001",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Training",
+      "Triathlon",
+      "Vancouver",
+      "2001"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/feb-2001",
+    "title": "February 2001",
+    "dek": "Training and triathlon prep in Seattle.",
+    "date": "Feb 2001",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Training",
+      "Triathlon",
+      "2001"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/mar-2001",
+    "title": "March 2001",
+    "dek": "The Nisqually earthquake, triathlon, and the first geocaches.",
+    "date": "Mar 2001",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Earthquake",
+      "Triathlon",
+      "Geocaching",
+      "2001"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/apr-2001",
+    "title": "April 2001",
+    "dek": "Arizona, triathlon, geocaching, new bike.",
+    "date": "Apr 2001",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Arizona",
+      "Triathlon",
+      "Geocaching",
+      "2001"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/may-2001",
+    "title": "May 2001",
+    "dek": "Birthday, grandmother, triathlon, Mariners.",
+    "date": "May 2001",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Triathlon",
+      "Geocaching",
+      "Mariners",
+      "2001"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/jun-2001",
+    "title": "June 2001",
+    "dek": "Triathlon, geocaching, Mariners magic summer.",
+    "date": "Jun 2001",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Triathlon",
+      "Geocaching",
+      "Mariners",
+      "2001"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/jul-2001",
+    "title": "July 2001",
+    "dek": "Triathlon, Lake Tahoe, baseball.",
+    "date": "Jul 2001",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Triathlon",
+      "Tahoe",
+      "Baseball",
+      "Geocaching",
+      "2001"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/aug-2001",
+    "title": "August 2001",
+    "dek": "Mountain biking, Tahoe, Hempfest. Before everything changed.",
+    "date": "Aug 2001",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Mountain Biking",
+      "Tahoe",
+      "2001"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/sep-2001",
+    "title": "September 2001",
+    "dek": "September 11. Aftermath. Mariners. Unemployment.",
+    "date": "Sep 2001",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "September 11",
+      "Mariners",
+      "2001"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/nov-2001",
+    "title": "November 2001",
+    "dek": "Post-9/11 Seattle. WTO anniversary. Midnight Oil.",
+    "date": "Nov 2001",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Post-9/11",
+      "WTO",
+      "Midnight Oil",
+      "2001"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/dec-2001",
+    "title": "December 2001",
+    "dek": "Vancouver, hockey, Amsterdam, year in review.",
+    "date": "Dec 2001",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Vancouver",
+      "Hockey",
+      "Amsterdam",
+      "2001"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/jan-2002",
+    "title": "January 2002",
+    "dek": "Amsterdam, Luxembourg, the Euro launches.",
+    "date": "Jan 2002",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Amsterdam",
+      "Luxembourg",
+      "2002"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/feb-2002",
+    "title": "February 2002",
+    "dek": "Winter Olympics, Mardi Gras, training.",
+    "date": "Feb 2002",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Winter Olympics",
+      "Mardi Gras",
+      "Geocaching",
+      "2002"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/mar-2002",
+    "title": "March 2002",
+    "dek": "Six months after 9/11. The Westin. Geocaching.",
+    "date": "Mar 2002",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "The Westin",
+      "Geocaching",
+      "2002"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/may-2002",
+    "title": "May 2002",
+    "dek": "New apartment, birthday, Mariners.",
+    "date": "May 2002",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Mariners",
+      "Geocaching",
+      "2002"
+    ]
+  },
+  {
+    "url": "https://y2k.brooksgroves.com/entries/coda-2004",
+    "title": "Coda: 2004-2005",
+    "dek": "The gap years. Seattle. The end of one chapter.",
+    "date": "2004-2005",
+    "tags": [
+      "Y2K Archive",
+      "Journal",
+      "Seattle",
+      "Coda"
+    ]
+  }
 ];
 
-// Build tag frequency map
 const tagMap = {};
 POSTS.forEach(p => p.tags.forEach(t => { tagMap[t] = (tagMap[t]||0)+1; }));
 const sortedTags = Object.entries(tagMap).sort((a,b) => b[1]-a[1] || a[0].localeCompare(b[0]));
 
 let activeTag = null;
-
-// Check URL hash on load
 if (window.location.hash) {
   activeTag = decodeURIComponent(window.location.hash.slice(1));
 }
 
-// Render tag cloud
 const tagCloud = document.getElementById('tagCloud');
 sortedTags.forEach(([tag, count]) => {
   const btn = document.createElement('button');
   btn.className = 'tag-btn' + (activeTag === tag ? ' active' : '');
-  btn.innerHTML = tag + `<span class="tag-count">${count}</span>`;
+  btn.innerHTML = tag + '<span class="tag-count">' + count + '</span>';
   btn.onclick = () => {
     if (activeTag === tag) {
       activeTag = null;
@@ -295,24 +910,21 @@ function renderPosts() {
   const label = document.getElementById('resultsLabel');
   const list = document.getElementById('postList');
   const filtered = activeTag ? POSTS.filter(p => p.tags.includes(activeTag)) : POSTS;
-
   label.innerHTML = activeTag
-    ? `Showing <span>${filtered.length} post${filtered.length !== 1 ? 's' : ''}</span> tagged <span>${activeTag}</span>`
-    : `All posts — <span>${POSTS.length} total</span>`;
-
+    ? 'Showing <span>' + filtered.length + ' ' + (filtered.length !== 1 ? 'entries' : 'entry') + '</span> tagged <span>' + activeTag + '</span>'
+    : 'All entries — <span>' + POSTS.length + ' total</span>';
   if (!filtered.length) {
-    list.innerHTML = '<div class="no-results">No posts found for this tag.</div>';
+    list.innerHTML = '<div class="no-results">No entries found for this tag.</div>';
     return;
   }
-
-  list.innerHTML = filtered.map(p => `
-    <a href="${p.url}" class="post-item">
-      <div class="post-item-tags">${p.tags.slice(0,4).join(' · ')}</div>
-      <div class="post-item-title">${p.title}</div>
-      <div class="post-item-dek">${p.dek}</div>
-      <div class="post-item-date">${p.date}</div>
-    </a>
-  `).join('');
+  list.innerHTML = filtered.map(p =>
+    '<a href="' + p.url + '" class="post-item">' +
+    '<div class="post-item-tags">' + p.tags.slice(0,4).join(' · ') + '</div>' +
+    '<div class="post-item-title">' + p.title + '</div>' +
+    '<div class="post-item-dek">' + p.dek + '</div>' +
+    '<div class="post-item-date">' + p.date + '</div>' +
+    '</a>'
+  ).join('');
 }
 
 renderPosts();
