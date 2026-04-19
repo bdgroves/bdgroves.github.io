@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quotes — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--sage) 0%,var(--gold) 50%,var(--rust) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:900px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
+
+    .page-header { max-width:900px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--rust); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--gold); }
+    .page-sub { font-size:0.9rem; color:var(--stone); max-width:560px; line-height:1.8; }
+
+    /* FILTER BAR */
+    .filter-bar { max-width:900px; margin:0 auto; padding:1.5rem clamp(1.5rem,5vw,4rem) 0; display:flex; gap:0.4rem; flex-wrap:wrap; }
+    .filter-btn { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.08em; text-transform:uppercase; background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.7rem; border-radius:4px; cursor:pointer; color:var(--stone); transition:all 0.15s; }
+    .filter-btn:hover { border-color:var(--gold); color:var(--gold); }
+    .filter-btn.active { background:var(--ink); color:var(--white); border-color:var(--ink); }
+
+    /* QUOTE LIST */
+    .page-content { max-width:900px; margin:0 auto; padding:2rem clamp(1.5rem,5vw,4rem) 5rem; }
+    .quote-count { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--mist); margin-bottom:1.5rem; }
+
+    .quote-item { padding:1.5rem 0; border-bottom:1px solid var(--mist); }
+    .quote-item:last-child { border-bottom:none; }
+    .quote-cat { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .quote-text { font-family:'Playfair Display',serif; font-size:1.05rem; font-style:italic; line-height:1.7; color:var(--ink); margin-bottom:0.6rem; }
+    .quote-attr { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.06em; color:var(--stone); }
+
+    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:2rem; }
+    .footer-inner { max-width:900px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/about.html">About</a>
+      <a href="/">Home</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a></p>
+  <h1 class="page-title">A <em>Commonplace</em> Book</h1>
+  <p class="page-sub">Quotes collected over the years — from field notebooks, Apple Notes, the margins of paperbacks. Abbey, Muir, Powell, Tobler, Prefontaine, Steinbeck, and a few others.</p>
+</div>
+
+<div class="filter-bar" id="filterBar"></div>
+
+<div class="page-content">
+  <div class="quote-count" id="quoteCount"></div>
+  <div id="quoteList"></div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+    </div>
+    <div class="footer-links">
+      <a href="/about.html">About</a>
+      <a href="/tags.html">Tags</a>
+      <a href="/">Home</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const QUOTES = [
+  {q:"The redwoods, once seen, leave a mark or create a vision that stays with you always.",a:"John Steinbeck",c:"Nature"},
+  {q:"When we try to pick out anything by itself, we find it hitched to everything else in the Universe.",a:"John Muir",c:"Nature"},
+  {q:"I am losing precious days. I am degenerating into a machine for making money. I am learning nothing in this trivial world of men. I must break away and get out into the mountains to learn the news.",a:"John Muir",c:"Nature"},
+  {q:"Of all the fire-mountains which, like beacons, once blazed along the Pacific Coast, Mount Rainier is the noblest.",a:"John Muir",c:"Nature"},
+  {q:"All this is the music of waters.",a:"John Wesley Powell, 1895",c:"Nature"},
+  {q:"Il faut aller voir — We must go and see for ourselves.",a:"Jacques-Yves Cousteau",c:"Nature"},
+  {q:"The desert could not be claimed or owned — it was a piece of cloth carried by winds, never held down by stones, and given a hundred shifting names.",a:"Michael Ondaatje, The English Patient",c:"Nature"},
+  {q:"If the desert is holy, it is because it is a forgotten place that allows us to remember the sacred. Perhaps that is why every pilgrimage to the desert is a pilgrimage to the self.",a:"Terry Tempest Williams, Refuge",c:"Nature"},
+  {q:"I have dropped into the very place I have been seeking.",a:"Isabella Bird",c:"Nature"},
+  {q:"By discovering nature, you discover yourself.",a:"Maxime Lagacé",c:"Nature"},
+  {q:"We really live on a planet where birds give us a dawn chorus to start each day. I still can't believe this.",a:"Corina Newsome",c:"Nature"},
+  {q:"There can be no purpose more enspiriting than to begin the age of restoration, reweaving the wondrous diversity of life that still surrounds us.",a:"E.O. Wilson",c:"Nature"},
+  {q:"A thing is right when it tends to preserve the integrity, stability, and beauty of the biotic community. It is wrong when it tends otherwise.",a:"Aldo Leopold",c:"Nature"},
+  {q:"The river only says things once. Listen or risk silencing this liquid jubilee. Take what the river says personally. Because where water is, life is.",a:"Ellen Waterston",c:"Nature"},
+  {q:"Ocian in view! O! the joy.",a:"William Clark, Nov 7 1805",c:"Nature"},
+  {q:"Our adventure is heightened by knowing that we are among a few who will venture into this canyon and see the sights now laid out before us.",a:"Devon Comstock",c:"Nature"},
+  {q:"I believe we all have a stake in the future of our country — our love for the outdoors and a desire and obligation to keep our nation livable for future generations.",a:"Secretary of Interior Deb Haaland",c:"Nature"},
+  {q:"Wilderness is not a luxury but a necessity of the human spirit, and as vital to our lives as water and good bread.",a:"Edward Abbey",c:"Abbey"},
+  {q:"The idea of wilderness needs no defense, it only needs defenders.",a:"Edward Abbey",c:"Abbey"},
+  {q:"What draws us into the desert is the search for something intimate in the remote.",a:"Edward Abbey",c:"Abbey"},
+  {q:"If my decomposing carcass helps nourish the roots of a juniper tree or the wings of a vulture — that is immortality enough for me. And as much as anyone deserves.",a:"Edward Abbey, Desert Solitaire",c:"Abbey"},
+  {q:"Life is too short for grief. Or regret. Or bullshit.",a:"Edward Abbey",c:"Abbey"},
+  {q:"Freedom begins between the ears.",a:"Edward Abbey",c:"Abbey"},
+  {q:"I stand for what I stand on.",a:"Edward Abbey",c:"Abbey"},
+  {q:"This is the most beautiful place on Earth. There are many such places.",a:"Edward Abbey",c:"Abbey"},
+  {q:"When the situation is hopeless, there's nothing to worry about.",a:"Edward Abbey",c:"Abbey"},
+  {q:"There are some places so beautiful they can make a grown man break down and weep.",a:"Edward Abbey",c:"Abbey"},
+  {q:"Has joy any survival value in the operations of evolution? I suspect that it does; I suspect that the morose and fearful are doomed to quick extinction.",a:"Edward Abbey",c:"Abbey"},
+  {q:"Everything is related to everything else, but near things are more related than distant things.",a:"Waldo Tobler — First Law of Geography",c:"GIS"},
+  {q:"Tidy datasets are all alike, but every messy dataset is messy in its own way.",a:"Hadley Wickham",c:"GIS"},
+  {q:"All models are wrong, but some are useful.",a:"George Box",c:"Science"},
+  {q:"To know the brain is equivalent to ascertaining the material course of thought and will.",a:"Santiago Ramón y Cajal",c:"Science"},
+  {q:"Out of clutter, find simplicity. From discord, find harmony. In the middle of difficulty lies opportunity.",a:"Albert Einstein",c:"Science"},
+  {q:"Happy families are all alike; every unhappy family is unhappy in its own way.",a:"Leo Tolstoy",c:"Writing"},
+  {q:"And it never failed that during the dry years the people forgot about the rich years, and during the wet years they lost all memory of the dry years. It was always that way.",a:"John Steinbeck, East of Eden",c:"Writing"},
+  {q:"Stay in the mile you're in.",a:"Runner's World",c:"Running"},
+  {q:"To give anything less than your best is to sacrifice the gift.",a:"Steve Prefontaine",c:"Running"},
+  {q:"Before the deed comes the thought. Before the achievement comes the dream. Every mountain we climb, we first climb in our mind.",a:"Royal Robbins",c:"Running"},
+  {q:"The story you tell yourself becomes your reality.",a:"Chad Kellogg",c:"Running"},
+  {q:"I have often marvelled at the thin line that divides success from failure and the sudden turn that leads from apparently certain disaster to comparative safety.",a:"Ernest Shackleton",c:"Running"},
+  {q:"Every sunset brings the promise of a new dawn.",a:"Ralph Waldo Emerson",c:"Life"},
+  {q:"Because when you stop and look around, this life is pretty amazing.",a:"Dr. Seuss",c:"Life"},
+  {q:"You're off to Great Places! Today is your day! Your mountain is waiting, so get on your way!",a:"Dr. Seuss, Oh The Places You'll Go",c:"Life"},
+  {q:"A journey of a thousand miles begins with a single step.",a:"Lao-tzu",c:"Life"},
+  {q:"Every situation is of infinite value, for it is the representative of a whole eternity.",a:"Johann Wolfgang von Goethe",c:"Life"},
+  {q:"Maybe some people just aren't meant to be in our lives forever. Maybe some people are just passing through to bring us something: a gift, a blessing, a lesson we need to learn.",a:"Danielle Steel",c:"Life"},
+  {q:"Accept what is, let go of what was, and have faith in what will be.",a:"Unknown",c:"Life"},
+  {q:"Remember, tomorrow is promised to no one.",a:"Walter Payton",c:"Life"},
+  {q:"Lack of direction, not lack of time, is the problem. We all have twenty-four hour days.",a:"Zig Ziglar",c:"Life"},
+  {q:"The cure for boredom is curiosity. There is no cure for curiosity.",a:"Dorothy Parker",c:"Life"},
+  {q:"It had only to do with how it felt to be in the wild — the accumulation of trees and meadows, mountains and deserts, streams and rocks, sunrises and sunsets. The experience was powerful and fundamental.",a:"Cheryl Strayed",c:"Life"},
+  {q:"Ah, California! The way I figure, it should take about 34 minutes to revert to my Native State!",a:"Brooks Groves",c:"Funny"},
+  {q:"80 percent trill, 20 percent dope.",a:"Matt Brody, Baywatch",c:"Funny"},
+  {q:"She is so fucked up — Magnum P.I. couldn't solve that shit!",a:"Unknown",c:"Funny"},
+  {q:"I don't understand the question, and I am not going to respond to it!",a:"Unknown",c:"Funny"},
+  {q:"Better put some ice on these pythons!",a:"Unknown",c:"Funny"},
+  {q:"Putting the douche into fiduciary!",a:"Unknown",c:"Funny"},
+  {q:"Dude, you're rolling benjis until the rubber band pops!",a:"Unknown",c:"Funny"},
+  {q:"Text me, don't call. It freaks me out.",a:"Unknown",c:"Funny"},
+];
+
+const CATS = ['All', ...new Set(QUOTES.map(q => q.c))].sort((a,b) => a === 'All' ? -1 : b === 'All' ? 1 : a.localeCompare(b));
+let activeFilter = 'All';
+
+// Build filter buttons
+const filterBar = document.getElementById('filterBar');
+CATS.forEach(cat => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn' + (cat === 'All' ? ' active' : '');
+  btn.textContent = cat + (cat !== 'All' ? ' (' + QUOTES.filter(q => q.c === cat).length + ')' : '');
+  btn.onclick = () => {
+    activeFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderQuotes();
+  };
+  filterBar.appendChild(btn);
+});
+
+function renderQuotes() {
+  const filtered = activeFilter === 'All' ? QUOTES : QUOTES.filter(q => q.c === activeFilter);
+  document.getElementById('quoteCount').textContent = filtered.length + ' quote' + (filtered.length !== 1 ? 's' : '') + (activeFilter !== 'All' ? ' · ' + activeFilter : '');
+  document.getElementById('quoteList').innerHTML = filtered.map(q => `
+    <div class="quote-item">
+      <div class="quote-cat">${q.c}</div>
+      <div class="quote-text">"${q.q}"</div>
+      <div class="quote-attr">— ${q.a}</div>
+    </div>
+  `).join('');
+}
+
+renderQuotes();
+</script>
+</body>
+</html>
