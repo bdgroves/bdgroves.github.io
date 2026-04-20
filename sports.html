@@ -156,6 +156,10 @@
  .strava-btn:hover { background:var(--strava); color:var(--white); }
 
  .sport-note { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); padding-top:0.5rem; letter-spacing:0.06em; }
+ .fort-george-alert { display:none; background:var(--ink); color:#e8e4d8; border-left:4px solid var(--gold); padding:0.85rem 1.25rem; margin-top:1rem; }
+ .fort-george-alert.visible { display:block; }
+ .fort-george-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.25rem; }
+ .fort-george-text { font-size:0.88rem; line-height:1.6; }
  .loading { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--mist); padding:1.5rem 0; }
  .updated-note { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--mist); margin-top:2rem; }
 
@@ -384,22 +388,18 @@
   <div class="team-links">
     <a href="https://www.peaksandpints.com/on-tap/" target="_blank" class="team-link">Full Tap List ↗</a>
     <a href="https://www.peaksandpints.com/events/" target="_blank" class="team-link">Events ↗</a>
+    <a href="https://www.google.com/maps/place/Peaks+and+Pints" target="_blank" class="team-link">3816 N 26th, Tacoma ↗</a>
   </div>
 
   <div class="fort-george-alert" id="fort-george-alert">
-    <div class="fort-george-label">Fort George on Tap</div>
-    <div class="fort-george-text" id="fort-george-text">Fort George Brewery is currently on tap at Peaks &amp; Pints.</div>
+    <div class="fort-george-label">🍺 Fort George on Tap</div>
+    <div class="fort-george-text" id="fort-george-text"></div>
   </div>
 
-  <div class="peaks-iframe-wrap">
-    <div class="peaks-loading" id="peaks-loading">Loading tap list…</div>
-    <iframe 
-      src="https://www.peaksandpints.com/on-tap/" 
-      title="Peaks and Pints On Tap"
-      id="peaks-iframe"
-      onload="peaksLoaded()"
-      loading="lazy">
-    </iframe>
+  <div style="background:var(--cream);border:1px solid var(--mist);padding:1.5rem;margin-top:1rem;">
+    <p style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);margin-bottom:0.75rem;">About Peaks &amp; Pints</p>
+    <p style="font-size:0.88rem;color:var(--stone);line-height:1.7;margin-bottom:1rem;">28 taps including nitro lines. Craft beer, cider, wine, cold brew, and kombucha. Tacoma's best bottle shop and taproom — 3816 N. 26th St., Proctor District. Hours: 11am–11pm Sun–Thu, 11am–midnight Fri–Sat.</p>
+    <a href="https://www.peaksandpints.com/on-tap/" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;color:var(--gold);border:1px solid var(--gold);padding:0.4rem 0.9rem;display:inline-block;transition:all 0.15s;" onmouseover="this.style.background='var(--gold)';this.style.color='var(--white)'" onmouseout="this.style.background='';this.style.color='var(--gold)'">View Live Tap List ↗</a>
   </div>
 
 
@@ -546,7 +546,7 @@
  const brewery = match ? match[2].trim() : '';
  const date = new Date(b.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
  return `<a href="${b.link}" target="_blank" class="beer-item">
- ${b.image?`<img src="${b.image}" class="beer-thumb" alt="">`:`<div class="beer-thumb-placeholder"></div>`}
+ ${b.image?`<img src="${b.image}" class="beer-thumb" alt="" onerror="this.outerHTML='<div class=\"beer-thumb-placeholder\">🍺</div>'">`:`<div class="beer-thumb-placeholder">🍺</div>`}
  <div style="flex:1;">
  <p class="beer-name">${beerName}</p>
  <p class="beer-brewery">${brewery}</p>
@@ -579,10 +579,14 @@
  }
 
  function renderYTD(ytd) {
+ const yogaCard = ytd.yoga && ytd.yoga.count > 0
+   ? `<div class="ytd-card"><div class="ytd-icon">🧘</div><div class="ytd-sport">Yoga</div><div><span class="ytd-val">${ytd.yoga.count}</span><span class="ytd-unit">sessions</span></div><div class="ytd-sub">${ytd.yoga.time || ''}</div></div>`
+   : '';
  document.getElementById('ytd-grid').innerHTML = `
- <div class="ytd-card"><div class="ytd-icon"></div><div class="ytd-sport">Running</div><div><span class="ytd-val">${ytd.run.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div><div class="ytd-sub">${ytd.run.count} runs · ${ytd.run.time}</div></div>
- <div class="ytd-card"><div class="ytd-icon"></div><div class="ytd-sport">Cycling</div><div><span class="ytd-val">${ytd.ride.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div><div class="ytd-sub">${ytd.ride.count} rides · ${ytd.ride.time}</div></div>
- <div class="ytd-card"><div class="ytd-icon"></div><div class="ytd-sport">Swimming</div><div><span class="ytd-val">${ytd.swim.yards.toLocaleString()}</span><span class="ytd-unit">yd</span></div><div class="ytd-sub">${ytd.swim.count} swims · ${ytd.swim.time}</div></div>`;
+ <div class="ytd-card"><div class="ytd-icon">🏃</div><div class="ytd-sport">Running</div><div><span class="ytd-val">${ytd.run.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div><div class="ytd-sub">${ytd.run.count} runs · ${ytd.run.time}</div></div>
+ <div class="ytd-card"><div class="ytd-icon">🚴</div><div class="ytd-sport">Cycling</div><div><span class="ytd-val">${ytd.ride.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div><div class="ytd-sub">${ytd.ride.count} rides · ${ytd.ride.time}</div></div>
+ <div class="ytd-card"><div class="ytd-icon">🏊</div><div class="ytd-sport">Swimming</div><div><span class="ytd-val">${ytd.swim.yards.toLocaleString()}</span><span class="ytd-unit">yd</span></div><div class="ytd-sub">${ytd.swim.count} swims · ${ytd.swim.time}</div></div>
+ ${yogaCard}`;
  }
 
  function renderActivities(acts) {
@@ -598,9 +602,9 @@
 
  function renderAllTime(at) {
  document.getElementById('alltime-grid').innerHTML = `
- <div class="alltime-card"><div class="alltime-label"> Running</div><div><span class="alltime-val">${at.run.miles.toLocaleString()}</span> <span class="alltime-unit">miles</span></div><div class="alltime-count">${at.run.count.toLocaleString()} activities</div></div>
- <div class="alltime-card"><div class="alltime-label"> Cycling</div><div><span class="alltime-val">${at.ride.miles.toLocaleString()}</span> <span class="alltime-unit">miles</span></div><div class="alltime-count">${at.ride.count.toLocaleString()} activities</div></div>
- <div class="alltime-card"><div class="alltime-label"> Swimming</div><div><span class="alltime-val">${at.swim.yards.toLocaleString()}</span> <span class="alltime-unit">yards</span></div><div class="alltime-count">${at.swim.count.toLocaleString()} activities</div></div>`;
+ <div class="alltime-card"><div class="alltime-label">🏃 Running</div><div><span class="alltime-val">${at.run.miles.toLocaleString()}</span> <span class="alltime-unit">miles</span></div><div class="alltime-count">${at.run.count.toLocaleString()} activities</div></div>
+ <div class="alltime-card"><div class="alltime-label">🚴 Cycling</div><div><span class="alltime-val">${at.ride.miles.toLocaleString()}</span> <span class="alltime-unit">miles</span></div><div class="alltime-count">${at.ride.count.toLocaleString()} activities</div></div>
+ <div class="alltime-card"><div class="alltime-label">🏊 Swimming</div><div><span class="alltime-val">${at.swim.yards.toLocaleString()}</span> <span class="alltime-unit">yards</span></div><div class="alltime-count">${at.swim.count.toLocaleString()} activities</div></div>`;
  }
 
  document.getElementById('current-year').textContent = new Date().getFullYear();
@@ -612,30 +616,26 @@
  load();
  setInterval(() => { if (!document.hidden) { loadMLB(); loadStandings(); } }, 5*60*1000);
 
-// PEAKS & PINTS / FORT GEORGE DETECTION
+// FORT GEORGE DETECTION via Cloudflare Worker proxy
 async function checkFortGeorge() {
+  const alertEl = document.getElementById('fort-george-alert');
+  const textEl = document.getElementById('fort-george-text');
   try {
-    const res = await fetch('https://www.peaksandpints.com/on-tap/');
+    const res = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev/proxy?url=' + encodeURIComponent('https://www.peaksandpints.com/on-tap/'));
     const html = await res.text();
-    const alert = document.getElementById('fort-george-alert');
-    const text = document.getElementById('fort-george-text');
     if (html.toLowerCase().includes('fort george')) {
-      // Try to find the beer name
-      const match = html.match(/Fort George[^<]*<[^>]*>[^<]*([A-Z][^<]{3,40})</i);
-      alert.classList.add('visible');
-      if (match) {
-        text.textContent = 'Fort George is on tap: ' + match[1].trim();
-      }
+      alertEl.classList.add('visible');
+      // Try to extract beer name near Fort George mention
+      const m = html.match(/Fort George[^
+<]{0,5}[
+>]([^
+<]{5,60})/i);
+      textEl.textContent = m ? 'Fort George on tap: ' + m[1].trim() : 'Fort George Brewery is currently on tap at Peaks & Pints.';
     }
   } catch(e) {
-    // CORS will block this — silently fail, iframe still works
+    // Worker not available or CORS — silently skip
   }
 }
-
-function peaksLoaded() {
-  document.getElementById('peaks-loading').style.display = 'none';
-}
-
 checkFortGeorge();
 
 </script>
