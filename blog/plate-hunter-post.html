@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔍 Plate Hunter — Washington's 72 Specialty Plates as a Road Trip Game — Brooks Groves</title>
+  <meta name="description" content="Five square dancer plates. 140 horseless carriages. 184,000 specialty plates generating $5.8M in fees. A road trip game built on real DOL data.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc; --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
+
+    /* POST LAYOUT */
+    .post-wrap { max-width:700px; margin:0 auto; padding:clamp(2.5rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+    .post-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:2.5rem; }
+    .post-back a { color:var(--stone); text-decoration:none; }
+    .post-back a:hover { color:var(--rust); }
+    .post-eyebrow { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--stone); margin-bottom:1rem; }
+    h1 { font-family:'Playfair Display',serif; font-size:clamp(1.9rem,4vw,2.8rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:1.25rem; }
+    .post-byline { font-family:'DM Mono',monospace; font-size:0.63rem; color:var(--stone); letter-spacing:0.08em; margin-bottom:1.25rem; line-height:1.8; }
+    .post-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1.75rem; }
+    .post-tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.2rem 0.55rem; border-radius:4px; text-decoration:none; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .post-tag:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+    .post-live { display:inline-block; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; background:var(--ink); color:var(--gold); padding:0.5rem 1.1rem; text-decoration:none; margin-bottom:2.5rem; border-radius:2px; }
+    .post-live:hover { background:var(--rust); color:var(--white); }
+
+    /* PROSE */
+    p { margin-bottom:1.35rem; }
+    h2 { font-family:'Playfair Display',serif; font-size:1.35rem; font-weight:700; margin:2.5rem 0 0.85rem; letter-spacing:-0.01em; }
+    blockquote { border-left:3px solid var(--gold); margin:1.75rem 0; padding:0.75rem 0 0.75rem 1.5rem; font-style:italic; color:var(--stone); font-size:0.975rem; line-height:1.75; }
+    pre { background:var(--cream); border:1px solid var(--mist); border-radius:4px; padding:1.25rem 1.5rem; margin:1.5rem 0; overflow-x:auto; }
+    code { font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--rust); }
+    pre code { color:var(--ink); font-size:0.75rem; }
+    ul, ol { margin:1rem 0 1.35rem 1.5rem; }
+    li { margin-bottom:0.4rem; font-size:0.95rem; }
+    hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.875rem; }
+    th { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-align:left; padding:0.6rem 0.75rem; border-bottom:2px solid var(--ink); color:var(--stone); }
+    td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    tr:last-child td { border-bottom:none; }
+    a { color:var(--rust); }
+    a:hover { color:var(--gold); }
+
+    .post-sign { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--stone); letter-spacing:0.1em; margin-top:2.5rem; }
+    .post-footer-links { display:flex; gap:2rem; margin-top:2.5rem; padding-top:1.5rem; border-top:1px solid var(--mist); flex-wrap:wrap; }
+    .post-footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); text-decoration:none; }
+    .post-footer-links a:hover { color:var(--rust); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://bdgroves.github.io/plate-hunter" target="_blank">Live App ↗</a>
+      <a href="https://github.com/bdgroves/plate-hunter" target="_blank">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="post-wrap">
+
+  <div class="post-back"><a href="/blog/index.html">← Blog</a></div>
+
+  <p class="post-eyebrow">Project Build · Washington State · Road Trip · Open Data · April 2026</p>
+
+  <h1>🔍 Plate Hunter — Washington's 72 Specialty Plates as a Road Trip Game</h1>
+
+  <div class="post-byline">
+    Brooks Groves<br>
+    April 2026<br>
+    HTML · CSS · JavaScript · DOL Open Data
+  </div>
+
+  <div class="post-tags">
+    <a href="/tags.html#Washington" class="post-tag">Washington</a>
+    <a href="/tags.html#Road%20Trip" class="post-tag">Road Trip</a>
+    <a href="/tags.html#JavaScript" class="post-tag">JavaScript</a>
+    <a href="/tags.html#Open%20Data" class="post-tag">Open Data</a>
+    <a href="/tags.html#GitHub%20Pages" class="post-tag">GitHub Pages</a>
+    <a href="/tags.html#Civic%20Data" class="post-tag">Civic Data</a>
+    <a href="/tags.html#Pacific%20Northwest" class="post-tag">Pacific Northwest</a>
+  </div>
+
+  <a href="https://bdgroves.github.io/plate-hunter" target="_blank" class="post-live">Live App · bdgroves.github.io/plate-hunter ↗</a>
+
+  <p>
+    On April 20, 2026, the Seattle Times ran a data story about Washington specialty license plates. Gene Balk had pulled the DOL's annual registration report and found that in 2025, nearly 184,000 vehicles in the state carried a special-design plate, generating $5.8 million in fees. He listed the top sellers — WSU with 24,100 plates, Seahawks with 11,100 — and then buried the real story in the last paragraph.
+  </p>
+
+  <blockquote>
+    "The least popular special-design plate last year was the square dancer design, on only five vehicles, despite being one of the least expensive." — Seattle Times, April 20, 2026
+  </blockquote>
+
+  <p>
+    Five. Five square dancer plates on the roads of Washington State. I read that and immediately knew there was an app in it.
+  </p>
+
+  <p>
+    Washington has 72 specialty license plates. Most people driving around this state have never noticed most of them. There's a plate for pickleball. A plate for honeybees. A plate for the Muckleshoot Tribe. A plate that's only legal on vehicles built before January 1, 1916. And somewhere out on the I-5 corridor or the back roads of the Palouse, five vehicles are rolling around with a square dancer on the bumper, 300 points just waiting to be claimed by someone paying attention.
+  </p>
+
+  <p>
+    PLATE HUNTER is a road trip game built around that premise. See a plate in real life. Tap it in the app. It unlocks in full color. Earn the points. The rarer the plate, the more it's worth — and the rarity tiers are grounded in actual DOL vehicle registration counts, not made-up difficulty levels.
+  </p>
+
+  <h2>The Data Behind It</h2>
+
+  <p>
+    The Seattle Times article dropped the same morning I started building. The DOL's 2025 figures gave me everything I needed for a proper rarity system:
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Rank</th><th>Plate</th><th>Vehicles</th><th>Fees</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>WSU Cougars</td><td>24,100</td><td>$734,000</td></tr>
+      <tr><td>2</td><td>Collector Vehicle</td><td>20,300</td><td>$710,400</td></tr>
+      <tr><td>3</td><td>Washington National Parks</td><td>12,700</td><td>$404,000</td></tr>
+      <tr><td>4</td><td>Law Enforcement Memorial</td><td>11,300</td><td>$351,100</td></tr>
+      <tr><td>5</td><td>Seattle Seahawks</td><td>11,100</td><td>$336,000</td></tr>
+      <tr><td>—</td><td>Seattle Mariners</td><td>1,100</td><td>$35,300</td></tr>
+      <tr><td>—</td><td>Seattle University</td><td>~200</td><td>$6,600</td></tr>
+      <tr><td>—</td><td>Horseless Carriage</td><td>~140</td><td>—</td></tr>
+      <tr><td>💀 Last</td><td><strong>Square Dancer</strong></td><td><strong>5</strong></td><td>—</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    That data maps directly to four rarity tiers: Common (8,000+ vehicles, 10 pts), Uncommon (3,000–8,000, 25 pts), Rare (500–3,000, 50 pts), and Legendary (under 500, 150–300 pts). WSU is Common. You'll see it constantly. The square dancer is Legendary at 300 points — the highest value in the game — because there are five of them.
+  </p>
+
+  <h2>The Image Source</h2>
+
+  <p>
+    The plate images came from two places. The base catalog — 67 plates — came from Jon Keegan's <a href="https://github.com/jonkeegan/us-license-plates" target="_blank">us-license-plates</a> repository, a dataset of all 8,291 U.S. license plates collected in 2023 for his <em>Beautiful Public Data</em> project. It's a remarkable piece of open data work — every specialty plate from all 50 states, cleanly organized, photographed, and licensed.
+  </p>
+
+  <p>
+    The 2025 additions — Pickleball, Honeybees & Pollinators, Keep WA Evergreen, LeMay Car Museum, Throwback Blackout — came directly from the Washington DOL's special design plates page. Two more are pending: Smokey Bear ("coming soon") and Mount St. Helens ("awaiting redesign after the first one failed testing"). They'll be added when they drop. The update pipeline is simple: find the DOL image, drop it in <code>plates/WA/</code>, add one JSON entry, push.
+  </p>
+
+  <h2>The Architecture</h2>
+
+  <p>
+    This is the most architecturally minimal project in this collection — intentionally so. No Python. No GitHub Actions cron job. No data pipeline. The whole thing is one HTML file and a folder of images.
+  </p>
+
+  <pre><code>plate-hunter/
+├── index.html       ← The entire app
+├── README.md
+└── plates/
+    └── WA/          ← 72 plate images, static files
+        ├── seahawksPlate.png
+        ├── squaredancePlate.png
+        └── ...</code></pre>
+
+  <p>
+    Plate data lives as a JSON array inside <code>index.html</code>. The app renders the grid from that array, loads images via relative paths, handles tap/collect interactions with vanilla JavaScript, and persists found plates to localStorage. No build step. No bundler. No framework. GitHub Pages serves it for free. The entire deployment is a <code>git push</code>.
+  </p>
+
+  <h2>Work in Progress</h2>
+
+  <p>
+    The Washington build is the foundation. The full vision is larger: all 50 states using Keegan's dataset, Canadian provinces and Mexican states as bonus tiers, React Native for iOS and Android distribution, family multiplayer mode. There's a lot of road between here and all of that.
+  </p>
+
+  <p>
+    But the core mechanic is already working. The real plate photos load. The rarity tiers are real. The confetti fires when you find something good. And somewhere on the roads of Washington, five square dancer plates are waiting to be tapped.
+  </p>
+
+  <hr>
+
+  <p>
+    Open source at <a href="https://github.com/bdgroves/plate-hunter" target="_blank">github.com/bdgroves/plate-hunter</a>. Live app at <a href="https://bdgroves.github.io/plate-hunter" target="_blank">bdgroves.github.io/plate-hunter</a>. Built in Lakewood, WA. The square dancer is out there.
+  </p>
+
+  <p class="post-sign">Brooks Groves · April 2026</p>
+
+  <div class="post-footer-links">
+    <a href="/blog/index.html">← All Posts</a>
+    <a href="https://bdgroves.github.io/plate-hunter" target="_blank">Live App ↗</a>
+    <a href="https://github.com/bdgroves/plate-hunter" target="_blank">GitHub ↗</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/tags.html">Tags</a>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+</body>
+</html>
