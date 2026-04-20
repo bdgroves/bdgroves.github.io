@@ -375,13 +375,41 @@
 
  <div id="beer-list"><p class="loading">Loading from Untappd…</p></div>
 
+  <!-- PEAKS & PINTS ON TAP -->
+  <div class="section-label">
+    <span>Peaks &amp; Pints — On Tap Now</span>
+    <a href="https://www.peaksandpints.com/on-tap/" target="_blank">peaksandpints.com ↗</a>
+  </div>
+
+  <div class="team-links">
+    <a href="https://www.peaksandpints.com/on-tap/" target="_blank" class="team-link">Full Tap List ↗</a>
+    <a href="https://www.peaksandpints.com/events/" target="_blank" class="team-link">Events ↗</a>
+  </div>
+
+  <div class="fort-george-alert" id="fort-george-alert">
+    <div class="fort-george-label">Fort George on Tap</div>
+    <div class="fort-george-text" id="fort-george-text">Fort George Brewery is currently on tap at Peaks &amp; Pints.</div>
+  </div>
+
+  <div class="peaks-iframe-wrap">
+    <div class="peaks-loading" id="peaks-loading">Loading tap list…</div>
+    <iframe 
+      src="https://www.peaksandpints.com/on-tap/" 
+      title="Peaks and Pints On Tap"
+      id="peaks-iframe"
+      onload="peaksLoaded()"
+      loading="lazy">
+    </iframe>
+  </div>
+
+
 </div>
 
 <footer>
  <div class="footer-inner">
  <div>
  <p class="footer-name">Brooks Groves</p>
- <p class="footer-tagline"> Training data via Strava · Scores via MLB Stats API · Beer via Untappd</p>
+ <p class="footer-tagline"> Training data via Strava · Scores via MLB Stats API · Beer via Untappd · On Tap via Peaks &amp; Pints</p>
  </div>
  <div class="footer-links">
  <a href="/">Home</a>
@@ -583,6 +611,33 @@
  loadBeers();
  load();
  setInterval(() => { if (!document.hidden) { loadMLB(); loadStandings(); } }, 5*60*1000);
+
+// PEAKS & PINTS / FORT GEORGE DETECTION
+async function checkFortGeorge() {
+  try {
+    const res = await fetch('https://www.peaksandpints.com/on-tap/');
+    const html = await res.text();
+    const alert = document.getElementById('fort-george-alert');
+    const text = document.getElementById('fort-george-text');
+    if (html.toLowerCase().includes('fort george')) {
+      // Try to find the beer name
+      const match = html.match(/Fort George[^<]*<[^>]*>[^<]*([A-Z][^<]{3,40})</i);
+      alert.classList.add('visible');
+      if (match) {
+        text.textContent = 'Fort George is on tap: ' + match[1].trim();
+      }
+    }
+  } catch(e) {
+    // CORS will block this — silently fail, iframe still works
+  }
+}
+
+function peaksLoaded() {
+  document.getElementById('peaks-loading').style.display = 'none';
+}
+
+checkFortGeorge();
+
 </script>
 </body>
 </html>
