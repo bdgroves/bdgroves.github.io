@@ -241,14 +241,14 @@
       <div class="section-label">
         <span>Race Calendar 2026</span>
       </div>
-      <div class="event-row">
-        <div><p class="event-name">Ironman World Championship</p><p class="event-loc">Nice, France</p></div>
-        <div class="event-meta"><span>Sep 6, 2026</span><span class="score-status sched">Upcoming</span></div>
-      </div>
-      <div class="event-row">
-        <div><p class="event-name">Ironman 70.3 Washington</p><p class="event-loc">Tri-Cities, WA · Columbia River</p></div>
-        <div class="event-meta"><span>Sep 20, 2026</span><span class="score-status sched">Upcoming</span></div>
-      </div>
+      <a href="https://www.ironman.com/im-nice" target="_blank" class="event-row" style="text-decoration:none;color:inherit;display:flex;transition:background 0.1s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+        <div style="flex:1;"><p class="event-name">Ironman World Championship</p><p class="event-loc">Nice, France</p></div>
+        <div class="event-meta"><span>Sep 6, 2026</span><span class="score-status sched">Upcoming ↗</span></div>
+      </a>
+      <a href="https://www.ironman.com/im703-washington-tri-cities" target="_blank" class="event-row" style="text-decoration:none;color:inherit;display:flex;transition:background 0.1s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
+        <div style="flex:1;"><p class="event-name">Ironman 70.3 Washington</p><p class="event-loc">Tri-Cities, WA · Columbia River</p></div>
+        <div class="event-meta"><span>Sep 20, 2026</span><span class="score-status sched">Upcoming ↗</span></div>
+      </a>
 
     </div>
 
@@ -407,7 +407,8 @@ function renderGames(el, games) {
     const scoreDisplay=status==='Preview'?`<span class="score-line">vs ${oppAbbr}</span>`:`<span class="score-line">${isSEAHome?seaScore:oppScore} · ${isSEAHome?oppScore:seaScore}</span>`;
     const leftTeam=isSEAHome?'Seattle':oppName, rightTeam=isSEAHome?oppName:'Seattle';
     const leftWin=isSEAHome?seaWin:oppWin, rightWin=isSEAHome?oppWin:seaWin;
-    return `<div class="game-row">
+    const gameLink = `https://www.mlb.com/mariners/scores`;
+      return `<a href="${gameLink}" target="_blank" class="game-row" style="text-decoration:none;color:inherit;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--mist);gap:0.5rem;transition:background 0.1s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
       <div class="team-home"><div class="team-name ${status!=='Preview'?(leftWin?'winner':'loser'):''}">${leftTeam}</div></div>
       <div class="game-score-block">${scoreDisplay}<span class="score-status ${statusClass}">${statusLabel}</span></div>
       <div class="team-away"><div class="team-name ${status!=='Preview'?(rightWin?'winner':'loser'):''}">${rightTeam}</div></div>
@@ -460,7 +461,7 @@ async function loadCycling() {
         leader=`<p class="race-leader" style="color:var(--rust);">Racing now</p>`;
       }
       return `<div class="race-row">
-        <div><p class="race-name">${r.emoji||''} ${r.name} <span style="${mono}">${r.category}</span></p>${leader}</div>
+        <div><p class="race-name">${r.name} <span style="${mono}">${r.category}</span></p>${leader}</div>
         <div class="race-meta"><span>${dateStr}</span><span class="score-status ${statusClass}">${statusLabel}</span></div>
       </div>`;
     };
