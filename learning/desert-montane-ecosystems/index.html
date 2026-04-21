@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desert & Montane Ecosystems — Learning — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --sand:#c8922a; --mesa:#8b5a2b; --sky:#2a4a6b;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--sand) 0%,var(--mesa) 50%,var(--sage) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
+
+    .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--sand); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+    .page-stats { display:flex; gap:2rem; margin-top:1.5rem; flex-wrap:wrap; }
+    .page-stat-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--sand); }
+    .page-stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
+
+    .progress-wrap { background:var(--cream); border:1px solid var(--mist); padding:1.25rem 1.5rem; margin-top:1.5rem; }
+    .progress-bar-track { height:6px; background:var(--mist); border-radius:3px; margin:0.75rem 0 0.4rem; }
+    .progress-bar-fill { height:6px; background:var(--sand); border-radius:3px; transition:width 0.4s ease; width:0%; }
+    .progress-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); }
+
+    .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .phase-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1.25rem; display:flex; justify-content:space-between; }
+    .phase-label:first-child { margin-top:0; }
+    .phase-name { color:var(--sand); }
+
+    .lesson { border:1px solid var(--mist); margin-bottom:0.75rem; }
+    .lesson-header { padding:1.1rem 1.25rem; cursor:pointer; display:grid; grid-template-columns:2.5rem 1fr auto; gap:0.75rem; align-items:start; transition:background 0.15s; }
+    .lesson-header:hover { background:var(--cream); }
+    .lesson-num { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--stone); padding-top:0.1rem; }
+    .lesson-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.3; }
+    .lesson-sub { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; font-style:italic; }
+    .lesson-time { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); text-align:right; white-space:nowrap; padding-top:0.2rem; }
+    .lesson-expand { display:none; padding:1.25rem 1.5rem; border-top:1px solid var(--mist); background:var(--cream); }
+    .lesson.open .lesson-expand { display:block; }
+    .lesson.open .lesson-header { background:var(--cream); }
+    .lesson.done .lesson-num { color:var(--sage); }
+    .lesson.done .lesson-num::after { content:' ✓'; }
+
+    .expand-section { margin-bottom:1.25rem; }
+    .expand-section:last-child { margin-bottom:0; }
+    .expand-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--sand); margin-bottom:0.5rem; }
+    .expand-body { font-size:0.88rem; line-height:1.75; color:var(--stone); }
+    .expand-body p { margin-bottom:0.6rem; }
+    .expand-body p:last-child { margin-bottom:0; }
+
+    .cocktail-box { background:var(--ink); color:#e8e4d8; padding:1rem 1.25rem; margin-top:1rem; border-left:3px solid var(--sand); }
+    .cocktail-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--sand); margin-bottom:0.4rem; }
+    .cocktail-line { font-size:0.88rem; font-style:italic; line-height:1.7; }
+
+    .abbey-box { background:var(--cream); border-left:3px solid var(--rust); padding:1rem 1.25rem; margin-top:1rem; }
+    .abbey-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--rust); margin-bottom:0.4rem; }
+    .abbey-text { font-size:0.85rem; line-height:1.7; color:var(--stone); font-style:italic; }
+
+    .vocab-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .vocab-grid { grid-template-columns:1fr; } }
+    .vocab-item { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    .vocab-item strong { color:var(--ink); font-weight:700; }
+
+    .resources { border:1px solid var(--mist); padding:1.75rem; margin-top:3rem; }
+    .resources-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:var(--sand); }
+    .resource-list { display:flex; flex-direction:column; gap:0.6rem; }
+    .resource-item { font-size:0.85rem; color:var(--stone); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:baseline; }
+    .resource-item a { color:var(--rust); text-decoration:underline; text-underline-offset:3px; font-size:0.75rem; font-family:'DM Mono',monospace; }
+
+    .mark-done-btn { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--mist); background:none; color:var(--stone); padding:0.3rem 0.75rem; cursor:pointer; margin-top:1rem; transition:all 0.15s; }
+    .mark-done-btn:hover { border-color:var(--sage); color:var(--sage); }
+    .mark-done-btn.done { border-color:var(--sage); color:var(--sage); }
+
+    .qa-widget { border:2px solid var(--ink); margin-top:3rem; }
+    .qa-header { background:var(--ink); color:var(--white); padding:1rem 1.5rem; display:flex; align-items:center; gap:0.75rem; }
+    .qa-header-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; }
+    .qa-header-sub { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:#888; }
+    .qa-body { padding:1.5rem; }
+    .qa-input-row { display:flex; gap:0.75rem; margin-bottom:1rem; }
+    .qa-input { flex:1; padding:0.75rem 1rem; font-family:'Libre Baskerville',serif; font-size:0.88rem; border:1px solid var(--mist); background:var(--white); color:var(--ink); outline:none; }
+    .qa-input:focus { border-color:var(--sand); }
+    .qa-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; background:var(--sand); color:var(--white); border:none; padding:0.75rem 1.25rem; cursor:pointer; white-space:nowrap; }
+    .qa-btn:hover { background:var(--mesa); }
+    .qa-response { font-size:0.88rem; line-height:1.75; color:var(--stone); min-height:3rem; }
+    .qa-loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--mist); }
+
+    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/learning/">← Learning</a>
+      <a href="/">Home</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/learning/">Learning</a></p>
+  <h1 class="page-title">🌵 Desert &amp; <em>Montane</em> Ecosystems</h1>
+  <p class="page-sub">The ecology of extremes — where temperature, aridity, and elevation shape radically different life strategies. American West basins and ranges, the Kalahari, the Namib. Plants that don't die of thirst. Animals that don't die of heat. Why the desert is not empty.</p>
+  <div class="page-stats">
+    <div><div class="page-stat-val">14</div><div class="page-stat-lbl">Lessons</div></div>
+    <div><div class="page-stat-val">4</div><div class="page-stat-lbl">Phases</div></div>
+    <div><div class="page-stat-val">~12 hrs</div><div class="page-stat-lbl">Estimated time</div></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Progress — <span id="done-count">0</span> of 14 lessons complete</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-pct">0%</div>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <!-- PHASE 1 -->
+  <div class="phase-label"><span>Phase 1 — <span class="phase-name">What Makes a Desert</span></span><span>Lessons 1–3</span></div>
+
+  <div class="lesson" id="l1">
+    <div class="lesson-header" onclick="toggle('l1')">
+      <div class="lesson-num">1</div>
+      <div><div class="lesson-title">Defining the Desert</div><div class="lesson-sub">Aridity, precipitation, and why "hot and dry" is only half the story</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>A desert is defined by moisture deficit, not temperature. The technical threshold is less than 250mm (10 inches) of annual precipitation — but aridity is the ratio of potential evapotranspiration to precipitation. A cold desert with 200mm of rain and low evaporation can be wetter ecologically than a warm desert with 300mm and high evaporation. This is the Aridity Index — the metric used by the UNCCD to classify dryland systems.</p>
+          <p>The four major desert types: hot and dry (Sonoran, Sahara, Namib), semiarid (Great Basin, patagonian steppe), coastal (Atacama, Namib coast — cold ocean upwelling creates fog-dependent ecosystems), and cold (Gobi, Antarctic). The Namib is the world's oldest desert at 55–80 million years old — it survived ice ages, continental drift, and mass extinctions. The Mojave may be the youngest at 10,000–20,000 years.</p>
+          <p>Globally, drylands cover 41% of Earth's land surface and support 38% of the human population. The American West's Basin and Range province — the physiographic region underlying the Great Basin, Mojave, Sonoran, and Chihuahuan deserts — was formed by crustal extension stretching the continent apart, creating parallel north-south mountain ranges separated by flat basins. Death Valley sits 86 meters below sea level because the crust stretched and a block dropped.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Aridity Index</strong> — ratio of precipitation to potential evapotranspiration; the standard measure of dryness</div>
+          <div class="vocab-item"><strong>Basin and Range</strong> — North American physiographic province; horsts and grabens from crustal extension</div>
+          <div class="vocab-item"><strong>Hyperarid</strong> — AI < 0.05; essentially no rain; Atacama, central Namib</div>
+          <div class="vocab-item"><strong>Graben</strong> — downfaulted crustal block; forms desert basins</div>
+          <div class="vocab-item"><strong>Rain shadow</strong> — orographic effect; leeward side of mountains receives drastically less precipitation</div>
+          <div class="vocab-item"><strong>Fog drip</strong> — moisture collection from fog; critical in coastal deserts like the Namib</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Death Valley is so low because the continent stretched. The Basin and Range province is literally being pulled apart — the crust extended by 100% over the last 30 million years, and Death Valley is a graben, a dropped block. The crust is still moving. Las Vegas sits on the same system. The whole thing is going to keep spreading until it eventually rifts — in maybe 50 million years."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l1" onclick="markDone('l1')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l2">
+    <div class="lesson-header" onclick="toggle('l2')">
+      <div class="lesson-num">2</div>
+      <div><div class="lesson-title">The American Deserts</div><div class="lesson-sub">Great Basin, Mojave, Sonoran, Chihuahuan — four deserts, four personalities</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The four North American deserts are ecologically distinct despite geographic proximity. The Great Basin (Nevada, Utah, Oregon, Idaho) is a cold desert — dominated by sagebrush (Artemisia tridentata) and receiving most precipitation as winter snow. Elevation averages 1,200–2,000m. The basin has no outlet to the ocean — it is endorheic, draining internally to salt flats like Bonneville and Humboldt Sink. Dr. Vineyard's Desert and Montane Ecosystems course at UNR was built around this landscape.</p>
+          <p>The Mojave (southeastern California, southern Nevada) is the smallest and driest North American desert. Its indicator species is the Joshua tree (Yucca brevifolia) — a monocot that looks like a tree and is neither a tree nor a cactus. The Mojave receives winter rain and sits at moderate elevation (600–1,800m). Death Valley's floor receives an average of 50mm/year — the driest location in North America.</p>
+          <p>The Sonoran (Arizona, Sonora Mexico) is the most biodiverse North American desert — it receives both winter and summer (monsoon) rainfall, a bimodal precipitation pattern that supports extraordinary species richness. The saguaro cactus (Carnegiea gigantea) is its icon — it grows only in the Sonoran. The Chihuahuan (New Mexico, West Texas, Chihuahua) is the largest and highest elevation, dominated by lechuguilla agave and creosote bush.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Endorheic basin</strong> — internally draining; no outlet to ocean; Great Basin, Kalahari</div>
+          <div class="vocab-item"><strong>Sagebrush steppe</strong> — Great Basin dominant plant community; Artemisia tridentata</div>
+          <div class="vocab-item"><strong>Monsoon</strong> — seasonal shift in wind direction bringing summer moisture; critical to Sonoran</div>
+          <div class="vocab-item"><strong>Bimodal precipitation</strong> — two wet seasons per year; drives Sonoran biodiversity</div>
+          <div class="vocab-item"><strong>Creosote bush</strong> — Larrea tridentata; dominant shrub across all warm deserts; may clone for 11,000 years</div>
+          <div class="vocab-item"><strong>CAM photosynthesis</strong> — Crassulacean Acid Metabolism; opens stomata at night to minimize water loss; cacti</div>
+        </div>
+      </div>
+      <div class="abbey-box">
+        <div class="abbey-label">Abbey in the Field</div>
+        <div class="abbey-text">"The desert is not a wasteland. It is a place of maximum clarity, minimum clutter, and maximum life — if you know how to look." Abbey's Desert Solitaire is set in the canyon country at the edge of the Colorado Plateau and Great Basin. The slickrock country of Arches sits at the interface of two desert systems — technically Colorado Plateau, ecologically the Sonoran-Great Basin transition zone.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The Sonoran Desert is the most biodiverse desert in North America partly because of a geological accident — it sits at the perfect latitude to catch both the winter Pacific storm track and the summer North American monsoon. Two wet seasons means the plants and animals have twice as many phenological windows. A saguaro cactus can absorb 200 gallons of water in a single rainstorm and store it in its pleated trunk for a year."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l2" onclick="markDone('l2')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l3">
+    <div class="lesson-header" onclick="toggle('l3')">
+      <div class="lesson-num">3</div>
+      <div><div class="lesson-title">The Namib and Kalahari</div><div class="lesson-sub">Africa's desert systems — fog, ancient sand, and the world's oldest desert</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The Namib Desert runs along Namibia's Atlantic coast for 2,000km — a coastal desert created by the cold Benguela Current, which chills the air above it and prevents moisture from reaching the coast as rain. Instead, the Namib receives fog — up to 180 fog days per year. The fog-dependent ecosystem supports remarkable adaptations: the Namib fog beetle (Stenocara gracilipes) harvests water droplets from fog on its hydrophobic back, tilting its body into the wind at precisely 45° to channel drops to its mouth — a design so elegant it inspired biomimetic fog nets for water collection in arid regions.</p>
+          <p>The Welwitschia (Welwitschia mirabilis) grows only in the Namib — a gymnosperm with just two leaves that grow continuously for up to 2,000 years, shredded by wind and sand into ribbon-like strips. A single plant living today germinated when the Roman Empire was intact. The Namib's red sand dunes at Sossusvlei (among the world's tallest, reaching 300m) are iron-oxide stained quartz grains — some of the oldest sand on Earth, recycled from the Orange River over millions of years.</p>
+          <p>The Kalahari is technically a fossil desert — it receives too much rainfall (250–500mm) to be a true desert but has the sandy substrate of one, left from a period of greater aridity 10,000 years ago. It spans Botswana, Namibia, and South Africa. The Okavango Delta sits within it — an inland delta fed by Angolan highlands, creating an extraordinary wetland within the desert matrix. The San people (Bushmen) have lived in the Kalahari for at least 20,000 years, developing one of the most sophisticated tracking and hunting cultures ever documented.</div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Benguela Current</strong> — cold Atlantic upwelling; creates the Namib's coastal fog desert</div>
+          <div class="vocab-item"><strong>Welwitschia</strong> — ancient gymnosperm; 2 leaves; up to 2,000 years old; Namib endemic</div>
+          <div class="vocab-item"><strong>Sossusvlei</strong> — Namib salt and clay pans surrounded by 300m orange dunes</div>
+          <div class="vocab-item"><strong>Fossil desert</strong> — Kalahari; sandy substrate from ancient aridity but current rainfall above desert threshold</div>
+          <div class="vocab-item"><strong>Okavango Delta</strong> — inland delta in the Kalahari; UNESCO World Heritage; seasonal flooding from Angolan highlands</div>
+          <div class="vocab-item"><strong>Fog harvesting</strong> — organisms and technology that collect moisture from fog; inspired by Namib beetle</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The Namib Desert is 55 to 80 million years old — older than the Himalayas, older than most mountain ranges, older than the Atlantic Ocean was wide enough to matter. It survived the asteroid that killed the dinosaurs. A Welwitschia growing there today sprouted before the fall of Rome and is still photosynthesizing with the same two leaves it was born with."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l3" onclick="markDone('l3')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-label"><span>Phase 2 — <span class="phase-name">Life Strategies in Arid Environments</span></span><span>Lessons 4–7</span></div>
+
+  <div class="lesson" id="l4">
+    <div class="lesson-header" onclick="toggle('l4')">
+      <div class="lesson-num">4</div>
+      <div><div class="lesson-title">Plant Adaptations — Surviving Without Water</div><div class="lesson-sub">CAM, C4, succulence, dormancy, and the deep root strategy</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Desert plants solve the same problem three different ways. Succulents store water in stems (cacti), leaves (agave, aloe), or roots (desert rose, Adenium). They use CAM photosynthesis — stomata open only at night to fix CO2, minimizing daytime water loss. The tradeoff: CAM is slower; succulents grow slowly. Annuals (ephemerals) don't solve the drought problem — they avoid it entirely by completing their lifecycle in weeks after rain, then dying, leaving only seeds that can wait years or decades to germinate.</p>
+          <p>Phreatophytes — deep-rooted water seekers — send roots 30–50 meters down to reach permanent groundwater. The mesquite (Prosopis) is the classic example: it can grow in extreme aridity because its taproot reaches the water table. Creosote bush (Larrea tridentata) uses a different strategy — shallow, wide-spreading roots that monopolize surface moisture after rain, combined with toxic allelopathic chemicals that prevent competitors from establishing nearby. The King Clone creosote ring in the Mojave is estimated at 11,700 years old — one of the oldest living organisms on Earth.</p>
+          <p>In the Namib, succulents like Lithops (living stones) have evolved to look exactly like pebbles — camouflage against herbivory. Mesembs (Aizoaceae family) are so specialized that a single family has produced hundreds of species across southern Africa's arid zones, many looking like rocks, calcite pebbles, or soil crusts. Quiver trees (Aloe dichotoma) in Namibia store water in their spongy wood and are dying northward as temperatures rise — a visible signal of climate change in the Namib.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>CAM photosynthesis</strong> — stomata open at night; CO2 stored as malic acid; daytime carbon fixation without water loss</div>
+          <div class="vocab-item"><strong>Ephemeral</strong> — short-lived annual; completes lifecycle in weeks after rain; dormant as seed for years</div>
+          <div class="vocab-item"><strong>Phreatophyte</strong> — deep-rooted plant reaching permanent groundwater; mesquite, cottonwood</div>
+          <div class="vocab-item"><strong>Allelopathy</strong> — chemical suppression of competitors; creosote produces compounds toxic to other plants</div>
+          <div class="vocab-item"><strong>Succulence</strong> — water storage in plant tissue; stems (cacti), leaves (agave), roots (Adenium)</div>
+          <div class="vocab-item"><strong>Biological soil crust</strong> — cryptobiotic crust of cyanobacteria, fungi, algae; stabilizes desert soil; destroyed by footsteps</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The King Clone creosote bush ring in the Mojave is 11,700 years old. It's not a forest — it's one plant that's been slowly cloning itself outward since the last Ice Age. When mammoths were still alive in North America, this creosote bush was already a mature plant. And it's still alive, still fixing carbon, still poisoning the ground around it to keep competitors away."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l4" onclick="markDone('l4')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l5">
+    <div class="lesson-header" onclick="toggle('l5')">
+      <div class="lesson-num">5</div>
+      <div><div class="lesson-title">Animal Adaptations — Thermoregulation and Water</div><div class="lesson-sub">Kangaroo rats, Oryx, sidewinders, and the physics of staying alive</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The kangaroo rat (Dipodomys) never drinks water. It extracts all moisture metabolically — from oxidizing food (metabolic water), and through extraordinarily efficient kidneys that produce the most concentrated urine of any mammal. It lives in sealed burrows during the day (underground humidity can be 30% higher than surface air), and emerges only at night when temperatures are lower and vapor pressure deficit is reduced. Its nasal passages are arranged as counter-current heat exchangers that recover moisture from exhaled air.</p>
+          <p>The Gemsbok (Oryx) of the Kalahari and Namib uses hyperthermia rather than fighting it — it allows its body temperature to rise to 45°C during the day (when most mammals die at 41°C) and cools the blood going to its brain via a carotid rete mirabile (a network of fine vessels where arterial blood is cooled by venous blood before reaching the brain). It can do this because its brain is tolerant of high temperature in a way most mammal brains are not. It saves the water that would otherwise be spent on sweating.</p>
+          <p>Reptiles have the easiest time in deserts — ectotherms don't spend energy maintaining body temperature and can tolerate dehydration that would kill a mammal. The sidewinder rattlesnake moves in its distinctive lateral undulation to minimize contact area with hot sand. Desert tortoises can store up to 40% of their body weight as water in their bladder. Gila monsters can go without eating for months, living off fat stored in their tails — and they carry venom, which may function partly to kill prey quickly before it can escape into the heat.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Metabolic water</strong> — water produced by oxidizing food; primary water source for kangaroo rats</div>
+          <div class="vocab-item"><strong>Carotid rete mirabile</strong> — fine vessel network; cools blood before brain; Oryx, camels, other desert ungulates</div>
+          <div class="vocab-item"><strong>Hyperthermia tolerance</strong> — allowing body temperature to rise rather than spending water cooling it</div>
+          <div class="vocab-item"><strong>Counter-current exchange</strong> — heat and moisture recovery in nasal passages; kangaroo rats, camels</div>
+          <div class="vocab-item"><strong>Estivation</strong> — summer dormancy; desert toads, lungfish; analogous to hibernation for heat/drought</div>
+          <div class="vocab-item"><strong>Crepuscular</strong> — active at dawn and dusk; common desert strategy to avoid midday heat</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"A kangaroo rat has never taken a drink of water in its entire life. It gets all its water from metabolizing seeds — the chemical breakdown of fat and carbohydrates produces water as a byproduct, and its kidneys are so efficient it can concentrate urine to nearly crystalline. Its nasal passages are a counter-current heat exchanger that recovers moisture from every exhaled breath. It's a closed-loop water system in a small furry package."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l5" onclick="markDone('l5')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l6">
+    <div class="lesson-header" onclick="toggle('l6')">
+      <div class="lesson-num">6</div>
+      <div><div class="lesson-title">Desert Soils — Cryptobiotic Crusts and Caliche</div><div class="lesson-sub">What lives in the ground and what it means to step on it</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Desert soils are among the most fragile ecosystems on Earth — and most of what makes them alive is invisible. Biological soil crust (cryptobiotic crust) is a thin living layer of cyanobacteria, fungi, algae, mosses, and lichens that covers bare soil between plants across the Colorado Plateau and Great Basin. It fixes atmospheric nitrogen (making the soil fertile), stabilizes sand against wind erosion, and absorbs water. A single footprint destroys crust that took 50–250 years to form. The BLM estimates that vehicle tracks in the Great Basin persist for centuries. This is why "stay on the trail" in desert parks is not just aesthetics.</p>
+          <p>Caliche (calcium carbonate hardpan) forms in desert soils where calcium dissolved in rainwater precipitates at the depth of maximum water penetration — typically 30–60cm. Over thousands of years it builds into a rock-hard white layer that can be impenetrable to plant roots and tools. The depth of caliche is a proxy for past rainfall — deeper caliche suggests more precipitation during formation. Caliche horizons across the Mojave record Pleistocene climates. In the Namib and Kalahari, calcrete (a similar feature) creates vast shallow pans that fill seasonally.</p>
+          <p>Desert pavement — the rock-paved surface found across the Mojave, Atacama, and Sahara — forms not by wind deflation but by frost heave and wetting/drying cycles that gradually bring stones to the surface while fine particles settle below. The varnish on desert rocks (desert varnish) is a thin coating of manganese and iron oxides deposited by microorganisms over thousands of years. Petroglyph-makers in the American West exploited this — scratching through varnish to the lighter rock below creates images that are now thousands of years old.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Cryptobiotic crust</strong> — biological soil crust; cyanobacteria, fungi, algae; stabilizes desert soils; fragile</div>
+          <div class="vocab-item"><strong>Caliche</strong> — calcium carbonate hardpan; forms at depth of maximum water penetration</div>
+          <div class="vocab-item"><strong>Desert pavement</strong> — rock-paved surface; forms by heave and settling, not wind deflation</div>
+          <div class="vocab-item"><strong>Desert varnish</strong> — Mn/Fe oxide coating on rock surfaces; deposited by microorganisms over millennia</div>
+          <div class="vocab-item"><strong>Nitrogen fixation</strong> — converting atmospheric N2 to bioavailable forms; critical role of cyanobacteria in desert crust</div>
+          <div class="vocab-item"><strong>Argillic horizon</strong> — clay-rich soil layer below the surface; common in Great Basin soils</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"That black crust on desert soil between plants isn't dirt — it's a living community that took 200 years to grow. It's fixing nitrogen from the atmosphere, holding the sand together against the wind, and absorbing water during the rare rains. One footprint destroys two centuries of ecosystem development. The signs in Utah that say 'Don't Bust the Crust' are not being dramatic."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l6" onclick="markDone('l6')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l7">
+    <div class="lesson-header" onclick="toggle('l7')">
+      <div class="lesson-num">7</div>
+      <div><div class="lesson-title">Desert Fire — Cheatgrass, Invasives, and the Changed West</div><div class="lesson-sub">How an Asian grass rewrote the fire ecology of the Great Basin</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Cheatgrass (Bromus tectorum) arrived in North America from central Asia in the 1890s, likely as a contaminant in grain shipments. It now covers over 40 million acres of the Great Basin — the largest single invasive plant takeover in North American history. Native sagebrush ecosystems evolved without fire as a regular disturbance; cheatgrass created one. It grows early in spring, dries by June, and creates a continuous fine fuel layer that carries fire in ways the native bunchgrass-sagebrush matrix never did. After a cheatgrass fire, cheatgrass comes back faster than natives — and the fire interval shortens, eventually eliminating the shrub layer entirely. Sage-grouse lose habitat. Pronghorn lose browse. The entire food web shifts.</p>
+          <p>Climate change is accelerating the cheatgrass takeover — warmer, drier springs favor cheatgrass over natives, and the longer fire seasons create more opportunities for post-fire cheatgrass domination. Some Great Basin valleys have crossed a threshold where native recovery is no longer possible without active intervention; the landscape is functionally committed to cheatgrass. USDA ARS researchers are investigating a biological control (Pyrenophora semeniperda, a fungal pathogen) but field deployment is still experimental.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Cheatgrass</strong> — Bromus tectorum; invasive annual; dominant in Great Basin; fire cycle accelerant</div>
+          <div class="vocab-item"><strong>Fine fuel</strong> — small diameter, fast-drying material; carries fire; cheatgrass creates continuous fine fuel layer</div>
+          <div class="vocab-item"><strong>Fire return interval</strong> — average years between fires in a given area; cheatgrass shortens it from 60–100 yrs to 5–10 yrs</div>
+          <div class="vocab-item"><strong>Alternative stable state</strong> — ecosystem threshold after which return to original state requires major intervention</div>
+          <div class="vocab-item"><strong>Sage-grouse</strong> — indicator species for Great Basin sagebrush health; requires large unfragmented sagebrush stands</div>
+          <div class="vocab-item"><strong>Allelopathic soil residue</strong> — cheatgrass roots leave compounds that inhibit native plant germination</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The Great Basin wasn't supposed to burn. Sagebrush ecosystems evolved over 10,000 years without fire as a regular feature — the plants don't have adaptations for it. Then cheatgrass arrived from Asia in the 1890s, created a continuous fine fuel layer across 40 million acres, and rewrote the entire fire regime. Now it burns every 5 to 10 years instead of every 60 to 100. After each fire, cheatgrass recovers faster. The sagebrush doesn't come back. The sage-grouse are disappearing with it."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l7" onclick="markDone('l7')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-label"><span>Phase 3 — <span class="phase-name">Montane Ecosystems & Elevation Gradients</span></span><span>Lessons 8–11</span></div>
+
+  <div class="lesson" id="l8">
+    <div class="lesson-header" onclick="toggle('l8')">
+      <div class="lesson-num">8</div>
+      <div><div class="lesson-title">Life Zones — Merriam's Elevation Bands</div><div class="lesson-sub">How climbing a mountain compresses latitude into altitude</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Clinton Hart Merriam spent the summer of 1889 on San Francisco Peaks in northern Arizona recording where plant and animal species occurred relative to elevation. He noticed that ascending 1,000 meters in elevation was ecologically equivalent to traveling 1,000km north in latitude. This produced the concept of life zones — discrete bands of plant communities stacked by elevation, each with characteristic temperature, precipitation, and species assemblages.</p>
+          <p>From desert floor to alpine summit in the American Southwest: Lower Sonoran (desert shrub, saguaro, ocotillo) → Upper Sonoran (pinyon-juniper woodland, sagebrush) → Transition (ponderosa pine) → Canadian (Douglas fir, Engelmann spruce) → Hudsonian (subalpine fir, bristlecone pine) → Arctic-Alpine (tundra, above treeline). The transition zone — ponderosa pine belt — is where most western mountain towns sit. Flagstaff, Prescott, Taos. John Muir called the ponderosa the most beautiful tree in the American West.</p>
+          <p>Sky islands — isolated mountain ranges rising from desert basins in Arizona and northern Mexico — are the most dramatic expression of elevation gradients. They function as ecological islands, with species stranded by post-Pleistocene warming that retreated to higher elevations as the surrounding desert dried. The Chiricahua, Huachuca, and Santa Catalina mountains harbor species otherwise found in Mexico's Sierra Madre or the Rocky Mountains, with populations isolated since the last ice age. Sky islands have extraordinarily high endemism as a result.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Life zones</strong> — Merriam's elevation bands; each a distinct plant community with characteristic species</div>
+          <div class="vocab-item"><strong>Elevational equivalent</strong> — 1,000m elevation ≈ 1,000km latitude in ecological terms</div>
+          <div class="vocab-item"><strong>Sky island</strong> — isolated mountain range in desert basin; high endemism; ecological island dynamics</div>
+          <div class="vocab-item"><strong>Pinyon-juniper woodland</strong> — Upper Sonoran/Great Basin interface; dominant woodland of the Colorado Plateau</div>
+          <div class="vocab-item"><strong>Treeline</strong> — upper limit of tree growth; controlled by temperature (growing season length); ~3,500m in SW US</div>
+          <div class="vocab-item"><strong>Endemism</strong> — species found only in a specific geographic area; sky islands have high rates due to isolation</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Climbing Mt. Lemmon outside Tucson from the desert floor to the summit is ecologically equivalent to driving from Mexico to Canada. You pass through all of Merriam's life zones in 27 miles and 2,800 meters of elevation — saguaro cactus at the base, Canadian forest at the top. The animals stranded on those mountain tops when the Ice Age ended are now separated by seas of desert, evolving separately, accumulating differences. Natural selection happening in real time, island by island."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l8" onclick="markDone('l8')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l9">
+    <div class="lesson-header" onclick="toggle('l9')">
+      <div class="lesson-num">9</div>
+      <div><div class="lesson-title">Sierra Nevada — Snow, Water, and Fire</div><div class="lesson-sub">California's backbone — the range that built the West</div></div>
+      <div class="lesson-time">~55 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The Sierra Nevada is a single granite batholith — a massive igneous intrusion that solidified deep underground during the Mesozoic, then was uplifted and exposed by erosion. It is asymmetric: the western slope is long and gentle (where the rivers run to the Central Valley), the eastern escarpment is abrupt and dramatic, dropping 3,000 meters in 20 miles from Mt. Whitney's summit to the Owens Valley floor. This asymmetry is because the range is a tilted fault block — the eastern side is the fault scarp.</p>
+          <p>The Sierra is California's water tower — its snowpack supplies over a third of the state's water supply. The Tuolumne River (draining the meadows and range you grew up seeing) feeds the Hetch Hetchy reservoir that supplies San Francisco. The Kings, San Joaquin, Merced, and American rivers all originate in Sierra snowfields. Snowpack decline from climate change is the most critical water security issue in California — and the Sierra snowpack has declined 20% since 1950.</p>
+          <p>Giant Sequoias (Sequoiadendron giganteum) grow only on the western slope of the Sierra, between 1,400–2,150m elevation, in a narrow belt in Tulare and Fresno counties. They are the world's largest organisms by volume — General Sherman is 1,487 cubic meters. They require fire for regeneration: their cones can remain closed for 20 years, opening only when heated by fire. A century of fire suppression led to dense understory growth that now carries catastrophic fire into groves that evolved with low-intensity surface fire. The Castle Fire of 2020 killed 10–19% of all mature giant sequoias in existence — more than in the previous century combined.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Batholith</strong> — large igneous intrusion solidified underground; Sierra Nevada granite</div>
+          <div class="vocab-item"><strong>Rain shadow</strong> — Owens Valley and Great Basin; leeward of Sierra; precipitation drops dramatically</div>
+          <div class="vocab-item"><strong>Snow water equivalent (SWE)</strong> — water content of snowpack; measure of water storage</div>
+          <div class="vocab-item"><strong>Serotinous cone</strong> — cone sealed with resin; opens when heated by fire; Giant Sequoia, lodgepole pine</div>
+          <div class="vocab-item"><strong>Subalpine meadow</strong> — Sierra high-elevation grasslands; Tuolumne Meadows; critical carbon sinks</div>
+          <div class="vocab-item"><strong>Foxtail pine</strong> — Pinus balfouriana; grows 3,000–3,700m; only on highest Sierra and Klamath peaks</div>
+        </div>
+      </div>
+      <div class="abbey-box">
+        <div class="abbey-label">Personal Geography</div>
+        <div class="abbey-text">You grew up in Groveland and Sonora in the western Sierra foothills — the transition zone between foothill oak woodland and the lower ponderosa belt. Tioga Pass, the Tuolumne River corridor, the Hetch Hetchy watershed — these are your home range. The mountains at the edge of town that looked permanent are losing their snowpack. The water in the river you swam in as a kid comes from the same snowfields your family watched for a lifetime. This isn't abstract ecology.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The 2020 Castle Fire killed up to 19% of all mature Giant Sequoias alive on Earth. Not in one grove — across the entire species range. Trees that are 2,000 years old, that survived the Roman Empire, the Black Death, the American Revolution — they died in a fire so intense it crowned into the canopy. A century of putting out fires to 'protect' the forest created the fuel load that made this possible. The sequoias evolved to need low-intensity fire. We gave them catastrophic fire instead."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l9" onclick="markDone('l9')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l10">
+    <div class="lesson-header" onclick="toggle('l10')">
+      <div class="lesson-num">10</div>
+      <div><div class="lesson-title">Great Basin Ranges — Basin and Range in Detail</div><div class="lesson-sub">Bristlecone pines, Nevada's mountain islands, and the oldest living trees</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Nevada has more mountain ranges than any other state — over 300 north-south ranges separated by enclosed valleys, all part of the Basin and Range province. Each range is an isolated ecological island surrounded by sagebrush sea. The Ruby Mountains (northeast Nevada), the Spring Range (near Las Vegas), the Schell Creek and Snake Ranges (east-central Nevada) all harbor Rocky Mountain species — subalpine fir, Engelmann spruce, pika, marmot — isolated since the Pleistocene when lower elevations were cooler and wetter and continuous forest connected these ranges.</p>
+          <p>Bristlecone pines (Pinus longaeva) grow above 3,000m in the White Mountains of California and the Snake Range of Nevada. Methuselah — in the White Mountains Inyo National Forest — is 4,856 years old, the oldest confirmed living non-clonal organism on Earth. Bristlecones grow in the harshest possible conditions: rocky dolomite soils, extreme cold, minimal precipitation, high UV. The metabolic slowdown of these conditions — not despite the stress but because of it — is what produces their longevity. A bristlecone in rich soil grows faster and dies younger. The difficulty is the point.</p>
+          <p>Wheeler Peak in Nevada's Great Basin National Park hosts a bristlecone grove, a glacier remnant, and one of the most dramatic elevational gradients in the Basin and Range. The ill-fated Prometheus — a bristlecone estimated at nearly 5,000 years old — was cut down by a researcher in 1964 to count its rings. It remains the oldest tree ever confirmed. The lesson learned prompted the creation of Great Basin National Park in 1986.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Bristlecone pine</strong> — Pinus longaeva; oldest known non-clonal organism; White Mountains, Snake Range</div>
+          <div class="vocab-item"><strong>Dolomite</strong> — magnesium-calcium carbonate rock; poor soil; competitive advantage for bristlecones</div>
+          <div class="vocab-item"><strong>Pika</strong> — Ochotona princeps; alpine indicator species; heat-sensitive; retreating to higher elevations</div>
+          <div class="vocab-item"><strong>Pleistocene refugia</strong> — populations that survived glacial periods in favorable microhabitats</div>
+          <div class="vocab-item"><strong>Endorheic</strong> — internally draining basin; Great Basin drains to salt flats, not ocean</div>
+          <div class="vocab-item"><strong>Relict population</strong> — isolated remnant of formerly widespread species; most sky island fauna</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Bristlecone pines are the oldest individual organisms on Earth, and the reason they're so old is because they live in terrible conditions. Rich soil, ample water, good growing conditions — those trees grow fast and die young, toppled by their own weight. The bristlecones that live in rocky dolomite with almost no water grow so slowly their wood is so dense it resists rot, fungi, beetles, everything. Stress is their longevity strategy. Methuselah in the White Mountains is almost 5,000 years old and still alive."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l10" onclick="markDone('l10')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l11">
+    <div class="lesson-header" onclick="toggle('l11')">
+      <div class="lesson-num">11</div>
+      <div><div class="lesson-title">Drakensberg and Namibian Highlands</div><div class="lesson-sub">Africa's montane systems — plateau edges, escarpments, and fynbos</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Southern Africa's montane systems are defined by the Great Escarpment — the inland edge of the African continental platform that runs from the Drakensberg in the east to the Namibian Highlands in the west. The Drakensberg (Zulu: uKhahlamba, "Barrier of Spears") reaches 3,482m at Thabana Ntlenyana in Lesotho — the highest point in Africa south of Kilimanjaro. The escarpment creates an extreme precipitation gradient: the eastern slopes receive 1,000mm+ of rainfall while the inland plateau is semiarid.</p>
+          <p>The Cape Floristic Region at the southwestern tip of Africa is the world's smallest and richest floral kingdom — 9,000 plant species in an area the size of Portugal, 69% endemic. Fynbos (Afrikaans: "fine bush") is the dominant vegetation — a fire-adapted shrubland dominated by Proteaceae, Ericaceae, and Restionaceae. Like sagebrush in the Great Basin and chaparral in California, fynbos is a fire-climax community — it evolved with regular fire and declines without it. The proteas, king proteas, and pincushions are globally iconic but represent a fraction of the diversity in this ecosystem.</p>
+          <p>The Namibian Highlands — the central plateau of Namibia at 1,500–2,000m — support a transitional ecosystem between the Namib coastal desert and the Kalahari interior. The Naukluft Mountains and Brandberg (at 2,573m, the highest point in Namibia) harbor surprising biodiversity including desert-adapted elephants, lions, and rhinos. The !Nara melon — endemic to the Namib — is a leafless, spiny plant whose deep taproot reaches groundwater and whose melons feed jackals, hyenas, insects, and humans. San rock art at Brandberg dates to at least 2,000 years ago.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Great Escarpment</strong> — inland edge of African platform; creates sharp precipitation gradient; defines montane zones</div>
+          <div class="vocab-item"><strong>Fynbos</strong> — Cape shrubland; fire-adapted; 9,000 spp in Cape Floristic Region; 69% endemic</div>
+          <div class="vocab-item"><strong>Proteaceae</strong> — family dominant in fynbos and Australian heathland; ancient Gondwana distribution</div>
+          <div class="vocab-item"><strong>Cape Floristic Region</strong> — world's richest floral kingdom per area; southwestern South Africa</div>
+          <div class="vocab-item"><strong>Fire-climax community</strong> — ecosystem maintained by regular fire; declines in fire's absence</div>
+          <div class="vocab-item"><strong>Desert-adapted elephant</strong> — Namibian desert populations; travel 70km/day for water; unique behavioral adaptations</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The Cape Floristic Region — the southwest tip of South Africa — has more plant species per square kilometer than the Amazon rainforest. Nine thousand species in an area the size of Portugal, and 69% of them grow nowhere else on Earth. The plants are so diverse because the Cape sits at the convergence of three climate systems and has extremely varied soils and geology. The fynbos shrublands look scrubby and unremarkable until you realize you're standing in the most plant-diverse patch of land on Earth."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l11" onclick="markDone('l11')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase-label"><span>Phase 4 — <span class="phase-name">Climate, Change, and the Future Desert West</span></span><span>Lessons 12–14</span></div>
+
+  <div class="lesson" id="l12">
+    <div class="lesson-header" onclick="toggle('l12')">
+      <div class="lesson-num">12</div>
+      <div><div class="lesson-title">The Colorado River — Seven States, One River, No Water</div><div class="lesson-sub">The most overallocated river in North America and the reckoning coming for it</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The Colorado River Compact of 1922 allocated 17.5 million acre-feet of water per year among seven states — Arizona, California, Colorado, Nevada, New Mexico, Utah, Wyoming — plus Mexico. The problem: the river only averages 13–14 million acre-feet per year in a normal year. The compact was signed during the wettest 20-year period in the last 500 years. Hydrologists at the time used tree rings to reconstruct historical flows and warned the allocation was based on anomalous data. They were ignored.</p>
+          <p>Lake Mead and Lake Powell — the two largest reservoirs in the US — store the Colorado's water. In 2022, Lake Mead fell to 27% capacity, triggering Tier 2 water cuts to Arizona and Nevada for the first time in history. The bathtub ring of white calcium carbonate left on the canyon walls shows 30+ meters of decline. The Colorado River no longer reliably reaches the sea — the delta in Mexico is largely a dry channel. The ecosystem that once supported jaguar, cottonwood gallery forests, and rich fisheries is functionally gone.</p>
+          <p>The emerging solution framework is "demand management" — paying agricultural users (who consume 80% of Colorado River water) to fallow fields and reduce consumption. The Bureau of Reclamation is also exploring desalination from the Sea of Cortez and further conservation mandates. But the fundamental math has not changed: 40 million people depend on a river that cannot reliably supply them, in a region drying further under climate change. John Wesley Powell, who first ran the Colorado in 1869, warned the West could not support large-scale agriculture. He was right.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Prior appropriation</strong> — "first in time, first in right"; Western water law; senior users protected in shortage</div>
+          <div class="vocab-item"><strong>Acre-foot</strong> — volume of water covering one acre to one foot depth; 325,851 gallons; standard water unit in West</div>
+          <div class="vocab-item"><strong>Lake Mead bathtub ring</strong> — white calcium carbonate deposit marking former high water level; visual record of drought</div>
+          <div class="vocab-item"><strong>Compact negotiation</strong> — 1922 Colorado River Compact; allocated non-existent water; foundational Western water policy error</div>
+          <div class="vocab-item"><strong>Dendrhydrology</strong> — using tree rings to reconstruct historical river flows and climate</div>
+          <div class="vocab-item"><strong>Demand management</strong> — reducing water consumption through payment to voluntary fallowing; current drought response strategy</div>
+        </div>
+      </div>
+      <div class="abbey-box">
+        <div class="abbey-label">Powell's Warning</div>
+        <div class="abbey-text">"If men stay away from this region and allow it to remain as nature intended — a wilderness — it will be beautiful and picturesque beyond all that has been seen." John Wesley Powell, 1878, Report on the Lands of the Arid Region. He laid out precisely how much of the West could sustainably support agriculture — roughly 20% of what was ultimately developed. Congress ignored him. Edward Abbey, a century later, argued the dams themselves were the problem. They made the desert bloom, temporarily, at a cost the West is now paying.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The Colorado River Compact of 1922 gave out 17.5 million acre-feet of water. The river only produces about 13 million. The hydrologists knew this in 1922 — the compact was negotiated during the wettest 20-year period in 500 years. They used tree rings to reconstruct historical flows and told the negotiators. The negotiators signed it anyway. Forty million people now live downstream of that decision, in the driest decade in 1,200 years."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l12" onclick="markDone('l12')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l13">
+    <div class="lesson-header" onclick="toggle('l13')">
+      <div class="lesson-num">13</div>
+      <div><div class="lesson-title">Climate Change in the Desert West</div><div class="lesson-sub">Aridification, megadrought, and what the tree rings say</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The American Southwest is experiencing what climate scientists call "aridification" — a long-term drying trend superimposed on natural drought variability. The 2020–2022 period was the driest 22-year period in the Southwest in at least 1,200 years, based on tree ring reconstructions. A 2022 Nature Climate Change paper found that 42% of the severity of this megadrought was attributable to human-caused warming — not just natural variability. The remaining 58% was natural, but warming amplifies every drought by increasing evaporation and reducing snowpack.</p>
+          <p>The most direct climate signal in the desert West is snowpack decline. The Sierra Nevada and Rocky Mountain snowpacks have declined 20% since 1950 and are projected to decline another 25–40% by 2100 under moderate emissions scenarios. Earlier snowmelt means rivers peak earlier and run lower through summer, when agricultural demand is highest. In the Kalahari, climate projections show a 10–20% increase in potential evapotranspiration by 2050, converting the "fossil desert" to a more active desert system.</p>
+          <p>Species range shifts are already documented across the desert West. Joshua trees are retreating from their southern and lower-elevation range while expanding northward — but the pace of range expansion is far slower than the pace of habitat loss. Clark's Nutcracker, a key whitebark pine seed disperser, is shifting its range upward. Pika populations have gone locally extinct from numerous mountain ranges in the Great Basin. The spruce beetle has expanded 400km northward in range as winters warm, killing over 3 million acres of Engelmann spruce in Colorado alone. The elevational gradient that once provided climate buffering — retreat upslope — runs out at the summit.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Aridification</strong> — long-term drying trend; distinct from drought (temporary); permanent reduction in moisture</div>
+          <div class="vocab-item"><strong>Megadrought</strong> — multi-decadal drought; recent SW drought worst in 1,200 years</div>
+          <div class="vocab-item"><strong>Dendrochronology</strong> — tree ring dating; provides 1,000+ year climate reconstructions</div>
+          <div class="vocab-item"><strong>Vapor pressure deficit (VPD)</strong> — measure of atmospheric dryness; higher VPD = more plant water stress; rising with warming</div>
+          <div class="vocab-item"><strong>Whitebark pine</strong> — high-elevation 5-needle pine; keystone species; food source for grizzly, Clark's Nutcracker</div>
+          <div class="vocab-item"><strong>Range shift</strong> — species moving upslope or poleward in response to warming; documented in most desert taxa</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The 2020–2022 drought in the American Southwest was the worst 22-year drought in 1,200 years — and 42% of its severity was directly attributable to human-caused warming. Not just bad luck, not just natural variability. The warming increases evaporation so aggressively that even a normal-precipitation year produces drought conditions. It's not that it stopped raining. It's that rain now evaporates before it can be stored. That's aridification, and it's a one-way door."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l13" onclick="markDone('l13')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l14">
+    <div class="lesson-header" onclick="toggle('l14')">
+      <div class="lesson-num">14</div>
+      <div><div class="lesson-title">Field Reading — The Sierra Nevada Foothills to the Great Basin</div><div class="lesson-sub">Reading the landscape of your home range</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The drive from Groveland east over Tioga Pass and down into the Owens Valley is one of the most ecologically compressed transects in North America. In 120 miles you cross: foothill oak woodland (blue oak, gray pine, manzanita — fire-adapted chaparral) → ponderosa pine belt → mixed conifer (sugar pine, white fir, incense cedar) → subalpine zone (lodgepole pine, whitebark pine, mountain hemlock above 3,000m) → Tioga Pass summit tundra → sudden eastern escarpment drop → Great Basin desert floor (4,000 feet in 15 miles) → Owens Valley sagebrush at 1,000m with the White Mountains behind it → bristlecone pine forest above 3,000m on the White Mountains.</p>
+          <p>The Owens Valley is the deepest valley in the continental US, measured from valley floor to adjacent peak (Whitney to valley = 3,100m vertical in 15 horizontal miles). The valley was drained by the LA Aqueduct beginning in 1913 — William Mulholland's engineering feat and political theft that converted the Owens Lake (then the largest lake in California) into an alkali dust flat. The Owens dry lake now produces the largest single source of particulate air pollution in the US — PM10 blowing off 110 square miles of exposed lakebed, causing respiratory disease in the Owens Valley communities downwind.</p>
+          <p>When you climb from Groveland toward Yosemite, the foothill belt you grew up in is defined by blue oak (Quercus douglasii) — a drought-deciduous tree that drops its leaves in summer dry season rather than winter. It is the most drought-tolerant oak in California. The gray pine (Pinus sabiniana) alongside it is the indicator species of the California foothill zone. Both species are being negatively impacted by climate-driven drought stress — the blue oak experienced unprecedented mortality in the 2012–2016 drought. Your home landscape is already changing.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Field Markers — Groveland to Owens Valley</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Blue oak</strong> — drought-deciduous; California foothill indicator; summer dormancy; most drought-tolerant CA oak</div>
+          <div class="vocab-item"><strong>Gray pine</strong> — Pinus sabiniana; foothill indicator; large seeds (piñon-like); scraggly, open crown</div>
+          <div class="vocab-item"><strong>Tioga Pass (3,031m)</strong> — highest paved pass in Sierra Nevada; opens late May–June; Pleistocene glacial polish on granite</div>
+          <div class="vocab-item"><strong>Owens Valley</strong> — rain shadow of Sierra; deepest valley in continental US; Owens dry lake = largest US PM10 source</div>
+          <div class="vocab-item"><strong>White Mountains</strong> — across Owens Valley from Whitney; home of bristlecone pine; 4,341m (Boundary Peak)</div>
+          <div class="vocab-item"><strong>Rain shadow effect</strong> — western Sierra intercepts Pacific moisture; east side of pass is Great Basin desert</div>
+        </div>
+      </div>
+      <div class="abbey-box">
+        <div class="abbey-label">Home Ground</div>
+        <div class="abbey-text">"The mountains are calling and I must go." Muir wrote that about the Sierra Nevada — the same mountains you grew up with. The foothill oak woodland between Groveland and the park boundary is one of the most biologically distinctive ecosystems in California — the savanna and woodland that runs along the entire western Sierra slope. You grew up inside an ecology that most people study in textbooks. The question now is what it looks like in 50 years.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"William Mulholland built the LA Aqueduct in 1913 and drained the Owens Lake — then the largest lake in California — to water Los Angeles. The exposed lakebed is now 110 square miles of alkali dust. It's the largest single source of PM10 air pollution in the United States. The towns downwind — Lone Pine, Independence, Big Pine — have some of the worst air quality in the country. It's not from industry. It's from a decision made 110 years ago to steal their water."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l14" onclick="markDone('l14')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div class="resources">
+    <div class="resources-hed">Further Reading & Resources</div>
+    <div class="resource-list">
+      <div class="resource-item"><span>Desert Solitaire — Edward Abbey (1968) — the book that made the Colorado Plateau</span><span style="font-size:0.75rem;font-family:'DM Mono',monospace;color:var(--stone);">Abbey</span></div>
+      <div class="resource-item"><span>The Desert — John C. Van Dyke (1901) — first serious American desert aesthetics</span><span style="font-size:0.75rem;font-family:'DM Mono',monospace;color:var(--stone);">Classic</span></div>
+      <div class="resource-item"><span>USGS Water Resources of the United States — real-time streamflow data</span><a href="https://waterdata.usgs.gov" target="_blank">waterdata.usgs.gov ↗</a></div>
+      <div class="resource-item"><span>Bureau of Reclamation — Colorado River Basin water supply and demand</span><a href="https://www.usbr.gov/lc/" target="_blank">usbr.gov ↗</a></div>
+      <div class="resource-item"><span>ALPINE-WATCH — Sierra and Cascade lake water quality monitoring</span><a href="https://brooksgroves.com/Alpine-watch" target="_blank">brooksgroves.com ↗</a></div>
+      <div class="resource-item"><span>Rainier Snowpack Monitor — Pacific Northwest snowpack tracking</span><a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">bdgroves.github.io ↗</a></div>
+      <div class="resource-item"><span>Nevada Natural Heritage — Great Basin plant communities and species data</span><a href="https://heritage.nv.gov" target="_blank">heritage.nv.gov ↗</a></div>
+      <div class="resource-item"><span>Namibia Nature Foundation — Namib and Kalahari ecosystem research</span><a href="https://www.nnf.org.na" target="_blank">nnf.org.na ↗</a></div>
+    </div>
+  </div>
+
+  <!-- QA WIDGET -->
+  <div class="qa-widget">
+    <div class="qa-header">
+      <div>
+        <div class="qa-header-title">Ask the Tutor</div>
+        <div class="qa-header-sub">Desert & Montane Ecosystems · Powered by Claude</div>
+      </div>
+    </div>
+    <div class="qa-body">
+      <div class="qa-input-row">
+        <input type="text" class="qa-input" id="qa-input" placeholder="Ask anything about deserts, montane ecology, the Great Basin, Namib, Sierra Nevada…" onkeydown="if(event.key==='Enter') askTutor()">
+        <button class="qa-btn" onclick="askTutor()">Ask</button>
+      </div>
+      <div class="qa-response" id="qa-response"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+    </div>
+    <div class="footer-links">
+      <a href="/learning/">Learning</a>
+      <a href="/">Home</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+function markDone(id) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById('check-' + id);
+  el.classList.toggle('done');
+  const isDone = el.classList.contains('done');
+  btn.textContent = isDone ? '✓ Done' : 'Mark done';
+  btn.classList.toggle('done', isDone);
+  localStorage.setItem('dme-' + id, isDone ? '1' : '');
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = 14;
+  const done = document.querySelectorAll('.lesson.done').length;
+  document.getElementById('done-count').textContent = done;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+// Restore progress from localStorage
+window.addEventListener('DOMContentLoaded', () => {
+  for (let i = 1; i <= 14; i++) {
+    if (localStorage.getItem('dme-l' + i) === '1') {
+      const el = document.getElementById('l' + i);
+      const btn = document.getElementById('check-l' + i);
+      if (el) el.classList.add('done');
+      if (btn) { btn.textContent = '✓ Done'; btn.classList.add('done'); }
+    }
+  }
+  updateProgress();
+});
+
+async function askTutor() {
+  const input = document.getElementById('qa-input');
+  const response = document.getElementById('qa-response');
+  const question = input.value.trim();
+  if (!question) return;
+  input.value = '';
+  response.innerHTML = '<span class="qa-loading">Thinking…</span>';
+  try {
+    const res = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'You are an expert tutor for a self-directed curriculum on Desert and Montane Ecosystems — focused on the American West (Great Basin, Sierra Nevada, Mojave, Sonoran, Chihuahuan deserts), Namibia, and the Kalahari. The student has a background in molecular biology, GIS, and grew up in the Sierra Nevada foothills of Tuolumne County, California. Draw on ecology, plant physiology, hydrology, biogeography, and climate science. Be precise, substantive, and connect concepts to real places and species. Keep answers to 3–4 paragraphs unless asked for more.',
+        messages: [{ role: 'user', content: question }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'No response.';
+    response.innerHTML = text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+  } catch(e) {
+    response.innerHTML = 'Tutor unavailable. Try again in a moment.';
+  }
+}
+</script>
+</body>
+</html>

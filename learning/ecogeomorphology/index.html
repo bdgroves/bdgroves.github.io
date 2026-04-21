@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecogeomorphology — Learning — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --river:#2a5c6b; --mud:#6b4a2a; --moss:#3a5c35;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--river) 0%,var(--sage) 50%,var(--mud) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
+
+    .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--river); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+    .page-stats { display:flex; gap:2rem; margin-top:1.5rem; flex-wrap:wrap; }
+    .page-stat-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--river); }
+    .page-stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
+
+    .progress-wrap { background:var(--cream); border:1px solid var(--mist); padding:1.25rem 1.5rem; margin-top:1.5rem; }
+    .progress-bar-track { height:6px; background:var(--mist); border-radius:3px; margin:0.75rem 0 0.4rem; }
+    .progress-bar-fill { height:6px; background:var(--river); border-radius:3px; transition:width 0.4s ease; width:0%; }
+    .progress-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); }
+
+    .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .phase-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1.25rem; display:flex; justify-content:space-between; }
+    .phase-label:first-child { margin-top:0; }
+    .phase-name { color:var(--river); }
+
+    .lesson { border:1px solid var(--mist); margin-bottom:0.75rem; }
+    .lesson-header { padding:1.1rem 1.25rem; cursor:pointer; display:grid; grid-template-columns:2.5rem 1fr auto; gap:0.75rem; align-items:start; transition:background 0.15s; }
+    .lesson-header:hover { background:var(--cream); }
+    .lesson-num { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--stone); padding-top:0.1rem; }
+    .lesson-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.3; }
+    .lesson-sub { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; font-style:italic; }
+    .lesson-time { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); text-align:right; white-space:nowrap; padding-top:0.2rem; }
+    .lesson-expand { display:none; padding:1.25rem 1.5rem; border-top:1px solid var(--mist); background:var(--cream); }
+    .lesson.open .lesson-expand { display:block; }
+    .lesson.open .lesson-header { background:var(--cream); }
+    .lesson.done .lesson-num { color:var(--sage); }
+    .lesson.done .lesson-num::after { content:' ✓'; }
+
+    .expand-section { margin-bottom:1.25rem; }
+    .expand-section:last-child { margin-bottom:0; }
+    .expand-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--river); margin-bottom:0.5rem; }
+    .expand-body { font-size:0.88rem; line-height:1.75; color:var(--stone); }
+    .expand-body p { margin-bottom:0.6rem; }
+    .expand-body p:last-child { margin-bottom:0; }
+
+    .cocktail-box { background:var(--ink); color:#e8e4d8; padding:1rem 1.25rem; margin-top:1rem; border-left:3px solid var(--river); }
+    .cocktail-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--river); margin-bottom:0.4rem; }
+    .cocktail-line { font-size:0.88rem; font-style:italic; line-height:1.7; }
+
+    .gis-box { background:var(--cream); border-left:3px solid var(--sage); padding:1rem 1.25rem; margin-top:1rem; }
+    .gis-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--sage); margin-bottom:0.4rem; }
+    .gis-text { font-size:0.85rem; line-height:1.7; color:var(--stone); }
+
+    .vocab-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .vocab-grid { grid-template-columns:1fr; } }
+    .vocab-item { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    .vocab-item strong { color:var(--ink); font-weight:700; }
+
+    .resources { border:1px solid var(--mist); padding:1.75rem; margin-top:3rem; }
+    .resources-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:var(--river); }
+    .resource-list { display:flex; flex-direction:column; gap:0.6rem; }
+    .resource-item { font-size:0.85rem; color:var(--stone); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:baseline; }
+    .resource-item a { color:var(--rust); text-decoration:underline; text-underline-offset:3px; font-size:0.75rem; font-family:'DM Mono',monospace; }
+
+    .mark-done-btn { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--mist); background:none; color:var(--stone); padding:0.3rem 0.75rem; cursor:pointer; margin-top:1rem; transition:all 0.15s; }
+    .mark-done-btn:hover { border-color:var(--sage); color:var(--sage); }
+    .mark-done-btn.done { border-color:var(--sage); color:var(--sage); }
+
+    .qa-widget { border:2px solid var(--ink); margin-top:3rem; }
+    .qa-header { background:var(--ink); color:var(--white); padding:1rem 1.5rem; }
+    .qa-header-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; }
+    .qa-header-sub { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:#888; margin-top:0.2rem; }
+    .qa-body { padding:1.5rem; }
+    .qa-input-row { display:flex; gap:0.75rem; margin-bottom:1rem; }
+    .qa-input { flex:1; padding:0.75rem 1rem; font-family:'Libre Baskerville',serif; font-size:0.88rem; border:1px solid var(--mist); background:var(--white); color:var(--ink); outline:none; }
+    .qa-input:focus { border-color:var(--river); }
+    .qa-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; background:var(--river); color:var(--white); border:none; padding:0.75rem 1.25rem; cursor:pointer; white-space:nowrap; }
+    .qa-btn:hover { background:var(--mud); }
+    .qa-response { font-size:0.88rem; line-height:1.75; color:var(--stone); min-height:3rem; }
+    .qa-loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--mist); }
+
+    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/learning/">← Learning</a>
+      <a href="/">Home</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/learning/">Learning</a></p>
+  <h1 class="page-title">🌊 <em>Ecogeomorphology</em></h1>
+  <p class="page-sub">The feedback loop between organisms and landforms — where biology shapes rivers, slopes, and coasts, and the land shapes life in return. Darwin's earthworms, beaver dams, mangrove coasts, saltmarsh accretion, bioprotection, and the organisms that are ecosystem engineers. From the UC Davis watershed tradition to the PNW rivers outside your door.</p>
+  <div class="page-stats">
+    <div><div class="page-stat-val">12</div><div class="page-stat-lbl">Lessons</div></div>
+    <div><div class="page-stat-val">4</div><div class="page-stat-lbl">Phases</div></div>
+    <div><div class="page-stat-val">~10 hrs</div><div class="page-stat-lbl">Estimated time</div></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Progress — <span id="done-count">0</span> of 12 lessons complete</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-pct">0%</div>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <!-- PHASE 1 -->
+  <div class="phase-label"><span>Phase 1 — <span class="phase-name">What is Ecogeomorphology</span></span><span>Lessons 1–3</span></div>
+
+  <div class="lesson" id="l1">
+    <div class="lesson-header" onclick="toggle('l1')">
+      <div class="lesson-num">1</div>
+      <div><div class="lesson-title">Darwin's Earthworms — Where It Started</div><div class="lesson-sub">How a Victorian naturalist invented a field he didn't name</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Charles Darwin's last book — The Formation of Vegetable Mould, through the Action of Worms (1881) — was not about evolution. It was about how earthworms reshape landscapes. Darwin spent 40 years measuring how much soil earthworms moved, burying objects, plowing fields from below, and creating the topsoil structure that makes agriculture possible. He estimated that earthworms in English farmland moved 18 tons of soil per acre per year — turning the entire top layer every few decades. He placed stones on his lawn and measured how far they sank over the years. Methodical. Obsessive. Revolutionary.</p>
+          <p>What Darwin described without naming it is the founding experiment of ecogeomorphology — the study of how organisms modify landforms, and how landforms in turn constrain organisms. The field wasn't formalized until the 1980s, when researchers began systematically studying biogeomorphic processes: bioerosion (organisms breaking down rock and substrate), bioprotection (organisms shielding surfaces from erosion), bioconstruction (organisms building structures that accumulate sediment), and bioturbation (organisms mixing sediment).</p>
+          <p>The UC Davis Center for Watershed Sciences course (Dr. Carson Jeffres, Dr. Sarah Yarnell) applied these principles to California, Oregon, and Washington watershed systems — the rivers, estuaries, and floodplains of the Pacific states. The course integrates fluvial geomorphology, riparian ecology, and watershed hydrology into an applied science for conservation and restoration. The same principles that govern beaver dams in the Sierra Nevada govern mangrove accretion in the Namib delta and salt marsh expansion on Puget Sound.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Ecogeomorphology</strong> — study of feedbacks between organisms and geomorphic processes; also biogeomorphology</div>
+          <div class="vocab-item"><strong>Bioturbation</strong> — mixing of sediment by organisms; earthworms, burrowing crabs, bioturbating fish</div>
+          <div class="vocab-item"><strong>Bioerosion</strong> — weathering of rock/substrate by organisms; urchins, parrotfish, boring bivalves</div>
+          <div class="vocab-item"><strong>Bioprotection</strong> — organisms shielding surfaces from erosion; algae on rock, roots on slopes, oysters on intertidal</div>
+          <div class="vocab-item"><strong>Bioconstruction</strong> — organisms building structures that modify topography; coral reefs, oyster reefs, beaver dams</div>
+          <div class="vocab-item"><strong>Ecosystem engineer</strong> — organism that creates, modifies, or destroys habitat; beavers, elephants, prairie dogs, kelp</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Darwin's last book was about earthworms, and he spent 40 years on it. He measured how much soil they moved, how fast they buried stones, how they created the topsoil structure that makes farming possible. He estimated 18 tons per acre per year in English farmland. He wasn't wrong. Earthworms are moving more sediment annually than most rivers in Britain. He essentially invented ecogeomorphology without naming it — the study of how organisms reshape the land they live on."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l1" onclick="markDone('l1')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l2">
+    <div class="lesson-header" onclick="toggle('l2')">
+      <div class="lesson-num">2</div>
+      <div><div class="lesson-title">Fluvial Geomorphology — Rivers as Systems</div><div class="lesson-sub">How rivers work before organisms get involved</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>A river is a sediment transport system. Water flows downhill; it carries sediment; it deposits sediment where its energy decreases. The fundamental equation is Lane's balance: the relationship between discharge (Q), slope (S), sediment load (Qs), and grain size (D). When you change one variable, the river adjusts the others to re-establish equilibrium. This is why dams cause downstream erosion (sediment trapped in reservoir; river below has excess energy, erodes its bed), and why removing dams causes temporary downstream sediment pulses.</p>
+          <p>The three river morphology types that matter most for ecogeomorphology: braided (high energy, high sediment, wide shallow channels with shifting bars), meandering (lower gradient, single-thread channel with point bars and cut banks, lateral migration over decades), and straight/confined (canyon rivers, bedrock control). Pacific Northwest rivers tend to be hybrid systems — steep gradients, episodic disturbance from landslides and debris flows, and strong biotic modification by large woody debris and salmon.</p>
+          <p>Stream order (Strahler classification) provides a framework: headwater streams (1st–2nd order) have steep gradients and control fine sediment delivery; mid-order streams (3rd–5th) have floodplain development and strong riparian interaction; large rivers (6th+ order) have broad alluvial valleys and complex channel networks. The Coquille, Umpqua, Klamath, Trinity, Sacramento — all PNW/California river systems — follow this gradient from mountain headwaters to estuary. Understanding stream order tells you what kind of ecological interventions work where.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Lane's balance</strong> — equilibrium relationship between discharge, slope, sediment load, and grain size</div>
+          <div class="vocab-item"><strong>Braided channel</strong> — multiple threads; high energy; unstable banks; high bedload</div>
+          <div class="vocab-item"><strong>Meander</strong> — sinuous single-thread channel; point bar inside bend, cut bank outside; lateral migration</div>
+          <div class="vocab-item"><strong>Bankfull discharge</strong> — flow that just fills the channel; occurs ~1.5 years on average; geomorphically most effective</div>
+          <div class="vocab-item"><strong>Bedload</strong> — sediment moving along channel floor; gravel, cobbles; saltation and rolling</div>
+          <div class="vocab-item"><strong>Stream order</strong> — Strahler classification; headwaters = 1st order; adds with each confluence</div>
+        </div>
+      </div>
+      <div class="gis-box">
+        <div class="gis-label">GIS Connection</div>
+        <div class="gis-text">Stream networks are one of the most fundamental GIS datasets. USGS NHDPlus (National Hydrography Dataset) provides stream order, flow accumulation, and watershed delineation for all US streams. The SOLSTICE and ALPINE-WATCH projects both interact with USGS hydrological data. Watershed delineation — tracing the ridge lines that define a basin — is a core GIS skill and a direct application of fluvial geomorphology principles to spatial analysis.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"When you put a dam on a river, you trap the sediment that the river downstream needs to maintain its bed. The river below the dam has the same energy — the same water — but no sediment to carry, so it erodes its own banks and bed instead. The Colorado below Hoover Dam has incised its channel by up to 7 meters since 1935 and destroyed the riparian habitat that depended on periodic flooding. Glen Canyon Dam then trapped what was left. The river below the Grand Canyon is running on borrowed time."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l2" onclick="markDone('l2')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l3">
+    <div class="lesson-header" onclick="toggle('l3')">
+      <div class="lesson-num">3</div>
+      <div><div class="lesson-title">Biogeomorphic Windows and Succession</div><div class="lesson-sub">When biology drives landform change — and when it can't</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Ecogeomorphologists distinguish between geomorphically-dominated phases and biogeomorphically-dominated phases in landscape evolution. The concept of the "biogeomorphic window" — developed by Stallins (2006) and Corenblit et al. — describes the conditions under which biological processes can control landform development rather than being controlled by it. Outside the window (extreme disturbance, high energy, fast geomorphic processes), organisms are passengers. Inside the window (moderate disturbance, stable enough for colonization), organisms become drivers.</p>
+          <p>On a gravel bar in a braided river, the biogeomorphic window opens when flood disturbance decreases enough for pioneer plants (willows, cottonwoods, alder) to colonize. Their roots stabilize sediment; their stems trap more sediment; the bar builds; the window widens; more diverse species establish; the bar becomes an island, then a floodplain terrace. Remove the pioneer species — by herbivory, drought, or human intervention — and the window closes; the geomorphic processes reclaim the bar. This succession-disturbance feedback is central to understanding riparian restoration.</p>
+          <p>Complex systems themes in ecogeomorphology (from Stallins 2006): multiple causality (multiple processes operating simultaneously), ecological memory (past states encoded in current form), ecological topology (spatial variation in species-process relationships), and ecosystem engineering. These themes parallel complex systems concepts in GIS and spatial analysis — non-linear feedbacks, threshold behavior, path dependency, scale dependence. Ecogeomorphology is inherently spatial and inherently complex.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Biogeomorphic window</strong> — conditions where biological processes dominate landform development</div>
+          <div class="vocab-item"><strong>Ecological memory</strong> — past states encoded in current ecosystem structure; path dependency</div>
+          <div class="vocab-item"><strong>Pioneer species</strong> — early colonizers of disturbed surfaces; willows, cottonwood on gravel bars</div>
+          <div class="vocab-item"><strong>Phytostabilization</strong> — plant roots stabilizing sediment; first stage of biogeomorphic succession on bars</div>
+          <div class="vocab-item"><strong>Disturbance regime</strong> — frequency, magnitude, and predictability of disturbance events; controls succession</div>
+          <div class="vocab-item"><strong>Threshold behavior</strong> — sudden state change when driving variable crosses critical value; common in geomorphic systems</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"There's a concept in ecogeomorphology called the biogeomorphic window — the conditions under which organisms get to drive landform development rather than just respond to it. Too much disturbance and biology is just a passenger. Too little and the landform is already fixed. But hit that middle ground and a willow seedling on a gravel bar can start a cascade — roots stabilize sediment, sediment accumulates, more plants establish, the bar builds into a floodplain. One pioneer plant starts remaking the river."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l3" onclick="markDone('l3')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-label"><span>Phase 2 — <span class="phase-name">Ecosystem Engineers</span></span><span>Lessons 4–7</span></div>
+
+  <div class="lesson" id="l4">
+    <div class="lesson-header" onclick="toggle('l4')">
+      <div class="lesson-num">4</div>
+      <div><div class="lesson-title">Beavers — The Original Dam Engineers</div><div class="lesson-sub">How a 60-pound rodent reshapes watersheds</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Before European contact, 60–400 million beavers occupied North American watersheds from the Arctic to the Rio Grande. They built an estimated 15 million dams, creating millions of acres of wetland, slowing rivers, raising water tables, and storing more water in the western US than all current reservoirs combined. Beaver trapping for the fur trade (1600–1850) essentially dewatered the West — removing the organism that had been the primary hydrological engineer for 3 million years. The arid, erosion-prone landscapes Europeans documented as "natural" were already profoundly altered landscapes.</p>
+          <p>A beaver dam does several things simultaneously: raises local water table (critical in the dry West, where riparian vegetation depends on shallow groundwater); creates pond habitat; traps sediment (reducing downstream turbidity); slows stream velocity (reducing peak flood flows); and creates fire refugia (wet areas that don't burn in wildland fire). The riparian zone behind a beaver dam is among the most productive ecosystems in temperate North America — the "oasis effect." Moose browse willows; moose create more willows (through defecation and trampling); willows feed beavers; beavers create more ponds; ponds grow more willows. A positive feedback loop.</p>
+          <p>Beaver dam analog (BDA) restoration — building structures that mimic beaver dam effects using posts and natural materials — is now a mainstream low-cost restoration technique in the intermountain West. Projects on degraded stream reaches in the Methow Valley (WA), Elko County (NV), and dozens of Oregon sites show rapid channel narrowing, water table recovery, and riparian vegetation recovery within 2–5 years. The question is always: can you reintroduce actual beavers? Where willows are available, they are far more effective than human-built structures.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Beaver dam analog (BDA)</strong> — restoration structure mimicking beaver dam; posts + willow; low cost; rapid results</div>
+          <div class="vocab-item"><strong>Water table</strong> — upper surface of saturated groundwater; beaver ponds raise local water table</div>
+          <div class="vocab-item"><strong>Riparian zone</strong> — stream-adjacent vegetation corridor; most productive temperate zone per area; beaver-dependent</div>
+          <div class="vocab-item"><strong>Hysteresis</strong> — path-dependent response; degraded stream channels don't recover in reverse of degradation</div>
+          <div class="vocab-item"><strong>Trophic cascade</strong> — top-down ecological effects; wolf → elk → willow → beaver → hydrology</div>
+          <div class="vocab-item"><strong>Incised channel</strong> — stream that has cut below its floodplain; disconnected from riparian zone; common in degraded West</div>
+        </div>
+      </div>
+      <div class="gis-box">
+        <div class="gis-label">GIS Connection</div>
+        <div class="gis-text">Beaver dam mapping is a growing GIS application — identifying suitable sites for BDA restoration using LiDAR-derived slope, valley width, and riparian vegetation data. USFS and BLM in the intermountain West use spatial modeling to prioritize BDA installation sites based on groundwater potential and fire risk reduction value. The Methow Valley Conservancy has published spatial datasets of BDA installations and their hydrological response. This is applied ecogeomorphology in GIS form.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Before the fur trade wiped them out, beavers stored more water in the American West than all our current dams and reservoirs combined. The arid West we think of as natural — the eroded, incised, fire-prone landscape — is a landscape that's been dewatered. When you restore beavers to a degraded stream in Nevada or eastern Oregon, you don't just get a pond. You get a rising water table, recovering willows, reduced flood peaks, and a wet refuge that doesn't burn. One rodent fixes what millions in restoration funding can't."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l4" onclick="markDone('l4')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l5">
+    <div class="lesson-header" onclick="toggle('l5')">
+      <div class="lesson-num">5</div>
+      <div><div class="lesson-title">Large Woody Debris — How Dead Trees Build Rivers</div><div class="lesson-sub">The Pacific Northwest's most important river engineering material</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>In old-growth Pacific Northwest forests, fallen trees enter streams and restructure the entire channel. Large woody debris (LWD) — logs greater than 10cm diameter and 1m length — creates pools by deflecting flow and scouring channel beds, traps gravel spawning habitat for salmon, creates hydraulic complexity (alternating fast and slow water), retains leaf litter and organic matter (the base of the stream food web), and dissipates flood energy. A single large log can create a pool system that persists for decades and concentrates salmon spawning activity for its entire lifespan.</p>
+          <p>Historical logging in the PNW removed both the riparian trees that would have fallen into streams and actively "cleaned" streams of existing LWD under the mistaken belief that it impeded fish migration. The result was simplified, "channelized" streams with less hydraulic complexity, degraded spawning habitat, and reduced invertebrate diversity. The science reversing this — showing that LWD is not an obstacle but a fundamental structural component of PNW river ecosystems — took 30 years to filter from research to policy. LWD placement is now a standard restoration technique.</p>
+          <p>The nutrient connection: Pacific salmon return marine nitrogen, phosphorus, and carbon to freshwater and riparian systems. A spawned-out salmon carcass is a marine nutrient subsidy — bears, eagles, and ravens drag carcasses into the forest; the nitrogen from Pacific fish has been found in tree rings 500 meters from the stream. Remove salmon (via dam blockage, habitat degradation), and the riparian forest becomes nitrogen-limited. The fish feed the trees. The trees fall into the river. The logs create habitat for the fish. The feedback runs in both directions.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Large woody debris (LWD)</strong> — logs in streams; creates pools, traps gravel, retains organic matter</div>
+          <div class="vocab-item"><strong>Hydraulic complexity</strong> — spatial variation in flow velocity and depth; driven by LWD and channel morphology</div>
+          <div class="vocab-item"><strong>Marine-derived nutrients</strong> — nitrogen and phosphorus from salmon carcasses; documented in riparian tree rings</div>
+          <div class="vocab-item"><strong>Spawning gravel</strong> — clean gravel 1–10cm; salmon require specific grain size and low embeddedness for redds</div>
+          <div class="vocab-item"><strong>Hyporheic zone</strong> — subsurface flow through stream gravels; critical salmon egg habitat; temperature moderation</div>
+          <div class="vocab-item"><strong>Channel complexity</strong> — pools, riffles, runs; number and variety of channel units; index of stream health</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Pacific salmon are carrying nitrogen from the ocean into the mountains. Bears and ravens drag carcasses into the forest; that nitrogen shows up in tree rings 500 meters from the stream. The trees grow bigger, die, fall into the river, create the pools and gravel habitat where salmon spawn. The fish build the forest that builds the stream that grows the fish. Dam a river and block salmon migration and you're not just removing fish — you're cutting off the nutrient supply that built the riparian forest for 10,000 years."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l5" onclick="markDone('l5')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l6">
+    <div class="lesson-header" onclick="toggle('l6')">
+      <div class="lesson-num">6</div>
+      <div><div class="lesson-title">Coastal Engineers — Mangroves, Salt Marshes, and Oysters</div><div class="lesson-sub">How sessile organisms build coastlines</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Mangroves are the premier coastal ecosystem engineers in tropical and subtropical systems. Their prop roots reduce wave energy, trap fine sediment, and build peat — raising the land surface as sea level rises. A healthy mangrove system can accrete vertically at 2–5mm per year, keeping pace with current rates of sea level rise. Mangrove deforestation (for shrimp ponds, coastal development) exposes the underlying peat to oxidation — releasing centuries of stored carbon and causing the coastline to subside, creating a doubly bad outcome: loss of coastal protection and significant carbon emissions.</p>
+          <p>Salt marshes perform the same engineering in temperate systems — grasses (Spartina, Salicornia) trap fine sediment and build peat, dissipating wave energy and providing nursery habitat for commercially important fish and invertebrates. Puget Sound's tidal flats and estuaries are salt marsh-dominated — or were, before 70% of the historical salt marsh fringe was diked, filled, or developed. Restoration of Puget Sound tidal marshes is a major conservation priority partly because of their role in juvenile Chinook salmon rearing — the same salmon that orcas depend on.</p>
+          <p>Oyster reefs — once the dominant habitat structure in many temperate estuaries — function as both bioconstructors and bioprotectors. Live oyster reefs dissipate wave energy (bioprotection), accumulate shell hash that builds reef elevation (bioconstruction), and provide habitat for hundreds of associated species. Chesapeake Bay's oyster population is 1% of its historical level — the loss removed an organism that could filter the entire bay's water volume in a week. The turbidity that followed drove the decline of SAV (submerged aquatic vegetation), which collapsed the habitat base for blue crabs and juvenile fish. One species removal cascading through the entire system.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Vertical accretion</strong> — upward build of sediment/peat; mangroves and salt marshes keep pace with sea level rise via accretion</div>
+          <div class="vocab-item"><strong>Peat</strong> — partially decomposed organic matter; accumulates in low-oxygen waterlogged soils; mangroves, bogs</div>
+          <div class="vocab-item"><strong>Spartina</strong> — cordgrass; dominant salt marsh grass; wave energy dissipation; sediment trapping</div>
+          <div class="vocab-item"><strong>Biogenic habitat</strong> — habitat created by organisms; oyster reefs, coral reefs, kelp forests, beaver ponds</div>
+          <div class="vocab-item"><strong>Tidal prism</strong> — volume of water entering/leaving estuary with each tidal cycle; controls channel geometry</div>
+          <div class="vocab-item"><strong>Submerged aquatic vegetation (SAV)</strong> — underwater grasses; light-dependent; lost when turbidity increases from oyster decline</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Chesapeake Bay oysters are at 1% of their historical population. The historical oyster reef could filter the entire volume of the Bay — all 18 trillion gallons — in about a week. They're now filtering it in about a year. The resulting turbidity drove out the underwater grass beds, which drove out the crabs and juvenile fish that depended on them. One species. One percent remaining. The entire estuary restructured around its absence."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l6" onclick="markDone('l6')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l7">
+    <div class="lesson-header" onclick="toggle('l7')">
+      <div class="lesson-num">7</div>
+      <div><div class="lesson-title">Roots and Slopes — How Plants Hold the Land</div><div class="lesson-sub">Root architecture, root reinforcement, and what happens when trees die</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Tree roots are the primary stabilizing mechanism on steep slopes in humid mountain environments. Root reinforcement — the additional cohesion provided by roots crossing potential failure planes — can increase slope stability by 2–30 kPa, enough to prevent shallow landslides on slopes that would otherwise fail. The critical zone is the root penetration depth: roots must cross the slip surface, typically 0.5–2m depth for shallow translational slides. Larger, deeper-rooted species (Douglas fir, Sitka spruce) provide far more stability than shallow-rooted species (red alder, many grasses).</p>
+          <p>Forest harvesting creates a temporal window of high landslide risk. Root reinforcement declines over 3–15 years after harvest as roots decay — this lag effect means peak landslide risk occurs years after logging, not immediately. The 1996 storm events in western Oregon and Washington produced exceptional landslide activity concentrated in areas clearcut 5–10 years earlier, documented in multiple GIS-based spatial analyses. Salvage logging after wildfire has the same effect: removing fire-killed trees removes root anchoring before new roots establish, creating a window of elevated mass movement hazard.</p>
+          <p>Debris flows — hyperconcentrated mixtures of water, sediment, and wood that move at velocities of 5–20 m/s — are the primary sediment transport mechanism in steep mountain channels. They begin as shallow landslides, entrain water and channel sediment, and travel long distances before depositing at channel junctions or valley floors. In the Oregon Coast Range, debris flows occur at rates of 1–10 per km² per century. They are the dominant force shaping hollow topography (concave headwater valleys) in PNW mountains. They also deliver large woody debris to stream channels — making landslides a key link between the terrestrial and aquatic systems.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Root reinforcement</strong> — additional cohesion from roots crossing failure planes; prevents shallow landslides</div>
+          <div class="vocab-item"><strong>Factor of safety</strong> — ratio of resisting to driving forces on a slope; FS > 1 = stable; < 1 = failure</div>
+          <div class="vocab-item"><strong>Debris flow</strong> — fast-moving mix of water, sediment, wood; primary sediment mover in steep channels</div>
+          <div class="vocab-item"><strong>Hollow topography</strong> — concave hillslope convergence zone; accumulates sediment; high debris flow initiation probability</div>
+          <div class="vocab-item"><strong>Lag effect</strong> — peak landslide risk years after harvest as roots decay; temporal disconnection of cause and effect</div>
+          <div class="vocab-item"><strong>Pipeflow</strong> — subsurface flow through soil macropores; triggers pore pressure buildup; landslide initiation</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The highest landslide risk after a clearcut isn't immediately after logging — it's 5 to 10 years later, when the root systems have rotted out but nothing new has grown in deep enough to replace them. The 1996 storms in western Oregon hit exactly that window in thousands of clearcut hillslopes. The roots that were holding the slopes together were gone. The new trees hadn't grown their roots in yet. The timing of a storm and the timing of root decay created a disaster that forest policy hadn't anticipated."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l7" onclick="markDone('l7')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-label"><span>Phase 3 — <span class="phase-name">Pacific Northwest Watersheds</span></span><span>Lessons 8–10</span></div>
+
+  <div class="lesson" id="l8">
+    <div class="lesson-header" onclick="toggle('l8')">
+      <div class="lesson-num">8</div>
+      <div><div class="lesson-title">PNW Rivers — Salmon, Hydrology, and the Fire-Flood-Landslide Cycle</div><div class="lesson-sub">The disturbance regime that built the Pacific Northwest</div></div>
+      <div class="lesson-time">~55 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Pacific Northwest rivers are disturbance-driven systems. Unlike the stable, meandering rivers of the Midwest, PNW rivers experience episodic pulses of sediment and wood from landslides, debris flows, and wildfire that fundamentally restructure channel morphology on decadal timescales. The disturbance cycle: wildfire kills forest → storm delivers landslides and debris flows → debris flows deliver LWD and sediment to channels → channels aggrade (fill with sediment), braid, and shift → pioneer vegetation colonizes bars → forest recovers → fire → repeat. Salmon evolved in this system — they require the channel complexity created by disturbance, not the simplified, stable channels that result when disturbance is suppressed.</p>
+          <p>The Rogue, Umpqua, Willamette, Deschutes, McKenzie, Sandy, Clackamas, Cowlitz, Nisqually, Carbon, White, Puyallup — these rivers all drain the Cascades into Puget Sound or the Oregon/Washington coast. Each has a distinct character based on geology (basaltic vs. andesitic Cascades, different erosion rates), disturbance history, and degree of human modification (dams, levees, gravel mining, riparian clearing). The Puyallup River drains Mt. Rainier — where lahar risk (volcanic debris flows) adds a dimension of ecogeomorphic complexity found nowhere else in the contiguous US.</p>
+          <p>Winter steelhead, Chinook, coho, and chum salmon all require different channel conditions at different life stages. Chinook spawn in large-gravel riffles in mainstem rivers; coho use off-channel alcoves and small tributaries; steelhead use high-gradient headwater streams. The distribution of these species across a watershed is a spatial expression of channel morphology — which is itself a spatial expression of geology, disturbance history, and ecogeomorphic processes. Mapping salmon distribution is, in a sense, mapping ecogeomorphic outcomes.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Aggradation</strong> — filling of channel with sediment; often follows large disturbance events</div>
+          <div class="vocab-item"><strong>Lahar</strong> — volcanic debris flow; mixture of water and volcanic sediment; Mt. Rainier hazard</div>
+          <div class="vocab-item"><strong>Off-channel habitat</strong> — side channels, alcoves, beaver ponds; critical coho and juvenile salmon rearing areas</div>
+          <div class="vocab-item"><strong>Flood pulse</strong> — seasonal high flow; connects floodplain to channel; drives productivity and channel dynamics</div>
+          <div class="vocab-item"><strong>Redd</strong> — salmon spawning nest; requires specific gravel size, clean water, upwelling flow</div>
+          <div class="vocab-item"><strong>Watershed disturbance regime</strong> — frequency and magnitude of fire, flood, and mass movement; controls channel character</div>
+        </div>
+      </div>
+      <div class="gis-box">
+        <div class="gis-label">GIS Connection</div>
+        <div class="gis-text">The Rainier Snowpack project at brooksgroves.com monitors the hydrology of the Puyallup watershed — the same system shaped by Rainier's lahar geology and disturbance history. USGS stream gages on the Puyallup, Carbon, and Nisqually rivers record the flood pulse that drives channel dynamics. AFTERSHOCK monitors the seismicity that triggers debris flows on Rainier's flanks. These are ecogeomorphic systems instrumented with sensors and visualized with code.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Salmon evolved to need disturbed river channels — the complex habitat created by landslides and debris flows delivering wood and sediment, creating pools and gravel bars and side channels. We spent a century simplifying rivers, removing wood, confining channels with levees, thinking we were improving them. What we were doing was removing the channel complexity that salmon require. Restoring salmon habitat isn't about putting fish back in the river. It's about putting the geomorphic processes back that create the habitat."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l8" onclick="markDone('l8')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l9">
+    <div class="lesson-header" onclick="toggle('l9')">
+      <div class="lesson-num">9</div>
+      <div><div class="lesson-title">Dam Removal — The Largest Ecogeomorphic Experiment in History</div><div class="lesson-sub">What happened when the Elwha dams came out</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The removal of Elwha Dam and Glines Canyon Dam on the Elwha River (2011–2014) was the largest dam removal in US history at the time — and the most intensively studied ecogeomorphic experiment ever conducted. Researchers predicted what would happen to the 21 million cubic meters of sediment stored behind both dams, how rapidly the river would re-establish its channel, and how fast salmon would recolonize. The results exceeded predictions on almost every metric.</p>
+          <p>Within months of removal, the Elwha River cut through the reservoir deltas, mobilizing decades of fine sediment downstream. The river re-established a braided channel through former reservoir beds within a year. Cottonwood and willow established on exposed bars within two growing seasons. Coho and Chinook recolonized 70km of previously blocked river within 18 months of removal. The Lower Elwha Klallam Tribe, whose fishing culture had been severed for a century by the illegal dams, harvested the first salmon run in 2012. The river "remembered" its pre-dam form — the geomorphic template was encoded in the valley, waiting for the constraint to be removed.</p>
+          <p>The Klamath River dams (Oregon-California) are currently being removed in the largest dam removal project ever undertaken — four dams on 400km of river, with 57,000 acres of tribal fishing grounds and critically depleted Chinook and coho runs at stake. The Karuk and Yurok tribes — whose salmon-based cultures were decimated by the dams — were central advocates for removal over 20 years of legal and political battles. The ecogeomorphic recovery of the Klamath will be monitored for decades.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Reservoir delta</strong> — sediment deposited where river enters reservoir; coarse front, fine tail</div>
+          <div class="vocab-item"><strong>Geomorphic template</strong> — underlying valley form that channels expression of river morphology; persists beneath reservoirs</div>
+          <div class="vocab-item"><strong>Sediment pulse</strong> — mobilization of stored sediment after dam removal; initially high turbidity, then decline</div>
+          <div class="vocab-item"><strong>Recolonization rate</strong> — speed at which species repopulate restored habitat; Elwha salmon faster than predicted</div>
+          <div class="vocab-item"><strong>Fluvial terrace</strong> — former floodplain preserved above current channel; records river history</div>
+          <div class="vocab-item"><strong>Tribal fishing rights</strong> — treaty-protected rights to fish specific rivers; foundational to Elwha and Klamath dam removal advocacy</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"When the Elwha dams came out, the river responded faster than anyone predicted. Salmon recolonized 70 kilometers of river within 18 months. Cottonwoods established on the exposed reservoir bed within two growing seasons. The river had been blocked for a century but the valley remembered its pre-dam form — the geomorphic template was still there, encoded in the valley walls. Remove the dam and the river doesn't have to start from scratch. It's resuming a conversation that was interrupted."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l9" onclick="markDone('l9')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l10">
+    <div class="lesson-header" onclick="toggle('l10')">
+      <div class="lesson-num">10</div>
+      <div><div class="lesson-title">Puget Sound — Estuary as Ecogeomorphic System</div><div class="lesson-sub">Glacial geology, tidal flats, and the orca-salmon-river connection</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Puget Sound is a glacially carved fjord system — scoured by the Puget Lobe of the Cordilleran Ice Sheet to depths of 300m, then drowned by sea level rise as the ice melted. The resulting complex of basins, sills, and inlets creates extraordinary tidal variation and habitat complexity. The rivers entering Puget Sound — Nisqually, Puyallup, White, Duwamish, Snohomish, Skagit, Stillaguamish — deliver sediment and fresh water that build deltas, sustain eelgrass beds, and support the juvenile salmon rearing habitat that orca populations depend on.</p>
+          <p>The orca (Southern Resident Killer Whale) population of Puget Sound is critically endangered — 73 individuals remain. Their near-exclusive prey is Chinook salmon. Chinook salmon require: (1) clean cold rivers with spawning gravel — threatened by dam blockage, warming, and fine sediment from roads and development; (2) floodplain and off-channel rearing habitat — lost to levees and tidegate installation; (3) estuarine juvenile rearing habitat — lost to 70% destruction of Puget Sound salt marsh. The orca-salmon-river-estuary-marsh system is a connected ecogeomorphic chain. Protecting orcas means protecting rivers, estuaries, and the geomorphic processes that maintain them.</p>
+          <p>Nisqually Delta — at the south end of Puget Sound, below the mountain you can see from Lakewood on clear days — underwent the largest tidal wetland restoration on the US West Coast in 2009. Removing 8km of dikes restored 762 acres of tidal marsh and flats. Monitoring since then shows rapid sediment accretion, vegetation establishment, and use by juvenile salmon within 2 years. The restoration is a textbook ecogeomorphic recovery — and it's visible from your commute.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Fjord</strong> — glacially carved, drowned valley; steep walls, deep basin, sill at mouth; Puget Sound</div>
+          <div class="vocab-item"><strong>Eelgrass (Zostera marina)</strong> — submerged marine grass; critical juvenile salmon habitat; light-limited</div>
+          <div class="vocab-item"><strong>Tidegate</strong> — one-way valve preventing tidal inundation of diked farmland; disconnects estuary from upland</div>
+          <div class="vocab-item"><strong>Tidal prism restoration</strong> — removing dikes to reconnect tidal wetlands; Nisqually, Snohomish, Skagit</div>
+          <div class="vocab-item"><strong>Southern Resident Killer Whale</strong> — 73 individuals; Chinook-dependent; canary in Puget Sound coal mine</div>
+          <div class="vocab-item"><strong>Sediment accretion rate</strong> — vertical build of tidal flat; measure of restoration trajectory</div>
+        </div>
+      </div>
+      <div class="gis-box">
+        <div class="gis-label">GIS Connection</div>
+        <div class="gis-text">You can see the Nisqually Delta from Lakewood. The restoration removed dikes, reconnected tidal wetlands, and produced measurable ecogeomorphic change documented in before/after satellite imagery. NOAA and WDFW monitor the restoration with annual aerial surveys. The Nisqually Indian Tribe manages the refuge and the restoration data. This is ecogeomorphology happening in your backyard, visible from space, tracked in GIS datasets you can access.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The orca crisis in Puget Sound is really a river crisis. The Southern Residents eat almost exclusively Chinook salmon. The Chinook need cold clean rivers with spawning gravel, floodplain rearing habitat, and estuarine marshes for the juveniles. We've degraded all three — with dams, levees, and 70% marsh loss. Seventy-three orcas remain. The number is going down. The fix isn't in the Sound — it's in the rivers draining into it, and the ecogeomorphic processes that maintain those rivers."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l10" onclick="markDone('l10')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase-label"><span>Phase 4 — <span class="phase-name">Climate Change and the Future of Ecogeomorphology</span></span><span>Lessons 11–12</span></div>
+
+  <div class="lesson" id="l11">
+    <div class="lesson-header" onclick="toggle('l11')">
+      <div class="lesson-num">11</div>
+      <div><div class="lesson-title">Sea Level Rise and Coastal Ecogeomorphology</div><div class="lesson-sub">Can marshes and mangroves keep up?</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Global mean sea level has risen 20cm since 1900 and is rising at 3.6mm per year — accelerating. By 2100, IPCC projections suggest 0.5–1m of additional rise under moderate emissions, potentially 2m under high emissions. Coastal ecosystems — salt marshes, mangroves, tidal flats — can theoretically keep pace with sea level rise through vertical accretion (sediment trapping and organic matter accumulation). The critical question is whether accretion rates can match or exceed sea level rise rates.</p>
+          <p>Research from Puget Sound tidal marshes (Morris et al., Thom et al.) shows that healthy marshes with adequate sediment supply can accrete at rates matching or exceeding current sea level rise. But "coastal squeeze" — marshes caught between rising sea levels on the seaward side and human development (roads, levees, development) on the landward side — prevents marsh migration. A marsh that cannot migrate landward will drown in place. The Nisqually, Skagit, and Snohomish deltas all face coastal squeeze to varying degrees.</p>
+          <p>In Namibia and other African coastal systems, climate-driven changes to storm frequency, sediment supply, and sea level are restructuring mangrove distributions. The Orange River delta (Namibia/South Africa border) delivers sediment to the northern Namib coast — the same sediment that built Sossusvlei's dunes. Reduced river flows (from increased irrigation and drought) have reduced sediment supply to the coast, contributing to barrier island erosion. Land and sea are connected through sediment budgets that climate change is rewriting.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Coastal squeeze</strong> — marsh trapped between rising sea and landward barriers; cannot migrate; drowns in place</div>
+          <div class="vocab-item"><strong>Sediment supply</strong> — rate of sediment delivery to coast; controlled by river discharge, watershed erosion</div>
+          <div class="vocab-item"><strong>Blue carbon</strong> — carbon stored in coastal wetland soils; mangroves, salt marshes, seagrasses; high per-area storage</div>
+          <div class="vocab-item"><strong>Storm surge</strong> — coastal flooding from storm wind-driven water; wave height + surge = combined hazard</div>
+          <div class="vocab-item"><strong>Coastal accretion</strong> — vertical addition of sediment/organic matter; measured by marker horizons and GPS</div>
+          <div class="vocab-item"><strong>Managed retreat</strong> — planned relocation of infrastructure to allow coastal ecosystem migration</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Salt marshes can keep pace with sea level rise — they trap sediment and build peat, raising themselves as the water rises. The problem is coastal squeeze: when you put a road or a levee behind a marsh, it can't migrate landward when sea level rises seaward. It gets squeezed out of existence. The solution is managed retreat — moving the infrastructure back to give the marsh room to move. But 'managed retreat' means 'move your house' to the people who live there, which makes the politics almost impossible."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l11" onclick="markDone('l11')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l12">
+    <div class="lesson-header" onclick="toggle('l12')">
+      <div class="lesson-num">12</div>
+      <div><div class="lesson-title">Ecogeomorphology and GIS — Mapping the Feedback</div><div class="lesson-sub">How spatial analysis connects organisms and landforms at scale</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Ecogeomorphology is inherently spatial — the feedbacks between organisms and landforms operate at specific locations, across gradients, through connected networks. GIS provides the analytical framework for studying these relationships at watershed and landscape scales. The key datasets: LiDAR-derived digital elevation models (slope, aspect, curvature, flow accumulation, drainage networks); vegetation data (NLCD, Landsat time series, aerial photo classification); hydrological data (USGS stream gages, NHDPlus); and disturbance records (fire perimeters, landslide inventories, flood recurrence).</p>
+          <p>Slope stability modeling — predicting landslide probability across a landscape — integrates topography, soil type, root reinforcement estimates, and pore pressure models into spatially distributed hazard maps. SHALSTAB (Shallow Landsliding Stability Model) and similar models are applied in the Oregon Coast Range to prioritize areas for road decommissioning, timber harvest restrictions, and emergency response. The model is geomorphic (slope, contributing area, soil cohesion) but the best calibration datasets come from decades of landslide mapping correlated with forest management history — the ecogeomorphic signal in the spatial record.</p>
+          <p>The Tobler connection: ecogeomorphic processes are spatially autocorrelated — "near things are more related than distant things." A beaver dam's effects are strongest immediately downstream and diminish with distance. Root reinforcement is strongest at the tree and declines with distance from the root mass. Debris flows affect channels directly below initiation sites. Every ecogeomorphic process has a spatial signature — a pattern of influence that decreases with distance and is bounded by topographic barriers. Mapping those signatures is GIS. Understanding the processes that create them is ecogeomorphology.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>LiDAR</strong> — Light Detection and Ranging; point cloud → DEM; reveals channel networks, slope features through canopy</div>
+          <div class="vocab-item"><strong>SHALSTAB</strong> — Shallow Landslide Stability model; topographic/hydrologic slope stability prediction</div>
+          <div class="vocab-item"><strong>Flow accumulation</strong> — GIS raster; cumulative upstream drainage area; delineates channel networks</div>
+          <div class="vocab-item"><strong>Spatial autocorrelation</strong> — Tobler's First Law; nearby locations more similar than distant; fundamental to ecogeomorphic pattern</div>
+          <div class="vocab-item"><strong>Disturbance inventory</strong> — spatial database of landslide, fire, flood events; basis for ecogeomorphic model calibration</div>
+          <div class="vocab-item"><strong>NHDPlus</strong> — National Hydrography Dataset; stream network with flow direction, stream order, watershed delineation</div>
+        </div>
+      </div>
+      <div class="gis-box">
+        <div class="gis-label">GIS + Ecogeomorphology</div>
+        <div class="gis-text">Your GIS work at Zillow involves spatial modeling and data pipelines — the same toolkit that watershed scientists apply to ecogeomorphic questions. The difference is the data: instead of home prices, it's slope stability and sediment flux. LiDAR-derived DEMs are the base dataset for most applied ecogeomorphology in the PNW. The Oregon Department of Forestry publishes its SHALSTAB model outputs as GIS layers for the entire Coast Range — a direct application of ecogeomorphic science to forest management and hazard mapping. Cartographic Perspectives No. 105 published your review of historical cartography; the modern equivalent is the spatial data infrastructure that makes ecogeomorphic modeling possible.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Tobler's First Law of Geography — 'near things are more related than distant things' — is the spatial statement of ecogeomorphology. A beaver dam's effects on water table diminish with distance downstream. Root reinforcement is strongest at the trunk and declines outward. Debris flows affect channels in a cone below their source. Every organism-landform feedback has a spatial signature, a distance decay, a topographic boundary. Ecogeomorphology is ecology with coordinates. It's biology expressed as a map."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l12" onclick="markDone('l12')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div class="resources">
+    <div class="resources-hed">Further Reading & Resources</div>
+    <div class="resource-list">
+      <div class="resource-item"><span>UC Davis Center for Watershed Sciences — Ecogeomorphology course archive (Jeffres, Yarnell)</span><a href="https://watershed.ucdavis.edu" target="_blank">watershed.ucdavis.edu ↗</a></div>
+      <div class="resource-item"><span>USGS National Hydrography Dataset — stream networks, watershed delineation, flow data</span><a href="https://www.usgs.gov/national-hydrography" target="_blank">usgs.gov ↗</a></div>
+      <div class="resource-item"><span>Stallins (2006) — Geomorphology and Ecology: Unifying Themes for Complex Systems in Biogeomorphology</span><span style="font-size:0.75rem;font-family:'DM Mono',monospace;color:var(--stone);">Geomorphology</span></div>
+      <div class="resource-item"><span>Elwha River Restoration — USGS monitoring and results of largest US dam removal</span><a href="https://www.usgs.gov/centers/pcmsc/science/elwha-river-restoration" target="_blank">usgs.gov/elwha ↗</a></div>
+      <div class="resource-item"><span>ALPINE-WATCH — Pacific Northwest lake water quality monitoring</span><a href="https://brooksgroves.com/Alpine-watch" target="_blank">brooksgroves.com ↗</a></div>
+      <div class="resource-item"><span>Rainier Snowpack — Puyallup watershed snowpack and hydrology</span><a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">bdgroves.github.io ↗</a></div>
+      <div class="resource-item"><span>Nisqually National Wildlife Refuge — Puget Sound tidal restoration monitoring</span><a href="https://www.fws.gov/refuge/nisqually" target="_blank">fws.gov ↗</a></div>
+      <div class="resource-item"><span>Oregon Department of Forestry — SHALSTAB slope stability GIS data</span><a href="https://www.oregon.gov/odf" target="_blank">oregon.gov/odf ↗</a></div>
+    </div>
+  </div>
+
+  <!-- QA WIDGET -->
+  <div class="qa-widget">
+    <div class="qa-header">
+      <div class="qa-header-title">Ask the Tutor</div>
+      <div class="qa-header-sub">Ecogeomorphology · Powered by Claude</div>
+    </div>
+    <div class="qa-body">
+      <div class="qa-input-row">
+        <input type="text" class="qa-input" id="qa-input" placeholder="Ask about beavers, salmon, LWD, slope stability, Puget Sound, dam removal, coastal geomorphology…" onkeydown="if(event.key==='Enter') askTutor()">
+        <button class="qa-btn" onclick="askTutor()">Ask</button>
+      </div>
+      <div class="qa-response" id="qa-response"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div><p class="footer-name">Brooks Groves</p></div>
+    <div class="footer-links">
+      <a href="/learning/">Learning</a>
+      <a href="/">Home</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggle(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function markDone(id) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById('check-' + id);
+  el.classList.toggle('done');
+  const isDone = el.classList.contains('done');
+  btn.textContent = isDone ? '✓ Done' : 'Mark done';
+  btn.classList.toggle('done', isDone);
+  localStorage.setItem('ecogeo-' + id, isDone ? '1' : '');
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = 12;
+  const done = document.querySelectorAll('.lesson.done').length;
+  document.getElementById('done-count').textContent = done;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  for (let i = 1; i <= 12; i++) {
+    if (localStorage.getItem('ecogeo-l' + i) === '1') {
+      const el = document.getElementById('l' + i);
+      const btn = document.getElementById('check-l' + i);
+      if (el) el.classList.add('done');
+      if (btn) { btn.textContent = '✓ Done'; btn.classList.add('done'); }
+    }
+  }
+  updateProgress();
+});
+
+async function askTutor() {
+  const input = document.getElementById('qa-input');
+  const response = document.getElementById('qa-response');
+  const question = input.value.trim();
+  if (!question) return;
+  input.value = '';
+  response.innerHTML = '<span class="qa-loading">Thinking…</span>';
+  try {
+    const res = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'You are an expert tutor for a self-directed curriculum on Ecogeomorphology — the study of feedbacks between organisms and landforms. Focus on Pacific Northwest rivers, Puget Sound, salmon ecology, beaver geomorphology, large woody debris, slope stability, coastal systems, and the UC Davis watershed science tradition. The student is a GIS Analyst with a molecular biology background who grew up in the Sierra Nevada foothills and lives in Lakewood, WA. Connect concepts to local rivers (Puyallup, Nisqually, Elwha, Klamath), Puget Sound restoration, and GIS applications. Be precise, substantive, and ecologically grounded. Keep answers to 3–4 paragraphs unless asked for more.',
+        messages: [{ role: 'user', content: question }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'No response.';
+    response.innerHTML = text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+  } catch(e) {
+    response.innerHTML = 'Tutor unavailable. Try again in a moment.';
+  }
+}
+</script>
+</body>
+</html>
