@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outside — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --sky:#2a4a6b; --strava:#fc4c02;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1200px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
+    .page-header { max-width:1200px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--rust); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:580px; line-height:1.8; margin-bottom:1.25rem; }
+    .page-tags { display:flex; gap:0.4rem; flex-wrap:wrap; }
+    .page-tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.2rem 0.55rem; border-radius:4px; text-decoration:none; transition:all 0.15s; }
+    .page-tag:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+    .page-content { max-width:1200px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    /* TWO COLUMN LAYOUT */
+    .outside-grid { display:grid; grid-template-columns:320px 1fr; gap:3rem; align-items:start; }
+    @media(max-width:900px) { .outside-grid { grid-template-columns:1fr; gap:0; } }
+
+    /* SECTION + LABELS */
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label:first-child { margin-top:0; }
+    .section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
+    .section-label a:hover { color:var(--rust); }
+    .col-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin:1.25rem 0 0.6rem; }
+    .quick-links { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .quick-link { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.08em; text-transform:uppercase; text-decoration:none; color:var(--stone); border:1px solid var(--mist); padding:0.22rem 0.55rem; border-radius:4px; transition:all 0.15s; }
+    .quick-link:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+
+    /* SCORES */
+    .game-row { display:grid; grid-template-columns:1fr auto 1fr; align-items:center; padding:0.6rem 0; border-bottom:1px solid var(--mist); gap:0.5rem; }
+    .game-row:last-child { border-bottom:none; }
+    .team-home { text-align:right; }
+    .team-name { font-family:'Playfair Display',serif; font-size:0.85rem; font-weight:600; }
+    .team-name.winner { color:var(--ink); }
+    .team-name.loser { color:var(--mist); }
+    .game-score-block { text-align:center; min-width:60px; }
+    .score-line { font-family:'DM Mono',monospace; font-size:0.88rem; letter-spacing:0.05em; }
+    .score-status { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-top:0.1rem; }
+    .score-status.live { color:var(--rust); }
+    .score-status.final { color:var(--stone); }
+    .score-status.sched { color:var(--gold); }
+    .live-dot { display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--rust); margin-right:3px; vertical-align:middle; animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .standings-grid { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); }
+    .standings-header { display:grid; grid-template-columns:1fr auto auto auto; gap:0.25rem 0.75rem; padding-bottom:0.3rem; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; border-bottom:1px solid var(--mist); margin-bottom:0.3rem; }
+    .standings-row { display:grid; grid-template-columns:1fr auto auto auto; gap:0.25rem 0.75rem; padding:0.3rem 0; border-bottom:1px solid var(--mist); }
+    .standings-row:last-child { border-bottom:none; }
+    .standings-row.highlight { color:var(--ink); font-weight:700; }
+    .gb-neg { color:var(--rust); }
+
+    /* NFL */
+    .nfl-banner { background:var(--cream); border-left:3px solid var(--gold); padding:1rem 1.25rem; display:flex; align-items:center; gap:1rem; }
+    .nfl-trophy { font-size:1.5rem; flex-shrink:0; }
+    .nfl-result { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:900; line-height:1.2; }
+    .nfl-sub { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
+
+    /* PEAKS */
+    .peaks-card { background:var(--cream); border:1px solid var(--mist); padding:1.1rem; }
+    .peaks-card-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; margin-bottom:0.25rem; }
+    .peaks-card-desc { font-size:0.78rem; color:var(--stone); line-height:1.6; margin-bottom:0.5rem; }
+    .peaks-card-hours { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); margin-bottom:0.6rem; }
+    .fort-george-badge { display:none; font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); background:var(--ink); padding:0.3rem 0.6rem; margin-bottom:0.6rem; border-left:3px solid var(--gold); }
+    .fort-george-badge.visible { display:block; }
+    .peaks-btn { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--gold); border:1px solid var(--gold); padding:0.3rem 0.7rem; display:inline-block; transition:all 0.15s; }
+    .peaks-btn:hover { background:var(--gold); color:var(--white); }
+
+    /* STRAVA */
+    .ytd-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--mist); border:1px solid var(--mist); }
+    @media(max-width:600px) { .ytd-grid { grid-template-columns:repeat(2,1fr); } }
+    .ytd-card { background:var(--white); padding:1rem; text-align:center; }
+    .ytd-icon { font-size:1.3rem; margin-bottom:0.35rem; }
+    .ytd-sport { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.4rem; }
+    .ytd-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--ink); line-height:1; }
+    .ytd-unit { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); }
+    .ytd-sub { font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--mist); margin-top:0.25rem; }
+    .activity-list { display:flex; flex-direction:column; }
+    .activity-item { display:grid; grid-template-columns:2rem 1fr auto; align-items:center; gap:0.75rem; padding:0.7rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.1s; }
+    .activity-item:hover { background:var(--cream); margin:0 -0.5rem; padding-left:0.5rem; padding-right:0.5rem; }
+    .activity-item:last-child { border-bottom:none; }
+    .activity-icon { font-size:1.1rem; text-align:center; }
+    .activity-name { font-weight:700; font-size:0.88rem; color:var(--ink); margin-bottom:0.1rem; }
+    .activity-item:hover .activity-name { color:var(--strava); }
+    .activity-meta { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .activity-date { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--mist); text-align:right; white-space:nowrap; }
+    .alltime-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; }
+    @media(max-width:500px) { .alltime-grid { grid-template-columns:1fr; } }
+    .alltime-card { background:var(--cream); padding:1rem; border-left:3px solid var(--gold); }
+    .alltime-label { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.4rem; }
+    .alltime-val { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:900; color:var(--ink); }
+    .alltime-unit { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); }
+    .alltime-count { font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--mist); margin-top:0.15rem; }
+    .strava-btn { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--strava); border:1px solid var(--strava); padding:0.3rem 0.7rem; }
+    .strava-btn:hover { background:var(--strava); color:var(--white); }
+
+    /* BEER */
+    .beer-item { display:flex; align-items:flex-start; gap:0.75rem; padding:0.8rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.1s; }
+    .beer-item:hover { background:var(--cream); margin:0 -0.5rem; padding-left:0.5rem; padding-right:0.5rem; }
+    .beer-item:last-child { border-bottom:none; }
+    .beer-thumb { width:38px; min-width:38px; height:38px; object-fit:cover; border-radius:2px; }
+    .beer-thumb-placeholder { width:38px; min-width:38px; height:38px; background:var(--cream); border:1px solid var(--mist); border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
+    .beer-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; margin-bottom:0.1rem; line-height:1.2; }
+    .beer-brewery { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); text-transform:uppercase; }
+    .beer-comment { font-size:0.72rem; color:var(--stone); font-style:italic; margin-top:0.15rem; }
+    .beer-date { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--mist); margin-top:0.1rem; }
+
+    /* EVENTS */
+    .event-row { display:flex; justify-content:space-between; align-items:baseline; padding:0.65rem 0; border-bottom:1px solid var(--mist); gap:1rem; }
+    .event-row:last-child { border-bottom:none; }
+    .event-name { font-family:'Playfair Display',serif; font-size:0.9rem; font-weight:700; }
+    .event-loc { font-size:0.75rem; color:var(--stone); margin-top:0.1rem; }
+    .event-meta { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); text-align:right; flex-shrink:0; }
+    .event-meta span { display:block; }
+
+    /* CYCLING */
+    .tour-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+    @media(max-width:700px) { .tour-cards { grid-template-columns:1fr; } }
+    .tour-card { background:var(--ink); color:var(--white); padding:1.25rem; text-decoration:none; display:block; border-left:3px solid var(--gold); transition:background 0.15s; }
+    .tour-card:hover { background:#2a2820; }
+    .tour-card-country { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.14em; text-transform:uppercase; color:#888; margin-bottom:0.4rem; }
+    .tour-card-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:900; color:var(--white); margin-bottom:0.25rem; }
+    .tour-card-dates { font-family:'DM Mono',monospace; font-size:0.5rem; color:#888; margin-bottom:0.75rem; }
+    .tour-card-status { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); }
+    .tour-card-cta { font-family:'DM Mono',monospace; font-size:0.55rem; text-transform:uppercase; color:var(--gold); margin-top:0.5rem; }
+    .race-row { display:flex; align-items:baseline; justify-content:space-between; padding:0.65rem 0; border-bottom:1px solid var(--mist); gap:1rem; }
+    .race-row:last-child { border-bottom:none; }
+    .race-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; }
+    .race-leader { font-family:'Libre Baskerville',serif; font-style:italic; color:var(--gold); font-size:0.75rem; margin-top:0.15rem; }
+    .race-meta { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); text-align:right; flex-shrink:0; }
+    .race-meta span { display:block; }
+    .news-item { display:block; padding:0.5rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; }
+    .news-item:last-child { border-bottom:none; }
+    .news-date { font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--stone); margin-bottom:0.1rem; }
+    .news-title { font-size:0.84rem; font-weight:700; font-family:'Playfair Display',serif; line-height:1.3; }
+
+    .sport-note { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); padding:0.75rem 0; }
+    .loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--mist); padding:1rem 0; }
+    .updated-note { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--mist); margin-top:1.5rem; }
+
+    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/about.html">About</a>
+      <a href="/tags.html">Tags</a>
+      <a href="/">Home</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a></p>
+  <h1 class="page-title"><em>Outside</em></h1>
+  <p class="page-sub">Baseball, cycling, running, triathlon, beer. Endurance athlete in my 50s — still chasing PRs and big horizons. Life outside the office.</p>
+  <div class="page-tags">
+    <a href="/tags.html#Baseball" class="page-tag">Baseball</a>
+    <a href="/tags.html#Mariners" class="page-tag">Mariners</a>
+    <a href="/tags.html#Seahawks" class="page-tag">Seahawks</a>
+    <a href="/tags.html#Pro%20Cycling" class="page-tag">Pro Cycling</a>
+    <a href="/tags.html#Triathlon" class="page-tag">Triathlon</a>
+    <a href="/tags.html#Running" class="page-tag">Running</a>
+    <a href="/tags.html#Beer" class="page-tag">Beer</a>
+    <a href="/tags.html#Strava" class="page-tag">Strava</a>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <div class="outside-grid">
+
+    <!-- LEFT: Scores · Seahawks · Peaks & Pints -->
+    <div>
+
+      <div class="section-label">
+        <span>Seattle Mariners</span>
+        <a href="https://bdgroves.github.io/EDGAR" target="_blank">EDGAR ↗</a>
+      </div>
+      <div class="quick-links">
+        <a href="https://www.mlb.com/mariners" target="_blank" class="quick-link">MLB.com ↗</a>
+        <a href="https://www.mlb.com/mariners/schedule" target="_blank" class="quick-link">Schedule ↗</a>
+        <a href="https://bdgroves.github.io/EDGAR" target="_blank" class="quick-link">EDGAR ↗</a>
+      </div>
+      <div class="col-label">Recent Games</div>
+      <div id="mlb-scores"><p class="loading">Loading scores…</p></div>
+      <div class="col-label">AL West</div>
+      <div id="mlb-standings"><p class="loading">Loading standings…</p></div>
+
+      <div class="section-label">
+        <span>Seattle Seahawks</span>
+        <a href="https://www.seahawks.com" target="_blank">seahawks.com ↗</a>
+      </div>
+      <div class="quick-links">
+        <a href="https://www.nfl.com/teams/seattle-seahawks" target="_blank" class="quick-link">NFL.com ↗</a>
+        <a href="https://www.seahawks.com/schedule" target="_blank" class="quick-link">Schedule ↗</a>
+        <a href="https://www.seahawks.com/roster" target="_blank" class="quick-link">Roster ↗</a>
+      </div>
+      <div class="nfl-banner">
+        <div class="nfl-trophy">🏆</div>
+        <div>
+          <div class="nfl-result">Super Bowl LX Champions · 29–13</div>
+          <div class="nfl-sub">vs New England Patriots · Feb 8, 2026</div>
+          <div class="nfl-sub">MVP: Kenneth Walker III</div>
+          <div class="nfl-sub" style="margin-top:0.3rem;">2026 NFL Draft — Apr 23–25 · Green Bay</div>
+        </div>
+      </div>
+
+      <div class="section-label">
+        <span>Upcoming Races</span>
+      </div>
+      <div class="event-row">
+        <div><p class="event-name">Boston Marathon</p><p class="event-loc">Hopkinton → Boston, MA</p></div>
+        <div class="event-meta"><span>Apr 21, 2026</span><span class="score-status sched">Upcoming</span></div>
+      </div>
+      <div class="event-row">
+        <div><p class="event-name">Ironman World Championship</p><p class="event-loc">Nice, France</p></div>
+        <div class="event-meta"><span>Sep 6, 2026</span><span class="score-status sched">Upcoming</span></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Training + Beer -->
+    <div>
+
+      <div class="section-label">
+        <span>Training Log — <span id="current-year">2026</span></span>
+        <a href="https://www.strava.com/athletes/59148" target="_blank">Strava ↗</a>
+      </div>
+      <div class="quick-links">
+        <a href="https://www.strava.com/athletes/59148" target="_blank" class="quick-link">Strava Profile ↗</a>
+        <a href="https://www.ironman.com" target="_blank" class="quick-link">Ironman ↗</a>
+        <a href="https://www.baa.org" target="_blank" class="quick-link">Boston Marathon ↗</a>
+      </div>
+
+      <div class="col-label">Year to Date</div>
+      <div class="ytd-grid" id="ytd-grid">
+        <div class="ytd-card"><p class="loading">…</p></div>
+        <div class="ytd-card"></div>
+        <div class="ytd-card"></div>
+        <div class="ytd-card"></div>
+      </div>
+
+      <div class="col-label">Recent Activities</div>
+      <div class="activity-list" id="activity-list"><p class="loading">Loading activities…</p></div>
+      <a href="https://www.strava.com/athletes/59148" target="_blank" class="strava-btn">Full profile on Strava ↗</a>
+
+      <div class="col-label" style="margin-top:1.5rem;">All Time</div>
+      <div class="alltime-grid" id="alltime-grid"><p class="loading">Loading…</p></div>
+      <div class="updated-note" id="updated-note"></div>
+
+      <div class="section-label" style="margin-top:2.5rem;">
+        <span>Recent Check-ins</span>
+        <a href="https://untappd.com/user/bdgroves" target="_blank">Untappd ↗</a>
+      </div>
+      <div class="quick-links">
+        <a href="https://untappd.com/user/bdgroves" target="_blank" class="quick-link">Untappd Profile ↗</a>
+      </div>
+      <div id="beer-list"><p class="loading">Loading from Untappd…</p></div>
+
+      <div class="section-label" style="margin-top:2.5rem;">
+        <span>Peaks &amp; Pints</span>
+        <a href="https://www.peaksandpints.com/on-tap/" target="_blank">on tap ↗</a>
+      </div>
+      <div class="fort-george-badge" id="fort-george-alert">🍺 Fort George on tap right now</div>
+      <div class="peaks-card">
+        <div class="peaks-card-name">Peaks &amp; Pints — Proctor</div>
+        <div class="peaks-card-desc">28 taps — craft beer, cider, wine, cold brew, kombucha. Tacoma's best bottle shop and taproom.</div>
+        <div class="peaks-card-hours">3816 N. 26th St · 11am–11pm Sun–Thu · 11am–midnight Fri–Sat</div>
+        <a href="https://www.peaksandpints.com/on-tap/" target="_blank" class="peaks-btn">View Live Tap List ↗</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FULL WIDTH: CYCLING -->
+  <div style="margin-top:3rem;padding-top:0;">
+    <div class="section-label">
+      <span>Pro Cycling</span>
+      <a href="https://www.cyclingnews.com" target="_blank">Cyclingnews ↗</a>
+    </div>
+    <div class="quick-links">
+      <a href="https://www.procyclingstats.com" target="_blank" class="quick-link">PCS Stats ↗</a>
+      <a href="https://www.cyclingnews.com" target="_blank" class="quick-link">Cycling News ↗</a>
+      <a href="https://www.velonews.com" target="_blank" class="quick-link">VeloNews ↗</a>
+      <a href="https://www.letour.fr" target="_blank" class="quick-link">Tour de France ↗</a>
+      <a href="https://www.giroditalia.it" target="_blank" class="quick-link">Giro d'Italia ↗</a>
+    </div>
+    <div class="col-label">Grand Tours 2026</div>
+    <div class="tour-cards">
+      <a href="/giro-2026.html" class="tour-card">
+        <div class="tour-card-country">Italy</div>
+        <div class="tour-card-name">Giro d'Italia</div>
+        <div class="tour-card-dates">May 8–31 · Bulgaria → Rome · 21 stages</div>
+        <div class="tour-card-status">Upcoming · 109th Edition</div>
+        <div class="tour-card-cta">Stage Tracker →</div>
+      </a>
+      <a href="/tdf-2026.html" class="tour-card">
+        <div class="tour-card-country">France</div>
+        <div class="tour-card-name">Tour de France</div>
+        <div class="tour-card-dates">Jul 4–26 · Barcelona → Paris · 21 stages</div>
+        <div class="tour-card-status">Upcoming · 113th Edition</div>
+        <div class="tour-card-cta">Stage Tracker →</div>
+      </a>
+      <a href="/vuelta-2026.html" class="tour-card">
+        <div class="tour-card-country">Spain</div>
+        <div class="tour-card-name">Vuelta a España</div>
+        <div class="tour-card-dates">Aug 22–Sep 13 · Monaco → Granada · 21 stages</div>
+        <div class="tour-card-status">Upcoming · 81st Edition</div>
+        <div class="tour-card-cta">Stage Tracker →</div>
+      </a>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-top:2rem;">
+      <div>
+        <div class="col-label" style="margin-top:0;">Recent Races</div>
+        <div id="cycling-races"><p class="loading">Loading races…</p></div>
+      </div>
+      <div>
+        <div class="col-label" style="margin-top:0;">Latest News</div>
+        <div id="cycling-news"><p class="loading">Loading news…</p></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">Strava · MLB Stats API · Untappd · Peaks &amp; Pints</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/tags.html">Tags</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+async function loadMLB() {
+  const el = document.getElementById('mlb-scores');
+  try {
+    const today = new Date();
+    const start = new Date(today); start.setDate(start.getDate()-3);
+    const end = new Date(today); end.setDate(end.getDate()+3);
+    const fmt = d => d.toISOString().split('T')[0];
+    const res = await fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=136&startDate=${fmt(start)}&endDate=${fmt(end)}&sportId=1&hydrate=linescore,team`);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    const games = data.dates?.flatMap(d=>d.games)||[];
+    renderGames(el, games);
+  } catch(e) { el.innerHTML='<p class="sport-note">Scores loading…</p>'; }
+}
+
+function renderGames(el, games) {
+  if (!games.length) { el.innerHTML='<p class="sport-note">No recent games.</p>'; return; }
+  const order = {'Live':0,'Final':1,'Preview':2};
+  games.sort((a,b)=>(order[a.status.abstractGameState]||2)-(order[b.status.abstractGameState]||2));
+  el.innerHTML = games.slice(0,5).map(g => {
+    const status = g.status.abstractGameState;
+    const home=g.teams.home, away=g.teams.away;
+    const isSEAHome=home.team.id===136;
+    const seaTeam=isSEAHome?home:away, oppTeam=isSEAHome?away:home;
+    const seaScore=seaTeam.score??'--', oppScore=oppTeam.score??'--';
+    const seaWin=status!=='Preview'&&Number(seaScore)>Number(oppScore);
+    const oppWin=status!=='Preview'&&Number(oppScore)>Number(seaScore);
+    const oppName=oppTeam.team?.teamName||oppTeam.team?.name?.split(' ').slice(-1)[0]||'Opp';
+    const oppAbbr=oppTeam.team?.abbreviation||'';
+    let statusLabel='', statusClass='sched';
+    if (status==='Final'){statusLabel='Final · '+new Date(g.gameDate).toLocaleDateString('en-US',{month:'short',day:'numeric'});statusClass='final';}
+    else if (status==='Live'){statusLabel=`<span class="live-dot"></span>${g.linescore?.currentInningOrdinal||''}`;statusClass='live';}
+    else {const t=new Date(g.gameDate);statusLabel=t.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})+' · '+t.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
+    const scoreDisplay=status==='Preview'?`<span class="score-line">vs ${oppAbbr}</span>`:`<span class="score-line">${isSEAHome?seaScore:oppScore} · ${isSEAHome?oppScore:seaScore}</span>`;
+    const leftTeam=isSEAHome?'Seattle':oppName, rightTeam=isSEAHome?oppName:'Seattle';
+    const leftWin=isSEAHome?seaWin:oppWin, rightWin=isSEAHome?oppWin:seaWin;
+    return `<div class="game-row">
+      <div class="team-home"><div class="team-name ${status!=='Preview'?(leftWin?'winner':'loser'):''}">${leftTeam}</div></div>
+      <div class="game-score-block">${scoreDisplay}<span class="score-status ${statusClass}">${statusLabel}</span></div>
+      <div class="team-away"><div class="team-name ${status!=='Preview'?(rightWin?'winner':'loser'):''}">${rightTeam}</div></div>
+    </div>`;
+  }).join('');
+}
+
+async function loadStandings() {
+  const el = document.getElementById('mlb-standings');
+  try {
+    const res = await fetch('https://statsapi.mlb.com/api/v1/standings?leagueId=103&season=2026&standingsTypes=regularSeason');
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    const alWest = data.records?.find(r=>r.division?.id===200);
+    if (!alWest) throw new Error();
+    el.innerHTML = `<div class="standings-grid">
+      <div class="standings-header"><span>Team</span><span>W</span><span>L</span><span>GB</span></div>
+      ${alWest.teamRecords.map(t=>{
+        const isSEA=t.team.id===136;
+        const gb=t.gamesBack==='0.0'||t.gamesBack==='—'?'—':t.gamesBack;
+        return `<div class="standings-row ${isSEA?'highlight':''}">
+          <span>${t.team.teamName}</span><span>${t.wins}</span><span>${t.losses}</span>
+          <span class="${isSEA&&gb!=='—'?'gb-neg':''}">${gb}</span>
+        </div>`;
+      }).join('')}
+    </div>`;
+  } catch(e) { el.innerHTML='<p class="sport-note">Standings loading…</p>'; }
+}
+
+async function loadCycling() {
+  const el = document.getElementById('cycling-races');
+  try {
+    const res = await fetch('/cycling.json?t='+Date.now());
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    const finals=data.races.filter(r=>r.status==='final').slice(-8);
+    const live=data.races.filter(r=>r.status==='live');
+    const display=[...live,...finals].slice(0,8);
+    el.innerHTML = display.map(r=>{
+      let leader='',statusClass='sched',statusLabel='';
+      if(r.status==='final'){statusClass='final';statusLabel='Final';if(r.winner)leader=`<p class="race-leader">${r.winner}${r.team?' · '+r.team:''}</p>`;}
+      else if(r.status==='live'){statusClass='live';statusLabel='<span class="live-dot"></span>Live';leader=`<p class="race-leader" style="color:var(--rust);">Racing now</p>`;}
+      const dateStr=new Date(r.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      return `<div class="race-row"><div><p class="race-name">${r.name} <span style="font-family:'DM Mono',monospace;font-size:0.48rem;color:var(--stone);font-weight:normal;">${r.category}</span></p>${leader}</div><div class="race-meta"><span>${dateStr}</span><span class="score-status ${statusClass}">${statusLabel}</span></div></div>`;
+    }).join('')||'<p class="sport-note">No recent results yet.</p>';
+  } catch(e) { el.innerHTML='<p class="sport-note">Cycling data loading…</p>'; }
+}
+
+async function loadCyclingNews() {
+  const el = document.getElementById('cycling-news');
+  try {
+    const RSS_URL=encodeURIComponent('https://www.cyclingnews.com/rss/news/');
+    const res=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${RSS_URL}&count=6`);
+    if(!res.ok) throw new Error();
+    const data=await res.json();
+    if(data.status!=='ok'||!data.items?.length) throw new Error();
+    el.innerHTML=data.items.map(item=>{
+      const date=new Date(item.pubDate).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      return `<a href="${item.link}" target="_blank" class="news-item"><div class="news-date">${date}</div><div class="news-title">${item.title}</div></a>`;
+    }).join('');
+  } catch(e) { el.innerHTML='<p class="sport-note">Cycling news loading…</p>'; }
+}
+
+async function loadBeers() {
+  const el = document.getElementById('beer-list');
+  try {
+    const res=await fetch('/beers.json?t='+Date.now());
+    if(!res.ok) throw new Error();
+    const data=await res.json();
+    const beers=data.checkins.slice(0,8);
+    if(!beers.length) throw new Error();
+    el.innerHTML=beers.map(b=>{
+      const match=b.title.match(/drinking an? (.+?) by\s+(.+?) at/);
+      const beerName=match?match[1].trim():b.title;
+      const brewery=match?match[2].trim():'';
+      const date=new Date(b.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      const thumb=b.image
+        ?`<img src="${b.image}" class="beer-thumb" alt="" onerror="this.outerHTML='<div class=\\"beer-thumb-placeholder\\">🍺</div>'">`
+        :`<div class="beer-thumb-placeholder">🍺</div>`;
+      return `<a href="${b.link}" target="_blank" class="beer-item">${thumb}<div style="flex:1;"><p class="beer-name">${beerName}</p><p class="beer-brewery">${brewery}</p>${b.description?`<p class="beer-comment">"${b.description}"</p>`:''}<p class="beer-date">${date}</p></div></a>`;
+    }).join('');
+  } catch(e) { el.innerHTML='<p class="sport-note">Check back soon.</p>'; }
+}
+
+async function loadStrava() {
+  try {
+    const res=await fetch('/data/strava.json?t='+Date.now());
+    if(!res.ok) throw new Error();
+    const d=await res.json();
+    renderYTD(d.ytd);
+    renderActivities(d.activities);
+    renderAllTime(d.all_time);
+    if(d.updated){
+      const dt=new Date(d.updated);
+      document.getElementById('updated-note').textContent='Strava data last updated '+dt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+    }
+  } catch(e) {
+    document.getElementById('ytd-grid').innerHTML='<div class="ytd-card" style="grid-column:1/-1"><p class="loading">Training data loading — <a href="https://www.strava.com/athletes/59148" target="_blank" style="color:var(--strava)">view on Strava ↗</a></p></div>';
+    document.getElementById('activity-list').innerHTML='';
+    document.getElementById('alltime-grid').innerHTML='';
+  }
+}
+
+function renderYTD(ytd) {
+  const yogaCard=ytd.yoga&&ytd.yoga.count>0
+    ?`<div class="ytd-card"><div class="ytd-icon">🧘</div><div class="ytd-sport">Yoga</div><div><span class="ytd-val">${ytd.yoga.count}</span></div><div class="ytd-sub">${ytd.yoga.time||''}</div></div>`:'';
+  document.getElementById('ytd-grid').innerHTML=
+    `<div class="ytd-card"><div class="ytd-icon">🏃</div><div class="ytd-sport">Running</div><div><span class="ytd-val">${ytd.run.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div><div class="ytd-sub">${ytd.run.count} runs · ${ytd.run.time}</div></div>
+    <div class="ytd-card"><div class="ytd-icon">🚴</div><div class="ytd-sport">Cycling</div><div><span class="ytd-val">${ytd.ride.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div><div class="ytd-sub">${ytd.ride.count} rides · ${ytd.ride.time}</div></div>
+    <div class="ytd-card"><div class="ytd-icon">🏊</div><div class="ytd-sport">Swimming</div><div><span class="ytd-val">${ytd.swim.yards.toLocaleString()}</span><span class="ytd-unit">yd</span></div><div class="ytd-sub">${ytd.swim.count} swims · ${ytd.swim.time}</div></div>
+    ${yogaCard}`;
+}
+
+function renderActivities(acts) {
+  if(!acts||!acts.length){document.getElementById('activity-list').innerHTML='<p class="loading">No recent activities.</p>';return;}
+  document.getElementById('activity-list').innerHTML=acts.map(a=>`
+    <a href="${a.map_url}" target="_blank" class="activity-item">
+      <div class="activity-icon">${a.icon}</div>
+      <div><div class="activity-name">${a.name}</div>
+      <div class="activity-meta">${a.distance?`<span>${a.distance}</span>`:''} ${a.time?`<span>${a.time}</span>`:''} ${a.pace?`<span>${a.pace}</span>`:''} ${a.elevation?`<span>↑${a.elevation}</span>`:''}</div></div>
+      <div class="activity-date">${a.date}</div>
+    </a>`).join('');
+}
+
+function renderAllTime(at) {
+  document.getElementById('alltime-grid').innerHTML=
+    `<div class="alltime-card"><div class="alltime-label">🏃 Running</div><div><span class="alltime-val">${at.run.miles.toLocaleString()}</span> <span class="alltime-unit">miles</span></div><div class="alltime-count">${at.run.count.toLocaleString()} activities</div></div>
+    <div class="alltime-card"><div class="alltime-label">🚴 Cycling</div><div><span class="alltime-val">${at.ride.miles.toLocaleString()}</span> <span class="alltime-unit">miles</span></div><div class="alltime-count">${at.ride.count.toLocaleString()} activities</div></div>
+    <div class="alltime-card"><div class="alltime-label">🏊 Swimming</div><div><span class="alltime-val">${at.swim.yards.toLocaleString()}</span> <span class="alltime-unit">yards</span></div><div class="alltime-count">${at.swim.count.toLocaleString()} activities</div></div>`;
+}
+
+async function checkFortGeorge() {
+  try {
+    const res=await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev/proxy?url='+encodeURIComponent('https://www.peaksandpints.com/on-tap/'));
+    const html=await res.text();
+    if(html.toLowerCase().includes('fort george'))
+      document.getElementById('fort-george-alert').classList.add('visible');
+  } catch(e) {}
+}
+
+document.getElementById('current-year').textContent=new Date().getFullYear();
+loadMLB();
+loadStandings();
+loadCycling();
+loadCyclingNews();
+loadBeers();
+loadStrava();
+checkFortGeorge();
+setInterval(()=>{if(!document.hidden){loadMLB();loadStandings();}},5*60*1000);
+</script>
+</body>
+</html>
