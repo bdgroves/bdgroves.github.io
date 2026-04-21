@@ -239,15 +239,15 @@
       </div>
 
       <div class="section-label">
-        <span>Upcoming Races</span>
-      </div>
-      <div class="event-row">
-        <div><p class="event-name">Boston Marathon</p><p class="event-loc">Hopkinton → Boston, MA</p></div>
-        <div class="event-meta"><span>Apr 21, 2026</span><span class="score-status sched">Upcoming</span></div>
+        <span>Race Calendar 2026</span>
       </div>
       <div class="event-row">
         <div><p class="event-name">Ironman World Championship</p><p class="event-loc">Nice, France</p></div>
         <div class="event-meta"><span>Sep 6, 2026</span><span class="score-status sched">Upcoming</span></div>
+      </div>
+      <div class="event-row">
+        <div><p class="event-name">Ironman 70.3 Washington</p><p class="event-loc">Tri-Cities, WA · Columbia River</p></div>
+        <div class="event-meta"><span>Sep 20, 2026</span><span class="score-status sched">Upcoming</span></div>
       </div>
 
     </div>
@@ -262,7 +262,7 @@
       <div class="quick-links">
         <a href="https://www.strava.com/athletes/59148" target="_blank" class="quick-link">Strava Profile ↗</a>
         <a href="https://www.ironman.com" target="_blank" class="quick-link">Ironman ↗</a>
-        <a href="https://www.baa.org" target="_blank" class="quick-link">Boston Marathon ↗</a>
+        <a href="https://www.ironman.com/im703-washington-tri-cities" target="_blank" class="quick-link">IM 70.3 Tri-Cities ↗</a>
       </div>
 
       <div class="col-label">Year to Date</div>
@@ -496,7 +496,7 @@ async function loadBeers() {
     const res=await fetch('/beers.json?t='+Date.now());
     if(!res.ok) throw new Error();
     const data=await res.json();
-    const beers=data.checkins.slice(0,8);
+    const beers=data.checkins.slice(0,5);
     if(!beers.length) throw new Error();
     el.innerHTML=beers.map(b=>{
       const match=b.title.match(/drinking an? (.+?) by\s+(.+?) at/);
