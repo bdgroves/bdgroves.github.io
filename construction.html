@@ -2,336 +2,138 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coming Soon — Brooks Groves</title>
+  <title>Site Status — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
     :root {
-      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
-      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
-      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
-    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
-    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
-    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
-    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
-    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
-    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
-    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
-    nav a:hover { color: var(--rust); }
-    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
-    nav a.github:hover { background: var(--ink); color: var(--parchment); }
-    .main { flex: 1; max-width: 720px; margin: 0 auto; padding: clamp(4rem,8vw,6rem) clamp(1.5rem,5vw,2rem); width: 100%; }
-    .eyebrow { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
-    .page-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3rem); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
-    .page-title em { font-style: italic; color: var(--rust); }
-    .desc { font-size: 0.95rem; color: var(--stone); line-height: 1.8; margin-bottom: 3rem; }
-    .status-section { margin-bottom: 2.5rem; }
-    .status-heading { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--stone); padding-bottom: 0.6rem; border-bottom: 2px solid var(--ink); margin-bottom: 1rem; }
-    .status-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--mist); }
-    .status-item { font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.08em; color: var(--stone); padding: 0.8rem 1rem; border-bottom: 1px solid var(--mist); display: flex; gap: 0.75rem; align-items: center; text-decoration: none; transition: background 0.15s; }
-    .status-item:last-child { border-bottom: none; }
-    a.status-item:hover { background: var(--cream); color: var(--ink); }
-    .status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-    .dot-live { background: var(--sage); }
-    .dot-soon { background: var(--gold); opacity: 0.6; }
-    .status-label { flex: 1; }
-    .status-tag { font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mist); margin-left: auto; white-space: nowrap; }
-    a.status-item .status-tag { color: var(--sage); }
-    .back-btn { display: inline-block; font-family: 'DM Mono', monospace; font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; padding: 0.6rem 1.4rem; border: 1.5px solid var(--ink); color: var(--ink); transition: background 0.2s, color 0.2s; margin-top: 1rem; }
-    .back-btn:hover { background: var(--ink); color: var(--parchment); }
-    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: auto; }
-    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
-    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
-    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
-    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
-    .footer-tagline a:hover { color: var(--gold); }
-    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
-    .footer-links a:hover { color: var(--gold); }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--sage) 0%,var(--gold) 50%,var(--rust) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; max-width:860px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; text-decoration:none; color:var(--ink); }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
+    .page-wrap { max-width:860px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem); }
+    .eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .eyebrow a { color:var(--stone); text-decoration:none; }
+    h1 { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3rem); font-weight:900; line-height:1.05; margin-bottom:0.75rem; }
+    h1 em { font-style:italic; color:var(--gold); }
+    .intro { font-size:0.95rem; color:var(--stone); max-width:560px; line-height:1.8; margin-bottom:3rem; }
+    .section-label { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.6rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1.25rem; display:flex; justify-content:space-between; }
+    .status-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.6rem; }
+    @media(max-width:600px) { .status-grid { grid-template-columns:1fr; } }
+    .status-item { display:flex; align-items:baseline; gap:0.75rem; padding:0.75rem; background:var(--cream); border-left:3px solid var(--mist); }
+    .status-item.live { border-left-color:var(--sage); }
+    .status-item.building { border-left-color:var(--gold); }
+    .status-item.planned { border-left-color:var(--mist); opacity:0.7; }
+    .status-dot { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; flex-shrink:0; padding:0.15rem 0.45rem; border-radius:2px; }
+    .live .status-dot { background:var(--sage); color:var(--white); }
+    .building .status-dot { background:var(--gold); color:var(--white); }
+    .planned .status-dot { background:var(--mist); color:var(--stone); }
+    .status-name { font-size:0.88rem; font-weight:600; color:var(--ink); }
+    .status-note { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.1rem; }
+    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:5rem; }
+    .footer-inner { max-width:860px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1.5rem; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); margin-left:1.5rem; }
+    .footer-links a:hover { color:var(--gold); }
   </style>
 </head>
 <body>
-
 <div class="topline"></div>
-
 <header>
   <div class="masthead-inner">
     <a href="/" class="site-name">Brooks Groves</a>
-    <nav>
-      <a href="/blog/index.html">Blog</a>
-      <a href="/journal/index.html">Journal</a>
-      <a href="/westin/index.html">Westin</a>
-      <a href="https://github.com/bdgroves" target="_blank">Projects</a>
-      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
-      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
-    </nav>
+    <nav><a href="/">← Home</a></nav>
   </div>
 </header>
 
-<div class="main">
-  <p class="eyebrow">Brooks Groves · brooksgroves.com</p>
-  <h1 class="page-title">Still being <em>built.</em></h1>
-  <p class="desc">This section isn't ready yet. In the meantime, here's where things stand across the site.</p>
+<div class="page-wrap">
+  <p class="eyebrow"><a href="/">Brooks Groves</a></p>
+  <h1>Site <em>Status</em></h1>
+  <p class="intro">What's live, what's building, what's planned. brooksgroves.com is an ongoing project — always something in progress. Last updated April 2026.</p>
 
-  <!-- LIVE NOW -->
-  <div class="status-section">
-    <div class="status-heading">Live Now</div>
-    <div class="status-list">
-      <a href="/" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Homepage — live weather, MLB scores + standings, reading, beer, cycling</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/blog/index.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Blog — forge3d terrain rendering, pixi environments, streamflow dashboard</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/journal/index.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Journal — Cannon Beach, tide pools, Fort George beers</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/westin/index.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Westin Stories — 8 dispatches from 21 years as bell captain (1997–2018) · Password protected</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/meteorology.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Meteorology — weather-report-bot, 4 stations, broadcast cards twice daily</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/volcanology.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Volcanology — lahar-watch, Mt. Rainier sensor network, 8 seismic stations</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/geospatial.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Geospatial — wildfire response gaps, Project Kiva, QGIS pipelines</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/hydrology.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Hydrology — streamchaser, Sierra Streamflow, Rainier Snowpack</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/paleontology.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Paleontology — PaleoWave ichthyosaurs, IceWave megafauna (E02 validated)</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/giro-2026.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Giro d'Italia 2026 — stage tracker, GC standings, auto-updated nightly · May 8–31</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/tdf-2026.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Tour de France 2026 — stage tracker, GC standings, auto-updated nightly · Jul 4–26</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="https://bdgroves.github.io/EDGAR" target="_blank" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">EDGAR — Mariners &amp; Tacoma Rainiers analytics dashboard · nightly GitHub Actions</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="https://bdgroves.github.io/ridgeline" target="_blank" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">RIDGELINE — WUI search &amp; rescue call volume analysis · Phoenix Fire · 86K+ incidents</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Sierra Streamflow Monitor — 8 USGS gages, spaghetti charts, weekly automation</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/about.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">About page — bio, timeline, education, connect links</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/writing/index.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Writing section — essays, reviews, field notes · separate from technical blog</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/writing/draught-south-land.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Book Review: A Draught of the South Land — published Cartographic Perspectives No. 105, 2025</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/westin/new-years-eve.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Westin Story 09 — Turn and Burn · New Year's Eve · All Hands</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/vuelta-2026.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Vuelta a España 2026 tracker — stage by stage, GC standings, auto-updated · Aug 22 – Sep 13</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/sports.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Training Log — live Strava data, YTD stats, recent activities, all-time totals</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/concerts.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Concert Log — setlist.fm attended shows, filter by artist/venue, full setlists</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/writing/cow-palace-nye-1991.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Memoir — The Night the Cow Palace Changed Everything · RHCP / Nirvana / Pearl Jam · NYE 1991</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/maps.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Maps — Leaflet interactive map · Places lived · 1,170 geocaches · 25 countries</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="https://bdgroves.github.io/PELE" target="_blank" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">PELE — Hawai'i Volcanoes Observatory Dashboard · Live Kīlauea eruption tracking · USGS HVO · Earthquakes · Webcams</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="https://bdgroves.github.io/weather-station" target="_blank" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Weather Station — 4 stations · Lakewood · Groveland · Reno · Death Valley · Wind compass · NWS alerts · Moon phase · Updates every 15 min</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Sentinel Stockpile — ESA Sentinel-2 commodity intelligence · Port of Longview lumber cycle · 12-month time series · Planetary Computer</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/little-free-pantry" target="_blank" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Little Free Pantry — Lakewood Rotary · Interactive Leaflet map · 7 pantries · 24/7 food access · Lakewood/Tillicum/Steilacoom</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="https://bdgroves.github.io/dipodomys" target="_blank" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">DIPODOMYS — Death Valley kangaroo rat data portrait · Live iNaturalist API · Leaflet map · Two species · Citizen science temporal analysis</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="https://bdgroves.github.io/aftershock" target="_blank" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">AFTERSHOCK — Real-time U.S. seismic monitor · USGS ComCat · M1.5+ worldwide · State deep-dives · Hiroshima equivalents · 6-hr updates</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/geology.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Geology hub — AFTERSHOCK · Melones Fault Zone · Cascadia · seismic science</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/ecology.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Ecology hub — DIPODOMYS · desert-ecostats · fire ecology · species distributions · community science</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/geology.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Geology hub — AFTERSHOCK · USGS seismic monitoring · Cascadia · Melones Fault Zone</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="/archaeology.html" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">Archaeology hub — SOLSTICE · Project Kiva · Chaco Canyon · archaeoastronomy · LiDAR</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="https://bdgroves.github.io/solstice" target="_blank" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">SOLSTICE — live archaeoastronomy dashboard · Chaco Canyon · Casa Rinconada alignment · sun/moon positions · forge3d terrain</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-      <a href="https://bdgroves.github.io/aftershock" target="_blank" class="status-item">
-        <span class="status-dot dot-live"></span>
-        <span class="status-label">AFTERSHOCK — real-time US seismic dashboard · USGS ComCat · M1.5+ worldwide · state deep-dives · Hiroshima equivalent</span>
-        <span class="status-tag">↗ Live</span>
-      </a>
-    </div>
+  <div class="section-label"><span>Core Pages</span><span>brooksgroves.com</span></div>
+  <div class="status-grid">
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Homepage</div><div class="status-note">Daily quote · Projects · Writing · Outside</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">About</div><div class="status-note">Life timeline · UNR · UCT Cape Town</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Maps & Cartography</div><div class="status-note">Places lived · Geocaches · GIS portfolio</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Outside</div><div class="status-note">Mariners · Cycling · Strava · Beer</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Quotes</div><div class="status-note">104 quotes · Abbey · Kerouac · Muir · Steinbeck</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Concerts</div><div class="status-note">Setlist.fm log · 24-show history</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Tags</div><div class="status-note">104 entries across all sections</div></div></div>
+    <div class="status-item building"><div class="status-dot">Building</div><div><div class="status-name">Photos</div><div class="status-note">Pacific Northwest · Sierra Nevada · Africa</div></div></div>
   </div>
 
-  <!-- COMING SOON -->
-  <div class="status-section">
-    <div class="status-heading">Coming Soon</div>
-    <div class="status-list">
-      <div class="status-item">
-        <span class="status-dot dot-soon"></span>
-        <span class="status-label">More Westin Stories — New Year's Eve, Elmo (started in 1947), Becoming Bell Captain</span>
-        <span class="status-tag">Soon</span>
-      </div>
-      <div class="status-item">
-        <span class="status-dot dot-soon"></span>
-        <span class="status-label">More journal entries — field notes, race dispatches, travel</span>
-        <span class="status-tag">Soon</span>
-      </div>
-
-      <div class="status-item">
-        <span class="status-dot dot-soon"></span>
-        <span class="status-label">Geology hub — Pacific Northwest volcanic arc, fault systems, Cascadia</span>
-        <span class="status-tag">Soon</span>
-      </div>
-      <div class="status-item">
-        <span class="status-dot dot-soon"></span>
-        <span class="status-label">Archaeology hub — Project Kiva, Southwest remote sensing, LiDAR survey work</span>
-        <span class="status-tag">Soon</span>
-      </div>
-      <div class="status-item">
-        <span class="status-dot dot-soon"></span>
-        <span class="status-label">Sports & Beer — full Mariners, Seahawks, cycling, Untappd pages</span>
-        <span class="status-tag">Soon</span>
-      </div>
-      <div class="status-item">
-        <span class="status-dot dot-soon"></span>
-        <span class="status-label">Training log — running, triathlon, Strava feed</span>
-        <span class="status-tag">Soon</span>
-      </div>
-      <div class="status-item">
-        <span class="status-dot dot-soon"></span>
-        <span class="status-label">Cycling auto-updates — live stage results and GC standings during Grand Tours</span>
-        <span class="status-tag">Soon</span>
-      </div>
-      <div class="status-item">
-        <span class="status-dot dot-soon"></span>
-        <span class="status-label">Photos — field work, Pacific Northwest, race days</span>
-        <span class="status-tag">Soon</span>
-      </div>
-    </div>
+  <div class="section-label"><span>Writing</span><span>Multiple subdomains</span></div>
+  <div class="status-grid">
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Blog</div><div class="status-note">12 posts · AFTERSHOCK · PELE · Plate Hunter</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Memoir</div><div class="status-note">memoir.brooksgroves.com · The Midtown · Cow Palace</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Westin Stories</div><div class="status-note">westin.brooksgroves.com · 12 stories</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Journal</div><div class="status-note">journal.brooksgroves.com</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Y2K Archive</div><div class="status-note">y2k.brooksgroves.com · 1999–2000</div></div></div>
+    <div class="status-item building"><div class="status-dot">Building</div><div><div class="status-name">Nevada Neil</div><div class="status-note">Long read — next up</div></div></div>
+    <div class="status-item planned"><div class="status-dot">Planned</div><div><div class="status-name">Butthole Surfers</div><div class="status-note">Concert memoir piece</div></div></div>
+    <div class="status-item planned"><div class="status-dot">Planned</div><div><div class="status-name">Reagan Letter</div><div class="status-note">Find · Scan · Post</div></div></div>
   </div>
 
-  <a href="/" class="back-btn">← Back to brooksgroves.com</a>
+  <div class="section-label"><span>Learning</span><span>brooksgroves.com/learning/</span></div>
+  <div class="status-grid">
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Quantum Physics</div><div class="status-note">15 lessons · 4 phases · AI tutor</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Volcanology</div><div class="status-note">16 lessons · Hawaii 2026 field guide</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Desert & Montane Ecosystems</div><div class="status-note">14 lessons · American West · Namib · Kalahari</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Ecogeomorphology</div><div class="status-note">12 lessons · PNW rivers · beavers · salmon</div></div></div>
+    <div class="status-item planned"><div class="status-dot">Planned</div><div><div class="status-name">Ancestral Puebloans</div><div class="status-note">Chaco Canyon · Mesa Verde · archaeoastronomy</div></div></div>
+    <div class="status-item planned"><div class="status-dot">Planned</div><div><div class="status-name">Music Underground 1985–95</div><div class="status-note">SST · Sub Pop · 4AD · Touch and Go</div></div></div>
+    <div class="status-item planned"><div class="status-dot">Planned</div><div><div class="status-name">Cosmology</div><div class="status-note">Early universe · dark matter · spacetime</div></div></div>
+    <div class="status-item planned"><div class="status-dot">Planned</div><div><div class="status-name">The Cryosphere</div><div class="status-note">Glaciers · sea ice · permafrost</div></div></div>
+  </div>
+
+  <div class="section-label"><span>Projects & Dashboards</span><span>GitHub Pages</span></div>
+  <div class="status-grid">
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">AFTERSHOCK</div><div class="status-note">US seismic monitor · USGS · live</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">PELE</div><div class="status-note">Kīlauea dashboard · HVO webcams</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">ALPINE-WATCH</div><div class="status-note">13 Sierra & Cascade lakes · water quality</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Rainier Snowpack</div><div class="status-note">SNOTEL · NASA MODIS · hourly</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">EDGAR</div><div class="status-note">Mariners analytics · MLB Stats API</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Plate Hunter</div><div class="status-note">72 WA plates · rarity from DOL data</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">SOLSTICE</div><div class="status-note">Chaco Canyon sky watch</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">DIPODOMYS</div><div class="status-note">Death Valley kangaroo rats · iNaturalist</div></div></div>
+    <div class="status-item building"><div class="status-dot">Building</div><div><div class="status-name">EDGAR — Live Scores</div><div class="status-note">Real-time in-game updates</div></div></div>
+    <div class="status-item planned"><div class="status-dot">Planned</div><div><div class="status-name">ALPINE-WATCH GEE</div><div class="status-note">Sentinel-2 NDCI · Tahoe · Chelan · Crater Lake</div></div></div>
+  </div>
+
+  <div class="section-label"><span>Site Features</span></div>
+  <div class="status-grid">
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Daily Quote Widget</div><div class="status-note">104 quotes · rotates by day of year</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Strava Integration</div><div class="status-note">OAuth · GitHub Actions · YTD + activities</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Cycling News Action</div><div class="status-note">CyclingNews + VeloNews · every 6 hours</div></div></div>
+    <div class="status-item live"><div class="status-dot">Live</div><div><div class="status-name">Geocache Map</div><div class="status-note">1,190+ finds · 25 countries · Leaflet</div></div></div>
+    <div class="status-item planned"><div class="status-dot">Planned</div><div><div class="status-name">Dark Mode</div><div class="status-note">Toggle · system preference detection</div></div></div>
+    <div class="status-item planned"><div class="status-dot">Planned</div><div><div class="status-name">Cycling Climbs</div><div class="status-note">PNW elevation profiles · QGIS</div></div></div>
+  </div>
+
 </div>
 
 <footer>
   <div class="footer-inner">
-    <div>
-      <p class="footer-name">Brooks Groves</p>
-      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
-    </div>
+    <p class="footer-name">Brooks Groves</p>
     <div class="footer-links">
       <a href="/">Home</a>
-      <a href="/blog/index.html">Blog</a>
-      <a href="/journal/index.html">Journal</a>
-      <a href="/westin/index.html">Westin Stories</a>
-      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
-      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
-      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
-      <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky</a>
+      <a href="/about.html">About</a>
+      <a href="/tags.html">Tags</a>
     </div>
-    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
   </div>
 </footer>
-
 </body>
 </html>
