@@ -592,20 +592,32 @@ async function checkFortGeorge() {
     const html = await res.text();
     if (!html.toLowerCase().includes('fort george')) return;
 
-    // Strip tags and split into lines to find beer name after Fort George
-    let beerName = '';
-    const stripped = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-    const fgIdx = stripped.toLowerCase().indexOf('fort george');
-    if (fgIdx !== -1) {
-      // Grab text after "Fort George" — next non-empty chunk is the beer name
-      const after = stripped.substring(fgIdx + 11).trim();
-      const parts = after.split(/\s{2,}/).filter(p => p.trim().length > 2);
-      if (parts[0]) beerName = parts[0].replace(/&amp;/g,'&').trim().substring(0, 60);
-    }
+    // Strip all tags, collapse whitespace, then scan for ALL Fort George occurrences
+    const stripped = html.replace(/<[^>]+>/g, ' ').replace(/[ \t]+/g, ' ');
+    const lines = stripped.split(/\n/).map(l => l.trim()).filter(l => l.length > 1);
 
-    badge.textContent = beerName
-      ? '🍺 Fort George on tap: ' + beerName
-      : '🍺 Fort George on tap right now';
+    const beers = [];
+    lines.forEach((line, i) => {
+      if (line.toLowerCase().includes('fort george')) {
+        // Beer name is typically the next non-empty line after the brewery name
+        for (let j = i + 1; j < Math.min(i + 4, lines.length); j++) {
+          const candidate = lines[j].replace(/&amp;/g,'&').trim();
+          // Skip short strings, percentages, IBU values, location names
+          if (candidate.length > 4 && !/^\d/.test(candidate) && !/IBU|Just Tapped|WA|OR|CA/i.test(candidate)) {
+            beers.push(candidate.substring(0, 60));
+            break;
+          }
+        }
+      }
+    });
+
+    const label = beers.length > 1
+      ? '🍺 Fort George x' + beers.length + ': ' + beers.join(' · ')
+      : beers.length === 1
+        ? '🍺 Fort George on tap: ' + beers[0]
+        : '🍺 Fort George on tap right now';
+
+    badge.textContent = label;
     badge.classList.add('visible');
   } catch(e) {}
 }
