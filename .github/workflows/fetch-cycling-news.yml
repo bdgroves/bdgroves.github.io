@@ -1,0 +1,90 @@
+name: Fetch Cycling News
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'   # Every 6 hours
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests feedparser
+
+      - name: Fetch cycling news
+        run: |
+          python3 << 'EOF'
+          import json, requests, feedparser, os
+          from datetime import datetime, timezone
+
+          FEEDS = [
+              'https://www.cyclingnews.com/rss/news/',
+              'https://www.velonews.com/feed/',
+          ]
+
+          articles = []
+          seen = set()
+
+          headers = {
+              'User-Agent': 'Mozilla/5.0 (compatible; bdgroves-cycling-bot/1.0)'
+          }
+
+          for feed_url in FEEDS:
+              try:
+                  res = requests.get(feed_url, headers=headers, timeout=15)
+                  res.raise_for_status()
+                  feed = feedparser.parse(res.content)
+                  source = 'CyclingNews' if 'cyclingnews' in feed_url else 'VeloNews'
+                  for entry in feed.entries[:8]:
+                      title = entry.get('title', '').strip()
+                      link = entry.get('link', '').strip()
+                      if not title or link in seen:
+                          continue
+                      seen.add(link)
+                      # Parse date
+                      pub = entry.get('published_parsed') or entry.get('updated_parsed')
+                      if pub:
+                          dt = datetime(*pub[:6], tzinfo=timezone.utc)
+                          date_str = dt.strftime('%b %d')
+                      else:
+                          date_str = ''
+                      articles.append({
+                          'title': title,
+                          'link': link,
+                          'date': date_str,
+                          'source': source
+                      })
+                  print(f"Fetched {len(feed.entries)} items from {source}")
+              except Exception as e:
+                  print(f"Failed {feed_url}: {e}")
+
+          # Sort by source — CyclingNews first, then VeloNews
+          articles = articles[:12]
+
+          output = {
+              'updated': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'articles': articles
+          }
+
+          os.makedirs('data', exist_ok=True)
+          with open('data/cycling-news.json', 'w') as f:
+              json.dump(output, f, indent=2)
+
+          print(f"Written {len(articles)} articles to data/cycling-news.json")
+          EOF
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/cycling-news.json
+          git diff --staged --quiet || git commit -m "chore: cycling news $(date -u +%Y-%m-%d)"
+          git push
