@@ -444,16 +444,32 @@ async function loadCycling() {
     const res = await fetch('/cycling.json?t='+Date.now());
     if (!res.ok) throw new Error();
     const data = await res.json();
-    const finals=data.races.filter(r=>r.status==='final').slice(-8);
-    const live=data.races.filter(r=>r.status==='live');
-    const display=[...live,...finals].slice(0,8);
-    el.innerHTML = display.map(r=>{
-      let leader='',statusClass='sched',statusLabel='';
-      if(r.status==='final'){statusClass='final';statusLabel='Final';if(r.winner)leader=`<p class="race-leader">${r.winner}${r.team?' · '+r.team:''}</p>`;}
-      else if(r.status==='live'){statusClass='live';statusLabel='<span class="live-dot"></span>Live';leader=`<p class="race-leader" style="color:var(--rust);">Racing now</p>`;}
-      const dateStr=new Date(r.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
-      return `<div class="race-row"><div><p class="race-name">${r.name} <span style="font-family:'DM Mono',monospace;font-size:0.48rem;color:var(--stone);font-weight:normal;">${r.category}</span></p>${leader}</div><div class="race-meta"><span>${dateStr}</span><span class="score-status ${statusClass}">${statusLabel}</span></div></div>`;
-    }).join('')||'<p class="sport-note">No recent results yet.</p>';
+    const live = data.races.filter(r=>r.status==='live');
+    const finals = data.races.filter(r=>r.status==='final').slice(-6);
+    const upcoming = data.races.filter(r=>r.status==='upcoming').slice(0,5);
+    const mono = "font-family:'DM Mono',monospace;font-size:0.46rem;color:var(--stone);font-weight:normal;";
+
+    const renderRace = r => {
+      const dateStr = new Date(r.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      let leader='', statusClass='sched', statusLabel='Upcoming';
+      if(r.status==='final'){
+        statusClass='final'; statusLabel='Final';
+        if(r.winner) leader=`<p class="race-leader">${r.winner}${r.team?' · '+r.team:''}</p>`;
+      } else if(r.status==='live'){
+        statusClass='live'; statusLabel='<span class="live-dot"></span>Live';
+        leader=`<p class="race-leader" style="color:var(--rust);">Racing now</p>`;
+      }
+      return `<div class="race-row">
+        <div><p class="race-name">${r.emoji||''} ${r.name} <span style="${mono}">${r.category}</span></p>${leader}</div>
+        <div class="race-meta"><span>${dateStr}</span><span class="score-status ${statusClass}">${statusLabel}</span></div>
+      </div>`;
+    };
+
+    const divider = upcoming.length
+      ? `<div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--stone);padding:0.75rem 0 0.25rem;border-top:1px solid var(--mist);margin-top:0.25rem;">Upcoming</div>`
+      : '';
+
+    el.innerHTML = [...live,...finals].map(renderRace).join('') + divider + upcoming.map(renderRace).join('') || '<p class="sport-note">No results yet.</p>';
   } catch(e) { el.innerHTML='<p class="sport-note">Cycling data loading…</p>'; }
 }
 
