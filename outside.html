@@ -428,8 +428,9 @@ async function loadStandings() {
       ${alWest.teamRecords.map(t=>{
         const isSEA=t.team.id===136;
         const gb=t.gamesBack==='0.0'||t.gamesBack==='—'?'—':t.gamesBack;
+        const tname = t.team.teamName || t.team.name?.split(' ').slice(-1)[0] || t.team.abbreviation || '?';
         return `<div class="standings-row ${isSEA?'highlight':''}">
-          <span>${t.team.teamName}</span><span>${t.wins}</span><span>${t.losses}</span>
+          <span>${tname}</span><span>${t.wins}</span><span>${t.losses}</span>
           <span class="${isSEA&&gb!=='—'?'gb-neg':''}">${gb}</span>
         </div>`;
       }).join('')}
@@ -458,17 +459,24 @@ async function loadCycling() {
 
 async function loadCyclingNews() {
   const el = document.getElementById('cycling-news');
-  try {
-    const RSS_URL=encodeURIComponent('https://www.cyclingnews.com/rss/news/');
-    const res=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${RSS_URL}&count=6`);
-    if(!res.ok) throw new Error();
-    const data=await res.json();
-    if(data.status!=='ok'||!data.items?.length) throw new Error();
-    el.innerHTML=data.items.map(item=>{
-      const date=new Date(item.pubDate).toLocaleDateString('en-US',{month:'short',day:'numeric'});
-      return `<a href="${item.link}" target="_blank" class="news-item"><div class="news-date">${date}</div><div class="news-title">${item.title}</div></a>`;
-    }).join('');
-  } catch(e) { el.innerHTML='<p class="sport-note">Cycling news loading…</p>'; }
+  const RSS_APIS = [
+    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.cyclingnews.com/rss/news/')}&count=6`,
+    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.velonews.com/feed/')}&count=6`
+  ];
+  for (const url of RSS_APIS) {
+    try {
+      const res=await fetch(url);
+      if(!res.ok) continue;
+      const data=await res.json();
+      if(data.status!=='ok'||!data.items?.length) continue;
+      el.innerHTML=data.items.map(item=>{
+        const date=new Date(item.pubDate).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+        return `<a href="${item.link}" target="_blank" class="news-item"><div class="news-date">${date}</div><div class="news-title">${item.title}</div></a>`;
+      }).join('');
+      return;
+    } catch(e) { continue; }
+  }
+  el.innerHTML='<p class="sport-note">Cycling news unavailable — <a href="https://www.cyclingnews.com" target="_blank" style="color:var(--gold)">cyclingnews.com ↗</a></p>';
 }
 
 async function loadBeers() {

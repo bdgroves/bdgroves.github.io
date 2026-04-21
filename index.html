@@ -483,6 +483,12 @@
           <p class="support-dek">High-end weather dashboard monitoring Lakewood WA, Groveland CA, Reno NV, and Death Valley. Wind compass, pressure trends, NWS alerts, moon phase. Updates every 15 min.</p>
           <span class="support-link">View dashboard →</span>
         </a>
+        <a href="/plate-hunter.html" class="support-story">
+          <p class="support-kicker">Mobile · Family · Road Trip</p>
+          <h3 class="support-hed">🚗 Plate Hunter</h3>
+          <p class="support-dek">A kid-friendly license plate spotting app for road trips. Track all 50 states, earn badges, compete with family. Built for the back seat.</p>
+          <span class="support-link">Coming soon →</span>
+        </a>
       </div>
     </div>
   </div>
@@ -562,6 +568,12 @@
           <a href="/blog/index.html">All →</a>
         </div>
       </div>
+      <a href="/blog/plate-hunter-post.html" class="writing-item">
+        <div class="writing-type">Blog · Mobile App · Idea</div>
+        <div class="writing-date">2026</div>
+        <div class="writing-hed">Plate Hunter — A Road Trip App for the Back Seat</div>
+        <div class="writing-dek">License plate spotting for families. 50 states, badges, and a leaderboard. The app I wish existed when I was eight years old in a station wagon on I-5.</div>
+      </a>
       <a href="https://memoir.brooksgroves.com/the-midtown.html" class="writing-item">
         <div class="writing-type">Memoir · San Francisco · 1990s</div>
         <div class="writing-date">2026</div>
@@ -585,12 +597,6 @@
         <div class="writing-date">2026</div>
         <div class="writing-hed">PELE — Building a Live Kilauea Dashboard</div>
         <div class="writing-dek">43 eruption episodes, a buried webcam, and a cron job. Real data from USGS HVO, served six times a day. Built before a birthday trip to the Big Island.</div>
-      </a>
-      <a href="/blog/aftershock-post.html" class="writing-item">
-        <div class="writing-type">Blog · Geology</div>
-        <div class="writing-date">2026</div>
-        <div class="writing-hed">AFTERSHOCK — Real-Time U.S. Seismic Monitor</div>
-        <div class="writing-dek">Growing up on the Melones Fault Zone. Loma Prieta 1989. A live seismic dashboard from USGS ComCat and a GitHub Actions cron job.</div>
       </a>
 
     </div>
@@ -803,7 +809,7 @@
       const data = await res.json();
       const books = [
         ...data.currently_reading.map(b => ({...b, status:'reading'})),
-        ...data.recently_read.slice(0,4).map(b => ({...b, status:'done'}))
+        ...data.recently_read.slice(0,5).map(b => ({...b, status:'done'}))
       ];
       if (!books.length) throw new Error();
       el.innerHTML = books.map(b => `
