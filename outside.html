@@ -592,20 +592,30 @@ async function checkFortGeorge() {
     const html = await res.text();
     if (!html.toLowerCase().includes('fort george')) return;
 
-    // Strip all tags, collapse whitespace, then scan for ALL Fort George occurrences
-    const stripped = html.replace(/<[^>]+>/g, ' ').replace(/[ \t]+/g, ' ');
-    const lines = stripped.split(/\n/).map(l => l.trim()).filter(l => l.length > 1);
+    // Parse using DOMParser — much cleaner than regex on raw HTML
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
 
+    // Each tap entry is a list item — find ones containing Fort George
+    const allText = doc.querySelectorAll('li, div, p');
     const beers = [];
-    lines.forEach((line, i) => {
-      if (line.toLowerCase().includes('fort george')) {
-        // Beer name is typically the next non-empty line after the brewery name
-        for (let j = i + 1; j < Math.min(i + 4, lines.length); j++) {
-          const candidate = lines[j].replace(/&amp;/g,'&').trim();
-          // Skip short strings, percentages, IBU values, location names
-          if (candidate.length > 4 && !/^\d/.test(candidate) && !/IBU|Just Tapped|WA|OR|CA/i.test(candidate)) {
-            beers.push(candidate.substring(0, 60));
-            break;
+    const seen = new Set();
+
+    allText.forEach(el => {
+      const text = el.textContent.replace(/\s+/g, ' ').trim();
+      if (text.toLowerCase().includes('fort george') && text.length < 200) {
+        // Extract beer name — it follows the brewery name
+        // Pattern: "Georgetown/Fort George  BeerName  Style  Location"
+        const parts = text.split(/\s{2,}/).map(p => p.trim()).filter(p => p.length > 2);
+        const fgPartIdx = parts.findIndex(p => p.toLowerCase().includes('fort george'));
+        if (fgPartIdx !== -1 && parts[fgPartIdx + 1]) {
+          const name = parts[fgPartIdx + 1]
+            .replace(/&amp;/g, '&')
+            .replace(/&nbsp;/g, '')
+            .trim();
+          if (name.length > 3 && !seen.has(name) && !/^\d|IBU|Just Tapped|WA$|OR$|CA$/i.test(name)) {
+            seen.add(name);
+            beers.push(name.substring(0, 50));
           }
         }
       }
