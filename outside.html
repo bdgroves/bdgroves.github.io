@@ -89,7 +89,7 @@
     .peaks-btn:hover { background:var(--gold); color:var(--white); }
 
     /* STRAVA */
-    .ytd-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--mist); border:1px solid var(--mist); }
+    .ytd-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:1px; background:var(--mist); border:1px solid var(--mist); }
     @media(max-width:600px) { .ytd-grid { grid-template-columns:repeat(2,1fr); } }
     .ytd-card { background:var(--white); padding:1rem; text-align:center; }
     .ytd-icon { font-size:1.3rem; margin-bottom:0.35rem; }
@@ -459,24 +459,52 @@ async function loadCycling() {
 
 async function loadCyclingNews() {
   const el = document.getElementById('cycling-news');
-  const RSS_APIS = [
-    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.cyclingnews.com/rss/news/')}&count=6`,
-    `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.velonews.com/feed/')}&count=6`
+  // Try multiple RSS proxy services
+  const FEEDS = [
+    { proxy: 'rss2json', url: `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.cyclingnews.com/rss/news/')}&count=6&api_key=` },
+    { proxy: 'feedjson', url: `https://feedjson.com/parse?url=${encodeURIComponent('https://www.cyclingnews.com/rss/news/')}&limit=6` },
+    { proxy: 'rss2json_velo', url: `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent('https://www.velonews.com/feed/')}&count=6` },
   ];
-  for (const url of RSS_APIS) {
+
+  // rss2json format parser
+  function parseRss2json(data) {
+    if (data.status !== 'ok' || !data.items?.length) return null;
+    return data.items.map(item => ({
+      title: item.title,
+      link: item.link,
+      date: item.pubDate
+    }));
+  }
+
+  for (const feed of FEEDS) {
     try {
-      const res=await fetch(url);
-      if(!res.ok) continue;
-      const data=await res.json();
-      if(data.status!=='ok'||!data.items?.length) continue;
-      el.innerHTML=data.items.map(item=>{
-        const date=new Date(item.pubDate).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      const res = await fetch(feed.url);
+      if (!res.ok) continue;
+      const data = await res.json();
+      const items = parseRss2json(data);
+      if (!items?.length) continue;
+      el.innerHTML = items.map(item => {
+        const date = new Date(item.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
         return `<a href="${item.link}" target="_blank" class="news-item"><div class="news-date">${date}</div><div class="news-title">${item.title}</div></a>`;
       }).join('');
       return;
     } catch(e) { continue; }
   }
-  el.innerHTML='<p class="sport-note">Cycling news unavailable — <a href="https://www.cyclingnews.com" target="_blank" style="color:var(--gold)">cyclingnews.com ↗</a></p>';
+
+  // Final fallback — just show links
+  el.innerHTML = `
+    <a href="https://www.cyclingnews.com" target="_blank" class="news-item">
+      <div class="news-date">Latest</div>
+      <div class="news-title">CyclingNews — Latest Headlines ↗</div>
+    </a>
+    <a href="https://www.velonews.com" target="_blank" class="news-item">
+      <div class="news-date">Latest</div>
+      <div class="news-title">VeloNews — Latest Headlines ↗</div>
+    </a>
+    <a href="https://www.procyclingstats.com" target="_blank" class="news-item">
+      <div class="news-date">Latest</div>
+      <div class="news-title">ProCyclingStats — Race Results ↗</div>
+    </a>`;
 }
 
 async function loadBeers() {
@@ -522,11 +550,13 @@ async function loadStrava() {
 function renderYTD(ytd) {
   const yogaCard=ytd.yoga&&ytd.yoga.count>0
     ?`<div class="ytd-card"><div class="ytd-icon">🧘</div><div class="ytd-sport">Yoga</div><div><span class="ytd-val">${ytd.yoga.count}</span></div><div class="ytd-sub">${ytd.yoga.time||''}</div></div>`:'';
+  const strengthCard=ytd.strength&&ytd.strength.count>0
+    ?`<div class="ytd-card"><div class="ytd-icon">🏋️</div><div class="ytd-sport">Strength</div><div><span class="ytd-val">${ytd.strength.count}</span></div><div class="ytd-sub">${ytd.strength.time||''}</div></div>`:'';
   document.getElementById('ytd-grid').innerHTML=
     `<div class="ytd-card"><div class="ytd-icon">🏃</div><div class="ytd-sport">Running</div><div><span class="ytd-val">${ytd.run.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div><div class="ytd-sub">${ytd.run.count} runs · ${ytd.run.time}</div></div>
     <div class="ytd-card"><div class="ytd-icon">🚴</div><div class="ytd-sport">Cycling</div><div><span class="ytd-val">${ytd.ride.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div><div class="ytd-sub">${ytd.ride.count} rides · ${ytd.ride.time}</div></div>
     <div class="ytd-card"><div class="ytd-icon">🏊</div><div class="ytd-sport">Swimming</div><div><span class="ytd-val">${ytd.swim.yards.toLocaleString()}</span><span class="ytd-unit">yd</span></div><div class="ytd-sub">${ytd.swim.count} swims · ${ytd.swim.time}</div></div>
-    ${yogaCard}`;
+    ${yogaCard}${strengthCard}`;
 }
 
 function renderActivities(acts) {

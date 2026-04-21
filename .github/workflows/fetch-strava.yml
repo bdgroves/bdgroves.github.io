@@ -133,6 +133,27 @@ jobs:
                   'map_url':  f"https://www.strava.com/activities/{a.get('id')}"
               })
 
+          # --- Yoga + WeightTraining YTD (fetch full year) ---
+          jan1 = int(datetime(datetime.now().year, 1, 1, tzinfo=timezone.utc).timestamp())
+          ytd_res = requests.get(
+              'https://www.strava.com/api/v3/athlete/activities',
+              headers=headers,
+              params={'per_page': 200, 'page': 1, 'after': jan1}
+          )
+          yoga_count = 0
+          yoga_secs = 0
+          strength_count = 0
+          strength_secs = 0
+          if ytd_res.ok:
+              for a in ytd_res.json():
+                  sport = a.get('sport_type', a.get('type', ''))
+                  if sport == 'Yoga':
+                      yoga_count += 1
+                      yoga_secs += a.get('moving_time', 0)
+                  elif sport == 'WeightTraining':
+                      strength_count += 1
+                      strength_secs += a.get('moving_time', 0)
+
           # --- Build output JSON ---
           output = {
               'updated': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
@@ -140,6 +161,8 @@ jobs:
                   'run':  {'miles': m_to_mi(ytd_run.get('distance',0)),  'time': sec_to_hm(ytd_run.get('moving_time',0)),  'count': ytd_run.get('count',0)},
                   'ride': {'miles': m_to_mi(ytd_ride.get('distance',0)), 'time': sec_to_hm(ytd_ride.get('moving_time',0)), 'count': ytd_ride.get('count',0)},
                   'swim': {'yards': m_to_yd(ytd_swim.get('distance',0)), 'time': sec_to_hm(ytd_swim.get('moving_time',0)), 'count': ytd_swim.get('count',0)},
+                  'yoga': {'count': yoga_count, 'time': sec_to_hm(yoga_secs)},
+                  'strength': {'count': strength_count, 'time': sec_to_hm(strength_secs)},
               },
               'all_time': {
                   'run':  {'miles': m_to_mi(all_run.get('distance',0)),  'count': all_run.get('count',0)},
@@ -157,6 +180,8 @@ jobs:
           print(f"YTD Run: {output['ytd']['run']['miles']} mi")
           print(f"YTD Ride: {output['ytd']['ride']['miles']} mi")
           print(f"YTD Swim: {output['ytd']['swim']['yards']} yd")
+          print(f"YTD Yoga: {output['ytd']['yoga']['count']} sessions")
+          print(f"YTD Strength: {output['ytd']['strength']['count']} sessions")
           EOF
 
       - name: Commit data
