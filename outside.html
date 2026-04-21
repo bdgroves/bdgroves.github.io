@@ -590,29 +590,24 @@ async function checkFortGeorge() {
   try {
     const res = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev/proxy?url=' + encodeURIComponent('https://www.peaksandpints.com/on-tap/'));
     const html = await res.text();
-    const lower = html.toLowerCase();
-    if (!lower.includes('fort george')) return;
+    if (!html.toLowerCase().includes('fort george')) return;
 
-    // Parse the beer name — in the tap list HTML, the structure around
-    // Fort George is: brewery name followed by beer name in next text node
-    // Try to extract it with a regex looking for the beer name after Fort George
+    // Strip tags and split into lines to find beer name after Fort George
     let beerName = '';
-    // Match "Fort George" then grab the next meaningful text (the beer name)
-    const match = html.match(/Fort George[^<]*<\/[^>]+>\s*<[^>]+>\s*([^<
-]{3,60})/i);
-    if (match) {
-      beerName = match[1].trim();
-      // Clean up any stray HTML entities or whitespace
-      beerName = beerName.replace(/&amp;/g,'&').replace(/&quot;/g,'"').trim();
+    const stripped = html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+    const fgIdx = stripped.toLowerCase().indexOf('fort george');
+    if (fgIdx !== -1) {
+      // Grab text after "Fort George" — next non-empty chunk is the beer name
+      const after = stripped.substring(fgIdx + 11).trim();
+      const parts = after.split(/\s{2,}/).filter(p => p.trim().length > 2);
+      if (parts[0]) beerName = parts[0].replace(/&amp;/g,'&').trim().substring(0, 60);
     }
 
     badge.textContent = beerName
       ? '🍺 Fort George on tap: ' + beerName
       : '🍺 Fort George on tap right now';
     badge.classList.add('visible');
-  } catch(e) {
-    // Proxy unavailable — silently skip
-  }
+  } catch(e) {}
 }
 
 document.getElementById('current-year').textContent=new Date().getFullYear();
