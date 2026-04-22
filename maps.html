@@ -107,6 +107,7 @@
     <button class="layer-btn" onclick="toggleLayer('travel', this)">🌍 Countries Visited</button>
     <button class="layer-btn" onclick="toggleLayer('races', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🏃 Races</button>
     <button class="layer-btn" onclick="toggleLayer('hikes', this)">🥾 Hikes</button>
+    <button class="layer-btn" onclick="toggleLayer('parks', this)">🏕️ National Parks</button>
     <button class="layer-btn" onclick="toggleLayer('fieldwork', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🗺️ Field Work</button>
   </div>
 
@@ -579,6 +580,73 @@ HIKES.forEach(h => {
     <div class="popup-meta">${h.elev} · ${h.type}</div>
     <div class="popup-desc">${h.desc}</div>
   `, { maxWidth: 260 }).addTo(hikeLayer);
+});
+
+
+// =============================================
+// NATIONAL PARKS LAYER
+// =============================================
+const PARKS = [
+  // Sierra Nevada / California
+  { name: 'Yosemite National Park', lat: 37.8651, lng: -119.5383, state: 'CA', year: '1980s', desc: 'Home range. Grew up hiking Yosemite from Groveland — Tuolumne Meadows, Half Dome, the valley floor.' },
+  { name: 'Sequoia National Park', lat: 36.4864, lng: -118.5658, state: 'CA', year: null, desc: 'Giant sequoia groves on the western Sierra slope. General Sherman. The world's largest organism by volume.' },
+  { name: 'Kings Canyon National Park', lat: 36.8879, lng: -118.5551, state: 'CA', year: null, desc: 'Adjacent to Sequoia. One of the deepest canyons in North America.' },
+  { name: 'Death Valley National Park', lat: 36.5054, lng: -117.0794, state: 'CA', year: null, desc: 'The driest, hottest, lowest place in North America. Badwater Basin at -282 ft. DIPODOMYS research territory.' },
+  { name: 'Joshua Tree National Park', lat: 33.8734, lng: -115.9010, state: 'CA', year: null, desc: 'Mojave meets Colorado Desert. Joshua trees, granite boulder fields, the Milky Way.' },
+  { name: 'Pinnacles National Park', lat: 36.4906, lng: -121.1825, state: 'CA', year: null, desc: 'Volcanic spires in the Coast Ranges. Condor territory.' },
+  { name: 'Point Reyes National Seashore', lat: 38.0599, lng: -122.8814, state: 'CA', year: null, desc: 'Dramatic headlands north of San Francisco. Tule elk, elephant seals, the Pacific.' },
+  // Pacific Northwest
+  { name: 'Mount Rainier National Park', lat: 46.8523, lng: -121.7603, state: 'WA', year: null, desc: 'The mountain visible from Lakewood on clear days. 14,411 ft. Most glaciated peak in the contiguous US.' },
+  { name: 'Olympic National Park', lat: 47.8021, lng: -123.6044, state: 'WA', year: null, desc: 'Temperate rainforest, alpine peaks, and wild Pacific coastline. Three ecosystems in one park.' },
+  { name: 'North Cascades National Park', lat: 48.7718, lng: -121.2985, state: 'WA', year: null, desc: 'The American Alps. More glaciers than any park in the contiguous US.' },
+  { name: 'Crater Lake National Park', lat: 42.9446, lng: -122.1090, state: 'OR', year: null, desc: 'Deepest lake in the US. Caldera of the collapsed Mt. Mazama. ALPINE-WATCH monitors Crater Lake water quality.' },
+  { name: 'Mount Hood National Forest / Timberline', lat: 45.3735, lng: -121.6959, state: 'OR', year: null, desc: 'Oregon's highest peak. Year-round skiing at Timberline Lodge.' },
+  // Southwest
+  { name: 'Grand Canyon National Park', lat: 36.0544, lng: -112.1401, state: 'AZ', year: null, desc: 'The big one. 277 river miles. 1.7 billion years of geology in the walls.' },
+  { name: 'Zion National Park', lat: 37.2982, lng: -113.0263, state: 'UT', year: null, desc: 'Narrow slot canyons and sandstone walls. Angels Landing. The Narrows.' },
+  { name: 'Bryce Canyon National Park', lat: 37.5930, lng: -112.1871, state: 'UT', year: null, desc: 'Hoodoos and amphitheaters. The highest elevation of Utah's grand staircase parks.' },
+  { name: 'Arches National Park', lat: 38.7331, lng: -109.5925, state: 'UT', year: null, desc: 'Delicate Arch. Fiery Furnace. The slickrock country Abbey wrote about in Desert Solitaire.' },
+  { name: 'Canyonlands National Park', lat: 38.2000, lng: -109.9300, state: 'UT', year: null, desc: 'The confluence of the Green and Colorado Rivers. Island in the Sky mesa. Needles district.' },
+  { name: 'Capitol Reef National Park', lat: 38.0877, lng: -111.1535, state: 'UT', year: null, desc: 'The Waterpocket Fold — a 100-mile wrinkle in the earth's crust. One of Utah's least-crowded parks.' },
+  { name: 'Mesa Verde National Park', lat: 37.1853, lng: -108.4868, state: 'CO', year: null, desc: 'Ancestral Puebloan cliff dwellings. Cliff Palace. 700 years of continuous habitation in the canyon walls.' },
+  { name: 'Petrified Forest National Park', lat: 34.9100, lng: -109.8068, state: 'AZ', year: null, desc: 'Triassic logs turned to agate and jasper. Painted Desert badlands. One of the most surreal landscapes in the West.' },
+  // Great Basin / Nevada
+  { name: 'Great Basin National Park', lat: 38.9830, lng: -114.2130, state: 'NV', year: null, desc: 'Wheeler Peak and the Snake Range. Bristlecone pines. Lehman Caves. The park created after Prometheus was cut down.' },
+  // Florida / Southeast
+  { name: 'Dry Tortugas National Park', lat: 24.6285, lng: -82.8733, state: 'FL', year: '2025', desc: 'Fort Jefferson on a coral island 70 miles west of Key West. Accessible only by ferry or seaplane. Sea turtle nesting, frigatebirds, and the most remote national park in the lower 48.' },
+  { name: 'Everglades National Park', lat: 25.2866, lng: -80.8987, state: 'FL', year: null, desc: 'The river of grass. Largest tropical wilderness in the US. Mangroves, manatees, American crocodile.' },
+  { name: 'Biscayne National Park', lat: 25.4824, lng: -80.3317, state: 'FL', year: null, desc: 'Largely underwater — coral reefs, mangrove shoreline, and shallow bays south of Miami.' },
+  // Hawaii
+  { name: 'Hawai'i Volcanoes National Park', lat: 19.4194, lng: -155.2885, state: 'HI', year: '2026', desc: 'Kīlauea and Mauna Loa. The destination for the May 2026 trip. PELE dashboard tracks this volcano in real time.' },
+  { name: 'Haleakalā National Park', lat: 20.7204, lng: -156.1552, state: 'HI', year: null, desc: 'Massive shield volcano summit on Maui. Silverswords, Nēnē geese, and one of the world's best stargazing sites.' },
+  // South Africa / International
+  { name: 'Table Mountain National Park', lat: -34.0009, lng: 18.4094, state: 'South Africa', year: '1996', desc: 'Cape Town. The flat-topped mountain above the city. Fynbos, Cape Point, and the meeting of two oceans. UCT research period.' },
+];
+
+const parkLayer = L.layerGroup();
+layers.parks = parkLayer;
+
+PARKS.forEach(p => {
+  // Green NPS-style marker
+  const circle = L.circleMarker([p.lat, p.lng], {
+    radius: 7,
+    fillColor: '#2d6a2d',
+    color: '#1c1a16',
+    weight: 1.5,
+    opacity: 1,
+    fillOpacity: 0.85
+  });
+
+  const yearHtml = p.year ? `<div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:#4a5c45;margin-bottom:0.3rem;">Visited ${p.year}</div>` : '';
+
+  circle.bindPopup(`
+    <div class="popup-title">🏕️ ${p.name}</div>
+    <div class="popup-meta">${p.state}</div>
+    ${yearHtml}
+    <div class="popup-desc">${p.desc}</div>
+  `, { maxWidth: 260 });
+
+  parkLayer.addLayer(circle);
 });
 
 </script>
