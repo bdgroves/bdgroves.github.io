@@ -587,47 +587,78 @@ HIKES.forEach(h => {
 // NATIONAL PARKS LAYER
 // =============================================
 const PARKS = [
-  // Sierra Nevada / California
-  { name: 'Yosemite National Park', lat: 37.8651, lng: -119.5383, state: 'CA', year: '1980s', desc: 'Home range. Grew up hiking Yosemite from Groveland — Tuolumne Meadows, Half Dome, the valley floor.' },
-  { name: 'Sequoia National Park', lat: 36.4864, lng: -118.5658, state: 'CA', year: null, desc: 'Giant sequoia groves on the western Sierra slope. General Sherman. The largest organism on Earth by volume.' },
-  { name: 'Kings Canyon National Park', lat: 36.8879, lng: -118.5551, state: 'CA', year: null, desc: 'Adjacent to Sequoia. One of the deepest canyons in North America.' },
-  { name: 'Death Valley National Park', lat: 36.5054, lng: -117.0794, state: 'CA', year: null, desc: 'The driest, hottest, lowest place in North America. Badwater Basin at -282 ft. DIPODOMYS research territory.' },
-  { name: 'Joshua Tree National Park', lat: 33.8734, lng: -115.9010, state: 'CA', year: null, desc: 'Mojave meets Colorado Desert. Joshua trees, granite boulder fields, the Milky Way.' },
-  { name: 'Pinnacles National Park', lat: 36.4906, lng: -121.1825, state: 'CA', year: null, desc: 'Volcanic spires in the Coast Ranges. Condor territory.' },
-  { name: 'Point Reyes National Seashore', lat: 38.0599, lng: -122.8814, state: 'CA', year: null, desc: 'Dramatic headlands north of San Francisco. Tule elk, elephant seals, the Pacific.' },
-  // Pacific Northwest
-  { name: 'Mount Rainier National Park', lat: 46.8523, lng: -121.7603, state: 'WA', year: null, desc: 'The mountain visible from Lakewood on clear days. 14,411 ft. Most glaciated peak in the contiguous US.' },
-  { name: 'Olympic National Park', lat: 47.8021, lng: -123.6044, state: 'WA', year: null, desc: 'Temperate rainforest, alpine peaks, and wild Pacific coastline. Three ecosystems in one park.' },
-  { name: 'North Cascades National Park', lat: 48.7718, lng: -121.2985, state: 'WA', year: null, desc: 'The American Alps. More glaciers than any park in the contiguous US.' },
-  { name: 'Crater Lake National Park', lat: 42.9446, lng: -122.1090, state: 'OR', year: null, desc: 'Deepest lake in the US. Caldera of the collapsed Mt. Mazama. ALPINE-WATCH monitors Crater Lake water quality.' },
-  { name: 'Mount Hood National Forest / Timberline', lat: 45.3735, lng: -121.6959, state: 'OR', year: null, desc: 'Highest peak in Oregon. Year-round skiing at Timberline Lodge.' },
-  // Southwest
-  { name: 'Grand Canyon National Park', lat: 36.0544, lng: -112.1401, state: 'AZ', year: null, desc: 'The big one. 277 river miles. 1.7 billion years of geology in the walls.' },
-  { name: 'Zion National Park', lat: 37.2982, lng: -113.0263, state: 'UT', year: null, desc: 'Narrow slot canyons and sandstone walls. Angels Landing. The Narrows.' },
-  { name: 'Bryce Canyon National Park', lat: 37.5930, lng: -112.1871, state: 'UT', year: null, desc: 'Hoodoos and amphitheaters. Highest elevation among the grand staircase parks.' },
-  { name: 'Arches National Park', lat: 38.7331, lng: -109.5925, state: 'UT', year: null, desc: 'Delicate Arch. Fiery Furnace. The slickrock country Abbey wrote about in Desert Solitaire.' },
-  { name: 'Canyonlands National Park', lat: 38.2000, lng: -109.9300, state: 'UT', year: null, desc: 'The confluence of the Green and Colorado Rivers. Island in the Sky mesa. Needles district.' },
-  { name: 'Capitol Reef National Park', lat: 38.0877, lng: -111.1535, state: 'UT', year: null, desc: 'The Waterpocket Fold — a 100-mile wrinkle in the crust. One of the least-crowded Utah parks.' },
-  { name: 'Mesa Verde National Park', lat: 37.1853, lng: -108.4868, state: 'CO', year: null, desc: 'Ancestral Puebloan cliff dwellings. Cliff Palace. 700 years of continuous habitation in the canyon walls.' },
-  { name: 'Petrified Forest National Park', lat: 34.9100, lng: -109.8068, state: 'AZ', year: null, desc: 'Triassic logs turned to agate and jasper. Painted Desert badlands. One of the most surreal landscapes in the West.' },
-  // Great Basin / Nevada
-  { name: 'Great Basin National Park', lat: 38.9830, lng: -114.2130, state: 'NV', year: null, desc: 'Wheeler Peak and the Snake Range. Bristlecone pines. Lehman Caves. The park created after Prometheus was cut down.' },
-  // Florida / Southeast
-  { name: 'Dry Tortugas National Park', lat: 24.6285, lng: -82.8733, state: 'FL', year: '2025', desc: 'Fort Jefferson on a coral island 70 miles west of Key West. Accessible only by ferry or seaplane. Sea turtle nesting, frigatebirds, and the most remote national park in the lower 48.' },
-  { name: 'Everglades National Park', lat: 25.2866, lng: -80.8987, state: 'FL', year: null, desc: 'The river of grass. Largest tropical wilderness in the US. Mangroves, manatees, American crocodile.' },
-  { name: 'Biscayne National Park', lat: 25.4824, lng: -80.3317, state: 'FL', year: null, desc: 'Largely underwater — coral reefs, mangrove shoreline, and shallow bays south of Miami.' },
-  // Hawaii
-  { name: 'Hawaii Volcanoes National Park', lat: 19.4194, lng: -155.2885, state: 'HI', year: '2026', desc: 'Kilauea and Mauna Loa. The destination for the May 2026 trip. PELE dashboard tracks this volcano in real time.' },
-  { name: 'Haleakala National Park', lat: 20.7204, lng: -156.1552, state: 'HI', year: null, desc: 'Massive shield volcano summit on Maui. Silverswords, Nene geese, and one of the finest stargazing sites on Earth.' },
-  // South Africa / International
-  { name: 'Table Mountain National Park', lat: -34.0009, lng: 18.4094, state: 'South Africa', year: '1996', desc: 'Cape Town. The flat-topped mountain above the city. Fynbos, Cape Point, and the meeting of two oceans. UCT research period.' },
+  // USA — California
+  { name: 'Yosemite National Park', lat: 37.8651, lng: -119.5383, state: 'California', year: '1980s', desc: 'Home range. Grew up hiking Yosemite from Groveland — Tuolumne Meadows, Half Dome, the valley floor.', wiki: 'https://en.wikipedia.org/wiki/Yosemite_National_Park' },
+  { name: 'Sequoia National Park', lat: 36.4864, lng: -118.5658, state: 'California', year: null, desc: 'Giant sequoia groves on the western Sierra slope. General Sherman. The largest organism on Earth by volume.', wiki: 'https://en.wikipedia.org/wiki/Sequoia_National_Park' },
+  { name: 'Kings Canyon National Park', lat: 36.8879, lng: -118.5551, state: 'California', year: null, desc: 'Adjacent to Sequoia. One of the deepest canyons in North America.', wiki: 'https://en.wikipedia.org/wiki/Kings_Canyon_National_Park' },
+  { name: 'Death Valley National Park', lat: 36.5054, lng: -117.0794, state: 'California / Nevada', year: null, desc: 'The driest, hottest, lowest place in North America. Badwater Basin at -282 ft. DIPODOMYS research territory.', wiki: 'https://en.wikipedia.org/wiki/Death_Valley_National_Park' },
+  { name: 'Joshua Tree National Park', lat: 33.8734, lng: -115.9010, state: 'California', year: null, desc: 'Mojave meets Colorado Desert. Joshua trees, granite boulder fields, the Milky Way.', wiki: 'https://en.wikipedia.org/wiki/Joshua_Tree_National_Park' },
+  { name: 'Lassen Volcanic National Park', lat: 40.4977, lng: -121.4207, state: 'California', year: null, desc: 'The southernmost active volcano in the Cascades. Hydrothermal features, lava fields, and Lassen Peak.', wiki: 'https://en.wikipedia.org/wiki/Lassen_Volcanic_National_Park' },
+  { name: 'Saguaro National Park', lat: 32.2967, lng: -111.1666, state: 'Arizona', year: null, desc: 'Two districts flanking Tucson. The Sonoran Desert in full expression — saguaro forest, Gila woodpeckers, desert tortoise.', wiki: 'https://en.wikipedia.org/wiki/Saguaro_National_Park' },
+  { name: 'Petrified Forest National Park', lat: 34.9100, lng: -109.8068, state: 'Arizona', year: null, desc: 'Triassic logs turned to agate and jasper. Painted Desert badlands. One of the most surreal landscapes in the West.', wiki: 'https://en.wikipedia.org/wiki/Petrified_Forest_National_Park' },
+  { name: 'Carlsbad Caverns National Park', lat: 32.1478, lng: -104.5567, state: 'New Mexico', year: null, desc: 'Over 100 caves in the Guadalupe Mountains. The Big Room. The nightly bat flight from the main entrance cave.', wiki: 'https://en.wikipedia.org/wiki/Carlsbad_Caverns_National_Park' },
+  // USA — Southwest (Utah/Colorado/Arizona)
+  { name: 'Grand Canyon National Park', lat: 36.0544, lng: -112.1401, state: 'Arizona', year: null, desc: 'The big one. 277 river miles. 1.7 billion years of geology in the walls.', wiki: 'https://en.wikipedia.org/wiki/Grand_Canyon_National_Park' },
+  { name: 'Zion National Park', lat: 37.2982, lng: -113.0263, state: 'Utah', year: null, desc: 'Narrow slot canyons and sandstone walls. Angels Landing. The Narrows.', wiki: 'https://en.wikipedia.org/wiki/Zion_National_Park' },
+  { name: 'Bryce Canyon National Park', lat: 37.5930, lng: -112.1871, state: 'Utah', year: null, desc: 'Hoodoos and amphitheaters. Highest elevation among the grand staircase parks.', wiki: 'https://en.wikipedia.org/wiki/Bryce_Canyon_National_Park' },
+  { name: 'Arches National Park', lat: 38.7331, lng: -109.5925, state: 'Utah', year: null, desc: 'Delicate Arch. Fiery Furnace. The slickrock country Abbey wrote about in Desert Solitaire.', wiki: 'https://en.wikipedia.org/wiki/Arches_National_Park' },
+  { name: 'Canyonlands National Park', lat: 38.2000, lng: -109.9300, state: 'Utah', year: null, desc: 'Confluence of the Green and Colorado Rivers. Island in the Sky mesa. Needles district.', wiki: 'https://en.wikipedia.org/wiki/Canyonlands_National_Park' },
+  { name: 'Capitol Reef National Park', lat: 38.0877, lng: -111.1535, state: 'Utah', year: null, desc: 'The Waterpocket Fold — a 100-mile wrinkle in the crust. One of the least-crowded Utah parks.', wiki: 'https://en.wikipedia.org/wiki/Capitol_Reef_National_Park' },
+  { name: 'Mesa Verde National Park', lat: 37.1853, lng: -108.4868, state: 'Colorado', year: null, desc: 'Ancestral Puebloan cliff dwellings. Cliff Palace. 700 years of continuous habitation in the canyon walls.', wiki: 'https://en.wikipedia.org/wiki/Mesa_Verde_National_Park' },
+  // USA — Great Basin / Nevada
+  { name: 'Great Basin National Park', lat: 38.9830, lng: -114.2130, state: 'Nevada', year: null, desc: 'Wheeler Peak and the Snake Range. Bristlecone pines. Lehman Caves. Created after the Prometheus tree was cut down.', wiki: 'https://en.wikipedia.org/wiki/Great_Basin_National_Park' },
+  // USA — Pacific Northwest
+  { name: 'Mount Rainier National Park', lat: 46.8523, lng: -121.7603, state: 'Washington', year: null, desc: 'The mountain visible from Lakewood on clear days. 14,411 ft. Most glaciated peak in the contiguous US.', wiki: 'https://en.wikipedia.org/wiki/Mount_Rainier_National_Park' },
+  { name: 'Olympic National Park', lat: 47.8021, lng: -123.6044, state: 'Washington', year: null, desc: 'Temperate rainforest, alpine peaks, and wild Pacific coastline. Three ecosystems in one park.', wiki: 'https://en.wikipedia.org/wiki/Olympic_National_Park' },
+  { name: 'North Cascades National Park', lat: 48.7718, lng: -121.2985, state: 'Washington', year: null, desc: 'The American Alps. More glaciers than any park in the contiguous US.', wiki: 'https://en.wikipedia.org/wiki/North_Cascades_National_Park' },
+  { name: 'Crater Lake National Park', lat: 42.9446, lng: -122.1090, state: 'Oregon', year: null, desc: 'Deepest lake in the US. Caldera of the collapsed Mt. Mazama. ALPINE-WATCH monitors Crater Lake water quality.', wiki: 'https://en.wikipedia.org/wiki/Crater_Lake_National_Park' },
+  // USA — Rocky Mountains / Northern
+  { name: 'Glacier National Park', lat: 48.6961, lng: -113.7180, state: 'Montana', year: null, desc: 'Going-to-the-Sun Road. Over 700 miles of trails. Named glaciers disappearing faster than predicted.', wiki: 'https://en.wikipedia.org/wiki/Glacier_National_Park_(U.S.)' },
+  { name: 'Yellowstone National Park', lat: 44.4280, lng: -110.5885, state: 'Wyoming / Montana / Idaho', year: null, desc: 'The first national park. Geothermal supervolcano. Old Faithful, Grand Prismatic Spring, wolf reintroduction.', wiki: 'https://en.wikipedia.org/wiki/Yellowstone_National_Park' },
+  // USA — Southeast / East
+  { name: 'Dry Tortugas National Park', lat: 24.6285, lng: -82.8733, state: 'Florida', year: '2025', desc: 'Fort Jefferson on a coral island 70 miles west of Key West. Ferry or seaplane only. Sea turtle nesting, frigatebirds, the most remote park in the lower 48.', wiki: 'https://en.wikipedia.org/wiki/Dry_Tortugas_National_Park' },
+  { name: 'New River Gorge National Park', lat: 37.8678, lng: -81.0775, state: 'West Virginia', year: null, desc: 'The newest national park (2020). Deepest river gorge in the eastern US. Class V whitewater and the longest steel arch bridge in the Western Hemisphere.', wiki: 'https://en.wikipedia.org/wiki/New_River_Gorge_National_Park_and_Preserve' },
+  // USA — Alaska
+  { name: 'Glacier Bay National Park', lat: 58.6658, lng: -136.9000, state: 'Alaska', year: null, desc: 'Tidewater glaciers calving into the sea. UNESCO World Heritage Site. Humpback whales, sea otters, and 200 years of post-glacial succession.', wiki: 'https://en.wikipedia.org/wiki/Glacier_Bay_National_Park_and_Preserve' },
+  // New Zealand
+  { name: 'Abel Tasman National Park', lat: -40.9100, lng: 172.9700, state: 'New Zealand', year: null, desc: 'Golden sand beaches and coastal forest on the northern tip of the South Island. Kayaking, the Abel Tasman Coast Track.', wiki: 'https://en.wikipedia.org/wiki/Abel_Tasman_National_Park' },
+  { name: 'Aoraki / Mount Cook National Park', lat: -43.7350, lng: 170.0970, state: 'New Zealand', year: null, desc: 'Highest peak in New Zealand at 3,724m. Tasman Glacier. Sir Edmund Hillary trained here before Everest.', wiki: 'https://en.wikipedia.org/wiki/Aoraki_/_Mount_Cook_National_Park' },
+  { name: 'Arthur\'s Pass National Park', lat: -42.9500, lng: 171.5600, state: 'New Zealand', year: null, desc: 'The alpine crossing between Canterbury and the West Coast. Kea parrots, beech forest, and dramatic mountain passes.', wiki: 'https://en.wikipedia.org/wiki/Arthur%27s_Pass_National_Park' },
+  { name: 'Fiordland National Park', lat: -45.4153, lng: 167.7193, state: 'New Zealand', year: null, desc: 'Milford Sound, Doubtful Sound, and Dusky Sound. UNESCO World Heritage. Among the wettest and most remote places on Earth.', wiki: 'https://en.wikipedia.org/wiki/Fiordland_National_Park' },
+  { name: 'Mount Aspiring National Park', lat: -44.3833, lng: 168.7167, state: 'New Zealand', year: null, desc: 'The Matterhorn of the South Pacific. Wanaka. Glaciers, river flats, and the Routeburn Track.', wiki: 'https://en.wikipedia.org/wiki/Mount_Aspiring_National_Park' },
+  { name: 'Tongariro National Park', lat: -39.2833, lng: 175.5667, state: 'New Zealand', year: null, desc: 'Active volcanoes — Ruapehu, Ngauruhoe, Tongariro. Maori sacred landscape. The Tongariro Alpine Crossing.', wiki: 'https://en.wikipedia.org/wiki/Tongariro_National_Park' },
+  // Namibia
+  { name: 'Namib-Naukluft National Park', lat: -24.7500, lng: 15.9300, state: 'Namibia', year: null, desc: 'The oldest desert on Earth. Sossusvlei dunes up to 300m. Deadvlei. The Namib fog ecosystem.', wiki: 'https://en.wikipedia.org/wiki/Namib-Naukluft_National_Park' },
+  { name: 'Etosha National Park', lat: -18.8557, lng: 16.3290, state: 'Namibia', year: null, desc: 'The great white pan. Waterholes where lion, leopard, elephant, rhino, and giraffe converge at dusk.', wiki: 'https://en.wikipedia.org/wiki/Etosha_National_Park' },
+  { name: 'Skeleton Coast National Park', lat: -19.0000, lng: 12.5000, state: 'Namibia', year: null, desc: 'Shipwrecks, desert-adapted lions, and the cold Benguela Current fog. One of the most desolate coastlines on Earth.', wiki: 'https://en.wikipedia.org/wiki/Skeleton_Coast_National_Park' },
+  // South Africa
+  { name: 'Tsitsikamma National Park', lat: -33.9833, lng: 23.8833, state: 'South Africa', year: null, desc: 'The Garden Route coast. Ancient yellowwood forest, the Storms River gorge, and the highest bungee jump in the world.', wiki: 'https://en.wikipedia.org/wiki/Tsitsikamma_National_Park' },
+  { name: 'Table Mountain National Park', lat: -34.0009, lng: 18.4094, state: 'South Africa', year: '1996', desc: 'Cape Town. The flat-topped mountain above the city. Fynbos, Cape Point, and the meeting of two oceans. UCT research period.', wiki: 'https://en.wikipedia.org/wiki/Table_Mountain_National_Park' },
+  { name: 'Augrabies Falls National Park', lat: -28.5958, lng: 20.3406, state: 'South Africa', year: null, desc: 'The Orange River drops 56m into a narrow granite gorge. One of the largest waterfalls in the world.', wiki: 'https://en.wikipedia.org/wiki/Augrabies_Falls_National_Park' },
+  { name: 'Kruger National Park', lat: -23.9884, lng: 31.5547, state: 'South Africa', year: null, desc: 'The flagship. Nearly 2 million hectares. Big Five territory. One of the great wildlife reserves on Earth.', wiki: 'https://en.wikipedia.org/wiki/Kruger_National_Park' },
+  { name: 'Karoo National Park', lat: -32.2833, lng: 22.5000, state: 'South Africa', year: null, desc: 'The Great Karoo semi-desert. Springbok, black rhino, and some of the finest fossil beds in the world.', wiki: 'https://en.wikipedia.org/wiki/Karoo_National_Park' },
+  { name: 'Mapungubwe National Park', lat: -22.1833, lng: 29.3667, state: 'South Africa', year: null, desc: 'At the confluence of the Limpopo and Shashe Rivers. UNESCO World Heritage. Iron Age kingdom that preceded Great Zimbabwe.', wiki: 'https://en.wikipedia.org/wiki/Mapungubwe_National_Park' },
+  { name: 'Wilderness National Park', lat: -33.9833, lng: 22.5833, state: 'South Africa', year: null, desc: 'Lakes, rivers, estuaries, and beach on the Garden Route. Knysna Loerie territory.', wiki: 'https://en.wikipedia.org/wiki/Wilderness_National_Park' },
+  // Tanzania / Zimbabwe
+  { name: 'Kilimanjaro National Park', lat: -3.0674, lng: 37.3556, state: 'Tanzania', year: null, desc: 'Highest peak in Africa at 5,895m. Glaciers retreating fast. Five climate zones from base to summit.', wiki: 'https://en.wikipedia.org/wiki/Kilimanjaro_National_Park' },
+  { name: 'Arusha National Park', lat: -3.2167, lng: 36.8000, state: 'Tanzania', year: null, desc: 'Mount Meru, the Momella Lakes, and Ngurdoto Crater. Giraffe, buffalo, and colobus monkeys in the crater forest.', wiki: 'https://en.wikipedia.org/wiki/Arusha_National_Park' },
+  { name: 'Serengeti National Park', lat: -2.3333, lng: 34.8333, state: 'Tanzania', year: null, desc: 'The great migration — over a million wildebeest. Endless plains. The predator density is extraordinary.', wiki: 'https://en.wikipedia.org/wiki/Serengeti_National_Park' },
+  { name: 'Victoria Falls National Park', lat: -17.9243, lng: 25.8572, state: 'Zimbabwe', year: null, desc: 'Mosi-oa-Tunya — the smoke that thunders. Largest waterfall by area on Earth. Zambia on the other side.', wiki: 'https://en.wikipedia.org/wiki/Victoria_Falls_National_Park' },
+  // Australia
+  { name: 'Namadgi National Park', lat: -35.5833, lng: 148.7833, state: 'Australian Capital Territory', year: null, desc: 'Surrounds Canberra to the west. Alpine terrain, ancient Aboriginal sites, and sub-alpine snowgum woodland.', wiki: 'https://en.wikipedia.org/wiki/Namadgi_National_Park' },
+  { name: 'Blue Mountains National Park', lat: -33.6167, lng: 150.3833, state: 'New South Wales', year: null, desc: 'The Three Sisters. Eucalyptus oil haze gives the blue tint. Deep sandstone gorges west of Sydney.', wiki: 'https://en.wikipedia.org/wiki/Blue_Mountains_National_Park' },
+  { name: 'Cradle Mountain-Lake St Clair National Park', lat: -41.6500, lng: 145.9333, state: 'Tasmania', year: null, desc: 'The Overland Track. Pencil pines and pandani. One of the great wilderness walks on Earth.', wiki: 'https://en.wikipedia.org/wiki/Cradle_Mountain-Lake_St_Clair_National_Park' },
+  { name: 'Freycinet National Park', lat: -42.1667, lng: 148.3000, state: 'Tasmania', year: null, desc: 'Wineglass Bay — one of the most photographed beaches in Australia. Pink granite peaks, oysters, wallabies.', wiki: 'https://en.wikipedia.org/wiki/Freycinet_National_Park' },
+  { name: 'Franklin-Gordon Wild Rivers National Park', lat: -42.5333, lng: 146.0000, state: 'Tasmania', year: null, desc: 'UNESCO World Heritage. The Franklin River — saved from damming in one of the great conservation campaigns of the 1980s.', wiki: 'https://en.wikipedia.org/wiki/Franklin-Gordon_Wild_Rivers_National_Park' },
+  { name: 'Southwest National Park', lat: -43.2333, lng: 146.0833, state: 'Tasmania', year: null, desc: 'The most remote and wild corner of Tasmania. Buttongrass moorland, Huon pine, and jagged dolerite ranges.', wiki: 'https://en.wikipedia.org/wiki/Southwest_National_Park' },
+  { name: 'Tasman National Park', lat: -43.0833, lng: 147.9167, state: 'Tasmania', year: null, desc: 'Sea cliffs, sea caves, and the Tasman Arch. Dolerite columns rising from the Southern Ocean.', wiki: 'https://en.wikipedia.org/wiki/Tasman_National_Park' },
+  { name: 'Botany Bay National Park', lat: -34.0167, lng: 151.2333, state: 'New South Wales', year: null, desc: 'Where Cook landed in 1770. La Perouse. The head of Botany Bay — history, heath, and the Sydney Harbour approach.', wiki: 'https://en.wikipedia.org/wiki/Botany_Bay_National_Park' },
 ];
 
 const parkLayer = L.layerGroup();
 layers.parks = parkLayer;
 
 PARKS.forEach(p => {
-  // Green NPS-style marker
   const circle = L.circleMarker([p.lat, p.lng], {
     radius: 7,
     fillColor: '#2d6a2d',
@@ -638,13 +669,15 @@ PARKS.forEach(p => {
   });
 
   const yearHtml = p.year ? `<div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:#4a5c45;margin-bottom:0.3rem;">Visited ${p.year}</div>` : '';
+  const wikiHtml = p.wiki ? `<div style="margin-top:0.5rem;"><a href="${p.wiki}" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--sky);text-decoration:none;">Wikipedia →</a></div>` : '';
 
   circle.bindPopup(`
     <div class="popup-title">🏕️ ${p.name}</div>
     <div class="popup-meta">${p.state}</div>
     ${yearHtml}
     <div class="popup-desc">${p.desc}</div>
-  `, { maxWidth: 260 });
+    ${wikiHtml}
+  `, { maxWidth: 280 });
 
   parkLayer.addLayer(circle);
 });
