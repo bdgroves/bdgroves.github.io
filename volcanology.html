@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volcanology — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --lava:#c0392b; --magma:#e67e22;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--lava) 0%,var(--magma) 50%,var(--gold) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.4rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--lava); }
+
+    .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) 2.5rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--lava); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.5rem; }
+    .page-title em { font-style:italic; color:var(--lava); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; margin-top:0.75rem; }
+
+    .page-wrap { max-width:1000px; margin:0 auto; padding:2.5rem clamp(1.5rem,5vw,2rem) clamp(4rem,8vw,6rem); }
+
+    .section-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); border-bottom:2px solid var(--ink); padding-bottom:0.5rem; margin-bottom:1.5rem; margin-top:3rem; }
+    .section-head:first-child { margin-top:0; }
+
+    .project-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--mist); border:1px solid var(--mist); margin-bottom:2rem; }
+    @media(max-width:640px) { .project-grid { grid-template-columns:1fr; } }
+    .project-card { background:var(--parchment); padding:1.5rem; text-decoration:none; color:inherit; display:block; transition:background 0.15s; }
+    .project-card:hover { background:var(--cream); }
+    .project-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--lava); margin-bottom:0.4rem; }
+    .project-name { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:900; margin-bottom:0.4rem; }
+    .project-desc { font-size:0.85rem; color:var(--stone); line-height:1.65; margin-bottom:0.75rem; }
+    .project-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--lava); }
+    .project-badge { display:inline-block; font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; background:var(--sage); color:var(--white); padding:0.15rem 0.45rem; margin-left:0.5rem; vertical-align:middle; }
+
+    .learn-box { background:var(--cream); border-left:3px solid var(--gold); padding:1.25rem 1.5rem; margin-bottom:2rem; display:flex; align-items:baseline; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+    .learn-box-text { font-size:0.88rem; color:var(--stone); line-height:1.7; }
+    .learn-box-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--gold); white-space:nowrap; flex-shrink:0; }
+
+    .reading-item { padding:0.85rem 0; border-bottom:1px solid var(--mist); display:flex; justify-content:space-between; align-items:baseline; gap:1rem; }
+    .reading-item:last-child { border-bottom:none; }
+    .reading-title { font-size:0.88rem; font-weight:600; color:var(--ink); }
+    .reading-sub { font-size:0.78rem; color:var(--stone); margin-top:0.1rem; }
+    .reading-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; text-decoration:none; color:var(--lava); white-space:nowrap; flex-shrink:0; }
+    .reading-link:hover { text-decoration:underline; }
+
+    footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-link:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/maps.html">Maps</a>
+      <a href="/learning/">Learning</a>
+      <a href="/tags.html">Tags</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · Ologies</p>
+  <h1 class="page-title">🌋 <em>Volcanology</em></h1>
+  <p class="page-sub">Live eruption monitoring, lahar hazard tracking, and seismic analysis across Hawaiʻi and the Pacific Northwest. Built for a birthday trip to Hawaiʻi Volcanoes National Park in May 2026 — and for the obsession that preceded it.</p>
+</div>
+
+<div class="page-wrap">
+
+  <div class="section-head">Active Projects</div>
+
+  <div class="project-grid">
+    <a href="https://bdgroves.github.io/PELE" target="_blank" class="project-card">
+      <div class="project-kicker">Live Dashboard · Kīlauea · USGS HVO</div>
+      <div class="project-name">PELE <span class="project-badge">Live</span></div>
+      <div class="project-desc">Real-time Kīlauea eruption tracker — episodic lava fountaining, SO₂ emissions, earthquake catalog, and live HVO webcam feeds. GitHub Actions cron every 6 hours. Built before a birthday trip to Hawaiʻi Volcanoes National Park.</div>
+      <div class="project-link">bdgroves.github.io/PELE ↗</div>
+    </a>
+    <a href="https://bdgroves.github.io/aftershock" target="_blank" class="project-card">
+      <div class="project-kicker">Seismic Monitor · USGS · Pacific Northwest</div>
+      <div class="project-name">AFTERSHOCK <span class="project-badge">Live</span></div>
+      <div class="project-desc">US seismic activity monitor — real-time earthquake data from USGS, magnitude color-coding, depth analysis, and M5+ alert surfacing for the Pacific Northwest. Cascadia Subduction Zone focus.</div>
+      <div class="project-link">bdgroves.github.io/aftershock ↗</div>
+    </a>
+    <a href="https://bdgroves.github.io/lahar-watch" target="_blank" class="project-card">
+      <div class="project-kicker">Lahar Hazard · Mt. Rainier · Puyallup Watershed</div>
+      <div class="project-name">lahar-watch <span class="project-badge">Live</span></div>
+      <div class="project-desc">Mount Rainier lahar hazard monitoring — the most lahar-prone volcano in North America sits 35 miles from Tacoma. Tracks USGS seismicity, snowpack, and river levels in the Puyallup, Carbon, and Nisqually drainages. The volcano you can see from the backyard.</div>
+      <div class="project-link">bdgroves.github.io/lahar-watch ↗</div>
+    </a>
+    <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank" class="project-card">
+      <div class="project-kicker">Snowpack Monitor · Mt. Rainier · SNOTEL</div>
+      <div class="project-name">Rainier Snowpack <span class="project-badge">Live</span></div>
+      <div class="project-desc">SNOTEL and NASA MODIS snowpack data for the Mt. Rainier watershed — hourly updates, seasonal comparison, and melt rate tracking. The snowpack that feeds the rivers that lahars would follow.</div>
+      <div class="project-link">bdgroves.github.io/rainier-snowpack ↗</div>
+    </a>
+  </div>
+
+  <div class="learn-box">
+    <div class="learn-box-text">Going deep on the science — 16 lessons covering shield volcanoes, stratovolcanoes, calderas, lahars, pyroclastic flows, Kīlauea, the Cascades, and supervolcanoes. Built before the May 2026 Hawaii trip.</div>
+    <a href="/learning/volcanology/" class="learn-box-link">Volcanology Curriculum →</a>
+  </div>
+
+  <div class="section-head">Data Sources</div>
+
+  <div class="reading-item">
+    <div><div class="reading-title">USGS Hawaiian Volcano Observatory (HVO)</div><div class="reading-sub">Real-time Kīlauea monitoring — alert levels, webcams, tiltmeters, SO₂, earthquake catalog</div></div>
+    <a href="https://www.usgs.gov/observatories/hvo" target="_blank" class="reading-link">usgs.gov/hvo ↗</a>
+  </div>
+  <div class="reading-item">
+    <div><div class="reading-title">USGS Earthquake Hazards Program</div><div class="reading-sub">FDSN earthquake catalog API — magnitude, depth, location, 7-day rolling window</div></div>
+    <a href="https://earthquake.usgs.gov" target="_blank" class="reading-link">earthquake.usgs.gov ↗</a>
+  </div>
+  <div class="reading-item">
+    <div><div class="reading-title">USGS HANS Public API</div><div class="reading-sub">Volcano alert levels and color codes for all US monitored volcanoes</div></div>
+    <a href="https://volcanoes.usgs.gov/hans-public/" target="_blank" class="reading-link">volcanoes.usgs.gov ↗</a>
+  </div>
+  <div class="reading-item">
+    <div><div class="reading-title">NPS Hawaiʻi Volcanoes National Park</div><div class="reading-sub">Current conditions, trail closures, and SO₂ air quality</div></div>
+    <a href="https://www.nps.gov/havo/" target="_blank" class="reading-link">nps.gov/havo ↗</a>
+  </div>
+  <div class="reading-item">
+    <div><div class="reading-title">Pacific Northwest Seismic Network (PNSN)</div><div class="reading-sub">Cascadia subduction zone — volcanic and tectonic seismicity</div></div>
+    <a href="https://pnsn.org" target="_blank" class="reading-link">pnsn.org ↗</a>
+  </div>
+
+  <div class="section-head">Further Reading</div>
+
+  <div class="reading-item">
+    <div><div class="reading-title">Volcanoes of the World — Smithsonian Global Volcanism Program</div><div class="reading-sub">The definitive global catalog of volcanic activity, eruption histories, and monitoring status</div></div>
+    <a href="https://volcano.si.edu" target="_blank" class="reading-link">volcano.si.edu ↗</a>
+  </div>
+  <div class="reading-item">
+    <div><div class="reading-title">Eruptions — Erik Klemetti (Substack)</div><div class="reading-sub">Best ongoing volcanology commentary. Clear, accurate, no hype.</div></div>
+    <a href="https://substack.com/@volcanista" target="_blank" class="reading-link">Substack ↗</a>
+  </div>
+  <div class="reading-item">
+    <div><div class="reading-title">Big Island Video News — Eruption Coverage</div><div class="reading-sub">Best on-the-ground Kīlauea coverage. Episode recaps, community impact, HVO summaries.</div></div>
+    <a href="https://www.bigislandvideonews.com" target="_blank" class="reading-link">bigislandvideonews.com ↗</a>
+  </div>
+  <div class="reading-item">
+    <div><div class="reading-title">USGS Volcano Hazards Program</div><div class="reading-sub">All 161 active US volcanoes, monitoring data, and hazard assessments</div></div>
+    <a href="https://www.usgs.gov/programs/VHP" target="_blank" class="reading-link">usgs.gov/VHP ↗</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <a href="/" class="footer-link">← brooksgroves.com</a>
+  </div>
+</footer>
+</body>
+</html>
