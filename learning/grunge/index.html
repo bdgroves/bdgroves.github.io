@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grunge — Learning — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --grunge:#2a2a3a; --static:#5a4a6b; --feedback:#8b2a4a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--grunge) 0%,var(--static) 50%,var(--feedback) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--feedback); }
+
+    .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--feedback); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+    .page-stats { display:flex; gap:2rem; margin-top:1.5rem; flex-wrap:wrap; }
+    .page-stat-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--feedback); }
+    .page-stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
+
+    .progress-wrap { background:var(--cream); border:1px solid var(--mist); padding:1.25rem 1.5rem; margin-top:1.5rem; }
+    .progress-bar-track { height:6px; background:var(--mist); border-radius:3px; margin:0.75rem 0 0.4rem; }
+    .progress-bar-fill { height:6px; background:var(--feedback); border-radius:3px; transition:width 0.4s ease; width:0%; }
+    .progress-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); }
+
+    .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .phase-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1.25rem; display:flex; justify-content:space-between; }
+    .phase-label:first-child { margin-top:0; }
+    .phase-name { color:var(--feedback); }
+
+    .lesson { border:1px solid var(--mist); margin-bottom:0.75rem; }
+    .lesson-header { padding:1.1rem 1.25rem; cursor:pointer; display:grid; grid-template-columns:2.5rem 1fr auto; gap:0.75rem; align-items:start; transition:background 0.15s; }
+    .lesson-header:hover { background:var(--cream); }
+    .lesson-num { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--stone); padding-top:0.1rem; }
+    .lesson-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.3; }
+    .lesson-sub { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; font-style:italic; }
+    .lesson-time { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); text-align:right; white-space:nowrap; padding-top:0.2rem; }
+    .lesson-expand { display:none; padding:1.25rem 1.5rem; border-top:1px solid var(--mist); background:var(--cream); }
+    .lesson.open .lesson-expand { display:block; }
+    .lesson.open .lesson-header { background:var(--cream); }
+    .lesson.done .lesson-num { color:var(--sage); }
+    .lesson.done .lesson-num::after { content:' ✓'; }
+
+    .expand-section { margin-bottom:1.25rem; }
+    .expand-section:last-child { margin-bottom:0; }
+    .expand-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--feedback); margin-bottom:0.5rem; }
+    .expand-body { font-size:0.88rem; line-height:1.75; color:var(--stone); }
+    .expand-body p { margin-bottom:0.6rem; }
+    .expand-body p:last-child { margin-bottom:0; }
+
+    .cocktail-box { background:var(--grunge); color:#e8e4d8; padding:1rem 1.25rem; margin-top:1rem; border-left:3px solid var(--feedback); }
+    .cocktail-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--feedback); margin-bottom:0.4rem; }
+    .cocktail-line { font-size:0.88rem; font-style:italic; line-height:1.7; }
+
+    .personal-box { background:var(--cream); border-left:3px solid var(--static); padding:1rem 1.25rem; margin-top:1rem; }
+    .personal-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--static); margin-bottom:0.4rem; }
+    .personal-text { font-size:0.85rem; line-height:1.7; color:var(--stone); }
+
+    .vocab-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .vocab-grid { grid-template-columns:1fr; } }
+    .vocab-item { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    .vocab-item strong { color:var(--ink); font-weight:700; }
+
+    .records-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .records-grid { grid-template-columns:1fr; } }
+    .record-item { font-size:0.82rem; color:var(--stone); line-height:1.6; padding:0.5rem 0; border-bottom:1px solid var(--mist); }
+    .record-item:last-child { border-bottom:none; }
+    .record-item strong { color:var(--ink); font-weight:700; display:block; }
+
+    .resources { border:1px solid var(--mist); padding:1.75rem; margin-top:3rem; }
+    .resources-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:var(--feedback); }
+    .resource-list { display:flex; flex-direction:column; gap:0.6rem; }
+    .resource-item { font-size:0.85rem; color:var(--stone); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:baseline; }
+    .resource-item a { color:var(--rust); text-decoration:underline; text-underline-offset:3px; font-size:0.75rem; font-family:'DM Mono',monospace; }
+
+    .mark-done-btn { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--mist); background:none; color:var(--stone); padding:0.3rem 0.75rem; cursor:pointer; margin-top:1rem; transition:all 0.15s; }
+    .mark-done-btn:hover { border-color:var(--sage); color:var(--sage); }
+    .mark-done-btn.done { border-color:var(--sage); color:var(--sage); }
+
+    .qa-widget { border:2px solid var(--ink); margin-top:3rem; }
+    .qa-header { background:var(--grunge); color:var(--white); padding:1rem 1.5rem; }
+    .qa-header-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; }
+    .qa-header-sub { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:#888; margin-top:0.2rem; }
+    .qa-body { padding:1.5rem; }
+    .qa-input-row { display:flex; gap:0.75rem; margin-bottom:1rem; }
+    .qa-input { flex:1; padding:0.75rem 1rem; font-family:'Libre Baskerville',serif; font-size:0.88rem; border:1px solid var(--mist); background:var(--white); color:var(--ink); outline:none; }
+    .qa-input:focus { border-color:var(--feedback); }
+    .qa-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; background:var(--feedback); color:var(--white); border:none; padding:0.75rem 1.25rem; cursor:pointer; white-space:nowrap; }
+    .qa-btn:hover { background:var(--grunge); }
+    .qa-response { font-size:0.88rem; line-height:1.75; color:var(--stone); min-height:3rem; }
+    .qa-loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--mist); }
+
+    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/learning/">← Learning</a>
+      <a href="/">Home</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/learning/">Learning</a></p>
+  <h1 class="page-title">🎸 <em>Grunge</em></h1>
+  <p class="page-sub">The decade that came out of Seattle and changed everything — then burned itself out in under ten years. Green River to Nirvana, Sub Pop to DGC, the Cow Palace to the Paramount. Not nostalgia. History. The most geographically specific musical revolution since the Delta blues.</p>
+  <div class="page-stats">
+    <div><div class="page-stat-val">14</div><div class="page-stat-lbl">Lessons</div></div>
+    <div><div class="page-stat-val">4</div><div class="page-stat-lbl">Phases</div></div>
+    <div><div class="page-stat-val">~12 hrs</div><div class="page-stat-lbl">Estimated time</div></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Progress — <span id="done-count">0</span> of 14 lessons complete</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-pct">0%</div>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <!-- PHASE 1 -->
+  <div class="phase-label"><span>Phase 1 — <span class="phase-name">The Underground, 1984–1988</span></span><span>Lessons 1–4</span></div>
+
+  <div class="lesson" id="l1">
+    <div class="lesson-header" onclick="toggle('l1')">
+      <div class="lesson-num">1</div>
+      <div><div class="lesson-title">What Was There Before</div><div class="lesson-sub">Punk, hardcore, and the Pacific Northwest scene that made grunge possible</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Grunge didn't appear from nowhere. It emerged from a specific lineage: the Pacific Northwest hardcore scene of the early 1980s, filtered through the influence of Black Flag and the SST Records catalog, mixed with the heavy metal that was inescapable on FM radio in 1984. The key precondition was geographic isolation. Seattle was far enough from New York and Los Angeles that its bands could develop without being absorbed into either scene. The result was something that sounded like no particular genre and all of them at once.</p>
+          <p>The local foundation: The U-Men, Mudhoney's spiritual predecessors, playing a deranged mix of blues and punk at the Central Tavern and Squid Row in Seattle's Pioneer Square. The Melvins, from Aberdeen, who would directly influence Kurt Cobain — they were the first band in the area to slow punk down to the tempo of doom metal, creating the sludgy heaviness that became one of grunge's defining textures. And Mark Arm, who would coin the word "grunge" itself in a 1981 letter to a Seattle fanzine, using it as a self-deprecating description of his own band Green River.</p>
+          <p>The national context: SST Records (Black Flag, Dinosaur Jr., Husker Du, Minutemen) had demonstrated that independent labels could distribute nationally and that guitar noise was a legitimate artistic choice, not a failure of technique. The Pixies in Boston were building the quiet-loud dynamic that Cobain would later call his greatest compositional influence. Sonic Youth in New York were proving that dissonance could be a feature, not a bug. The elements were all assembling. Seattle just happened to be where they came together.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Acts & Labels</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>The Melvins</strong> — Aberdeen; doom-slowed punk; direct influence on Cobain; still recording</div>
+          <div class="vocab-item"><strong>The U-Men</strong> — Seattle; blues-punk hybrid; precursor to the grunge sound</div>
+          <div class="vocab-item"><strong>Mark Arm</strong> — coined "grunge" in 1981; later fronted Green River and Mudhoney</div>
+          <div class="vocab-item"><strong>SST Records</strong> — Hermosa Beach, CA; distributed nationwide; template for Sub Pop</div>
+          <div class="vocab-item"><strong>Black Flag</strong> — SST's flagship; hardcore blueprint; Henry Rollins; "My War" as a speed/tempo shift</div>
+          <div class="vocab-item"><strong>Husker Du</strong> — Minneapolis; melodic punk; bridge between hardcore and alternative rock</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The word 'grunge' was coined in 1981 by the guy who would later front Mudhoney — as an insult, describing his own band's sound in a letter to a fanzine. The genre named itself before it existed. And the Melvins from Aberdeen — Kurt Cobain's hometown — were already doing it before anyone called it anything. Grunge didn't erupt out of nowhere in 1991. It had been building in rain-soaked basements for a decade."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l1" onclick="markDone('l1')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l2">
+    <div class="lesson-header" onclick="toggle('l2')">
+      <div class="lesson-num">2</div>
+      <div><div class="lesson-title">Green River and the Family Tree</div><div class="lesson-sub">The band that split into Mudhoney and Pearl Jam</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Green River (1984–1988) is the single most important band in grunge history that almost nobody outside the Pacific Northwest knew while they were active. Their membership reads like a genealogy chart for the entire Seattle scene: Mark Arm and Steve Turner (who would form Mudhoney), Jeff Ament and Stone Gossard (who would form Mother Love Bone, then Pearl Jam), and Bruce Fairweather. They released two EPs on Homestead Records and one on Sub Pop, played the Central Tavern constantly, and broke up before they ever made a full album.</p>
+          <p>The split was acrimonious. Ament and Gossard wanted to pursue a more commercial direction; Arm and Turner wanted to stay weird and abrasive. The tension between those two impulses — commercial accessibility versus underground credibility — would define grunge's entire arc. Mudhoney went one direction (raw, sloppy, underground heroes); Pearl Jam went the other (stadium rock, classic rock songwriting, massive commercial success). Both were direct descendants of the same band. The argument that broke Green River up was the same argument the entire genre would have with itself for a decade.</p>
+          <p>After Green River dissolved, Ament and Gossard recruited singer Andrew Wood and formed Mother Love Bone — a glam-influenced hard rock band that was signed to a major label (PolyGram) and was six weeks from releasing their debut album when Wood died of a heroin overdose in March 1990. Wood's death sent shock waves through the Seattle scene. The surviving members of Mother Love Bone, plus guitarist Mike McCready, would audition a San Diego singer named Eddie Vedder in late 1990. Pearl Jam played their first show in October 1990.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">The Family Tree</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Green River (1984–88)</strong> — Mark Arm, Steve Turner, Jeff Ament, Stone Gossard, Bruce Fairweather</div>
+          <div class="vocab-item"><strong>Mudhoney (1988–)</strong> — Arm + Turner; Sub Pop's defining band; "Touch Me I'm Sick"</div>
+          <div class="vocab-item"><strong>Mother Love Bone (1988–90)</strong> — Ament + Gossard + Andrew Wood; signed to major; Wood died March 1990</div>
+          <div class="vocab-item"><strong>Pearl Jam (1990–)</strong> — Ament, Gossard, McCready + Eddie Vedder; first show Oct 1990</div>
+          <div class="vocab-item"><strong>Temple of the Dog (1990–91)</strong> — Cornell + Pearl Jam members; tribute to Andrew Wood</div>
+          <div class="vocab-item"><strong>Andrew Wood</strong> — Mother Love Bone vocalist; glam influence; heroin OD March 19, 1990</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Pearl Jam and Mudhoney are literally the same band, split down the middle over a creative argument. Green River broke up in 1988 because half the members wanted to go commercial and half wanted to stay weird. The commercial half became Pearl Jam. The weird half became Mudhoney. The argument they had in 1988 is the same argument grunge had with itself until 1994."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l2" onclick="markDone('l2')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l3">
+    <div class="lesson-header" onclick="toggle('l3')">
+      <div class="lesson-num">3</div>
+      <div><div class="lesson-title">Sub Pop Records</div><div class="lesson-sub">The label that invented the scene — and sold it to the world</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Sub Pop Records was founded by Bruce Pavitt and Jonathan Poneman in Seattle in 1988. It was not the first independent label in the Pacific Northwest, but it was the first to understand that image, mythology, and marketing were as important as the music itself. Pavitt had spent years writing about American regional music scenes in a fanzine called Subterranean Pop (later Sub Pop); Poneman brought capital and ambition. Together they created a label identity as distinctive as any of their acts.</p>
+          <p>Their masterstroke was importing British music press attention. They flew NME and Melody Maker journalists to Seattle in 1989 and 1990, put them up in the Moore Hotel, fed them coffee and beer, and let the bands do the rest. The resulting features — breathless, hyperbolic, describing Seattle as a city of flannel-wearing, heroin-taking, rain-soaked guitar gods — created the myth of grunge before the music had reached a mass American audience. The British press invented the grunge narrative that American media then imported back.</p>
+          <p>The Sub Pop Singles Club (launched 1988) sent a 7-inch single to subscribers every month — limited pressings, hand-numbered, designed to be collectible. It built a national base of devoted fans who felt like insiders. By the time Nirvana released "Smells Like Teen Spirit" on DGC Records in September 1991, Sub Pop had already seeded the ground. The explosion wasn't a surprise to anyone who'd been paying attention to the Singles Club since 1988.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Sub Pop Singles Club</strong> — monthly 7-inch subscription; limited pressings; built national cult following 1988–</div>
+          <div class="vocab-item"><strong>Bruce Pavitt</strong> — Sub Pop co-founder; Subterranean Pop fanzine; the archivist and mythmaker</div>
+          <div class="vocab-item"><strong>Jonathan Poneman</strong> — Sub Pop co-founder; the operator; nearly bankrupted, saved by Nirvana's DGC deal</div>
+          <div class="vocab-item"><strong>Loser</strong> — Sub Pop slogan; ironic self-deprecation that became an identity marker</div>
+          <div class="vocab-item"><strong>NME / Melody Maker</strong> — British music weeklies; gave grunge its mythology before America caught on</div>
+          <div class="vocab-item"><strong>Everett True</strong> — NME/Melody Maker journalist; wrote early grunge coverage; brought Cobain to UK attention</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The myth of grunge was invented by British music journalists who were flown to Seattle by Sub Pop Records and given beer and a story to tell. The NME wrote about flannel and heroin and rain before most Americans had heard of Mudhoney. Sub Pop understood that narrative is product. By the time Nevermind came out, the myth was already fully formed — they were just waiting for the music to catch up."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l3" onclick="markDone('l3')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l4">
+    <div class="lesson-header" onclick="toggle('l4')">
+      <div class="lesson-num">4</div>
+      <div><div class="lesson-title">Soundgarden and the Sound of Seattle</div><div class="lesson-sub">Before Nirvana, there was this</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Soundgarden formed in Seattle in 1984 — the same year as Green River — and were in many ways the most musically sophisticated of the grunge bands from the start. Chris Cornell's voice was genuinely operatic in range; Kim Thayil's guitar work drew on Black Sabbath and Middle Eastern scales rather than punk; Matt Cameron's drumming was technically exceptional. They were the first Seattle band to sign to a major label (A&M Records, 1989) and the first to play on major network television (Arsenio Hall, 1989).</p>
+          <p>Their early Sub Pop recordings — "Hunted Down," "Nothing to Say," the Screaming Life EP — established the heavy, dark template that distinguished Seattle from the jangly alternative rock coming out of Athens, Georgia (R.E.M., B-52s) or the art-noise of New York. Soundgarden sounded like the weight of the Pacific Northwest — gray skies, heavy timber, cold water. Where Mudhoney was sloppy and fun and deliberately trashy, Soundgarden was precise and massive and occasionally terrifying.</p>
+          <p>Badmotorfinger (1991) and Superunknown (1994) are the peak of their output. Superunknown sold 5 million copies in the US and contains some of the most ambitious compositions in the grunge catalog — odd time signatures, tunings Cornell invented himself, subject matter (depression, dissociation, mythology) that most rock bands wouldn't approach. "Black Hole Sun" was the radio hit; "The Day I Tried to Live" and "Limo Wreck" are the actual masterpieces on that record.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Screaming Life EP (1987)</strong> Sub Pop debut; "Nothing to Say"; established the heavy template</div>
+          <div class="record-item"><strong>Louder Than Love (1989)</strong> A&M major label debut; first Seattle band to sign major</div>
+          <div class="record-item"><strong>Badmotorfinger (1991)</strong> "Outshined," "Rusty Cage," "Jesus Christ Pose"; the peak of raw Soundgarden</div>
+          <div class="record-item"><strong>Superunknown (1994)</strong> 5M US copies; odd time signatures; Cornell's greatest songwriting; Grammy winner</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Soundgarden were the first Seattle band to sign to a major label and the first to be on network TV — two years before Nevermind. They were also the most technically accomplished: Cornell's voice covered five octaves, Kim Thayil tuned his guitars to scales borrowed from Middle Eastern music, and Superunknown has more odd time signatures than most prog rock albums. Grunge had a reputation for being dumb and simple. Soundgarden spent their whole career proving that wrong."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l4" onclick="markDone('l4')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-label"><span>Phase 2 — <span class="phase-name">The Explosion, 1989–1991</span></span><span>Lessons 5–8</span></div>
+
+  <div class="lesson" id="l5">
+    <div class="lesson-header" onclick="toggle('l5')">
+      <div class="lesson-num">5</div>
+      <div><div class="lesson-title">Nirvana — The Making of Nevermind</div><div class="lesson-sub">How a band from Aberdeen made the most important album of the decade</div></div>
+      <div class="lesson-time">~55 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Nirvana formed in Aberdeen, Washington in 1987 — Kurt Cobain and Krist Novoselic, joined eventually by a succession of drummers before Dave Grohl arrived from Washington D.C. hardcore band Scream in 1990. Their Sub Pop debut Bleach (1989) was recorded for $606 and sold 35,000 copies — exceptional for an indie release, invisible by major label standards. DGC Records A&R man Gary Gersh signed them in 1990 after seeing them play in Seattle. The advance was $287,000. Sub Pop got $75,000 as a release buyout.</p>
+          <p>Nevermind was recorded at Sound City Studios in Van Nuys, California, produced by Butch Vig (later of Garbage), mixed by Andy Wallace. The recording cost $250,000. DGC expected to sell 250,000 copies — a respectable showing for an alternative act. "Smells Like Teen Spirit" was released as the first single in September 1991 with a video directed by Samuel Bayer that cost $33,000. MTV began playing it in light rotation. Within weeks it was in heavy rotation. Nevermind debuted at #144 on the Billboard 200. By January 1992 it had knocked Michael Jackson's Dangerous off the #1 spot. It sold 300,000 copies in its first week. Nobody at DGC had planned for this.</p>
+          <p>The production of Nevermind is as important as the songwriting. Butch Vig's instinct was to make it sound huge — compressed, polished, sonically powerful in a way that Bleach wasn't. Cobain famously resented this, complained the album was too clean, too commercial, and spent the rest of his career trying to make records that sounded worse. In Utero (1993) was the corrective — recorded with Steve Albini specifically to sound raw and abrasive. It is also a great album. But Nevermind is the one that changed everything.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Bleach (1989)</strong> — Sub Pop debut; $606 to record; raw, slow, heavy; 35,000 copies</div>
+          <div class="vocab-item"><strong>Butch Vig</strong> — Nevermind producer; polished the sound Cobain later resented; later formed Garbage</div>
+          <div class="vocab-item"><strong>Gary Gersh</strong> — DGC A&R; signed Nirvana; also signed Sonic Youth; had the ear</div>
+          <div class="vocab-item"><strong>Sound City Studios</strong> — Van Nuys, CA; where Nevermind was tracked; also Fleetwood Mac's Rumours</div>
+          <div class="vocab-item"><strong>In Utero (1993)</strong> — Steve Albini production; deliberately raw; Cobain's corrective to Nevermind</div>
+          <div class="vocab-item"><strong>Dave Grohl</strong> — joined from DC hardcore band Scream 1990; best drummer in rock; later Foo Fighters</div>
+        </div>
+      </div>
+      <div class="personal-box">
+        <div class="personal-label">You Were There</div>
+        <div class="personal-text">New Year's Eve 1991 at the Cow Palace — Nirvana was on the bill, opening for the Red Hot Chili Peppers, with Pearl Jam also on the card. Nevermind had been out for three months. "Smells Like Teen Spirit" was already everywhere. You drove over Donner Pass in a snowstorm to be there. Nevada Neil was in that crowd. The story of that night is already written — the Cow Palace piece. This is the context for it.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"DGC Records expected Nevermind to sell 250,000 copies. That would have been a hit. It sold 300,000 in the first week and knocked Michael Jackson off number one. Nobody planned for that — not the label, not the band, not the producer. The person who was most upset about it was Kurt Cobain, who spent the rest of his career trying to make records that didn't sound like Nevermind. In Utero is his apology for Nevermind. It is also excellent."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l5" onclick="markDone('l5')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l6">
+    <div class="lesson-header" onclick="toggle('l6')">
+      <div class="lesson-num">6</div>
+      <div><div class="lesson-title">Pearl Jam — Ten and the Other Direction</div><div class="lesson-sub">The band that went the other way and became the biggest in the world</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Pearl Jam released Ten in August 1991 — one month before Nevermind. It sold modestly at first, then Nevermind's explosion lifted everything in its wake. By 1992, Ten was selling faster than Nevermind. It has now sold over 13 million copies in the US — more than any other grunge album, more than Nevermind. Pearl Jam became the biggest band of the 1990s in terms of concert attendance, and they did it while being deeply conflicted about commercial success in ways that sometimes made them their own worst enemies.</p>
+          <p>Eddie Vedder is the key to Pearl Jam's sound and their paradox. He arrived with a tape recording he'd made over a demo — three songs ("Alive," "Once," "Footsteps") that formed a loose narrative about a boy who discovers his father is actually his stepfather, then kills someone. Gossard and Ament heard it and knew immediately. Vedder flew to Seattle, auditioned, and was in the band. His voice — enormous, physically committed, unembarrassed — was the complement to Gossard's classic rock songwriting. Pearl Jam sounded like arena rock made by people who grew up on punk and meant every word.</p>
+          <p>The Ticketmaster battle (1994–96) is as important as the music for understanding Pearl Jam. After Ten's success they could have printed money touring. Instead they attempted to boycott Ticketmaster's service fees, tour only through independent venues, and hold ticket prices down. The Department of Justice investigated Ticketmaster at Pearl Jam's request. They largely lost — the tour was logistically impossible, they played fewer dates, fans suffered. But the attempt was genuine and it cost them commercially. Vedder was not performing populism. He actually believed it.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Ten (1991)</strong> 13M+ US copies; "Alive," "Jeremy," "Black"; the commercial peak</div>
+          <div class="record-item"><strong>Vs. (1993)</strong> Sold 950,000 first week — still a record; deliberately less accessible than Ten</div>
+          <div class="record-item"><strong>Vitalogy (1994)</strong> Released on vinyl two weeks before CD; "Better Man," "Nothingman"</div>
+          <div class="record-item"><strong>No Code (1996)</strong> Deliberately uncommercial; random polaroid art; they were not chasing hits</div>
+        </div>
+      </div>
+      <div class="personal-box">
+        <div class="personal-label">You Were There</div>
+        <div class="personal-text">Pearl Jam was also on the Cow Palace bill NYE 1991 — opening for the Chili Peppers alongside Nirvana. Ten had been out four months. "Alive" was already a touchstone. The band that would sell 13 million copies of that album was in the same room, on the same night, playing to the same crowd that saw Nirvana. You were watching the two biggest bands of the decade before most of America knew their names.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Pearl Jam is the best-selling grunge band — more copies of Ten than Nevermind, more concert tickets than anyone in the 90s. And they spent half that decade in a legal battle with Ticketmaster trying to keep ticket prices down. They won a DOJ investigation, lost the tour logistics, and came out the other side still believing it was worth trying. They're the only band from that era that got bigger and more principled simultaneously."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l6" onclick="markDone('l6')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l7">
+    <div class="lesson-header" onclick="toggle('l7')">
+      <div class="lesson-num">7</div>
+      <div><div class="lesson-title">Alice in Chains — The Darkest Corner</div><div class="lesson-sub">Heavy metal's Seattle cousin and the most brutal record of the era</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Alice in Chains are the outlier in the Seattle story — they came from a more explicit heavy metal background than the others, formed in 1987 when Layne Staley and Jerry Cantrell began writing together. Cantrell's guitar work drew heavily on Black Sabbath's Tony Iommi; the rhythms were slower and heavier than Soundgarden or Nirvana. They were signed to Columbia Records before Sub Pop had made Seattle famous and their debut Facelift (1990) sold 400,000 copies without any grunge mythology attached to it yet.</p>
+          <p>What distinguished Alice in Chains was the vocal interplay between Staley and Cantrell — two voices harmonizing in ways that often sounded dissonant, wrong, unsettling. Staley's lyrical subject matter was almost exclusively about heroin addiction, in terms so direct that the songs function as documentary. "Junkhead," "Rooster," "God Smells Like Dirt" — these are not metaphors. The Dirt EP (1992) and Jar of Flies (1994) are the most unsparing records about drug addiction in rock history. Staley was not speaking hypothetically.</p>
+          <p>Layne Staley died on April 5, 2002 — eight years to the day after Kurt Cobain. He had been effectively reclusive for the last five years of his life, rarely leaving his apartment in Seattle's University District. His body was discovered two weeks after his death. He was 34. Alice in Chains reconvened in 2006 with singer William DuVall and have continued recording. The post-Staley work is good. It is not the same.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Facelift (1990)</strong> "We Die Young," "Man in the Box"; pre-grunge explosion debut; 400K copies</div>
+          <div class="record-item"><strong>Dirt (1992)</strong> The masterpiece; entirely about heroin; Staley's most confessional work</div>
+          <div class="record-item"><strong>Jar of Flies (1994)</strong> Acoustic EP; #1 Billboard — first EP ever to debut at #1; "No Excuses"</div>
+          <div class="record-item"><strong>Alice in Chains (1995)</strong> Self-titled; Staley barely left the studio; the last full album of his life</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Dirt is the most honest record about heroin addiction ever made, and it was made by someone who was actively addicted while recording it. Layne Staley wasn't writing about someone else's experience. He died eight years to the day after Kurt Cobain — April 5, 2002. His body wasn't found for two weeks. Alice in Chains is the only Seattle band where the darkness in the music was completely, literally true."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l7" onclick="markDone('l7')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l8">
+    <div class="lesson-header" onclick="toggle('l8')">
+      <div class="lesson-num">8</div>
+      <div><div class="lesson-title">Mudhoney, Screaming Trees, and the Ones Who Stayed Underground</div><div class="lesson-sub">The bands that didn't cross over — and what that meant</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>When Nevermind exploded, every major label descended on Seattle looking for the next Nirvana. They signed everything. Mudhoney — Sub Pop's flagship act, the band that had defined the Seattle sound before anyone else — turned down major label offers and stayed on Sub Pop. Mark Arm later said it was partly principle and partly laziness. The result was that Mudhoney retained a critical credibility that the major label bands sometimes lost, while remaining commercially invisible by comparison. Every Mudhoney album is excellent. Almost nobody bought them.</p>
+          <p>The Screaming Trees from Ellensburg, Washington had been making records since 1985 and were one of the most underrated bands of the era. Singer Mark Lanegan's voice — deep, scratched, like Tom Waits fronting a psychedelic garage band — was unlike anything else in the Seattle scene. Sweet Oblivion (1992) is as good as anything from that period, and "Nearly Lost You" is as good a song as grunge produced. Lanegan later worked with Queens of the Stone Age, recorded solo albums of stunning quality, and collaborated with an improbable range of artists until his death in 2022.</p>
+          <p>The lesson of Mudhoney and the Screaming Trees: commercial success and artistic quality are not the same variable. The bands that stayed underground during the grunge explosion were often making better records than the ones who went multiplatinum. The machinery of the music industry rewarded the accessible and punished the difficult, regardless of quality. This was not new. But grunge made it unusually visible because the contrast happened so quickly and so publicly.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Mudhoney — Superfuzz Bigmuff (1988)</strong> "Touch Me I'm Sick"; the Sub Pop template; still sounds like a downed power line</div>
+          <div class="record-item"><strong>Mudhoney — Every Good Boy Deserves Fudge (1991)</strong> Their best album; turned down majors to make it</div>
+          <div class="record-item"><strong>Screaming Trees — Sweet Oblivion (1992)</strong> "Nearly Lost You"; Lanegan at his peak; should have been huge</div>
+          <div class="record-item"><strong>Mark Lanegan — Whiskey for the Holy Ghost (1994)</strong> Solo debut; devastating; a different kind of Northwest darkness</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Mudhoney invented the Seattle sound — 'Touch Me I'm Sick' in 1988 is the first grunge single. When the majors came calling after Nevermind, they turned everyone down and stayed on Sub Pop. Mark Arm said later it was partly principle. Every Mudhoney album is excellent and almost nobody bought them. They are the most important band in grunge history that most people who say they love grunge have never actually listened to."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l8" onclick="markDone('l8')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-label"><span>Phase 3 — <span class="phase-name">Peak and Fracture, 1992–1994</span></span><span>Lessons 9–11</span></div>
+
+  <div class="lesson" id="l9">
+    <div class="lesson-header" onclick="toggle('l9')">
+      <div class="lesson-num">9</div>
+      <div><div class="lesson-title">The Women of Grunge</div><div class="lesson-sub">Hole, Babes in Toyland, 7 Year Bitch, and what they were actually saying</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The narrative of grunge is almost entirely male — Cobain, Vedder, Cornell, Staley, Arm. This is a distortion. The Seattle and Pacific Northwest scene had significant women making important music throughout the same period, and their work engaged with the same themes of alienation, rage, and self-destruction from perspectives the male bands couldn't access. The critical and commercial establishment largely ignored them while they were active; the revisionist history has been slow.</p>
+          <p>Hole, fronted by Courtney Love, released Pretty on the Inside in 1991 — before Ten, before Nevermind — produced by Kim Gordon of Sonic Youth. It is abrasive, confrontational, and deliberately ugly in ways that made male critics uncomfortable. Live Through This (1994), released four days after Cobain's death, is one of the great albums of the decade — melodically sophisticated, lyrically devastating, performed with a rawness that made even its polished moments feel dangerous. It was largely reviewed through the lens of Love's relationship with Cobain rather than on its own terms. This was a failure of criticism.</p>
+          <p>Babes in Toyland (Minneapolis) and 7 Year Bitch (Seattle) were operating in the same space with less commercial reach but equal intensity. Kat Bjelland of Babes in Toyland developed a guitar style as distinctive as any in the scene — primitive, distorted, tuned to her own specifications — and Fontanelle (1992) is a brutally effective record. 7 Year Bitch formed partly in response to the murder of their friend Mia Zapata (lead singer of The Gits) in Seattle in 1993 — their album Viva Zapata! was a direct tribute. These were not peripheral figures. They were central to what grunge actually was.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Hole — Pretty on the Inside (1991)</strong> Produced by Kim Gordon; pre-Nevermind; deliberately confrontational</div>
+          <div class="record-item"><strong>Hole — Live Through This (1994)</strong> Released four days after Cobain's death; reviewed wrong; actually great</div>
+          <div class="record-item"><strong>Babes in Toyland — Fontanelle (1992)</strong> Kat Bjelland's guitar; primitive and devastating; Minneapolis via grunge</div>
+          <div class="record-item"><strong>7 Year Bitch — Viva Zapata! (1994)</strong> Tribute to Mia Zapata; grief as fuel; the Seattle scene's loss documented</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Live Through This came out four days after Kurt Cobain died. Every review of it mentioned Cobain. Almost none of them engaged seriously with the music, which is one of the best albums of the 1990s. Courtney Love made it harder for critics to hear her by being exactly the kind of person critics didn't like. The album didn't care. It's still there, still devastating, still waiting for the serious treatment it never got in 1994."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l9" onclick="markDone('l9')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l10">
+    <div class="lesson-header" onclick="toggle('l10')">
+      <div class="lesson-num">10</div>
+      <div><div class="lesson-title">Kurt Cobain — The Weight of It</div><div class="lesson-sub">What he was actually saying and why it mattered</div></div>
+      <div class="lesson-time">~55 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Kurt Cobain grew up in Aberdeen, Washington — a logging town on the Chehalis River that was in severe economic decline throughout his childhood. His parents divorced when he was nine; he moved between relatives for years. He was drawn to art, music, and outcasts; Aberdeen was not a place that rewarded any of these. The biography matters because Cobain's work is autobiographical in a way that most rock songwriting isn't — not confessional in the singer-songwriter sense, but genuinely processing experience through noise and melody.</p>
+          <p>His songwriting method was distinctive: he worked from melodic fragments and riffs, added lyrics almost last, valued feel over craft in a deliberate way. "Smells Like Teen Spirit" was written as a Pixies pastiche — the quiet verse, loud chorus structure lifted directly from the Pixies' "Debaser" dynamic. Cobain acknowledged this openly. What he added was a melodic gift that the Pixies didn't have in the same concentrated form, and a lyrical approach that was simultaneously obscure and emotionally direct. The lyrics don't parse logically; they feel right. That's a different and rarer skill.</p>
+          <p>The last two years of his life are well documented and hard to read. Chronic stomach pain (a condition never definitively diagnosed), heroin addiction, the pressure of being the spokesperson for a generation he hadn't applied for, a marriage that was volatile and public, a daughter he clearly loved. He died in Seattle on April 5, 1994. He was 27. The note he left quoted Neil Young: "It's better to burn out than to fade away." Young later said he wished Cobain had never read that line.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Aberdeen, WA</strong> — Cobain's hometown; logging town in decline; shaped everything</div>
+          <div class="vocab-item"><strong>Quiet-loud dynamic</strong> — verse-chorus contrast; borrowed from Pixies; Cobain's primary compositional tool</div>
+          <div class="vocab-item"><strong>Montage of Heck (2015)</strong> — Brett Morgen documentary; best Cobain biography on film; use the journals</div>
+          <div class="vocab-item"><strong>Frances Bean Cobain</strong> — born 1992; Cobain's daughter; still active in music and visual art</div>
+          <div class="vocab-item"><strong>27 Club</strong> — Cobain, Hendrix, Joplin, Morrison, Jones, Winehouse; pattern or coincidence</div>
+          <div class="vocab-item"><strong>"Burn out / fade away"</strong> — Neil Young lyric Cobain quoted in his note; Young has expressed regret about it since</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Cobain told multiple interviewers that 'Smells Like Teen Spirit' was his attempt to write a Pixies song. He was not being modest — he was being accurate. What he added to that structure was a melodic density the Pixies didn't have and a lyrical approach where the words feel right without parsing logically. That's a harder thing to do than it sounds. Neil Young later said he wished Cobain had never read the line he quoted in his note."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l10" onclick="markDone('l10')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l11">
+    <div class="lesson-header" onclick="toggle('l11')">
+      <div class="lesson-num">11</div>
+      <div><div class="lesson-title">April 1994 and What Came After</div><div class="lesson-sub">The end of grunge as a genre — and what it left behind</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>April 1994 is the moment grunge ended as a coherent movement. Kurt Cobain died on April 5. Within weeks, the music industry began the process of replacing grunge with something more controllable — post-grunge, a production aesthetic that kept the distorted guitars and the flannel imagery but removed the actual danger. Bush, Candlebox, Collective Soul, Creed, Nickelback — these bands were sonically descended from grunge but were safe in ways that Nirvana and Soundgarden were not. They sold enormous numbers of records. They are not why grunge matters.</p>
+          <p>The remaining Seattle bands responded in different ways. Pearl Jam withdrew from MTV, stopped releasing singles to radio, fought Ticketmaster, and made records that were deliberately uncommercial. Soundgarden released Superunknown in March 1994 — one month before Cobain's death — their commercial and artistic peak, and then essentially waited. They broke up in 1997 with no announcement and minimal drama. Cornell said later he was exhausted. Alice in Chains went silent after 1995; Staley retreated entirely. The scene that had produced an explosion in 1991 was effectively over by 1997.</p>
+          <p>What remained: the influence. Every guitar band of the next twenty years was shaped by what Seattle did between 1988 and 1994. The production aesthetics, the emotional directness, the relationship between commercial success and artistic credibility — all of it was worked out in that compressed window. Dave Grohl formed Foo Fighters in 1994, playing all the instruments himself on the debut album, and spent the next thirty years proving that the energy of grunge could be sustained without the self-destruction. Chris Cornell, Mark Lanegan, Scott Weiland — the deaths continued. Grohl kept going. Both choices were grunge's legacy.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">The Post-Grunge Landscape</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Post-grunge</strong> — Bush, Creed, Nickelback; grunge aesthetics without the danger; commercially dominant 1995–2003</div>
+          <div class="vocab-item"><strong>Foo Fighters</strong> — Grohl solo project 1994; became arena rock; proof that grunge energy could outlast grunge</div>
+          <div class="vocab-item"><strong>Soundgarden breakup 1997</strong> — no announcement; Cornell "exhausted"; reforming in 2010 until Cornell's death 2017</div>
+          <div class="vocab-item"><strong>Scott Weiland</strong> — Stone Temple Pilots; died 2015; parallel Seattle arc without being from Seattle</div>
+          <div class="vocab-item"><strong>Chris Cornell</strong> — died May 2017; Audioslave, solo work; voice that outlasted the genre</div>
+          <div class="vocab-item"><strong>Mark Lanegan</strong> — died February 2022; most consistent post-grunge solo career; 13 solo albums</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Grunge ended twice — once in April 1994 when Cobain died, and again in 1997 when Soundgarden quietly dissolved. What replaced it was post-grunge: the same distorted guitars, the same flannel aesthetic, none of the actual threat. Bush and Creed sold more records than Mudhoney ever did. Dave Grohl took the energy in a different direction and is still touring. Chris Cornell and Mark Lanegan are gone. The genre that defined itself as burning out managed to both burn out and fade away."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l11" onclick="markDone('l11')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase-label"><span>Phase 4 — <span class="phase-name">Geography, Context, and Why It Happened Here</span></span><span>Lessons 12–14</span></div>
+
+  <div class="lesson" id="l12">
+    <div class="lesson-header" onclick="toggle('l12')">
+      <div class="lesson-num">12</div>
+      <div><div class="lesson-title">Why Seattle</div><div class="lesson-sub">The geography of isolation and what it produced</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The question of why grunge emerged specifically from Seattle has a geographic answer. Seattle in the 1980s was geographically isolated — far from both coasts, without a major music industry presence, and climatically hostile to the outdoor culture that dominated California. The rain created interior spaces: basements, practice rooms, cheap venues, coffee shops. The economy was timber and aerospace — both industrial, both physically demanding, both subject to boom-bust cycles that left working-class communities economically precarious and culturally unmoored. Aberdeen's economy collapsed when the logging industry mechanized. That's where Cobain came from.</p>
+          <p>The isolation meant that Seattle bands developed without being absorbed into existing scenes. They could take influence from Black Flag and the Pixies and Black Sabbath and Neil Young without needing to choose between them — there was no local tastemaking infrastructure that would have forced choices. The eccentricity that produced Soundgarden's odd time signatures and the Melvins' deliberately antagonistic slowness was enabled by a scene where nobody was telling you what was commercially viable, because nobody in Seattle was connected to commercial viability in the first place.</p>
+          <p>Post-Nevermind, Seattle became a destination — young bands moved there from across the country, hoping to be part of the scene. By the time they arrived, the scene was over. The bands that made grunge were shaped by the Seattle that existed before it was famous, not the Seattle that became famous because of them. This is how all regional scenes work: the geography and economics produce the music, then the music transforms the geography and economics, and the conditions that produced the original work no longer exist.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Geography</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Aberdeen, WA</strong> — Cobain and Melvins; logging economy in collapse; 108 miles SW of Seattle</div>
+          <div class="vocab-item"><strong>Ellensburg, WA</strong> — Screaming Trees; college town east of Cascades; 100 miles from Seattle</div>
+          <div class="vocab-item"><strong>Central Tavern / Vogue / RKCNDY</strong> — Seattle venues where the scene developed; Pioneer Square and Belltown</div>
+          <div class="vocab-item"><strong>Reciprocal Recording</strong> — Jack Endino's studio; most early grunge records made here; cheap, decisive</div>
+          <div class="vocab-item"><strong>Jack Endino</strong> — "Godfather of Grunge"; produced Bleach, most Sub Pop catalog; still recording in Seattle</div>
+          <div class="vocab-item"><strong>Moore Hotel / Moore Theatre</strong> — Seattle; where Sub Pop put up British journalists; where many shows happened</div>
+        </div>
+      </div>
+      <div class="personal-box">
+        <div class="personal-label">Your Geography</div>
+        <div class="personal-text">You arrived in Seattle in 1997 — three years after Cobain, the same year Soundgarden dissolved. You came to study astrobiology at UW, ended up at the Westin bell desk, and watched the city transform for 21 years. The Seattle you lived in was already post-grunge Seattle — the city that grunge had made famous, not the isolated city that had produced it. That's the vantage point the Westin stories come from: the city after the explosion, still carrying the myth of the decade before.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Grunge happened in Seattle because Seattle was too far from everything to be told what it should sound like. The isolation that made the city economically depressed — the logged-out timber towns, the aerospace layoffs, the rain keeping everyone inside — is exactly what produced the music. By the time Seattle was famous for grunge, the conditions that created it were gone. Every band that moved there after Nevermind arrived too late."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l12" onclick="markDone('l12')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l13">
+    <div class="lesson-header" onclick="toggle('l13')">
+      <div class="lesson-num">13</div>
+      <div><div class="lesson-title">The Listening Curriculum</div><div class="lesson-sub">The 20 records that tell the whole story</div></div>
+      <div class="lesson-time">~60 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">The Canon — In Chronological Order</div>
+        <div class="expand-body">
+          <p>These are the records that constitute a complete education in grunge. Listen in order and the arc of the genre becomes audible — from the primitive basement recordings of 1988 through the commercial explosion and into the dissolution. Each record is essential; none is optional.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">The 20 Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Mudhoney — Superfuzz Bigmuff (1988)</strong> Start here. This is what everything came from.</div>
+          <div class="record-item"><strong>Soundgarden — Screaming Life EP (1987)</strong> The other origin point. Kim Thayil's guitar as a weather system.</div>
+          <div class="record-item"><strong>Nirvana — Bleach (1989)</strong> $606. Slower and heavier than what came later. Raw in ways Nevermind isn't.</div>
+          <div class="record-item"><strong>Alice in Chains — Facelift (1990)</strong> "Man in the Box." The metal entry point before the mythology arrived.</div>
+          <div class="record-item"><strong>Mudhoney — Every Good Boy Deserves Fudge (1991)</strong> Their best. They turned down majors for this.</div>
+          <div class="record-item"><strong>Hole — Pretty on the Inside (1991)</strong> Produced by Kim Gordon. Deliberately ugly. Predates the explosion.</div>
+          <div class="record-item"><strong>Pearl Jam — Ten (1991)</strong> 13 million copies. Arena rock made by people who grew up on punk.</div>
+          <div class="record-item"><strong>Nirvana — Nevermind (1991)</strong> The record that changed everything. Still sounds like a shock.</div>
+          <div class="record-item"><strong>Soundgarden — Badmotorfinger (1991)</strong> "Outshined." "Jesus Christ Pose." The peak of raw Soundgarden.</div>
+          <div class="record-item"><strong>Alice in Chains — Dirt (1992)</strong> The most honest record about heroin ever made. Not metaphorical.</div>
+          <div class="record-item"><strong>Babes in Toyland — Fontanelle (1992)</strong> Kat Bjelland's guitar. Primitive and devastating.</div>
+          <div class="record-item"><strong>Screaming Trees — Sweet Oblivion (1992)</strong> "Nearly Lost You." Lanegan at his peak. Should have been huge.</div>
+          <div class="record-item"><strong>Pearl Jam — Vs. (1993)</strong> 950K first week. Deliberately less accessible. They were not chasing Ten.</div>
+          <div class="record-item"><strong>Nirvana — In Utero (1993)</strong> Steve Albini production. Cobain's apology for Nevermind. Equally great.</div>
+          <div class="record-item"><strong>Alice in Chains — Jar of Flies (1994)</strong> First EP to debut at #1. Acoustic. "No Excuses." Staley's last good year.</div>
+          <div class="record-item"><strong>Soundgarden — Superunknown (1994)</strong> The masterpiece. Odd time signatures. 5 million copies. Released one month before April 1994.</div>
+          <div class="record-item"><strong>Hole — Live Through This (1994)</strong> Four days after Cobain died. Reviewed wrong. Actually great.</div>
+          <div class="record-item"><strong>Mark Lanegan — Whiskey for the Holy Ghost (1994)</strong> Solo debut. A different kind of Northwest darkness.</div>
+          <div class="record-item"><strong>Pearl Jam — Vitalogy (1994)</strong> Released on vinyl before CD. "Better Man." Still fighting the industry.</div>
+          <div class="record-item"><strong>7 Year Bitch — Viva Zapata! (1994)</strong> For Mia Zapata. Grief as fuel. The scene's loss documented.</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The entire grunge story fits in a six-year window — Superfuzz Bigmuff in 1988 to Vitalogy in 1994. Twenty records cover everything: the origin, the explosion, the women the history forgot, the bands that stayed underground, and the dissolution. Start with Mudhoney. End with Pearl Jam still fighting Ticketmaster. Everything in between is the most compressed, most geographically specific musical revolution since Robert Johnson recorded in a hotel room in San Antonio in 1936."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l13" onclick="markDone('l13')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l14">
+    <div class="lesson-header" onclick="toggle('l14')">
+      <div class="lesson-num">14</div>
+      <div><div class="lesson-title">New Year's Eve 1991 — A Field Guide</div><div class="lesson-sub">Reading the Cow Palace show in context</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The Cow Palace show on December 31, 1991 — Red Hot Chili Peppers headlining, Pearl Jam and Nirvana as support — was a historical hinge point that was only legible as such in retrospect. Nevermind had been out for three months. "Smells Like Teen Spirit" was ubiquitous on MTV. Pearl Jam's Ten had been out four months and was beginning to accelerate. The headliners, the Chili Peppers, were the biggest alternative band in the world at that moment, riding Blood Sugar Sex Magik (released October 1991, produced by Rick Rubin, the record that made them stadium-sized).</p>
+          <p>By the time the same artists played arenas two years later, the dynamic would have completely inverted. Pearl Jam and Nirvana would be headlining; the Chili Peppers would be their peers rather than their superiors. The show was a snapshot of the exact moment before the inversion — the last night that anyone could have called Nirvana an opening act without irony. If you were in that room, you were watching the tectonic plates shift in real time without knowing it.</p>
+          <p>The people in that crowd who drove over Donner Pass in a snowstorm from the Sierra Nevada foothills, who had been following the Sub Pop Singles Club, who knew the names of all three bands before they were famous — they were not just attending a concert. They were present at one of those rare moments when history and geography and music converge into something that can only be understood looking backward. Nevada Neil was there. You were there. The story of that night is its own curriculum.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">The Bill That Night</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Red Hot Chili Peppers</strong> — headliner; Blood Sugar Sex Magik (Oct 1991); at their commercial peak that night</div>
+          <div class="vocab-item"><strong>Nirvana</strong> — support; Nevermind 3 months old; "Teen Spirit" on MTV; not yet #1</div>
+          <div class="vocab-item"><strong>Pearl Jam</strong> — support; Ten 4 months old; still building; would outsell Nevermind within a year</div>
+          <div class="vocab-item"><strong>The Cow Palace</strong> — Daly City, CA; 14,500 capacity; opened 1941; California's arena for 50 years</div>
+          <div class="vocab-item"><strong>Blood Sugar Sex Magik</strong> — RHCP, produced Rick Rubin, Oct 1991; 7M US copies; made them the headliners that night</div>
+          <div class="vocab-item"><strong>Donner Pass</strong> — I-80 over the Sierra Nevada; what you drove over in a snowstorm to be there</div>
+        </div>
+      </div>
+      <div class="personal-box">
+        <div class="personal-label">The Story</div>
+        <div class="personal-text">This is what the Cow Palace memoir piece is about — and what the Nevada Neil long read will be about. You were in that room. Nevada Neil was in that room. You drove over Donner Pass in a snowstorm. The bands on the bill that night would collectively define the next five years of American music. The curriculum is the context. The story is yours.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"On New Year's Eve 1991, the Red Hot Chili Peppers headlined the Cow Palace with Nirvana and Pearl Jam opening. Three months later Nevermind knocked Michael Jackson off number one. A year after that Pearl Jam was outselling Nirvana. The headliner that night became the peer; the opening acts became the biggest bands in the world. If you were in that room you were watching the tectonic plates shift without knowing it. Some people drove over Donner Pass in a snowstorm to be there."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l14" onclick="markDone('l14')">Mark done</button>
+    </div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div class="resources">
+    <div class="resources-hed">Further Reading & Listening</div>
+    <div class="resource-list">
+      <div class="resource-item"><span>Come as You Are — Michael Azerrad (1993) — the Cobain biography written while he was alive</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Essential</span></div>
+      <div class="resource-item"><span>Our Band Could Be Your Life — Michael Azerrad (2001) — the definitive history of American indie rock 1981–1991</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Essential</span></div>
+      <div class="resource-item"><span>Montage of Heck — Brett Morgen (2015) — documentary; Cobain's journals and home recordings; best biography on film</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Film</span></div>
+      <div class="resource-item"><span>Pearl Jam Twenty — Cameron Crowe (2011) — authorized documentary; full access; the Ticketmaster years documented</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Film</span></div>
+      <div class="resource-item"><span>Everybody Loves Our Town — Mark Yarm (2011) — oral history of grunge; everyone talks; the definitive account</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Oral History</span></div>
+      <div class="resource-item"><span>I Am Trying to Break Your Heart — Sam Jones (2002) — Wilco documentary; about the generation after grunge</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Film</span></div>
+    </div>
+  </div>
+
+  <!-- QA WIDGET -->
+  <div class="qa-widget">
+    <div class="qa-header">
+      <div class="qa-header-title">Ask the Tutor</div>
+      <div class="qa-header-sub">Grunge · Seattle · 1988–1994 · Powered by Claude</div>
+    </div>
+    <div class="qa-body">
+      <div class="qa-input-row">
+        <input type="text" class="qa-input" id="qa-input" placeholder="Ask about Sub Pop, Nirvana, Pearl Jam, Soundgarden, Alice in Chains, the Cow Palace, Seattle geography…" onkeydown="if(event.key==='Enter') askTutor()">
+        <button class="qa-btn" onclick="askTutor()">Ask</button>
+      </div>
+      <div class="qa-response" id="qa-response"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div><p class="footer-name">Brooks Groves</p></div>
+    <div class="footer-links">
+      <a href="/learning/">Learning</a>
+      <a href="/">Home</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function toggle(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function markDone(id) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById('check-' + id);
+  el.classList.toggle('done');
+  const isDone = el.classList.contains('done');
+  btn.textContent = isDone ? '✓ Done' : 'Mark done';
+  btn.classList.toggle('done', isDone);
+  localStorage.setItem('grunge-' + id, isDone ? '1' : '');
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = 14;
+  const done = document.querySelectorAll('.lesson.done').length;
+  document.getElementById('done-count').textContent = done;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  for (let i = 1; i <= 14; i++) {
+    if (localStorage.getItem('grunge-l' + i) === '1') {
+      const el = document.getElementById('l' + i);
+      const btn = document.getElementById('check-l' + i);
+      if (el) el.classList.add('done');
+      if (btn) { btn.textContent = '✓ Done'; btn.classList.add('done'); }
+    }
+  }
+  updateProgress();
+});
+
+async function askTutor() {
+  const input = document.getElementById('qa-input');
+  const response = document.getElementById('qa-response');
+  const question = input.value.trim();
+  if (!question) return;
+  input.value = '';
+  response.innerHTML = '<span class="qa-loading">Thinking…</span>';
+  try {
+    const res = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'You are an expert tutor for a self-directed curriculum on grunge music — Seattle, 1984–1994. Cover Sub Pop Records, Green River, Mudhoney, Nirvana, Pearl Jam, Soundgarden, Alice in Chains, Screaming Trees, Hole, Babes in Toyland, and the geography and economics that produced the scene. The student grew up in the Sierra Nevada foothills, drove over Donner Pass to see Nirvana and Pearl Jam open for the Red Hot Chili Peppers at the Cow Palace on New Year\'s Eve 1991, and now lives in Lakewood WA — 30 miles from Seattle. Connect music history to geography, economics, and lived experience. Be precise, substantive, and opinionated where opinion is warranted. Keep answers to 3-4 paragraphs unless asked for more.',
+        messages: [{ role: 'user', content: question }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'No response.';
+    response.innerHTML = text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+  } catch(e) {
+    response.innerHTML = 'Tutor unavailable. Try again in a moment.';
+  }
+}
+</script>
+</body>
+</html>
