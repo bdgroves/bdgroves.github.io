@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Afropop — Learning — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --kora:#2a5c8b; --savanna:#8b6914; --highlife:#6b2a8b;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--savanna) 0%,var(--kora) 50%,var(--highlife) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--kora); }
+    .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--kora); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+    .page-stats { display:flex; gap:2rem; margin-top:1.5rem; flex-wrap:wrap; }
+    .page-stat-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--kora); }
+    .page-stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
+    .progress-wrap { background:var(--cream); border:1px solid var(--mist); padding:1.25rem 1.5rem; margin-top:1.5rem; }
+    .progress-bar-track { height:6px; background:var(--mist); border-radius:3px; margin:0.75rem 0 0.4rem; }
+    .progress-bar-fill { height:6px; background:var(--kora); border-radius:3px; transition:width 0.4s ease; width:0%; }
+    .progress-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); }
+    .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+    .phase-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1.25rem; display:flex; justify-content:space-between; }
+    .phase-label:first-child { margin-top:0; }
+    .phase-name { color:var(--kora); }
+    .lesson { border:1px solid var(--mist); margin-bottom:0.75rem; }
+    .lesson-header { padding:1.1rem 1.25rem; cursor:pointer; display:grid; grid-template-columns:2.5rem 1fr auto; gap:0.75rem; align-items:start; transition:background 0.15s; }
+    .lesson-header:hover { background:var(--cream); }
+    .lesson-num { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--stone); padding-top:0.1rem; }
+    .lesson-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.3; }
+    .lesson-sub { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; font-style:italic; }
+    .lesson-time { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); text-align:right; white-space:nowrap; padding-top:0.2rem; }
+    .lesson-expand { display:none; padding:1.25rem 1.5rem; border-top:1px solid var(--mist); background:var(--cream); }
+    .lesson.open .lesson-expand { display:block; }
+    .lesson.open .lesson-header { background:var(--cream); }
+    .lesson.done .lesson-num { color:var(--sage); }
+    .lesson.done .lesson-num::after { content:' ✓'; }
+    .expand-section { margin-bottom:1.25rem; }
+    .expand-section:last-child { margin-bottom:0; }
+    .expand-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--kora); margin-bottom:0.5rem; }
+    .expand-body { font-size:0.88rem; line-height:1.75; color:var(--stone); }
+    .expand-body p { margin-bottom:0.6rem; }
+    .expand-body p:last-child { margin-bottom:0; }
+    .cocktail-box { background:var(--ink); color:#e8e4d8; padding:1rem 1.25rem; margin-top:1rem; border-left:3px solid var(--savanna); }
+    .cocktail-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--savanna); margin-bottom:0.4rem; }
+    .cocktail-line { font-size:0.88rem; font-style:italic; line-height:1.7; }
+    .vocab-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .vocab-grid { grid-template-columns:1fr; } }
+    .vocab-item { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    .vocab-item strong { color:var(--ink); font-weight:700; }
+    .records-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .records-grid { grid-template-columns:1fr; } }
+    .record-item { font-size:0.82rem; color:var(--stone); line-height:1.6; padding:0.5rem 0; border-bottom:1px solid var(--mist); }
+    .record-item:last-child { border-bottom:none; }
+    .record-item strong { color:var(--ink); font-weight:700; display:block; }
+    .apw-box { background:var(--cream); border-left:3px solid var(--kora); padding:1rem 1.25rem; margin-top:1rem; }
+    .apw-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--kora); margin-bottom:0.4rem; }
+    .apw-text { font-size:0.85rem; line-height:1.7; color:var(--stone); }
+    .resources { border:1px solid var(--mist); padding:1.75rem; margin-top:3rem; }
+    .resources-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:var(--kora); }
+    .resource-list { display:flex; flex-direction:column; gap:0.6rem; }
+    .resource-item { font-size:0.85rem; color:var(--stone); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:baseline; }
+    .resource-item a { color:var(--rust); text-decoration:underline; text-underline-offset:3px; font-size:0.75rem; font-family:'DM Mono',monospace; }
+    .mark-done-btn { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--mist); background:none; color:var(--stone); padding:0.3rem 0.75rem; cursor:pointer; margin-top:1rem; transition:all 0.15s; }
+    .mark-done-btn:hover { border-color:var(--sage); color:var(--sage); }
+    .mark-done-btn.done { border-color:var(--sage); color:var(--sage); }
+    .qa-widget { border:2px solid var(--ink); margin-top:3rem; }
+    .qa-header { background:var(--ink); color:var(--white); padding:1rem 1.5rem; }
+    .qa-header-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; }
+    .qa-header-sub { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:#888; margin-top:0.2rem; }
+    .qa-body { padding:1.5rem; }
+    .qa-input-row { display:flex; gap:0.75rem; margin-bottom:1rem; }
+    .qa-input { flex:1; padding:0.75rem 1rem; font-family:'Libre Baskerville',serif; font-size:0.88rem; border:1px solid var(--mist); background:var(--white); color:var(--ink); outline:none; }
+    .qa-input:focus { border-color:var(--kora); }
+    .qa-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; background:var(--kora); color:var(--white); border:none; padding:0.75rem 1.25rem; cursor:pointer; }
+    .qa-btn:hover { background:var(--ink); }
+    .qa-response { font-size:0.88rem; line-height:1.75; color:var(--stone); min-height:3rem; }
+    .qa-loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--mist); }
+    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav><a href="/learning/">← Learning</a><a href="/">Home</a></nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/learning/">Learning</a></p>
+  <h1 class="page-title">🌍 <em>Afropop</em></h1>
+  <p class="page-sub">A continent of music — not a genre but a conversation spanning 54 countries, a thousand languages, and the oldest musical traditions on Earth. Mali kora, Nigerian highlife, Ethiopian jazz, South African township jive, Senegalese mbalax, Zimbabwean chimurenga. The Afropop Worldwide tradition: go deep, go broad, go specific.</p>
+  <div class="page-stats">
+    <div><div class="page-stat-val">14</div><div class="page-stat-lbl">Lessons</div></div>
+    <div><div class="page-stat-val">4</div><div class="page-stat-lbl">Phases</div></div>
+    <div><div class="page-stat-val">~12 hrs</div><div class="page-stat-lbl">Estimated time</div></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Progress — <span id="done-count">0</span> of 14 lessons complete</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-pct">0%</div>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <div class="phase-label"><span>Phase 1 — <span class="phase-name">West Africa: The Griot Tradition and Its Modern Descendants</span></span><span>Lessons 1–4</span></div>
+
+  <div class="lesson" id="l1">
+    <div class="lesson-header" onclick="toggle('l1')">
+      <div class="lesson-num">1</div>
+      <div><div class="lesson-title">The Griot — History, Memory, and the Musician's Role</div><div class="lesson-sub">Why in West Africa, the musician is also the historian</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The griot (French transliteration of jeli in Mande languages, or gewel in Wolof) is a hereditary caste of musicians, praise singers, historians, and oral archivists found across West Africa — from Senegal and Gambia through Mali, Guinea, Burkina Faso, and beyond. The griot's function is not primarily entertainment: it is custodianship of history. Genealogies, battle accounts, diplomatic negotiations, moral lessons, and political commentary are all carried in the griot tradition, passed from parent to child across generations. When a griot dies without passing the tradition, a library burns.</p>
+          <p>The instruments of the griot tradition are equally specific: the kora (a 21-string harp-lute of extraordinary complexity, made from a calabash gourd), the balafon (a wooden xylophone), the ngoni (a small lute that is the ancestor of the American banjo — enslaved West Africans brought it to the Americas where it became the banjo), and the human voice. The kora in particular is one of the most technically demanding and acoustically beautiful instruments on Earth. Toumani Diabate of Mali is its current master; his playing combines technical virtuosity with improvisational depth that rewards close listening.</p>
+          <p>The griot tradition is the foundation from which all of West African popular music grows. When you hear Youssou Ndour, Salif Keita, or Oumou Sangare, you are hearing artists who grew up with this tradition as their reference point — not rock, not jazz, but something far older, more formal, and more freighted with social responsibility. Understanding the griot is understanding why African popular music carries itself differently from Western pop: the musician is not merely an entertainer. The musician is a witness.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Griot / jeli / gewel</strong> — hereditary musician-historian caste; West Africa; keeper of genealogy and oral history</div>
+          <div class="vocab-item"><strong>Kora</strong> — 21-string harp-lute; calabash body; Mande tradition; Toumani Diabate its master</div>
+          <div class="vocab-item"><strong>Ngoni</strong> — ancestor of the banjo; brought to America by enslaved West Africans</div>
+          <div class="vocab-item"><strong>Balafon</strong> — West African wooden xylophone; ancient; still central to griot ceremonies</div>
+          <div class="vocab-item"><strong>Toumani Diabate</strong> — Mali; kora master; Symmetric Orchestra; collaborations with Ali Farka Toure</div>
+          <div class="vocab-item"><strong>Afropop Worldwide</strong> — PRI/BBC radio program since 1988; host Georges Collinet and later Banning Eyre; the essential guide</div>
+        </div>
+      </div>
+      <div class="apw-box">
+        <div class="apw-label">Afropop Worldwide</div>
+        <div class="apw-text">Afropop Worldwide has been the essential guide to this tradition since 1988 — a radio program that approaches African music with the seriousness it deserves, going deep on specific regional traditions rather than treating the continent as a monolith. Their online archive at afropop.org is one of the great music education resources available. Start with their griot and kora episodes.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The banjo is a West African instrument. Enslaved people brought the ngoni from Senegambia to the American South, where it became the banjo, which became the foundation of American folk music, country music, and bluegrass. The American musical tradition that considers itself most 'roots' and 'authentically American' — that tradition has a West African instrument at its center, and most people who play it have no idea. The griot tradition traveled in ways nobody planned."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l1" onclick="markDone('l1')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l2">
+    <div class="lesson-header" onclick="toggle('l2')">
+      <div class="lesson-num">2</div>
+      <div><div class="lesson-title">Mali — The Desert Blues and the Wassoulou Tradition</div><div class="lesson-sub">Ali Farka Toure, Oumou Sangare, and the music of the Sahel</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Mali is home to two of the most distinctive musical traditions in Africa. The first — sometimes called the desert blues or Malian blues — is the guitar-based music of the Songhai people along the Niger River, most fully realized in the work of Ali Farka Toure (1939–2006). Toure was a farmer, local politician, and self-taught guitarist who developed a style that Western ears immediately heard as blues — the same pentatonic scales, the same microtonal bends, the same rhythmic approach — because both are descended from the same West African root. His collaborations with Ry Cooder (Talking Timbuktu, 1994) brought him global attention, but his solo recordings on the World Circuit label are where the depth is.</p>
+          <p>The Wassoulou tradition, from southern Mali, is a women-centered music rooted in hunter societies and pre-Islamic spiritual practice. Oumou Sangare is its primary ambassador internationally — her voice is one of the great instruments in African music, powerful, precise, and capable of emotional range that stops conversation. Her early albums (Moussolou, 1989; Ko Sira, 1993) deal with arranged marriage, polygamy, and women's rights in terms that were considered scandalous in Mali and revelatory in the rest of the world. She is not a protest singer — she is a Wassoulou singer who insists on telling the truth about women's lives.</p>
+          <p>Rokia Traore represents the post-griot generation — a Malian artist from a noble family (not a griot caste), trained classically, who has constructed a contemporary sound that draws on the griot tradition without being bound by it. Her collaborations with European musicians and her theatrical work have brought Malian music to audiences who might not find their way to Oumou Sangare or Ali Farka Toure. Fatoumata Diawara, who apprenticed with Traore, is the current generation's most compelling voice from Mali — her debut album Fatou (2011) is startling in its beauty and directness.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Ali Farka Toure — The River (1990)</strong> Solo masterpiece; the Malian blues in full; haunting and spare</div>
+          <div class="record-item"><strong>Ali Farka Toure & Ry Cooder — Talking Timbuktu (1994)</strong> Grammy winner; accessible entry point; does not oversell the collaboration</div>
+          <div class="record-item"><strong>Oumou Sangare — Moussolou (1989)</strong> Wassoulou debut; women's rights framing; her voice at its most raw</div>
+          <div class="record-item"><strong>Fatoumata Diawara — Fatou (2011)</strong> Contemporary Mali; electric and acoustic; "Clandestin" is essential</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Ali Farka Toure played guitar like a Mississippi Delta bluesman because both traditions come from the same West African root. When he collaborated with Ry Cooder in 1994, American audiences heard it as blues-influenced African music. Toure heard it as African music, full stop — the American blues was the derivation, not the original. He was being precise. The pentatonic scale did not travel from Mississippi to Mali. It traveled the other direction, with enslaved people, four hundred years ago."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l2" onclick="markDone('l2')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l3">
+    <div class="lesson-header" onclick="toggle('l3')">
+      <div class="lesson-num">3</div>
+      <div><div class="lesson-title">Senegal — Mbalax and Youssou Ndour</div><div class="lesson-sub">The most complex popular music rhythm tradition in the world</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Mbalax is the popular music of Senegal — a dense, polyrhythmic genre built around the sabar drum tradition of the Wolof people, with influences from Cuban music (which arrived via radio in the 1940s-50s and was immediately absorbed into Senegalese musical vocabulary), jazz, and the griot tradition. The sabar is not a background instrument — it is the lead voice, played at volumes and speeds that are physically demanding, with rhythmic complexity that requires years to understand. To dance to mbalax properly is to have absorbed the sabar tradition bodily.</p>
+          <p>Youssou Ndour is the greatest living African popular musician — a griot-caste singer from Dakar whose voice covers an extraordinary range, from sub-bass to falsetto, and who has navigated the tension between international stardom and local cultural responsibility with more grace than almost anyone. His Super Etoile de Dakar band defined mbalax from the late 1970s onward. The Lion (1989) and Set (1990) are the peak of his early work; his collaboration with Neneh Cherry ("7 Seconds," 1994) gave him a global pop hit that introduced millions to his voice without reducing it. He was Senegal Minister of Tourism briefly in 2012 before resigning — he is too large a figure to be contained by politics.</p>
+          <p>Cheikh Lo, a disciple of Ndour's, represents the spiritual dimension of Senegalese music — his recordings are deeply rooted in the Baye Fall tradition of Sufi Islam, and his voice carries the same quality of devotional intensity that you find in the best qawwali. Baaba Maal, from northern Senegal, brings the Peul (Fula) tradition — a more austere, melodically elaborate style than Dakar mbalax. The breadth of Senegalese music in a country of 17 million people is staggering.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Youssou Ndour — The Lion (1989)</strong> Western production with Senegalese core; essential entry point; Peter Gabriel connection</div>
+          <div class="record-item"><strong>Youssou Ndour — Set (1990)</strong> More rooted in mbalax; "Medina"; the deeper record</div>
+          <div class="record-item"><strong>Cheikh Lo — Ne La Thiass (1996)</strong> Baye Fall Sufism; produced by Youssou Ndour; one of the great African records</div>
+          <div class="record-item"><strong>Baaba Maal — Firin in Fouta (1994)</strong> Peul tradition; acoustic and electric; raw and beautiful</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The sabar drum in mbalax is the lead instrument — not the bass, not the guitar. The drums carry the melody, the harmonic movement, the lyrical commentary. Everything else in the band is accompanying the drums. Western ears trained on European harmonic structures hear mbalax as rhythmically complex but melodically simple — that is because we are listening to the wrong layer. Turn your attention to the sabar and a completely different musical universe opens."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l3" onclick="markDone('l3')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l4">
+    <div class="lesson-header" onclick="toggle('l4')">
+      <div class="lesson-num">4</div>
+      <div><div class="lesson-title">Nigeria — Highlife, Afrobeat, and Fela Kuti</div><div class="lesson-sub">The most political musician Africa has ever produced</div></div>
+      <div class="lesson-time">~55 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Nigerian highlife emerged in the early 20th century as a fusion of West African traditional music with European brass band instruments and Trinidadian calypso — the music of the colonial elite, then democratized and electrified in the 1950s and 60s by bandleaders like E.T. Mensah (Ghana) and Bobby Benson (Nigeria). By the 1960s, highlife had spawned juju music (Yoruba guitar-driven popular music, its greatest practitioner King Sunny Ade), and the conditions were set for the explosion of Afrobeat.</p>
+          <p>Fela Anikulapo-Kuti (1938–1997) is the most important African musician of the 20th century and one of the most important political artists of any era. He studied jazz in London, absorbed James Brown and soul music in the US, returned to Lagos in 1970, and created Afrobeat — a dense, polyrhythmic, politically explicit genre that combined jazz improvisation with Yoruba music and James Brown's funk. His Afrika 70 and Egypt 80 bands were 30+ musicians; his concerts at the Shrine in Lagos ran through the night. His lyrics — always in Pidgin English, always accessible to ordinary Nigerians — attacked the military government, corruption, neo-colonialism, and the complicity of the Nigerian middle class with devastating precision.</p>
+          <p>The Nigerian military raided his compound (the Kalakuta Republic) in 1977, burned it down, threw his elderly mother out of an upstairs window (she died of her injuries), and beat him and his 27 wives. He responded by delivering his mother's coffin to the military barracks and releasing "Coffin for Head of State." He was imprisoned 200 times. He died of AIDS-related complications in 1997; his funeral in Lagos drew over a million people. His son Femi Kuti and grandson Made Kuti continue the tradition with skill and commitment. The original is irreplaceable.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Fela — Zombie (1977)</strong> Attack on the military; title track is a 12-minute rebuke; released same year as the Kalakuta raid</div>
+          <div class="record-item"><strong>Fela — Expensive Shit (1975)</strong> Based on a true story of Fela swallowing evidence; absurdist and furious</div>
+          <div class="record-item"><strong>Fela — Lady (1972)</strong> Early Afrobeat; feminist argument about Nigerian vs. Western women; complex legacy</div>
+          <div class="record-item"><strong>King Sunny Ade — Juju Music (1982)</strong> Island Records; introduced juju to the world; talking drum mastery</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"After the Nigerian military burned down his commune and threw his 82-year-old mother out of an upstairs window, Fela Kuti delivered her coffin to the military barracks and released a song called 'Coffin for Head of State.' He was imprisoned 200 times in his lifetime. His response to each imprisonment was to release more records about why he was imprisoned. There are very few examples in history of an artist being as dangerous to a government as the government believed him to be. Fela was one of them."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l4" onclick="markDone('l4')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="phase-label"><span>Phase 2 — <span class="phase-name">East Africa: Ethiopia, Zimbabwe, and the Indian Ocean</span></span><span>Lessons 5–8</span></div>
+
+  <div class="lesson" id="l5">
+    <div class="lesson-header" onclick="toggle('l5')">
+      <div class="lesson-num">5</div>
+      <div><div class="lesson-title">Ethiopian Jazz — The Golden Age and Mulatu Astatke</div><div class="lesson-sub">The most singular national popular music tradition in Africa</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Ethiopian music is unlike any other African popular tradition — built on a pentatonic modal system (qenet) that sounds simultaneously ancient and futuristic, with scales that have no direct Western equivalent and create an immediately recognizable harmonic atmosphere. The Swinging Addis scene of the 1960s and early 70s — a period of relative cultural openness under Haile Selassie — produced an extraordinary flowering of jazz-influenced popular music that was abruptly ended by the Derg military coup of 1974. The music from that period was compiled by Francis Falceto into the Ethiopiques series (30+ volumes on Buda Musique) and is one of the great rescue projects in music history.</p>
+          <p>Mulatu Astatke is the architect of Ethio-jazz — a composer and vibraphone player who studied in London, New York, and Boston before returning to Addis Ababa and creating a fusion of Ethiopian modal music with jazz harmonics and Afro-Cuban percussion. His records from the late 1960s and early 70s sound like nothing else: the Ethiopian qenet scales create a sense of unresolved harmonic tension that jazz harmony then does unexpected things with. The Broken Flowers soundtrack (Jim Jarmusch, 2005) introduced Astatke to a new generation; his Ethiopiques Vol. 4 is the starting point.</p>
+          <p>Mahmoud Ahmed, Tilahun Gessesse, and Bizunesh Bekele are the great vocalists of the golden age — each working within the Ethiopian modal tradition with technical command and emotional intensity that rewards close listening. Aster Aweke, who came slightly later and survived the Derg era to build a career in the US, brought the tradition into the 1980s and 90s. The Derg regime tried to suppress the cultural memory of the Swinging Addis era; Falceto's archival work and the global reach of Ethiopiques has preserved it.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Mulatu Astatke — Ethiopiques Vol. 4 (1972 recordings)</strong> The essential Ethio-jazz document; vibraphone as primary voice</div>
+          <div class="record-item"><strong>Mahmoud Ahmed — Ethiopiques Vol. 7 (1970s recordings)</strong> Greatest Ethiopian male vocalist; "Ere Mela Mela"</div>
+          <div class="record-item"><strong>Various — Ethiopiques Vol. 1 (1997)</strong> The overview; start here if new to the series; Francis Falceto curation</div>
+          <div class="record-item"><strong>Aster Aweke — Kabu (1989)</strong> Post-Derg; Washington DC recordings; the tradition in diaspora</div>
+        </div>
+      </div>
+      <div class="apw-box">
+        <div class="apw-label">Afropop Worldwide</div>
+        <div class="apw-text">Afropop Worldwide has done extensive coverage of the Ethiopiques project and Ethiopian music broadly. Their interviews with Mulatu Astatke and Francis Falceto are essential listening. The full series — 30+ volumes — is available on streaming platforms and is one of the great listening projects available to anyone interested in African music.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Ethiopian music uses modal scales that have no direct Western equivalent — they create a harmonic atmosphere that sounds ancient and futuristic simultaneously. When Mulatu Astatke combined those scales with jazz harmony and Afro-Cuban percussion in the late 1960s, he created something genuinely new. The military government that came to power in 1974 tried to suppress it. A French archivist spent twenty years recovering it. The Ethiopiques series is one of the great rescue operations in music history."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l5" onclick="markDone('l5')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l6">
+    <div class="lesson-header" onclick="toggle('l6')">
+      <div class="lesson-num">6</div>
+      <div><div class="lesson-title">Zimbabwe — Thomas Mapfumo and Chimurenga</div><div class="lesson-sub">How a guitar made to sound like a mbira became a liberation soundtrack</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Thomas Mapfumo (born 1945) created chimurenga music — named for the Shona word for the liberation struggle — by adapting the tuning and playing style of the mbira (thumb piano, a sacred Shona instrument used to contact ancestors) to electric guitar. The result sounds unlike any other African guitar music: the interlocking, cyclical patterns of mbira music translated to electric strings, played at relatively low volume with a clean tone, creating a hypnotic layered texture. He sang in Shona rather than English, about the liberation struggle against Ian Smith's Rhodesian government, and was imprisoned by that government in 1977 — without charge — because the music was deemed too dangerous.</p>
+          <p>The mbira itself deserves deep attention. It is one of the oldest instruments in Africa — iron keys mounted on a wooden board, played with thumbs and forefingers in patterns that interlock in complex polyrhythmic cycles, used specifically in bira ceremonies to invite ancestral spirits into communication with the living. The music is not performance — it is invocation. Mapfumo's genius was recognizing that this ceremonial power could be translated to popular music without losing its spiritual authority. Chimurenga is thus simultaneously liberation politics, ancestral connection, and popular entertainment — the same triple function as roots reggae, arrived at independently.</p>
+          <p>After Zimbabwe's independence in 1980, Mapfumo became the country's most celebrated musician. As Mugabe's government turned authoritarian, Mapfumo began criticizing it in the same terms he had criticized Smith — and was effectively forced into exile in the US in 2000, where he has remained. His trajectory — liberation artist, celebrated hero, dissident exile — is one of the most illuminating political biographies in African music.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Thomas Mapfumo — Chimurenga Explosion (1982)</strong> Post-independence peak; the mbira guitar at its most developed</div>
+          <div class="record-item"><strong>Thomas Mapfumo — Corruption (1989)</strong> Turning on Mugabe; the second liberation; as dangerous as the first</div>
+          <div class="record-item"><strong>Stella Chiweshe — Ambuya (1987)</strong> Mbira master; the instrument in its traditional ceremonial form; extraordinary</div>
+          <div class="record-item"><strong>Bhundu Boys — Shabini (1986)</strong> Jit music; faster, lighter version of Zimbabwe guitar; "Hatisitose"</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Thomas Mapfumo was imprisoned by the Rhodesian government in 1977 without charge because his songs were too dangerous. After Zimbabwe's independence, he became the country's most celebrated musician. When Mugabe turned authoritarian, Mapfumo started criticizing him in the same terms he had criticized Smith — and was forced into exile in Oregon. He has been in Eugene since 2000. The Rhodesian government, Mugabe's government, and Oregon are not the three acts you expect in an African liberation narrative."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l6" onclick="markDone('l6')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l7">
+    <div class="lesson-header" onclick="toggle('l7')">
+      <div class="lesson-num">7</div>
+      <div><div class="lesson-title">South Africa — Township Music, Miriam Makeba, and Hugh Masekela</div><div class="lesson-sub">Music as the documentary record of apartheid and resistance</div></div>
+      <div class="lesson-time">~55 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>South African popular music in the apartheid era is inseparable from the political history — the music is the primary record of what life in the townships was, and what resistance to apartheid looked and felt like from the inside. Marabi (a 1920s-30s piano jazz genre from Johannesburg shebeens), kwela (pennywhistle street music of the 1950s), mbaqanga (the township jive of the 1960s-80s, the Mahotella Queens its queens), and bubblegum (1980s synthesizer pop) are the successive forms. Paul Simon's Graceland (1986) brought mbaqanga and isicathamiya to global attention — controversially, because Simon recorded in South Africa during a cultural boycott, with musicians who faced genuine threats for collaborating with a Western artist during the sanctions period.</p>
+          <p>Miriam Makeba (1932–2008) — Mama Africa — is the central figure. A singer of extraordinary emotional range and natural authority, she was banned from South Africa in 1960 after testifying before the United Nations about apartheid, her passport revoked while she was abroad. She could not return for 31 years. She sang "Pata Pata" and "The Click Song" to Western audiences who had no idea of her political situation; she testified before the UN and addressed the OAU; she married Stokely Carmichael in 1968 and was immediately blacklisted in the US, losing her recording contracts. She returned to South Africa in 1990, after Mandela's release, and died there in 2008 after collapsing on stage in Italy at a benefit concert.</p>
+          <p>Hugh Masekela (1939–2018) — her first husband — was South Africa greatest jazz trumpeter, an activist, and the composer of "Bring Him Back Home (Nelson Mandela)," which became the anthem of the Free Mandela campaign and was played at the 1988 Wembley concert that was broadcast to 600 million people. Ladysmith Black Mambazo, the isicathamiya vocal group brought to global attention by Paul Simon, carry a Zulu vocal tradition of extraordinary beauty. Busi Mhlongo brought Zulu music into conversation with electronic production. The South African tradition is inexhaustible.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Miriam Makeba — Miriam Makeba (1960)</strong> US debut; "Pata Pata," "The Click Song"; recorded while she was already exiled</div>
+          <div class="record-item"><strong>Hugh Masekela — Hope (1994)</strong> Post-apartheid recording; "Stimela (Coal Train)" is one of the great African songs</div>
+          <div class="record-item"><strong>Ladysmith Black Mambazo — Shaka Zulu (1987)</strong> Post-Graceland; isicathamiya vocal tradition fully realized</div>
+          <div class="record-item"><strong>Mahotella Queens — Women of the World (1993)</strong> Mbaqanga queens; township jive; voices like weather systems</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Miriam Makeba was banned from South Africa in 1960 for testifying before the United Nations about apartheid. Then she was blacklisted in America in 1968 for marrying Stokely Carmichael. She spent thirty years in exile — Guinea, Belgium, various African countries — singing to audiences who mostly had no idea that the woman who sang 'Pata Pata' had been expelled from two continents for her politics. She returned to South Africa in 1990 and died on stage in Italy in 2008, still performing. She was Mama Africa because she contained that much contradiction and kept singing anyway."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l7" onclick="markDone('l7')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l8">
+    <div class="lesson-header" onclick="toggle('l8')">
+      <div class="lesson-num">8</div>
+      <div><div class="lesson-title">The Congo — Soukous, Rumba, and the Sound of Central Africa</div><div class="lesson-sub">How Cuban music came back to Africa and became something new</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Congolese rumba is one of the great ironies of musical history: Cuban rumba was created by Cuban musicians of African descent drawing on Bantu musical traditions; that music was broadcast to Congo via Radio Congo Belge in the 1940s-50s, where Congolese musicians heard it as their own music coming back to them transformed. They absorbed it, combined it with local musical traditions, and created Congolese rumba — which then spread across Sub-Saharan Africa as the dominant popular music of the 1960s-80s. Joseph Kabasele (Grand Kalle) and OK Jazz (led by Franco) were the foundational figures; their records defined a pan-African sound that reached from Kinshasa to Nairobi to Lagos.</p>
+          <p>Franco (Luambo Makiadi, 1938–1989) is the Elvis and Bob Marley of Central Africa combined — a guitarist of extraordinary fluency, a bandleader who ran OK Jazz for 30 years, a songwriter whose catalog covered romance, social commentary, explicit sexuality, and traditional praise in roughly equal measure. His guitar style — fluid, melodic, conversational — defined the sound of Congolese rumba. He died of AIDS in 1989, having refused to acknowledge his diagnosis publicly. His catalog is enormous and inconsistent; the best of it is among the greatest recordings in African music.</p>
+          <p>Soukous — the faster, more dancefloor-oriented descendant of Congolese rumba — dominated African popular music in the 1980s and 90s. Kanda Bongo Man, Papa Wemba, and Tabu Ley Rochereau brought it to international audiences. The Congolese guitar tradition — multiple interlocking guitars playing conversation patterns — is as technically demanding and aesthetically specific as any guitar tradition in the world, and has influenced African music far beyond the DRC's borders.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Franco — Francophonic Vol. 1 (1953–1980)</strong> The overview; OK Jazz catalog sampled; start here</div>
+          <div class="record-item"><strong>Tabu Ley Rochereau — Muzina (1977)</strong> Congolese rumba elegance; the most melodically sophisticated</div>
+          <div class="record-item"><strong>Papa Wemba — Emotion (1995)</strong> Soukous into the 90s; European production; accessible</div>
+          <div class="record-item"><strong>Kanda Bongo Man — Amour Fou (1987)</strong> International soukous; the dancefloor version; "Sai"</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Cuban rumba was created by Afro-Cuban musicians drawing on Bantu musical traditions. That music was broadcast to Congo in the 1940s on colonial radio. Congolese musicians heard it as their own music coming back transformed. They absorbed it and created Congolese rumba, which then spread across Sub-Saharan Africa as the dominant popular music for thirty years. The music completed a circle: it left Africa enslaved, was transformed in the Americas, came back on radio waves, and became the soundtrack of a continent."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l8" onclick="markDone('l8')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="phase-label"><span>Phase 3 — <span class="phase-name">North Africa, the Sahara, and the Diaspora</span></span><span>Lessons 9–11</span></div>
+
+  <div class="lesson" id="l9">
+    <div class="lesson-header" onclick="toggle('l9')">
+      <div class="lesson-num">9</div>
+      <div><div class="lesson-title">The Tuareg — Tinariwen and the Desert Guitar</div><div class="lesson-sub">Electric blues from the Sahara, written in refugee camps</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Tinariwen are a Tuareg band from the Sahara desert — specifically from the Adrar des Ifoghas massif in northern Mali — who formed in the Libyan refugee camps of the 1980s, where Tuareg men were training with Gaddafi's forces for an attempted rebellion that never fully materialized. They played guitars powered by car batteries, writing songs about exile, desert landscapes, and the Tuareg political situation in Tamashek language. Their music sounds like nothing else: the pentatonic scales of traditional Tuareg music played on electric guitar with a dry, buzzing tone, the rhythm section minimal and hypnotic. Western ears hear it as blues. It is not blues — it is something that shares some of the same genetic material.</p>
+          <p>Tinariwen won a Grammy in 2012 and have toured globally, collaborating with Western artists across multiple genres. Their core audience is Tuareg communities across the Sahara and Sahel, who hear in the music both cultural affirmation and political statement. The Tuareg rebellion in northern Mali (2012) — in which some Tinariwen members were directly involved — was suppressed with French military intervention; the political situation remains unresolved. Their music is not historical artifact. It is contemporary political statement.</p>
+          <p>Mdou Moctar, a younger Tuareg guitarist from Niger, represents the next generation — his playing is faster, more technically flashy, influenced by Hendrix and psychedelic rock as much as by Tinariwen, and his live performances have been described as some of the most intense guitar events of the current era. Bombino, another Tuareg guitarist, brings a similar combination of traditional Tuareg elements with contemporary rock energy. The Saharan guitar tradition is alive and expanding.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Tinariwen — Amassakoul (2004)</strong> International breakthrough; essential; the desert guitar fully realized</div>
+          <div class="record-item"><strong>Tinariwen — Emmaar (2014)</strong> Recorded in Joshua Tree with American musicians; stunning</div>
+          <div class="record-item"><strong>Mdou Moctar — Afrique Victime (2021)</strong> Political statement; most technically demanding Tuareg guitar yet</div>
+          <div class="record-item"><strong>Bombino — Nomad (2013)</strong> Produced by Dan Auerbach (Black Keys); accessible entry; "Azamane Tiliade"</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Tinariwen formed in Libyan refugee camps in the 1980s, playing guitars powered by car batteries. Their music is in Tamashek, the Tuareg language, about exile and the Sahara desert. Western audiences hear it as blues. It is not blues — it is a Tuareg pentatonic tradition that shares some DNA with the Mississippi Delta because both draw from ancient West African roots. Tinariwen won a Grammy in 2012. Some of the band members were involved in the 2012 Mali rebellion. Both facts are true simultaneously."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l9" onclick="markDone('l9')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l10">
+    <div class="lesson-header" onclick="toggle('l10')">
+      <div class="lesson-num">10</div>
+      <div><div class="lesson-title">Morocco and North Africa — Gnawa, Chaabi, and the Sacred Music of the Maghreb</div><div class="lesson-sub">Where Sub-Saharan Africa meets the Arab world</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Gnawa music is one of the most distinctive and spiritually powerful traditions in Africa — a ritual healing music practiced by the Gnawa people of Morocco, descendants of enslaved Sub-Saharan Africans brought to Morocco over centuries. The music is used in lila ceremonies, all-night healing rituals in which specific spirits (mluk) are called through music, color, and incense, and can possess participants in trance states. The guembri (a three-stringed bass lute), krakebs (iron castanets), and call-and-response singing are the instruments. The music is not performance — it is ceremony. It is also extraordinarily beautiful.</p>
+          <p>Maalem Mahmoud Guinia (1951–2015) is considered the greatest Gnawa master of the modern era — his guembri playing combined technical virtuosity with ceremonial authority in a way that attracted collaborators from across the musical spectrum (Pharoah Sanders, Randy Weston, Bill Laswell). Gnawa music has attracted jazz musicians because its trance-inducing qualities, its modal structures, and its call-and-response patterns share qualities with free jazz and spiritual jazz. The Gnaoua World Music Festival in Essaouira is the annual gathering of the tradition alongside global collaborators.</p>
+          <p>Chaabi is Morocco's secular popular music — lively, party-oriented, drawing on Andalusian musical traditions as well as Berber and Arab elements. Nass El Ghiwane, a Moroccan band that combined chaabi instruments with political protest lyrics in the 1970s, are considered the Rolling Stones of Morocco and were so threatening to the government that one member was imprisoned. The breadth of North African music — Gnawa ceremony, chaabi party, Berber folk, Andalusian classical — is as rich as anything in Sub-Saharan Africa, and is a different chapter of the same continental story.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Maalem Mahmoud Guinia — Colours of the Night (1990)</strong> The essential Gnawa document; guembri mastery; deeply spiritual</div>
+          <div class="record-item"><strong>Nass El Ghiwane — various compilations</strong> Moroccan political music; chaabi meets protest; the Stones of Morocco</div>
+          <div class="record-item"><strong>Hassan Hakmoun — Gift of the Gnawa (1993)</strong> New York Gnawa; ceremonial music in diaspora; collaboration with Don Cherry</div>
+          <div class="record-item"><strong>Rachid Taha — Diwan (1998)</strong> Algerian raï meets rock; "Rock el Casbah" (Clash cover in Arabic); diaspora voice</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Gnawa music is a healing ceremony, not a performance. The guembri is calling specific spirits by name. The krakebs mark the transitions between spiritual states. When jazz musicians like Pharoah Sanders and Randy Weston collaborated with Gnawa masters, they were not being exotic — they were recognizing a music that operates in the same territory as spiritual jazz: modal, trance-inducing, concerned with opening states of consciousness rather than entertaining closed ones. The connection is real. Both traditions knew it immediately."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l10" onclick="markDone('l10')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l11">
+    <div class="lesson-header" onclick="toggle('l11')">
+      <div class="lesson-num">11</div>
+      <div><div class="lesson-title">Afrobeats — The Current Wave from Lagos to the World</div><div class="lesson-sub">Not Fela's Afrobeat — something new, from the same city</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Afrobeats (note the plural — distinct from Fela's Afrobeat) is a broad umbrella term for the contemporary popular music of Nigeria and Ghana that has become one of the dominant global sounds of the 2020s. It draws on highlife, juju, hip-hop, R&B, dancehall, and electronic production, and is characterized by specific rhythmic patterns (the clave-influenced kick-and-snare pattern, the melodic percussion lines), falsetto and tenor male vocals, and lyrics that mix Yoruba, Igbo, Pidgin English, and English. Wizkid, Davido, Burna Boy, Tiwa Savage, and Tems are the international names; the ecosystem behind them is vast.</p>
+          <p>Burna Boy is the most interesting figure in contemporary Afrobeats — a Lagos artist who explicitly claims Fela's legacy, samples Fela's recordings, and makes political statements about Nigeria and pan-African identity that are unusual in a genre that is largely focused on celebration and romance. His African Giant (2019) and Twice as Tall (2020) are the strongest artistic statements in the genre. Wizkid's Made in Lagos (2020) is the most beautiful. Tems brings a voice — deeper, more soulful than most Afrobeats — that recalls the South African and Malian vocal traditions. The genre is still consolidating its identity.</p>
+          <p>The Afrobeats diaspora in the UK — where a substantial Nigerian and Ghanaian community has been present since the Windrush era — is as important as Lagos itself. Skepta and the grime scene, Afroswing artists like Not3s and Afro B, and the second-generation artists negotiating British-Nigerian identity are making the same music in a different context. The connection between Afrobeats and Afropop Worldwide's broader tradition is explicit: Burna Boy sampled Miriam Makeba. The chain of African music does not break. It keeps adding links.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Burna Boy — African Giant (2019)</strong> Political and personal; Fela samples; the most ambitious Afrobeats record</div>
+          <div class="record-item"><strong>Wizkid — Made in Lagos (2020)</strong> The most beautiful; "Essence" (with Tems); global breakthrough</div>
+          <div class="record-item"><strong>Tems — If Orange Was a Place (2021)</strong> EP; five tracks; one of the most compelling new voices in African music</div>
+          <div class="record-item"><strong>Femi Kuti — One People One World (2018)</strong> Fela son; Afrobeat tradition maintained; Grammy-nominated</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Burna Boy sampled Miriam Makeba on his album and named himself after Fela. He is from Lagos, 36 years old, and the most-nominated African artist in Grammy history. The chain from Fela's Kalakuta Republic to Burna Boy's African Giant is direct and audible if you listen for it — the same political claim on Nigerian identity, the same defiance toward power, the same insistence that African music contains the world. Fela said it first. Burna Boy is saying it to a billion people on Spotify."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l11" onclick="markDone('l11')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="phase-label"><span>Phase 4 — <span class="phase-name">Listening, Context, and the Afropop Worldwide Tradition</span></span><span>Lessons 12–14</span></div>
+
+  <div class="lesson" id="l12">
+    <div class="lesson-header" onclick="toggle('l12')">
+      <div class="lesson-num">12</div>
+      <div><div class="lesson-title">World Music, Global Pop, and What Those Terms Get Wrong</div><div class="lesson-sub">The politics of how African music is categorized and sold</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>"World music" as a marketing category was invented in 1987 by a group of independent British record labels trying to get African, Caribbean, and Asian music into mainstream record stores that had no shelf space for it. It was a commercial solution to a distribution problem, not a musical category. The term has been criticized ever since — most cogently by David Byrne, who pointed out that it functions as a remainder bin for all non-Western music, implying that Western pop is the norm and everything else is exotic Other. Youssou Ndour, Oumou Sangare, and Miriam Makeba are not "world music" artists from the perspective of their home audiences. They are simply musicians.</p>
+          <p>The curatorial tradition of Afropop Worldwide — which has operated since 1988 — represents a more honest approach: treat each regional tradition as worthy of specific, deep attention, learn the local critical vocabulary, interview the artists in their own contexts, and resist the temptation to explain African music through Western reference points. The program was founded on the belief that African music is not exotic material to be processed for Western consumption — it is music, with its own history, its own arguments, and its own standards of excellence.</p>
+          <p>The commercial success of Afrobeats in the 2020s has changed the political economy of this conversation. When Burna Boy and Wizkid are streaming in the hundreds of millions, the "world music" category becomes obviously inadequate. Lagos is not an exotic other — it is one of the great popular music cities on Earth, making music that is listened to on every continent. The question of how Western critics and audiences approach African music is evolving, imperfectly, in real time.</p>
+        </div>
+      </div>
+      <div class="vocab-grid">
+        <div class="vocab-item"><strong>World music (category)</strong> — invented 1987 by UK indie labels; marketing solution; criticized as Othering of non-Western music</div>
+        <div class="vocab-item"><strong>Afropop Worldwide</strong> — PRI/BBC radio since 1988; host Georges Collinet; the standard for deep African music coverage</div>
+        <div class="vocab-item"><strong>afropop.org</strong> — online archive; interviews, essays, listening guides; the best free resource for this curriculum</div>
+        <div class="vocab-item"><strong>Banning Eyre</strong> — Afropop Worldwide journalist; deep expertise in West African and Saharan guitar traditions</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"'World music' was invented in 1987 by British record labels who needed a shelf category for African records. David Byrne pointed out that the category implies Western pop is the norm and everything else is exotic Other. He was right. Youssou Ndour is not a 'world music' artist in Dakar — he is simply the greatest living Senegalese musician. The category tells you more about the organizational limitations of record stores in 1987 than it does about the music."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l12" onclick="markDone('l12')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l13">
+    <div class="lesson-header" onclick="toggle('l13')">
+      <div class="lesson-num">13</div>
+      <div><div class="lesson-title">The Listening Curriculum</div><div class="lesson-sub">The 20 records that span the continent</div></div>
+      <div class="lesson-time">~60 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">The 20 Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Toumani Diabate — Kaira (1987)</strong> Solo kora. Start here. The instrument in its purest form.</div>
+          <div class="record-item"><strong>Ali Farka Toure — The River (1990)</strong> Malian blues. The pentatonic desert guitar.</div>
+          <div class="record-item"><strong>Oumou Sangare — Moussolou (1989)</strong> Wassoulou. Women's rights in Bambara. Her voice raw.</div>
+          <div class="record-item"><strong>Youssou Ndour — Set (1990)</strong> Mbalax. Sabar drums leading. The Senegalese tradition.</div>
+          <div class="record-item"><strong>Cheikh Lo — Ne La Thiass (1996)</strong> Baye Fall Sufism. One of the great African records.</div>
+          <div class="record-item"><strong>Fela — Zombie (1977)</strong> Afrobeat. The most political. The most dangerous.</div>
+          <div class="record-item"><strong>Miriam Makeba — Miriam Makeba (1960)</strong> Township music in exile. "The Click Song."</div>
+          <div class="record-item"><strong>Hugh Masekela — Hope (1994)</strong> South African jazz. "Stimela." Post-apartheid.</div>
+          <div class="record-item"><strong>Various — Ethiopiques Vol. 4 (Mulatu Astatke)</strong> Ethio-jazz. Modal scales meet jazz harmony.</div>
+          <div class="record-item"><strong>Thomas Mapfumo — Chimurenga Explosion (1982)</strong> Mbira guitar. Zimbabwe liberation music.</div>
+          <div class="record-item"><strong>Franco — Francophonic Vol. 1</strong> Congolese rumba. The pan-African guitar tradition.</div>
+          <div class="record-item"><strong>Tinariwen — Amassakoul (2004)</strong> Tuareg desert guitar. Refugee camp songs.</div>
+          <div class="record-item"><strong>Maalem Mahmoud Guinia — Colours of the Night (1990)</strong> Gnawa ceremony. The sacred tradition.</div>
+          <div class="record-item"><strong>Ladysmith Black Mambazo — Shaka Zulu (1987)</strong> Isicathamiya. Zulu vocal harmony.</div>
+          <div class="record-item"><strong>Fatoumata Diawara — Fatou (2011)</strong> Contemporary Mali. Electric and acoustic. "Clandestin."</div>
+          <div class="record-item"><strong>Mdou Moctar — Afrique Victime (2021)</strong> Tuareg guitar current generation. Political and ferocious.</div>
+          <div class="record-item"><strong>Burna Boy — African Giant (2019)</strong> Afrobeats. Fela legacy claimed. Political.</div>
+          <div class="record-item"><strong>Wizkid — Made in Lagos (2020)</strong> Afrobeats beautiful. "Essence." The current peak.</div>
+          <div class="record-item"><strong>Tems — If Orange Was a Place (2021)</strong> Five tracks. The most compelling new African voice.</div>
+          <div class="record-item"><strong>Stella Chiweshe — Ambuya (1987)</strong> Mbira in ceremonial form. The instrument that started it all.</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Twenty records can take you from a solo kora in Mali in 1987 to Lagos in 2020 — across 54 countries, dozens of languages, and every conceivable political situation. The griot tradition is in all of it: the musician as historian, the music as memory, the instrument as a tool for something more important than entertainment. That function does not change between Toumani Diabate playing kora in Bamako and Burna Boy sampling Miriam Makeba in Lagos. The continent is always in conversation with itself."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l13" onclick="markDone('l13')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l14">
+    <div class="lesson-header" onclick="toggle('l14')">
+      <div class="lesson-num">14</div>
+      <div><div class="lesson-title">How to Keep Listening — The Afropop Worldwide Method</div><div class="lesson-sub">Resources, approaches, and the ongoing education</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>African music is too vast, too regionally specific, and too rapidly evolving to be contained in any single curriculum. This course is a map, not a destination. The goal is to give you enough context — historical, geographic, spiritual, political — that you can hear African music with informed ears, ask better questions, and keep going deeper. The Afropop Worldwide tradition is the most reliable guide to what comes next.</p>
+          <p>afropop.org is the essential online resource — decades of articles, interviews, and listening guides organized by region and artist. The radio program (now podcast) is available on NPR stations and as direct downloads. Banning Eyre on West African and Saharan guitar; Sean Barlow on East African traditions; Samba Diabare Toure's work on Guinean music — each contributor brings regional expertise that you cannot get anywhere else for free. If this curriculum has opened a door, Afropop Worldwide is the hallway behind it.</p>
+          <p>Specific recommendations for going deeper: the Ethiopiques series (volumes 1–30+, all excellent) for East Africa; the Stern's Africa and Piranha labels for ongoing releases; the World Circuit label (Ali Farka Toure, Youssou Ndour, Buena Vista Social Club) for archival and new work. In the streaming era, Bandcamp has become the best platform for independent African music — artists receive a higher percentage, regional music that would not survive on Spotify economics can find its audience, and the catalog is extraordinary.</p>
+        </div>
+      </div>
+      <div class="apw-box">
+        <div class="apw-label">Where to Go Next</div>
+        <div class="apw-text">afropop.org — the archive. Ethiopiques on streaming — start with vol. 4 (Mulatu) and branch. World Circuit label catalog. Stern's Africa Records (online store and label). Bandcamp for independent African releases. And: find a live show. African music in a proper venue, with a proper sound system, is categorically different from African music on headphones. The continent has a presence that requires a room.</div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The continent of Africa has been producing popular music for over a century and has never needed Western validation to know it was good. The griot tradition is older than Western notation. The mbira is older than the guitar. The sabar drum patterns that mbalax is built on contain more rhythmic information than most Western popular music. The appropriate response to African music is not 'how exotic' — it is the same response as any other great music: pay attention, learn the vocabulary, and then get out of the way and listen."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l14" onclick="markDone('l14')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="resources">
+    <div class="resources-hed">Further Reading & Resources</div>
+    <div class="resource-list">
+      <div class="resource-item"><span>Afropop Worldwide — the essential radio program and archive since 1988</span><a href="https://afropop.org" target="_blank">afropop.org ↗</a></div>
+      <div class="resource-item"><span>Ethiopiques series — 30+ volumes; the great rescue project of African music; all on streaming</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Buda Musique</span></div>
+      <div class="resource-item"><span>World Circuit Records — Ali Farka Toure, Youssou Ndour, Malian catalog</span><a href="https://www.worldcircuit.co.uk" target="_blank">worldcircuit.co.uk ↗</a></div>
+      <div class="resource-item"><span>Africa: The Rough Guide to World Music — the reference; use alongside afropop.org</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Rough Guides</span></div>
+      <div class="resource-item"><span>Stern's Africa — independent label and shop; the best catalog of African releases</span><a href="https://www.sternsmusic.com" target="_blank">sternsmusic.com ↗</a></div>
+    </div>
+  </div>
+
+  <div class="qa-widget">
+    <div class="qa-header">
+      <div class="qa-header-title">Ask the Tutor</div>
+      <div class="qa-header-sub">Afropop · Pan-African · Afropop Worldwide tradition · Powered by Claude</div>
+    </div>
+    <div class="qa-body">
+      <div class="qa-input-row">
+        <input type="text" class="qa-input" id="qa-input" placeholder="Ask about Mali kora, Fela, Ethiopian jazz, South African music, Tinariwen, Afrobeats, the griot tradition…" onkeydown="if(event.key==='Enter') askTutor()">
+        <button class="qa-btn" onclick="askTutor()">Ask</button>
+      </div>
+      <div class="qa-response" id="qa-response"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div><p class="footer-name">Brooks Groves</p></div>
+    <div class="footer-links"><a href="/learning/">Learning</a><a href="/">Home</a></div>
+  </div>
+</footer>
+
+<script>
+function toggle(id) { document.getElementById(id).classList.toggle('open'); }
+function markDone(id) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById('check-' + id);
+  el.classList.toggle('done');
+  const isDone = el.classList.contains('done');
+  btn.textContent = isDone ? '✓ Done' : 'Mark done';
+  btn.classList.toggle('done', isDone);
+  localStorage.setItem('afropop-' + id, isDone ? '1' : '');
+  updateProgress();
+}
+function updateProgress() {
+  const total = 14;
+  const done = document.querySelectorAll('.lesson.done').length;
+  document.getElementById('done-count').textContent = done;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+window.addEventListener('DOMContentLoaded', () => {
+  for (let i = 1; i <= 14; i++) {
+    if (localStorage.getItem('afropop-l' + i) === '1') {
+      const el = document.getElementById('l' + i);
+      const btn = document.getElementById('check-l' + i);
+      if (el) el.classList.add('done');
+      if (btn) { btn.textContent = '✓ Done'; btn.classList.add('done'); }
+    }
+  }
+  updateProgress();
+});
+async function askTutor() {
+  const input = document.getElementById('qa-input');
+  const response = document.getElementById('qa-response');
+  const question = input.value.trim();
+  if (!question) return;
+  input.value = '';
+  response.innerHTML = '<span class="qa-loading">Thinking…</span>';
+  try {
+    const res = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'You are an expert tutor for a self-directed curriculum on African popular music — in the tradition of Afropop Worldwide. Cover the griot tradition, Mali kora and desert blues, Senegalese mbalax, Nigerian highlife and Afrobeat (Fela Kuti), Ethiopian jazz (Mulatu Astatke, Ethiopiques), South African township music (Miriam Makeba, Hugh Masekela), Congolese rumba, Zimbabwean chimurenga (Thomas Mapfumo), Tuareg desert guitar (Tinariwen, Mdou Moctar), Gnawa music, and contemporary Afrobeats (Burna Boy, Wizkid). Treat each regional tradition with the specificity it deserves. Avoid generalizing "Africa" as monolithic. Be historically precise and politically informed. Reference Afropop Worldwide as a resource when relevant. Keep answers to 3-4 paragraphs unless asked for more.',
+        messages: [{ role: 'user', content: question }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'No response.';
+    response.innerHTML = text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+  } catch(e) { response.innerHTML = 'Tutor unavailable. Try again in a moment.'; }
+}
+</script>
+</body>
+</html>

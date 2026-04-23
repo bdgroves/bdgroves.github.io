@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reggae — Learning — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --irie:#2a6b3a; --sun:#c8760a; --red:#8b2a2a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--irie) 0%,var(--sun) 50%,var(--red) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--irie); }
+    .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--irie); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+    .page-stats { display:flex; gap:2rem; margin-top:1.5rem; flex-wrap:wrap; }
+    .page-stat-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--irie); }
+    .page-stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
+    .progress-wrap { background:var(--cream); border:1px solid var(--mist); padding:1.25rem 1.5rem; margin-top:1.5rem; }
+    .progress-bar-track { height:6px; background:var(--mist); border-radius:3px; margin:0.75rem 0 0.4rem; }
+    .progress-bar-fill { height:6px; background:var(--irie); border-radius:3px; transition:width 0.4s ease; width:0%; }
+    .progress-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); }
+    .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+    .phase-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1.25rem; display:flex; justify-content:space-between; }
+    .phase-label:first-child { margin-top:0; }
+    .phase-name { color:var(--irie); }
+    .lesson { border:1px solid var(--mist); margin-bottom:0.75rem; }
+    .lesson-header { padding:1.1rem 1.25rem; cursor:pointer; display:grid; grid-template-columns:2.5rem 1fr auto; gap:0.75rem; align-items:start; transition:background 0.15s; }
+    .lesson-header:hover { background:var(--cream); }
+    .lesson-num { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--stone); padding-top:0.1rem; }
+    .lesson-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.3; }
+    .lesson-sub { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; font-style:italic; }
+    .lesson-time { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); text-align:right; white-space:nowrap; padding-top:0.2rem; }
+    .lesson-expand { display:none; padding:1.25rem 1.5rem; border-top:1px solid var(--mist); background:var(--cream); }
+    .lesson.open .lesson-expand { display:block; }
+    .lesson.open .lesson-header { background:var(--cream); }
+    .lesson.done .lesson-num { color:var(--sage); }
+    .lesson.done .lesson-num::after { content:' ✓'; }
+    .expand-section { margin-bottom:1.25rem; }
+    .expand-section:last-child { margin-bottom:0; }
+    .expand-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--irie); margin-bottom:0.5rem; }
+    .expand-body { font-size:0.88rem; line-height:1.75; color:var(--stone); }
+    .expand-body p { margin-bottom:0.6rem; }
+    .expand-body p:last-child { margin-bottom:0; }
+    .cocktail-box { background:var(--ink); color:#e8e4d8; padding:1rem 1.25rem; margin-top:1rem; border-left:3px solid var(--sun); }
+    .cocktail-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--sun); margin-bottom:0.4rem; }
+    .cocktail-line { font-size:0.88rem; font-style:italic; line-height:1.7; }
+    .vocab-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .vocab-grid { grid-template-columns:1fr; } }
+    .vocab-item { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    .vocab-item strong { color:var(--ink); font-weight:700; }
+    .records-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .records-grid { grid-template-columns:1fr; } }
+    .record-item { font-size:0.82rem; color:var(--stone); line-height:1.6; padding:0.5rem 0; border-bottom:1px solid var(--mist); }
+    .record-item:last-child { border-bottom:none; }
+    .record-item strong { color:var(--ink); font-weight:700; display:block; }
+    .resources { border:1px solid var(--mist); padding:1.75rem; margin-top:3rem; }
+    .resources-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:var(--irie); }
+    .resource-list { display:flex; flex-direction:column; gap:0.6rem; }
+    .resource-item { font-size:0.85rem; color:var(--stone); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:baseline; }
+    .resource-item a { color:var(--rust); text-decoration:underline; text-underline-offset:3px; font-size:0.75rem; font-family:'DM Mono',monospace; }
+    .mark-done-btn { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--mist); background:none; color:var(--stone); padding:0.3rem 0.75rem; cursor:pointer; margin-top:1rem; transition:all 0.15s; }
+    .mark-done-btn:hover { border-color:var(--sage); color:var(--sage); }
+    .mark-done-btn.done { border-color:var(--sage); color:var(--sage); }
+    .qa-widget { border:2px solid var(--ink); margin-top:3rem; }
+    .qa-header { background:var(--ink); color:var(--white); padding:1rem 1.5rem; }
+    .qa-header-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; }
+    .qa-header-sub { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:#888; margin-top:0.2rem; }
+    .qa-body { padding:1.5rem; }
+    .qa-input-row { display:flex; gap:0.75rem; margin-bottom:1rem; }
+    .qa-input { flex:1; padding:0.75rem 1rem; font-family:'Libre Baskerville',serif; font-size:0.88rem; border:1px solid var(--mist); background:var(--white); color:var(--ink); outline:none; }
+    .qa-input:focus { border-color:var(--irie); }
+    .qa-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; background:var(--irie); color:var(--white); border:none; padding:0.75rem 1.25rem; cursor:pointer; white-space:nowrap; }
+    .qa-btn:hover { background:var(--ink); }
+    .qa-response { font-size:0.88rem; line-height:1.75; color:var(--stone); min-height:3rem; }
+    .qa-loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--mist); }
+    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav><a href="/learning/">← Learning</a><a href="/">Home</a></nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/learning/">Learning</a></p>
+  <h1 class="page-title">🎵 <em>Reggae</em></h1>
+  <p class="page-sub">From the dance halls of Kingston in 1959 to the bass-heavy diaspora that reached every continent. Ska, rocksteady, roots, dancehall, reggaeton — each a mutation of the same original DNA. The most globally influential music ever to come from one small island.</p>
+  <div class="page-stats">
+    <div><div class="page-stat-val">14</div><div class="page-stat-lbl">Lessons</div></div>
+    <div><div class="page-stat-val">4</div><div class="page-stat-lbl">Phases</div></div>
+    <div><div class="page-stat-val">~12 hrs</div><div class="page-stat-lbl">Estimated time</div></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Progress — <span id="done-count">0</span> of 14 lessons complete</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-pct">0%</div>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <div class="phase-label"><span>Phase 1 — <span class="phase-name">Before Reggae: Jamaica 1959–1966</span></span><span>Lessons 1–3</span></div>
+
+  <div class="lesson" id="l1">
+    <div class="lesson-header" onclick="toggle('l1')">
+      <div class="lesson-num">1</div>
+      <div><div class="lesson-title">The Origins — Mento, R&B, and the Birth of Ska</div><div class="lesson-sub">What Jamaicans heard on the radio from New Orleans, and what they made of it</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Jamaican popular music begins with mento — a rural acoustic folk form combining African rhythmic traditions with European harmonic structures, played on banjo, hand drums, and acoustic guitar. Mento was the island music before urbanization; it carried the satirical lyrical tradition that would persist through every subsequent genre. The move to Kingston and the sound system culture of the late 1950s is where modern Jamaican music starts.</p>
+          <p>Sound system operators — men who assembled enormous speaker rigs and played imported records at outdoor dances — were the DJs, promoters, and tastemakers of Jamaican music in the 1950s. Coxsone Dodd, Duke Reid, and Prince Buster were the dominant operators. They imported American R&B from New Orleans and Miami; when the supply of good R&B dried up as American music moved toward soul, they began recording their own. The result was ska — a fast, upbeat genre with the offbeat guitar chop that would define all Jamaican music to follow, and horns adapted from American jazz and R&B. The first ska records were made in 1959.</p>
+          <p>Ska was dance music for newly independent Jamaica (independence: 1962) — optimistic, fast, urban, aspirational. The guitar plays on the offbeat (beats 2 and 4), the bass walks, the horns play bright stabs. The tempo is fast because the dances were hot and the audiences were young. The Skatalites — Jamaica's greatest studio band — played on virtually every ska record made between 1963 and 1965, and their instrumentals (including "Guns of Navarone") are as good as anything the genre produced. When Independence arrived the music embodied the national mood: energetic, forward-looking, free.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Mento</strong> — Jamaican acoustic folk; banjo, rumba box; the pre-ska foundation</div>
+          <div class="vocab-item"><strong>Sound system</strong> — massive outdoor speaker rigs; operators were the tastemakers; still central to Jamaican music</div>
+          <div class="vocab-item"><strong>Offbeat guitar chop</strong> — guitar plays on beats 2 and 4; defining rhythmic feature of all Jamaican music</div>
+          <div class="vocab-item"><strong>The Skatalites</strong> — Jamaica premier studio band 1963–65; played on virtually every ska record made</div>
+          <div class="vocab-item"><strong>Coxsone Dodd</strong> — Studio One founder; the most important producer in Jamaican music history</div>
+          <div class="vocab-item"><strong>Prince Buster</strong> — sound system operator, performer; "Al Capone"; bridge between ska and rocksteady</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Ska was born because Jamaican sound system operators couldn't get enough good New Orleans R&B records, so they started making their own. They took the American offbeat rhythm, sped it up, added horns from jazz, and created something that sounded exactly like what a newly independent Caribbean island sounds like when it decides it has something to say. Every Jamaican music genre since — rocksteady, reggae, dancehall, reggaeton — has that same offbeat guitar chop at the center."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l1" onclick="markDone('l1')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l2">
+    <div class="lesson-header" onclick="toggle('l2')">
+      <div class="lesson-num">2</div>
+      <div><div class="lesson-title">Rocksteady — Slowing Down, 1966–1968</div><div class="lesson-sub">Two years that changed everything about how Jamaica sounded</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Rocksteady emerged around 1966 as Jamaica slowed ska down — partly because the summer heat made fast dancing uncomfortable, partly because the mood of the island was shifting. The optimism of Independence was fading; Kingston's ghettoes were getting harder. The music responded. The tempo dropped, the bass moved to the foreground, the horns receded, and the lyrics turned toward romance, social commentary, and the emerging Rude Boy culture — young urban men with nothing to lose and a certain style to project.</p>
+          <p>Rocksteady lasted only two years but its influence was enormous. The bass guitar became the most important instrument in Jamaican music during this period and never relinquished that position. Alton Ellis, Phyllis Dillon, and the Techniques were the great rocksteady vocalists — smoother, more soulful than ska, influenced by American soul music in ways that gave the genre an emotional range ska sometimes lacked. The harmony group tradition that would produce so much roots reggae — the Melodians, the Heptones — developed in the rocksteady era.</p>
+          <p>The Rude Boy figure — the Kingston ghetto youth dressed in porkpie hat and narrow suit, living outside the law — became a cultural archetype in rocksteady lyrics. He would reappear in every subsequent Jamaican genre and eventually export himself to the UK skinhead scene, to 2-Tone, and ultimately to every corner of the world that received Jamaican music. The Rude Boy is the ancestor of the Yardie, the ragamuffin, and in a direct musical line, the reggaeton artist.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Rocksteady</strong> — 1966–68; slower than ska; bass-forward; emotional range; the bridge to reggae</div>
+          <div class="vocab-item"><strong>Rude Boy</strong> — Kingston ghetto youth archetype; style, attitude, outsider status; recurs in every Jamaican genre</div>
+          <div class="vocab-item"><strong>Alton Ellis</strong> — "Mr. Rocksteady"; greatest vocalist of the era; "Girl I've Got a Date"</div>
+          <div class="vocab-item"><strong>The Heptones</strong> — harmony trio; rocksteady to roots; "Party Time"; one of Jamaica finest vocal groups</div>
+          <div class="vocab-item"><strong>Studio One</strong> — Coxsone Dodd label; the most important catalog in Jamaican music; Brentford Road, Kingston</div>
+          <div class="vocab-item"><strong>Rhythm riddim</strong> — backing track reused across multiple songs; foundational Jamaican production practice from rocksteady onward</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Rocksteady lasted exactly two years and may be the most influential two-year period in the history of popular music. The bass moved to the center, the tempo dropped, and the lyrics turned dark. The Rude Boy appeared. Studio One recorded essentially the entire catalog in that window. Everything Jamaica made after 1968 — reggae, dancehall, ragga, reggaeton — is rocksteady with something added or subtracted. Two years. One island. The template for everything."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l2" onclick="markDone('l2')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l3">
+    <div class="lesson-header" onclick="toggle('l3')">
+      <div class="lesson-num">3</div>
+      <div><div class="lesson-title">Rastafari — The Spiritual Foundation</div><div class="lesson-sub">Without this you cannot understand roots reggae</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Rastafari is a spiritual and political movement that emerged in Jamaica in the 1930s, rooted in the teachings of Marcus Garvey and the belief that Haile Selassie I — Emperor of Ethiopia, crowned 1930 — was the returned messiah prophesied in Revelation. The movement drew on Pan-African consciousness, the Old Testament (particularly Psalms and Revelation), and a rejection of "Babylon" — the oppressive Western system of capitalism, colonialism, and racial hierarchy. Repatriation to Africa, specifically Ethiopia, was the original goal.</p>
+          <p>Rastafari theology is inseparable from roots reggae. The music is not entertainment — it is prayer, prophecy, and protest. Jah is God. Babylon is the oppressive system. Zion is the promised land, spiritual and physical. I and I (not "me and you" but a unity of all people in Jah) is the relational philosophy. Ganja is a sacrament, used in reasoning sessions to open the mind. The locks (dreadlocks) are a covenant. When Burning Spear sings about slavery and Marcus Garvey, or when Bob Marley sings "Exodus," these are not metaphors — they are theological statements about history, justice, and liberation.</p>
+          <p>Marcus Garvey (1887–1940) is the prophet of the tradition — his Pan-African movement, the Universal Negro Improvement Association, and his philosophy of Black pride and African repatriation were foundational. Haile Selassie visited Jamaica in 1966 and was overwhelmed by the reception — hundreds of thousands of Rastas lined the route from the airport, many weeping. Selassie himself never claimed divinity, but this did not alter the faith of those who believed. The relationship between the theology and the music is not decorative. You cannot understand "Natty Dread" or "War" without it.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Rastafari</strong> — Jamaican spiritual movement; Haile Selassie as Jah; Babylon vs. Zion; repatriation to Africa</div>
+          <div class="vocab-item"><strong>Babylon</strong> — oppressive Western system; capitalism, colonialism, racism; used throughout reggae lyrics</div>
+          <div class="vocab-item"><strong>Zion</strong> — promised land; Ethiopia spiritually; freedom from Babylon; recurring reggae motif</div>
+          <div class="vocab-item"><strong>I and I</strong> — unity of all people in Jah; replaces "me" in Rastafari speech</div>
+          <div class="vocab-item"><strong>Marcus Garvey</strong> — Pan-Africanist; UNIA founder; prophetic figure of Rastafari; "Look to Africa"</div>
+          <div class="vocab-item"><strong>Haile Selassie I</strong> — Ethiopian Emperor; Jah in Rastafari; visited Jamaica 1966; never claimed divinity</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"When Bob Marley sings 'War' at the 1978 One Love Peace Concert in Kingston — in front of the two gang leaders whose factions had been killing each other — he is not performing a protest song. He is delivering a sermon. The lyrics are Haile Selassie's speech to the United Nations in 1963, almost verbatim. Roots reggae is not music with a political message. It is theology expressed through music. The distinction matters enormously."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l3" onclick="markDone('l3')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="phase-label"><span>Phase 2 — <span class="phase-name">Roots Reggae, 1968–1980</span></span><span>Lessons 4–7</span></div>
+
+  <div class="lesson" id="l4">
+    <div class="lesson-header" onclick="toggle('l4')">
+      <div class="lesson-num">4</div>
+      <div><div class="lesson-title">Bob Marley and the Wailers</div><div class="lesson-sub">The man who gave reggae the world — and what he was actually saying</div></div>
+      <div class="lesson-time">~55 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Bob Marley (1945–1981) is the most important figure in the global spread of reggae, but understanding his work requires separating the myth from the music. The myth — peace, love, ganja, beach — is a commercial simplification that would have horrified him. Marley was a committed Rastafarian, a fierce political thinker, a survivor of a CIA-linked assassination attempt in 1976, and a man whose songs were banned by Jamaican radio for being too politically dangerous. "Get Up Stand Up," "Burnin' and Lootin'," "War," "Babylon System" — these are not relaxation music.</p>
+          <p>The original Wailers — Marley, Peter Tosh, and Bunny Wailer — formed in 1963 and recorded for Studio One and then their own Tuff Gong label before signing to Island Records in 1972. Island's Chris Blackwell signed them and produced Catch a Fire (1973) with overdubs designed to make the sound accessible to rock audiences. It worked. Tosh and Bunny left after Burnin' (1973) to pursue solo careers; Marley continued with a reconstituted Wailers. The tension between Island-era accessibility and the raw power of the Jamaican recordings is audible throughout the catalog.</p>
+          <p>Marley died of melanoma in May 1981, aged 36. He refused amputation of his toe when the cancer was first discovered, reportedly for religious reasons. The cancer spread. He was baptized into the Ethiopian Orthodox Church days before his death. He was traveling to Germany for treatment when he collapsed; he died in Miami on his way back to Jamaica. His last words to his son Ziggy: "Money can't buy life." The funeral in Kingston drew 100,000 people. He was buried with his guitar, a soccer ball, a stalk of marijuana, and a ring given to him by Haile Selassie.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Catch a Fire (1973)</strong> First Island release; rock overdubs; "Concrete Jungle"; the global introduction</div>
+          <div class="record-item"><strong>Burnin' (1973)</strong> Last with original Wailers; "Get Up Stand Up," "I Shot the Sheriff"; raw and essential</div>
+          <div class="record-item"><strong>Natty Dread (1974)</strong> First without Tosh/Bunny; "No Woman No Cry" (live version); the pivot</div>
+          <div class="record-item"><strong>Rastaman Vibration (1976)</strong> US top 10; survived assassination attempt during recording; "War," "Positive Vibration"</div>
+          <div class="record-item"><strong>Exodus (1977)</strong> Time called it album of the century; recorded in London; "Jamming," "One Love"</div>
+          <div class="record-item"><strong>Survival (1979)</strong> Most explicitly Pan-African; "Zimbabwe," "Africa Unite"; his most political statement</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Bob Marley survived an assassination attempt in 1976 — gunmen shot up his house two days before the Smile Jamaica concert. He played the concert anyway, showed up on stage, lifted his shirt to show the bandages, and played for ninety minutes. The myth of Marley as a gentle peace-and-love figure erases the fact that someone tried to kill him for his politics. His songs were considered dangerous enough to warrant that. Take the myth seriously enough to see past it."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l4" onclick="markDone('l4')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l5">
+    <div class="lesson-header" onclick="toggle('l5')">
+      <div class="lesson-num">5</div>
+      <div><div class="lesson-title">The Deep Roots — Burning Spear, Culture, and the Prophets</div><div class="lesson-sub">The artists who kept the theology central</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Burning Spear (Winston Rodney) is, for many serious reggae listeners, the most important roots artist of all — more uncompromising than Marley, more consistently focused on African history and Rastafari theology, and the creator of a hypnotic, ceremonial sound that functions as much as ritual as entertainment. Marcus Garvey (1975) and Man in the Hills (1976) are the pinnacle of his work — the former entirely devoted to Garvey's legacy, the latter recorded in the hills of Jamaica with a raw, rootsy sound that no studio could replicate. Spear is still recording and touring, now in his 70s, and has never compromised.</p>
+          <p>Culture, led by Joseph Hill, made Two Sevens Clash (1977) — named for the prophecy that July 7, 1977 would bring apocalyptic judgment. On July 7, 1977, Kingston largely shut down. Buses stopped running. People stayed home. The record had created a self-fulfilling prophecy. The album is a masterpiece of paranoid, urgent roots reggae, and "Two Sevens Clash" remains one of the greatest songs the genre produced. The Abyssinians, the Congos (Heart of the Congos, 1977, produced by Lee Perry), and the Mighty Diamonds round out the deepest tier of roots artists.</p>
+          <p>Lee "Scratch" Perry deserves a lesson of his own (and gets one) but in the context of roots reggae his Black Ark studio in Washington Gardens, Kingston was the creative center of the genre from 1973–1979. Perry produced records for the Congos, the Heptones, Max Romeo, Junior Murvin, and dozens of others, developing a production style — layered, reverberant, hallucinatory — that was unlike anything else in popular music. When he burned the Black Ark down in 1979, something ended. The studio had been built out of concrete and genius; the music that came out of it has never been replicated.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Burning Spear — Marcus Garvey (1975)</strong> Entirely devoted to Garvey; hypnotic and ceremonial; one of the great albums</div>
+          <div class="record-item"><strong>Culture — Two Sevens Clash (1977)</strong> Apocalyptic prophecy; Kingston shut down on 7/7/77; "See Them a Come"</div>
+          <div class="record-item"><strong>The Congos — Heart of the Congos (1977)</strong> Produced by Lee Perry; falsetto harmonies; one of the strangest and most beautiful records</div>
+          <div class="record-item"><strong>The Abyssinians — Satta Massagana (1976)</strong> Title track in Amharic; Ethiopianist theology; deep and beautiful roots harmony</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Culture released a song called 'Two Sevens Clash' predicting apocalypse on July 7, 1977. On July 7, 1977, Kingston, Jamaica largely shut down. Buses stopped. People stayed home. A reggae record created a city-wide mass event through the power of prophetic conviction. That is not a metaphor for the power of music. It is a documented historical event. Roots reggae operated at a frequency that could stop a city."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l5" onclick="markDone('l5')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l6">
+    <div class="lesson-header" onclick="toggle('l6')">
+      <div class="lesson-num">6</div>
+      <div><div class="lesson-title">Lee "Scratch" Perry and the Producers</div><div class="lesson-sub">The men behind the music and the invention of dub</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>In Jamaican music, the producer is as important as — often more important than — the performer. This is because of the riddim system: a single backing track (rhythm) is recorded once and then voiced by multiple artists, each delivering different lyrics and melodies over the same instrumental foundation. The producer owns the riddim and controls who gets to record over it. Coxsone Dodd at Studio One, Duke Reid at Treasure Isle, Joe Gibbs, and Lee Perry were the great producers of the roots era — their aesthetic choices defined the sound of genres.</p>
+          <p>Dub emerged from a production accident — or more precisely, from Jamaican DJs' practice of toasting (improvised lyrical commentary) over instrumental versions of records. When sound system operators discovered that stripping vocals from a track and manipulating the remaining elements — dropping bass frequencies in and out, adding heavy reverb and echo, isolating drum patterns — created an entirely new genre, dub was born. King Tubby (Osbourne Ruddock) is the father of dub, working with engineer techniques that were entirely improvised because the equipment was being used in ways it was never designed for. Lee Perry took dub further into psychedelia; Augustus Pablo brought it the melodica. Dub is the ancestor of electronic music, ambient music, hip-hop production, and dubstep.</p>
+          <p>Lee Perry (1936–2021) built the Black Ark studio in his backyard in 1973 with concrete blocks he mixed himself. He embedded objects in the studio walls — mirrors, photographs, shells — for spiritual protection. He worked alone at night, often in altered states, creating records that sounded like they came from another dimension. "Roast Fish and Cornbread," the Congos sessions, Max Romeo's "War Ina Babylon," Junior Murvin's "Police and Thieves" — all came from a small concrete building in a Kingston yard. He burned it down in 1979 and never explained why. He spent the next four decades as an itinerant genius, recording sporadically, becoming increasingly eccentric, wearing paint-covered clothes and calling himself the Upsetter. He was right about everything.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Dub</strong> — instrumental remix; strips vocals; manipulates bass, echo, reverb; ancestor of electronic music</div>
+          <div class="vocab-item"><strong>Riddim</strong> — backing track; reused across multiple vocal recordings; the Jamaican production system</div>
+          <div class="vocab-item"><strong>King Tubby</strong> — father of dub; mixing board as instrument; worked with engineer intuition in Kingston</div>
+          <div class="vocab-item"><strong>Black Ark</strong> — Lee Perry studio; Washington Gardens, Kingston; 1973–1979; burned down by Perry himself</div>
+          <div class="vocab-item"><strong>Version</strong> — instrumental B-side of a reggae single; the vehicle for dub and toasting</div>
+          <div class="vocab-item"><strong>Augustus Pablo</strong> — melodica player and producer; "King Tubby Meets Rockers Uptown"; haunting dub classic</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Dub music was invented because Jamaican sound system DJs wanted instrumental versions of records to talk over. King Tubby figured out that if you pulled the bass in and out, added echo to the snare, and let certain elements drop away and return, you had a completely new genre. He was using equipment in ways it was never designed for. Dub is the direct ancestor of hip-hop production, electronic music, ambient, and dubstep. It all came from a mixing board in Kingston being used wrong in exactly the right way."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l6" onclick="markDone('l6')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l7">
+    <div class="lesson-header" onclick="toggle('l7')">
+      <div class="lesson-num">7</div>
+      <div><div class="lesson-title">Peter Tosh and the Radical Tradition</div><div class="lesson-sub">The Wailer who refused to compromise — ever</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Peter Tosh (1944–1987) is the most uncompromising figure in the history of reggae and arguably the most important. Where Marley became global and, in the process, was partially smoothed for international consumption, Tosh refused every accommodation. He was beaten by Jamaican police at the 1978 One Love Peace Concert for delivering a speech about ganja legalization with Manley and Seaga on the platform. He was shot dead in his own home in 1987 by robbers he had previously helped. He made enemies everywhere he went and was right about everything.</p>
+          <p>Legalize It (1976) is the explicit manifesto — the entire album argues for ganja legalization on legal, spiritual, medical, and social grounds, a position so controversial it was banned from Jamaican radio. Equal Rights (1977) is the masterpiece: "Equal Rights," "Downpressor Man," "Stepping Razor" — this last a direct threat to those who would harm him, recorded years before anyone actually did. His Rolling Stones-era recordings ("Don't Look Back" with Jagger, Mystic Man) are more commercially accessible without being dishonest. He remained dangerous until the end.</p>
+          <p>Tosh also represents the friction within the reggae tradition between spiritual acceptance and political rage. Marley tended toward the former; Tosh toward the latter. Burning Spear was ceremonial; Tosh was confrontational. This tension runs through the entire history of the music — the same theological framework producing very different responses to the same conditions of oppression. Understanding Tosh helps you understand why roots reggae is not a monolithic genre but a set of arguments conducted in music.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Legalize It (1976)</strong> Banned from Jamaican radio; the manifesto; entire album about ganja legalization</div>
+          <div class="record-item"><strong>Equal Rights (1977)</strong> The masterpiece; "Stepping Razor," "Downpressor Man"; uncompromising political statement</div>
+          <div class="record-item"><strong>Bush Doctor (1978)</strong> Rolling Stones label; "Don't Look Back" with Jagger; accessible without compromise</div>
+          <div class="record-item"><strong>Mystic Man (1979)</strong> Deep spiritual roots; less commercial than Bush Doctor; underrated</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Peter Tosh delivered a speech about legalizing ganja at the 1978 One Love Peace Concert with the Prime Minister and opposition leader on the same stage, then got beaten by Jamaican police afterward. He had already written 'Stepping Razor' — a song warning that he was dangerous to cross. He was shot dead in his home nine years later. Tosh spent his entire career being exactly as threatening as the authorities always suspected he was. He was also correct about everything."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l7" onclick="markDone('l7')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="phase-label"><span>Phase 3 — <span class="phase-name">Dancehall and the Digital Revolution, 1980–2000</span></span><span>Lessons 8–11</span></div>
+
+  <div class="lesson" id="l8">
+    <div class="lesson-header" onclick="toggle('l8')">
+      <div class="lesson-num">8</div>
+      <div><div class="lesson-title">The Birth of Dancehall</div><div class="lesson-sub">When the drum machine arrived in Kingston — and what it meant</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Dancehall emerged in the late 1970s and early 1980s as a reaction against roots reggae — or more precisely, as the next evolution in the ongoing Jamaican tradition. Where roots was Rastafarian, slow, theological, and politically oriented toward Pan-African liberation, dancehall was secular, faster, focused on the dance floor, and concerned with contemporary Jamaican life: sex, money, style, the ghetto, violence, and pleasure. The shift was generational — the sufferers who had grown up on roots were being succeeded by a younger generation with different references and demands.</p>
+          <p>The arrival of the Drum Computer (Roland TR-808 and later Casio drum machines) in Jamaica in the early 1980s transformed the production aesthetic. The digital riddim — stark, computerized, without the warmth of live drums — created a harder, more abrasive sound that suited dancehall lyrics. Sly Dunbar and Robbie Shakespeare had been the great riddim section of late roots reggae; now producers like King Jammy and later Dave Kelly, Bobby Digital, and Sly & Robbie themselves were programming machines. The Sleng Teng riddim (1985), produced by King Jammy with a digital Casio keyboard, is considered the moment digital dancehall was born — Wayne Smith's "Under Mi Sleng Teng" was the first fully digital reggae record.</p>
+          <p>Toasting — the Jamaican tradition of improvised vocal performance over a riddim — became deejaying in the dancehall era, and the deejay (not DJ in the American sense but vocalist) became the central figure. Yellowman was the first major dancehall star, his albino appearance and sexually explicit lyrics both controversial and commercially dominant. Shabba Ranks, Buju Banton, Beenie Man, and Bounty Killer would follow. The tension between the explicit content of dancehall and Rastafari values, between pleasure and liberation theology, is not resolved — it is the ongoing argument at the center of Jamaican music.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Dancehall</strong> — late 1970s onward; secular, faster, digital, deejay-led; reaction to and evolution of roots</div>
+          <div class="vocab-item"><strong>Digital riddim</strong> — drum machine-based backing track; Sleng Teng 1985 as origin point</div>
+          <div class="vocab-item"><strong>Deejay</strong> — Jamaican term for vocalist toasting over riddim; not a record selector</div>
+          <div class="vocab-item"><strong>Sleng Teng riddim (1985)</strong> — Wayne Smith / King Jammy; first fully digital riddim; changed everything</div>
+          <div class="vocab-item"><strong>Slack</strong> — sexually explicit dancehall lyrics; controversial but commercially dominant</div>
+          <div class="vocab-item"><strong>King Jammy</strong> — producer; "Sleng Teng"; pivotal figure in digital dancehall transition</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"In 1985 a producer called King Jammy put a Wayne Smith vocal over a rhythm programmed on a Casio MT-40 keyboard. 'Under Mi Sleng Teng' was the first fully digital reggae record. Older musicians and roots purists were horrified. The dance halls went crazy. Every major Jamaican producer immediately switched to digital production. It took about six months for the entire sound of Jamaican music to change — because a Casio keyboard cost less than hiring a drummer."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l8" onclick="markDone('l8')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l9">
+    <div class="lesson-header" onclick="toggle('l9')">
+      <div class="lesson-num">9</div>
+      <div><div class="lesson-title">Buju Banton, Sizzla, and Conscious Dancehall</div><div class="lesson-sub">The artists who brought roots theology back into the modern era</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Buju Banton began his career as a slack dancehall artist in the early 1990s — raw, sexual, commercially successful. His 1992 track "Boom Bye Bye" (advocating violence against gay men) became one of the most controversial records in reggae history, leading to decades of concert cancellations internationally and a conversation about homophobia in Jamaican culture that is still ongoing. But Buju's trajectory changed radically in the mid-1990s when he converted to Rastafari. 'Til Shiloh (1995) is one of the great conversion narratives in popular music — an artist completely reinventing himself theologically and sonically, trading slack for scripture.</p>
+          <p>Sizzla Kalonji is the most prolific and theologically intense artist of the conscious dancehall tradition — he has released over 60 albums, most of them dense with Rastafari doctrine, African history, and spiritual instruction. Black Woman & Child (1997) is the starting point. His output is uneven but his best work is extraordinary. Capleton, Anthony B, and Luciano represent different facets of the same conscious tradition — artists who used dancehall production aesthetics to deliver roots theology to a generation that had grown up on Yellowman and Shabba Ranks.</p>
+          <p>The conscious dancehall artists also inherited the roots tradition of firetop — calling down fire and judgment on Babylon, using violent imagery in the service of spiritual warfare. The line between metaphorical and literal in these lyrics has been a source of controversy; international promoters and music festivals have wrestled with it for decades. The complexity is real: the same tradition that produced the most beautiful music of liberation has also produced lyrics that caused genuine harm. Holding both truths is required for understanding the music honestly.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Buju Banton — Til Shiloh (1995)</strong> Conversion album; ska-influenced production; "Untold Stories"; genuinely great</div>
+          <div class="record-item"><strong>Buju Banton — Inna Heights (1997)</strong> The mature statement; rich production; "Hills and Valleys"</div>
+          <div class="record-item"><strong>Sizzla — Black Woman & Child (1997)</strong> The essential Sizzla record; tender and fierce in equal measure</div>
+          <div class="record-item"><strong>Capleton — More Fire (2000)</strong> Fierce conscious dancehall; "More Fire"; prophetic and confrontational</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Buju Banton converted to Rastafari in the mid-1990s and made one of the great conversion albums in popular music — 'Til Shiloh, where you can hear the entire theology changing in real time. He went from 'Boom Bye Bye' to 'Untold Stories' in three years. That is not a commercial calculation. That is a man actually reckoning with his own conscience. The music is better for it. The controversy around his earlier work did not go away. Both things are true."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l9" onclick="markDone('l9')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l10">
+    <div class="lesson-header" onclick="toggle('l10')">
+      <div class="lesson-num">10</div>
+      <div><div class="lesson-title">The UK Connection — 2-Tone, Lovers Rock, and the Diaspora</div><div class="lesson-sub">What happened when Jamaican music reached Britain</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The Windrush generation — Jamaican immigrants who arrived in Britain from 1948 onward — brought Jamaican music with them. Sound system culture transplanted to Brixton, Notting Hill, and Handsworth. By the late 1970s, second-generation British-Caribbean youth had developed their own subgenres: Lovers Rock (sensual, melodic reggae made in Britain, largely by women for women — Janet Kay, Carroll Thompson) and the UK roots scene (Steel Pulse, Aswad, Misty in Roots). These were not Jamaican music — they were Jamaican-influenced British music, dealing with British racism, police violence, and immigrant experience.</p>
+          <p>2-Tone emerged in Coventry in 1979 — a biracial British ska revival that combined Jamaican ska with punk energy and an explicit anti-racism message. The Specials, Madness, the Selecter, the Beat (English Beat). The timing was perfect: Britain was in the grip of economic depression and rising National Front activity; 2-Tone was the counterprogramming, with Black and white musicians sharing stages and singing about racial integration as a political act. "Ghost Town" (1981) by the Specials is one of the great political records in British history — released during the 1981 riots, it described a country falling apart with an accuracy that seemed prophetic because it was observational.</p>
+          <p>The Notting Hill Carnival, founded in 1966 by Claudia Jones as a response to racist violence, became the annual expression of Caribbean cultural presence in Britain. Sound systems from all Jamaican traditions — roots, dancehall, lovers rock — assembled on the streets of Notting Hill every August Bank Holiday. Carnival was raided by police, shut down, threatened, and survived. It is now Europe largest street festival and the living proof that Jamaican music culture cannot be contained.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Essential Records</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>The Specials — The Specials (1979)</strong> 2-Tone debut; "A Message to You Rudy"; Jamaican ska meets British punk</div>
+          <div class="record-item"><strong>The Specials — Ghost Town (1981)</strong> Released during 1981 riots; one of the great political singles in British history</div>
+          <div class="record-item"><strong>Steel Pulse — Handsworth Revolution (1978)</strong> UK roots masterpiece; "Ku Klux Klan"; British-Caribbean experience documented</div>
+          <div class="record-item"><strong>Janet Kay — Silly Games (1979)</strong> UK Lovers Rock peak; #2 UK chart; smooth, beautiful, distinctly British</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The Specials released 'Ghost Town' in June 1981. Within weeks the 1981 riots broke out in Brixton, Toxteth, Handsworth, and Moss Side. The song described empty factories, violent streets, and a country coming apart — not as prediction but as observation of what was already happening. It went to number one. The political establishment was described accurately, in three minutes, by a biracial ska band from Coventry. British music criticism has never fully recovered from being scooped like that."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l10" onclick="markDone('l10')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l11">
+    <div class="lesson-header" onclick="toggle('l11')">
+      <div class="lesson-num">11</div>
+      <div><div class="lesson-title">Reggaeton — The Caribbean Basin Mutation</div><div class="lesson-sub">How Jamaican music became Latin America's dominant sound</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Reggaeton is the most commercially successful descendant of Jamaican music — a genre born in Panama and Puerto Rico in the 1990s, combining Jamaican dancehall with Latin American Spanish-language rap and Caribbean percussion. The dembow riddim — itself derived from a 1990 Shabba Ranks track produced by Bobby Digital — is the rhythmic foundation: a syncopated bass-drum pattern with an offbeat kick that drives essentially every reggaeton track. DJ Playero in Puerto Rico and El General in Panama are the origin points; Daddy Yankee, Don Omar, Wisin & Yandel, and later Bad Bunny are the commercial peak.</p>
+          <p>Bad Bunny represents reggaeton's current global dominance — he is consistently the most-streamed artist in the world (2020, 2021, 2022 on Spotify), performing entirely in Spanish to audiences on every continent, mixing reggaeton with trap, bachata, and experimental production. He is also explicitly Puerto Rican in ways that resonate politically — his 2020 protest EP YHLQMDLG (Yo Hago Lo Que Me Da La Gana) was released during Puerto Rico's political crisis and topped charts globally. The Jamaican chain — mento to ska to rocksteady to roots to dancehall to reggaeton — connects Marcus Garvey to Bad Bunny across seventy years.</p>
+          <p>The global spread of reggaeton has been accompanied by debates about cultural appropriation and authenticity. The dembow riddim is Jamaican; the language is Spanish; the producers are Puerto Rican and Colombian and Dominican. The genre has absorbed cumbia, vallenato, Afrobeats, and trap while remaining recognizably itself. It is the clearest example in contemporary music of what happens when a rhythm pattern is genuinely global — it does not stay pure, it mutates, and the mutations are where the most interesting music lives.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Dembow riddim</strong> — 1990 Shabba Ranks track; syncopated bass-drum pattern; foundation of reggaeton</div>
+          <div class="vocab-item"><strong>El General</strong> — Panama; early reggaeton pioneer; Spanish-language dancehall</div>
+          <div class="vocab-item"><strong>Daddy Yankee</strong> — Puerto Rico; "Gasolina" (2004); first global reggaeton crossover</div>
+          <div class="vocab-item"><strong>Bad Bunny</strong> — most-streamed artist globally 2020-22; political; entirely in Spanish; the current peak</div>
+          <div class="vocab-item"><strong>Perreo</strong> — reggaeton-specific dance style; the dembow rhythm made physical</div>
+          <div class="vocab-item"><strong>Trap latino</strong> — reggaeton/trap hybrid; Bad Bunny and J Balvin primary architects</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The rhythm that drives every reggaeton track — the dembow — came from a 1990 Shabba Ranks record from Kingston, Jamaica. Thirty years later Bad Bunny is the most-streamed artist in the world, performing entirely in Spanish, and his rhythm section is still built on that same Jamaican bass-drum pattern. The chain from Coxsone Dodd's Studio One in 1963 to Bad Bunny's 2020 Puerto Rican protest album is unbroken. Every link is audible if you listen for it."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l11" onclick="markDone('l11')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="phase-label"><span>Phase 4 — <span class="phase-name">Global Reach and the Listening Curriculum</span></span><span>Lessons 12–14</span></div>
+
+  <div class="lesson" id="l12">
+    <div class="lesson-header" onclick="toggle('l12')">
+      <div class="lesson-num">12</div>
+      <div><div class="lesson-title">Reggae's Global Diaspora</div><div class="lesson-sub">From West Africa to Japan to the Pacific Islands — how the music traveled</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Reggae is one of the most globally distributed music genres in history. Its spread followed several routes simultaneously: the Jamaican diaspora to Britain, Canada, and the United States; the marketing of Marley's Island Records catalog to rock audiences in the 1970s; the missionary activity of Rastafari theology in Africa; and the sound system culture that could be replicated anywhere with a speaker rig and records. The result is that reggae has been adapted into local musical traditions on every continent.</p>
+          <p>In West Africa, reggae arrived in the 1970s and immediately resonated — the Pan-African consciousness of roots reggae connected with post-independence African political movements in ways that made sense. Alpha Blondy from Ivory Coast and Tiken Jah Fakoly are the great West African reggae artists, singing in French, Dioula, and Arabic about African political corruption and neo-colonialism in terms that would have satisfied Peter Tosh. Lucky Dube in South Africa made reggae that explicitly addressed apartheid and its aftermath — his murder in 2007 was a genuine loss to the genre.</p>
+          <p>In Japan, reggae found an unlikely home — a deep sound system culture developed in Tokyo and Osaka, entirely dedicated to Jamaican production techniques and riddims. In the Pacific Islands — Hawaii, New Zealand, the Marshall Islands — reggae has merged with indigenous music traditions to create forms that are genuinely new. In Hawaii, Jawaiian — reggae fused with Hawaiian slack-key guitar traditions — has been the dominant local music form for thirty years. IZ (Israel Kamakawiwoole) was not a reggae artist, but the Hawaiian music tradition he represented exists in conversation with reggae in ways that are audible. The Pacific is a reggae ocean.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Global Artists</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>Alpha Blondy (Ivory Coast)</strong> Reggae in French/Dioula; "Cocody Rock"; African political consciousness</div>
+          <div class="record-item"><strong>Lucky Dube (South Africa)</strong> Apartheid-era reggae; "Slave," "Together as One"; murdered 2007</div>
+          <div class="record-item"><strong>Tiken Jah Fakoly (Ivory Coast)</strong> Contemporary African reggae; neo-colonialism; Marley-influenced but distinctly African</div>
+          <div class="record-item"><strong>Groundation (Hawaii/California)</strong> Jazz-influenced reggae; deep Rastafari theology; academic reggae at its best</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Reggae may be the only genre that has a genuinely global sound system culture — dedicated communities in Japan, West Africa, New Zealand, Brazil, and Scandinavia, all running their own sound rigs, playing Jamaican riddims, and often producing their own music in the same tradition. Hawaii developed an entire sub-genre called Jawaiian — reggae fused with slack-key guitar. The most-streamed artist in the world is Puerto Rican and his rhythm section is Jamaican. This is what genuine cultural diffusion looks like."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l12" onclick="markDone('l12')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l13">
+    <div class="lesson-header" onclick="toggle('l13')">
+      <div class="lesson-num">13</div>
+      <div><div class="lesson-title">The Listening Curriculum</div><div class="lesson-sub">The 20 records that tell the whole story</div></div>
+      <div class="lesson-time">~60 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">The 20 Essential Records — In Order</div>
+        <div class="records-grid">
+          <div class="record-item"><strong>The Skatalites — Foundation Ska (1963–65)</strong> Start here. The rhythm everything else comes from.</div>
+          <div class="record-item"><strong>Alton Ellis — Mr. Soul of Jamaica (1967)</strong> Rocksteady peak. The smoothest voice in the tradition.</div>
+          <div class="record-item"><strong>The Heptones — On Top (1968)</strong> Late rocksteady to early reggae. Harmony perfection.</div>
+          <div class="record-item"><strong>Toots and the Maytals — Funky Kingston (1975)</strong> The most soulful reggae ever made. Toots was Otis Redding and Bob Marley simultaneously.</div>
+          <div class="record-item"><strong>Burning Spear — Marcus Garvey (1975)</strong> Deep roots theology. Ceremonial and hypnotic.</div>
+          <div class="record-item"><strong>Bob Marley — Rastaman Vibration (1976)</strong> His most political major-label record. "War" is a UN speech.</div>
+          <div class="record-item"><strong>Peter Tosh — Equal Rights (1977)</strong> Uncompromising. "Stepping Razor." The most radical roots record.</div>
+          <div class="record-item"><strong>Culture — Two Sevens Clash (1977)</strong> Stopped Kingston on 7/7/77. Apocalyptic and essential.</div>
+          <div class="record-item"><strong>The Congos — Heart of the Congos (1977)</strong> Produced by Lee Perry. Falsetto and roots mystery.</div>
+          <div class="record-item"><strong>Bob Marley — Exodus (1977)</strong> Time album of the century. Recorded in London exile.</div>
+          <div class="record-item"><strong>Augustus Pablo — King Tubby Meets Rockers Uptown (1976)</strong> The dub masterpiece. Melodica and echo forever.</div>
+          <div class="record-item"><strong>Steel Pulse — Handsworth Revolution (1978)</strong> UK roots. British-Caribbean experience at its most powerful.</div>
+          <div class="record-item"><strong>The Specials — Ghost Town (1981)</strong> 2-Tone peak. Released during the riots. One of the great political singles.</div>
+          <div class="record-item"><strong>Wayne Smith — Under Mi Sleng Teng (1985)</strong> The digital moment. Everything changed after this.</div>
+          <div class="record-item"><strong>Buju Banton — Til Shiloh (1995)</strong> The conversion. Dancehall artist becomes roots prophet.</div>
+          <div class="record-item"><strong>Sizzla — Black Woman & Child (1997)</strong> Conscious dancehall peak. Tender and fierce.</div>
+          <div class="record-item"><strong>Burning Spear — Calling Rastafari (1999)</strong> The elder still burning. Roots never stopped.</div>
+          <div class="record-item"><strong>Damian Marley — Welcome to Jamrock (2005)</strong> Bob son. Hip-hop meets roots reggae. "Jamrock" is the greatest modern reggae track.</div>
+          <div class="record-item"><strong>Alpha Blondy — Jah Victory (2007)</strong> West African reggae at its peak. Pan-African consciousness in French.</div>
+          <div class="record-item"><strong>Bad Bunny — YHLQMDLG (2020)</strong> The end of the chain from mento. Puerto Rican, Spanish, global, Jamaican DNA.</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The reggae story in 20 records runs from 1963 to 2020 — from a Jamaican studio band playing fast American R&B with an upstroked guitar to the most-streamed artist on Earth. The offbeat guitar chop is in every record. The bass is always the most important instrument. And somewhere in the middle, Lee Perry built a concrete studio in his backyard, made some of the greatest records ever recorded, and then burned it down. The music survived. It always does."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l13" onclick="markDone('l13')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="lesson" id="l14">
+    <div class="lesson-header" onclick="toggle('l14')">
+      <div class="lesson-num">14</div>
+      <div><div class="lesson-title">Why Reggae Matters — The Bass, the Politics, and the Spiritual</div><div class="lesson-sub">What this music is actually doing and why it has lasted</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Reggae endures because it operates simultaneously on three levels that most music addresses only one or two of: the physical (the bass, the rhythm, the body), the political (Babylon, liberation, justice), and the spiritual (Jah, Zion, I and I). This triple function is why the music has resonated globally across cultures that have no direct connection to Jamaica — the bass frequency reaches the body regardless of language; the politics resonates wherever oppression exists; the spiritual offers a framework for meaning-making that is neither Western Christianity nor secular materialism.</p>
+          <p>The bass as physical phenomenon: reggae bass frequencies are deliberately mixed louder than in most Western popular music. The sound system tradition — massive speaker rigs felt before they are heard — made the physical impact of bass the defining aesthetic experience of the music. When you hear a roots reggae track on a proper sound system, the bass is not accompaniment to the melody. It is the primary event. This is a deliberate theological choice: the bass is Jah's voice, felt in the chest, below the level of the intellect. You cannot think your way into reggae. You have to let the bass in.</p>
+          <p>The persistence of the music over sixty-plus years, through every technological and cultural change, suggests that it addresses something durable in human experience. The three questions reggae asks — how do we live in our bodies? how do we resist power? what do we owe to the sacred? — are not questions that become obsolete. The answers change. The questions stay. That is why a music made in a small Caribbean island in the 1960s is, in 2026, still the most globally distributed rhythm tradition on Earth.</p>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Reggae bass is mixed the way it is because the bass is Jah's voice — felt in the chest, below the intellect. On a proper sound system you feel the low frequencies before you hear them. The music is asking three questions simultaneously: how do we live in our bodies, how do we resist power, and what do we owe the sacred? Those questions do not become obsolete. That is why a music from a small Caribbean island in the 1960s is still the most widely distributed rhythm tradition on Earth sixty years later."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l14" onclick="markDone('l14')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="resources">
+    <div class="resources-hed">Further Reading & Resources</div>
+    <div class="resource-list">
+      <div class="resource-item"><span>Bass Culture — Lloyd Bradley (2000) — the definitive history of Jamaican music; essential</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Essential</span></div>
+      <div class="resource-item"><span>Catch a Fire — Timothy White (1983) — Marley biography; written while he was alive; the standard</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Biography</span></div>
+      <div class="resource-item"><span>The Rough Guide to Reggae — various — comprehensive; good reference; use alongside Bradley</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Reference</span></div>
+      <div class="resource-item"><span>Studio One — online catalog; the most important label in Jamaican music; stream everything</span><a href="https://www.studioone.com" target="_blank">studioone.com ↗</a></div>
+      <div class="resource-item"><span>Reggae Explosion documentary (2001) — broad survey; good introductory film</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Film</span></div>
+    </div>
+  </div>
+
+  <div class="qa-widget">
+    <div class="qa-header">
+      <div class="qa-header-title">Ask the Tutor</div>
+      <div class="qa-header-sub">Reggae · Jamaica · Ska to Reggaeton · Powered by Claude</div>
+    </div>
+    <div class="qa-body">
+      <div class="qa-input-row">
+        <input type="text" class="qa-input" id="qa-input" placeholder="Ask about ska, rocksteady, roots, dancehall, Rastafari, dub, Lee Perry, Marley, reggaeton…" onkeydown="if(event.key==='Enter') askTutor()">
+        <button class="qa-btn" onclick="askTutor()">Ask</button>
+      </div>
+      <div class="qa-response" id="qa-response"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div><p class="footer-name">Brooks Groves</p></div>
+    <div class="footer-links"><a href="/learning/">Learning</a><a href="/">Home</a></div>
+  </div>
+</footer>
+
+<script>
+function toggle(id) { document.getElementById(id).classList.toggle('open'); }
+function markDone(id) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById('check-' + id);
+  el.classList.toggle('done');
+  const isDone = el.classList.contains('done');
+  btn.textContent = isDone ? '✓ Done' : 'Mark done';
+  btn.classList.toggle('done', isDone);
+  localStorage.setItem('reggae-' + id, isDone ? '1' : '');
+  updateProgress();
+}
+function updateProgress() {
+  const total = 14;
+  const done = document.querySelectorAll('.lesson.done').length;
+  document.getElementById('done-count').textContent = done;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+window.addEventListener('DOMContentLoaded', () => {
+  for (let i = 1; i <= 14; i++) {
+    if (localStorage.getItem('reggae-l' + i) === '1') {
+      const el = document.getElementById('l' + i);
+      const btn = document.getElementById('check-l' + i);
+      if (el) el.classList.add('done');
+      if (btn) { btn.textContent = '✓ Done'; btn.classList.add('done'); }
+    }
+  }
+  updateProgress();
+});
+async function askTutor() {
+  const input = document.getElementById('qa-input');
+  const response = document.getElementById('qa-response');
+  const question = input.value.trim();
+  if (!question) return;
+  input.value = '';
+  response.innerHTML = '<span class="qa-loading">Thinking…</span>';
+  try {
+    const res = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'You are an expert tutor for a self-directed curriculum on reggae music — from Jamaican mento and ska in the late 1950s through rocksteady, roots reggae, dub, dancehall, and reggaeton. Cover Rastafari theology, sound system culture, key producers (Lee Perry, King Tubby, Coxsone Dodd), artists (Marley, Tosh, Burning Spear, Culture, Sizzla, Buju), the UK diaspora (2-Tone, Steel Pulse, Lovers Rock), and global spread. Be historically precise, theologically informed, and willing to engage with the political dimensions of the music. Keep answers to 3-4 paragraphs unless asked for more.',
+        messages: [{ role: 'user', content: question }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'No response.';
+    response.innerHTML = text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+  } catch(e) { response.innerHTML = 'Tutor unavailable. Try again in a moment.'; }
+}
+</script>
+</body>
+</html>
