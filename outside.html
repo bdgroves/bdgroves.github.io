@@ -352,6 +352,7 @@
           <a href="https://www.peaksandpints.com/on-tap/" target="_blank">on tap ↗</a>
         </div>
         <div class="fort-george-badge" id="fort-george-alert">🍺 Fort George on tap right now</div>
+        <div class="fort-george-badge" id="kings-daughters-alert">🍺 Kings &amp; Daughters on tap right now</div>
         <div class="peaks-card">
           <div class="peaks-card-name">Peaks &amp; Pints — Proctor</div>
           <div class="peaks-card-desc">28 taps — craft beer, cider, wine, cold brew, kombucha. Tacoma's best bottle shop and taproom.</div>
@@ -458,6 +459,35 @@ async function loadCycling() {
     const upcoming = data.races.filter(r=>r.status==='upcoming').slice(0,5);
     const mono = "font-family:'DM Mono',monospace;font-size:0.46rem;color:var(--stone);font-weight:normal;";
 
+    const RACE_URLS = {
+      'Santos Tour Down Under':'https://www.cyclingnews.com/races/santos-tour-down-under/',
+      'Omloop Het Nieuwsblad':'https://www.cyclingnews.com/races/omloop-het-nieuwsblad/',
+      'Strade Bianche':'https://www.cyclingnews.com/races/strade-bianche/',
+      'Paris-Nice':'https://www.cyclingnews.com/races/paris-nice/',
+      'Tirreno-Adriatico':'https://www.cyclingnews.com/races/tirreno-adriatico/',
+      'Milan–San Remo':'https://www.cyclingnews.com/races/milan-san-remo/',
+      'Volta a Catalunya':'https://www.cyclingnews.com/races/volta-a-catalunya/',
+      'E3 Saxo Classic':'https://www.cyclingnews.com/races/e3-harelbeke/',
+      'In Flanders Fields':'https://www.cyclingnews.com/races/in-flanders-fields/',
+      'Dwars door Vlaanderen':'https://www.cyclingnews.com/races/dwars-door-vlaanderen/',
+      'Ronde van Vlaanderen':'https://www.cyclingnews.com/races/ronde-van-vlaanderen/',
+      'Itzulia Basque Country':'https://www.cyclingnews.com/races/itzulia-basque-country/',
+      'Paris–Roubaix':'https://www.cyclingnews.com/races/paris-roubaix/',
+      'Amstel Gold Race':'https://www.cyclingnews.com/races/amstel-gold-race/',
+      'La Flèche Wallonne':'https://www.cyclingnews.com/races/la-fleche-wallonne/',
+      'Liège–Bastogne–Liège':'https://www.cyclingnews.com/races/liege-bastogne-liege/',
+      'Tour de Romandie':'https://www.cyclingnews.com/races/tour-de-romandie/',
+      'Eschborn-Frankfurt':'https://www.cyclingnews.com/races/eschborn-frankfurt/',
+      "Giro d'Italia":'https://www.cyclingnews.com/races/giro-d-italia/',
+      'Tour de Suisse':'https://www.cyclingnews.com/races/tour-de-suisse/',
+      'Tour de France':'https://www.cyclingnews.com/races/tour-de-france/',
+      'ADAC Cyclassics':'https://www.cyclingnews.com/races/hamburg-cyclassics/',
+      'Vuelta a España':'https://www.cyclingnews.com/races/vuelta-a-espana/',
+      'GP Québec':'https://www.cyclingnews.com/races/grand-prix-cycliste-de-quebec/',
+      'GP Montréal':'https://www.cyclingnews.com/races/grand-prix-cycliste-de-montreal/',
+      'Il Lombardia':'https://www.cyclingnews.com/races/il-lombardia/',
+    };
+
     const renderRace = r => {
       const dateStr = new Date(r.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
       let leader='', statusClass='sched', statusLabel='Upcoming';
@@ -468,8 +498,12 @@ async function loadCycling() {
         statusClass='live'; statusLabel='<span class="live-dot"></span>Live';
         leader=`<p class="race-leader" style="color:var(--rust);">Racing now</p>`;
       }
+      const url = RACE_URLS[r.name];
+      const nameHtml = url
+        ? `<a href="${url}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;border-bottom:1px solid var(--mist);transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--mist)'">${r.name}</a>`
+        : r.name;
       return `<div class="race-row">
-        <div><p class="race-name">${r.name} <span style="${mono}">${r.category}</span></p>${leader}</div>
+        <div><p class="race-name">${nameHtml} <span style="${mono}">${r.category}</span></p>${leader}</div>
         <div class="race-meta"><span>${dateStr}</span><span class="score-status ${statusClass}">${statusLabel}</span></div>
       </div>`;
     };
@@ -585,60 +619,80 @@ function renderAllTime(at) {
     <div class="alltime-card"><div class="alltime-label">🏊 Swimming</div><div><span class="alltime-val">${at.swim.yards.toLocaleString()}</span> <span class="alltime-unit">yards</span></div><div class="alltime-count">${at.swim.count.toLocaleString()} activities</div></div>`;
 }
 
+// Shared tap list fetch — cached so we only hit the proxy once
+let _tapListDoc = null;
+async function getTapList() {
+  if (_tapListDoc) return _tapListDoc;
+  const res = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev/proxy?url=' + encodeURIComponent('https://www.peaksandpints.com/on-tap/'));
+  const html = await res.text();
+  const parser = new DOMParser();
+  _tapListDoc = { doc: parser.parseFromString(html, 'text/html'), html };
+  return _tapListDoc;
+}
+
+// Extract beer names for a brewery from the parsed tap list
+function findBreweryBeers(doc, brewerySearch) {
+  const beers = [];
+  const seen = new Set();
+  doc.querySelectorAll('li').forEach(li => {
+    const text = li.textContent;
+    if (!text.toLowerCase().includes(brewerySearch.toLowerCase())) return;
+    const chunks = text
+      .split('\n')
+      .map(s => s.replace(/\s+/g, ' ').trim())
+      .filter(s => s.length > 2);
+    let found = false;
+    for (const chunk of chunks) {
+      if (chunk.toLowerCase().includes(brewerySearch.toLowerCase())) { found = true; continue; }
+      if (found) {
+        if (/^[\d\.]+%?$|IBU|Just Tapped|^\w{2}$/.test(chunk)) continue;
+        if (chunk.length < 4) continue;
+        if (!seen.has(chunk)) { seen.add(chunk); beers.push(chunk.substring(0, 55)); }
+        break;
+      }
+    }
+  });
+  return beers;
+}
+
 async function checkFortGeorge() {
   const badge = document.getElementById('fort-george-alert');
   try {
-    const res = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev/proxy?url=' + encodeURIComponent('https://www.peaksandpints.com/on-tap/'));
-    const html = await res.text();
+    const { doc, html } = await getTapList();
     if (!html.toLowerCase().includes('fort george')) return;
-
-    // The DigitalPour tap list renders each tap as a <li> with text chunks
-    // Structure per entry: tap# | brewery | beer name | style | location | abv | Just Tapped
-    // We find Fort George entries then pull the beer name from the same <li>
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-
-    const beers = [];
-    const seen = new Set();
-
-    // Walk all list items
-    doc.querySelectorAll('li').forEach(li => {
-      const text = li.textContent;
-      if (!text.toLowerCase().includes('fort george')) return;
-
-      // Get all text nodes, clean them up
-      const chunks = text
-        .split('\n')
-        .map(s => s.replace(/\s+/g, ' ').trim())
-        .filter(s => s.length > 2 && !/^\s*$/.test(s));
-
-      // Find the chunk with Fort George, beer name should be right after
-      let foundFG = false;
-      for (const chunk of chunks) {
-        if (chunk.toLowerCase().includes('fort george')) {
-          foundFG = true;
-          continue;
-        }
-        if (foundFG) {
-          // Skip % values, IBU, location shortcodes, Just Tapped
-          if (/^[\d\.]+%?$|IBU|Just Tapped|^\w{2}$/.test(chunk)) continue;
-          // Skip style descriptions that are too short or look like cities
-          if (chunk.length < 4) continue;
-          if (!seen.has(chunk)) {
-            seen.add(chunk);
-            beers.push(chunk.substring(0, 55));
-          }
-          break;
-        }
-      }
-    });
-
+    const beers = findBreweryBeers(doc, 'fort george');
     const label = beers.length > 1
       ? '🍺 Fort George x' + beers.length + ': ' + beers.join(' · ')
       : beers.length === 1
         ? '🍺 Fort George on tap: ' + beers[0]
         : '🍺 Fort George on tap right now';
+    badge.textContent = label;
+    badge.classList.add('visible');
+  } catch(e) {}
+}
 
+async function checkKingsDaughters() {
+  const badge = document.getElementById('kings-daughters-alert');
+  try {
+    const { doc, html } = await getTapList();
+    // Try both "Kings & Daughters" and "Kings and Daughters"
+    const lower = html.toLowerCase();
+    if (!lower.includes('kings') || !lower.includes('daughters')) return;
+    const beers = findBreweryBeers(doc, 'kings');
+    // Filter to only Kings & Daughters entries (not other "Kings" breweries)
+    const kd = beers.filter((b, i) => {
+      // Re-check the li text to confirm it's Kings & Daughters
+      let found = false;
+      doc.querySelectorAll('li').forEach(li => {
+        const t = li.textContent.toLowerCase();
+        if ((t.includes('kings') && t.includes('daughters')) && t.includes(b.toLowerCase())) found = true;
+      });
+      return found;
+    });
+    if (!kd.length) return;
+    const label = kd.length > 1
+      ? '🍺 Kings & Daughters x' + kd.length + ': ' + kd.join(' · ')
+      : '🍺 Kings & Daughters on tap: ' + kd[0];
     badge.textContent = label;
     badge.classList.add('visible');
   } catch(e) {}
@@ -652,6 +706,7 @@ loadCyclingNews();
 loadBeers();
 loadStrava();
 checkFortGeorge();
+checkKingsDaughters();
 setInterval(()=>{if(!document.hidden){loadMLB();loadStandings();}},5*60*1000);
 </script>
 </body>
