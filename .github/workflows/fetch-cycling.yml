@@ -455,26 +455,35 @@ jobs:
               if stats.get("fetched"):
                   print(f"  {name}: {stats.get('wins_2026', 0)} wins in 2026, PCS rank #{stats.get('pcs_ranking', '?')}")
 
-          # Cross-reference rider wins against calendar to catch missed results
+          # Cross-reference rider wins against calendar
+          import unicodedata
+          def norm(s):
+              # Replace dashes/en-dashes BEFORE stripping accents
+              s = s.replace("\u2013", " ").replace("\u2014", " ").replace("-", " ")
+              s = unicodedata.normalize("NFKD", s)
+              s = s.encode("ascii", "ignore").decode("ascii")
+              return s.lower().strip()
+
           for rider in riders:
               if not rider.get("fetched"):
                   continue
               for win in rider.get("win_list", []):
-                  win_race = win.get("race", "").strip().lower().replace("-", " ")
-                  if not win_race or len(win_race) < 4:
+                  win_raw = win.get("race", "")
+                  if not win_raw:
                       continue
+                  win_norm = norm(win_raw)
                   for r in races:
                       if r["status"] != "upcoming":
                           continue
-                      cal = r["name"].lower().replace("-", " ").replace("\u2013", " ").replace("\u00e8", "e").replace("\u00e8", "e")
-                      # Match if 2+ words overlap
-                      w_words = set(win_race.split())
-                      c_words = set(cal.split())
-                      if len(w_words & c_words) >= 2:
+                      cal_norm = norm(r["name"])
+                      w_words = set(w for w in win_norm.split() if len(w) > 3)
+                      c_words = set(w for w in cal_norm.split() if len(w) > 3)
+                      print(f"    Checking {win_raw!r} vs {r['name']!r}: {w_words & c_words}")
+                      if w_words and c_words and len(w_words & c_words) >= 1:
                           r["status"] = "final"
                           r["winner"] = rider["name"]
                           r["team"] = rider.get("team", "")
-                          print(f"  Cross-ref win: {r['name']} -> {rider['name']}")
+                          print(f"  Cross-ref HIT: {r['name']} -> {rider['name']}")
                           break
 
           output = {
