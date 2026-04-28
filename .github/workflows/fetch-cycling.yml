@@ -138,6 +138,108 @@ jobs:
                   traceback.print_exc()
                   return {"name": display_name, "flag": nationality_flag, "fetched": False, "error": str(e)}
 
+          # ── AUTO-FETCH RACE RESULTS FROM PCS ──
+          PCS_RACE_SLUGS = {
+              "Santos Tour Down Under": "tour-down-under",
+              "Omloop Het Nieuwsblad": "omloop-het-nieuwsblad",
+              "Strade Bianche": "strade-bianche",
+              "Paris-Nice": "paris-nice",
+              "Tirreno-Adriatico": "tirreno-adriatico",
+              "Milan\u2013San Remo": "milano-sanremo",
+              "Volta a Catalunya": "volta-a-catalunya",
+              "E3 Saxo Classic": "e3-saxo-classic",
+              "In Flanders Fields": "in-flanders-fields-uci",
+              "Dwars door Vlaanderen": "dwars-door-vlaanderen",
+              "Ronde van Vlaanderen": "ronde-van-vlaanderen",
+              "Itzulia Basque Country": "itzulia-basque-country",
+              "Paris\u2013Roubaix": "paris-roubaix",
+              "Amstel Gold Race": "amstel-gold-race",
+              "La Fl\u00e8che Wallonne": "la-fleche-wallonne",
+              "Li\u00e8ge\u2013Bastogne\u2013Li\u00e8ge": "liege-bastogne-liege",
+              "Tour de Romandie": "tour-de-romandie",
+              "Eschborn-Frankfurt": "eschborn-frankfurt",
+              "Giro d'Italia": "giro-d-italia",
+              "Tour de Suisse": "tour-de-suisse",
+              "Tour de France": "tour-de-france",
+              "ADAC Cyclassics": "hamburg-cyclassics",
+              "Vuelta a Espa\u00f1a": "vuelta-a-espana",
+              "GP Qu\u00e9bec": "gp-quebec",
+              "GP Montr\u00e9al": "gp-montreal",
+              "Il Lombardia": "il-lombardia",
+          }
+
+          KNOWN_WINNERS = {
+              "Tadej Poga\u010dar": ("Tadej Poga\u010dar \U0001f308", "UAE Team Emirates XRG"),
+              "Tadej Pogacar": ("Tadej Poga\u010dar \U0001f308", "UAE Team Emirates XRG"),
+              "Mathieu van der Poel": ("Mathieu van der Poel", "Alpecin-Premier Tech"),
+              "Remco Evenepoel": ("Remco Evenepoel", "Red Bull - BORA - hansgrohe"),
+              "Wout van Aert": ("Wout van Aert", "Visma-Lease a Bike"),
+              "Jonas Vingegaard": ("Jonas Vingegaard", "Visma-Lease a Bike"),
+              "Paul Seixas": ("Paul Seixas", "Decathlon CMA CGM"),
+          }
+
+          def fetch_race_result(race_name, race_date_str):
+              """Fetch race winner from PCS. Returns (winner, team) or (None, None)."""
+              slug = PCS_RACE_SLUGS.get(race_name)
+              if not slug:
+                  print(f"    No PCS slug for {race_name}")
+                  return None, None
+              try:
+                  import cloudscraper
+                  from selectolax.parser import HTMLParser
+                  import re
+                  scraper = cloudscraper.create_scraper()
+                  headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+                  url = f"https://www.procyclingstats.com/race/{slug}/2026/result"
+                  print(f"    Fetching result: {url}")
+                  r = scraper.get(url, headers=headers, timeout=15)
+                  if r.status_code != 200:
+                      print(f"    HTTP {r.status_code} for {race_name}")
+                      return None, None
+                  tree = HTMLParser(r.text)
+                  # PCS result table: first data row is the winner (rank 1)
+                  table = tree.css_first("table.results")
+                  if not table:
+                      # Try alternate selector
+                      table = tree.css_first("div.result-cont table")
+                  if not table:
+                      print(f"    No results table found for {race_name}")
+                      return None, None
+                  rows = table.css("tr")
+                  for row in rows:
+                      cols = row.css("td")
+                      if not cols:
+                          continue
+                      rank_text = cols[0].text(strip=True)
+                      if rank_text != "1":
+                          continue
+                      # Find rider name — usually in an <a> tag
+                      rider_name = ""
+                      team_name = ""
+                      for col in cols:
+                          a = col.css_first("a[href*='/rider/']")
+                          if a:
+                              rider_name = a.text(strip=True)
+                              break
+                      for col in cols:
+                          a = col.css_first("a[href*='/team/']")
+                          if a:
+                              team_name = a.text(strip=True)
+                              break
+                      if rider_name:
+                          # Check known winners for canonical name/team
+                          for key, (canonical, team) in KNOWN_WINNERS.items():
+                              if key.lower() in rider_name.lower():
+                                  print(f"    Winner: {canonical} ({team})")
+                                  return canonical, team
+                          print(f"    Winner: {rider_name} ({team_name or '?'})")
+                          return rider_name, team_name
+                  print(f"    No rank-1 row found for {race_name}")
+                  return None, None
+              except Exception as e:
+                  print(f"    Error fetching {race_name}: {e}")
+                  return None, None
+
           # ── RACE CALENDAR ──
           races = [
             {
@@ -297,6 +399,24 @@ jobs:
               race_date = date.fromisoformat(r["date"])
               delta = (race_date - today).days
               r["days_away"] = delta if delta >= 0 else None
+
+          # ── AUTO-UPDATE RACE RESULTS ──
+          # For any race past its date still showing upcoming, try PCS
+          for r in races:
+              if r["status"] != "upcoming":
+                  continue
+              race_date = date.fromisoformat(r["date"])
+              if (today - race_date).days < 1:
+                  continue
+              print(f"  Auto-fetching result for {r['name']} ({r['date']})...")
+              winner, team = fetch_race_result(r["name"], r["date"])
+              if winner:
+                  r["status"] = "final"
+                  r["winner"] = winner
+                  r["team"] = team
+                  print(f"  ✓ {r['name']}: {winner}")
+              else:
+                  print(f"  ✗ Could not auto-fetch {r['name']} — leaving as upcoming")
 
           # ── FETCH RIDER STATS ──
           riders = []
