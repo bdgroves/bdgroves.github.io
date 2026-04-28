@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -11,414 +10,410 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-```
-:root {
-  --bg:        #f5f0e8;
-  --parchment: #ede6d5;
-  --ink:       #2b2116;
-  --rust:      #8b3a1a;
-  --gold:      #a07820;
-  --muted:     #7a6a55;
-  --rule:      #d4c9b5;
-  --white:     #faf8f3;
-}
+    :root {
+      --bg:        #f5f0e8;
+      --parchment: #ede6d5;
+      --ink:       #2b2116;
+      --rust:      #8b3a1a;
+      --gold:      #a07820;
+      --muted:     #7a6a55;
+      --rule:      #d4c9b5;
+      --white:     #faf8f3;
+    }
 
-html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; }
 
-body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: 'Libre Baskerville', Georgia, serif;
-  font-size: 15px;
-  line-height: 1.7;
-  min-height: 100vh;
-}
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Libre Baskerville', Georgia, serif;
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
 
-a { color: var(--rust); text-decoration: none; }
-a:hover { text-decoration: underline; }
+    a { color: var(--rust); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
-/* ─── Site nav (matches brooksgroves.com) ─── */
-.site-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.9rem 2rem;
-  border-bottom: 1px solid var(--rule);
-  background: var(--bg);
-}
-.site-nav .wordmark {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--ink);
-  letter-spacing: 0.01em;
-}
-.site-nav .wordmark:hover { text-decoration: none; color: var(--rust); }
-.nav-links {
-  display: flex;
-  gap: 1.5rem;
-  list-style: none;
-}
-.nav-links a {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.nav-links a:hover { color: var(--rust); text-decoration: none; }
+    /* ─── Site nav (matches brooksgroves.com) ─── */
+    .site-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 2rem;
+      border-bottom: 1px solid var(--rule);
+      background: var(--bg);
+    }
+    .site-nav .wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: 0.01em;
+    }
+    .site-nav .wordmark:hover { text-decoration: none; color: var(--rust); }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .nav-links a:hover { color: var(--rust); text-decoration: none; }
 
-/* ─── Page header ─── */
-.page-header {
-  background: var(--parchment);
-  border-bottom: 1px solid var(--rule);
-  padding: 2.5rem 2rem 2rem;
-}
-.page-header .kicker {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--rust);
-  margin-bottom: 0.5rem;
-}
-.page-header h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.2rem;
-  font-weight: 700;
-  line-height: 1.15;
-  color: var(--ink);
-  margin-bottom: 0.6rem;
-}
-.page-header p {
-  font-size: 0.9rem;
-  color: var(--muted);
-  max-width: 540px;
-  font-style: italic;
-}
+    /* ─── Page header ─── */
+    .page-header {
+      background: var(--parchment);
+      border-bottom: 1px solid var(--rule);
+      padding: 2.5rem 2rem 2rem;
+    }
+    .page-header .kicker {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 0.5rem;
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 0.6rem;
+    }
+    .page-header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 540px;
+      font-style: italic;
+    }
 
-/* ─── Input bar ─── */
-.input-bar {
-  background: var(--white);
-  border-bottom: 1px solid var(--rule);
-  padding: 1.25rem 2rem;
-}
-.input-row {
-  display: flex;
-  gap: 0.6rem;
-  max-width: 820px;
-  align-items: center;
-}
-.url-input {
-  flex: 1;
-  background: var(--bg);
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  padding: 0.55rem 0.9rem;
-  font-family: 'DM Mono', monospace;
-  font-size: 0.75rem;
-  color: var(--ink);
-  outline: none;
-  transition: border-color 0.2s;
-}
-.url-input:focus { border-color: var(--rust); }
-.url-input::placeholder { color: #bbb0a0; }
+    /* ─── Input bar ─── */
+    .input-bar {
+      background: var(--white);
+      border-bottom: 1px solid var(--rule);
+      padding: 1.25rem 2rem;
+    }
+    .input-row {
+      display: flex;
+      gap: 0.6rem;
+      max-width: 820px;
+      align-items: center;
+    }
+    .url-input {
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 0.55rem 0.9rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .url-input:focus { border-color: var(--rust); }
+    .url-input::placeholder { color: #bbb0a0; }
 
-.btn {
-  background: var(--rust);
-  color: var(--white);
-  border: none;
-  border-radius: 2px;
-  padding: 0.55rem 1.25rem;
-  font-family: 'DM Mono', monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.15s, opacity 0.15s;
-  white-space: nowrap;
-}
-.btn:hover { background: #6e2e14; }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.btn.secondary {
-  background: transparent;
-  color: var(--muted);
-  border: 1px solid var(--rule);
-}
-.btn.secondary:hover { border-color: var(--rust); color: var(--rust); background: transparent; }
-.btn.secondary.done { border-color: var(--gold); color: var(--gold); }
+    .btn {
+      background: var(--rust);
+      color: var(--white);
+      border: none;
+      border-radius: 2px;
+      padding: 0.55rem 1.25rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s, opacity 0.15s;
+      white-space: nowrap;
+    }
+    .btn:hover { background: #6e2e14; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn.secondary {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--rule);
+    }
+    .btn.secondary:hover { border-color: var(--rust); color: var(--rust); background: transparent; }
+    .btn.secondary.done { border-color: var(--gold); color: var(--gold); }
 
-.input-hint {
-  margin-top: 0.4rem;
-  font-family: 'DM Mono', monospace;
-  font-size: 0.62rem;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-}
+    .input-hint {
+      margin-top: 0.4rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
 
-/* ─── Quick links ─── */
-.quick-section {
-  padding: 0.9rem 2rem;
-  border-bottom: 1px solid var(--rule);
-  background: var(--bg);
-}
-.quick-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.5rem;
-}
-.quick-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-.qbtn {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.67rem;
-  color: var(--rust);
-  background: transparent;
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  padding: 0.22rem 0.55rem;
-  cursor: pointer;
-  transition: all 0.12s;
-}
-.qbtn:hover {
-  background: var(--rust);
-  color: var(--white);
-  border-color: var(--rust);
-}
+    /* ─── Quick links ─── */
+    .quick-section {
+      padding: 0.9rem 2rem;
+      border-bottom: 1px solid var(--rule);
+      background: var(--bg);
+    }
+    .quick-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .quick-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .qbtn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.67rem;
+      color: var(--rust);
+      background: transparent;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 0.22rem 0.55rem;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .qbtn:hover {
+      background: var(--rust);
+      color: var(--white);
+      border-color: var(--rust);
+    }
 
-/* ─── Main output ─── */
-#output {
-  max-width: 860px;
-  margin: 0 auto;
-  padding: 2.5rem 2rem 5rem;
-}
+    /* ─── Main output ─── */
+    #output {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 5rem;
+    }
 
-.status {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.78rem;
-  color: var(--muted);
-  text-align: center;
-  padding: 3rem 0;
-}
-.status.err { color: #903; }
+    .status {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      padding: 3rem 0;
+    }
+    .status.err { color: #903; }
 
-/* ─── Recipe ─── */
-.recipe { animation: rise 0.35s ease both; }
-@keyframes rise {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+    /* ─── Recipe ─── */
+    .recipe { animation: rise 0.35s ease both; }
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
 
-.recipe-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1.15;
-  margin-bottom: 0.7rem;
-}
-.recipe-desc {
-  font-style: italic;
-  color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.65;
-  border-left: 3px solid var(--gold);
-  padding-left: 1rem;
-  margin-bottom: 1.5rem;
-  max-width: 640px;
-}
-.recipe-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  padding-bottom: 1.5rem;
-  margin-bottom: 1.75rem;
-  border-bottom: 1px solid var(--rule);
-}
-.meta-item { display: flex; flex-direction: column; gap: 0.1rem; }
-.meta-lbl {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-.meta-val {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.82rem;
-  color: var(--ink);
-}
+    .recipe-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 0.7rem;
+    }
+    .recipe-desc {
+      font-style: italic;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.65;
+      border-left: 3px solid var(--gold);
+      padding-left: 1rem;
+      margin-bottom: 1.5rem;
+      max-width: 640px;
+    }
+    .recipe-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.75rem;
+      border-bottom: 1px solid var(--rule);
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 0.1rem; }
+    .meta-lbl {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .meta-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--ink);
+    }
 
-.recipe-body {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 3rem;
-  align-items: start;
-}
-@media (max-width: 620px) {
-  .recipe-body { grid-template-columns: 1fr; gap: 2rem; }
-  .recipe-title { font-size: 1.85rem; }
-}
+    .recipe-body {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    @media (max-width: 620px) {
+      .recipe-body { grid-template-columns: 1fr; gap: 2rem; }
+      .recipe-title { font-size: 1.85rem; }
+    }
 
-.sec-head {
-  font-family: 'Playfair Display', serif;
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--rust);
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(--rule);
-  margin-bottom: 0.85rem;
-}
-.sub-head {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 1.1rem 0 0.45rem;
-}
+    .sec-head {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--rust);
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 0.85rem;
+    }
+    .sub-head {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 1.1rem 0 0.45rem;
+    }
 
-/* Ingredients */
-.ing-list { list-style: none; }
-.ing-list li {
-  font-size: 0.88rem;
-  line-height: 1.6;
-  padding: 0.22rem 0;
-  border-bottom: 1px dotted var(--rule);
-  display: flex;
-  align-items: baseline;
-  gap: 0.45rem;
-}
-.ing-list li::before {
-  content: '—';
-  font-family: 'DM Mono', monospace;
-  font-size: 0.7rem;
-  color: var(--gold);
-  flex-shrink: 0;
-}
+    /* Ingredients */
+    .ing-list { list-style: none; }
+    .ing-list li {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      padding: 0.22rem 0;
+      border-bottom: 1px dotted var(--rule);
+      display: flex;
+      align-items: baseline;
+      gap: 0.45rem;
+    }
+    .ing-list li::before {
+      content: '—';
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
 
-/* Instructions */
-.inst-list { list-style: none; counter-reset: step; }
-.inst-list li {
-  counter-increment: step;
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.1rem;
-  font-size: 0.94rem;
-  line-height: 1.7;
-}
-.inst-list li::before {
-  content: counter(step, decimal-leading-zero);
-  font-family: 'DM Mono', monospace;
-  font-size: 0.68rem;
-  color: var(--rust);
-  flex-shrink: 0;
-  padding-top: 0.38em;
-  min-width: 1.8em;
-}
+    /* Instructions */
+    .inst-list { list-style: none; counter-reset: step; }
+    .inst-list li {
+      counter-increment: step;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.1rem;
+      font-size: 0.94rem;
+      line-height: 1.7;
+    }
+    .inst-list li::before {
+      content: counter(step, decimal-leading-zero);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--rust);
+      flex-shrink: 0;
+      padding-top: 0.38em;
+      min-width: 1.8em;
+    }
 
-/* Notes */
-.notes {
-  margin-top: 2rem;
-  background: var(--parchment);
-  border-left: 3px solid var(--gold);
-  padding: 1.1rem 1.25rem;
-}
-.notes ul { list-style: none; padding: 0; }
-.notes li {
-  font-size: 0.85rem;
-  line-height: 1.65;
-  color: var(--muted);
-  padding: 0.2rem 0;
-  display: flex;
-  gap: 0.5rem;
-}
-.notes li::before { content: '›'; color: var(--gold); }
+    /* Notes */
+    .notes {
+      margin-top: 2rem;
+      background: var(--parchment);
+      border-left: 3px solid var(--gold);
+      padding: 1.1rem 1.25rem;
+    }
+    .notes ul { list-style: none; padding: 0; }
+    .notes li {
+      font-size: 0.85rem;
+      line-height: 1.65;
+      color: var(--muted);
+      padding: 0.2rem 0;
+      display: flex;
+      gap: 0.5rem;
+    }
+    .notes li::before { content: '›'; color: var(--gold); }
 
-/* Nutrition */
-.nutrition {
-  margin-top: 1.5rem;
-  border: 1px solid var(--rule);
-  padding: 1rem 1.1rem;
-}
-.nutrition p {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.72rem;
-  color: var(--muted);
-  line-height: 1.7;
-  margin-top: 0.5rem;
-}
+    /* Nutrition */
+    .nutrition {
+      margin-top: 1.5rem;
+      border: 1px solid var(--rule);
+      padding: 1rem 1.1rem;
+    }
+    .nutrition p {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-top: 0.5rem;
+    }
 
-/* Top bar */
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-.source-link {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.65rem;
-  color: var(--muted);
-}
-.source-link a { color: var(--rust); }
+    /* Top bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .source-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+    .source-link a { color: var(--rust); }
 
-/* Divider */
-.divider {
-  border: none;
-  border-top: 1px solid var(--rule);
-  margin: 3rem 0 2rem;
-  position: relative;
-}
-.divider::after {
-  content: '✦';
-  position: absolute;
-  top: -0.65em;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--bg);
-  padding: 0 0.6rem;
-  color: var(--gold);
-  font-size: 0.65rem;
-}
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 3rem 0 2rem;
+      position: relative;
+    }
+    .divider::after {
+      content: '✦';
+      position: absolute;
+      top: -0.65em;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg);
+      padding: 0 0.6rem;
+      color: var(--gold);
+      font-size: 0.65rem;
+    }
 
-/* ─── Footer ─── */
-.site-footer {
-  border-top: 1px solid var(--rule);
-  padding: 1.5rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-.site-footer span {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.65rem;
-  color: var(--muted);
-}
-.site-footer a {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.65rem;
-  color: var(--muted);
-}
-.site-footer a:hover { color: var(--rust); }
-.footer-links { display: flex; gap: 1.25rem; }
-```
-
+    /* ─── Footer ─── */
+    .site-footer {
+      border-top: 1px solid var(--rule);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .site-footer span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+    .site-footer a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+    .site-footer a:hover { color: var(--rust); }
+    .footer-links { display: flex; gap: 1.25rem; }
   </style>
 </head>
 <body>
 
 <!-- Site nav -->
-
 <nav class="site-nav">
   <a href="https://brooksgroves.com/" class="wordmark">Brooks Groves</a>
   <ul class="nav-links">
@@ -430,7 +425,6 @@ a:hover { text-decoration: underline; }
 </nav>
 
 <!-- Page header -->
-
 <div class="page-header">
   <p class="kicker">Tool · Recipes</p>
   <h1>Recipe Reader</h1>
@@ -438,7 +432,6 @@ a:hover { text-decoration: underline; }
 </div>
 
 <!-- Input -->
-
 <div class="input-bar">
   <div class="input-row">
     <input id="urlInput" class="url-input" type="text"
@@ -449,7 +442,6 @@ a:hover { text-decoration: underline; }
 </div>
 
 <!-- Quick links -->
-
 <div class="quick-section">
   <p class="quick-label">Quick load</p>
   <div class="quick-grid">
@@ -475,13 +467,11 @@ a:hover { text-decoration: underline; }
 </div>
 
 <!-- Output -->
-
 <div id="output">
   <p class="status">Enter a noracooks.com URL above to get started.</p>
 </div>
 
 <!-- Footer -->
-
 <footer class="site-footer">
   <span>© 2026 Brooks Groves · Lakewood, WA</span>
   <div class="footer-links">
@@ -492,6 +482,9 @@ a:hover { text-decoration: underline; }
 </footer>
 
 <script>
+  // Cloudflare Worker proxy — keeps API key server-side, fixes CORS for GitHub Pages
+  const WORKER_URL = 'https://brooks-anthropic-proxy.bdgroves1970.workers.dev';
+
   function go(url) {
     document.getElementById('urlInput').value = url;
     fetchRecipe();
@@ -526,12 +519,12 @@ a:hover { text-decoration: underline; }
 
     try {
       // Step 1 — fetch page via AI web search
-      const r1 = await fetch('https://api.anthropic.com/v1/messages', {
+      const r1 = await fetch(WORKER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
+          model: 'claude-opus-4-5',
+          max_tokens: 4096,
           system: 'You are a web page fetcher. The user gives you a URL. Use your web_search tool to retrieve that page and return all its text content. Return only the page text, nothing else.',
           messages: [{ role: 'user', content: `Fetch and return the full text of: ${url}` }],
           tools: [{ type: 'web_search_20250305', name: 'web_search' }]
@@ -542,12 +535,12 @@ a:hover { text-decoration: underline; }
       if (!pageText || pageText.length < 300) throw new Error('Could not retrieve that page. Check the URL.');
 
       // Step 2 — extract recipe JSON
-      const r2 = await fetch('https://api.anthropic.com/v1/messages', {
+      const r2 = await fetch(WORKER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
+          model: 'claude-opus-4-5',
+          max_tokens: 4096,
           system: SYS,
           messages: [{ role: 'user', content: pageText.slice(0, 14000) }]
         })
@@ -666,6 +659,5 @@ a:hover { text-decoration: underline; }
     } catch { btn.textContent = 'Select & copy manually'; }
   }
 </script>
-
 </body>
 </html>
