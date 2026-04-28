@@ -197,23 +197,40 @@ jobs:
                       print(f"    HTTP {r.status_code} for {race_name}")
                       return None, None
                   tree = HTMLParser(r.text)
-                  # PCS result table: first data row is the winner (rank 1)
-                  table = tree.css_first("table.results")
+                  # Try all table selectors PCS might use
+                  table = None
+                  for selector in ["table.results", "table.rdrResults", "div.result-cont table",
+                                   "div.resultCont table", "table[class*='result']", "table"]:
+                      table = tree.css_first(selector)
+                      if table:
+                          print(f"    Found table with selector: {selector}")
+                          break
                   if not table:
-                      # Try alternate selector
-                      table = tree.css_first("div.result-cont table")
-                  if not table:
-                      print(f"    No results table found for {race_name}")
+                      # Last resort: look for rank "1" anywhere in the page text near a rider link
+                      print(f"    No table found — trying text parse")
+                      links = tree.css("a[href*='/rider/']")
+                      for link in links[:5]:
+                          parent = link.parent
+                          if parent:
+                              txt = parent.text(strip=True)
+                              if txt.startswith("1") or "1 " in txt:
+                                  rider_name = link.text(strip=True)
+                                  if rider_name and len(rider_name) > 3:
+                                      for key, (canonical, team) in KNOWN_WINNERS.items():
+                                          if key.lower() in rider_name.lower():
+                                              return canonical, team
+                                      return rider_name, ""
+                      print(f"    No results found for {race_name}")
                       return None, None
                   rows = table.css("tr")
+                  print(f"    Table rows: {len(rows)}")
                   for row in rows:
                       cols = row.css("td")
                       if not cols:
                           continue
-                      rank_text = cols[0].text(strip=True)
+                      rank_text = cols[0].text(strip=True).strip(".")
                       if rank_text != "1":
                           continue
-                      # Find rider name — usually in an <a> tag
                       rider_name = ""
                       team_name = ""
                       for col in cols:
@@ -226,8 +243,14 @@ jobs:
                           if a:
                               team_name = a.text(strip=True)
                               break
+                      if not rider_name:
+                          # Some PCS pages put name directly in td
+                          for col in cols[2:5]:
+                              txt = col.text(strip=True)
+                              if txt and len(txt) > 4 and not txt.replace(":", "").replace(".", "").isdigit():
+                                  rider_name = txt
+                                  break
                       if rider_name:
-                          # Check known winners for canonical name/team
                           for key, (canonical, team) in KNOWN_WINNERS.items():
                               if key.lower() in rider_name.lower():
                                   print(f"    Winner: {canonical} ({team})")
@@ -431,6 +454,28 @@ jobs:
               riders.append(stats)
               if stats.get("fetched"):
                   print(f"  {name}: {stats.get('wins_2026', 0)} wins in 2026, PCS rank #{stats.get('pcs_ranking', '?')}")
+
+          # Cross-reference rider wins against calendar to catch missed results
+          for rider in riders:
+              if not rider.get("fetched"):
+                  continue
+              for win in rider.get("win_list", []):
+                  win_race = win.get("race", "").strip().lower().replace("-", " ")
+                  if not win_race or len(win_race) < 4:
+                      continue
+                  for r in races:
+                      if r["status"] != "upcoming":
+                          continue
+                      cal = r["name"].lower().replace("-", " ").replace("\u2013", " ").replace("\u00e8", "e").replace("\u00e8", "e")
+                      # Match if 2+ words overlap
+                      w_words = set(win_race.split())
+                      c_words = set(cal.split())
+                      if len(w_words & c_words) >= 2:
+                          r["status"] = "final"
+                          r["winner"] = rider["name"]
+                          r["team"] = rider.get("team", "")
+                          print(f"  Cross-ref win: {r['name']} -> {rider['name']}")
+                          break
 
           output = {
               "races": races,
