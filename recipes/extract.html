@@ -164,12 +164,13 @@
     <div class="output" id="outputBlock">
       <pre class="json-out" id="jsonOut"></pre>
       <div class="actions-row">
-        <button class="btn" id="copyBtn">Copy to clipboard</button>
+        <button class="btn" id="saveBtn">Save to Cookbook</button>
+        <button class="btn ghost" id="copyBtn">Copy JSON</button>
         <button class="btn ghost" id="downloadBtn">Download .json</button>
         <button class="btn ghost" id="resetBtn">Reset</button>
       </div>
-      <div class="footer-note">
-        Append this object to the array in <code>recipes.json</code> (mind the comma after the previous entry), commit, push.
+      <div class="footer-note" id="footerNote">
+        <strong>Save to Cookbook</strong> commits this entry directly to <code>recipes.json</code> on GitHub. The site rebuilds in ~30 seconds.
       </div>
     </div>
   </section>
@@ -375,6 +376,49 @@ Rules:
   });
 
   // ── Output actions ──────────────────────────────────────────────────
+  $("#saveBtn").addEventListener('click', async () => {
+    let recipe;
+    try {
+      recipe = JSON.parse($("#jsonOut").textContent);
+    } catch (e) {
+      setStatus('Could not parse JSON: ' + e.message, 'err');
+      return;
+    }
+
+    const btn = $("#saveBtn");
+    const orig = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    setStatus(`<span class="spinner"></span>Committing to GitHub…`);
+
+    try {
+      const resp = await fetch(WORKER_URL + '/save-recipe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recipe }),
+      });
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        throw new Error(data.error + (data.detail ? ' · ' + data.detail : ''));
+      }
+
+      btn.textContent = 'Saved ✓';
+      btn.style.background = 'var(--sage)';
+      btn.style.borderColor = 'var(--sage)';
+      const cookbookLink = `<a href="/recipes.html" style="color:var(--rust);">View in cookbook →</a>`;
+      const commitLink = data.commit_url
+        ? ` · <a href="${data.commit_url}" target="_blank" style="color:var(--rust);">commit ${data.commit_sha?.slice(0,7)}</a>`
+        : '';
+      setStatus(`Saved "${data.title}" — recipe #${data.total_recipes}. Site rebuilds in ~30s. ${cookbookLink}${commitLink}`, 'ok');
+      setStatusRight('saved · #' + data.total_recipes);
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = orig;
+      setStatus('Save failed · ' + err.message, 'err');
+    }
+  });
+
   $("#copyBtn").addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText($("#jsonOut").textContent);
@@ -405,6 +449,12 @@ Rules:
     $("#outputBlock").classList.remove('show');
     setStatus('Awaiting URL.');
     setStatusRight('—');
+    // Reset save button visual state
+    const sb = $("#saveBtn");
+    sb.disabled = false;
+    sb.textContent = 'Save to Cookbook';
+    sb.style.background = '';
+    sb.style.borderColor = '';
     $("#urlInput").focus();
   });
 </script>
