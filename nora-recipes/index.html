@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Reader — Brooks Groves</title>
+  <meta name="description" content="Clean recipe reader for Nora Cooks — no ads, no life story, just the recipe.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+```
+:root {
+  --bg:        #f5f0e8;
+  --parchment: #ede6d5;
+  --ink:       #2b2116;
+  --rust:      #8b3a1a;
+  --gold:      #a07820;
+  --muted:     #7a6a55;
+  --rule:      #d4c9b5;
+  --white:     #faf8f3;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+a { color: var(--rust); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ─── Site nav (matches brooksgroves.com) ─── */
+.site-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 2rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg);
+}
+.site-nav .wordmark {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+.site-nav .wordmark:hover { text-decoration: none; color: var(--rust); }
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.nav-links a:hover { color: var(--rust); text-decoration: none; }
+
+/* ─── Page header ─── */
+.page-header {
+  background: var(--parchment);
+  border-bottom: 1px solid var(--rule);
+  padding: 2.5rem 2rem 2rem;
+}
+.page-header .kicker {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 0.5rem;
+}
+.page-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 0.6rem;
+}
+.page-header p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  max-width: 540px;
+  font-style: italic;
+}
+
+/* ─── Input bar ─── */
+.input-bar {
+  background: var(--white);
+  border-bottom: 1px solid var(--rule);
+  padding: 1.25rem 2rem;
+}
+.input-row {
+  display: flex;
+  gap: 0.6rem;
+  max-width: 820px;
+  align-items: center;
+}
+.url-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0.55rem 0.9rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.url-input:focus { border-color: var(--rust); }
+.url-input::placeholder { color: #bbb0a0; }
+
+.btn {
+  background: var(--rust);
+  color: var(--white);
+  border: none;
+  border-radius: 2px;
+  padding: 0.55rem 1.25rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+.btn:hover { background: #6e2e14; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn.secondary {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--rule);
+}
+.btn.secondary:hover { border-color: var(--rust); color: var(--rust); background: transparent; }
+.btn.secondary.done { border-color: var(--gold); color: var(--gold); }
+
+.input-hint {
+  margin-top: 0.4rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+/* ─── Quick links ─── */
+.quick-section {
+  padding: 0.9rem 2rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg);
+}
+.quick-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.quick-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.qbtn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.67rem;
+  color: var(--rust);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0.22rem 0.55rem;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.qbtn:hover {
+  background: var(--rust);
+  color: var(--white);
+  border-color: var(--rust);
+}
+
+/* ─── Main output ─── */
+#output {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem 5rem;
+}
+
+.status {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: center;
+  padding: 3rem 0;
+}
+.status.err { color: #903; }
+
+/* ─── Recipe ─── */
+.recipe { animation: rise 0.35s ease both; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.recipe-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 0.7rem;
+}
+.recipe-desc {
+  font-style: italic;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.65;
+  border-left: 3px solid var(--gold);
+  padding-left: 1rem;
+  margin-bottom: 1.5rem;
+  max-width: 640px;
+}
+.recipe-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid var(--rule);
+}
+.meta-item { display: flex; flex-direction: column; gap: 0.1rem; }
+.meta-lbl {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.meta-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--ink);
+}
+
+.recipe-body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+@media (max-width: 620px) {
+  .recipe-body { grid-template-columns: 1fr; gap: 2rem; }
+  .recipe-title { font-size: 1.85rem; }
+}
+
+.sec-head {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rust);
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 0.85rem;
+}
+.sub-head {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 1.1rem 0 0.45rem;
+}
+
+/* Ingredients */
+.ing-list { list-style: none; }
+.ing-list li {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  padding: 0.22rem 0;
+  border-bottom: 1px dotted var(--rule);
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+.ing-list li::before {
+  content: '—';
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+
+/* Instructions */
+.inst-list { list-style: none; counter-reset: step; }
+.inst-list li {
+  counter-increment: step;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+  font-size: 0.94rem;
+  line-height: 1.7;
+}
+.inst-list li::before {
+  content: counter(step, decimal-leading-zero);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--rust);
+  flex-shrink: 0;
+  padding-top: 0.38em;
+  min-width: 1.8em;
+}
+
+/* Notes */
+.notes {
+  margin-top: 2rem;
+  background: var(--parchment);
+  border-left: 3px solid var(--gold);
+  padding: 1.1rem 1.25rem;
+}
+.notes ul { list-style: none; padding: 0; }
+.notes li {
+  font-size: 0.85rem;
+  line-height: 1.65;
+  color: var(--muted);
+  padding: 0.2rem 0;
+  display: flex;
+  gap: 0.5rem;
+}
+.notes li::before { content: '›'; color: var(--gold); }
+
+/* Nutrition */
+.nutrition {
+  margin-top: 1.5rem;
+  border: 1px solid var(--rule);
+  padding: 1rem 1.1rem;
+}
+.nutrition p {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-top: 0.5rem;
+}
+
+/* Top bar */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+.source-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+.source-link a { color: var(--rust); }
+
+/* Divider */
+.divider {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 3rem 0 2rem;
+  position: relative;
+}
+.divider::after {
+  content: '✦';
+  position: absolute;
+  top: -0.65em;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg);
+  padding: 0 0.6rem;
+  color: var(--gold);
+  font-size: 0.65rem;
+}
+
+/* ─── Footer ─── */
+.site-footer {
+  border-top: 1px solid var(--rule);
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.site-footer span {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+.site-footer a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+}
+.site-footer a:hover { color: var(--rust); }
+.footer-links { display: flex; gap: 1.25rem; }
+```
+
+  </style>
+</head>
+<body>
+
+<!-- Site nav -->
+
+<nav class="site-nav">
+  <a href="https://brooksgroves.com/" class="wordmark">Brooks Groves</a>
+  <ul class="nav-links">
+    <li><a href="https://brooksgroves.com/about.html">About</a></li>
+    <li><a href="https://brooksgroves.com/writing/">Writing</a></li>
+    <li><a href="https://brooksgroves.com/">Projects</a></li>
+    <li><a href="https://brooksgroves.com/outside.html">Outside</a></li>
+  </ul>
+</nav>
+
+<!-- Page header -->
+
+<div class="page-header">
+  <p class="kicker">Tool · Recipes</p>
+  <h1>Recipe Reader</h1>
+  <p>Clean extracts from Nora Cooks — no ads, no life story, no scroll-bait. Paste a URL and get the recipe.</p>
+</div>
+
+<!-- Input -->
+
+<div class="input-bar">
+  <div class="input-row">
+    <input id="urlInput" class="url-input" type="text"
+      placeholder="https://www.noracooks.com/vegan-chocolate-cake/">
+    <button class="btn" id="fetchBtn" onclick="fetchRecipe()">Extract</button>
+  </div>
+  <p class="input-hint">Any noracooks.com recipe URL · press Enter or click Extract</p>
+</div>
+
+<!-- Quick links -->
+
+<div class="quick-section">
+  <p class="quick-label">Quick load</p>
+  <div class="quick-grid">
+    <button class="qbtn" onclick="go('https://www.noracooks.com/vegan-chocolate-cake/')">Chocolate Cake</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/best-vegan-lasagna/')">Lasagna</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/vegan-brownies-recipe/')">Brownies</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/vegan-pancakes/')">Pancakes</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/ultimate-vegan-chili/')">Chili</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/vegan-lentil-soup/')">Lentil Soup</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/vegan-chocolate-chip-cookies/')">Choc Chip Cookies</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/vegan-alfredo-sauce/')">Alfredo Sauce</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/tofu-scramble/')">Tofu Scramble</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/the-best-vegan-enchiladas/')">Enchiladas</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/the-best-vegan-cornbread/')">Cornbread</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/vegan-cinnamon-rolls/')">Cinnamon Rolls</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/vegan-lemon-cake/')">Lemon Cake</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/broccoli-cheese-soup/')">Broccoli Cheddar Soup</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/chickpea-pot-pie/')">Chickpea Pot Pie</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/sesame-tofu/')">Sesame Tofu</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/vegan-waffles/')">Waffles</button>
+    <button class="qbtn" onclick="go('https://www.noracooks.com/kale-caesar-salad/')">Kale Caesar</button>
+  </div>
+</div>
+
+<!-- Output -->
+
+<div id="output">
+  <p class="status">Enter a noracooks.com URL above to get started.</p>
+</div>
+
+<!-- Footer -->
+
+<footer class="site-footer">
+  <span>© 2026 Brooks Groves · Lakewood, WA</span>
+  <div class="footer-links">
+    <a href="https://brooksgroves.com/">Home</a>
+    <a href="https://brooksgroves.com/about.html">About</a>
+    <a href="https://github.com/bdgroves">GitHub ↗</a>
+  </div>
+</footer>
+
+<script>
+  function go(url) {
+    document.getElementById('urlInput').value = url;
+    fetchRecipe();
+  }
+
+  document.getElementById('urlInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') fetchRecipe();
+  });
+
+  async function fetchRecipe() {
+    const url = document.getElementById('urlInput').value.trim();
+    if (!url) return;
+    const btn = document.getElementById('fetchBtn');
+    const out = document.getElementById('output');
+
+    btn.disabled = true;
+    out.innerHTML = '<p class="status">Fetching recipe…</p>';
+
+    const SYS = `You are a recipe extractor. Given raw text from a noracooks.com page, extract ONLY the recipe and return valid JSON (no markdown fences) with this exact schema:
+{
+  "title": "string",
+  "description": "string or null",
+  "prep_time": "string or null",
+  "cook_time": "string or null",
+  "total_time": "string or null",
+  "servings": "string or null",
+  "ingredient_groups": [{"group_name":"string or null","items":["string"]}],
+  "instruction_groups": [{"group_name":"string or null","steps":["string"]}],
+  "notes": ["string"],
+  "nutrition": "string or null"
+}`;
+
+    try {
+      // Step 1 — fetch page via AI web search
+      const r1 = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: 'You are a web page fetcher. The user gives you a URL. Use your web_search tool to retrieve that page and return all its text content. Return only the page text, nothing else.',
+          messages: [{ role: 'user', content: `Fetch and return the full text of: ${url}` }],
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+        })
+      });
+      const d1 = await r1.json();
+      const pageText = d1.content.map(b => b.type === 'text' ? b.text : '').join('\n');
+      if (!pageText || pageText.length < 300) throw new Error('Could not retrieve that page. Check the URL.');
+
+      // Step 2 — extract recipe JSON
+      const r2 = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: SYS,
+          messages: [{ role: 'user', content: pageText.slice(0, 14000) }]
+        })
+      });
+      const d2 = await r2.json();
+      const raw = d2.content.map(b => b.text || '').join('').trim()
+                            .replace(/^```json|^```|```$/gm, '').trim();
+      const recipe = JSON.parse(raw);
+      render(recipe, url);
+    } catch(e) {
+      out.innerHTML = `<p class="status err">⚠ ${e.message}</p>`;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function toPlainText(r, url) {
+    let t = `${r.title}\n${'─'.repeat(50)}\n`;
+    if (r.description) t += `\n${r.description}\n`;
+    const m = [r.prep_time&&`Prep: ${r.prep_time}`, r.cook_time&&`Cook: ${r.cook_time}`,
+               r.total_time&&`Total: ${r.total_time}`, r.servings&&`Serves: ${r.servings}`].filter(Boolean);
+    if (m.length) t += `\n${m.join('  ·  ')}\n`;
+    t += '\n\nINGREDIENTS\n';
+    (r.ingredient_groups||[]).forEach(g => {
+      if (g.group_name) t += `\n${g.group_name}:\n`;
+      (g.items||[]).forEach(i => t += `• ${i}\n`);
+    });
+    t += '\n\nINSTRUCTIONS\n';
+    let n = 1;
+    (r.instruction_groups||[]).forEach(g => {
+      if (g.group_name) t += `\n${g.group_name}:\n`;
+      (g.steps||[]).forEach(s => t += `${n++}. ${s}\n`);
+    });
+    if (r.notes?.length) { t += '\n\nNOTES\n'; r.notes.forEach(x => t += `• ${x}\n`); }
+    if (r.nutrition) t += `\n\nNUTRITION\n${r.nutrition}\n`;
+    t += `\n\nSource: ${url}`;
+    return t;
+  }
+
+  function render(r, url) {
+    const out = document.getElementById('output');
+    const plain = toPlainText(r, url);
+
+    const metaHtml = [
+      r.prep_time  && ['Prep',     r.prep_time],
+      r.cook_time  && ['Cook',     r.cook_time],
+      r.total_time && ['Total',    r.total_time],
+      r.servings   && ['Servings', r.servings],
+    ].filter(Boolean).map(([l,v]) => `
+      <div class="meta-item">
+        <span class="meta-lbl">${l}</span>
+        <span class="meta-val">${v}</span>
+      </div>`).join('');
+
+    const ingHtml = (r.ingredient_groups||[]).map(g => `
+      ${g.group_name ? `<p class="sub-head">${g.group_name}</p>` : ''}
+      <ul class="ing-list">${(g.items||[]).map(i=>`<li>${i}</li>`).join('')}</ul>
+    `).join('');
+
+    const instHtml = (r.instruction_groups||[]).map(g => `
+      ${g.group_name ? `<p class="sub-head">${g.group_name}</p>` : ''}
+      <ol class="inst-list">${(g.steps||[]).map(s=>`<li>${s}</li>`).join('')}</ol>
+    `).join('');
+
+    const notesHtml = (r.notes?.length) ? `
+      <div class="notes">
+        <p class="sec-head">Notes</p>
+        <ul>${r.notes.map(n=>`<li>${n}</li>`).join('')}</ul>
+      </div>` : '';
+
+    const nutrHtml = r.nutrition ? `
+      <div class="nutrition">
+        <p class="sec-head">Nutrition</p>
+        <p>${r.nutrition}</p>
+      </div>` : '';
+
+    out.innerHTML = `
+      <div class="recipe">
+        <div class="top-bar">
+          <span class="source-link">Source: <a href="${url}" target="_blank" rel="noopener">${url.replace('https://www.noracooks.com','noracooks.com')}</a></span>
+          <button class="btn secondary" id="copyBtn" onclick="doCopy()">Copy plain text</button>
+        </div>
+
+        <h2 class="recipe-title">${r.title}</h2>
+        ${r.description ? `<p class="recipe-desc">${r.description}</p>` : ''}
+        ${metaHtml ? `<div class="recipe-meta">${metaHtml}</div>` : ''}
+
+        <div class="recipe-body">
+          <div class="ing-col">
+            <p class="sec-head">Ingredients</p>
+            ${ingHtml}
+          </div>
+          <div class="inst-col">
+            <p class="sec-head">Instructions</p>
+            ${instHtml}
+            ${notesHtml}
+            ${nutrHtml}
+          </div>
+        </div>
+
+        <hr class="divider">
+      </div>`;
+
+    out._plain = plain;
+  }
+
+  async function doCopy() {
+    const out = document.getElementById('output');
+    const btn = document.getElementById('copyBtn');
+    if (!out._plain) return;
+    try {
+      await navigator.clipboard.writeText(out._plain);
+      btn.textContent = '✓ Copied';
+      btn.classList.add('done');
+      setTimeout(() => { btn.textContent = 'Copy plain text'; btn.classList.remove('done'); }, 2200);
+    } catch { btn.textContent = 'Select & copy manually'; }
+  }
+</script>
+
+</body>
+</html>
