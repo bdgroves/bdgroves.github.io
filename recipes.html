@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recipes — Brooks Groves</title>
+  <meta name="description" content="A working recipe box. Searchable by ingredient, cuisine, and cook time." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --parchment:       #f3e8d2;
+      --parchment-deep:  #ead9b9;
+      --parchment-edge:  #d9c39a;
+      --ink:             #2b2218;
+      --ink-soft:        #5a4a35;
+      --ink-faded:       #8a7656;
+      --rust:            #a64227;
+      --rust-deep:       #7e2f1c;
+      --gold:            #b08642;
+      --rule:            #8a7656;
+      --shadow:          0 1px 0 rgba(43,34,24,.06), 0 14px 40px -18px rgba(43,34,24,.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--parchment);
+      color: var(--ink);
+      font-family: "Libre Baskerville", Georgia, serif;
+      font-size: 17px;
+      line-height: 1.6;
+    }
+
+    /* Subtle paper grain — radial speckle + soft vignette */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,.35), transparent 60%),
+        radial-gradient(900px 700px at 85% 90%, rgba(176,134,66,.15), transparent 65%),
+        radial-gradient(rgba(43,34,24,.04) 1px, transparent 1px);
+      background-size: auto, auto, 4px 4px;
+      mix-blend-mode: multiply;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 48px 28px 96px;
+    }
+
+    /* ── Masthead ─────────────────────────────────────── */
+    .crumb {
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      margin-bottom: 18px;
+    }
+    .crumb a { color: var(--rust); text-decoration: none; }
+    .crumb a:hover { text-decoration: underline; }
+
+    .masthead {
+      text-align: center;
+      padding-bottom: 28px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid var(--rule);
+      position: relative;
+    }
+    .masthead::after {
+      content: "";
+      display: block;
+      position: absolute;
+      left: 50%;
+      bottom: -3px;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: var(--rule);
+      opacity: .5;
+    }
+    .kicker {
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--rust);
+    }
+    h1 {
+      font-family: "Playfair Display", serif;
+      font-weight: 900;
+      font-style: italic;
+      font-size: clamp(48px, 8vw, 84px);
+      letter-spacing: -.01em;
+      margin: 6px 0 4px;
+      line-height: 1;
+    }
+    .lede {
+      font-style: italic;
+      color: var(--ink-soft);
+      max-width: 540px;
+      margin: 12px auto 0;
+    }
+
+    /* ── Controls ─────────────────────────────────────── */
+    .controls {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 36px;
+    }
+
+    .search {
+      position: relative;
+    }
+    .search input {
+      width: 100%;
+      padding: 14px 18px 14px 46px;
+      font-family: "Libre Baskerville", serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--ink);
+      background: var(--parchment-deep);
+      border: 1px solid var(--parchment-edge);
+      border-radius: 2px;
+      outline: none;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.5), inset 0 -1px 0 rgba(43,34,24,.05);
+      transition: border-color .15s ease, background .15s ease;
+    }
+    .search input::placeholder { color: var(--ink-faded); font-style: italic; }
+    .search input:focus { border-color: var(--rust); background: #f7eeda; }
+    .search::before {
+      content: "✦";
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gold);
+      font-size: 16px;
+    }
+
+    .filter-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px 18px;
+      align-items: center;
+    }
+    .filter-label {
+      font-family: "DM Mono", monospace;
+      font-size: 10px;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      white-space: nowrap;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      background: transparent;
+      color: var(--ink-soft);
+      border: 1px solid var(--parchment-edge);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all .15s ease;
+    }
+    .chip:hover { border-color: var(--ink-soft); color: var(--ink); }
+    .chip.active {
+      background: var(--ink);
+      color: var(--parchment);
+      border-color: var(--ink);
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-top: 14px;
+      border-top: 1px dashed var(--parchment-edge);
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+    }
+    .meta-row a {
+      color: var(--rust);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .meta-row a:hover { text-decoration: underline; }
+
+    /* ── Recipe cards ─────────────────────────────────── */
+    .recipes {
+      display: grid;
+      gap: 28px;
+    }
+
+    .card {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.25), transparent 40%),
+        var(--parchment-deep);
+      border: 1px solid var(--parchment-edge);
+      border-radius: 3px;
+      padding: 28px 30px;
+      box-shadow: var(--shadow);
+      position: relative;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 1px 0 rgba(43,34,24,.06), 0 22px 48px -18px rgba(43,34,24,.45);
+    }
+    /* Decorative corner mark */
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      width: 14px;
+      height: 14px;
+      border-top: 1px solid var(--gold);
+      border-left: 1px solid var(--gold);
+      opacity: .6;
+    }
+    .card::after {
+      content: "";
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      width: 14px;
+      height: 14px;
+      border-bottom: 1px solid var(--gold);
+      border-right: 1px solid var(--gold);
+      opacity: .6;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .card h2 {
+      font-family: "Playfair Display", serif;
+      font-weight: 700;
+      font-size: 30px;
+      margin: 0 0 4px;
+      letter-spacing: -.005em;
+    }
+    .card-tags {
+      font-family: "DM Mono", monospace;
+      font-size: 10px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--rust);
+      white-space: nowrap;
+    }
+    .card-tags .dot {
+      color: var(--ink-faded);
+      margin: 0 6px;
+    }
+    .card-tags .diet-tag {
+      color: #4a5c45;
+    }
+    .card-source {
+      font-style: italic;
+      color: var(--ink-soft);
+      font-size: 14px;
+      margin: 0 0 14px;
+    }
+
+    .card-stats {
+      display: flex;
+      gap: 24px;
+      padding: 12px 0;
+      border-top: 1px solid var(--parchment-edge);
+      border-bottom: 1px solid var(--parchment-edge);
+      margin: 12px 0 0;
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+    .stat strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    /* Expanded body */
+    .card-body {
+      display: none;
+      margin-top: 22px;
+      padding-top: 22px;
+      border-top: 1px solid var(--parchment-edge);
+    }
+    .card.open .card-body { display: grid; }
+    .card-body {
+      grid-template-columns: 1fr 1.4fr;
+      gap: 36px;
+    }
+    @media (max-width: 640px) {
+      .card-body { grid-template-columns: 1fr; gap: 24px; }
+    }
+
+    .section-label {
+      font-family: "DM Mono", monospace;
+      font-size: 10px;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--gold);
+    }
+
+    .ingredients ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .ingredients li {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 12px;
+      padding: 6px 0;
+      border-bottom: 1px dotted var(--parchment-edge);
+      font-size: 15px;
+    }
+    .ingredients li:last-child { border-bottom: none; }
+    .ingredients .qty {
+      font-family: "DM Mono", monospace;
+      font-size: 13px;
+      color: var(--rust-deep);
+    }
+
+    .steps ol {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .steps li {
+      counter-increment: step;
+      position: relative;
+      padding: 4px 0 14px 36px;
+      font-size: 15.5px;
+    }
+    .steps li::before {
+      content: counter(step, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 4px;
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: .1em;
+    }
+
+    .card-notes {
+      grid-column: 1 / -1;
+      margin-top: 8px;
+      padding: 14px 18px;
+      background: rgba(176,134,66,.08);
+      border-left: 3px solid var(--gold);
+      font-style: italic;
+      color: var(--ink-soft);
+      font-size: 14.5px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      font-style: italic;
+      color: var(--ink-faded);
+    }
+
+    /* ── Footer ────────────────────────────────────────── */
+    footer {
+      margin-top: 80px;
+      padding-top: 28px;
+      border-top: 1px solid var(--rule);
+      text-align: center;
+      font-family: "DM Mono", monospace;
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+    }
+    footer a { color: var(--rust); text-decoration: none; }
+
+    /* Highlight matched search text */
+    mark {
+      background: rgba(176,134,66,.3);
+      color: inherit;
+      padding: 0 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="crumb">
+      <a href="/">brooksgroves.com</a> &nbsp;/&nbsp; recipes
+    </nav>
+
+    <header class="masthead">
+      <div class="kicker">A Working Recipe Box</div>
+      <h1>Recipes</h1>
+      <p class="lede">
+        Things I cook. Things friends cooked for me. Things passed down from
+        Sonora and Groveland and a few hotel kitchens in between.
+      </p>
+    </header>
+
+    <section class="controls">
+      <div class="search">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search by name, ingredient, or source…"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="filter-row">
+        <span class="filter-label">Cuisine</span>
+        <div class="chips" id="cuisineChips"></div>
+      </div>
+
+      <div class="filter-row">
+        <span class="filter-label">Cook Time</span>
+        <div class="chips" id="timeChips">
+          <button class="chip active" data-time="all">All</button>
+          <button class="chip" data-time="quick">&lt; 30 min</button>
+          <button class="chip" data-time="medium">30–60 min</button>
+          <button class="chip" data-time="long">60+ min</button>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <span class="filter-label">Dietary</span>
+        <div class="chips" id="dietChips">
+          <button class="chip active" data-diet="all">All</button>
+          <button class="chip" data-diet="vegan">Vegan</button>
+          <button class="chip" data-diet="gluten-free">Gluten-Free</button>
+        </div>
+      </div>
+
+      <div class="meta-row">
+        <span id="resultCount">— recipes</span>
+        <a id="clearAll">Clear filters</a>
+      </div>
+    </section>
+
+    <section class="recipes" id="recipeList"></section>
+
+    <footer>
+      <p>
+        Last updated <span id="lastUpdated">—</span> &nbsp;·&nbsp;
+        <a href="/">Home</a> &nbsp;·&nbsp;
+        <a href="https://github.com/bdgroves">GitHub</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // ── State ────────────────────────────────────────────
+    let recipes = [];
+    let activeCuisine = "all";
+    let activeTime = "all";
+    let activeDiet = "all";
+    let searchTerm = "";
+
+    // ── Helpers ──────────────────────────────────────────
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => document.querySelectorAll(s);
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+    }
+
+    function highlight(text, term) {
+      const safe = escapeHtml(text);
+      if (!term) return safe;
+      const re = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "ig");
+      return safe.replace(re, "<mark>$1</mark>");
+    }
+
+    function timeBucket(min) {
+      if (min < 30) return "quick";
+      if (min <= 60) return "medium";
+      return "long";
+    }
+
+    // ── Filter logic ─────────────────────────────────────
+    function matches(recipe) {
+      // Cuisine
+      if (activeCuisine !== "all" && recipe.cuisine !== activeCuisine) return false;
+      // Time
+      if (activeTime !== "all" && timeBucket(recipe.cook_time_min) !== activeTime) return false;
+      // Dietary
+      if (activeDiet !== "all") {
+        const tags = recipe.dietary || [];
+        if (!tags.includes(activeDiet)) return false;
+      }
+      // Search (title, ingredients, source, category)
+      if (searchTerm) {
+        const haystack = [
+          recipe.title,
+          recipe.cuisine,
+          recipe.category,
+          recipe.source,
+          ...recipe.ingredients.map((i) => i.item),
+        ].join(" ").toLowerCase();
+        if (!haystack.includes(searchTerm.toLowerCase())) return false;
+      }
+      return true;
+    }
+
+    // ── Render ───────────────────────────────────────────
+    function renderCuisineChips() {
+      const cuisines = [...new Set(recipes.map((r) => r.cuisine))].sort();
+      const html = ['<button class="chip active" data-cuisine="all">All</button>']
+        .concat(
+          cuisines.map(
+            (c) => `<button class="chip" data-cuisine="${escapeHtml(c)}">${escapeHtml(c)}</button>`
+          )
+        )
+        .join("");
+      $("#cuisineChips").innerHTML = html;
+    }
+
+    function renderRecipes() {
+      const filtered = recipes.filter(matches);
+      const list = $("#recipeList");
+
+      $("#resultCount").textContent =
+        filtered.length === recipes.length
+          ? `${recipes.length} recipes`
+          : `${filtered.length} of ${recipes.length} recipes`;
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<div class="empty">No recipes match. Try a different search or clear filters.</div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map((r) => `
+        <article class="card" data-slug="${escapeHtml(r.slug)}">
+          <div class="card-head">
+            <div>
+              <h2>${highlight(r.title, searchTerm)}</h2>
+              ${r.source ? `<p class="card-source">from ${escapeHtml(r.source)}</p>` : ""}
+            </div>
+            <div class="card-tags">
+              ${escapeHtml(r.cuisine)} <span class="dot">·</span> ${escapeHtml(r.category)}${
+                (r.dietary || []).filter(d => d !== "vegetarian").length
+                  ? ` <span class="dot">·</span> <span class="diet-tag">${(r.dietary || []).filter(d => d !== "vegetarian").map(escapeHtml).join(" · ")}</span>`
+                  : ""
+              }
+            </div>
+          </div>
+
+          <div class="card-stats">
+            <div class="stat"><strong>${r.cook_time_min}</strong> min total</div>
+            <div class="stat"><strong>${r.active_time_min}</strong> min active</div>
+            <div class="stat">serves <strong>${r.servings}</strong></div>
+          </div>
+
+          <div class="card-body">
+            <div class="ingredients">
+              <div class="section-label">Ingredients</div>
+              <ul>
+                ${r.ingredients.map((i) => `
+                  <li>
+                    <span class="qty">${escapeHtml(i.qty)}</span>
+                    <span class="item">${highlight(i.item, searchTerm)}</span>
+                  </li>
+                `).join("")}
+              </ul>
+            </div>
+            <div class="steps">
+              <div class="section-label">Method</div>
+              <ol>
+                ${r.steps.map((s) => `<li>${escapeHtml(s)}</li>`).join("")}
+              </ol>
+            </div>
+            ${r.notes ? `<div class="card-notes">${escapeHtml(r.notes)}</div>` : ""}
+          </div>
+        </article>
+      `).join("");
+
+      // Bind expand/collapse
+      $$(".card").forEach((card) => {
+        card.addEventListener("click", () => card.classList.toggle("open"));
+      });
+    }
+
+    // ── Event wiring ─────────────────────────────────────
+    function init() {
+      $("#searchInput").addEventListener("input", (e) => {
+        searchTerm = e.target.value.trim();
+        renderRecipes();
+      });
+
+      $("#cuisineChips").addEventListener("click", (e) => {
+        const btn = e.target.closest(".chip");
+        if (!btn) return;
+        $$("#cuisineChips .chip").forEach((c) => c.classList.remove("active"));
+        btn.classList.add("active");
+        activeCuisine = btn.dataset.cuisine;
+        renderRecipes();
+      });
+
+      $("#timeChips").addEventListener("click", (e) => {
+        const btn = e.target.closest(".chip");
+        if (!btn) return;
+        $$("#timeChips .chip").forEach((c) => c.classList.remove("active"));
+        btn.classList.add("active");
+        activeTime = btn.dataset.time;
+        renderRecipes();
+      });
+
+      $("#dietChips").addEventListener("click", (e) => {
+        const btn = e.target.closest(".chip");
+        if (!btn) return;
+        $$("#dietChips .chip").forEach((c) => c.classList.remove("active"));
+        btn.classList.add("active");
+        activeDiet = btn.dataset.diet;
+        renderRecipes();
+      });
+
+      $("#clearAll").addEventListener("click", () => {
+        searchTerm = "";
+        activeCuisine = "all";
+        activeTime = "all";
+        activeDiet = "all";
+        $("#searchInput").value = "";
+        $$(".chip").forEach((c) => c.classList.remove("active"));
+        $('[data-cuisine="all"]').classList.add("active");
+        $('[data-time="all"]').classList.add("active");
+        $('[data-diet="all"]').classList.add("active");
+        renderRecipes();
+      });
+    }
+
+    // ── Load data ────────────────────────────────────────
+    fetch("recipes.json")
+      .then((r) => r.json())
+      .then((data) => {
+        recipes = data.sort((a, b) => (b.added || "").localeCompare(a.added || ""));
+        renderCuisineChips();
+        renderRecipes();
+        // Last updated = most recent "added"
+        const newest = recipes[0]?.added;
+        if (newest) {
+          $("#lastUpdated").textContent = new Date(newest).toLocaleDateString("en-US", {
+            year: "numeric", month: "long", day: "numeric"
+          });
+        }
+      })
+      .catch((err) => {
+        $("#recipeList").innerHTML = `<div class="empty">Could not load recipes.json — ${escapeHtml(err.message)}</div>`;
+      });
+
+    init();
+  </script>
+</body>
+</html>
