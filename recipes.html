@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recipes — Brooks Groves</title>
@@ -113,6 +116,15 @@
     .footer-bottom { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); width:100%; padding-top:1.5rem; border-top:1px solid #2a2a26; margin-top:1rem; }
     .footer-bottom a { color:var(--stone); text-decoration:none; }
     .footer-bottom a:hover { color:var(--gold); }
+
+    /* Admin mode (only visible after password) */
+    .admin-toggle { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); cursor:pointer; text-decoration:none; padding:0.2rem 0.5rem; border:1px solid var(--mist); margin-left:0.5rem; transition:all 0.15s; }
+    .admin-toggle:hover { border-color:var(--rust); color:var(--rust); }
+    .admin-toggle.active { background:var(--rust); color:var(--white); border-color:var(--rust); }
+    .delete-btn { display:none; position:absolute; top:0.75rem; right:0.75rem; background:transparent; border:1px solid var(--mist); color:var(--stone); width:1.6rem; height:1.6rem; border-radius:50%; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.85rem; line-height:1; padding:0; transition:all 0.15s; z-index:5; }
+    .delete-btn:hover { background:var(--rust); border-color:var(--rust); color:var(--white); }
+    body.admin-mode .card { position:relative; }
+    body.admin-mode .delete-btn { display:flex; align-items:center; justify-content:center; }
   </style>
 </head>
 <body>
@@ -145,8 +157,9 @@
     <div class="section-label">
       <span>Browse</span>
       <span class="right">
-        <a href="/recipes/extract.html" style="color:var(--rust);text-decoration:none;margin-right:1rem;">+ Add recipe</a>
-        <span id="resultCount">— recipes</span>
+        <a href="/recipes/extract.html" style="color:var(--rust);text-decoration:none;margin-right:0.5rem;">+ Add recipe</a>
+        <a id="adminToggle" class="admin-toggle" title="Toggle admin mode for delete buttons">Admin</a>
+        <span id="resultCount" style="margin-left:0.75rem;">— recipes</span>
       </span>
     </div>
 
@@ -205,6 +218,10 @@
 </footer>
 
 <script>
+  // Cloudflare Worker proxy for save/delete operations
+  const WORKER_URL = 'https://brooks-anthropic-proxy.bdgroves1970.workers.dev';
+  const ADMIN_PASSWORD = 'Starwood'; // matches Westin Stories convention
+
   let recipes = [];
   let activeCuisine = "all";
   let activeTime = "all";
@@ -276,6 +293,7 @@
 
     list.innerHTML = filtered.map((r) => `
       <article class="card" data-slug="${escapeHtml(r.slug)}">
+        <button class="delete-btn" data-slug="${escapeHtml(r.slug)}" data-title="${escapeHtml(r.title)}" title="Delete recipe" aria-label="Delete ${escapeHtml(r.title)}">×</button>
         <div class="card-head">
           <div>
             <h2>${highlight(r.title, searchTerm)}</h2>
@@ -320,7 +338,44 @@
     `).join("");
 
     $$(".card").forEach((card) => {
-      card.addEventListener("click", () => card.classList.toggle("open"));
+      card.addEventListener("click", (e) => {
+        // Ignore clicks on the delete button — those are handled separately
+        if (e.target.closest('.delete-btn')) return;
+        card.classList.toggle("open");
+      });
+    });
+
+    $$(".delete-btn").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const slug = btn.dataset.slug;
+        const title = btn.dataset.title;
+        if (!confirm(`Delete "${title}" from your cookbook?\n\nThis commits a removal to GitHub. The recipe will be gone from the site once it rebuilds (~30 seconds), but you can always recover it from git history.`)) {
+          return;
+        }
+
+        const orig = btn.textContent;
+        btn.textContent = '…';
+        btn.disabled = true;
+
+        try {
+          const resp = await fetch(WORKER_URL + '/delete-recipe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slug }),
+          });
+          const data = await resp.json();
+          if (!resp.ok) throw new Error(data.error + (data.detail ? ' · ' + data.detail : ''));
+
+          // Remove from local state and re-render
+          recipes = recipes.filter((r) => r.slug !== slug);
+          renderRecipes();
+        } catch (err) {
+          btn.textContent = orig;
+          btn.disabled = false;
+          alert('Delete failed: ' + err.message);
+        }
+      });
     });
   }
 
@@ -368,6 +423,39 @@
       $('[data-time="all"]').classList.add("active");
       $('[data-diet="all"]').classList.add("active");
       renderRecipes();
+    });
+
+    // Admin mode — gated by password, persisted via sessionStorage
+    function setAdminMode(on) {
+      if (on) {
+        document.body.classList.add('admin-mode');
+        $("#adminToggle").classList.add('active');
+        $("#adminToggle").textContent = 'Admin ✓';
+        sessionStorage.setItem('cookbook_admin', '1');
+      } else {
+        document.body.classList.remove('admin-mode');
+        $("#adminToggle").classList.remove('active');
+        $("#adminToggle").textContent = 'Admin';
+        sessionStorage.removeItem('cookbook_admin');
+      }
+    }
+
+    if (sessionStorage.getItem('cookbook_admin') === '1') {
+      setAdminMode(true);
+    }
+
+    $("#adminToggle").addEventListener("click", () => {
+      if (document.body.classList.contains('admin-mode')) {
+        setAdminMode(false);
+        return;
+      }
+      const pw = prompt('Password:');
+      if (pw === null) return; // cancelled
+      if (pw === ADMIN_PASSWORD) {
+        setAdminMode(true);
+      } else {
+        alert('Wrong password.');
+      }
     });
   }
 

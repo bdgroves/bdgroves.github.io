@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noindex">
@@ -55,6 +58,20 @@
     .btn:disabled { opacity:0.5; cursor:not-allowed; }
     .btn.ghost { background:transparent; color:var(--ink); }
     .btn.ghost:hover { background:var(--ink); color:var(--white); }
+
+    /* Mode tabs (URL vs Paste Text) */
+    .mode-tabs { display:flex; gap:0; border-bottom:1px solid var(--mist); margin-bottom:1rem; }
+    .mode-tab { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; padding:0.6rem 1rem; background:transparent; color:var(--stone); border:none; border-bottom:2px solid transparent; cursor:pointer; transition:all 0.15s; margin-bottom:-1px; }
+    .mode-tab:hover { color:var(--ink); }
+    .mode-tab.active { color:var(--ink); border-bottom-color:var(--rust); }
+
+    .mode-panel { display:none; }
+    .mode-panel.active { display:block; }
+
+    textarea#textInput { width:100%; min-height:200px; padding:0.85rem 1rem; font-family:'DM Mono',monospace; font-size:0.8rem; line-height:1.5; color:var(--ink); background:var(--white); border:1px solid var(--mist); border-radius:0; outline:none; resize:vertical; }
+    textarea#textInput:focus { border-color:var(--ink); }
+    textarea#textInput::placeholder { color:var(--stone); font-style:italic; }
+    .text-help { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.5rem; letter-spacing:0.05em; line-height:1.6; }
 
     /* Optional source override */
     .opt-row { display:grid; grid-template-columns:auto 1fr; gap:0.5rem 1rem; align-items:center; padding:0.5rem 0; }
@@ -122,24 +139,43 @@
     <div class="intro-kicker">Cookbook Tool</div>
     <h1>Paste a URL, Get JSON</h1>
     <p class="lede">
-      Drops any recipe URL through the same pipeline as Nora Reader, then
-      structures it for <code>recipes.json</code>. Vegetarianizes anything with
-      meat or fish automatically.
+      Drops any recipe URL or pasted text through Claude, then structures it for
+      <code>recipes.json</code>. Vegetarianizes anything with meat or fish automatically.
     </p>
   </section>
 
   <section class="step-block">
     <div class="section-label">
-      <span>01 · Recipe URL</span>
+      <span>01 · Recipe Source</span>
       <span class="right">Required</span>
     </div>
-    <div class="url-row">
-      <input type="url" id="urlInput" placeholder="https://cookieandkate.com/vegetarian-enchilada-casserole-recipe/" autocomplete="off" />
-      <button class="btn" id="extractBtn">Extract</button>
+
+    <div class="mode-tabs" role="tablist">
+      <button class="mode-tab active" data-mode="url">URL</button>
+      <button class="mode-tab" data-mode="text">Paste Text</button>
     </div>
 
-    <div class="chips-label">Quick load · from todo queue</div>
-    <div class="chips" id="quickChips"></div>
+    <div class="mode-panel active" id="urlPanel">
+      <div class="url-row">
+        <input type="url" id="urlInput" placeholder="https://cookieandkate.com/vegetarian-enchilada-casserole-recipe/" autocomplete="off" />
+        <button class="btn" id="extractBtn">Extract</button>
+      </div>
+
+      <div class="chips-label">Quick load · from todo queue</div>
+      <div class="chips" id="quickChips"></div>
+    </div>
+
+    <div class="mode-panel" id="textPanel">
+      <textarea id="textInput" placeholder="Paste the recipe text here — title, ingredients, steps. Could be from an Apple Note, a screenshot OCR, or copy/paste from a paywalled site."></textarea>
+      <p class="text-help">
+        Useful when a URL is paywalled, requires sign-in, or renders the recipe with JavaScript that web search can't see.
+        Also good for handwritten notes, family recipes, or text from photos.
+      </p>
+      <div class="url-row" style="margin-top:1rem;">
+        <div style="flex:1;"></div>
+        <button class="btn" id="extractTextBtn">Extract from text</button>
+      </div>
+    </div>
   </section>
 
   <section class="step-block">
@@ -159,7 +195,7 @@
       <span>03 · Output</span>
       <span class="right" id="statusRight">—</span>
     </div>
-    <div class="status" id="status">Awaiting URL.</div>
+    <div class="status" id="status">Awaiting input.</div>
 
     <div class="output" id="outputBlock">
       <pre class="json-out" id="jsonOut"></pre>
@@ -186,7 +222,6 @@
     <div class="footer-links">
       <a href="/">Home</a>
       <a href="/recipes.html">Recipes</a>
-      <a href="/nora-recipes/">Nora Reader</a>
       <a href="https://github.com/bdgroves" target="_blank">GitHub ↗</a>
     </div>
     <p class="footer-bottom">© 2026 Brooks Groves · Lakewood, WA</p>
@@ -269,21 +304,129 @@ Rules:
     $("#statusRight").textContent = msg;
   }
 
-  // ── Extraction ──────────────────────────────────────────────────────
-  async function extract() {
+  // ── Paywall / blocked-page detection ────────────────────────────────
+  // These phrases indicate Claude couldn't actually read the recipe page.
+  function looksLikeBlockedPage(text) {
+    if (!text || text.length < 500) return true;
+    const blockers = [
+      "i wasn't able to access",
+      "i was unable to access",
+      "i can't access",
+      "i cannot access",
+      "could not access",
+      "unable to retrieve",
+      "subscription required",
+      "sign in to continue",
+      "sign-in required",
+      "page not found",
+      "404 not found",
+      "access denied",
+      "this content is not available",
+      "log in to view",
+    ];
+    const lower = text.toLowerCase().slice(0, 2000);
+    return blockers.some((phrase) => lower.includes(phrase));
+  }
+
+  function looksLikeRecipe(text) {
+    // Heuristic: real recipe pages have BOTH ingredient-style and instruction-style cues
+    const lower = text.toLowerCase();
+    const hasIngredients =
+      /\b(cup|tbsp|tsp|tablespoon|teaspoon|gram|ounce|pound|clove)s?\b/.test(lower) ||
+      /\bingredients?\b/.test(lower);
+    const hasInstructions =
+      /\b(preheat|bake|simmer|whisk|stir|combine|cook|saute|sauté)\b/.test(lower) ||
+      /\b(instructions|directions|method|steps)\b/.test(lower);
+    return hasIngredients && hasInstructions;
+  }
+
+  // ── Shared structuring step (called by both URL and Text modes) ─────
+  async function structureRecipe(pageText, sourceHint, urlHint) {
+    setStatus(`<span class="spinner"></span>Structuring as JSON…`);
+
+    const userMsg = [
+      sourceHint ? `Source attribution: "${sourceHint}".` : (urlHint ? `URL: ${urlHint}` : ''),
+      pageText.slice(0, 14000),
+    ].filter(Boolean).join('\n\n');
+
+    const r = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-opus-4-5',
+        max_tokens: 4096,
+        system: SCHEMA_SYS,
+        messages: [{ role: 'user', content: userMsg }],
+      }),
+    });
+
+    if (!r.ok) {
+      const err = await r.text();
+      throw new Error(`Worker returned ${r.status}: ${err.slice(0, 200)}`);
+    }
+    const d = await r.json();
+    const raw = (d.content || []).map((b) => b.text || '').join('').trim();
+    const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+
+    let parsed;
+    try {
+      parsed = JSON.parse(cleaned);
+    } catch (e) {
+      throw new Error('Model returned non-JSON — likely the recipe text was incomplete or unparseable. First 200 chars of response: ' + raw.slice(0, 200));
+    }
+
+    parsed.added = new Date().toISOString().slice(0, 10);
+    return {
+      slug: parsed.slug,
+      title: parsed.title,
+      cuisine: parsed.cuisine,
+      category: parsed.category,
+      cook_time_min: parsed.cook_time_min,
+      active_time_min: parsed.active_time_min,
+      servings: parsed.servings,
+      source: parsed.source,
+      dietary: parsed.dietary,
+      added: parsed.added,
+      ingredients: parsed.ingredients,
+      steps: parsed.steps,
+      notes: parsed.notes,
+    };
+  }
+
+  function showResult(parsed) {
+    $("#jsonOut").textContent = JSON.stringify(parsed, null, 2);
+    $("#outputBlock").classList.add('show');
+    setStatus(`Extracted: ${parsed.title}`, 'ok');
+    setStatusRight(`${parsed.ingredients?.length || 0} ingredients · ${parsed.steps?.length || 0} steps`);
+
+    // Reset the save button (in case it was previously disabled / green from another save)
+    const sb = $("#saveBtn");
+    sb.disabled = false;
+    sb.textContent = 'Save to Cookbook';
+    sb.style.background = '';
+    sb.style.borderColor = '';
+
+    $("#outputBlock").scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }
+
+  function setBusy(button, busy) {
+    button.disabled = busy;
+  }
+
+  // ── URL Mode ────────────────────────────────────────────────────────
+  async function extractFromUrl() {
     const url = $("#urlInput").value.trim();
     if (!url) { setStatus('Paste a URL first.', 'err'); return; }
     if (!/^https?:\/\//i.test(url)) { setStatus('That doesn\'t look like a URL.', 'err'); return; }
 
     const sourceHint = $("#sourceHint").value.trim();
 
-    $("#extractBtn").disabled = true;
+    setBusy($("#extractBtn"), true);
     $("#outputBlock").classList.remove('show');
     setStatus(`<span class="spinner"></span>Step 1 of 2 — fetching page via Claude…`);
     setStatusRight('working');
 
     try {
-      // Step 1 — fetch page text via web_search (same pattern as Nora Reader)
       const r1 = await fetch(WORKER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -292,8 +435,8 @@ Rules:
           max_tokens: 4096,
           system: 'You are a web page fetcher. The user gives you a URL. Use your web_search tool to retrieve that page and return all its text content. Return only the page text, nothing else.',
           messages: [{ role: 'user', content: `Fetch and return the full text of: ${url}` }],
-          tools: [{ type: 'web_search_20250305', name: 'web_search' }]
-        })
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        }),
       });
 
       if (!r1.ok) {
@@ -301,78 +444,68 @@ Rules:
         throw new Error(`Worker returned ${r1.status}: ${err.slice(0, 200)}`);
       }
       const d1 = await r1.json();
-      const pageText = (d1.content || []).map(b => b.type === 'text' ? b.text : '').join('\n');
-      if (!pageText || pageText.length < 300) throw new Error('Could not retrieve that page. Check the URL.');
+      const pageText = (d1.content || []).map((b) => (b.type === 'text' ? b.text : '')).join('\n');
 
-      // Step 2 — extract structured recipe
-      setStatus(`<span class="spinner"></span>Step 2 of 2 — structuring as JSON…`);
-
-      const userMsg = sourceHint
-        ? `Source attribution: "${sourceHint}".\n\n${pageText.slice(0, 14000)}`
-        : `URL: ${url}\n\n${pageText.slice(0, 14000)}`;
-
-      const r2 = await fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-opus-4-5',
-          max_tokens: 4096,
-          system: SCHEMA_SYS,
-          messages: [{ role: 'user', content: userMsg }]
-        })
-      });
-
-      if (!r2.ok) {
-        const err = await r2.text();
-        throw new Error(`Worker returned ${r2.status}: ${err.slice(0, 200)}`);
-      }
-      const d2 = await r2.json();
-      const raw = (d2.content || []).map(b => b.text || '').join('').trim();
-      const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
-
-      let parsed;
-      try {
-        parsed = JSON.parse(cleaned);
-      } catch (e) {
-        throw new Error('Model returned non-JSON. First 200 chars: ' + raw.slice(0, 200));
+      // Detect blocked pages and bail early with a clear, actionable message
+      if (looksLikeBlockedPage(pageText) || !looksLikeRecipe(pageText)) {
+        const reason = pageText.length < 500
+          ? 'The page returned almost no text.'
+          : 'The page appears to be paywalled, requires sign-in, or renders the recipe with JavaScript that web search can\'t see.';
+        throw new Error(
+          `Couldn't read this URL. ${reason}\n\n` +
+          `→ Switch to the "Paste Text" tab and paste the recipe directly. Same extraction, same Save to Cookbook flow.`
+        );
       }
 
-      // Stamp today's date as added
-      parsed.added = new Date().toISOString().slice(0, 10);
-
-      // Re-key fields in canonical order so the output reads cleanly
-      const ordered = {
-        slug: parsed.slug,
-        title: parsed.title,
-        cuisine: parsed.cuisine,
-        category: parsed.category,
-        cook_time_min: parsed.cook_time_min,
-        active_time_min: parsed.active_time_min,
-        servings: parsed.servings,
-        source: parsed.source,
-        dietary: parsed.dietary,
-        added: parsed.added,
-        ingredients: parsed.ingredients,
-        steps: parsed.steps,
-        notes: parsed.notes,
-      };
-
-      $("#jsonOut").textContent = JSON.stringify(ordered, null, 2);
-      $("#outputBlock").classList.add('show');
-      setStatus(`Extracted: ${parsed.title}`, 'ok');
-      setStatusRight(`${parsed.ingredients?.length || 0} ingredients · ${parsed.steps?.length || 0} steps`);
-      $("#outputBlock").scrollIntoView({ behavior:'smooth', block:'nearest' });
+      const parsed = await structureRecipe(pageText, sourceHint, url);
+      showResult(parsed);
     } catch (err) {
-      setStatus('Error · ' + err.message, 'err');
+      setStatus('Error · ' + err.message.replace(/\n/g, '<br>'), 'err');
       setStatusRight('failed');
     } finally {
-      $("#extractBtn").disabled = false;
+      setBusy($("#extractBtn"), false);
     }
   }
 
-  $("#extractBtn").addEventListener('click', extract);
+  // ── Text Mode ───────────────────────────────────────────────────────
+  async function extractFromText() {
+    const text = $("#textInput").value.trim();
+    if (!text) { setStatus('Paste some recipe text first.', 'err'); return; }
+    if (text.length < 100) { setStatus('That looks too short to be a complete recipe. Paste more text.', 'err'); return; }
+
+    const sourceHint = $("#sourceHint").value.trim();
+
+    setBusy($("#extractTextBtn"), true);
+    $("#outputBlock").classList.remove('show');
+    setStatus(`<span class="spinner"></span>Structuring as JSON…`);
+    setStatusRight('working');
+
+    try {
+      const parsed = await structureRecipe(text, sourceHint, null);
+      showResult(parsed);
+    } catch (err) {
+      setStatus('Error · ' + err.message.replace(/\n/g, '<br>'), 'err');
+      setStatusRight('failed');
+    } finally {
+      setBusy($("#extractTextBtn"), false);
+    }
+  }
+
+  // ── Mode tab switching ──────────────────────────────────────────────
+  document.querySelectorAll('.mode-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.mode-tab').forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      const mode = tab.dataset.mode;
+      $("#urlPanel").classList.toggle('active', mode === 'url');
+      $("#textPanel").classList.toggle('active', mode === 'text');
+    });
+  });
+
+  $("#extractBtn").addEventListener('click', extractFromUrl);
+  $("#extractTextBtn").addEventListener('click', extractFromText);
   $("#urlInput").addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') extract();
+    if (e.key === 'Enter') extractFromUrl();
   });
 
   // ── Output actions ──────────────────────────────────────────────────
@@ -445,9 +578,10 @@ Rules:
 
   $("#resetBtn").addEventListener('click', () => {
     $("#urlInput").value = '';
+    $("#textInput").value = '';
     $("#sourceHint").value = '';
     $("#outputBlock").classList.remove('show');
-    setStatus('Awaiting URL.');
+    setStatus('Awaiting input.');
     setStatusRight('—');
     // Reset save button visual state
     const sb = $("#saveBtn");
