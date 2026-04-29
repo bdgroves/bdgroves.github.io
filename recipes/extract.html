@@ -316,8 +316,14 @@ Rules:
   $("#quickChips").addEventListener('click', (e) => {
     const btn = e.target.closest('.chip');
     if (!btn) return;
+    // Switch to URL tab in case we're on text/photo
+    document.querySelectorAll('.mode-tab').forEach((t) => t.classList.remove('active'));
+    document.querySelector('.mode-tab[data-mode="url"]').classList.add('active');
+    $("#urlPanel").classList.add('active');
+    $("#textPanel").classList.remove('active');
+    $("#photoPanel").classList.remove('active');
     $("#urlInput").value = btn.dataset.url;
-    extract();
+    extractFromUrl();
   });
 
   // ── Status helpers ──────────────────────────────────────────────────
@@ -674,10 +680,18 @@ Rules:
     }
 
     const btn = $("#saveBtn");
-    const orig = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Saving…';
+    btn.style.background = '';
+    btn.style.borderColor = '';
     setStatus(`<span class="spinner"></span>Committing to GitHub…`);
+
+    // Hard timeout — never let the button stay disabled longer than 30 seconds
+    const timeoutId = setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = 'Save to Cookbook';
+      setStatus('Save timed out. Check the cookbook — it may have committed anyway. Refresh the cookbook page to verify.', 'err');
+    }, 30000);
 
     try {
       const resp = await fetch(WORKER_URL + '/save-recipe', {
@@ -685,6 +699,7 @@ Rules:
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ recipe }),
       });
+      clearTimeout(timeoutId);
       const data = await resp.json();
 
       if (!resp.ok) {
@@ -700,9 +715,16 @@ Rules:
         : '';
       setStatus(`Saved "${data.title}" — recipe #${data.total_recipes}. Site rebuilds in ~30s. ${cookbookLink}${commitLink}`, 'ok');
       setStatusRight('saved · #' + data.total_recipes);
+
+      // After a brief celebration, re-enable so a re-save (or accidental click) is at least possible.
+      // The button visual stays green until a new extraction calls showResult() which fully resets it.
+      setTimeout(() => { btn.disabled = false; }, 1500);
     } catch (err) {
+      clearTimeout(timeoutId);
       btn.disabled = false;
-      btn.textContent = orig;
+      btn.textContent = 'Save to Cookbook';
+      btn.style.background = '';
+      btn.style.borderColor = '';
       setStatus('Save failed · ' + err.message, 'err');
     }
   });
