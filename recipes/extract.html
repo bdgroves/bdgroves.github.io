@@ -73,6 +73,13 @@
     textarea#textInput::placeholder { color:var(--stone); font-style:italic; }
     .text-help { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.5rem; letter-spacing:0.05em; line-height:1.6; }
 
+    /* Photo drop zone */
+    .drop-zone { border:2px dashed var(--mist); padding:2.5rem 1rem; text-align:center; background:var(--white); cursor:pointer; transition:all 0.15s; }
+    .drop-zone:hover, .drop-zone.dragging { border-color:var(--rust); background:var(--cream); }
+    .drop-headline { font-family:'Playfair Display',serif; font-size:1.1rem; color:var(--ink); margin-bottom:0.4rem; font-style:italic; }
+    .drop-sub { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); letter-spacing:0.1em; }
+    .preview-img { max-width:100%; max-height:380px; margin-top:1rem; display:block; border:1px solid var(--mist); }
+
     /* Optional source override */
     .opt-row { display:grid; grid-template-columns:auto 1fr; gap:0.5rem 1rem; align-items:center; padding:0.5rem 0; }
     .opt-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); white-space:nowrap; }
@@ -153,6 +160,7 @@
     <div class="mode-tabs" role="tablist">
       <button class="mode-tab active" data-mode="url">URL</button>
       <button class="mode-tab" data-mode="text">Paste Text</button>
+      <button class="mode-tab" data-mode="photo">Photo</button>
     </div>
 
     <div class="mode-panel active" id="urlPanel">
@@ -174,6 +182,23 @@
       <div class="url-row" style="margin-top:1rem;">
         <div style="flex:1;"></div>
         <button class="btn" id="extractTextBtn">Extract from text</button>
+      </div>
+    </div>
+
+    <div class="mode-panel" id="photoPanel">
+      <div class="drop-zone" id="dropZone">
+        <input type="file" id="fileInput" accept="image/*" style="display:none;" />
+        <p class="drop-headline">Click to choose a photo</p>
+        <p class="drop-sub">or drag & drop · or paste from clipboard (Ctrl+V)</p>
+      </div>
+      <img id="previewImg" class="preview-img" style="display:none;" alt="Recipe preview" />
+      <p class="text-help">
+        Snap a recipe card, cookbook page, magazine clipping, or handwritten note. Claude vision OCRs and structures it.
+        Best results: well-lit, in focus, recipe fills the frame.
+      </p>
+      <div class="url-row" style="margin-top:1rem;">
+        <div style="flex:1;"></div>
+        <button class="btn" id="extractPhotoBtn" disabled>Extract from photo</button>
       </div>
     </div>
   </section>
@@ -491,6 +516,107 @@ Rules:
     }
   }
 
+  // ── Photo Mode ──────────────────────────────────────────────────────
+  let photoBase64 = null;
+  let photoMimeType = null;
+
+  function handlePhotoFile(file) {
+    if (!file || !file.type.startsWith('image/')) {
+      setStatus('That doesn\'t look like an image file.', 'err');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setStatus('Image is over 10 MB. Try a smaller version.', 'err');
+      return;
+    }
+    photoMimeType = file.type;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target.result;
+      photoBase64 = dataUrl.split(',')[1]; // strip the "data:image/...;base64," prefix
+      $("#previewImg").src = dataUrl;
+      $("#previewImg").style.display = 'block';
+      $("#extractPhotoBtn").disabled = false;
+      setStatus(`Photo loaded · ${(file.size / 1024).toFixed(0)} KB · ${file.type}`, 'ok');
+      setStatusRight('photo ready');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function extractFromPhoto() {
+    if (!photoBase64) { setStatus('Choose a photo first.', 'err'); return; }
+    const sourceHint = $("#sourceHint").value.trim();
+
+    setBusy($("#extractPhotoBtn"), true);
+    $("#outputBlock").classList.remove('show');
+    setStatus(`<span class="spinner"></span>Reading photo with Claude vision…`);
+    setStatusRight('working');
+
+    try {
+      const userMsg = [
+        { type: 'image', source: { type: 'base64', media_type: photoMimeType, data: photoBase64 } },
+        { type: 'text', text: sourceHint
+            ? `Source attribution: "${sourceHint}".\n\nExtract this recipe from the image into the JSON schema. If the image is not a recipe, return JSON with an "error" field explaining what you see.`
+            : `Extract this recipe from the image into the JSON schema. If the image is not a recipe, return JSON with an "error" field explaining what you see.`
+        },
+      ];
+
+      const r = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-opus-4-5',
+          max_tokens: 4096,
+          system: SCHEMA_SYS,
+          messages: [{ role: 'user', content: userMsg }],
+        }),
+      });
+
+      if (!r.ok) {
+        const err = await r.text();
+        throw new Error(`Worker returned ${r.status}: ${err.slice(0, 200)}`);
+      }
+      const d = await r.json();
+      const raw = (d.content || []).map((b) => b.text || '').join('').trim();
+      const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+
+      let parsed;
+      try {
+        parsed = JSON.parse(cleaned);
+      } catch (e) {
+        throw new Error('Model returned non-JSON. First 200 chars: ' + raw.slice(0, 200));
+      }
+
+      if (parsed.error) {
+        throw new Error(parsed.error);
+      }
+
+      parsed.added = new Date().toISOString().slice(0, 10);
+      const ordered = {
+        slug: parsed.slug,
+        title: parsed.title,
+        cuisine: parsed.cuisine,
+        category: parsed.category,
+        cook_time_min: parsed.cook_time_min,
+        active_time_min: parsed.active_time_min,
+        servings: parsed.servings,
+        source: parsed.source,
+        dietary: parsed.dietary,
+        added: parsed.added,
+        ingredients: parsed.ingredients,
+        steps: parsed.steps,
+        notes: parsed.notes,
+      };
+
+      showResult(ordered);
+    } catch (err) {
+      setStatus('Error · ' + err.message.replace(/\n/g, '<br>'), 'err');
+      setStatusRight('failed');
+    } finally {
+      setBusy($("#extractPhotoBtn"), false);
+    }
+  }
+
   // ── Mode tab switching ──────────────────────────────────────────────
   document.querySelectorAll('.mode-tab').forEach((tab) => {
     tab.addEventListener('click', () => {
@@ -499,13 +625,42 @@ Rules:
       const mode = tab.dataset.mode;
       $("#urlPanel").classList.toggle('active', mode === 'url');
       $("#textPanel").classList.toggle('active', mode === 'text');
+      $("#photoPanel").classList.toggle('active', mode === 'photo');
     });
   });
 
   $("#extractBtn").addEventListener('click', extractFromUrl);
   $("#extractTextBtn").addEventListener('click', extractFromText);
+  $("#extractPhotoBtn").addEventListener('click', extractFromPhoto);
   $("#urlInput").addEventListener('keydown', (e) => {
     if (e.key === 'Enter') extractFromUrl();
+  });
+
+  // Photo input handlers
+  $("#dropZone").addEventListener('click', () => $("#fileInput").click());
+  $("#fileInput").addEventListener('change', (e) => {
+    if (e.target.files[0]) handlePhotoFile(e.target.files[0]);
+  });
+  $("#dropZone").addEventListener('dragover', (e) => {
+    e.preventDefault();
+    $("#dropZone").classList.add('dragging');
+  });
+  $("#dropZone").addEventListener('dragleave', () => {
+    $("#dropZone").classList.remove('dragging');
+  });
+  $("#dropZone").addEventListener('drop', (e) => {
+    e.preventDefault();
+    $("#dropZone").classList.remove('dragging');
+    if (e.dataTransfer.files[0]) handlePhotoFile(e.dataTransfer.files[0]);
+  });
+  // Paste from clipboard (only when photo tab is active)
+  document.addEventListener('paste', (e) => {
+    if (!$("#photoPanel").classList.contains('active')) return;
+    const item = [...(e.clipboardData?.items || [])].find((i) => i.type.startsWith('image/'));
+    if (item) {
+      e.preventDefault();
+      handlePhotoFile(item.getAsFile());
+    }
   });
 
   // ── Output actions ──────────────────────────────────────────────────
@@ -580,6 +735,12 @@ Rules:
     $("#urlInput").value = '';
     $("#textInput").value = '';
     $("#sourceHint").value = '';
+    $("#fileInput").value = '';
+    $("#previewImg").style.display = 'none';
+    $("#previewImg").src = '';
+    photoBase64 = null;
+    photoMimeType = null;
+    $("#extractPhotoBtn").disabled = true;
     $("#outputBlock").classList.remove('show');
     setStatus('Awaiting input.');
     setStatusRight('—');

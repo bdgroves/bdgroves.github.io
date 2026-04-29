@@ -123,8 +123,31 @@
     .admin-toggle.active { background:var(--rust); color:var(--white); border-color:var(--rust); }
     .delete-btn { display:none; position:absolute; top:0.75rem; right:0.75rem; background:transparent; border:1px solid var(--mist); color:var(--stone); width:1.6rem; height:1.6rem; border-radius:50%; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.85rem; line-height:1; padding:0; transition:all 0.15s; z-index:5; }
     .delete-btn:hover { background:var(--rust); border-color:var(--rust); color:var(--white); }
+    .edit-btn { display:none; position:absolute; top:0.75rem; right:2.85rem; background:transparent; border:1px solid var(--mist); color:var(--stone); width:1.6rem; height:1.6rem; border-radius:50%; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.7rem; line-height:1; padding:0; transition:all 0.15s; z-index:5; }
+    .edit-btn:hover { background:var(--sage); border-color:var(--sage); color:var(--white); }
     body.admin-mode .card { position:relative; }
-    body.admin-mode .delete-btn { display:flex; align-items:center; justify-content:center; }
+    body.admin-mode .delete-btn,
+    body.admin-mode .edit-btn { display:flex; align-items:center; justify-content:center; }
+
+    /* Edit modal overlay */
+    .edit-overlay { display:none; position:fixed; inset:0; background:rgba(28,26,22,0.55); z-index:1000; align-items:center; justify-content:center; padding:1rem; }
+    .edit-overlay.show { display:flex; }
+    .edit-modal { background:var(--parchment); border:1px solid var(--ink); max-width:780px; width:100%; max-height:90vh; display:flex; flex-direction:column; }
+    .edit-header { display:flex; justify-content:space-between; align-items:baseline; padding:1rem 1.25rem; border-bottom:1px solid var(--mist); }
+    .edit-title { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; }
+    .edit-meta { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); letter-spacing:0.15em; text-transform:uppercase; }
+    .edit-body { flex:1; padding:1rem 1.25rem; overflow-y:auto; }
+    .edit-body textarea { width:100%; height:50vh; min-height:300px; padding:0.85rem 1rem; font-family:'DM Mono',monospace; font-size:0.78rem; line-height:1.55; color:var(--ink); background:var(--white); border:1px solid var(--mist); resize:vertical; outline:none; tab-size:2; }
+    .edit-body textarea:focus { border-color:var(--ink); }
+    .edit-footer { display:flex; gap:0.5rem; padding:1rem 1.25rem; border-top:1px solid var(--mist); flex-wrap:wrap; align-items:center; }
+    .edit-status { flex:1; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); letter-spacing:0.05em; }
+    .edit-status.err { color:var(--rust); }
+    .edit-status.ok { color:var(--sage); }
+    .edit-btn-action { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; padding:0.55rem 1rem; background:var(--ink); color:var(--white); border:1px solid var(--ink); cursor:pointer; transition:all 0.15s; }
+    .edit-btn-action:hover { background:var(--sage); border-color:var(--sage); }
+    .edit-btn-action.ghost { background:transparent; color:var(--ink); }
+    .edit-btn-action.ghost:hover { background:var(--ink); color:var(--white); }
+    .edit-btn-action:disabled { opacity:0.5; cursor:not-allowed; }
   </style>
 </head>
 <body>
@@ -217,6 +240,24 @@
   </div>
 </footer>
 
+<!-- Edit modal -->
+<div class="edit-overlay" id="editOverlay">
+  <div class="edit-modal">
+    <div class="edit-header">
+      <span class="edit-title" id="editTitle">Edit recipe</span>
+      <span class="edit-meta" id="editMeta">—</span>
+    </div>
+    <div class="edit-body">
+      <textarea id="editJson" spellcheck="false" autocomplete="off"></textarea>
+    </div>
+    <div class="edit-footer">
+      <span class="edit-status" id="editStatus">Edit JSON freely. Save commits to GitHub.</span>
+      <button class="edit-btn-action ghost" id="editCancelBtn">Cancel</button>
+      <button class="edit-btn-action" id="editSaveBtn">Save changes</button>
+    </div>
+  </div>
+</div>
+
 <script>
   // Cloudflare Worker proxy for save/delete operations
   const WORKER_URL = 'https://brooks-anthropic-proxy.bdgroves1970.workers.dev';
@@ -293,6 +334,7 @@
 
     list.innerHTML = filtered.map((r) => `
       <article class="card" data-slug="${escapeHtml(r.slug)}">
+        <button class="edit-btn" data-slug="${escapeHtml(r.slug)}" title="Edit recipe" aria-label="Edit ${escapeHtml(r.title)}">✎</button>
         <button class="delete-btn" data-slug="${escapeHtml(r.slug)}" data-title="${escapeHtml(r.title)}" title="Delete recipe" aria-label="Delete ${escapeHtml(r.title)}">×</button>
         <div class="card-head">
           <div>
@@ -339,8 +381,8 @@
 
     $$(".card").forEach((card) => {
       card.addEventListener("click", (e) => {
-        // Ignore clicks on the delete button — those are handled separately
-        if (e.target.closest('.delete-btn')) return;
+        // Ignore clicks on the action buttons — those are handled separately
+        if (e.target.closest('.delete-btn') || e.target.closest('.edit-btn')) return;
         card.classList.toggle("open");
       });
     });
@@ -377,6 +419,43 @@
         }
       });
     });
+
+    $$(".edit-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openEditor(btn.dataset.slug);
+      });
+    });
+  }
+
+  // ── Inline JSON editor ──────────────────────────────────────────────
+  let editingSlug = null;
+
+  function openEditor(slug) {
+    const recipe = recipes.find((r) => r.slug === slug);
+    if (!recipe) {
+      alert('Recipe not found.');
+      return;
+    }
+    editingSlug = slug;
+    $("#editTitle").textContent = recipe.title;
+    $("#editMeta").textContent = `slug: ${recipe.slug}`;
+    $("#editJson").value = JSON.stringify(recipe, null, 2);
+    setEditStatus('Edit JSON freely. Save commits to GitHub.');
+    $("#editOverlay").classList.add('show');
+    $("#editJson").focus();
+  }
+
+  function closeEditor() {
+    $("#editOverlay").classList.remove('show');
+    editingSlug = null;
+    $("#editJson").value = '';
+  }
+
+  function setEditStatus(msg, kind = '') {
+    const el = $("#editStatus");
+    el.className = 'edit-status ' + kind;
+    el.innerHTML = msg;
   }
 
   function init() {
@@ -457,7 +536,73 @@
         alert('Wrong password.');
       }
     });
+
+    // Edit modal handlers
+    $("#editCancelBtn").addEventListener('click', closeEditor);
+
+    $("#editOverlay").addEventListener('click', (e) => {
+      // Click outside the modal to close
+      if (e.target === $("#editOverlay")) closeEditor();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && $("#editOverlay").classList.contains('show')) {
+        closeEditor();
+      }
+    });
+
+    $("#editSaveBtn").addEventListener('click', async () => {
+      if (!editingSlug) return;
+
+      const text = $("#editJson").value.trim();
+      let parsed;
+      try {
+        parsed = JSON.parse(text);
+      } catch (e) {
+        setEditStatus('Invalid JSON: ' + e.message, 'err');
+        return;
+      }
+
+      if (!parsed.slug || !parsed.title) {
+        setEditStatus('Recipe must have at least a slug and title.', 'err');
+        return;
+      }
+
+      const saveBtn = $("#editSaveBtn");
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+      setEditStatus(`<span style="display:inline-block;width:8px;height:8px;border:2px solid var(--mist);border-top-color:var(--rust);border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:-1px;"></span>Committing changes…`);
+
+      try {
+        const resp = await fetch(WORKER_URL + '/update-recipe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            original_slug: editingSlug,
+            recipe: parsed,
+          }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error + (data.detail ? ' · ' + data.detail : ''));
+
+        // Update local state, re-render, close modal
+        const idx = recipes.findIndex((r) => r.slug === editingSlug);
+        if (idx !== -1) recipes[idx] = parsed;
+        renderRecipes();
+        setEditStatus(`Saved. Site rebuilds in ~30s.`, 'ok');
+        setTimeout(closeEditor, 800);
+      } catch (err) {
+        setEditStatus('Save failed: ' + err.message, 'err');
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save changes';
+      }
+    });
   }
+
+  // Spinner keyframes for the edit-status spinner
+  const spinnerStyle = document.createElement('style');
+  spinnerStyle.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+  document.head.appendChild(spinnerStyle);
 
   fetch("recipes.json")
     .then((r) => r.json())
