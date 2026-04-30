@@ -148,78 +148,83 @@ jobs:
                   scraper = cloudscraper.create_scraper()
                   headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
-                  # Get GC standings
-                  url = f"https://www.procyclingstats.com/race/{pcs_slug}/2026/gc"
-                  print(f"    Fetching GC: {url}")
-                  r = scraper.get(url, headers=headers, timeout=15)
-                  tree = HTMLParser(r.text)
-
+                  # Get GC standings — try both /gc and /general-classification URLs
                   gc = []
-                  table = tree.css_first("table.rdrResults")
-                  if not table:
-                      table = tree.css_first("table")
-                  if table:
-                      rows = table.css("tr")
-                      for row in rows:
-                          cols = row.css("td")
-                          if len(cols) < 3:
+                  for gc_url in [
+                      f"https://www.procyclingstats.com/race/{pcs_slug}/2026/gc",
+                      f"https://www.procyclingstats.com/race/{pcs_slug}/2026/general-classification",
+                  ]:
+                      print(f"    Fetching GC: {gc_url}")
+                      r = scraper.get(gc_url, headers=headers, timeout=15)
+                      if r.status_code != 200:
+                          continue
+                      tree = HTMLParser(r.text)
+                      # Try all table selectors
+                      for sel in ["table.rdrResults", "table.results", "div.result-cont table", "table"]:
+                          table = tree.css_first(sel)
+                          if not table:
                               continue
-                          rank = cols[0].text(strip=True).strip(".")
-                          if not rank.isdigit():
-                              continue
-                          if int(rank) > 10:
-                              break
-                          name = ""
-                          team = ""
-                          time = ""
-                          for col in cols:
-                              a = col.css_first("a[href*='/rider/']")
-                              if a and not name:
-                                  name = a.text(strip=True)
-                              a2 = col.css_first("a[href*='/team/']")
-                              if a2 and not team:
-                                  team = a2.text(strip=True)
-                          # Time gap usually in last numeric col
-                          for col in reversed(cols):
-                              t = col.text(strip=True)
-                              if re.match(r"^[\d:+\s]+$|^s\.t\.$|^0:00$", t) and len(t) > 1:
-                                  time = t
+                          rows = table.css("tr")
+                          print(f"    Selector {sel}: {len(rows)} rows")
+                          for row in rows:
+                              cols = row.css("td")
+                              if len(cols) < 3:
+                                  continue
+                              rank = cols[0].text(strip=True).strip(".").strip()
+                              if not rank.isdigit():
+                                  continue
+                              if int(rank) > 10:
                                   break
-                          if name:
-                              # Apply known rider canonicalization
-                              for key, (canonical, cteam) in KNOWN_WINNERS.items():
-                                  if key.lower() in name.lower():
-                                      name = canonical
-                                      if not team:
-                                          team = cteam
+                              name = ""
+                              team = ""
+                              time = ""
+                              for col in cols:
+                                  a = col.css_first("a[href*='/rider/']")
+                                  if a and not name:
+                                      name = a.text(strip=True)
+                                  a2 = col.css_first("a[href*='/team/']")
+                                  if a2 and not team:
+                                      team = a2.text(strip=True)
+                              for col in reversed(cols):
+                                  t = col.text(strip=True)
+                                  if re.match(r"^[\d]+:[\d]+|^\+[\d]|^s\.t\.$|^0:00$", t):
+                                      time = t
                                       break
-                              gc.append({"rank": int(rank), "name": name, "team": team, "time": time})
+                              if name:
+                                  for key, (canonical, cteam) in KNOWN_WINNERS.items():
+                                      if key.lower() in name.lower():
+                                          name = canonical
+                                          if not team:
+                                              team = cteam
+                                          break
+                                  gc.append({"rank": int(rank), "name": name, "team": team, "time": time})
+                          if gc:
+                              break
+                      if gc:
+                          break
 
-                  # Get stage count from race page
+                  # Count completed stages by checking PCS stage results
                   stages_done = 0
-                  stages_total = 0
                   try:
                       rr = scraper.get(f"https://www.procyclingstats.com/race/{pcs_slug}/2026", headers=headers, timeout=15)
                       tr = HTMLParser(rr.text)
-                      # Look for stage count in page
-                      stage_links = tr.css("a[href*='/stage-']")
-                      if stage_links:
-                          stages_total = len(set(a.attributes.get("href","") for a in stage_links if "/stage-" in a.attributes.get("href","")))
-                      # Count completed stages
-                      for a in stage_links:
-                          href = a.attributes.get("href","")
-                          if "/result" in href or "result" in href:
-                              stages_done += 1
+                      # Count stage links that have results
+                      done = set()
+                      for a in tr.css("a[href*='stage-']"):
+                          href = a.attributes.get("href", "")
+                          m = re.search(r'stage-(\d+)', href)
+                          if m:
+                              done.add(m.group(1))
+                      stages_done = len(done)
                   except Exception as se:
                       print(f"    Stage count error: {se}")
 
                   leader = gc[0] if gc else None
-                  print(f"    GC leader: {leader['name'] if leader else '?'}, {len(gc)} riders, {stages_done} stages done")
+                  print(f"    GC: {leader['name'] if leader else 'none'}, {len(gc)} riders, {stages_done} stages done")
                   return {
                       "gc": gc[:5],
                       "leader": leader,
                       "stages_done": stages_done,
-                      "stages_total": stages_total,
                   }
               except Exception as e:
                   print(f"    Live race fetch error: {e}")
@@ -369,7 +374,7 @@ jobs:
             {"name":"Amstel Gold Race","emoji":"🇳🇱","category":"1.UWT","date":"2026-04-19","status":"final","winner":"Remco Evenepoel","team":"Red Bull - BORA - hansgrohe","notes":"Ardennes opener"},
             {"name":"La Flèche Wallonne","emoji":"🇧🇪","category":"1.UWT","date":"2026-04-22","status":"final","winner":"Paul Seixas","team":"Decathlon CMA CGM","notes":"19yo — youngest ever winner on Mur de Huy"},
             {"name":"Liège–Bastogne–Liège","emoji":"🇧🇪","category":"Monument","date":"2026-04-26","status":"final","winner":"Tadej Pogačar 🌈","team":"UAE Team Emirates XRG","notes":"4th title · 3rd Monument 2026 · Seixas 2nd, Evenepoel 3rd"},
-            {"name":"Tour de Romandie","emoji":"🇨🇭","category":"2.UWT","date":"2026-04-28","end_date":"2026-05-03","stages":5,"status":"upcoming","winner":None,"team":None,"notes":"Pogačar leads after Stage 1"},
+            {"name":"Tour de Romandie","emoji":"🇨🇭","category":"2.UWT","date":"2026-04-28","end_date":"2026-05-03","stages":6,"status":"upcoming","winner":None,"team":None,"notes":"Prologue + 5 stages · Pogačar leads GC"},
             {"name":"Eschborn-Frankfurt","emoji":"🇩🇪","category":"1.UWT","date":"2026-05-01","status":"upcoming","winner":None,"team":None,"notes":""},
             {"name":"Giro d'Italia","emoji":"🇮🇹","category":"Grand Tour","date":"2026-05-09","end_date":"2026-06-01","stages":21,"status":"upcoming","winner":None,"team":None,"notes":"May 9–Jun 1 · Bulgaria → Rome"},
             {"name":"Tour de Suisse","emoji":"🇨🇭","category":"2.UWT","date":"2026-06-17","end_date":"2026-06-25","stages":8,"status":"upcoming","winner":None,"team":None,"notes":""},
