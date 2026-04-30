@@ -125,7 +125,20 @@
     .delete-btn:hover { background:var(--rust); border-color:var(--rust); color:var(--white); }
     .edit-btn { display:none; position:absolute; top:0.75rem; right:2.85rem; background:transparent; border:1px solid var(--mist); color:var(--stone); width:1.6rem; height:1.6rem; border-radius:50%; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.7rem; line-height:1; padding:0; transition:all 0.15s; z-index:5; }
     .edit-btn:hover { background:var(--sage); border-color:var(--sage); color:var(--white); }
-    body.admin-mode .card { position:relative; }
+
+    /* Share — always visible, sits at the top-right of every card */
+    .share-btn { position:absolute; top:0.75rem; right:0.75rem; background:transparent; border:1px solid var(--mist); color:var(--stone); width:1.6rem; height:1.6rem; border-radius:50%; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.85rem; line-height:1; padding:0; transition:all 0.15s; z-index:5; display:flex; align-items:center; justify-content:center; }
+    .share-btn:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+    .share-btn svg { width:0.7rem; height:0.7rem; }
+    /* When admin mode is on, push share aside so delete and edit have room */
+    body.admin-mode .share-btn { right:4.95rem; }
+    .card { position:relative; }
+
+    /* Full share button — only visible inside an expanded card */
+    .share-full-row { display:flex; gap:0.5rem; padding-top:1rem; margin-top:1rem; border-top:1px dashed var(--mist); flex-wrap:wrap; }
+    .share-full-btn { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; padding:0.5rem 0.9rem; background:transparent; color:var(--stone); border:1px solid var(--mist); cursor:pointer; transition:all 0.15s; }
+    .share-full-btn:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
     body.admin-mode .delete-btn,
     body.admin-mode .edit-btn { display:flex; align-items:center; justify-content:center; }
 
@@ -334,6 +347,15 @@
 
     list.innerHTML = filtered.map((r) => `
       <article class="card" data-slug="${escapeHtml(r.slug)}">
+        <button class="share-btn" data-slug="${escapeHtml(r.slug)}" title="Share recipe link" aria-label="Share ${escapeHtml(r.title)}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+        </button>
         <button class="edit-btn" data-slug="${escapeHtml(r.slug)}" title="Edit recipe" aria-label="Edit ${escapeHtml(r.title)}">✎</button>
         <button class="delete-btn" data-slug="${escapeHtml(r.slug)}" data-title="${escapeHtml(r.title)}" title="Delete recipe" aria-label="Delete ${escapeHtml(r.title)}">×</button>
         <div class="card-head">
@@ -375,6 +397,10 @@
             </ol>
           </div>
           ${r.notes ? `<div class="card-notes">${escapeHtml(r.notes)}</div>` : ""}
+          <div class="share-full-row">
+            <button class="share-full-btn" data-slug="${escapeHtml(r.slug)}" data-mode="full">Share full recipe</button>
+            <button class="share-full-btn" data-slug="${escapeHtml(r.slug)}" data-mode="link">Share link only</button>
+          </div>
         </div>
       </article>
     `).join("");
@@ -382,7 +408,8 @@
     $$(".card").forEach((card) => {
       card.addEventListener("click", (e) => {
         // Ignore clicks on the action buttons — those are handled separately
-        if (e.target.closest('.delete-btn') || e.target.closest('.edit-btn')) return;
+        if (e.target.closest('.delete-btn') || e.target.closest('.edit-btn') ||
+            e.target.closest('.share-btn') || e.target.closest('.share-full-btn')) return;
         card.classList.toggle("open");
       });
     });
@@ -426,6 +453,103 @@
         openEditor(btn.dataset.slug);
       });
     });
+
+    $$(".share-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        shareRecipe(btn.dataset.slug, 'link');
+      });
+    });
+
+    $$(".share-full-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        shareRecipe(btn.dataset.slug, btn.dataset.mode);
+      });
+    });
+  }
+
+  // ── Sharing ─────────────────────────────────────────────────────────
+  function buildRecipeText(recipe) {
+    const lines = [recipe.title];
+    if (recipe.source) lines.push(`from ${recipe.source}`);
+    lines.push('');
+    lines.push(`Total: ${recipe.cook_time_min} min · Active: ${recipe.active_time_min} min · Serves ${recipe.servings}`);
+    lines.push('');
+    lines.push('INGREDIENTS');
+    recipe.ingredients.forEach((i) => {
+      lines.push(`- ${i.qty} ${i.item}`);
+    });
+    lines.push('');
+    lines.push('METHOD');
+    recipe.steps.forEach((s, i) => {
+      lines.push(`${i + 1}. ${s}`);
+    });
+    if (recipe.notes) {
+      lines.push('');
+      lines.push(`NOTES: ${recipe.notes}`);
+    }
+    lines.push('');
+    lines.push(`https://brooksgroves.com/recipes.html#${recipe.slug}`);
+    return lines.join('\n');
+  }
+
+  async function shareRecipe(slug, mode) {
+    const recipe = recipes.find((r) => r.slug === slug);
+    if (!recipe) return;
+
+    const url = `https://brooksgroves.com/recipes.html#${recipe.slug}`;
+    const shareData = mode === 'full'
+      ? {
+          title: recipe.title,
+          text: buildRecipeText(recipe),
+          url,
+        }
+      : {
+          title: recipe.title,
+          text: `${recipe.title} — from brooksgroves.com`,
+          url,
+        };
+
+    // Use Web Share API if available (mobile, modern browsers)
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        // User cancelled or browser refused — fall through to clipboard
+        if (err.name === 'AbortError') return;
+      }
+    }
+
+    // Fallback: copy to clipboard
+    const textToCopy = mode === 'full' ? buildRecipeText(recipe) : url;
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      flashToast(mode === 'full' ? 'Full recipe copied to clipboard' : 'Recipe link copied to clipboard');
+    } catch (err) {
+      // Last-resort fallback: prompt with the text selected so user can copy manually
+      prompt('Copy this:', textToCopy);
+    }
+  }
+
+  function flashToast(msg) {
+    let toast = document.getElementById('shareToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'shareToast';
+      toast.style.cssText = `
+        position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%);
+        background:var(--ink); color:var(--white); padding:0.7rem 1.2rem;
+        font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.1em;
+        z-index:2000; opacity:0; transition:opacity 0.2s;
+      `;
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    requestAnimationFrame(() => { toast.style.opacity = '1'; });
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2400);
   }
 
   // ── Inline JSON editor ──────────────────────────────────────────────
@@ -616,10 +740,27 @@
           year: "numeric", month: "long", day: "numeric"
         });
       }
+      // Deep-link: if URL has #slug, expand and scroll to that recipe
+      handleHashDeepLink();
     })
     .catch((err) => {
       $("#recipeList").innerHTML = `<div class="empty">Could not load recipes.json — ${escapeHtml(err.message)}</div>`;
     });
+
+  function handleHashDeepLink() {
+    const slug = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+    if (!slug) return;
+    const card = document.querySelector(`.card[data-slug="${CSS.escape(slug)}"]`);
+    if (!card) return;
+    card.classList.add('open');
+    // Wait a tick for layout, then scroll
+    setTimeout(() => {
+      card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+  }
+
+  // Re-resolve hash if user clicks a same-page link (e.g. via browser history)
+  window.addEventListener('hashchange', handleHashDeepLink);
 
   init();
 </script>
