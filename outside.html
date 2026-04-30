@@ -490,21 +490,51 @@ async function loadCycling() {
 
     const renderRace = r => {
       const dateStr = new Date(r.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      const endDateStr = r.end_date ? new Date(r.end_date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : null;
       let leader='', statusClass='sched', statusLabel='Upcoming';
+
       if(r.status==='final'){
         statusClass='final'; statusLabel='Final';
         if(r.winner) leader=`<p class="race-leader">${r.winner}${r.team?' · '+r.team:''}</p>`;
+
       } else if(r.status==='live'){
-        statusClass='live'; statusLabel='<span class="live-dot"></span>Live';
-        leader=`<p class="race-leader" style="color:var(--rust);">Racing now</p>`;
+        statusClass='live';
+        const stagesDone = r.stages_done || 0;
+        const stagesTotal = r.stages || 0;
+        statusLabel=`<span class="live-dot"></span>Stage ${stagesDone}/${stagesTotal}`;
+
+        // GC leader
+        if(r.gc_leader){
+          leader=`<p class="race-leader" style="color:var(--rust);">🌈 ${r.gc_leader}${r.gc_leader_team?' · <span style="color:var(--stone);font-size:0.7rem;">'+r.gc_leader_team+'</span>':''} leads GC</p>`;
+        } else {
+          leader=`<p class="race-leader" style="color:var(--rust);">Racing now</p>`;
+        }
+
+        // Mini GC table if available
+        if(r.live_gc && r.live_gc.length > 1){
+          const gcRows = r.live_gc.slice(0,5).map(g =>
+            `<div style="display:flex;justify-content:space-between;gap:0.5rem;padding:0.15rem 0;font-size:0.72rem;border-bottom:1px solid var(--mist);">
+              <span style="font-family:'DM Mono',monospace;color:var(--stone);width:1rem;">${g.rank}</span>
+              <span style="flex:1;color:var(--ink);">${g.name}</span>
+              <span style="font-family:'DM Mono',monospace;color:var(--stone);font-size:0.65rem;">${g.time||'s.t.'}</span>
+            </div>`
+          ).join('');
+          leader += `<div style="margin-top:0.5rem;padding:0.5rem 0.75rem;background:var(--cream);border-left:2px solid var(--rust);">${gcRows}</div>`;
+        }
       }
+
       const url = RACE_URLS[r.name];
       const nameHtml = url
         ? `<a href="${url}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;border-bottom:1px solid var(--mist);transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--mist)'">${r.name}</a>`
         : r.name;
+
+      const dateDisplay = endDateStr && r.status !== 'final'
+        ? `${dateStr}–${endDateStr}`
+        : dateStr;
+
       return `<div class="race-row">
         <div><p class="race-name">${nameHtml} <span style="${mono}">${r.category}</span></p>${leader}</div>
-        <div class="race-meta"><span>${dateStr}</span><span class="score-status ${statusClass}">${statusLabel}</span></div>
+        <div class="race-meta"><span>${dateDisplay}</span><span class="score-status ${statusClass}">${statusLabel}</span></div>
       </div>`;
     };
 
