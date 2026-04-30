@@ -382,7 +382,7 @@ jobs:
           ]
 
           today = date.today()
-          for r in races:
+           for r in races:
               race_date = date.fromisoformat(r["date"])
               end_date = date.fromisoformat(r["end_date"]) if r.get("end_date") else race_date
               delta = (race_date - today).days
@@ -465,8 +465,7 @@ jobs:
                       cal_norm = norm(r["name"])
                       w_words = set(w for w in win_norm.split() if len(w) > 3)
                       c_words = set(w for w in cal_norm.split() if len(w) > 3)
-                      print(f"    Checking {win_raw!r} vs {r['name']!r}: {w_words & c_words}")
-                      if w_words and c_words and len(w_words & c_words) >= 1:
+                          if w_words and c_words and len(w_words & c_words) >= 1:
                           r["status"] = "final"
                           r["winner"] = rider["name"]
                           r["team"] = rider.get("team", "")
