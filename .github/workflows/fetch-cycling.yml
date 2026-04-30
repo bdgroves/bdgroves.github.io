@@ -647,6 +647,24 @@ jobs:
                       data["gc"] = gc
                       print(f"  GC: {gc[0]['name']} leads")
                       updated = True
+                  # Scrape jersey leaders
+                  for jersey, path, key in [
+                      ("Points", "points", "points_leader"),
+                      ("KOM",    "kom",    "kom_leader"),
+                      ("Youth",  "youth",  "young_rider"),
+                  ]:
+                      try:
+                          r = scraper.get(f"https://www.procyclingstats.com/race/{gt['slug']}/2026/{path}", headers=headers, timeout=10)
+                          if r.status_code == 200:
+                              tree = HTMLParser(r.text)
+                              table = first_table(tree)
+                              name, _ = get_rank1(table)
+                              if name:
+                                  data[key] = name
+                                  print(f"  {jersey} jersey: {name}")
+                                  updated = True
+                      except Exception as e:
+                          print(f"  {jersey} jersey error: {e}")
               if updated:
                   with open(fpath, "w", encoding="utf-8") as f:
                       json.dump(data, f, indent=2, ensure_ascii=False)
