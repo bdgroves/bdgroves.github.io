@@ -287,7 +287,7 @@ jobs:
                   # Try all table selectors PCS might use
                   table = None
                   for selector in ["table.results", "table.rdrResults", "div.result-cont table",
-                                   "div.resultCont table", "table[class*='result']", "table"]:
+                                  "div.resultCont table", "table[class*='result']", "table"]:
                       table = tree.css_first(selector)
                       if table:
                           print(f"    Found table with selector: {selector}")
@@ -465,7 +465,7 @@ jobs:
                       cal_norm = norm(r["name"])
                       w_words = set(w for w in win_norm.split() if len(w) > 3)
                       c_words = set(w for w in cal_norm.split() if len(w) > 3)
-                          if w_words and c_words and len(w_words & c_words) >= 1:
+                      if w_words and c_words and len(w_words & c_words) >= 1:
                           r["status"] = "final"
                           r["winner"] = rider["name"]
                           r["team"] = rider.get("team", "")
