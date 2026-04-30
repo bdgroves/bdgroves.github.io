@@ -139,6 +139,22 @@
     .tour-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
     @media(max-width:700px) { .tour-cards { grid-template-columns:1fr; } }
     .tour-card { background:var(--ink); color:var(--white); padding:1.25rem; text-decoration:none; display:block; border-left:3px solid var(--gold); transition:background 0.15s; }
+    .tour-card:hover { background:#111; }
+    /* Giro — pink/magenta */
+    .tour-card.giro { border-left-color:#e40046; }
+    .tour-card.giro .tour-card-status,
+    .tour-card.giro .tour-card-cta { color:#ff6b95; }
+    .tour-card.giro:hover .tour-card-name { color:#ff6b95; }
+    /* Tour de France — yellow */
+    .tour-card.tdf { border-left-color:#f5d800; }
+    .tour-card.tdf .tour-card-status,
+    .tour-card.tdf .tour-card-cta { color:#f5d800; }
+    .tour-card.tdf:hover .tour-card-name { color:#f5d800; }
+    /* Vuelta — red */
+    .tour-card.vuelta { border-left-color:#e8212c; }
+    .tour-card.vuelta .tour-card-status,
+    .tour-card.vuelta .tour-card-cta { color:#ff6b6b; }
+    .tour-card.vuelta:hover .tour-card-name { color:#ff6b6b; }
     .tour-card:hover { background:#2a2820; }
     .tour-card-country { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.14em; text-transform:uppercase; color:#888; margin-bottom:0.4rem; }
     .tour-card-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:900; color:var(--white); margin-bottom:0.25rem; }
@@ -299,21 +315,21 @@
     </div>
     <div class="col-label">Grand Tours 2026</div>
     <div class="tour-cards">
-      <a href="/giro-2026.html" class="tour-card">
+      <a href="/giro-2026.html" class="tour-card giro">
         <div class="tour-card-country">Italy</div>
         <div class="tour-card-name">Giro d'Italia</div>
         <div class="tour-card-dates">May 8–31 · Bulgaria → Rome · 21 stages</div>
         <div class="tour-card-status">Upcoming · 109th Edition</div>
         <div class="tour-card-cta">Stage Tracker →</div>
       </a>
-      <a href="/tdf-2026.html" class="tour-card">
+      <a href="/tdf-2026.html" class="tour-card tdf">
         <div class="tour-card-country">France</div>
         <div class="tour-card-name">Tour de France</div>
         <div class="tour-card-dates">Jul 4–26 · Barcelona → Paris · 21 stages</div>
         <div class="tour-card-status">Upcoming · 113th Edition</div>
         <div class="tour-card-cta">Stage Tracker →</div>
       </a>
-      <a href="/vuelta-2026.html" class="tour-card">
+      <a href="/vuelta-2026.html" class="tour-card vuelta">
         <div class="tour-card-country">Spain</div>
         <div class="tour-card-name">Vuelta a España</div>
         <div class="tour-card-dates">Aug 22–Sep 13 · Monaco → Granada · 21 stages</div>
@@ -490,51 +506,21 @@ async function loadCycling() {
 
     const renderRace = r => {
       const dateStr = new Date(r.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
-      const endDateStr = r.end_date ? new Date(r.end_date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}) : null;
       let leader='', statusClass='sched', statusLabel='Upcoming';
-
       if(r.status==='final'){
         statusClass='final'; statusLabel='Final';
         if(r.winner) leader=`<p class="race-leader">${r.winner}${r.team?' · '+r.team:''}</p>`;
-
       } else if(r.status==='live'){
-        statusClass='live';
-        const stagesDone = r.stages_done || 0;
-        const stagesTotal = r.stages || 0;
-        statusLabel=`<span class="live-dot"></span>Stage ${stagesDone}/${stagesTotal}`;
-
-        // GC leader
-        if(r.gc_leader){
-          leader=`<p class="race-leader" style="color:var(--rust);">🌈 ${r.gc_leader}${r.gc_leader_team?' · <span style="color:var(--stone);font-size:0.7rem;">'+r.gc_leader_team+'</span>':''} leads GC</p>`;
-        } else {
-          leader=`<p class="race-leader" style="color:var(--rust);">Racing now</p>`;
-        }
-
-        // Mini GC table if available
-        if(r.live_gc && r.live_gc.length > 1){
-          const gcRows = r.live_gc.slice(0,5).map(g =>
-            `<div style="display:flex;justify-content:space-between;gap:0.5rem;padding:0.15rem 0;font-size:0.72rem;border-bottom:1px solid var(--mist);">
-              <span style="font-family:'DM Mono',monospace;color:var(--stone);width:1rem;">${g.rank}</span>
-              <span style="flex:1;color:var(--ink);">${g.name}</span>
-              <span style="font-family:'DM Mono',monospace;color:var(--stone);font-size:0.65rem;">${g.time||'s.t.'}</span>
-            </div>`
-          ).join('');
-          leader += `<div style="margin-top:0.5rem;padding:0.5rem 0.75rem;background:var(--cream);border-left:2px solid var(--rust);">${gcRows}</div>`;
-        }
+        statusClass='live'; statusLabel='<span class="live-dot"></span>Live';
+        leader=`<p class="race-leader" style="color:var(--rust);">Racing now</p>`;
       }
-
       const url = RACE_URLS[r.name];
       const nameHtml = url
         ? `<a href="${url}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;border-bottom:1px solid var(--mist);transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--mist)'">${r.name}</a>`
         : r.name;
-
-      const dateDisplay = endDateStr && r.status !== 'final'
-        ? `${dateStr}–${endDateStr}`
-        : dateStr;
-
       return `<div class="race-row">
         <div><p class="race-name">${nameHtml} <span style="${mono}">${r.category}</span></p>${leader}</div>
-        <div class="race-meta"><span>${dateDisplay}</span><span class="score-status ${statusClass}">${statusLabel}</span></div>
+        <div class="race-meta"><span>${dateStr}</span><span class="score-status ${statusClass}">${statusLabel}</span></div>
       </div>`;
     };
 
