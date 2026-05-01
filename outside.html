@@ -183,6 +183,27 @@
     .footer-links { display:flex; gap:1.5rem; }
     .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
     .footer-links a:hover { color:var(--gold); }
+
+    /* ─── FuelCast (fueling card, dark like tour-cards) ─── */
+    .fuelcast-card { background:var(--ink); color:var(--white); padding:1.4rem 1.5rem; text-decoration:none; display:block; border-left:3px solid var(--rust); transition:background 0.15s; margin-bottom:0.5rem; }
+    .fuelcast-card:hover { background:#111; }
+    .fuelcast-card:hover .fuelcast-name { color:var(--gold); }
+    .fuelcast-row { display:flex; justify-content:space-between; align-items:baseline; gap:1rem; margin-bottom:0.6rem; }
+    .fuelcast-name { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:900; letter-spacing:0.02em; }
+    .fuelcast-name em { font-style:italic; font-weight:400; color:var(--gold); }
+    .fuelcast-day-badge { display:inline-flex; align-items:center; gap:0.4rem; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--mist); }
+    .fuelcast-day-badge .dot { width:0.55rem; height:0.55rem; border-radius:50%; display:inline-block; }
+    .fuelcast-day-badge .dot.red { background:var(--rust); }
+    .fuelcast-day-badge .dot.yellow { background:var(--gold); }
+    .fuelcast-day-badge .dot.green { background:var(--sage); }
+    .fuelcast-session { font-family:'Libre Baskerville',serif; font-style:italic; font-size:0.82rem; color:var(--mist); margin-bottom:0.9rem; line-height:1.4; }
+    .fuelcast-macros { display:grid; grid-template-columns:repeat(4,1fr); gap:0.5rem; padding:0.7rem 0; border-top:1px solid #2a2620; border-bottom:1px solid #2a2620; margin-bottom:0.8rem; }
+    .fuelcast-macro { text-align:center; font-family:'DM Mono',monospace; }
+    .fuelcast-macro .v { display:block; font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); letter-spacing:-0.01em; }
+    .fuelcast-macro .l { font-size:0.5rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--stone); }
+    .fuelcast-cta { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--rust); display:flex; justify-content:space-between; align-items:center; }
+    .fuelcast-loading, .fuelcast-error { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--mist); letter-spacing:0.05em; padding:0.5rem 0; }
+    .fuelcast-error a { color:var(--gold); text-decoration:none; }
   </style>
 </head>
 <body>
@@ -292,6 +313,11 @@
       <div class="col-label">Recent Activities</div>
       <div class="activity-list" id="activity-list"><p class="loading">Loading activities…</p></div>
       <a href="https://www.strava.com/athletes/59148" target="_blank" class="strava-btn">Full profile on Strava ↗</a>
+
+      <div class="col-label" style="margin-top:1.5rem;">Today's Fueling</div>
+      <a href="/fuelcast.html" class="fuelcast-card" id="fuelcast-card">
+        <div class="fuelcast-loading" id="fuelcast-loading">Loading today's plan…</div>
+      </a>
 
       <div class="col-label" style="margin-top:1.5rem;">All Time</div>
       <div class="alltime-grid" id="alltime-grid"><p class="loading">Loading…</p></div>
@@ -714,6 +740,49 @@ async function checkKingsDaughters() {
   } catch(e) {}
 }
 
+async function loadFuelcast() {
+  const card = document.getElementById('fuelcast-card');
+  if (!card) return;
+  const FUELCAST_DATA = 'https://raw.githubusercontent.com/bdgroves/fuelcast/main/data/today.json';
+
+  try {
+    const r = await fetch(FUELCAST_DATA + '?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const plan = await r.json();
+    const colorClass = (plan.day_color || 'red').toLowerCase();
+    const dayLabel = (plan.day_color || 'rest').toLowerCase() + ' day';
+    let session = 'Rest day';
+    if (plan.workout) {
+      session = `${plan.workout.title} · ${plan.workout.duration_min} min`;
+    }
+    const m = plan.macros || {};
+    const race = plan.race;
+    const raceLine = race
+      ? `${race.days_to_go} days to ${race.name.replace('Ironman 70.3 ', '')}`
+      : 'Build phase';
+
+    card.innerHTML = `
+      <div class="fuelcast-row">
+        <div class="fuelcast-name">Fuel<em>Cast</em></div>
+        <div class="fuelcast-day-badge"><span class="dot ${colorClass}"></span>${dayLabel}</div>
+      </div>
+      <div class="fuelcast-session">${session}</div>
+      <div class="fuelcast-macros">
+        <div class="fuelcast-macro"><span class="v">${m.protein_g ?? '—'}</span><span class="l">Pro · g</span></div>
+        <div class="fuelcast-macro"><span class="v">${m.fat_g ?? '—'}</span><span class="l">Fat · g</span></div>
+        <div class="fuelcast-macro"><span class="v">${m.carbs_g ?? '—'}</span><span class="l">Carb · g</span></div>
+        <div class="fuelcast-macro"><span class="v">${(m.calories ?? 0).toLocaleString()}</span><span class="l">kcal</span></div>
+      </div>
+      <div class="fuelcast-cta"><span>${raceLine}</span><span>Open FuelCast →</span></div>
+    `;
+  } catch (e) {
+    card.innerHTML = `
+      <div class="fuelcast-row"><div class="fuelcast-name">Fuel<em>Cast</em></div></div>
+      <div class="fuelcast-error">Engine offline. <a href="https://github.com/bdgroves/fuelcast/actions">Status →</a></div>
+    `;
+  }
+}
+
 document.getElementById('current-year').textContent=new Date().getFullYear();
 loadMLB();
 loadStandings();
@@ -721,6 +790,7 @@ loadCycling();
 loadCyclingNews();
 loadBeers();
 loadStrava();
+loadFuelcast();
 checkFortGeorge();
 checkKingsDaughters();
 setInterval(()=>{if(!document.hidden){loadMLB();loadStandings();}},5*60*1000);
