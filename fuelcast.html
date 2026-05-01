@@ -271,7 +271,38 @@
     .meal-macros { grid-column: 2; text-align: left; margin-top: 0.5rem; }
     .fuel-step { grid-template-columns: 1fr; gap: 0.2rem; }
     .footer-row { flex-direction: column; align-items: flex-start; }
+    .training-load { grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
+    .training-load .stat-spark { display: none; }
   }
+
+  /* ─── TRAINING LOAD ─── */
+  .training-load { display: grid; grid-template-columns: 1fr 1fr 1fr 1.5fr;
+                    gap: 1rem; padding: 1.2rem 1.5rem;
+                    background: var(--parchment-light); border: 1px solid var(--rule);
+                    margin-bottom: 1.5rem; align-items: center; }
+  .tl-stat { text-align: center; }
+  .tl-stat .v { font-family: var(--serif-display); font-size: 1.6rem; font-weight: 700;
+                 line-height: 1; color: var(--ink); }
+  .tl-stat .v.positive { color: var(--green); }
+  .tl-stat .v.negative { color: var(--red); }
+  .tl-stat .v.neutral { color: var(--ink); }
+  .tl-stat .l { font-family: var(--mono); font-size: 0.65rem; text-transform: uppercase;
+                 letter-spacing: 0.2em; color: var(--ink-faint); margin-top: 0.3rem; }
+  .tl-stat .l-detail { font-family: var(--mono); font-size: 0.55rem;
+                        color: var(--ink-soft); margin-top: 0.2rem;
+                        text-transform: uppercase; letter-spacing: 0.15em; }
+  .stat-spark { padding-left: 1rem; border-left: 1px solid var(--rule); }
+  .stat-spark-label { font-family: var(--mono); font-size: 0.6rem;
+                       color: var(--ink-faint); text-transform: uppercase;
+                       letter-spacing: 0.2em; margin-bottom: 0.4rem; }
+  .stat-spark svg { width: 100%; height: 32px; display: block; }
+  .stat-spark .ctl-line { stroke: var(--green); stroke-width: 1.5; fill: none; }
+  .stat-spark .atl-line { stroke: var(--red); stroke-width: 1.5; fill: none; }
+  .stat-spark .legend { font-family: var(--mono); font-size: 0.55rem;
+                         color: var(--ink-soft); margin-top: 0.3rem;
+                         display: flex; gap: 0.7rem; }
+  .stat-spark .legend .ctl { color: var(--green); }
+  .stat-spark .legend .atl { color: var(--red); }
 </style>
 </head>
 <body>
@@ -420,6 +451,11 @@
       `;
     });
     html += '</div>';
+
+    // ─── TRAINING LOAD (CTL/ATL/TSB) ───
+    if (plan.training_load) {
+      html += renderTrainingLoad(plan.training_load);
+    }
 
     // ─── DAILY HEADER ───
     html += `
@@ -579,6 +615,71 @@
     `;
 
     document.getElementById('content').innerHTML = html;
+  }
+
+  function renderTrainingLoad(tl) {
+    const tsbSign = tl.tsb >= 0 ? '+' : '';
+    const tsbClass = tl.tsb >= 5 ? 'positive' :
+                     tl.tsb <= -10 ? 'negative' : 'neutral';
+    const stateLabel = {
+      fresh: 'fresh',
+      recovered: 'recovered',
+      productive: 'productive',
+      heavy_load: 'heavy load',
+      overreached: 'overreached',
+    }[tl.state] || tl.state;
+
+    // Build sparkline from history (last 30 days)
+    const hist = tl.history || [];
+    let spark = '';
+    if (hist.length >= 7) {
+      const w = 200, h = 32;
+      const allVals = hist.flatMap(d => [d.ctl, d.atl]);
+      const maxVal = Math.max(...allVals, 50);
+      const minVal = Math.min(...allVals, 0);
+      const range = Math.max(maxVal - minVal, 10);
+      const xStep = w / (hist.length - 1);
+      const ctlPoints = hist.map((d, i) =>
+        `${(i * xStep).toFixed(1)},${(h - ((d.ctl - minVal) / range) * h).toFixed(1)}`
+      ).join(' ');
+      const atlPoints = hist.map((d, i) =>
+        `${(i * xStep).toFixed(1)},${(h - ((d.atl - minVal) / range) * h).toFixed(1)}`
+      ).join(' ');
+      spark = `
+        <div class="stat-spark">
+          <div class="stat-spark-label">${hist.length}-day trend</div>
+          <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+            <polyline class="ctl-line" points="${ctlPoints}"/>
+            <polyline class="atl-line" points="${atlPoints}"/>
+          </svg>
+          <div class="legend">
+            <span class="ctl">— CTL</span>
+            <span class="atl">— ATL</span>
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="training-load">
+        <div class="tl-stat">
+          <div class="v neutral">${tl.ctl.toFixed(0)}</div>
+          <div class="l">CTL</div>
+          <div class="l-detail">Fitness</div>
+        </div>
+        <div class="tl-stat">
+          <div class="v neutral">${tl.atl.toFixed(0)}</div>
+          <div class="l">ATL</div>
+          <div class="l-detail">Fatigue</div>
+        </div>
+        <div class="tl-stat">
+          <div class="v ${tsbClass}">${tsbSign}${tl.tsb.toFixed(0)}</div>
+          <div class="l">TSB</div>
+          <div class="l-detail">${stateLabel}</div>
+        </div>
+        ${spark}
+      </div>
+    `;
   }
 
   function renderMeal(m) {
