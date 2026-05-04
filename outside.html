@@ -497,7 +497,9 @@ async function loadCycling() {
     if (!res.ok) throw new Error();
     const data = await res.json();
     const live = data.races.filter(r=>r.status==='live');
-    const finals = data.races.filter(r=>r.status==='final').slice(-6);
+    const finals = data.races.filter(r=>r.status==='final')
+      .sort((a,b) => new Date(b.date) - new Date(a.date))
+      .slice(0,6).reverse();
     const upcoming = data.races.filter(r=>r.status==='upcoming').slice(0,5);
     const mono = "font-family:'DM Mono',monospace;font-size:0.46rem;color:var(--stone);font-weight:normal;";
 
@@ -537,8 +539,15 @@ async function loadCycling() {
         statusClass='final'; statusLabel='Final';
         if(r.winner) leader=`<p class="race-leader">${r.winner}${r.team?' · '+r.team:''}</p>`;
       } else if(r.status==='live'){
-        statusClass='live'; statusLabel='<span class="live-dot"></span>Live';
-        leader=`<p class="race-leader" style="color:var(--rust);">Racing now</p>`;
+        const stagesDone = r.stages_done || 0;
+        const stagesTotal = r.stages || 0;
+        statusClass='live';
+        statusLabel = stagesTotal ? `<span class="live-dot"></span>S${stagesDone}/${stagesTotal}` : `<span class="live-dot"></span>Live`;
+        if(r.gc_leader){
+          leader=`<p class="race-leader" style="color:var(--rust);">\uD83C\uDF08 ${r.gc_leader}${r.gc_leader_team?' <span style="color:var(--stone);font-size:0.7rem;">· '+r.gc_leader_team+'</span>':''} leads GC</p>`;
+        } else {
+          leader=`<p class="race-leader" style="color:var(--rust);">Racing now</p>`;
+        }
       }
       const url = RACE_URLS[r.name];
       const nameHtml = url
