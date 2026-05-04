@@ -55,6 +55,10 @@
     .dropdown a.dim { opacity:0.45; }
     .dropdown a.dim:hover { opacity:1; }
 
+    /* Direct-link nav item (no dropdown) — same look as the buttons */
+    .section-nav-link { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.7rem 1rem; color:var(--stone); transition:color 0.2s; white-space:nowrap; display:flex; align-items:center; }
+    .section-nav-link:hover { color:var(--ink); }
+
     .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
     .hamburger span { display:block; width:22px; height:2px; background:var(--ink); transition:all 0.3s; }
     .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
@@ -97,6 +101,18 @@
     .support-hed { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; line-height:1.25; margin-bottom:0.35rem; }
     .support-story:hover .support-hed { color:var(--rust); }
     .support-dek { font-size:0.8rem; color:var(--stone); line-height:1.6; }
+
+    /* Publications block — restrained, CV-style listing */
+    .pub-list { border:1px solid var(--mist); }
+    .pub-item { display:grid; grid-template-columns:5.5rem 1fr; gap:1.25rem; padding:1.25rem 1.5rem; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.2s; }
+    .pub-item:last-child { border-bottom:none; }
+    .pub-item:hover { background:var(--cream); }
+    .pub-year { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.1em; color:var(--stone); padding-top:0.2rem; }
+    .pub-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.35; color:var(--ink); margin-bottom:0.3rem; }
+    .pub-item:hover .pub-title { color:var(--rust); }
+    .pub-venue { font-family:'Libre Baskerville',serif; font-style:italic; font-size:0.85rem; color:var(--stone); }
+    .pub-venue em { color:var(--ink); font-weight:700; font-style:italic; }
+    @media(max-width:640px) { .pub-item { grid-template-columns:1fr; gap:0.3rem; } .pub-year { padding-top:0; } }
     .support-link { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.5rem; display:block; }
 
     .ologies-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:0; border:1px solid var(--mist); }
@@ -229,6 +245,7 @@
 
 <!-- MOBILE DRAWER -->
 <nav class="mobile-nav" id="mobileNav">
+  <a href="/about.html">About</a>
   <div class="nav-section">Projects</div>
   <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">❄️ Rainier Snowpack</a>
   <a href="https://bdgroves.github.io/lahar-watch" target="_blank">🌋 lahar-watch</a>
@@ -265,14 +282,9 @@
   <a href="/geology.html">🪨 Geology</a>
   <a href="/archaeology.html">🏺 Archaeology</a>
   <div class="nav-section">Writing</div>
-  <a href="/writing/">All Writing</a>
   <a href="/blog/">Blog</a>
-  <a href="https://memoir.brooksgroves.com">Memoir</a>
-  <a href="https://westin.brooksgroves.com">Westin Stories</a>
-  <a href="https://journal.brooksgroves.com">Journal</a>
-  <a href="https://y2k.brooksgroves.com" target="_blank">Y2K Archive</a>
+  <a href="/writing/">All Writing</a>
   <div class="nav-section">Personal</div>
-  <a href="/about.html">About</a>
   <a href="/quotes.html">Quotes</a>
   <a href="/concerts.html">Concerts</a>
   <a href="/maps.html">Maps</a>
@@ -328,8 +340,10 @@
     </button>
   </div>
   <a href="/" class="site-nameplate fade-in">Brooks Groves</a>
-  <p class="site-tagline">Developer · Geospatial · Pacific Northwest</p>
+  <p class="site-tagline">GIS Analyst · GISP · Cartographic Perspectives · Pacific Northwest</p>
   <nav class="section-nav">
+
+    <a href="/about.html" class="section-nav-link">About</a>
 
     <div class="section-nav-item">
       <button class="section-nav-btn">Projects <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
@@ -393,20 +407,14 @@
     <div class="section-nav-item">
       <button class="section-nav-btn">Writing <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
       <div class="dropdown">
-        <a href="/writing/">All Writing</a>
-        <div class="dropdown-label">Collections</div>
         <a href="/blog/">Blog</a>
-        <a href="https://memoir.brooksgroves.com">Memoir</a>
-        <a href="https://westin.brooksgroves.com">Westin Stories</a>
-        <a href="https://journal.brooksgroves.com">Journal</a>
-        <a href="https://y2k.brooksgroves.com" target="_blank">Y2K Archive</a>
+        <a href="/writing/">All Writing</a>
       </div>
     </div>
 
     <div class="section-nav-item">
       <button class="section-nav-btn">Personal <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
       <div class="dropdown">
-        <a href="/about.html">About</a>
         <a href="/quotes.html">Quotes</a>
         <a href="/concerts.html">Concerts</a>
         <a href="/maps.html">Maps</a>
@@ -494,6 +502,23 @@
           <span class="support-link">Play now →</span>
         </a>
       </div>
+    </div>
+  </div>
+
+  <!-- PUBLICATIONS -->
+  <div class="lead-section">
+    <div class="lead-section-label">
+      <span>Selected Publications</span>
+      <a href="https://cartographicperspectives.org/" target="_blank">NACIS · Cartographic Perspectives →</a>
+    </div>
+    <div class="pub-list">
+      <a href="/writing/draught-south-land.html" class="pub-item">
+        <div class="pub-year">2025</div>
+        <div>
+          <div class="pub-title">A Draught of the South Land: Mapping New Zealand from Tasman to Cook</div>
+          <div class="pub-venue">Book review · <em>Cartographic Perspectives</em>, No. 105, pp. 126–129 · NACIS · DOI 10.14714/CP105.1959</div>
+        </div>
+      </a>
     </div>
   </div>
 
