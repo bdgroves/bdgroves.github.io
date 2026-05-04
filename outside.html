@@ -161,11 +161,13 @@
     .tour-card-dates { font-family:'DM Mono',monospace; font-size:0.5rem; color:#888; margin-bottom:0.75rem; }
     .tour-card-status { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); }
     .tour-card-cta { font-family:'DM Mono',monospace; font-size:0.55rem; text-transform:uppercase; color:var(--gold); margin-top:0.5rem; }
-    .race-row { display:flex; align-items:baseline; justify-content:space-between; padding:0.65rem 0; border-bottom:1px solid var(--mist); gap:1rem; }
+    .race-row { display:flex; align-items:flex-start; justify-content:space-between; padding:0.55rem 0; border-bottom:1px solid var(--mist); gap:1rem; }
     .race-row:last-child { border-bottom:none; }
-    .race-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; }
-    .race-leader { font-family:'Libre Baskerville',serif; font-style:italic; color:var(--gold); font-size:0.75rem; margin-top:0.15rem; }
-    .race-meta { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); text-align:right; flex-shrink:0; }
+    .race-name { font-family:'Playfair Display',serif; font-size:0.85rem; font-weight:700; line-height:1.2; }
+    .race-winner { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--rust); margin-top:0.2rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:240px; }
+    .race-team { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.05rem; }
+    .race-leader { font-family:'DM Mono',monospace; color:var(--rust); font-size:0.62rem; margin-top:0.2rem; }
+    .race-meta { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); text-align:right; flex-shrink:0; min-width:52px; }
     .race-meta span { display:block; }
     .news-item { display:block; padding:0.5rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; }
     .news-item:last-child { border-bottom:none; }
@@ -537,7 +539,7 @@ async function loadCycling() {
       let leader='', statusClass='sched', statusLabel='Upcoming';
       if(r.status==='final'){
         statusClass='final'; statusLabel='Final';
-        if(r.winner) leader=`<p class="race-leader">${r.winner}${r.team?' · '+r.team:''}</p>`;
+        if(r.winner) leader=`<p class="race-winner">${r.winner}</p>${r.team?'<p class="race-team">'+r.team+'</p>':''}`;
       } else if(r.status==='live'){
         const stagesDone = r.stages_done || 0;
         const stagesTotal = r.stages || 0;
@@ -554,7 +556,10 @@ async function loadCycling() {
         ? `<a href="${url}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;border-bottom:1px solid var(--mist);transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--mist)'">${r.name}</a>`
         : r.name;
       return `<div class="race-row">
-        <div><p class="race-name">${nameHtml} <span style="${mono}">${r.category}</span></p>${leader}</div>
+        <div style="min-width:0;">
+          <p class="race-name">${nameHtml} <span style="${mono}">${r.category}</span></p>
+          ${leader}
+        </div>
         <div class="race-meta"><span>${dateStr}</span><span class="score-status ${statusClass}">${statusLabel}</span></div>
       </div>`;
     };
