@@ -96,7 +96,7 @@ jobs:
                   pcs_points = None
                   try:
                       profile_url = f"https://www.procyclingstats.com/rider/{pcs_slug}"
-                      rp = scraper.get(profile_url, headers=headers, timeout=15)
+                      rp = fetch_url(profile_url)
                       tp = HTMLParser(rp.text)
 
                       teams_ul = tp.css_first("ul[class*='rdr-teams']")
