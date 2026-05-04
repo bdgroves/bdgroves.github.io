@@ -35,7 +35,7 @@
 
     /* POST ROW */
     .post-list { display:flex; flex-direction:column; }
-    .post-item { display:grid; grid-template-columns:6.5rem 1fr; gap:1.5rem; align-items:start; padding:1.5rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.15s; }
+    .post-item { display:grid; grid-template-columns:7rem 1fr; gap:1.5rem; align-items:start; padding:1.5rem 0; border-bottom:1px solid var(--mist); transition:background 0.15s; }
     .post-item:hover { background:var(--cream); margin:0 -1.5rem; padding-left:1.5rem; padding-right:1.5rem; }
     .post-item:last-child { border-bottom:none; }
     @media(max-width:600px) { .post-item { grid-template-columns:1fr; gap:0.5rem; } }
@@ -48,9 +48,10 @@
     .post-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.35rem; }
     .post-tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.2rem 0.55rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
     .post-tag:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
-    .post-title { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; line-height:1.25; margin-bottom:0.5rem; color:var(--ink); }
-    .post-item:hover .post-title { color:var(--rust); }
-    .post-excerpt { font-size:0.875rem; color:var(--ink); opacity:0.75; line-height:1.7; }
+    .post-title { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; line-height:1.25; margin-bottom:0.4rem; color:var(--ink); }
+    .post-title-link { text-decoration:none; color:inherit; display:block; }
+    .post-title-link:hover .post-title { color:var(--rust); }
+    .post-excerpt { font-size:0.875rem; color:var(--ink); opacity:0.75; line-height:1.7; margin-bottom:0.4rem; }
     .post-arrow { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--gold); margin-top:0.5rem; display:block; }
 
     footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
@@ -85,7 +86,7 @@
   <div class="section-label"><span>All Posts</span><a href="/tags.html">Browse by tag →</a></div>
   <div class="post-list">
 
-    <a href="/blog/cookbook-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Apr 30, 2026</div>
         <div class="post-read">12 min read</div>
@@ -98,13 +99,15 @@
           <a href="/tags.html#JavaScript" class="post-tag">JavaScript</a>
           <a href="/tags.html#Geographer%20Stack" class="post-tag">Geographer Stack</a>
         </div>
-        <h2 class="post-title">🍳 From a Pile of Bookmarks to a Searchable Cookbook</h2>
-        <p class="post-excerpt">Building a one-tap recipe pipeline with Cloudflare Workers, Claude, and a static site. No database, no friction, versioned data for free. How a bookmarks-everywhere problem became real personal infrastructure.</p>
-        <span class="post-arrow">Read post →</span>
+        <a href="/blog/cookbook-post.html" class="post-title-link">
+          <h2 class="post-title">🍳 From a Pile of Bookmarks to a Searchable Cookbook</h2>
+          <p class="post-excerpt">A one-tap recipe pipeline with Cloudflare Workers, Claude, and a static site. No database, no friction, versioned data for free.</p>
+          <span class="post-arrow">Read post →</span>
+        </a>
       </div>
-    </a>
+    </div>
 
-    <a href="/blog/solstice-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Apr 9, 2026</div>
         <div class="post-read">7 min read</div>
@@ -116,13 +119,15 @@
           <a href="/tags.html#LiDAR" class="post-tag">LiDAR</a>
           <a href="/tags.html#GitHub%20Actions" class="post-tag">GitHub Actions</a>
         </div>
-        <h2 class="post-title">☀️ SOLSTICE — Watching the Same Sky Over Chaco Canyon</h2>
+        <a href="/blog/solstice-post.html" class="post-title-link">
+          <h2 class="post-title">☀️ SOLSTICE — Watching the Same Sky Over Chaco Canyon</h2>
         <p class="post-excerpt">A 1054 CE supernova painted on a canyon wall. Pueblo Bonito's rear wall aligned true north within 0.1°. Casa Rinconada's northeast doorway catching the summer solstice sunrise at 66.5°. A live dashboard watching the same sky over the same canyon, updated every 12 hours.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
-    <a href="/blog/aftershock-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Apr 9, 2026</div>
         <div class="post-read">7 min read</div>
@@ -134,13 +139,15 @@
           <a href="/tags.html#Python" class="post-tag">Python</a>
           <a href="/tags.html#Leaflet" class="post-tag">Leaflet</a>
         </div>
-        <h2 class="post-title">🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor</h2>
+        <a href="/blog/aftershock-post.html" class="post-title-link">
+          <h2 class="post-title">🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor</h2>
         <p class="post-excerpt">Every magnitude 1.5+ earthquake in the US, updated every six hours from USGS ComCat. A dark cinematic map, state deep-dives, Hiroshima equivalent energy readout, and the personal backstory of growing up on the Melones Fault Zone in Tuolumne County.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
-    <a href="/blog/dipodomys-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Apr 2026</div>
         <div class="post-read">6 min read</div>
@@ -152,13 +159,15 @@
           <a href="/tags.html#Death%20Valley" class="post-tag">Death Valley</a>
           <a href="/tags.html#Leaflet" class="post-tag">Leaflet</a>
         </div>
-        <h2 class="post-title">🐾 DIPODOMYS — A Data Portrait of Death Valley's Kangaroo Rats</h2>
+        <a href="/blog/dipodomys-post.html" class="post-title-link">
+          <h2 class="post-title">🐾 DIPODOMYS — A Data Portrait of Death Valley's Kangaroo Rats</h2>
         <p class="post-excerpt">Two kangaroo rat species, one valley, and what citizen science data from iNaturalist reveals about habitat partitioning in the hottest place on Earth. An interactive portrait built on live occurrence data.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
-    <a href="/blog/little-free-pantry-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Apr 2026</div>
         <div class="post-read">5 min read</div>
@@ -170,13 +179,15 @@
           <a href="/tags.html#Lakewood%20WA" class="post-tag">Lakewood WA</a>
           <a href="/tags.html#Civic%20Tech" class="post-tag">Civic Tech</a>
         </div>
-        <h2 class="post-title">🏠 Little Free Pantry — Mapping Food Access in Lakewood</h2>
+        <a href="/blog/little-free-pantry-post.html" class="post-title-link">
+          <h2 class="post-title">🏠 Little Free Pantry — Mapping Food Access in Lakewood</h2>
         <p class="post-excerpt">Interactive Leaflet map for the Lakewood Rotary's Little Free Pantry network — 7 pantries providing 24/7 no-barrier food and hygiene access across Lakewood, Tillicum, and Steilacoom. GIS as community infrastructure.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
-    <a href="/blog/sentinel-stockpile-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Apr 7, 2026</div>
         <div class="post-read">8 min read</div>
@@ -188,13 +199,15 @@
           <a href="/tags.html#GIS" class="post-tag">GIS</a>
           <a href="/tags.html#Python" class="post-tag">Python</a>
         </div>
-        <h2 class="post-title">🛰️ Sentinel Stockpile — The Economy You Can See From Space</h2>
+        <a href="/blog/sentinel-stockpile-post.html" class="post-title-link">
+          <h2 class="post-title">🛰️ Sentinel Stockpile — The Economy You Can See From Space</h2>
         <p class="post-excerpt">12 months of ESA satellite imagery tracking lumber stockpiles at the Port of Longview, Washington. 47 hectares in July. 5 hectares in January. The Pacific Northwest timber supply chain, measured from orbit using free data and open tools.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
-    <a href="/blog/weather-station-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Apr 7, 2026</div>
         <div class="post-read">6 min read</div>
@@ -206,13 +219,15 @@
           <a href="/tags.html#GitHub%20Actions" class="post-tag">GitHub Actions</a>
           <a href="/tags.html#Pacific%20Northwest" class="post-tag">Pacific Northwest</a>
         </div>
-        <h2 class="post-title">🌡️ Weather Station — Four Climates, Zero Dollars, Half a Cup of Coffee</h2>
+        <a href="/blog/weather-station-post.html" class="post-title-link">
+          <h2 class="post-title">🌡️ Weather Station — Four Climates, Zero Dollars, Half a Cup of Coffee</h2>
         <p class="post-excerpt">A real-time weather dashboard monitoring Lakewood, Groveland, Reno, and Death Valley. Wind compass, pressure trend arrows, NWS alerts, moon phase. Built before the coffee was done.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
-    <a href="/blog/pele-blog-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Apr 2026</div>
         <div class="post-read">7 min read</div>
@@ -224,13 +239,15 @@
           <a href="/tags.html#USGS" class="post-tag">USGS</a>
           <a href="/tags.html#Kīlauea" class="post-tag">Kīlauea</a>
         </div>
-        <h2 class="post-title">🌋 PELE — Building a Live Kīlauea Dashboard for a Birthday Trip</h2>
+        <a href="/blog/pele-blog-post.html" class="post-title-link">
+          <h2 class="post-title">🌋 PELE — Building a Live Kīlauea Dashboard for a Birthday Trip</h2>
         <p class="post-excerpt">43 eruption episodes, a webcam buried under 10 meters of tephra, and a cron job running every 6 hours. Real-time data from USGS HVO, YouTube livestream auto-discovery, and an episodic fountaining log going back to Christmas Eve 2024.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
-    <a href="/blog/cascadia-wx-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Apr 2, 2026</div>
         <div class="post-read">8 min read</div>
@@ -242,13 +259,15 @@
           <a href="/tags.html#SNOTEL" class="post-tag">SNOTEL</a>
           <a href="/tags.html#Pacific%20Northwest" class="post-tag">Pacific Northwest</a>
         </div>
-        <h2 class="post-title">FORTRAN, Snowpack, and the Language the Atmosphere Speaks</h2>
+        <a href="/blog/cascadia-wx-post.html" class="post-title-link">
+          <h2 class="post-title">FORTRAN, Snowpack, and the Language the Atmosphere Speaks</h2>
         <p class="post-excerpt">NWS runs FORTRAN. NCAR runs FORTRAN. ECMWF runs FORTRAN. So does a developer in Lakewood, WA — analyzing Cascade snowpack at 15% of normal, every morning, over coffee.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
-    <a href="/blog/sierra-flow-cobol-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Apr 1, 2026</div>
         <div class="post-read">8 min read</div>
@@ -260,13 +279,15 @@
           <a href="/tags.html#USGS" class="post-tag">USGS</a>
           <a href="/tags.html#Sierra%20Nevada" class="post-tag">Sierra Nevada</a>
         </div>
-        <h2 class="post-title">COBOL, Streamflow, and Artemis II</h2>
+        <a href="/blog/sierra-flow-cobol-post.html" class="post-title-link">
+          <h2 class="post-title">COBOL, Streamflow, and Artemis II</h2>
         <p class="post-excerpt">A 1959 language fetching live government telemetry, running in a cloud CI/CD pipeline, on the day four humans left Earth's orbit for the first time since 1972.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
-    <a href="/blog/forge3d-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Apr 2026</div>
         <div class="post-read">7 min read</div>
@@ -278,13 +299,15 @@
           <a href="/tags.html#forge3d" class="post-tag">forge3d</a>
           <a href="/tags.html#Python" class="post-tag">Python</a>
         </div>
-        <h2 class="post-title">Exploring forge3d With Washington LiDAR</h2>
+        <a href="/blog/forge3d-post.html" class="post-title-link">
+          <h2 class="post-title">Exploring forge3d With Washington LiDAR</h2>
         <p class="post-excerpt">A new GPU-accelerated terrain renderer built in Rust, shipped as Python wheels. Mount St. Helens, Crater Lake, and what 1-meter LiDAR does to a summit render.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
-    <a href="/blog/pixi-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Mar 31, 2026</div>
         <div class="post-read">5 min read</div>
@@ -296,13 +319,15 @@
           <a href="/tags.html#GIS" class="post-tag">GIS</a>
           <a href="/tags.html#Environments" class="post-tag">Environments</a>
         </div>
-        <h2 class="post-title">Why I Switched to pixi for Managing Python and R Environments</h2>
+        <a href="/blog/pixi-post.html" class="post-title-link">
+          <h2 class="post-title">Why I Switched to pixi for Managing Python and R Environments</h2>
         <p class="post-excerpt">After years of conda headaches, a faster, more reproducible path to geospatial work. Lockfiles, cross-platform consistency, and no more environment corruption at the worst possible moment.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
-    <a href="/blog/streamflow-post.html" class="post-item">
+    <div class="post-item">
       <div class="post-meta-col">
         <div class="post-date">Mar 18, 2026</div>
         <div class="post-read">6 min read</div>
@@ -314,11 +339,13 @@
           <a href="/tags.html#GitHub%20Actions" class="post-tag">GitHub Actions</a>
           <a href="/tags.html#Sierra%20Nevada" class="post-tag">Sierra Nevada</a>
         </div>
-        <h2 class="post-title">Building a Live Streamflow Dashboard on a $0 Budget</h2>
+        <a href="/blog/streamflow-post.html" class="post-title-link">
+          <h2 class="post-title">Building a Live Streamflow Dashboard on a $0 Budget</h2>
         <p class="post-excerpt">GitHub Actions, USGS APIs, and a healthy respect for Pacific snowmelt. How the Sierra Streamflow Monitor became the architectural template for everything that followed.</p>
         <span class="post-arrow">Read post →</span>
-      </div>
-    </a>
+        </a>
+      
+    </div>
 
   </div>
 </div>
