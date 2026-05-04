@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>From a Pile of Bookmarks to a Searchable Cookbook — Brooks Groves</title>
+  <meta name="description" content="Building a one-tap recipe pipeline with Cloudflare Workers, Claude, and a static site. No database. No friction. Versioned data for free.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--rust); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; transition:color 0.2s; }
+    .article-back:hover { color:var(--rust); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:0.5rem; }
+    .article-subtitle { font-family:'Libre Baskerville',serif; font-size:1.05rem; color:var(--stone); font-style:italic; margin-bottom:1rem; line-height:1.5; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.3rem 0.7rem; text-decoration:none; display:inline-block; transition:border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { border-color:var(--gold); color:var(--gold); }
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); line-height:1.2; }
+    .article-body h3 { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin:1.75rem 0 0.75rem; color:var(--rust); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body a { color:var(--rust); text-decoration:underline; text-underline-offset:3px; }
+    .article-body a:hover { color:var(--ink); }
+    .article-body strong { font-weight:700; }
+    .article-body em { font-style:italic; }
+    .article-body ul { padding-left:1.5rem; margin-bottom:1.5rem; }
+    .article-body ul li { margin-bottom:0.5rem; }
+    .article-body ol { padding-left:1.5rem; margin-bottom:1.5rem; }
+    .article-body ol li { margin-bottom:0.5rem; }
+    pre { background:var(--ink); color:#e8e0d0; font-family:'DM Mono',monospace; font-size:0.78rem; line-height:1.65; padding:1.5rem; overflow-x:auto; margin:1.5rem 0 2rem; border-left:3px solid var(--gold); }
+    code { font-family:'DM Mono',monospace; font-size:0.85em; background:var(--cream); padding:0.15em 0.4em; border:1px solid var(--mist); color:var(--rust); }
+    pre code { background:none; border:none; color:#e8e0d0; padding:0; font-size:1em; }
+    .callout { background:var(--cream); border-left:3px solid var(--gold); padding:1rem 1.5rem; margin:2rem 0; }
+    .callout p { margin:0; font-size:0.95rem; color:var(--stone); }
+    .callout strong { color:var(--ink); }
+    .route-table { width:100%; border-collapse:collapse; margin:1.5rem 0 2rem; font-family:'DM Mono',monospace; font-size:0.72rem; }
+    .route-table th { background:var(--ink); color:var(--white); padding:0.5rem 0.75rem; text-align:left; letter-spacing:0.08em; }
+    .route-table td { padding:0.5rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    .route-table tr:last-child td { border-bottom:none; }
+    .route-table td:first-child { color:var(--rust); white-space:nowrap; }
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .article-footer-nav a:hover { color:var(--rust); }
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; }
+    .footer-tagline a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/">Blog</a>
+      <a href="/writing/">Writing</a>
+      <a href="/tags.html">Tags</a>
+      <a href="/">Home</a>
+      <a href="https://github.com/bdgroves" class="github">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/" class="article-back">← All Posts</a>
+
+  <div class="article-kicker">Building · AI · Geographer Stack · April 2026</div>
+  <h1 class="article-title">From a Pile of Bookmarks to a Searchable Cookbook</h1>
+  <p class="article-subtitle">Building a one-tap recipe pipeline with Cloudflare, Claude, and a static site</p>
+  <div class="article-meta">
+    <span>April 30, 2026</span>
+    <span>Brooks Groves</span>
+    <span>~12 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <a href="/tags.html#Building" class="article-tag-pill">Building</a>
+    <a href="/tags.html#AI" class="article-tag-pill">AI</a>
+    <a href="/tags.html#Cloudflare" class="article-tag-pill">Cloudflare</a>
+    <a href="/tags.html#JavaScript" class="article-tag-pill">JavaScript</a>
+    <a href="/tags.html#GitHub%20Actions" class="article-tag-pill">GitHub Actions</a>
+    <a href="/tags.html#Geographer%20Stack" class="article-tag-pill">Geographer Stack</a>
+    <a href="/tags.html#Recipes" class="article-tag-pill">Recipes</a>
+    <a href="/tags.html#Personal%20Infrastructure" class="article-tag-pill">Personal Infrastructure</a>
+  </div>
+
+  <div class="article-body">
+
+    <p>I had recipes everywhere.</p>
+
+    <p>Cookie &amp; Kate links in a "Recipes 🌶🥦🍕" thread in my email. Apple Notes from the time I copied a tofu marinade off Instagram before it scrolled into the void. A photo of a Pike Place Market chalkboard. Three browser tabs open since the Obama administration. Two cookbooks on the shelf I never opened because I couldn't remember which one had the lentil dal. A printed PDF of an endurance fueling recipe shoved between two issues of <em>Cartographic Perspectives</em>.</p>
+
+    <p>When I wanted to actually cook something on a weeknight, the search cost was higher than the cooking cost. I'd give up and make pasta.</p>
+
+    <p>This is the post about how I fixed that — and how the fix turned into a small, real piece of personal infrastructure I now use multiple times a week. The cookbook itself is the demo. The interesting part is what's underneath it.</p>
+
+    <h2>What I wanted</h2>
+
+    <p>A single searchable page on my own site at <a href="/recipes.html">brooksgroves.com/recipes.html</a> that holds every recipe I cook. Filterable by ingredient, cuisine, cook time, dietary tags. Designed in the same parchment palette as the rest of the site so it doesn't feel like a third-party tool bolted on. Mine. Owned. Static. Fast.</p>
+
+    <p>That part was easy. Static HTML, a <code>recipes.json</code> file, a touch of JavaScript to filter and render. Day one work.</p>
+
+    <p>The hard part was the <strong>input pipeline</strong>. Hand-typing recipes into a JSON file is a quick way to ensure that no recipe gets added past the third one. The whole reason the bookmarks-everywhere problem existed is that the friction of structuring a recipe is too high. Solve the input problem or the cookbook just becomes the next graveyard.</p>
+
+    <h2>What I built</h2>
+
+    <p>Three things, layered.</p>
+
+    <h3>1. A Cloudflare Worker</h3>
+
+    <p>About 230 lines of code holding two encrypted secrets — an Anthropic API key and a fine-grained GitHub Personal Access Token — with four HTTP routes:</p>
+
+    <table class="route-table">
+      <tr><th>Route</th><th>What it does</th></tr>
+      <tr><td>POST /</td><td>Relays requests to Anthropic's Messages API</td></tr>
+      <tr><td>POST /save-recipe</td><td>Appends a recipe to <code>recipes.json</code> via the GitHub Contents API</td></tr>
+      <tr><td>POST /delete-recipe</td><td>Removes one by slug</td></tr>
+      <tr><td>POST /update-recipe</td><td>Edits one in place</td></tr>
+    </table>
+
+    <p>Free tier. Encrypted secrets the browser never sees. CORS allowlisted to my domain.</p>
+
+    <h3>2. A Recipe Extractor at <code>/recipes/extract.html</code></h3>
+
+    <p>Three input modes: paste a URL, paste raw text (for paywalled sites, Apple Notes, screenshot OCR), or drop a photo. Every mode sends the content to Claude with a schema prompt. A single <strong>Save to Cookbook</strong> button commits the structured JSON straight to <code>recipes.json</code> on GitHub. The site rebuilds. The recipe is live on my phone in about thirty seconds.</p>
+
+    <h3>3. The cookbook at <code>/recipes.html</code></h3>
+
+    <p>Searchable, filterable, expand-a-card to read. An Admin button gates edit and delete controls. A Share button lets me text a recipe to anyone — it deep-links straight to the right card, auto-expanded.</p>
+
+    <div class="callout"><p>That's the whole system. I see a recipe on Instagram, screenshot it, paste it into the extractor's Photo tab, hit Save. Done. Searchable forever.</p></div>
+
+    <h2>Why it works the way it works</h2>
+
+    <h3>The Worker as the linchpin</h3>
+
+    <p>Every API key in this system lives encrypted in Cloudflare. Browser code never touches them. This isn't paranoia — it's the only sane shape for something I want to use from my phone, which means it has to work in any browser on any network without typing in credentials.</p>
+
+    <p>The Worker is also general infrastructure. It's not a "recipe Worker." It's <em>a</em> Worker, with routes. The same encrypted-keys + GitHub-commit pattern is already on my list for: a Save Concert button on my setlist log, a Save Book flow that takes a Goodreads URL, an auto-summarizer for the day's Giro d'Italia stage. Build the substrate once. Features get cheaper from then on.</p>
+
+    <h3>Structure first</h3>
+
+    <p>Every recipe in <code>recipes.json</code> follows the same shape:</p>
+
+<pre><code>{
+  "slug": "miso-glazed-tofu",
+  "title": "Miso-Glazed Tofu",
+  "cuisine": "Japanese",
+  "category": "Main",
+  "cook_time_min": 30,
+  "active_time_min": 15,
+  "servings": 2,
+  "source": "Pike Place",
+  "dietary": ["vegetarian", "vegan"],
+  "added": "2026-04-10",
+  "ingredients": [
+    { "qty": "1 (14 oz)", "item": "extra-firm tofu, pressed and sliced 3/4-inch thick" }
+  ],
+  "steps": ["..."],
+  "notes": "Watch closely under the broiler — sugar burns fast."
+}</code></pre>
+
+    <p>Boring. Predictable. The whole point. Filtering, scaling, sorting, exporting — anything I want to do later — works on this shape without re-typing recipes. The schema also encodes my dietary preference directly into the Claude system prompt. If a recipe contains chicken stock, the extractor automatically swaps in vegetable stock and notes the change. I can extract from omnivore food blogs without thinking about it.</p>
+
+    <h3>Static site, live edits</h3>
+
+    <p>The whole site is GitHub Pages — a glorified file server, no database, no runtime. By routing writes through a Worker that hits the GitHub Contents API, I get <strong>the appearance of a database with none of the maintenance</strong>. Every save is a real commit. Every edit is a real commit. If I delete a recipe by accident, <code>git log recipes.json</code> shows me every prior version, recoverable with a single command.</p>
+
+    <p>Versioned data with no database is one of the most underrated tricks in small-scale software.</p>
+
+    <h2>What broke</h2>
+
+    <p>Plenty. In roughly increasing order of how long it took to diagnose.</p>
+
+    <h3>Mojibake spiral</h3>
+
+    <p>The first save worked fine. The fifth corrupted <code>recipes.json</code>. The Worker's base64 decode was using <code>atob()</code> directly, which returns a binary string where each character represents one byte. For ASCII that looks right. For an em-dash or a degree symbol — multi-byte in UTF-8 — every read-and-rewrite cycle re-interpreted the bytes and added a layer of garbage. By the time I noticed, one recipe's <code>notes</code> field had ballooned from <em>"Watch closely — sugar burns fast"</em> to <strong>393,301 characters</strong> of nested <code>Ã</code> and <code>Â</code> sequences. The whole file was 1.46 MB.</p>
+
+    <p>The fix was a proper UTF-8 decoder using <code>TextDecoder</code>. The lesson is as old as Unicode: if you find yourself doing <code>String.fromCharCode(...new TextEncoder().encode(s))</code>, ask whether you actually want bytes or characters, because the shortcut compounds over time.</p>
+
+    <h3>Stack overflow on save</h3>
+
+    <p>A spread operator into <code>String.fromCharCode</code> works fine when the array is small. Above ~30 KB of input, the engine refuses. Fixed by chunking the encode loop into 32 KB slices.</p>
+
+    <h3>Git treating HTML as binary</h3>
+
+    <p>A stray <code>*.html binary</code> line in <code>.gitattributes</code> from years ago meant every commit showed <em>Binary files differ</em> instead of a real diff. Merge conflicts were unrecoverable. Fixed by writing a proper <code>.gitattributes</code> declaring HTML/JSON/CSS/JS as text with LF line endings.</p>
+
+    <h3>Cache poisoning</h3>
+
+    <p>GitHub Pages serves static files with caching hints that, in practice, meant my browser would show yesterday's JavaScript long after I'd shipped today's. Fixed with <code>Cache-Control: no-cache, no-store, must-revalidate</code> meta tags on the tool pages. Pages I actively iterate on should never cache.</p>
+
+    <p>Each of these bugs took 10 to 90 minutes to diagnose. Each was a four-line fix. Together they turned a proof-of-concept into something I actually trust to hold years of recipes.</p>
+
+    <h2>What it's like to use</h2>
+
+    <p>Here's an actual recipe-add, start to finish:</p>
+
+    <ol>
+      <li>I'm in the kitchen and want to save the Cookie &amp; Kate enchilada recipe I've been meaning to try.</li>
+      <li>I tap the Recipe Extractor bookmark on my phone.</li>
+      <li>I paste the URL, hit Extract. About 8 seconds later, structured JSON appears.</li>
+      <li>I tap <strong>Save to Cookbook</strong>. A real GitHub commit fires. A green confirmation shows the commit SHA.</li>
+      <li>About 30 seconds later, GitHub Pages has rebuilt. The recipe is live, searchable, filterable by cuisine.</li>
+    </ol>
+
+    <p>Total elapsed time: under a minute. Total typing: zero.</p>
+
+    <p>When the extractor mis-categorizes something — calls a Mediterranean dish "American" because Cookie &amp; Kate's metadata is fuzzy — I open the card, hit the pencil icon, edit the JSON in-place, save. Real commit. Site rebuilds. Done.</p>
+
+    <h2>What this is actually about</h2>
+
+    <p>The recipe cookbook is not really the project. The project is <strong>a small, growing-over-time AI infrastructure for my personal site</strong>. The cookbook is the first feature. The Worker is the load-bearing wall.</p>
+
+    <p>A few things this project clarified:</p>
+
+    <p><strong>Static sites with one tiny serverless backend hit way above their weight.</strong> No database, no Docker, no deploy pipeline, no monitoring stack. Total operating cost: zero dollars. Total places this can break in the middle of the night: approximately zero. The Worker has been running for two weeks and has executed thousands of requests. I have not thought about its health a single time.</p>
+
+    <p><strong>LLMs are the right substrate for messy-input-to-clean-output problems.</strong> Every recipe page on the internet has a different shape. Some have JSON-LD schema, some don't. Some hide behind ad walls. Some are an infinite-scroll life story before the recipe begins. None of that matters when you can ask Claude to structure content into a fixed schema, substitute meat with vegetarian equivalents, and infer reasonable values for missing fields. The schema does the rest.</p>
+
+    <p><strong>Friction kills personal projects.</strong> The cookbook would already be abandoned if adding recipes required hand-typing JSON. Every minute shaved off the add-a-recipe loop multiplied the probability I'd actually use the thing. The fix had to be a friction fix.</p>
+
+    <p><strong>Versioned data with no database is one of the great free lunches in small-scale software.</strong> Every save is a commit. Every commit is recoverable. Audit logs come for free. If I want to know when I added a recipe, what it looked like before I edited it, or who made a change — <code>git log</code> answers all of that without building anything.</p>
+
+    <h2>What's next</h2>
+
+    <p>The same Worker pattern is already on the list for other parts of the site — a Save Concert button on the setlist log, a Save Book flow, maybe a geocache save route. Build the substrate once, features get cheaper.</p>
+
+    <p>On the cookbook itself: better cooking-from-the-recipe view (scale to N servings, imperial/metric toggle, checkbox ingredient tracking), and freeform tags beyond cuisine and category — "potluck," "weeknight," "from a friend."</p>
+
+    <p>But mostly the answer to "what's next" is <em>use it</em>. Two weeks of using it told me more about what to build than any amount of planning. The cookbook has 8 recipes now. By the end of the year it'll have 80, and the system will have answered for itself what the next feature should be.</p>
+
+    <p>The friction is gone. That was the whole project.</p>
+
+    <hr>
+
+    <p><em>The cookbook is at <a href="/recipes.html">brooksgroves.com/recipes.html</a>. The whole site is <a href="https://github.com/bdgroves/bdgroves.github.io">open source on GitHub</a>. The Worker is not — it's holding my keys.</em></p>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-footer-author">Brooks Groves · April 30, 2026</div>
+    <div class="article-footer-nav">
+      <a href="/blog/">← All Posts</a>
+      <a href="/recipes.html">Cookbook ↗</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline"><a href="/">brooksgroves.com</a></p>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
