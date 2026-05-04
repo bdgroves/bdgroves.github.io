@@ -55,6 +55,10 @@
     .dropdown a.dim { opacity:0.45; }
     .dropdown a.dim:hover { opacity:1; }
 
+    /* Direct-link nav item (no dropdown) — same look as the buttons */
+    .section-nav-link { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.7rem 1rem; color:var(--stone); transition:color 0.2s; white-space:nowrap; display:flex; align-items:center; }
+    .section-nav-link:hover { color:var(--ink); }
+
     .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
     .hamburger span { display:block; width:22px; height:2px; background:var(--ink); transition:all 0.3s; }
     .hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
@@ -97,6 +101,18 @@
     .support-hed { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; line-height:1.25; margin-bottom:0.35rem; }
     .support-story:hover .support-hed { color:var(--rust); }
     .support-dek { font-size:0.8rem; color:var(--stone); line-height:1.6; }
+
+    /* Publications block — restrained, CV-style listing */
+    .pub-list { border:1px solid var(--mist); }
+    .pub-item { display:grid; grid-template-columns:5.5rem 1fr; gap:1.25rem; padding:1.25rem 1.5rem; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.2s; }
+    .pub-item:last-child { border-bottom:none; }
+    .pub-item:hover { background:var(--cream); }
+    .pub-year { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.1em; color:var(--stone); padding-top:0.2rem; }
+    .pub-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.35; color:var(--ink); margin-bottom:0.3rem; }
+    .pub-item:hover .pub-title { color:var(--rust); }
+    .pub-venue { font-family:'Libre Baskerville',serif; font-style:italic; font-size:0.85rem; color:var(--stone); }
+    .pub-venue em { color:var(--ink); font-weight:700; font-style:italic; }
+    @media(max-width:640px) { .pub-item { grid-template-columns:1fr; gap:0.3rem; } .pub-year { padding-top:0; } }
     .support-link { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.5rem; display:block; }
 
     .ologies-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:0; border:1px solid var(--mist); }
@@ -198,6 +214,16 @@
     .untappd-link { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
     .untappd-link:hover { color:var(--gold); }
 
+
+    /* DAILY QUOTE */
+    .daily-quote { max-width:860px; margin:2rem auto 0; padding:0 clamp(1.5rem,5vw,4rem); }
+    .daily-quote-inner { border-left:3px solid var(--gold); padding:1rem 1.5rem; background:var(--cream); }
+    .daily-quote-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--stone); margin-bottom:0.5rem; display:flex; justify-content:space-between; align-items:center; }
+    .daily-quote-label a { color:var(--stone); text-decoration:none; font-size:0.52rem; }
+    .daily-quote-label a:hover { color:var(--gold); }
+    .daily-quote-text { font-family:'Playfair Display',serif; font-size:0.95rem; font-style:italic; line-height:1.65; color:var(--ink); margin-bottom:0.35rem; }
+    .daily-quote-attr { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); }
+
     footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,4vw,3rem) clamp(1rem,4vw,3rem); margin-top:3rem; }
     .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
     .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
@@ -219,6 +245,7 @@
 
 <!-- MOBILE DRAWER -->
 <nav class="mobile-nav" id="mobileNav">
+  <a href="/about.html">About</a>
   <div class="nav-section">Projects</div>
   <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">❄️ Rainier Snowpack</a>
   <a href="https://bdgroves.github.io/lahar-watch" target="_blank">🌋 lahar-watch</a>
@@ -243,6 +270,8 @@
   <a href="/learning/">📚 All Topics</a>
   <a href="/learning/quantum-physics/">⚛️ Quantum Physics</a>
   <a href="/learning/volcanology/">🌋 Volcanology</a>
+  <a href="/learning/desert-montane-ecosystems/">🌵 Desert & Montane</a>
+  <a href="/learning/ecogeomorphology/">🌊 Ecogeomorphology</a>
   <div class="nav-section">Ologies</div>
   <a href="/meteorology.html">🌩 Meteorology</a>
   <a href="/hydrology.html">💧 Hydrology</a>
@@ -253,18 +282,14 @@
   <a href="/geology.html">🪨 Geology</a>
   <a href="/archaeology.html">🏺 Archaeology</a>
   <div class="nav-section">Writing</div>
-  <a href="/writing/">All Writing</a>
   <a href="/blog/">Blog</a>
-  <a href="https://memoir.brooksgroves.com">Memoir</a>
-  <a href="https://westin.brooksgroves.com">Westin Stories</a>
-  <a href="https://journal.brooksgroves.com">Journal</a>
-  <a href="https://y2k.brooksgroves.com" target="_blank">Y2K Archive</a>
+  <a href="/writing/">All Writing</a>
   <div class="nav-section">Personal</div>
-  <a href="/about.html">About</a>
+  <a href="/quotes.html">Quotes</a>
   <a href="/concerts.html">Concerts</a>
   <a href="/maps.html">Maps</a>
   <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
-  <a href="/sports.html">Sports &amp; Beer</a>
+  <a href="/outside.html">Outside</a>
   <div class="nav-section">Connect</div>
   <a href="https://github.com/bdgroves" target="_blank">GitHub ↗</a>
   <a href="https://x.com/bdgroves" target="_blank">X / Twitter ↗</a>
@@ -318,6 +343,8 @@
   <p class="site-tagline">GIS Analyst · GISP · Cartographic Perspectives · Pacific Northwest</p>
   <nav class="section-nav">
 
+    <a href="/about.html" class="section-nav-link">About</a>
+
     <div class="section-nav-item">
       <button class="section-nav-btn">Projects <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
       <div class="dropdown">
@@ -338,7 +365,7 @@
         <a href="https://github.com/bdgroves/Project-PaleoWave" target="_blank">🌊 PaleoWave</a>
         <a href="https://github.com/bdgroves/project_ice_wave" target="_blank">🦣 IceWave</a>
         <a href="https://bdgroves.github.io/project-kiva" target="_blank">🏜 Project Kiva</a>
-        <a href="https://github.com/bdgroves/streamchaser" target="_blank">〰 streamchaser</a>
+        <a href="https://github.com/bdgroves/streamchaser" target="_blank">πÇ░ streamchaser</a>
         <a href="https://bdgroves.github.io/sierra-flow-cobol/" target="_blank">📟 sierra-flow-cobol</a>
         <a href="https://bdgroves.github.io/cascadia-wx/" target="_blank">🌨 cascadia-wx</a>
         <div class="dropdown-label">More</div>
@@ -353,6 +380,8 @@
         <a href="/learning/">📚 All Topics</a>
         <a href="/learning/quantum-physics/">⚛️ Quantum Physics</a>
         <a href="/learning/volcanology/">🌋 Volcanology</a>
+        <a href="/learning/desert-montane-ecosystems/">🌵 Desert &amp; Montane</a>
+        <a href="/learning/ecogeomorphology/">🌊 Ecogeomorphology</a>
         <div class="dropdown-label">Coming Soon</div>
         <a href="/learning/" class="dim">🌌 Cosmology</a>
         <a href="/learning/" class="dim">🎵 Music Underground 1985–95</a>
@@ -385,19 +414,24 @@
         <a href="https://westin.brooksgroves.com">Westin Stories</a>
         <a href="https://journal.brooksgroves.com">Journal</a>
         <a href="https://y2k.brooksgroves.com" target="_blank">Y2K Archive</a>
+        <div class="dropdown-label">More</div>
+        <a href="/recipes.html">Recipes</a>
       </div>
     </div>
+
 
     <div class="section-nav-item">
       <button class="section-nav-btn">Personal <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
       <div class="dropdown">
         <a href="/about.html">About</a>
+        <a href="/outside.html">Outside</a>
         <a href="/concerts.html">Concerts</a>
         <a href="/maps.html">Maps</a>
         <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
         <a href="/sports.html">Sports &amp; Beer</a>
       </div>
     </div>
+
 
     <div class="section-nav-item">
       <button class="section-nav-btn">Connect <svg viewBox="0 0 10 6"><path d="M0 0l5 6 5-6z"/></svg></button>
@@ -460,9 +494,9 @@
           <span class="support-link">View dashboard →</span>
         </a>
         <a href="https://bdgroves.github.io/PELE" target="_blank" class="support-story">
-          <p class="support-kicker">Volcanology · Kīlauea · USGS HVO</p>
+          <p class="support-kicker">Volcanology · K─½lauea · USGS HVO</p>
           <h3 class="support-hed">🌋 PELE — Hawai'i Volcanoes Dashboard</h3>
-          <p class="support-dek">Live Kīlauea eruption tracker. Real-time earthquakes, HVO webcams, alert levels, episodic fountaining log. Updated every 6 hours.</p>
+          <p class="support-dek">Live K─½lauea eruption tracker. Real-time earthquakes, HVO webcams, alert levels, episodic fountaining log. Updated every 6 hours.</p>
           <span class="support-link">View dashboard →</span>
         </a>
         <a href="https://bdgroves.github.io/weather-station" target="_blank" class="support-story">
@@ -471,7 +505,30 @@
           <p class="support-dek">High-end weather dashboard monitoring Lakewood WA, Groveland CA, Reno NV, and Death Valley. Wind compass, pressure trends, NWS alerts, moon phase. Updates every 15 min.</p>
           <span class="support-link">View dashboard →</span>
         </a>
+        <a href="https://brooksgroves.com/plate-hunter/" target="_blank" class="support-story">
+          <p class="support-kicker">Mobile · Family · Road Trip</p>
+          <h3 class="support-hed">🚗 Plate Hunter</h3>
+          <p class="support-dek">72 Washington specialty plates, rarity tiers from DOL data, zero frameworks. Spot a plate in real life, tap it, it unlocks. Points, confetti, the whole deal.</p>
+          <span class="support-link">Play now →</span>
+        </a>
       </div>
+    </div>
+  </div>
+
+  <!-- PUBLICATIONS -->
+  <div class="lead-section">
+    <div class="lead-section-label">
+      <span>Selected Publications</span>
+      <a href="https://cartographicperspectives.org/" target="_blank">NACIS · Cartographic Perspectives →</a>
+    </div>
+    <div class="pub-list">
+      <a href="/writing/draught-south-land.html" class="pub-item">
+        <div class="pub-year">2025</div>
+        <div>
+          <div class="pub-title">A Draught of the South Land: Mapping New Zealand from Tasman to Cook</div>
+          <div class="pub-venue">Book review · <em>Cartographic Perspectives</em>, No. 105, pp. 126–129 · NACIS · DOI 10.14714/CP105.1959</div>
+        </div>
+      </a>
     </div>
   </div>
 
@@ -507,7 +564,7 @@
         <span class="ology-icon">🌋</span>
         <h3 class="ology-name">Volcanology</h3>
         <p class="ology-desc">Live eruption monitoring, lahar hazard tracking, and seismic analysis across Hawaiʻi and the Pacific Northwest.</p>
-        <p class="ology-projects">PELE · lahar-watch · USGS HVO</p>
+        <p class="ology-projects">PELE · lahar-watch · AFTERSHOCK · Rainier Snowpack</p>
         <span class="ology-link">Explore →</span>
       </a>
       <a href="/ecology.html" class="ology-card eco">
@@ -537,7 +594,11 @@
   <hr class="rule">
 
   <!-- WRITING + READING -->
-  <div class="below-fold">
+  
+<!-- DAILY QUOTE -->
+<div class="daily-quote" id="daily-quote-wrap"></div>
+
+<div class="below-fold">
     <div class="below-col">
       <div class="col-label">
         <span>Writing</span>
@@ -576,6 +637,9 @@
         <div class="writing-hed">🐾 DIPODOMYS — A Data Portrait of Death Valley's Kangaroo Rats</div>
         <div class="writing-dek">Species distribution modeling and iNaturalist data analysis for kangaroo rat populations across the Mojave and Great Basin.</div>
       </a>
+      
+
+
 
     </div>
     <div class="below-col">
@@ -593,11 +657,11 @@
   <!-- SPORTS + BEER -->
   <div style="padding:2rem 0;border-top:1px solid var(--mist);">
     <div class="lead-section-label" style="margin-bottom:1.25rem;">
-      <span>Sports &amp; Beer</span>
-      <a href="/sports.html" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;">View all →</a>
+      <span>Outside</span>
+      <a href="/outside.html" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;">View all →</a>
     </div>
     <p style="font-size:0.875rem;color:var(--stone);line-height:1.7;max-width:480px;">Mariners scores, AL West standings, pro cycling results, Seahawks, and recent Untappd check-ins. All in one place.</p>
-    <a href="/sports.html" style="display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;color:var(--gold);">Sports &amp; Beer →</a>
+    <a href="/outside.html" style="display:inline-block;margin-top:1rem;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;color:var(--gold);">Outside →</a>
   </div>
 
 <!-- FOOTER -->
@@ -610,11 +674,8 @@
     <div class="footer-links">
       <div style="display:flex;flex-direction:column;gap:0.4rem;">
         <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:#3a3a36;margin-bottom:0.2rem;">Writing</div>
+        <a href="/blog/">Blog</a>
         <a href="/writing/">All Writing</a>
-        <a href="https://memoir.brooksgroves.com">Memoir</a>
-        <a href="https://westin.brooksgroves.com">Westin Stories</a>
-        <a href="https://journal.brooksgroves.com">Journal</a>
-        <a href="https://y2k.brooksgroves.com">Y2K Archive</a>
       </div>
       <div style="display:flex;flex-direction:column;gap:0.4rem;">
         <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:#3a3a36;margin-bottom:0.2rem;">Projects</div>
@@ -634,7 +695,7 @@
         <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
       </div>
     </div>
-    <p style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--stone);width:100%;padding-top:1.5rem;border-top:1px solid #2a2a26;">© 2026 Brooks Groves · Lakewood, WA · <a href="/about.html" style="color:var(--stone);text-decoration:none;">About</a> · <a href="/tags.html" style="color:var(--stone);text-decoration:none;">Tags</a></p>
+    <p style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--stone);width:100%;padding-top:1.5rem;border-top:1px solid #2a2a26;">┬⌐ 2026 Brooks Groves · Lakewood, WA · <a href="/about.html" style="color:var(--stone);text-decoration:none;">About</a> · <a href="/tags.html" style="color:var(--stone);text-decoration:none;">Tags</a></p>
   </div>
 </footer>
 
@@ -787,7 +848,7 @@
       const data = await res.json();
       const books = [
         ...data.currently_reading.map(b => ({...b, status:'reading'})),
-        ...data.recently_read.slice(0,4).map(b => ({...b, status:'done'}))
+        ...data.recently_read.slice(0,5).map(b => ({...b, status:'done'}))
       ];
       if (!books.length) throw new Error();
       el.innerHTML = books.map(b => `
@@ -987,7 +1048,7 @@
     }
   }
 
-  setTimeout(loadWeather, 100);
+  setTimeout(loadWeather, 150);
   loadMLB();
   loadStandings();
   loadBooks();
@@ -1029,6 +1090,22 @@ async function loadCyclingNews() {
       </a>`;
   }
 }
+
+// DAILY QUOTE
+(function() {
+  const QUOTES = [{"q": "Wilderness is not a luxury but a necessity of the human spirit, and as vital to our lives as water and good bread.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "The idea of wilderness needs no defense, it only needs defenders.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "What draws us into the desert is the search for something intimate in the remote.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "If my decomposing carcass helps nourish the roots of a juniper tree or the wings of a vulture — that is immortality enough for me. And as much as anyone deserves.", "a": "Edward Abbey, Desert Solitaire", "c": "Abbey"}, {"q": "Life is too short for grief. Or regret. Or bullshit.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "Freedom begins between the ears.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "I stand for what I stand on.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "This is the most beautiful place on Earth. There are many such places.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "When the situation is hopeless, there's nothing to worry about.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "There are some places so beautiful they can make a grown man break down and weep.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "Has joy any survival value in the operations of evolution? I suspect that it does; I suspect that the morose and fearful are doomed to quick extinction.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "A world without open country would be universal jail.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "How to Overthrow the System: brew your own beer; kick in your Tee Vee; kill your own beef; build your own cabin and piss off the front porch whenever you bloody well feel like it.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "In the first place you can't see anything from a car; you've got to get out of the goddamned contraption and walk, better yet crawl, on hands and knees, over the sandstone and through the thornbush and cactus.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "I find that in contemplating the natural world my pleasure is greater if there are not too many others contemplating it with me, at the same time.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "Every man, every woman, carries in heart and mind the image of the ideal place, the right place, the one true home, known or unknown, actual or visionary.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "There is no shortage of water in the desert but exactly the right amount — a perfect ratio of water to rock, water to sand.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "Believe? What do I believe in? I believe in sun. In rock. In the dogma of the sun and the doctrine of the rock.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "Ah yes, the head is full of books. The hard part is to force them down through the bloodstream and out through the fingers.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "High technology has done us one great service: it has retaught us the delight of performing simple and primordial tasks — chopping wood, building a fire, drawing water from a spring.", "a": "Edward Abbey", "c": "Abbey"}, {"q": "The only people for me are the mad ones, the ones who are mad to live, mad to talk, mad to be saved, desirous of everything at the same time, the ones who never yawn or say a commonplace thing, but burn, burn, burn like fabulous yellow roman candles.", "a": "Jack Kerouac, On the Road", "c": "Kerouac"}, {"q": "One day I will find the right words, and they will be simple.", "a": "Jack Kerouac", "c": "Kerouac"}, {"q": "I had nothing to offer anybody except my own confusion.", "a": "Jack Kerouac, On the Road", "c": "Kerouac"}, {"q": "All of life is a foreign country.", "a": "Jack Kerouac", "c": "Kerouac"}, {"q": "Because in the end, you won't remember the time you spent working in the office or mowing your lawn. Climb that goddamn mountain.", "a": "Jack Kerouac", "c": "Kerouac"}, {"q": "Nothing behind me, everything ahead of me, as is ever so on the road.", "a": "Jack Kerouac, On the Road", "c": "Kerouac"}, {"q": "Great things are not accomplished by those who yield to trends and fads and popular opinion.", "a": "Jack Kerouac", "c": "Kerouac"}, {"q": "What is that feeling when you're driving away from people and they recede on the plain till you see their specks dispersing? — it's the too-huge world vaulting us, and it's good-bye. But we lean forward to the next crazy venture beneath the skies.", "a": "Jack Kerouac, On the Road", "c": "Kerouac"}, {"q": "Maybe that's what life is... a wink of the eye and winking stars.", "a": "Jack Kerouac", "c": "Kerouac"}, {"q": "I like too many things and get all confused and hung-up running from one falling star to another till I drop. This is the night, what it does to you.", "a": "Jack Kerouac, On the Road", "c": "Kerouac"}, {"q": "Live, travel, adventure, bless, and don't be sorry.", "a": "Jack Kerouac", "c": "Kerouac"}, {"q": "Whither goest thou, America, in thy shiny car in the night?", "a": "Jack Kerouac, On the Road", "c": "Kerouac"}, {"q": "The mountains are calling and I must go.", "a": "John Muir", "c": "Muir"}, {"q": "When we try to pick out anything by itself, we find it hitched to everything else in the Universe.", "a": "John Muir", "c": "Muir"}, {"q": "I am losing precious days. I am degenerating into a machine for making money. I am learning nothing in this trivial world of men. I must break away and get out into the mountains to learn the news.", "a": "John Muir", "c": "Muir"}, {"q": "Of all the fire-mountains which, like beacons, once blazed along the Pacific Coast, Mount Rainier is the noblest.", "a": "John Muir", "c": "Muir"}, {"q": "The clearest way into the Universe is through a forest wilderness.", "a": "John Muir", "c": "Muir"}, {"q": "In every walk with nature, one receives far more than he seeks.", "a": "John Muir", "c": "Muir"}, {"q": "The world is big and I want to have a good look at it before it gets dark.", "a": "John Muir", "c": "Muir"}, {"q": "Between every two pine trees there is a door leading to a new way of life.", "a": "John Muir", "c": "Muir"}, {"q": "Everybody needs beauty as well as bread, places to play in and pray in, where Nature may heal and cheer and give strength to body and soul alike.", "a": "John Muir", "c": "Muir"}, {"q": "The sun shines not on us but in us.", "a": "John Muir", "c": "Muir"}, {"q": "All this is the music of waters.", "a": "John Wesley Powell, 1895", "c": "Nature"}, {"q": "Il faut aller voir — We must go and see for ourselves.", "a": "Jacques-Yves Cousteau", "c": "Nature"}, {"q": "The desert could not be claimed or owned — it was a piece of cloth carried by winds, never held down by stones, and given a hundred shifting names.", "a": "Michael Ondaatje, The English Patient", "c": "Nature"}, {"q": "If the desert is holy, it is because it is a forgotten place that allows us to remember the sacred. Perhaps that is why every pilgrimage to the desert is a pilgrimage to the self.", "a": "Terry Tempest Williams, Refuge", "c": "Nature"}, {"q": "I have dropped into the very place I have been seeking.", "a": "Isabella Bird", "c": "Nature"}, {"q": "By discovering nature, you discover yourself.", "a": "Maxime Lagacé", "c": "Nature"}, {"q": "We really live on a planet where birds give us a dawn chorus to start each day. I still can't believe this.", "a": "Corina Newsome", "c": "Nature"}, {"q": "There can be no purpose more enspiriting than to begin the age of restoration, reweaving the wondrous diversity of life that still surrounds us.", "a": "E.O. Wilson", "c": "Nature"}, {"q": "A thing is right when it tends to preserve the integrity, stability, and beauty of the biotic community. It is wrong when it tends otherwise.", "a": "Aldo Leopold", "c": "Nature"}, {"q": "The river only says things once. Listen or risk silencing this liquid jubilee.", "a": "Ellen Waterston", "c": "Nature"}, {"q": "Ocian in view! O! the joy.", "a": "William Clark, Nov 7 1805", "c": "Nature"}, {"q": "Everything is related to everything else, but near things are more related than distant things.", "a": "Waldo Tobler — First Law of Geography", "c": "GIS"}, {"q": "Tidy datasets are all alike, but every messy dataset is messy in its own way.", "a": "Hadley Wickham", "c": "GIS"}, {"q": "All models are wrong, but some are useful.", "a": "George Box", "c": "Science"}, {"q": "To know the brain is equivalent to ascertaining the material course of thought and will.", "a": "Santiago Ramón y Cajal", "c": "Science"}, {"q": "Out of clutter, find simplicity. From discord, find harmony. In the middle of difficulty lies opportunity.", "a": "Albert Einstein", "c": "Science"}, {"q": "Stay in the mile you're in.", "a": "Runner's World", "c": "Running"}, {"q": "To give anything less than your best is to sacrifice the gift.", "a": "Steve Prefontaine", "c": "Running"}, {"q": "Before the deed comes the thought. Before the achievement comes the dream. Every mountain we climb, we first climb in our mind.", "a": "Royal Robbins", "c": "Running"}, {"q": "The story you tell yourself becomes your reality.", "a": "Chad Kellogg", "c": "Running"}, {"q": "I have often marvelled at the thin line that divides success from failure and the sudden turn that leads from apparently certain disaster to comparative safety.", "a": "Ernest Shackleton", "c": "Running"}, {"q": "Strong, fast, and last.", "a": "Dakotah Lindwurm", "c": "Running"}, {"q": "Every sunset brings the promise of a new dawn.", "a": "Ralph Waldo Emerson", "c": "Life"}, {"q": "Because when you stop and look around, this life is pretty amazing.", "a": "Dr. Seuss", "c": "Life"}, {"q": "You're off to Great Places! Today is your day! Your mountain is waiting, so get on your way!", "a": "Dr. Seuss, Oh The Places You'll Go", "c": "Life"}, {"q": "A journey of a thousand miles begins with a single step.", "a": "Lao-tzu", "c": "Life"}, {"q": "Every situation is of infinite value, for it is the representative of a whole eternity.", "a": "Johann Wolfgang von Goethe", "c": "Life"}, {"q": "Maybe some people just aren't meant to be in our lives forever. Maybe some people are just passing through to bring us something: a gift, a blessing, a lesson we need to learn.", "a": "Danielle Steel", "c": "Life"}, {"q": "Accept what is, let go of what was, and have faith in what will be.", "a": "Unknown", "c": "Life"}, {"q": "Remember, tomorrow is promised to no one.", "a": "Walter Payton", "c": "Life"}, {"q": "Lack of direction, not lack of time, is the problem. We all have twenty-four hour days.", "a": "Zig Ziglar", "c": "Life"}, {"q": "The cure for boredom is curiosity. There is no cure for curiosity.", "a": "Dorothy Parker", "c": "Life"}, {"q": "It had only to do with how it felt to be in the wild — the accumulation of trees and meadows, mountains and deserts, streams and rocks, sunrises and sunsets. The experience was powerful and fundamental.", "a": "Cheryl Strayed", "c": "Life"}, {"q": "I have accepted fear as part of life — specifically the fear of change. I have gone ahead despite the pounding in the heart that says: turn back.", "a": "Erica Jong", "c": "Life"}, {"q": "Love is like a tree: it grows by itself, roots itself deeply in our being and continues to flourish over a heart in ruin.", "a": "Victor Hugo", "c": "Life"}, {"q": "We are told that people stay in love because of chemistry, because of many kindnesses, because of luck. But part of it has got to be forgiveness and gratefulness.", "a": "Ellen Goodman", "c": "Life"}, {"q": "And now that you don't have to be perfect, you can be good.", "a": "John Steinbeck, East of Eden", "c": "Steinbeck"}, {"q": "A man who tells secrets or stories must think of who is hearing or reading, for a story has as many versions as it has readers.", "a": "John Steinbeck", "c": "Steinbeck"}, {"q": "I wonder why progress looks so much like destruction.", "a": "John Steinbeck", "c": "Steinbeck"}, {"q": "No man really knows about other human beings. The best he can do is to suppose that they are like himself.", "a": "John Steinbeck", "c": "Steinbeck"}, {"q": "A journey is a person in itself; no two are alike. And all plans, safeguards, policing, and coercion are fruitless. We find that after years of struggle that we do not take a trip; a trip takes us.", "a": "John Steinbeck, Travels with Charley", "c": "Steinbeck"}, {"q": "I have always lived violently, drunk hugely, eaten too much or not at all, slept around the clock or missed two nights of sleeping, worked too hard and too long in glory, or slobbed for a time in utter laziness.", "a": "John Steinbeck, Travels with Charley", "c": "Steinbeck"}, {"q": "The free exploring mind of the individual human is the most valuable thing in the world.", "a": "John Steinbeck, East of Eden", "c": "Steinbeck"}, {"q": "I believe a strong woman may be stronger than a man, particularly if she happens to have love in her heart. I guess a loving woman is indestructible.", "a": "John Steinbeck", "c": "Steinbeck"}, {"q": "Power does not corrupt. Fear corrupts... perhaps the fear of a loss of power.", "a": "John Steinbeck", "c": "Steinbeck"}, {"q": "Man, unlike any other thing organic or inorganic in the universe, grows beyond his work, walks up the stairs of his concepts, emerges ahead of his accomplishments.", "a": "John Steinbeck, The Grapes of Wrath", "c": "Steinbeck"}, {"q": "And this I believe: that the free, exploring mind of the individual human is the most valuable thing in the world. And this I would fight for: the freedom of the mind to take any direction it wishes, undirected.", "a": "John Steinbeck, East of Eden", "c": "Steinbeck"}, {"q": "In utter loneliness a writer tries to explain the inexplicable.", "a": "John Steinbeck", "c": "Steinbeck"}, {"q": "Ideas are like rabbits. You get a couple and learn how to handle them, and pretty soon you have a dozen.", "a": "John Steinbeck", "c": "Steinbeck"}, {"q": "And it never failed that during the dry years the people forgot about the rich years, and during the wet years they lost all memory of the dry years. It was always that way.", "a": "John Steinbeck, East of Eden", "c": "Steinbeck"}, {"q": "The redwoods, once seen, leave a mark or create a vision that stays with you always.", "a": "John Steinbeck", "c": "Steinbeck"}];
+  const day = Math.floor(Date.now() / 86400000);
+  const quote = QUOTES[day % QUOTES.length];
+  const wrap = document.getElementById('daily-quote-wrap');
+  if (wrap) {
+    wrap.innerHTML = '<div class="daily-quote-inner">' +
+      '<div class="daily-quote-label"><span>Quote of the Day</span><a href="/quotes.html">All Quotes →</a></div>' +
+      '<div class="daily-quote-text">“' + quote.q + '”</div>' +
+      '<div class="daily-quote-attr">— ' + quote.a + '</div>' +
+      '</div>';
+  }
+})();
+
 </script>
 
 </body>
