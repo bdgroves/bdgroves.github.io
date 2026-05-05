@@ -31,8 +31,7 @@ jobs:
           # Lineup notes (May 2026):
           # - VeloNews: confirmed working from GHA runners
           # - CyclingNews: HARD-BLOCKED at Cloudflare (Future plc) — removed
-          # - Cycling Weekly: same Future plc family — risky, not adding
-          # - road.cc, Inner Ring, BikePortland: smaller pubs, typically friendlier
+          # - road.cc, Inner Ring, BikePortland: smaller pubs, friendlier
           FEEDS = [
               ('VeloNews',     'https://www.velonews.com/feed/'),
               ('road.cc',      'https://road.cc/rss'),
@@ -49,7 +48,7 @@ jobs:
               'Accept': 'application/rss+xml, application/xml, text/xml, */*',
           }
 
-          PER_FEED_LIMIT = 5     # cap entries pulled per feed (was 8)
+          PER_FEED_LIMIT = 5     # cap entries pulled per feed
           TOTAL_LIMIT    = 12    # final cap on articles written
 
           def fetch_feed(url, retries=3, backoff=5):
@@ -65,8 +64,7 @@ jobs:
                           time.sleep(backoff * (attempt + 1))
               raise last_err
 
-          articles = []
-          seen = set()
+          per_feed = {}        # source -> [articles in feed-native order]
           feeds_succeeded = 0
 
           for source, feed_url in FEEDS:
@@ -77,28 +75,46 @@ jobs:
                       print(f"WARN: {source} returned 0 entries")
                       continue
                   feeds_succeeded += 1
+                  bucket = []
                   for entry in feed.entries[:PER_FEED_LIMIT]:
                       title = entry.get('title', '').strip()
                       link  = entry.get('link', '').strip()
-                      if not title or link in seen:
+                      if not title:
                           continue
-                      seen.add(link)
                       pub = entry.get('published_parsed') or entry.get('updated_parsed')
                       date_str = datetime(*pub[:6], tzinfo=timezone.utc).strftime('%b %d') if pub else ''
-                      articles.append({
+                      bucket.append({
                           'title':  title,
                           'link':   link,
                           'date':   date_str,
                           'source': source,
                       })
-                  print(f"OK: {source} — {len(feed.entries)} entries")
+                  per_feed[source] = bucket
+                  print(f"OK: {source} — {len(feed.entries)} entries (kept {len(bucket)})")
               except Exception as e:
                   print(f"FAIL: {source} — {e}")
 
-          # Sort newest first by ISO-ish date string when present; entries
-          # without dates fall to the end.
-          articles.sort(key=lambda a: a.get('date') or '', reverse=True)
-          articles = articles[:TOTAL_LIMIT]
+          # Round-robin interleave: take 1 newest from each feed, then 2nd
+          # newest from each, etc. This guarantees source diversity even when
+          # one feed publishes far more aggressively than the others.
+          articles = []
+          seen_links = set()
+          i = 0
+          while len(articles) < TOTAL_LIMIT and any(len(b) > i for b in per_feed.values()):
+              for source, _ in FEEDS:
+                  if source not in per_feed:
+                      continue
+                  bucket = per_feed[source]
+                  if i >= len(bucket):
+                      continue
+                  art = bucket[i]
+                  if art['link'] and art['link'] in seen_links:
+                      continue
+                  seen_links.add(art['link'])
+                  articles.append(art)
+                  if len(articles) >= TOTAL_LIMIT:
+                      break
+              i += 1
 
           out_path = 'data/cycling-news.json'
           if feeds_succeeded == 0:
@@ -116,7 +132,12 @@ jobs:
                   'articles': articles,
               }, f, indent=2)
 
-          print(f"Wrote {len(articles)} articles to {out_path} from {feeds_succeeded} feed(s)")
+          # Summary by source for log readability
+          by_source = {}
+          for a in articles:
+              by_source[a['source']] = by_source.get(a['source'], 0) + 1
+          mix = ', '.join(f"{s}: {n}" for s, n in by_source.items())
+          print(f"Wrote {len(articles)} articles to {out_path} from {feeds_succeeded} feed(s) — {mix}")
           EOF
 
       - name: Commit data
