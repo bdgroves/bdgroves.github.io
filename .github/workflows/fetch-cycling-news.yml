@@ -28,13 +28,18 @@ jobs:
           import json, requests, feedparser, os, sys, time
           from datetime import datetime, timezone
 
+          # Lineup notes (May 2026):
+          # - VeloNews: confirmed working from GHA runners
+          # - CyclingNews: HARD-BLOCKED at Cloudflare (Future plc) — removed
+          # - Cycling Weekly: same Future plc family — risky, not adding
+          # - road.cc, Inner Ring, BikePortland: smaller pubs, typically friendlier
           FEEDS = [
-              ('CyclingNews', 'https://www.cyclingnews.com/rss/news/'),
-              ('VeloNews',    'https://www.velonews.com/feed/'),
+              ('VeloNews',     'https://www.velonews.com/feed/'),
+              ('road.cc',      'https://road.cc/rss'),
+              ('Inner Ring',   'https://inrng.com/feed/'),
+              ('BikePortland', 'https://bikeportland.org/feed'),
           ]
 
-          # Realistic browser UA — many cycling sites are behind Cloudflare
-          # and 403 obvious bot UAs.
           headers = {
               'User-Agent': (
                   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
@@ -43,6 +48,9 @@ jobs:
               ),
               'Accept': 'application/rss+xml, application/xml, text/xml, */*',
           }
+
+          PER_FEED_LIMIT = 5     # cap entries pulled per feed (was 8)
+          TOTAL_LIMIT    = 12    # final cap on articles written
 
           def fetch_feed(url, retries=3, backoff=5):
               last_err = None
@@ -69,7 +77,7 @@ jobs:
                       print(f"WARN: {source} returned 0 entries")
                       continue
                   feeds_succeeded += 1
-                  for entry in feed.entries[:8]:
+                  for entry in feed.entries[:PER_FEED_LIMIT]:
                       title = entry.get('title', '').strip()
                       link  = entry.get('link', '').strip()
                       if not title or link in seen:
@@ -87,9 +95,11 @@ jobs:
               except Exception as e:
                   print(f"FAIL: {source} — {e}")
 
-          articles = articles[:12]
+          # Sort newest first by ISO-ish date string when present; entries
+          # without dates fall to the end.
+          articles.sort(key=lambda a: a.get('date') or '', reverse=True)
+          articles = articles[:TOTAL_LIMIT]
 
-          # Don't clobber a good file with an empty one.
           out_path = 'data/cycling-news.json'
           if feeds_succeeded == 0:
               print("ERROR: all feeds failed — leaving existing JSON in place")
@@ -106,7 +116,7 @@ jobs:
                   'articles': articles,
               }, f, indent=2)
 
-          print(f"Wrote {len(articles)} articles to {out_path}")
+          print(f"Wrote {len(articles)} articles to {out_path} from {feeds_succeeded} feed(s)")
           EOF
 
       - name: Commit data
@@ -119,7 +129,6 @@ jobs:
             exit 0
           fi
           git commit -m "chore: cycling news $(date -u +%Y-%m-%d)"
-          # Pull-rebase to avoid races with other scheduled workflows
           for i in 1 2 3; do
             git pull --rebase origin "$(git rev-parse --abbrev-ref HEAD)" && \
             git push && exit 0
