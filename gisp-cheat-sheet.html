@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GISP Master Cheat Sheet — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sky:#5a7a8a;
+      --fire:#c0392b;
+      /* badge backgrounds tuned to parchment palette */
+      --green-bg:#e8efe2; --green-ink:#3d5a30;
+      --amber-bg:#f5ead0; --amber-ink:#7a5a14;
+      --rust-bg:#f2dcd2; --rust-ink:#7a2e20;
+      --slate-bg:#dde3e8; --slate-ink:#3d4a5c;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+
+    /* HEADER */
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1100px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--rust); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    /* PAGE HEADER */
+    .page-header { max-width:1100px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--rust); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--rust); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+
+    /* META STRIP */
+    .meta-strip { max-width:1100px; margin:0 auto; padding:1.25rem clamp(1.5rem,5vw,4rem); border-bottom:1px solid var(--mist); display:flex; gap:2rem; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+    .meta-stat { display:flex; flex-direction:column; gap:0.15rem; }
+    .meta-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); }
+    .meta-value { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--ink); }
+    .meta-value.target { color:var(--sage); }
+    .meta-controls { display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .ctrl-btn { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.5rem 0.9rem; background:transparent; border:1px solid var(--mist); color:var(--stone); cursor:pointer; transition:background 0.2s, color 0.2s, border-color 0.2s; }
+    .ctrl-btn:hover { background:var(--ink); color:var(--parchment); border-color:var(--ink); }
+
+    /* MAIN */
+    .page-content { max-width:1100px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    /* DETAILS / COLLAPSIBLES */
+    details { border:1px solid var(--mist); margin-bottom:1rem; background:var(--white); }
+    details[open] { border-color:var(--ink); }
+    summary {
+      list-style:none;
+      cursor:pointer;
+      padding:1rem 1.25rem;
+      font-family:'Playfair Display',serif;
+      font-size:1.1rem;
+      font-weight:700;
+      color:var(--ink);
+      display:flex;
+      align-items:center;
+      gap:0.75rem;
+      transition:background 0.15s;
+    }
+    summary::-webkit-details-marker { display:none; }
+    summary:hover { background:var(--cream); }
+    summary::after {
+      content:'+';
+      margin-left:auto;
+      font-family:'DM Mono',monospace;
+      font-weight:400;
+      font-size:1.2rem;
+      color:var(--stone);
+      transition:transform 0.2s;
+    }
+    details[open] summary::after { content:'−'; }
+    .summary-emoji { font-size:1.1rem; line-height:1; }
+    .section-body { padding:0 1.25rem 1.25rem; border-top:1px solid var(--mist); padding-top:1.25rem; }
+
+    /* TABLES */
+    .cs-table { width:100%; border-collapse:collapse; margin-bottom:1rem; font-size:0.85rem; }
+    .cs-table th { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); padding:0.6rem 0.75rem; border-bottom:2px solid var(--ink); text-align:left; background:var(--parchment); }
+    .cs-table td { padding:0.7rem 0.75rem; border-bottom:1px solid var(--mist); color:var(--ink); vertical-align:top; line-height:1.6; }
+    .cs-table tr:hover td { background:var(--cream); }
+    .cs-table td.mono { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--rust); white-space:nowrap; }
+    .cs-table td.mono-wrap { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--rust); }
+
+    /* BADGES */
+    .badge { display:inline-block; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.2rem 0.5rem; border-radius:2px; border:1px solid; }
+    .badge-slate  { background:var(--slate-bg); color:var(--slate-ink); border-color:var(--slate-ink); }
+    .badge-green  { background:var(--green-bg); color:var(--green-ink); border-color:var(--green-ink); }
+    .badge-amber  { background:var(--amber-bg); color:var(--amber-ink); border-color:var(--amber-ink); }
+
+    /* CALLOUTS */
+    .callout { border-left:3px solid var(--rust); background:var(--cream); padding:0.85rem 1rem; margin-top:0.75rem; font-size:0.875rem; line-height:1.7; }
+    .callout-title { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); margin-bottom:0.4rem; }
+    .callout strong { color:var(--ink); }
+
+    .rule-block { border:1px solid var(--gold); background:#faf3e0; padding:0.85rem 1rem; margin-top:0.75rem; font-size:0.875rem; line-height:1.7; }
+    .rule-title { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.4rem; }
+    .rule-block strong { color:var(--ink); }
+
+    /* GRID CARDS (raster ops, datums) */
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.5rem; }
+    @media(max-width:600px) { .grid-2 { grid-template-columns:1fr; } }
+    .grid-card { border:1px solid var(--mist); padding:0.85rem 1rem; background:var(--parchment); }
+    .grid-card-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--rust); margin-bottom:0.4rem; }
+    .grid-card p { font-size:0.85rem; line-height:1.65; color:var(--ink); }
+    .grid-card p + p { margin-top:0.5rem; color:var(--stone); font-size:0.78rem; }
+
+    /* PROGRESS NOTE (top of page) */
+    .progress-note { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--sage); padding:1rem 1.25rem; margin-bottom:2rem; font-size:0.875rem; line-height:1.75; color:var(--ink); }
+    .progress-note .progress-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--sage); margin-bottom:0.4rem; }
+    .progress-note strong { color:var(--ink); }
+
+    /* SECTION DIVIDERS in main flow */
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; margin-top:2rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label:first-child { margin-top:0; }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:2rem; }
+    .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+    .footer-copy { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); }
+
+    /* PRINT — simple, content-only, no chrome */
+    @media print {
+      body::before, header, .meta-controls, footer, nav { display:none !important; }
+      details { break-inside:avoid; border-color:#999; }
+      details[open] summary { background:#eee; }
+      summary::after { display:none; }
+      details:not([open]) { display:none; }
+      .callout, .rule-block { break-inside:avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/journal/index.html">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/geospatial.html">Geospatial</a> · Study Reference</p>
+  <h1 class="page-title">📚 GISP Master <em>Cheat Sheet</em></h1>
+  <p class="page-sub">Condensed reference for the GISCI Geospatial Core Technical Knowledge exam — built from practice sessions, organized around the sub-domains where points are most often left on the table. Targeted at the June 2026 sitting.</p>
+</div>
+
+<div class="meta-strip">
+  <div class="meta-stat">
+    <div class="meta-label">Exam window</div>
+    <div class="meta-value">June 2026</div>
+  </div>
+  <div class="meta-stat">
+    <div class="meta-label">Passing score</div>
+    <div class="meta-value target">730 / 1000</div>
+  </div>
+  <div class="meta-stat">
+    <div class="meta-label">Questions</div>
+    <div class="meta-value">150</div>
+  </div>
+  <div class="meta-controls">
+    <button class="ctrl-btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">▼ Expand All</button>
+    <button class="ctrl-btn" onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">▶ Collapse All</button>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <div class="progress-note">
+    <div class="progress-label">Practice trajectory</div>
+    Three GMetrix attempts logged: <strong>640</strong> → <strong>900</strong> → <strong>840</strong>. Persistent weak sub-domains feeding this sheet: datums &amp; coordinate systems (101), spatial data relationships (202), automated data collection (403), spatial file types (503), graphic representation (301). Press <strong>e</strong> to expand all sections, <strong>c</strong> to collapse.
+  </div>
+
+  <!-- CLASSIFICATION -->
+  <details open>
+    <summary><span class="summary-emoji">📌</span> Classification Methods</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Scenario trigger</th><th>Method</th></tr></thead>
+        <tbody>
+          <tr><td>Same number of features per class</td><td><span class="badge badge-slate">Quantile</span></td></tr>
+          <tr><td>Visually balanced map / show relative rank</td><td><span class="badge badge-slate">Quantile</span></td></tr>
+          <tr><td>Skewed data / outliers / natural clusters</td><td><span class="badge badge-slate">Natural Breaks</span></td></tr>
+          <tr><td>Show true magnitude differences</td><td><span class="badge badge-slate">Natural Breaks</span></td></tr>
+          <tr><td>Above/below average / normally distributed</td><td><span class="badge badge-slate">Std Deviation</span></td></tr>
+          <tr><td>Uniform / evenly spread distribution</td><td><span class="badge badge-slate">Equal Interval</span></td></tr>
+          <tr><td>Map series / cross-time comparison</td><td><span class="badge badge-slate">Equal Interval (fixed breaks)</span></td></tr>
+        </tbody>
+      </table>
+      <div class="rule-block">
+        <div class="rule-title">Know each weakness</div>
+        Quantile → groups unlike values together &nbsp;|&nbsp;
+        Equal Interval → empty classes with skewed data &nbsp;|&nbsp;
+        Natural Breaks → NOT comparable across maps &nbsp;|&nbsp;
+        Std Deviation → misleading with non-normal data
+      </div>
+      <div class="callout">
+        <div class="callout-title">Trap to watch</div>
+        "Normally distributed data — put equal features per class" → the normal distribution is a red herring. Equal features per class = <strong>Quantile</strong> regardless of distribution shape.
+      </div>
+    </div>
+  </details>
+
+  <!-- RASTER OPS -->
+  <details>
+    <summary><span class="summary-emoji">🗃️</span> Raster Operations — Local / Focal / Zonal / Global</summary>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="grid-card">
+          <div class="grid-card-title">Local</div>
+          <p>Cell-by-cell math across rasters. No neighbors. No zones. Matching positions only.</p>
+          <p>Add/subtract/multiply rasters · reclassify values · change detection (raster A − raster B)</p>
+        </div>
+        <div class="grid-card">
+          <div class="grid-card-title">Focal</div>
+          <p>Each cell calculated from its surrounding neighborhood / moving window.</p>
+          <p>Slope · aspect · smoothing filter · majority filter · any "neighboring cells" scenario</p>
+        </div>
+        <div class="grid-card">
+          <div class="grid-card-title">Zonal</div>
+          <p>Statistics calculated per zone / polygon group.</p>
+          <p>Avg elevation per watershed · max temp per climate zone · total precip per county</p>
+        </div>
+        <div class="grid-card">
+          <div class="grid-card-title">Global</div>
+          <p>Uses all cells in the entire raster for each output cell.</p>
+          <p>Euclidean distance · cost distance · viewshed analysis</p>
+        </div>
+      </div>
+      <div class="callout">
+        <div class="callout-title">Quick test</div>
+        Neighbors involved? → <strong>Focal</strong> &nbsp;|&nbsp; Per zone/polygon? → <strong>Zonal</strong> &nbsp;|&nbsp; Whole raster? → <strong>Global</strong> &nbsp;|&nbsp; Cell-to-cell math? → <strong>Local</strong>
+      </div>
+    </div>
+  </details>
+
+  <!-- OVERLAY OPS -->
+  <details>
+    <summary><span class="summary-emoji">🔀</span> Overlay Operations — Union / Intersect / Clip / Erase</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Operation</th><th>Output</th><th>Trigger words</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Union</td><td>Everything from A + B, full extent, all attributes</td><td>"all features from both," "combine," "merge"</td></tr>
+          <tr><td class="mono">Intersect</td><td>Only where A and B overlap, both attributes</td><td>"within," "inside," "overlap," AND condition</td></tr>
+          <tr><td class="mono">Clip</td><td>A cut to B's shape, only A's attributes</td><td>"cut to boundary," "extract within study area"</td></tr>
+          <tr><td class="mono">Erase</td><td>A minus B's area</td><td>"outside," "beyond," "more than X away," "exclude"</td></tr>
+        </tbody>
+      </table>
+      <div class="rule-block">
+        <div class="rule-title">Direction rule — most important</div>
+        Want what's <strong>INSIDE</strong> a zone → Buffer → <strong>Intersect</strong><br>
+        Want what's <strong>OUTSIDE</strong> a zone → Buffer → <strong>Erase</strong><br>
+        "Forest more than 2km from roads" → Buffer roads → Erase buffer from forest
+      </div>
+    </div>
+  </details>
+
+  <!-- DATA QUALITY -->
+  <details>
+    <summary><span class="summary-emoji">📏</span> ISO Data Quality Elements</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Type</th><th>What it means</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td class="mono-wrap">Positional accuracy</td><td>Feature is in the <strong>wrong location</strong></td><td>Road 50m west of true position</td></tr>
+          <tr><td class="mono-wrap">Logical consistency</td><td>Features <strong>contradict each other</strong> or violate a real-world rule</td><td>Road through a lake · bridge below river · parcel coded as both residential AND industrial</td></tr>
+          <tr><td class="mono-wrap">Attribute accuracy</td><td>Feature location is correct but <strong>attribute value is wrong</strong></td><td>Highway coded as residential street</td></tr>
+          <tr><td class="mono-wrap">Temporal accuracy</td><td>Data doesn't reflect the <strong>correct time period</strong></td><td>Demolished building still shown · 2005 dataset used for 2026 study</td></tr>
+          <tr><td class="mono-wrap">Completeness</td><td>Missing features or excess features</td><td>Roads not captured · duplicate polygons</td></tr>
+          <tr><td class="mono-wrap">Thematic accuracy</td><td>Features classified or labeled incorrectly</td><td>Land cover type misidentified</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">Two-question test</div>
+        Wrong place? → Positional &nbsp;|&nbsp; Features contradict? → Logical &nbsp;|&nbsp; Wrong value? → Attribute &nbsp;|&nbsp; Out of date? → Temporal
+      </div>
+      <div class="callout">
+        <div class="callout-title">Intentional vs unintentional error</div>
+        <strong>Intentional:</strong> generalization · map projection distortion (cartographer chooses to accept these)<br>
+        <strong>Unintentional:</strong> GPS error · digitizing mistakes · scanner distortion
+      </div>
+    </div>
+  </details>
+
+  <!-- BERTIN -->
+  <details>
+    <summary><span class="summary-emoji">🎨</span> Bertin's Visual Variables</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Variable</th><th>Best for</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td class="mono-wrap">Value (light→dark)</td><td>Ordered / quantitative</td><td>Light to dark blue for population density</td></tr>
+          <tr><td class="mono">Hue</td><td>Nominal / categorical</td><td>Red/blue/green for land use types</td></tr>
+          <tr><td class="mono">Size</td><td>Quantitative at point locations</td><td>Circle size for city population</td></tr>
+          <tr><td class="mono">Shape</td><td>Nominal at point locations</td><td>Circle vs square vs triangle symbols</td></tr>
+          <tr><td class="mono">Texture</td><td>Nominal or ordered — pattern of marks</td><td>Dashed vs solid lines · stipple · hatch spacing</td></tr>
+          <tr><td class="mono">Orientation</td><td>Directional data</td><td>Wind direction arrows</td></tr>
+          <tr><td class="mono">Position</td><td>All data types</td><td>X/Y location on the map</td></tr>
+        </tbody>
+      </table>
+      <div class="rule-block">
+        <div class="rule-title">Key pairing</div>
+        Quantitative/ordered → <strong>Value or Size</strong> &nbsp;|&nbsp; Categorical/nominal → <strong>Hue or Shape</strong><br>
+        Texture = dashed/dotted/hatched PATTERNS — not lightness, not color
+      </div>
+    </div>
+  </details>
+
+  <!-- COLOR SCHEMES -->
+  <details>
+    <summary><span class="summary-emoji">🌈</span> Color Schemes</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Scheme</th><th>Data type</th><th>Structure</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Sequential</td><td>Ordered / quantitative</td><td>One hue, light → dark (one direction)</td><td>White → dark blue for rainfall</td></tr>
+          <tr><td class="mono">Diverging</td><td>Ordered with meaningful midpoint</td><td>Two hues from neutral center</td><td>Red → white → blue for temp anomalies</td></tr>
+          <tr><td class="mono">Qualitative</td><td>Nominal / categorical</td><td>Distinct hues, no implied order</td><td>Land use types, political parties</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">Exam triggers</div>
+        One direction of progression → <strong>Sequential</strong><br>
+        Two directions from a meaningful midpoint / "anomaly" / "above-below average" → <strong>Diverging</strong><br>
+        No implied order / categorical → <strong>Qualitative</strong>
+      </div>
+      <div class="callout">
+        <div class="callout-title">Classic pairing</div>
+        Standard Deviation classification + Diverging color scheme = perfect for above/below average analysis
+      </div>
+    </div>
+  </details>
+
+  <!-- MAP TYPES -->
+  <details>
+    <summary><span class="summary-emoji">🗺️</span> Map Types</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Map type</th><th>Data requirement</th><th>Trigger</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Choropleth</td><td><span class="badge badge-green">Normalized only</span> rates, %, density — NEVER raw counts</td><td>"per capita," "per sq mile," "rate," "percentage"</td></tr>
+          <tr><td class="mono-wrap">Graduated symbol</td><td><span class="badge badge-amber">Raw counts</span> — single scaled symbol per location</td><td>"symbol size proportional to value"</td></tr>
+          <tr><td class="mono">Dot density</td><td><span class="badge badge-amber">Raw counts</span> — each dot = fixed quantity, randomly placed in polygon</td><td>"each dot represents X"</td></tr>
+          <tr><td class="mono">Isopleth</td><td>Continuous surface values</td><td>"contour lines," "equal values," temperature/elevation</td></tr>
+          <tr><td class="mono">KDE</td><td>Point events → smooth density surface</td><td>"hotspot," "concentration," "without showing individual points"</td></tr>
+        </tbody>
+      </table>
+      <div class="rule-block">
+        <div class="rule-title">Most-tested rule</div>
+        Choropleth must NEVER use raw counts. Larger areas always have more of anything — normalize first (divide by population, area, etc.)
+      </div>
+    </div>
+  </details>
+
+  <!-- TOPOLOGY -->
+  <details>
+    <summary><span class="summary-emoji">🔗</span> Topology</summary>
+    <div class="section-body">
+      <div class="callout">
+        <div class="callout-title">Topology enables — memorize all 3</div>
+        <strong>1.</strong> Selecting adjacent features &nbsp;&nbsp;
+        <strong>2.</strong> Enforcing planar data integrity &nbsp;&nbsp;
+        <strong>3.</strong> Automating data clean-up
+      </div>
+      <table class="cs-table" style="margin-top:0.75rem;">
+        <thead><tr><th>Rule</th><th>Applies to</th><th>Flags</th></tr></thead>
+        <tbody>
+          <tr><td class="mono-wrap">Must not overlap</td><td>Polygons</td><td>Two polygons sharing interior space</td></tr>
+          <tr><td class="mono-wrap">Must not have gaps</td><td>Polygons</td><td>Uncovered sliver between polygons</td></tr>
+          <tr><td class="mono-wrap">Must not have dangles</td><td>Lines</td><td>Unconnected line endpoint</td></tr>
+          <tr><td class="mono-wrap">Must not have pseudo nodes</td><td>Lines</td><td>Only two lines meeting end-to-end (no true intersection)</td></tr>
+          <tr><td class="mono-wrap">Planar enforcement</td><td>Polygons</td><td>No gaps + no overlaps = every location in exactly one polygon</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">Topology does NOT</div>
+        Increase positional accuracy — topology works with coordinates you already have. It enforces relationships, not precision.
+      </div>
+    </div>
+  </details>
+
+  <!-- PROJECTIONS -->
+  <details>
+    <summary><span class="summary-emoji">🌐</span> Projections &amp; Datums</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Projection</th><th>Preserves</th><th>Use case</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Mercator</td><td>Shapes/angles (conformal)</td><td>Navigation — rhumb lines are straight</td></tr>
+          <tr><td class="mono-wrap">Albers Equal-Area Conic</td><td>Area</td><td>US/Canada thematic mapping standard</td></tr>
+          <tr><td class="mono-wrap">Lambert Conformal Conic</td><td>Shapes/angles</td><td>Aeronautical charts, State Plane (wide states)</td></tr>
+          <tr><td class="mono">Gnomonic</td><td>Great circles as straight lines</td><td>Flight route planning</td></tr>
+          <tr><td class="mono-wrap">Azimuthal Equidistant</td><td>Distance + direction from center</td><td>UN emblem — every point true distance from pole</td></tr>
+          <tr><td class="mono-wrap">Polar Stereographic</td><td>Local shapes (conformal)</td><td>Antarctica / polar mapping</td></tr>
+          <tr><td class="mono">Robinson</td><td>Compromise (nothing perfectly)</td><td>World reference maps — no analysis</td></tr>
+        </tbody>
+      </table>
+      <div class="grid-2">
+        <div class="grid-card">
+          <div class="grid-card-title">Horizontal datums</div>
+          <p>WGS 84 (GPS default · global)<br>NAD 83 (US standard · GRS 80)<br>NAD 27 (legacy · Clarke 1866)<br>NAD 27→83 shift = up to 100m — EXPECTED</p>
+        </div>
+        <div class="grid-card">
+          <div class="grid-card-title">Vertical datums</div>
+          <p>NAVD 88 = current US standard elevation<br>NGVD 29 = legacy (convert to NAVD 88)<br>GPS → ellipsoidal height<br>GEOID18 → converts to NAVD 88<br>NADCON = horizontal transform only</p>
+        </div>
+      </div>
+      <div class="callout">
+        <div class="callout-title">State Plane vs UTM</div>
+        State Plane: ~3° wide zones · Lambert (wide states) or Transverse Mercator (tall states) · WA = Lambert<br>
+        UTM: 6° wide · 60 zones · WA = zones 10 &amp; 11 · False easting 500,000m · Scale factor 0.9996 (secant)<br>
+        <strong>Easting math:</strong> Easting − 500,000 = distance from central meridian (+ = east, − = west)
+      </div>
+    </div>
+  </details>
+
+  <!-- OGC SERVICES -->
+  <details>
+    <summary><span class="summary-emoji">🌍</span> OGC Web Services</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Service</th><th>Returns</th><th>Editable?</th><th>Trigger</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">WMS</td><td>Rendered map image</td><td>No</td><td>"display map image"</td></tr>
+          <tr><td class="mono">WMTS</td><td>Pre-tiled cached image</td><td>No</td><td>"pre-rendered tiles," "fixed zoom levels," basemaps</td></tr>
+          <tr><td class="mono">WFS</td><td>Vector features + attributes</td><td>No</td><td>"query," "download," "vector features"</td></tr>
+          <tr><td class="mono">WFS-T</td><td>Vector features + attributes</td><td><span class="badge badge-green">Yes</span></td><td>"edit," "insert," "update," "delete" features</td></tr>
+          <tr><td class="mono">WCS</td><td>Raster/coverage data</td><td>No</td><td>"raster," "coverage," "grid data"</td></tr>
+          <tr><td class="mono">GML</td><td>XML-based vector encoding</td><td>—</td><td>WFS native format · XML + OGC + geographic features</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- FILE FORMATS -->
+  <details>
+    <summary><span class="summary-emoji">📁</span> Spatial File Formats</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Format</th><th>Key facts</th><th>Limitations</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Shapefile</td><td>Multiple files (.shp .shx .dbf .prj) · one geometry type</td><td>2GB limit · 10-char field names · no nulls in numeric · no topology · no domains</td></tr>
+          <tr><td class="mono">GeoJSON</td><td>Open standard · JSON · web mapping standard · ODbL licensed</td><td>WGS 84 only · no topology · large file sizes for complex data</td></tr>
+          <tr><td class="mono">GeoPackage</td><td>Open standard · SQLite · vector + raster · OGC shapefile replacement</td><td>Best for offline mobile use · multi-feature class storage</td></tr>
+          <tr><td class="mono">File GDB</td><td>Esri · up to 1TB · domains · subtypes · topology · long field names</td><td>Proprietary · limited write support in open-source GIS</td></tr>
+          <tr><td class="mono">LAS / LAZ</td><td>LiDAR point cloud standard · x/y/z + intensity + return + classification</td><td>LAZ = compressed LAS</td></tr>
+          <tr><td class="mono">COG</td><td>Cloud Optimized GeoTIFF · HTTP range requests · no full download needed</td><td>Raster only · read-optimized not edit-optimized</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- DATABASE -->
+  <details>
+    <summary><span class="summary-emoji">🗄️</span> Database Design &amp; Management</summary>
+    <div class="section-body">
+      <div class="callout">
+        <div class="callout-title">Design sequence</div>
+        Needs Assessment → <strong>Conceptual</strong> (entities &amp; relationships) → <strong>Logical</strong> (tables, fields, data types) → <strong>Physical</strong> (platform implementation) → Implementation
+      </div>
+      <table class="cs-table" style="margin-top:0.75rem;">
+        <thead><tr><th>Concept</th><th>Definition</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Primary key</td><td>Unique identifier in its own table — no nulls, no duplicates</td></tr>
+          <tr><td class="mono">Foreign key</td><td>Field in one table referencing the primary key of another table</td></tr>
+          <tr><td class="mono-wrap">Coded value domain</td><td>Restricts field to a predefined list (Paved / Gravel / Dirt)</td></tr>
+          <tr><td class="mono">Range domain</td><td>Restricts numeric field to min/max range (speed limit 5–85)</td></tr>
+          <tr><td class="mono">Attribute join</td><td>Shared key field · merges tables · one-to-one or many-to-one only</td></tr>
+          <tr><td class="mono">Spatial join</td><td>Based on geographic location · no shared key needed</td></tr>
+          <tr><td class="mono">Relate</td><td>Navigable link · no merge · handles one-to-many</td></tr>
+          <tr><td class="mono">Versioning</td><td>Enterprise GDB only · multi-user simultaneous editing without conflicts</td></tr>
+          <tr><td class="mono">Many-to-many</td><td>Requires a junction/intermediate table</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- PROFESSIONAL PRACTICE -->
+  <details>
+    <summary><span class="summary-emoji">📋</span> Professional Practice &amp; Ethics</summary>
+    <div class="section-body">
+      <div class="callout">
+        <div class="callout-title">GISCI minimum metadata</div>
+        <strong>Source · Date · Projection · Author</strong><br>
+        ⛔️ NOT location &nbsp;&nbsp; ⛔️ NOT user
+      </div>
+      <table class="cs-table" style="margin-top:0.75rem;">
+        <thead><tr><th>Reality type</th><th>Definition</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Virtual</td><td>Fully immersive — replaces real world entirely (3D building model from desk)</td></tr>
+          <tr><td class="mono">Augmented</td><td>Digital overlay ON the real world (tablet overlay on real street view)</td></tr>
+          <tr><td class="mono">Mixed</td><td>Digital + physical interact in real time (virtual objects anchor to real surfaces)</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">Agile vs Waterfall</div>
+        <strong>Agile:</strong> iterative cycles · continuous feedback · frequent delivery · requirements evolve<br>
+        <strong>Waterfall:</strong> all requirements defined upfront · linear sequential phases · no going back
+      </div>
+    </div>
+  </details>
+
+  <!-- ANALYTICAL METHODS -->
+  <details>
+    <summary><span class="summary-emoji">📐</span> Analytical Methods</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Method</th><th>Use case</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Buffer</td><td>Zone of specified distance around features. Output = always a vector polygon.</td></tr>
+          <tr><td class="mono">Dissolve</td><td>Merge features sharing the same attribute value. Removes internal boundaries.</td></tr>
+          <tr><td class="mono">Spatial join</td><td>Transfer attributes based on geographic location/relationship</td></tr>
+          <tr><td class="mono-wrap">Point-in-polygon</td><td>Determine which polygon each point falls within — transfers polygon attributes to point</td></tr>
+          <tr><td class="mono">KDE</td><td>Smooth continuous density surface from points. Bandwidth controls smoothness.</td></tr>
+          <tr><td class="mono">Kriging</td><td>Geostatistical interpolation using spatial autocorrelation. Gold standard for unknown values.</td></tr>
+          <tr><td class="mono">IDW</td><td>Inverse Distance Weighting — closer points weighted more. Simpler than Kriging.</td></tr>
+          <tr><td class="mono-wrap">Thiessen / Voronoi</td><td>Every location assigned to nearest point feature. Proximity-based, not statistical.</td></tr>
+          <tr><td class="mono">Cost path</td><td>Least-cost route across a cost surface raster (pipeline routing, corridor siting)</td></tr>
+          <tr><td class="mono-wrap">Watershed delineation</td><td>Starts with DEM → fill sinks → flow direction → flow accumulation → pour point → boundary</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">Map algebra operations</div>
+        <strong>Local:</strong> cell × cell (multiply slope × erodibility) &nbsp;|&nbsp;
+        <strong>Logical:</strong> cells where value &gt; 50 → returns 1/0 binary raster &nbsp;|&nbsp;
+        <strong>Mathematical:</strong> square root, log of cell values
+      </div>
+    </div>
+  </details>
+
+  <!-- REMOTE SENSING -->
+  <details>
+    <summary><span class="summary-emoji">🛰️</span> Remote Sensing</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Concept</th><th>Definition</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">Passive sensor</td><td>Detects naturally available energy (reflected sunlight or emitted heat) · needs daylight for optical</td></tr>
+          <tr><td class="mono">Active sensor</td><td>Emits own energy, measures return · works day/night/cloud cover · LiDAR (laser) · SAR/RADAR (microwave)</td></tr>
+          <tr><td class="mono-wrap">Spatial resolution</td><td>Pixel size on the ground (1m vs 30m)</td></tr>
+          <tr><td class="mono-wrap">Spectral resolution</td><td>Number and width of wavelength bands captured</td></tr>
+          <tr><td class="mono-wrap">Temporal resolution</td><td>How frequently sensor revisits same area</td></tr>
+          <tr><td class="mono-wrap">Radiometric resolution</td><td>Sensitivity to signal differences — expressed in bits (8-bit = 256 values)</td></tr>
+          <tr><td class="mono">NDVI</td><td>(NIR − Red) / (NIR + Red) · healthy vegetation = high NIR, low Red = high NDVI</td></tr>
+          <tr><td class="mono">LiDAR</td><td>Time-of-flight laser · multiple returns (canopy, branches, ground) · stored as LAS/LAZ</td></tr>
+          <tr><td class="mono-wrap">Vertical imagery</td><td>Nadir (straight down) · accurate measurements · photogrammetric mapping · consistent scale</td></tr>
+          <tr><td class="mono-wrap">Oblique imagery</td><td>Angled view · shows building facades · better urban context visualization</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- COORDINATE SYSTEMS -->
+  <details>
+    <summary><span class="summary-emoji">🧭</span> Coordinate Systems Quick Reference</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>System</th><th>Units</th><th>Use</th></tr></thead>
+        <tbody>
+          <tr><td class="mono-wrap">GCS (Geographic)</td><td>Degrees (angular)</td><td>Storage format · global data · cannot measure distance directly</td></tr>
+          <tr><td class="mono-wrap">PCS (Projected)</td><td>Meters or feet (linear)</td><td>Analysis · distance/area measurement · flat surface</td></tr>
+          <tr><td class="mono">State Plane</td><td>Feet (US)</td><td>County/state-level precision work · surveying · cadastral</td></tr>
+          <tr><td class="mono">UTM</td><td>Meters</td><td>Regional mapping · 6° wide zones · WA = 10 &amp; 11</td></tr>
+          <tr><td class="mono">Web Mercator</td><td>Meters</td><td>Web basemaps only · distorts area · NOT for analysis</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">North America coordinate check</div>
+        Longitude must be <strong>NEGATIVE</strong> (−60° to −170°) = west of prime meridian<br>
+        Latitude must be <strong>POSITIVE</strong> (+15° to +85°) = north of equator<br>
+        Positive longitude = eastern hemisphere = NOT North America
+      </div>
+      <div class="callout">
+        <div class="callout-title">.prj file WKT check</div>
+        GEOGCS = Geographic Coordinate System (degrees) &nbsp;|&nbsp; PROJCS = Projected Coordinate System (linear units)<br>
+        No .prj file = unknown coordinate system — do not assume WGS 84
+      </div>
+    </div>
+  </details>
+
+  <!-- SELECT ALL THAT APPLY STRATEGY -->
+  <details>
+    <summary><span class="summary-emoji">✅</span> Select All That Apply — Test Strategy</summary>
+    <div class="section-body">
+      <div class="rule-block">
+        <div class="rule-title">The habit to build</div>
+        Treat every option as an <strong>independent true/false question.</strong> Don't look for THE answer — evaluate each option on its own. Every option that is independently true must be selected. Never stop early because you think you have enough.
+      </div>
+      <div class="callout">
+        <div class="callout-title">Red flag words — almost always WRONG</div>
+        "always" · "never" · "only" · "completely replaced" · "eliminates the need for" · "cannot be used with"<br>
+        Absolute statements are wrong ~80% of the time on this exam.
+      </div>
+      <div class="callout">
+        <div class="callout-title">Common traps</div>
+        • Topology increases positional accuracy ❌ — it enforces relationships, not precision<br>
+        • GeoJSON supports multiple coordinate systems ❌ — WGS 84 only<br>
+        • VGI is always less accurate than professional data ❌ — "always" = red flag<br>
+        • Waterfall = iterative cycles ❌ — that's Agile<br>
+        • Natural Breaks is comparable across maps ❌ — recalculates each time
+      </div>
+    </div>
+  </details>
+
+  <div class="section-label" style="margin-top:3rem;">
+    <span>GISCI Geospatial Core Technical Knowledge · 150 questions · Passing 730/1000</span>
+    <a href="/geospatial.html">← Geospatial</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+    </div>
+    <p class="footer-copy">© 2026 Brooks Groves</p>
+  </div>
+</footer>
+
+<script>
+  // Keyboard shortcuts: 'e' expand all, 'c' collapse all
+  document.addEventListener('keydown', e => {
+    // Ignore when typing in inputs
+    const t = e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.key === 'e' || e.key === 'E') document.querySelectorAll('details').forEach(d => d.open = true);
+    if (e.key === 'c' || e.key === 'C') document.querySelectorAll('details').forEach(d => d.open = false);
+  });
+</script>
+
+</body>
+</html>
