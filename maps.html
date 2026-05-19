@@ -9,7 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900&family=DM+Mono:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
   <style>
     :root {
       --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
@@ -81,6 +84,26 @@
       .map-grid { grid-template-columns:1fr; }
       #map { height:420px; }
     }
+
+    /* CUSTOM GEOCACHE CLUSTER STYLING — overrides Leaflet.markercluster defaults */
+    .geo-cluster { background:transparent; border:none; }
+    .geo-cluster .cluster-inner {
+      width:100%; height:100%; border-radius:50%;
+      background:rgba(200,146,42,0.85); /* gold w/ transparency */
+      border:2px solid var(--ink);
+      color:var(--ink);
+      display:flex; align-items:center; justify-content:center;
+      font-family:'DM Mono',monospace; font-weight:500;
+      box-shadow:0 2px 6px rgba(0,0,0,0.18);
+      transition:transform 0.15s, background 0.15s;
+    }
+    .geo-cluster:hover .cluster-inner { transform:scale(1.08); background:rgba(200,146,42,1); }
+    .geo-cluster .cluster-small  { font-size:0.7rem; }
+    .geo-cluster .cluster-medium { font-size:0.85rem; background:rgba(139,58,42,0.85); color:var(--white); }
+    .geo-cluster .cluster-large  { font-size:0.95rem; background:rgba(28,26,22,0.92); color:var(--gold); }
+    .leaflet-cluster-anim .leaflet-marker-icon, .leaflet-cluster-anim .leaflet-marker-shadow {
+      transition: transform 0.2s ease-out, opacity 0.2s ease-in;
+    }
   </style>
 </head>
 <body>
@@ -103,7 +126,7 @@
   <!-- LAYER TOGGLES -->
   <div class="layer-bar">
     <button class="layer-btn active" onclick="toggleLayer('lived', this)">🏠 Places Lived</button>
-    <button class="layer-btn" onclick="toggleLayer('geocaches', this)">📍 Geocaches (1,174)</button>
+    <button class="layer-btn" onclick="toggleLayer('geocaches', this)">📍 Geocaches (1,178)</button>
     <button class="layer-btn" onclick="toggleLayer('travel', this)">🌍 Countries Visited</button>
     <button class="layer-btn" onclick="toggleLayer('races', this)" disabled title="Coming soon" style="opacity:0.4;cursor:not-allowed;">🏃 Races</button>
     <button class="layer-btn" onclick="toggleLayer('hikes', this)">🥾 Hikes</button>
@@ -499,20 +522,33 @@ document.querySelector('.coming-soon-panel').innerHTML +=
 // =============================================
 // GEOCACHE LAYER
 // =============================================
-const geocacheLayer = L.layerGroup();
+const geocacheLayer = L.markerClusterGroup({
+  // Cluster bubble theme — match parchment/gold site palette
+  iconCreateFunction: function(cluster) {
+    const count = cluster.getChildCount();
+    // Size classes scale with count for visual hierarchy at zoom-out
+    let sizeClass = 'small';
+    let dim = 36;
+    if (count >= 100) { sizeClass = 'large'; dim = 56; }
+    else if (count >= 20) { sizeClass = 'medium'; dim = 46; }
+    return L.divIcon({
+      html: `<div class="cluster-inner cluster-${sizeClass}"><span>${count}</span></div>`,
+      className: 'geo-cluster',
+      iconSize: L.point(dim, dim)
+    });
+  },
+  showCoverageOnHover: false,        // skip the convex hull on hover, keeps it visually clean
+  spiderfyOnMaxZoom: true,           // when zoomed in fully, splay overlapping markers
+  disableClusteringAtZoom: 14,       // above this zoom level, show individual markers
+  maxClusterRadius: 60,              // px — distance markers cluster within
+  chunkedLoading: true               // load markers in chunks, prevents UI freeze with 1000+ records
+});
 layers.geocaches = geocacheLayer;
 
 // Load geocache data
 fetch('/data/geocaches.json?t=' + Date.now())
   .then(r => r.json())
   .then(data => {
-    // Build clustered markers
-    const byType = {};
-    data.forEach(c => {
-      if (!byType[c.t]) byType[c.t] = [];
-      byType[c.t].push(c);
-    });
-
     data.forEach(c => {
       const color = c.t === 'Traditional Cache' ? '#22a722'
         : c.t === 'Virtual Cache' ? '#888'
