@@ -429,12 +429,13 @@ const COUNTRIES = [
   { name:'Conch Republic', flag:'🦞', lat:24.5551, lng:-81.7800, wiki:'https://en.wikipedia.org/wiki/Conch_Republic', note:'Not internationally recognized', airport:false },
   { name:'Cascadia', flag:'🌲', lat:47.5, lng:-121.5, wiki:'https://en.wikipedia.org/wiki/Cascadia_(independence_movement)', note:'Not internationally recognized', airport:false },
   { name:'Jefferson', flag:'⛏️', lat:41.5, lng:-122.5, wiki:'https://en.wikipedia.org/wiki/State_of_Jefferson', note:'Not internationally recognized', airport:false },
+  { name:'Kingdom of Hawaii', flag:'🏝️', lat:19.6, lng:-155.5, wiki:'https://en.wikipedia.org/wiki/Hawaiian_Kingdom', note:'Not internationally recognized', airport:false },
 ];
 
 const travelLayer = L.layerGroup();
 layers.travel = travelLayer;
 
-const FUN = ['Conch Republic','Cascadia','Jefferson'];
+const FUN = ['Conch Republic','Cascadia','Jefferson','Kingdom of Hawaii'];
 COUNTRIES.forEach(c => {
   // Color by type:
   // gold = visited, grey = airport only, blue = home (USA),
@@ -473,7 +474,7 @@ COUNTRIES.forEach(c => {
 });
 
 // Stats note in coming-soon panel
-const FUN_NAMES = ['Conch Republic','Cascadia','Jefferson'];
+const FUN_NAMES = ['Conch Republic','Cascadia','Jefferson','Kingdom of Hawaii'];
 const visitedCount = COUNTRIES.filter(c => !c.airport && !FUN_NAMES.includes(c.name)).length;
 const airportCount = COUNTRIES.filter(c => c.airport).length;
 document.querySelector('.coming-soon-panel').innerHTML +=
@@ -619,6 +620,8 @@ const PARKS = [
   { name: 'Dry Tortugas National Park', lat: 24.6285, lng: -82.8733, state: 'Florida', year: '2025', desc: 'Fort Jefferson on a coral island 70 miles west of Key West. Ferry or seaplane only. Sea turtle nesting, frigatebirds, the most remote park in the lower 48.', wiki: 'https://en.wikipedia.org/wiki/Dry_Tortugas_National_Park' },
   // USA — Alaska
   { name: 'Glacier Bay National Park', lat: 58.6658, lng: -136.9000, state: 'Alaska', year: null, desc: 'Tidewater glaciers calving into the sea. UNESCO World Heritage Site. Humpback whales, sea otters, and 200 years of post-glacial succession.', wiki: 'https://en.wikipedia.org/wiki/Glacier_Bay_National_Park_and_Preserve' },
+  // USA — Hawaiʻi
+  { name: 'Hawaiʻi Volcanoes National Park', lat: 19.4194, lng: -155.2885, state: 'Hawaiʻi', year: '2026', desc: 'Kīlauea and Mauna Loa — two of the most active volcanoes on earth. Watched Episode 47 fountain at 650 ft from Devastation Trail on May 14, 2026. Halemaʻumaʻu, Chain of Craters Road, the pahoehoe coastline. Pele lives here.', wiki: 'https://en.wikipedia.org/wiki/Hawaii_Volcanoes_National_Park' },
   // New Zealand
   { name: 'Abel Tasman National Park', lat: -40.9100, lng: 172.9700, state: 'New Zealand', year: null, desc: 'Golden sand beaches and coastal forest on the northern tip of the South Island. Kayaking, the Abel Tasman Coast Track.', wiki: 'https://en.wikipedia.org/wiki/Abel_Tasman_National_Park' },
   { name: 'Aoraki / Mount Cook National Park', lat: -43.7350, lng: 170.0970, state: 'New Zealand', year: null, desc: 'Highest peak in New Zealand at 3,724m. Tasman Glacier. Sir Edmund Hillary trained here before Everest.', wiki: 'https://en.wikipedia.org/wiki/Aoraki_/_Mount_Cook_National_Park' },
