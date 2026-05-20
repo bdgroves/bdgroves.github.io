@@ -27,16 +27,11 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests mwparserfromhell
+        run: pip install requests
 
       - name: Determine which races to update
         id: which
         run: |
-          # Workflow can be triggered manually with a race choice, or scheduled (does all active races)
-          # Active windows:
-          #   Giro: May 8–31
-          #   TDF:  Jul 4–26
-          # Outside those windows, the script will no-op for that race
           INPUT="${{ github.event.inputs.race }}"
           if [ -z "$INPUT" ]; then
             INPUT="both"
@@ -52,29 +47,34 @@ jobs:
           """
           Fetch stage winners + GC from Wikipedia for cycling Grand Tours.
 
-          Why Wikipedia:
-          - Free, public API (en.wikipedia.org/w/api.php) — no rate limiting issues
-          - Wikipedia welcomes bot access; that's why the API exists
-          - Updated by editors within hours of each stage finish
-          - Stable URL pattern for "Stage 1 to Stage 11" / "Stage 12 to Stage 21" articles
-          - Standardized wikitable format (Rank/Rider/Team/Time) for both stage and GC results
+          Wikipedia uses cycling-specific templates inside the Stage sections:
+
+              {{cyclingresult start|title=Stage N Result<ref ...>}}
+              {{cyclingresult|1|[[Rider Name]]|NAT|{{UCI team code|CODE|2026}}|TIME}}
+              {{cyclingresult|2|...}}
+              ...
+              {{cyclingresult end}}
+
+          And the same for "General classification after Stage N",
+          "Points classification after Stage N", etc.
 
           Strategy:
-          - Only update DYNAMIC fields (winner, winner_team, gc, jersey leaders, last_updated)
-          - PRESERVE manually-written fields (desc, key_climbs, km, elevation, type)
-          - Skip races outside their active window (don't pull every day in October)
+          1. Fetch Stage-1-to-11 and Stage-12-to-21 articles
+          2. For each ==Stage N== section, find the cyclingresult blocks within
+          3. The block whose title starts with "Stage N Result" gives the winner
+          4. Track the latest GC / points / mountains / young-rider tables across all stages
+          5. Merge into existing JSON, preserving manual fields
           """
           import json
           import os
           import re
           import sys
           import time
-          from datetime import date, datetime, timezone
+          from datetime import date, datetime, timedelta, timezone
 
-          import mwparserfromhell
           import requests
 
-          # Identify ourselves clearly per Wikimedia's bot etiquette
+          # Polite UA per Wikimedia bot etiquette
           USER_AGENT = (
               'BrooksGrovesSiteBot/1.0 '
               '(https://github.com/bdgroves/bdgroves.github.io; '
@@ -105,24 +105,44 @@ jobs:
               },
           }
 
-          def should_run(race_key):
-              """Decide if we should update this race today."""
-              if RACE_INPUT != 'both' and RACE_INPUT != race_key:
-                  return False, f"skipped (input requested: {RACE_INPUT})"
-              cfg = RACES[race_key]
-              # Allow 1-day grace before/after race window for last-minute updates
-              start = cfg['window_start']
-              end = cfg['window_end']
-              # Subtract/add one day of grace
-              from datetime import timedelta
-              if today < start - timedelta(days=1):
-                  return False, f"outside window (race starts {start})"
-              if today > end + timedelta(days=2):
-                  return False, f"outside window (race ended {end})"
-              return True, "active"
+          # UCI team code -> display name. Codes are stable across the season.
+          # If a code isn't here, we fall back to the bare code (so we'll see it
+          # in the output and can add it to the map next run).
+          TEAM_CODE_MAP = {
+              # Men's WorldTour 2026
+              'TBV':     'Bahrain Victorious',
+              'TVL men': 'Visma–Lease a Bike',
+              'NCI':     'Netcompany INEOS',
+              'DCT':     'Decathlon CMA CGM Team',
+              'RBH':     'Red Bull–Bora–Hansgrohe',
+              'JAY men': 'Team Jayco AlUla',
+              'TUD':     'Tudor Pro Cycling Team',
+              'LTK men': 'Lidl–Trek',
+              'UEX':     'UAE–XRG',
+              'SOQ':     'Soudal Quick-Step',
+              'PQT':     'Pinarello Q36.5 Pro Cycling Team',
+              'APT':     'Alpecin–Deceuninck',
+              'MOV men': 'Movistar Team',
+              'URR':     'Unibet Rose Rockets',
+              'GFC':     'Groupama–FDJ',
+              'XDS':     'XDS Astana Team',
+              'EFE':     'EF Education–EasyPost',
+              'COF':     'Cofidis',
+              'IPT':     'Israel–Premier Tech',
+              'ARK':     'Arkéa–B&B Hotels',
+              'INW':     'Intermarché–Wanty',
+              # ProTeams / wildcards that often appear in Giro/TDF
+              'TPC':     'Team Polti VisitMalta',
+              'VBK':     'Bingoal WB',
+              'TBL':     'Tropicana–Loto–Caja Rural',
+              'PCT':     'Picnic PostNL',
+          }
+
+          # ─────────────────────────────────────────────────────────────────
+          # Wikipedia API
+          # ─────────────────────────────────────────────────────────────────
 
           def fetch_wikipedia_article(title, retries=3):
-              """Fetch the parsed wikitext of an article via Wikipedia's official API."""
               url = "https://en.wikipedia.org/w/api.php"
               params = {
                   'action': 'parse',
@@ -132,19 +152,16 @@ jobs:
                   'redirects': 1,
               }
               headers = {'User-Agent': USER_AGENT}
-
               for attempt in range(retries):
                   try:
                       r = requests.get(url, params=params, headers=headers, timeout=30)
                       r.raise_for_status()
                       data = r.json()
                       if 'error' in data:
-                          # Wikipedia returns a structured error if e.g. article doesn't exist
-                          err = data['error']
-                          if err.get('code') == 'missingtitle':
+                          if data['error'].get('code') == 'missingtitle':
                               print(f"  [WP] article not yet created: {title}")
                               return None
-                          raise RuntimeError(f"Wikipedia API error: {err}")
+                          raise RuntimeError(f"Wikipedia API error: {data['error']}")
                       return data['parse']['wikitext']['*']
                   except Exception as e:
                       print(f"  [WP] attempt {attempt+1}/{retries} failed for {title}: {e}")
@@ -152,113 +169,170 @@ jobs:
                           time.sleep(5 * (attempt + 1))
               return None
 
-          def clean_wiki_text(s):
-              """Strip wiki markup [[X|Y]] -> Y, {{flagicon|XX}} -> '', etc."""
-              if s is None:
-                  return ''
-              # Parse with mwparserfromhell which handles templates/links cleanly
-              parsed = mwparserfromhell.parse(s)
-              # strip_code removes templates, links return display text, formatting goes away
-              text = parsed.strip_code(normalize=True, collapse=True)
-              text = re.sub(r'\s+', ' ', text).strip()
-              # Remove (NAT) nationality codes — e.g. "Jonas Vingegaard (DEN)" -> "Jonas Vingegaard"
-              text = re.sub(r'\s*\([A-Z]{3}\)\s*$', '', text)
-              return text
+          # ─────────────────────────────────────────────────────────────────
+          # Template parsing (brace-depth aware)
+          # ─────────────────────────────────────────────────────────────────
 
-          def extract_tables_after_heading(wikitext, heading_pattern):
-              """
-              Find the FIRST wikitable that comes after a heading matching heading_pattern.
-              heading_pattern is a regex string applied to section headings.
-              Returns the wikitable text or None.
-              """
-              # Wikipedia stage tables typically appear right after a bold-text label OR
-              # a section heading like "Stage 1 Result" or "General classification after Stage 1"
-              # In wikitext these look like: '''Stage 1 Result''' or ;Stage 1 Result
-              # followed by {|class="wikitable" ... |}
+          def find_template_end(text, start_idx):
+              """Given text[start_idx:start_idx+2]=='{{', return index just after matching '}}'.
+              Handles nested {{ }}. Returns -1 if unbalanced."""
+              if text[start_idx:start_idx+2] != '{{':
+                  return -1
+              depth = 0
+              i = start_idx
+              while i < len(text):
+                  if text[i:i+2] == '{{':
+                      depth += 1
+                      i += 2
+                  elif text[i:i+2] == '}}':
+                      depth -= 1
+                      i += 2
+                      if depth == 0:
+                          return i
+                  else:
+                      i += 1
+              return -1
 
-              # Find heading position
-              pat = re.compile(heading_pattern, re.IGNORECASE)
-              m = pat.search(wikitext)
-              if not m:
-                  return None
-              after = wikitext[m.end():]
-              # Now find first wikitable in the next 8000 chars (tables are typically right after)
-              table_match = re.search(r'\{\|[^\n]*\n(.+?)\n\|\}', after[:8000], re.DOTALL)
-              if not table_match:
-                  return None
-              return table_match.group(0)
+          def split_template_args(template_body):
+              """Split template body on | respecting balanced [[ ]] and {{ }}."""
+              args = []
+              current = []
+              depth_square = 0
+              depth_curly = 0
+              i = 0
+              while i < len(template_body):
+                  c2 = template_body[i:i+2]
+                  if c2 == '[[':
+                      depth_square += 1
+                      current.append(c2); i += 2; continue
+                  if c2 == ']]':
+                      depth_square -= 1
+                      current.append(c2); i += 2; continue
+                  if c2 == '{{':
+                      depth_curly += 1
+                      current.append(c2); i += 2; continue
+                  if c2 == '}}':
+                      depth_curly -= 1
+                      current.append(c2); i += 2; continue
+                  c = template_body[i]
+                  if c == '|' and depth_square == 0 and depth_curly == 0:
+                      args.append(''.join(current))
+                      current = []
+                      i += 1; continue
+                  current.append(c)
+                  i += 1
+              if current:
+                  args.append(''.join(current))
+              return args
 
-          def parse_results_table(table_text):
-              """
-              Parse a wikitable into a list of rows. Each row is a dict with keys we care about.
-              Returns list of {'rank', 'rider', 'team', 'time'} dicts.
-              """
-              if not table_text:
-                  return []
+          def clean_title(s):
+              s = re.sub(r'<ref[^>]*?/>', '', s)
+              s = re.sub(r'<ref[^>]*>.*?</ref>', '', s, flags=re.DOTALL)
+              return s.strip()
 
-              rows = []
-              # Split table on row separators "|-"
-              # Wikipedia table cells start with | (data) or ! (header)
-              # Multi-cell rows use || as separator
-              raw_rows = re.split(r'\n\|-\s*\n', table_text)
+          def clean_rider(s):
+              s = s.strip()
+              # Strip optional flag template prefix: {{flagicon|XX}} [[Rider]]
+              s = re.sub(r'^\{\{flagicon\|[^}]+\}\}\s*', '', s)
+              m = re.match(r'^\[\[([^\]|]+)\|([^\]]+)\]\]$', s)
+              if m:
+                  return m.group(2).strip()
+              m = re.match(r'^\[\[([^\]]+)\]\]$', s)
+              if m:
+                  name = m.group(1)
+                  name = re.sub(r'\s*\([^)]+\)\s*$', '', name)
+                  return name.strip()
+              return s
 
-              for raw in raw_rows:
-                  # Strip table open/close
-                  raw = raw.strip()
-                  if not raw or raw.startswith('{|') or raw == '|}':
+          def parse_team(s):
+              """Parse {{UCI team code|XXX|2026}} -> 'XXX' (looked up in TEAM_CODE_MAP)."""
+              s = s.strip()
+              m = re.match(r'\{\{UCI team code\|([^|}]+)', s)
+              if m:
+                  code = m.group(1).strip()
+                  return TEAM_CODE_MAP.get(code, code)
+              # Sometimes raw [[Team]] link
+              m = re.match(r'^\[\[([^\]|]+)(?:\|[^\]]+)?\]\]$', s)
+              if m:
+                  return m.group(1).strip()
+              return s
+
+          # ─────────────────────────────────────────────────────────────────
+          # Result block extraction
+          # ─────────────────────────────────────────────────────────────────
+
+          def extract_result_blocks(wikitext):
+              """Find all {{cyclingresult start|title=X}}...{{cyclingresult end}} blocks.
+              Returns list of (title, [rows])."""
+              blocks = []
+              i = 0
+              while i < len(wikitext):
+                  idx = wikitext.find('{{cyclingresult start', i)
+                  if idx < 0:
+                      break
+                  start_end = find_template_end(wikitext, idx)
+                  if start_end < 0:
+                      break
+                  start_body = wikitext[idx+2:start_end-2]
+                  m = re.match(r'cyclingresult start\s*\|\s*title=', start_body)
+                  if not m:
+                      i = start_end
                       continue
+                  title = clean_title(start_body[m.end():])
 
-                  # Header rows start with ! — skip
-                  if raw.startswith('!'):
+                  end_idx = wikitext.find('{{cyclingresult end}}', start_end)
+                  if end_idx < 0:
+                      i = start_end
                       continue
+                  body = wikitext[start_end:end_idx]
 
-                  # Extract cells. Cells can be on separate lines (each starts with |)
-                  # or on the same line separated by ||
-                  cells = []
-                  for line in raw.split('\n'):
-                      line = line.strip()
-                      if not line or line.startswith('|}'):
-                          continue
-                      if line.startswith('!'):
-                          continue
-                      # Strip leading | and split on || for multi-cell lines
-                      if line.startswith('|'):
-                          line = line[1:].lstrip()
-                      parts = line.split('||')
-                      for p in parts:
-                          cells.append(p.strip())
+                  rows = []
+                  j = 0
+                  while j < len(body):
+                      t_idx = body.find('{{cyclingresult|', j)
+                      if t_idx < 0:
+                          break
+                      t_end = find_template_end(body, t_idx)
+                      if t_end < 0:
+                          break
+                      template_body = body[t_idx+2:t_end-2]
+                      parts = split_template_args(template_body)
+                      if len(parts) >= 6:
+                          try:
+                              rank = int(parts[1].strip())
+                              rider = clean_rider(parts[2])
+                              nation = parts[3].strip()
+                              team = parse_team(parts[4])
+                              time_str = parts[5].strip()
+                              # Strip jersey templates from time if present
+                              time_str = re.sub(r'\{\{cjersey[^}]+\}\}', '', time_str).strip()
+                              rows.append({
+                                  'rank': rank, 'rider': rider, 'nation': nation,
+                                  'team': team, 'time': time_str,
+                              })
+                          except ValueError:
+                              pass
+                      j = t_end
+                  if rows:
+                      blocks.append((title, rows))
+                  i = end_idx + len('{{cyclingresult end}}')
+              return blocks
 
-                  if len(cells) < 3:
-                      continue
+          # ─────────────────────────────────────────────────────────────────
+          # Race processing
+          # ─────────────────────────────────────────────────────────────────
 
-                  # Heuristics:
-                  #   Position 0 is usually rank (a number or +)
-                  #   Position 1 is rider name (may have flag template + (NAT))
-                  #   Position 2 is team
-                  #   Position 3 (if present) is time
-                  rank_raw = clean_wiki_text(cells[0])
-                  rider = clean_wiki_text(cells[1])
-                  team = clean_wiki_text(cells[2])
-                  time_str = clean_wiki_text(cells[3]) if len(cells) > 3 else ''
-
-                  # Skip if rank doesn't look like a number (header rows that slipped through)
-                  if not re.match(r'^\d+$', rank_raw):
-                      continue
-
-                  if not rider:
-                      continue
-
-                  rows.append({
-                      'rank':  int(rank_raw),
-                      'rider': rider,
-                      'team':  team,
-                      'time':  time_str,
-                  })
-
-              return rows
+          def should_run(race_key):
+              if RACE_INPUT != 'both' and RACE_INPUT != race_key:
+                  return False, f"skipped (input requested: {RACE_INPUT})"
+              cfg = RACES[race_key]
+              if today < cfg['window_start'] - timedelta(days=1):
+                  return False, f"outside window (race starts {cfg['window_start']})"
+              if today > cfg['window_end'] + timedelta(days=2):
+                  return False, f"outside window (race ended {cfg['window_end']})"
+              return True, "active"
 
           def parse_race(race_key):
-              """Fetch the Wikipedia articles for a race and return updated stage winners + GC."""
               cfg = RACES[race_key]
               all_wikitext = ''
               for title in cfg['wiki_articles']:
@@ -266,82 +340,81 @@ jobs:
                   text = fetch_wikipedia_article(title)
                   if text:
                       all_wikitext += '\n\n' + text
-                      time.sleep(2)   # polite pacing between requests
+                      time.sleep(2)
               if not all_wikitext:
                   return None
 
-              # === DIAGNOSTIC OUTPUT ===
-              # Dump the raw wikitext of specific stage sections so we see the actual format
-              print(f"\n  [diag] total wikitext: {len(all_wikitext):,} chars")
-              print(f"  [diag] wikitables ({{|) found: {all_wikitext.count('{|')}")
+              blocks = extract_result_blocks(all_wikitext)
+              print(f"  [parse] found {len(blocks)} result blocks")
 
-              # Show the "Classification standings" section (rollup) — first 3000 chars
-              cs_match = re.search(r'==\s*Classification standings\s*==(.+?)(?=\n==[^=]|\Z)',
-                                    all_wikitext, re.DOTALL)
-              if cs_match:
-                  cs_text = cs_match.group(1)
-                  print(f"\n  [diag] === 'Classification standings' section ({len(cs_text):,} chars) ===")
-                  for line in cs_text[:3000].split('\n')[:80]:
-                      print(f"    | {line}")
-
-              # Show what a single Stage section actually contains — pick Stage 7 (Vingegaard's Blockhaus)
-              for stage_to_dump in (7, 10):
-                  stage_match = re.search(
-                      rf'==\s*Stage {stage_to_dump}\s*==(.+?)(?=\n==[^=]|\Z)',
-                      all_wikitext, re.DOTALL
-                  )
-                  if stage_match:
-                      stage_text = stage_match.group(1)
-                      print(f"\n  [diag] === 'Stage {stage_to_dump}' section ({len(stage_text):,} chars) ===")
-                      for line in stage_text[:2500].split('\n')[:60]:
-                          print(f"    | {line}")
-              # === END DIAGNOSTIC ===
-
-              # Find each completed stage's result table + the latest GC
-              winners = {}      # stage_num -> {'winner', 'winner_team', 'winner_time'}
-              latest_gc = None  # rows from the most recent GC table found
+              winners = {}        # stage_num -> {winner, winner_team}
+              latest_gc = None
               latest_gc_stage = 0
               latest_points = None
               latest_kom = None
               latest_youth = None
+              # Track which stage the latest jerseys came from
+              latest_points_stage = 0
+              latest_kom_stage = 0
+              latest_youth_stage = 0
 
-              # Look for Stage N Result and General classification after Stage N
-              for stage_num in range(1, 22):
-                  # Stage results header — Wikipedia varies: bold ''' / definition list ;
-                  # / section heading ===. Just match the text with \b boundaries.
-                  # \b on both sides prevents "Stage 1" from matching "Stage 10".
-                  stage_pat = rf"\bStage\s+{stage_num}\s+Result\b"
-                  table = extract_tables_after_heading(all_wikitext, stage_pat)
-                  rows = parse_results_table(table)
-                  if rows:
-                      winner = rows[0]
-                      winners[stage_num] = {
-                          'winner':      winner['rider'],
-                          'winner_team': winner['team'],
+              for title, rows in blocks:
+                  # Stage N Result
+                  m = re.match(r'Stage\s+(\d+)\s+Result\b', title, re.IGNORECASE)
+                  if m and rows:
+                      n = int(m.group(1))
+                      w = rows[0]
+                      winners[n] = {
+                          'winner':      w['rider'],
+                          'winner_team': w['team'],
                       }
-                      if winner['time']:
-                          winners[stage_num]['winner_time'] = winner['time']
+                      print(f"  [parse] Stage {n} winner: {w['rider']} ({w['team']})")
+                      continue
 
-                  # GC table
-                  gc_pat = rf"\bGeneral\s+classification\s+after\s+Stage\s+{stage_num}\b"
-                  gc_table = extract_tables_after_heading(all_wikitext, gc_pat)
-                  gc_rows = parse_results_table(gc_table)
-                  if gc_rows and stage_num > latest_gc_stage:
-                      latest_gc = gc_rows
-                      latest_gc_stage = stage_num
+                  # General classification after Stage N
+                  m = re.match(r'General\s+classification\s+after\s+Stage\s+(\d+)\b',
+                               title, re.IGNORECASE)
+                  if m and rows:
+                      n = int(m.group(1))
+                      if n > latest_gc_stage:
+                          latest_gc = rows
+                          latest_gc_stage = n
+                      continue
 
-                  # Other classifications (after this stage)
-                  for jersey_pat, jersey_key in [
-                      (rf"\bPoints\s+classification\s+after\s+Stage\s+{stage_num}\b", 'points'),
-                      (rf"\bMountains\s+classification\s+after\s+Stage\s+{stage_num}\b", 'kom'),
-                      (rf"\bYoung\s+rider\s+classification\s+after\s+Stage\s+{stage_num}\b", 'youth'),
-                  ]:
-                      jt = extract_tables_after_heading(all_wikitext, jersey_pat)
-                      jr = parse_results_table(jt)
-                      if jr:
-                          if jersey_key == 'points': latest_points = jr[0]
-                          elif jersey_key == 'kom':    latest_kom = jr[0]
-                          elif jersey_key == 'youth':  latest_youth = jr[0]
+                  # Points classification after Stage N
+                  m = re.match(r'Points\s+classification\s+after\s+Stage\s+(\d+)\b',
+                               title, re.IGNORECASE)
+                  if m and rows:
+                      n = int(m.group(1))
+                      if n > latest_points_stage:
+                          latest_points = rows[0]
+                          latest_points_stage = n
+                      continue
+
+                  # Mountains classification after Stage N
+                  m = re.match(r'Mountains\s+classification\s+after\s+Stage\s+(\d+)\b',
+                               title, re.IGNORECASE)
+                  if m and rows:
+                      n = int(m.group(1))
+                      if n > latest_kom_stage:
+                          latest_kom = rows[0]
+                          latest_kom_stage = n
+                      continue
+
+                  # Young rider classification after Stage N
+                  m = re.match(r'Young\s+rider\s+classification\s+after\s+Stage\s+(\d+)\b',
+                               title, re.IGNORECASE)
+                  if m and rows:
+                      n = int(m.group(1))
+                      if n > latest_youth_stage:
+                          latest_youth = rows[0]
+                          latest_youth_stage = n
+                      continue
+
+              print(f"  [parse] latest GC: after Stage {latest_gc_stage} "
+                    f"({len(latest_gc) if latest_gc else 0} riders)")
+              print(f"  [parse] latest points/KOM/youth stages: "
+                    f"{latest_points_stage}/{latest_kom_stage}/{latest_youth_stage}")
 
               return {
                   'winners': winners,
@@ -353,21 +426,17 @@ jobs:
               }
 
           def update_json(race_key, parsed):
-              """Merge parsed Wikipedia data into the existing JSON, preserving manual fields."""
               cfg = RACES[race_key]
               json_path = cfg['json_path']
 
               if not os.path.exists(json_path):
-                  print(f"  [{race_key}] ERROR: {json_path} doesn't exist — won't create from scratch")
+                  print(f"  [{race_key}] ERROR: {json_path} doesn't exist")
                   return False
 
               with open(json_path, 'r', encoding='utf-8') as f:
                   doc = json.load(f)
 
               changes = 0
-
-              # Merge stage winners — only set if Wikipedia has them AND we don't already
-              # (or if they differ, which would be a correction)
               for stage in doc.get('stages', []):
                   num = stage.get('num')
                   if num in parsed['winners']:
@@ -379,10 +448,9 @@ jobs:
                           stage['winner_team'] = w['winner_team']
                           changes += 1
 
-              # Replace GC if we have a fresh one
               if parsed['gc']:
                   new_gc = []
-                  for row in parsed['gc'][:10]:   # top 10
+                  for row in parsed['gc'][:10]:
                       gap = 'Leader' if row['rank'] == 1 else (row['time'] or '+0:00')
                       new_gc.append({
                           'name': row['rider'],
@@ -393,29 +461,27 @@ jobs:
                       doc['gc'] = new_gc
                       changes += 1
 
-              # Jersey leaders
               for key in ('points_leader', 'kom_leader', 'young_rider'):
                   v = parsed[key]
                   if v and doc.get(key) != v:
                       doc[key] = v
                       changes += 1
 
-              # Always bump last_updated even if no changes (so we know the bot ran)
-              doc['last_updated'] = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+              # Only write file (and bump last_updated) if real data changed.
+              # That way we don't make noise commits twice a day with just a timestamp bump.
+              if changes > 0:
+                  doc['last_updated'] = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+                  with open(json_path, 'w', encoding='utf-8') as f:
+                      json.dump(doc, f, ensure_ascii=False, indent=2)
 
-              with open(json_path, 'w', encoding='utf-8') as f:
-                  json.dump(doc, f, ensure_ascii=False, indent=2)
-
-              print(f"  [{race_key}] updated {json_path} — {changes} field changes, "
-                    f"latest stage with GC: {parsed['latest_stage']}")
+              print(f"  [{race_key}] {changes} field changes, "
+                    f"latest GC after Stage {parsed['latest_stage']}")
               return changes > 0
 
-          # ============================================================
+          # ──────────────────────────────────────────────────────────
           # MAIN
-          # ============================================================
-          any_changes = False
+          # ──────────────────────────────────────────────────────────
           any_run = False
-
           for race_key in RACES:
               go, reason = should_run(race_key)
               print(f"\n=== {race_key.upper()} === {reason}")
@@ -424,16 +490,12 @@ jobs:
               any_run = True
               parsed = parse_race(race_key)
               if parsed is None:
-                  print(f"  [{race_key}] no data fetched — skipping update")
+                  print(f"  [{race_key}] no data fetched")
                   continue
-              if update_json(race_key, parsed):
-                  any_changes = True
+              update_json(race_key, parsed)
 
           if not any_run:
               print("\nNo races in active window. Workflow no-op.")
-              sys.exit(0)
-
-          # Exit 0 either way; the commit step decides what to do
           PYEOF
 
       - name: Commit data
