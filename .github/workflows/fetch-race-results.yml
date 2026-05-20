@@ -270,6 +270,34 @@ jobs:
               if not all_wikitext:
                   return None
 
+              # === DIAGNOSTIC OUTPUT ===
+              # Print stats about what we got so we can debug parsing failures
+              print(f"\n  [diag] total wikitext: {len(all_wikitext):,} chars")
+              # How many wikitables exist?
+              n_tables = all_wikitext.count('{|')
+              print(f"  [diag] wikitables ({{|) found: {n_tables}")
+              # What section headings exist?
+              h2_headings = re.findall(r'^==\s*([^=\n]+?)\s*==\s*$', all_wikitext, re.MULTILINE)
+              print(f"  [diag] section headings (==): {len(h2_headings)}")
+              for h in h2_headings[:30]:
+                  print(f"    - {h}")
+              # Anything resembling stage result / GC headings?
+              result_lines = re.findall(r'^[;:\']{0,3}\s*Stage\s+\d+\s+[Rr]esult[s]?\s*[\']{0,3}\s*$', all_wikitext, re.MULTILINE)
+              print(f"  [diag] 'Stage N Result' style lines: {len(result_lines)}")
+              for r in result_lines[:5]:
+                  print(f"    - {r!r}")
+              gc_lines = re.findall(r'^[;:\']{0,3}\s*General classification[^\n]{0,80}$', all_wikitext, re.MULTILINE)
+              print(f"  [diag] 'General classification' lines: {len(gc_lines)}")
+              for g in gc_lines[:5]:
+                  print(f"    - {g!r}")
+              # First wikitable snippet so we can see actual format
+              first_table = re.search(r'\{\|.{0,800}', all_wikitext, re.DOTALL)
+              if first_table:
+                  print(f"  [diag] first wikitable preview:")
+                  for line in first_table.group(0).split('\n')[:15]:
+                      print(f"    | {line}")
+              # === END DIAGNOSTIC ===
+
               # Find each completed stage's result table + the latest GC
               winners = {}      # stage_num -> {'winner', 'winner_team', 'winner_time'}
               latest_gc = None  # rows from the most recent GC table found
