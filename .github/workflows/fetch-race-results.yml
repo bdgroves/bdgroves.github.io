@@ -1,0 +1,429 @@
+name: Fetch Race Results
+
+on:
+  schedule:
+    # Twice daily during active windows: once mid-afternoon UTC (after early-finishing stages)
+    # and once late-evening UTC (after late-finishing stages + Wikipedia editors have had time)
+    - cron: '0 17,22 * * *'
+  workflow_dispatch:
+    inputs:
+      race:
+        description: 'Which race to update (giro, tdf, or both)'
+        required: false
+        default: 'both'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests mwparserfromhell
+
+      - name: Determine which races to update
+        id: which
+        run: |
+          # Workflow can be triggered manually with a race choice, or scheduled (does all active races)
+          # Active windows:
+          #   Giro: May 8–31
+          #   TDF:  Jul 4–26
+          # Outside those windows, the script will no-op for that race
+          INPUT="${{ github.event.inputs.race }}"
+          if [ -z "$INPUT" ]; then
+            INPUT="both"
+          fi
+          echo "race=$INPUT" >> "$GITHUB_OUTPUT"
+          echo "Will process: $INPUT"
+
+      - name: Fetch race data from Wikipedia
+        env:
+          RACE_INPUT: ${{ steps.which.outputs.race }}
+        run: |
+          python3 << 'PYEOF'
+          """
+          Fetch stage winners + GC from Wikipedia for cycling Grand Tours.
+
+          Why Wikipedia:
+          - Free, public API (en.wikipedia.org/w/api.php) — no rate limiting issues
+          - Wikipedia welcomes bot access; that's why the API exists
+          - Updated by editors within hours of each stage finish
+          - Stable URL pattern for "Stage 1 to Stage 11" / "Stage 12 to Stage 21" articles
+          - Standardized wikitable format (Rank/Rider/Team/Time) for both stage and GC results
+
+          Strategy:
+          - Only update DYNAMIC fields (winner, winner_team, gc, jersey leaders, last_updated)
+          - PRESERVE manually-written fields (desc, key_climbs, km, elevation, type)
+          - Skip races outside their active window (don't pull every day in October)
+          """
+          import json
+          import os
+          import re
+          import sys
+          import time
+          from datetime import date, datetime, timezone
+
+          import mwparserfromhell
+          import requests
+
+          # Identify ourselves clearly per Wikimedia's bot etiquette
+          USER_AGENT = (
+              'BrooksGrovesSiteBot/1.0 '
+              '(https://github.com/bdgroves/bdgroves.github.io; '
+              'data sync for brooksgroves.com race pages)'
+          )
+
+          RACE_INPUT = os.environ.get('RACE_INPUT', 'both').lower()
+          today = date.today()
+
+          RACES = {
+              'giro': {
+                  'json_path': 'data/giro-2026.json',
+                  'wiki_articles': [
+                      "2026 Giro d'Italia, Stage 1 to Stage 11",
+                      "2026 Giro d'Italia, Stage 12 to Stage 21",
+                  ],
+                  'window_start': date(2026, 5, 8),
+                  'window_end':   date(2026, 5, 31),
+              },
+              'tdf': {
+                  'json_path': 'data/tdf-2026.json',
+                  'wiki_articles': [
+                      "2026 Tour de France, Stage 1 to Stage 11",
+                      "2026 Tour de France, Stage 12 to Stage 21",
+                  ],
+                  'window_start': date(2026, 7, 4),
+                  'window_end':   date(2026, 7, 26),
+              },
+          }
+
+          def should_run(race_key):
+              """Decide if we should update this race today."""
+              if RACE_INPUT != 'both' and RACE_INPUT != race_key:
+                  return False, f"skipped (input requested: {RACE_INPUT})"
+              cfg = RACES[race_key]
+              # Allow 1-day grace before/after race window for last-minute updates
+              start = cfg['window_start']
+              end = cfg['window_end']
+              # Subtract/add one day of grace
+              from datetime import timedelta
+              if today < start - timedelta(days=1):
+                  return False, f"outside window (race starts {start})"
+              if today > end + timedelta(days=2):
+                  return False, f"outside window (race ended {end})"
+              return True, "active"
+
+          def fetch_wikipedia_article(title, retries=3):
+              """Fetch the parsed wikitext of an article via Wikipedia's official API."""
+              url = "https://en.wikipedia.org/w/api.php"
+              params = {
+                  'action': 'parse',
+                  'page': title,
+                  'format': 'json',
+                  'prop': 'wikitext',
+                  'redirects': 1,
+              }
+              headers = {'User-Agent': USER_AGENT}
+
+              for attempt in range(retries):
+                  try:
+                      r = requests.get(url, params=params, headers=headers, timeout=30)
+                      r.raise_for_status()
+                      data = r.json()
+                      if 'error' in data:
+                          # Wikipedia returns a structured error if e.g. article doesn't exist
+                          err = data['error']
+                          if err.get('code') == 'missingtitle':
+                              print(f"  [WP] article not yet created: {title}")
+                              return None
+                          raise RuntimeError(f"Wikipedia API error: {err}")
+                      return data['parse']['wikitext']['*']
+                  except Exception as e:
+                      print(f"  [WP] attempt {attempt+1}/{retries} failed for {title}: {e}")
+                      if attempt < retries - 1:
+                          time.sleep(5 * (attempt + 1))
+              return None
+
+          def clean_wiki_text(s):
+              """Strip wiki markup [[X|Y]] -> Y, {{flagicon|XX}} -> '', etc."""
+              if s is None:
+                  return ''
+              # Parse with mwparserfromhell which handles templates/links cleanly
+              parsed = mwparserfromhell.parse(s)
+              # strip_code removes templates, links return display text, formatting goes away
+              text = parsed.strip_code(normalize=True, collapse=True)
+              text = re.sub(r'\s+', ' ', text).strip()
+              # Remove (NAT) nationality codes — e.g. "Jonas Vingegaard (DEN)" -> "Jonas Vingegaard"
+              text = re.sub(r'\s*\([A-Z]{3}\)\s*$', '', text)
+              return text
+
+          def extract_tables_after_heading(wikitext, heading_pattern):
+              """
+              Find the FIRST wikitable that comes after a heading matching heading_pattern.
+              heading_pattern is a regex string applied to section headings.
+              Returns the wikitable text or None.
+              """
+              # Wikipedia stage tables typically appear right after a bold-text label OR
+              # a section heading like "Stage 1 Result" or "General classification after Stage 1"
+              # In wikitext these look like: '''Stage 1 Result''' or ;Stage 1 Result
+              # followed by {|class="wikitable" ... |}
+
+              # Find heading position
+              pat = re.compile(heading_pattern, re.IGNORECASE)
+              m = pat.search(wikitext)
+              if not m:
+                  return None
+              after = wikitext[m.end():]
+              # Now find first wikitable in the next 8000 chars (tables are typically right after)
+              table_match = re.search(r'\{\|[^\n]*\n(.+?)\n\|\}', after[:8000], re.DOTALL)
+              if not table_match:
+                  return None
+              return table_match.group(0)
+
+          def parse_results_table(table_text):
+              """
+              Parse a wikitable into a list of rows. Each row is a dict with keys we care about.
+              Returns list of {'rank', 'rider', 'team', 'time'} dicts.
+              """
+              if not table_text:
+                  return []
+
+              rows = []
+              # Split table on row separators "|-"
+              # Wikipedia table cells start with | (data) or ! (header)
+              # Multi-cell rows use || as separator
+              raw_rows = re.split(r'\n\|-\s*\n', table_text)
+
+              for raw in raw_rows:
+                  # Strip table open/close
+                  raw = raw.strip()
+                  if not raw or raw.startswith('{|') or raw == '|}':
+                      continue
+
+                  # Header rows start with ! — skip
+                  if raw.startswith('!'):
+                      continue
+
+                  # Extract cells. Cells can be on separate lines (each starts with |)
+                  # or on the same line separated by ||
+                  cells = []
+                  for line in raw.split('\n'):
+                      line = line.strip()
+                      if not line or line.startswith('|}'):
+                          continue
+                      if line.startswith('!'):
+                          continue
+                      # Strip leading | and split on || for multi-cell lines
+                      if line.startswith('|'):
+                          line = line[1:].lstrip()
+                      parts = line.split('||')
+                      for p in parts:
+                          cells.append(p.strip())
+
+                  if len(cells) < 3:
+                      continue
+
+                  # Heuristics:
+                  #   Position 0 is usually rank (a number or +)
+                  #   Position 1 is rider name (may have flag template + (NAT))
+                  #   Position 2 is team
+                  #   Position 3 (if present) is time
+                  rank_raw = clean_wiki_text(cells[0])
+                  rider = clean_wiki_text(cells[1])
+                  team = clean_wiki_text(cells[2])
+                  time_str = clean_wiki_text(cells[3]) if len(cells) > 3 else ''
+
+                  # Skip if rank doesn't look like a number (header rows that slipped through)
+                  if not re.match(r'^\d+$', rank_raw):
+                      continue
+
+                  if not rider:
+                      continue
+
+                  rows.append({
+                      'rank':  int(rank_raw),
+                      'rider': rider,
+                      'team':  team,
+                      'time':  time_str,
+                  })
+
+              return rows
+
+          def parse_race(race_key):
+              """Fetch the Wikipedia articles for a race and return updated stage winners + GC."""
+              cfg = RACES[race_key]
+              all_wikitext = ''
+              for title in cfg['wiki_articles']:
+                  print(f"  [WP] fetching: {title}")
+                  text = fetch_wikipedia_article(title)
+                  if text:
+                      all_wikitext += '\n\n' + text
+                      time.sleep(2)   # polite pacing between requests
+              if not all_wikitext:
+                  return None
+
+              # Find each completed stage's result table + the latest GC
+              winners = {}      # stage_num -> {'winner', 'winner_team', 'winner_time'}
+              latest_gc = None  # rows from the most recent GC table found
+              latest_gc_stage = 0
+              latest_points = None
+              latest_kom = None
+              latest_youth = None
+
+              # Look for Stage N Result and General classification after Stage N
+              for stage_num in range(1, 22):
+                  # Stage results header — Wikipedia varies: bold ''' / definition list ;
+                  # / section heading ===. Just match the text with \b boundaries.
+                  # \b on both sides prevents "Stage 1" from matching "Stage 10".
+                  stage_pat = rf"\bStage\s+{stage_num}\s+Result\b"
+                  table = extract_tables_after_heading(all_wikitext, stage_pat)
+                  rows = parse_results_table(table)
+                  if rows:
+                      winner = rows[0]
+                      winners[stage_num] = {
+                          'winner':      winner['rider'],
+                          'winner_team': winner['team'],
+                      }
+                      if winner['time']:
+                          winners[stage_num]['winner_time'] = winner['time']
+
+                  # GC table
+                  gc_pat = rf"\bGeneral\s+classification\s+after\s+Stage\s+{stage_num}\b"
+                  gc_table = extract_tables_after_heading(all_wikitext, gc_pat)
+                  gc_rows = parse_results_table(gc_table)
+                  if gc_rows and stage_num > latest_gc_stage:
+                      latest_gc = gc_rows
+                      latest_gc_stage = stage_num
+
+                  # Other classifications (after this stage)
+                  for jersey_pat, jersey_key in [
+                      (rf"\bPoints\s+classification\s+after\s+Stage\s+{stage_num}\b", 'points'),
+                      (rf"\bMountains\s+classification\s+after\s+Stage\s+{stage_num}\b", 'kom'),
+                      (rf"\bYoung\s+rider\s+classification\s+after\s+Stage\s+{stage_num}\b", 'youth'),
+                  ]:
+                      jt = extract_tables_after_heading(all_wikitext, jersey_pat)
+                      jr = parse_results_table(jt)
+                      if jr:
+                          if jersey_key == 'points': latest_points = jr[0]
+                          elif jersey_key == 'kom':    latest_kom = jr[0]
+                          elif jersey_key == 'youth':  latest_youth = jr[0]
+
+              return {
+                  'winners': winners,
+                  'gc': latest_gc,
+                  'latest_stage': latest_gc_stage,
+                  'points_leader': latest_points['rider'] if latest_points else None,
+                  'kom_leader':    latest_kom['rider']    if latest_kom    else None,
+                  'young_rider':   latest_youth['rider']  if latest_youth  else None,
+              }
+
+          def update_json(race_key, parsed):
+              """Merge parsed Wikipedia data into the existing JSON, preserving manual fields."""
+              cfg = RACES[race_key]
+              json_path = cfg['json_path']
+
+              if not os.path.exists(json_path):
+                  print(f"  [{race_key}] ERROR: {json_path} doesn't exist — won't create from scratch")
+                  return False
+
+              with open(json_path, 'r', encoding='utf-8') as f:
+                  doc = json.load(f)
+
+              changes = 0
+
+              # Merge stage winners — only set if Wikipedia has them AND we don't already
+              # (or if they differ, which would be a correction)
+              for stage in doc.get('stages', []):
+                  num = stage.get('num')
+                  if num in parsed['winners']:
+                      w = parsed['winners'][num]
+                      if stage.get('winner') != w['winner']:
+                          stage['winner'] = w['winner']
+                          changes += 1
+                      if stage.get('winner_team') != w['winner_team']:
+                          stage['winner_team'] = w['winner_team']
+                          changes += 1
+
+              # Replace GC if we have a fresh one
+              if parsed['gc']:
+                  new_gc = []
+                  for row in parsed['gc'][:10]:   # top 10
+                      gap = 'Leader' if row['rank'] == 1 else (row['time'] or '+0:00')
+                      new_gc.append({
+                          'name': row['rider'],
+                          'team': row['team'],
+                          'gap':  gap,
+                      })
+                  if doc.get('gc') != new_gc:
+                      doc['gc'] = new_gc
+                      changes += 1
+
+              # Jersey leaders
+              for key in ('points_leader', 'kom_leader', 'young_rider'):
+                  v = parsed[key]
+                  if v and doc.get(key) != v:
+                      doc[key] = v
+                      changes += 1
+
+              # Always bump last_updated even if no changes (so we know the bot ran)
+              doc['last_updated'] = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+              with open(json_path, 'w', encoding='utf-8') as f:
+                  json.dump(doc, f, ensure_ascii=False, indent=2)
+
+              print(f"  [{race_key}] updated {json_path} — {changes} field changes, "
+                    f"latest stage with GC: {parsed['latest_stage']}")
+              return changes > 0
+
+          # ============================================================
+          # MAIN
+          # ============================================================
+          any_changes = False
+          any_run = False
+
+          for race_key in RACES:
+              go, reason = should_run(race_key)
+              print(f"\n=== {race_key.upper()} === {reason}")
+              if not go:
+                  continue
+              any_run = True
+              parsed = parse_race(race_key)
+              if parsed is None:
+                  print(f"  [{race_key}] no data fetched — skipping update")
+                  continue
+              if update_json(race_key, parsed):
+                  any_changes = True
+
+          if not any_run:
+              print("\nNo races in active window. Workflow no-op.")
+              sys.exit(0)
+
+          # Exit 0 either way; the commit step decides what to do
+          PYEOF
+
+      - name: Commit data
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "actions@github.com"
+          git add data/giro-2026.json data/tdf-2026.json 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: race results $(date -u +%Y-%m-%d)"
+          for i in 1 2 3; do
+            git pull --rebase origin "$(git rev-parse --abbrev-ref HEAD)" && \
+            git push && exit 0
+            echo "Push retry $i…"
+            sleep 5
+          done
+          echo "Failed to push after 3 retries"
+          exit 1
