@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sierra Nevada Alert Bot — Real-Time Mountain Intelligence — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --storm:#2a5a8a; --deep:#1e2d44; --fire:#c0392b;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--deep) 0%,var(--storm) 40%,var(--fire) 75%,var(--gold) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--storm); }
+    nav a.live { border:1px solid var(--storm); padding:0.3rem 0.7rem; color:var(--storm); }
+    nav a.live:hover { background:var(--storm); color:var(--white); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--storm); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--storm); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--storm); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--deep); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body blockquote { border-left:3px solid var(--storm); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--storm); text-decoration:underline; text-underline-offset:3px; }
+
+    .live-badge { display:inline-flex; align-items:center; gap:0.5rem; background:var(--ink); color:var(--white); font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; padding:0.4rem 0.8rem; margin:1.5rem 0; text-decoration:none; }
+    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--fire); animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .live-badge:hover { background:var(--storm); }
+
+    .code-block { background:var(--ink); color:#e8e4dc; font-family:'DM Mono',monospace; font-size:0.78rem; padding:1.25rem 1.5rem; margin:1.5rem 0; overflow-x:auto; line-height:1.7; white-space:pre; }
+    .code-comment { color:#7a7268; }
+
+    .feature-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0; }
+    .feature-card { background:var(--cream); padding:1rem 1.25rem; border-left:3px solid var(--storm); }
+    .feature-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--storm); margin-bottom:0.4rem; }
+    .feature-body { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    @media(max-width:560px) { .feature-grid { grid-template-columns:1fr; } }
+
+    .data-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.82rem; }
+    .data-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--storm); text-align:left; padding:0.6rem 0.75rem; border-bottom:2px solid var(--mist); }
+    .data-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); color:var(--ink); vertical-align:top; line-height:1.5; }
+    .data-table tr:last-child td { border-bottom:none; }
+    .data-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; white-space:nowrap; }
+
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); margin-left:1.5rem; }
+    .article-footer-nav a:hover { color:var(--storm); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/meteorology.html">Meteorology</a>
+      <a href="https://x.com/SierraNevadaWX" target="_blank" class="live">@SierraNevadaWX ↗</a>
+      <a href="https://github.com/bdgroves/sierra-alert-bot" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/index.html" class="article-back">← Blog</a>
+
+  <p class="article-kicker">Project Build · Meteorology · NWS · NEXRAD · GitHub Actions · June 2026</p>
+  <h1 class="article-title">🌪️ Sierra Nevada Alert Bot — Intel the Moment It Happens</h1>
+  <div class="article-meta">
+    <span>Brooks Groves</span>
+    <span>June 2026</span>
+    <span>Python · MetPy · Py-ART · Tweepy · pixi</span>
+  </div>
+  <div class="article-tags">
+    <a href="/tags.html#Meteorology" class="article-tag-pill">Meteorology</a>
+    <a href="/tags.html#Weather" class="article-tag-pill">Weather</a>
+    <a href="/tags.html#Python" class="article-tag-pill">Python</a>
+    <a href="/tags.html#GitHub%20Actions" class="article-tag-pill">GitHub Actions</a>
+    <a href="/tags.html#NEXRAD" class="article-tag-pill">NEXRAD</a>
+    <a href="/tags.html#Wildfire" class="article-tag-pill">Wildfire</a>
+    <a href="/tags.html#Automation" class="article-tag-pill">Automation</a>
+    <a href="/tags.html#Real-Time%20Data" class="article-tag-pill">Real-Time Data</a>
+  </div>
+
+  <a href="https://x.com/SierraNevadaWX" target="_blank" class="live-badge">
+    <span class="live-dot"></span>
+    Live on X · @SierraNevadaWX
+  </a>
+
+  <div class="article-body">
+
+    <p>It started as a question, the way these things do: could I even do this? Could one person, with no server and no budget, watch an entire mountain range — every fire, flood, quake, and storm across four hundred miles of the most violent terrain in the Lower 48 — and know about each one the moment it happened, instead of finding out by accident while scrolling?</p>
+
+    <p>I did not know the answer when I started. That was the appeal. I wanted to find out how the data actually moved — where the federal feeds lived, what they cost, how fast they updated, whether you could stitch them together into something that watched the Sierra so I didn't have to. The honest shape of the project was a vision quest disguised as a weather bot. I'd pull one thread, learn how a single feed worked, get it posting, and then immediately see the next thread. Seven feeds later, here we are.</p>
+
+    <p>The mission crystallized somewhere in the middle of building it. I didn't want a dashboard I had to remember to check. I didn't want to discover a fire near my area of interest because it finally got big enough to trend. I wanted the intel pushed to me — to wherever I already was — the moment the data showed something worth knowing. Near-real-time situational awareness for a place I love, built out of public feeds and a free runner. That became the whole point.</p>
+
+    <h2>What It Watches</h2>
+
+    <p>The bot, posting as <a href="https://x.com/SierraNevadaWX" target="_blank">@SierraNevadaWX</a>, pulls from seven live federal data streams every few minutes on GitHub Actions. Each one answers a different question about whether the mountains are about to do something.</p>
+
+    <table class="data-table">
+      <thead><tr><th>Source</th><th>Trigger</th><th>Why It Matters</th></tr></thead>
+      <tbody>
+        <tr><td>🌩️ NWS Alerts</td><td>Any Sierra-zone warning</td><td>The official word from the forecasters watching the same sky</td></tr>
+        <tr><td>🔥 NIFC Fires</td><td>New fire or 50%+ growth, &lt;85% contained, ≥10 acres</td><td>Fires that are still fighting back</td></tr>
+        <tr><td>🔥 CAL FIRE</td><td>Same thresholds, faster CA updates</td><td>Sometimes ahead of NIFC by hours</td></tr>
+        <tr><td>⛈️ IEM Storm Reports</td><td>Any local storm report in the Sierra box</td><td>Trained spotters on the ground, calling it in</td></tr>
+        <tr><td>😷 AirNow AQI</td><td>AQI &gt;100 at 8 Sierra stations</td><td>When smoke makes the air a hazard</td></tr>
+        <tr><td>🌊 NWPS Gauges</td><td>Minor flood stage on 7 Sierra rivers</td><td>The snowmelt reckoning arriving downstream</td></tr>
+        <tr><td>🌋 USGS Quakes</td><td>M2.5+ in the Sierra box</td><td>The range sits on active fault systems</td></tr>
+      </tbody>
+    </table>
+
+    <p>The Sierra bounding box runs from -121.0°W to -117.5°W and 35.5°N to 41.5°N — Lassen in the north to the White Mountains in the south, Central Valley foothills to the Nevada Great Basin. Everything inside that box is fair game. Everything outside it is somebody else's problem.</p>
+
+    <h2>The Rivers, and the Thresholds That Matter</h2>
+
+    <p>When the snowpack releases, it all goes somewhere. The flood logic is the part I'm most careful about, because it's the part most likely to either cry wolf or miss the real thing.</p>
+
+    <div class="code-block"><span class="code-comment"># The bot tweets at MINOR flood stage — when property damage begins —</span>
+<span class="code-comment"># not at action stage. We are not here to cry wolf.</span>
+
+River      Station                  Minor    Moderate
+Tuolumne   Modesto                  55 ft    62 ft
+Tuolumne   Hetch Hetchy              9 ft    11 ft
+Merced     Happy Isles / Yosemite    7.5 ft   9 ft
+Merced     Merced                   71 ft    74 ft
+American   Fair Oaks                25 ft    33 ft
+Truckee    Reno                     11 ft    13.5 ft
+Kings      Pine Flat                18 ft    22 ft</div>
+
+    <p>Flood stages come from the NWS and the California-Nevada River Forecast Center. The bot stays silent at "action stage" — the watch-it level — and only speaks at minor flood, the point where water starts doing damage. A gauge reading nineteen feet below flood stage is not a tweet. It is just a river being a river. The thresholds are the difference between a feed people trust and a feed people mute.</p>
+
+    <h2>The Science Tools</h2>
+
+    <p>Partway through, the project stopped being just a bot. Watching the alerts fire made me want to understand <em>why</em> — to read the atmosphere myself, not just relay its verdicts. So the repo grew a toolkit.</p>
+
+    <p><strong>Skew-T Log-P soundings.</strong> Twice a day, weather balloons launch from Reno, Oakland, Salt Lake City, and Vandenberg, rising to 100,000 feet and measuring temperature, humidity, and wind every few meters on the way up. A MetPy script pulls that data from the Iowa State upper-air archive and plots a professional Skew-T: temperature and dewpoint profiles, wind barbs showing shear with altitude, the parcel path with CAPE and CIN shaded, LCL/LFC/EL markers, a hodograph inset, and an indices panel.</p>
+
+    <blockquote>When Reno shows CAPE near zero and a massive dewpoint depression between 500 and 700 hPa, that's the Great Basin drying out — a classic setup for dry lightning and high fire danger on the eastern slope by afternoon. When Salt Lake City shows negative lifted index with no cap, that instability is heading your way.</blockquote>
+
+    <p>That's the payoff: a morning sounding tells you what the afternoon is likely to do, hours before it does it. The eastern Sierra is a dry-lightning machine, and dry lightning is how a lot of the bad fire seasons begin.</p>
+
+    <p><strong>NEXRAD Level 2 dual-pol analysis.</strong> NOAA puts every NEXRAD radar scan on AWS S3 within seconds of it completing — free, public, real-time. A Py-ART script pulls the latest volume, reads all six dual-polarization fields, and renders a dark six-panel analysis plot with automatic signature detection.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-head">Z · Reflectivity</div>
+        <div class="feature-body">Precipitation intensity. Hook echo, bow echo, hail core.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-head">V · Velocity</div>
+        <div class="feature-body">Radial wind. A tight green/red couplet means rotation.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-head">CC · Correlation</div>
+        <div class="feature-body">Scatterer uniformity. Below 0.80 inside high-Z = debris.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-head">ZDR · Diff. Reflectivity</div>
+        <div class="feature-body">Drop shape. Near 0 dB = tumbling hail.</div>
+      </div>
+    </div>
+
+    <p>The detector flags three signatures automatically: a <strong>tornado debris signature</strong> (Z&gt;40 and CC&lt;0.80 — lofted non-meteorological debris, the radar fingerprint of a tornado actually on the ground), a <strong>TVS proxy</strong> (Z&gt;45 and high spectrum width), and a <strong>hail signature</strong> (Z&gt;55 with ZDR near zero). When magenta dots light up the CC panel, something is very wrong on the ground below.</p>
+
+    <h2>A Day in the Life</h2>
+
+    <p>On June 4, 2026, while I was still building this thing, a severe thunderstorm outbreak fired over north-central Oklahoma. The bot kept watching the Sierra; I pivoted the NEXRAD tool east to see what it could do against real weather.</p>
+
+    <p>The KVNX radar near Vance Air Force Base showed a massive bow echo over Alfalfa and Garfield County. The detector flagged 54 pixels of possible tornado debris — CC below 0.80 inside a high-reflectivity core near Enid — and 11 pixels of hail signature. There was a tornado warning polygon active over the same area.</p>
+
+    <p>But the signature didn't hold up under scrutiny, and that's the actually interesting part. The CC was 0.75 to 0.79 — not the 0.60 you'd expect from a genuine debris field. The velocity panel was range-folded. Read across all six fields in context, it was a hail-and-rain mixture, not lofted debris. The automatic flag was a starting point, not a verdict.</p>
+
+    <blockquote>Signatures must be read in context across all six fields. The detector points; the human confirms. Science in real time — that's the point.</blockquote>
+
+    <h2>How It's Built</h2>
+
+    <p>Same pattern as everything else in this collection. Python, one runner, no server, no database.</p>
+
+    <div class="code-block"><span class="code-comment"># The engine</span>
+GitHub Actions (every ~5 min, setup-pixi)
+  → bot/main.py  — polls all 7 federal feeds
+    → filter to Sierra bbox + alert thresholds
+      → dedup against posted_ids.json  (SHA cache, committed back)
+        → format + post to @SierraNevadaWX via Tweepy
+
+<span class="code-comment"># The toolkit (on-demand or scheduled)</span>
+tools/sierra_skewt.py     — MetPy Skew-T soundings (REV/OAK/SLC/VBG)
+tools/nexrad_analysis.py  — Py-ART dual-pol, auto signature detection</div>
+
+    <p>The whole thing runs on Python 3.12, managed by <strong>pixi</strong> for reproducibility — the same lockfile-pinned environment locally and on the runner, so a bot that fires unattended every five minutes forever never falls victim to "works on my machine." Deduplication is a SHA cache committed back to <em>posted_ids.json</em> on every run; the repository is the bot's memory, and the commit history is its log. Tweepy handles posting. AirNow needs a free API key; everything else is open public data, no key required.</p>
+
+    <p>Total infrastructure cost: zero. GitHub's free Actions tier covers the whole schedule with room to spare. A bad fire day that lights up every feed at once costs exactly the same as a quiet blue-sky Tuesday — nothing. The infrastructure doesn't care how much weather there is.</p>
+
+    <h2>What This Is Actually About</h2>
+
+    <p>The bot is the surface. Underneath, this was a project about closing the gap between <em>when something happens</em> and <em>when I find out</em>. The old way — open an app, scroll, hope something relevant surfaces — puts you minutes or hours behind, and behind is exactly the wrong place to be with a fire or a flash flood. The whole exercise was about flipping that: data finds me the instant it changes, pushed to where I already am.</p>
+
+    <p>And it taught me the thing I keep relearning with these builds. <strong>GitHub Actions is not a CI tool — it is a free, reliable cron server that watches the world for you.</strong> Seven federal agencies publish this data, in clean APIs, paid for by the public, because it is a public good. The plumbing to stitch it together and push it somewhere useful should be cheap and easy, and it is. A repository can be its own database. A free runner can watch a mountain range. One person can build a thing that knows, in near-real-time, when the Sierra is about to do something.</p>
+
+    <p>It's still growing. More feeds, more analysis scripts, a static dashboard fed by the same polls — the goal is to be able to drop into any situation, anywhere in the area of interest, and read it as it unfolds. It started as a question about whether I could do it at all. The answer turned out to be yes, and the better answer turned out to be: <em>and here is everything I learned on the way.</em></p>
+
+    <hr>
+
+    <p>Live on X at <a href="https://x.com/SierraNevadaWX" target="_blank">@SierraNevadaWX</a>. Open source at <a href="https://github.com/bdgroves/sierra-alert-bot" target="_blank">github.com/bdgroves/sierra-alert-bot</a>. Built in Lakewood, Washington, watching the Sierra Nevada.</p>
+
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · June 2026</span>
+    <div class="article-footer-nav">
+      <a href="/meteorology.html">Meteorology Hub →</a>
+      <a href="/blog/index.html">← All Posts</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/meteorology.html">Meteorology</a>
+      <a href="https://x.com/SierraNevadaWX" target="_blank">@SierraNevadaWX ↗</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
