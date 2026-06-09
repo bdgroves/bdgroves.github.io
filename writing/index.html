@@ -26,31 +26,42 @@
     .page-eyebrow a:hover { color:var(--rust); }
     .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
     .page-title em { font-style:italic; color:var(--rust); }
-    .page-sub { font-size:0.975rem; color:var(--stone); max-width:580px; line-height:1.8; }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:620px; line-height:1.8; }
     .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
 
-    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 0; display:flex; justify-content:space-between; align-items:center; }
-    .section-label:first-child { margin-top:0; }
-    .section-note { font-size:0.55rem; color:var(--mist); }
-    .lock-note { font-size:0.55rem; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.15rem 0.5rem; border-radius:3px; }
+    .collections { display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+    @media(max-width:640px){ .collections { grid-template-columns:1fr; } }
+    .collection-card { display:block; text-decoration:none; color:inherit; background:var(--white); border:1px solid var(--mist); border-top:3px solid var(--gold); padding:1.6rem 1.75rem; transition:transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
+    .collection-card:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(28,26,22,0.08); }
+    .collection-card.gated { border-top-color:var(--stone); }
+    .collection-card.open { border-top-color:var(--sage); }
+    .cc-top { display:flex; align-items:center; justify-content:space-between; gap:0.75rem; margin-bottom:0.6rem; }
+    .cc-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); }
+    .cc-lock { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.15rem 0.5rem; border-radius:3px; white-space:nowrap; }
+    .cc-lock.free { color:var(--sage); }
+    .cc-title { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; line-height:1.15; margin-bottom:0.5rem; }
+    .collection-card:hover .cc-title { color:var(--rust); }
+    .cc-desc { font-size:0.88rem; color:var(--stone); line-height:1.65; margin-bottom:0.9rem; }
+    .cc-enter { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); }
+    .collection-card:hover .cc-enter { color:var(--rust); }
 
-    .writing-list { display:flex; flex-direction:column; }
-    .writing-item { padding:1.5rem 0; border-bottom:1px solid var(--mist); }
-    .writing-item:last-child { border-bottom:none; }
-    .writing-item.featured { border-left:3px solid var(--gold); padding-left:1.25rem; }
-    .writing-item.gated { border-left:3px solid var(--stone); padding-left:1.25rem; }
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:0 0 1.75rem; }
+    .label-after { margin-top:3.5rem; }
 
-    .writing-tags { display:flex; gap:0.4rem; flex-wrap:wrap; margin-bottom:0.6rem; }
-    .writing-tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.2rem 0.55rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
-    .writing-tag:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
-    .writing-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:0.35rem; }
-    .writing-title-link { text-decoration:none; color:inherit; display:block; margin-bottom:0.4rem; }
-    .writing-hed { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; line-height:1.25; color:var(--ink); transition:color 0.15s; }
-    .writing-title-link:hover .writing-hed { color:var(--rust); }
-    .writing-dek { font-size:0.875rem; color:var(--stone); line-height:1.65; margin-bottom:0.5rem; }
-    .writing-read { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); text-decoration:none; display:inline-block; }
-    .writing-read:hover { color:var(--rust); }
-    .pw-hint { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--mist); margin-left:0.75rem; }
+    .starter-list { display:flex; flex-direction:column; }
+    .starter { padding:1.1rem 0; border-bottom:1px solid var(--mist); display:flex; gap:1rem; align-items:baseline; text-decoration:none; color:inherit; }
+    .starter:last-child { border-bottom:none; }
+    .starter-emoji { font-size:1.1rem; flex-shrink:0; }
+    .starter-body { flex:1; display:flex; flex-direction:column; }
+    .starter-title { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:var(--ink); transition:color 0.15s; }
+    .starter:hover .starter-title { color:var(--rust); }
+    .starter-meta { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); margin-top:0.2rem; }
+    .starter-desc { font-size:0.84rem; color:var(--stone); line-height:1.6; margin-top:0.35rem; }
+
+    .tags-cta { margin-top:3.5rem; padding:1.5rem 1.75rem; background:var(--cream); border:1px solid var(--mist); text-align:center; }
+    .tags-cta p { font-size:0.9rem; color:var(--stone); margin-bottom:0.75rem; }
+    .tags-cta a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); text-decoration:none; border:1px solid var(--gold); padding:0.5rem 1.1rem; display:inline-block; transition:background 0.15s,color 0.15s; }
+    .tags-cta a:hover { background:var(--gold); color:var(--white); }
 
     footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
     .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
@@ -77,290 +88,113 @@
 <div class="page-header">
   <p class="page-eyebrow"><a href="/">Brooks Groves</a></p>
   <h1 class="page-title">✍️ <em>Writing</em></h1>
-  <p class="page-sub">Essays, long reads, memoir, field notes, and dispatches — the other kind of writing, separate from the technical blog. Some sections are password protected.</p>
+  <p class="page-sub">Everything I write, gathered in one place — technical posts, field notes, memoir, hospitality-era stories, and a restored corner of the early web. Each collection lives in its own section; this is the front door. Most are password protected; the technical blog is open to everyone.</p>
 </div>
 
 <div class="page-content">
 
-  <!-- LONG READS -->
-  <div class="section-label">
-    <span>Long Reads</span>
-    <span class="lock-note">🔒 Private</span>
-  </div>
-  <div class="writing-list">
+  <div class="section-label">The Collections</div>
 
-    <div class="writing-item featured gated">
-      <div class="writing-tags">
-        <a href="/tags.html#Fiction" class="writing-tag">Fiction</a>
-        <a href="/tags.html#Long%20Read" class="writing-tag">Long Read</a>
-        <a href="/tags.html#American%20West" class="writing-tag">American West</a>
-        <a href="/tags.html#Nature%20Writing" class="writing-tag">Nature Writing</a>
+  <div class="collections">
+
+    <!-- BLOG — OPEN -->
+    <a href="/blog/" class="collection-card open">
+      <div class="cc-top">
+        <span class="cc-kicker">Technical · Open</span>
+        <span class="cc-lock free">Open to all</span>
       </div>
-      <div class="writing-kicker">Literary Fiction · ~25 min read · 🔒 journal.brooksgroves.com</div>
-      <a href="https://journal.brooksgroves.com/myles.html" class="writing-title-link">
-        <h2 class="writing-hed">🦆 Myles</h2>
-      </a>
-      <p class="writing-dek">One rubber duck. The American West. Every duck tells the same story. A lyric narrative following a rubber duck through Death Valley, Mono Lake, the Rubicon Trail, the Cascades, and into the Canadian Rockies. A meditation on movement, impermanence, and what objects carry that they cannot understand.</p>
-      <a href="https://journal.brooksgroves.com/myles.html" class="writing-read">Read →</a>
-    </div>
+      <h2 class="cc-title">📡 Blog</h2>
+      <p class="cc-desc">Project builds and technical writing — geospatial dashboards, environmental monitoring bots, Python and GitHub Actions pipelines, data tools. How things were made and what they taught me. The Sierra Nevada Alert Bot, AFTERSHOCK, the recipe pipeline, and more.</p>
+      <span class="cc-enter">Read the blog →</span>
+    </a>
 
-  </div>
-
-  <!-- MEMOIR & ESSAYS -->
-  <div class="section-label">
-    <span>Memoir &amp; Essays</span>
-    <span class="lock-note">🔒 memoir.brooksgroves.com</span>
-  </div>
-  <div class="writing-list">
-
-    <div class="writing-item gated">
-      <div class="writing-tags">
-        <a href="/tags.html#Memoir" class="writing-tag">Memoir</a>
-        <a href="/tags.html#Travel" class="writing-tag">Travel</a>
-        <a href="/tags.html#Tasmania" class="writing-tag">Tasmania</a>
-        <a href="/tags.html#Australia" class="writing-tag">Australia</a>
-        <a href="/tags.html#Wilderness" class="writing-tag">Wilderness</a>
-        <a href="/tags.html#Hiking" class="writing-tag">Hiking</a>
+    <!-- JOURNAL — GATED -->
+    <a href="https://journal.brooksgroves.com" class="collection-card gated">
+      <div class="cc-top">
+        <span class="cc-kicker">Field Notes · Travel · Fiction</span>
+        <span class="cc-lock">🔒 Gated</span>
       </div>
-      <div class="writing-kicker"><a href="/tags.html#Tasmania" style="color:var(--stone);text-decoration:underline;text-underline-offset:3px;">Tasmania</a> · 2004 &amp; 2009 · ~30 min read · 🔒</div>
-      <a href="https://memoir.brooksgroves.com/an-island-below-an-island.html" class="writing-title-link">
-        <h2 class="writing-hed">An Island Below an Island</h2>
-      </a>
-      <p class="writing-dek">Two trips to Tasmania, five years apart. Once by accident, on a ferry spotted from Bondi. Once on purpose, on foot, across the Overland Track. A trail family, a tiger snake under the deck, Paul Watson at the market, and the long pull south toward Antarctica and the things that were nearly lost.</p>
-      <a href="https://memoir.brooksgroves.com/an-island-below-an-island.html" class="writing-read">Read →</a>
-    </div>
+      <h2 class="cc-title">🌲 Journal</h2>
+      <p class="cc-desc">Field notes, travel dispatches, race reports, and things worth remembering — Hawaii, Vancouver, Cannon Beach, a state-playoff soccer night. Also home to the long-form fiction, including <em>Myles</em>, the rubber-duck odyssey across the American West.</p>
+      <span class="cc-enter">Enter the journal →</span>
+    </a>
 
-    <div class="writing-item gated">
-      <div class="writing-tags">
-        <a href="/tags.html#Memoir" class="writing-tag">Memoir</a>
-        <a href="/tags.html#Sierra%20Nevada" class="writing-tag">Sierra Nevada</a>
-        <a href="/tags.html#Groveland" class="writing-tag">Groveland</a>
-        <a href="/tags.html#1980s" class="writing-tag">1980s</a>
-        <a href="/tags.html#Sierra%20Foothills" class="writing-tag">Sierra Foothills</a>
+    <!-- MEMOIR — GATED -->
+    <a href="https://memoir.brooksgroves.com" class="collection-card gated">
+      <div class="cc-top">
+        <span class="cc-kicker">Literary · Personal Essays</span>
+        <span class="cc-lock">🔒 Gated</span>
       </div>
-      <div class="writing-kicker"><a href="/tags.html#Sierra%20Foothills" style="color:var(--stone);text-decoration:underline;text-underline-offset:3px;">Sierra Foothills</a> · Sonora · Mid-1980s · 🔒</div>
-      <a href="https://memoir.brooksgroves.com/windowpane.html" class="writing-title-link">
-        <h2 class="writing-hed">Windowpane</h2>
-      </a>
-      <p class="writing-dek">Sonora in the mid-1980s. Benjamin Figs. The creek tunnels under downtown. A first encounter with clear gel tabs from a Dead show, and the late bus home through fields that had never looked like that before.</p>
-      <a href="https://memoir.brooksgroves.com/windowpane.html" class="writing-read">Read →</a>
-    </div>
+      <h2 class="cc-title">📖 Memoir &amp; Essays</h2>
+      <p class="cc-desc">Longer literary nonfiction — the pieces that take their time. Reno and Nevada childhood, the bottom of the world, places that left a mark. Including <em>An Island Below an Island</em>, a two-crossing memoir of Tasmania and the long pull south.</p>
+      <span class="cc-enter">Enter the archive →</span>
+    </a>
 
-    <div class="writing-item gated">
-      <div class="writing-tags">
-        <a href="/tags.html#Memoir" class="writing-tag">Memoir</a>
-        <a href="/tags.html#Sierra%20Nevada" class="writing-tag">Sierra Nevada</a>
-        <a href="/tags.html#Groveland" class="writing-tag">Groveland</a>
-        <a href="/tags.html#1980s" class="writing-tag">1980s</a>
-        <a href="/tags.html#Sierra%20Foothills" class="writing-tag">Sierra Foothills</a>
+    <!-- WESTIN STORIES — GATED -->
+    <a href="https://westin.brooksgroves.com" class="collection-card gated">
+      <div class="cc-top">
+        <span class="cc-kicker">Hospitality Era · 1990s</span>
+        <span class="cc-lock">🔒 Gated</span>
       </div>
-      <div class="writing-kicker"><a href="/tags.html#Sierra%20Foothills" style="color:var(--stone);text-decoration:underline;text-underline-offset:3px;">Sierra Foothills</a> · Fall 1987 · Tuolumne County · 🔒</div>
-      <a href="https://memoir.brooksgroves.com/rainbow-pools.html" class="writing-title-link">
-        <h2 class="writing-hed">Purple Octopus / Rainbow Pools</h2>
-      </a>
-      <p class="writing-dek">A shortwave radio that seemed to be talking back. Old Priest Grade at night. Coulterville frozen in amber. And the Tuolumne River at Rainbow Pools — thirty feet of air, cold water, and something luminous moving in the dark underneath.</p>
-      <a href="https://memoir.brooksgroves.com/rainbow-pools.html" class="writing-read">Read →</a>
-    </div>
+      <h2 class="cc-title">🛎️ Westin Stories</h2>
+      <p class="cc-desc">Tales from a life in hotels — the bell captain years, the graveyard shift, the characters who passed through the lobby of a 1990s Seattle grand hotel. Cantina wrestling, the gator in a box, Tolstoy at 3 a.m., and a New Year's Eve or two.</p>
+      <span class="cc-enter">Enter the stories →</span>
+    </a>
 
-    <div class="writing-item gated">
-      <div class="writing-tags">
-        <a href="/tags.html#Memoir" class="writing-tag">Memoir</a>
-        <a href="/tags.html#San%20Francisco" class="writing-tag">San Francisco</a>
-        <a href="/tags.html#1990s" class="writing-tag">1990s</a>
-        <a href="/tags.html#Groveland" class="writing-tag">Groveland</a>
-        <a href="/tags.html#Friendship" class="writing-tag">Friendship</a>
+    <!-- Y2K JOURNAL — GATED -->
+    <a href="https://y2k.brooksgroves.com" class="collection-card gated">
+      <div class="cc-top">
+        <span class="cc-kicker">Web Archive · Digital Preservation</span>
+        <span class="cc-lock">🔒 Gated</span>
       </div>
-      <div class="writing-kicker">Lower Haight · Early 1990s · ~1,200 words · 🔒</div>
-      <a href="https://memoir.brooksgroves.com/the-midtown.html" class="writing-title-link">
-        <h2 class="writing-hed">The Midtown</h2>
-      </a>
-      <p class="writing-dek">A dark bar in the Lower Haight, a best friend from Groveland, cheap beer, the guy from Lucasfilm who drew the cantina aliens, and the most unresolvable argument in the galaxy.</p>
-      <a href="https://memoir.brooksgroves.com/the-midtown.html" class="writing-read">Read →</a>
-    </div>
-
-    <div class="writing-item gated">
-      <div class="writing-tags">
-        <a href="/tags.html#Memoir" class="writing-tag">Memoir</a>
-        <a href="/tags.html#Music" class="writing-tag">Music</a>
-        <a href="/tags.html#Concerts" class="writing-tag">Concerts</a>
-        <a href="/tags.html#1990s" class="writing-tag">1990s</a>
-      </div>
-      <div class="writing-kicker">Concert Memoir · New Year's Eve 1991 · ~12 min read · 🔒</div>
-      <a href="https://memoir.brooksgroves.com/cow-palace-nye-1991.html" class="writing-title-link">
-        <h2 class="writing-hed">The Night the Cow Palace Changed Everything</h2>
-      </a>
-      <p class="writing-dek">New Year's Eve, 1991. Four guys drove over Donner Pass in a snowstorm to see the Chili Peppers. Pearl Jam and Nirvana were opening. Nobody knew it yet, but the world was about to change.</p>
-      <a href="https://memoir.brooksgroves.com/cow-palace-nye-1991.html" class="writing-read">Read →</a>
-    </div>
-
-    <div class="writing-item gated">
-      <div class="writing-tags">
-        <a href="/tags.html#Memoir" class="writing-tag">Memoir</a>
-        <a href="/tags.html#Reno" class="writing-tag">Reno</a>
-        <a href="/tags.html#1990s" class="writing-tag">1990s</a>
-        <a href="/tags.html#UNR" class="writing-tag">UNR</a>
-        <a href="/tags.html#Music" class="writing-tag">Music</a>
-      </div>
-      <div class="writing-kicker">Reno · UNR · 1990–1997 · ~10 min read · 🔒</div>
-      <a href="https://memoir.brooksgroves.com/nevada-neil.html" class="writing-title-link">
-        <h2 class="writing-hed">Nevada Neil</h2>
-      </a>
-      <p class="writing-dek">UNR in the '90s. The Sundowners. The Ominous Pinniped expeditions. A Slayer show at the Westin Seattle. The kind of person who made a place and a time worth remembering.</p>
-      <a href="https://memoir.brooksgroves.com/nevada-neil.html" class="writing-read">Read →</a>
-    </div>
-
-    <div class="writing-item gated">
-      <div class="writing-tags">
-        <a href="/tags.html#Memoir" class="writing-tag">Memoir</a>
-        <a href="/tags.html#Reno" class="writing-tag">Reno</a>
-        <a href="/tags.html#1990s" class="writing-tag">1990s</a>
-        <a href="/tags.html#Camp%20Reno" class="writing-tag">Camp Reno</a>
-        <a href="/tags.html#Gambling" class="writing-tag">Gambling</a>
-      </div>
-      <div class="writing-kicker"><a href="/tags.html#Camp%20Reno" style="color:var(--stone);text-decoration:underline;text-underline-offset:3px;">Camp Reno</a> · Early 1990s · ~5 min read · 🔒</div>
-      <a href="https://memoir.brooksgroves.com/camp-reno-casino.html" class="writing-title-link">
-        <h2 class="writing-hed">Camp Reno: Power Walkers to the Casino</h2>
-      </a>
-      <p class="writing-dek">My mom's house as weekend hub, a power walk to the craps table, and the night Jim rolled three 11s in ten minutes — then walked away. We did not.</p>
-      <a href="https://memoir.brooksgroves.com/camp-reno-casino.html" class="writing-read">Read →</a>
-    </div>
-
-    <div class="writing-item">
-      <div class="writing-tags">
-        <a href="/tags.html#Book%20Review" class="writing-tag">Book Review</a>
-        <a href="/tags.html#Cartography" class="writing-tag">Cartography</a>
-        <a href="/tags.html#New%20Zealand" class="writing-tag">New Zealand</a>
-        <a href="/tags.html#Pacific%20Northwest" class="writing-tag">Pacific Northwest</a>
-      </div>
-      <div class="writing-kicker">Book Review · Cartographic Perspectives No. 105 · ~8 min read</div>
-      <a href="/writing/draught-south-land.html" class="writing-title-link">
-        <h2 class="writing-hed">A Draught of the South Land</h2>
-      </a>
-      <p class="writing-dek">Paul Moon's meticulous account of how cartography shaped New Zealand's encounter with European powers — from the VOC's strategic maps to Cook's empirical surveys and the enduring legacy of both on modern land rights.</p>
-      <a href="/writing/draught-south-land.html" class="writing-read">Read →</a>
-    </div>
+      <h2 class="cc-title">💾 Y2K Journal</h2>
+      <p class="cc-desc">A time capsule of the early web — personal sites and journal entries from the Y2K era, recovered from the Wayback Machine and restored on Netlify. Digital archaeology: the internet the way it looked when it was still figuring out what it wanted to be.</p>
+      <span class="cc-enter">Enter the archive →</span>
+    </a>
 
   </div>
 
-  <!-- WESTIN STORIES -->
-  <div class="section-label">
-    <span>Westin Stories</span>
-    <span class="lock-note">🔒 westin.brooksgroves.com</span>
-  </div>
-  <div class="writing-list">
+  <div class="section-label label-after">Start Here</div>
+  <p class="page-sub" style="margin-bottom:1.75rem;">New to all this? A few pieces that are a good way in.</p>
 
-    <div class="writing-item gated">
-      <div class="writing-tags">
-        <a href="/tags.html#Memoir" class="writing-tag">Memoir</a>
-        <a href="/tags.html#Seattle" class="writing-tag">Seattle</a>
-        <a href="/tags.html#Bell%20Captain" class="writing-tag">Bell Captain</a>
-        <a href="/tags.html#Hospitality" class="writing-tag">Hospitality</a>
-        <a href="/tags.html#1990s" class="writing-tag">1990s</a>
-      </div>
-      <div class="writing-kicker">Memoir · Hotel Life · 1997–2018 · 🔒 westin.brooksgroves.com</div>
-      <a href="https://westin.brooksgroves.com" class="writing-title-link">
-        <h2 class="writing-hed">🏨 Stories from the Westin Seattle</h2>
-      </a>
-      <p class="writing-dek">Nine hundred rooms breathing. Elevators humming like they've got secrets. 21 years as bell captain — Saudi royals, live animals in freight elevators, wrestling in the cantina, and the sound the building made at 2:17 AM when the lobby went quiet and the Modest Mouse started.</p>
-      <a href="https://westin.brooksgroves.com" class="writing-read">Read stories →</a>
-    </div>
-
-  </div>
-
-  <!-- Y2K ARCHIVE -->
-  <div class="section-label">
-    <span>Y2K Archive</span>
-    <span class="lock-note">🔒 y2k.brooksgroves.com</span>
-  </div>
-  <div class="writing-list">
-
-    <div class="writing-item gated">
-      <div class="writing-tags">
-        <a href="/tags.html#Journal" class="writing-tag">Journal</a>
-        <a href="/tags.html#Archive" class="writing-tag">Archive</a>
-        <a href="/tags.html#1999" class="writing-tag">1999</a>
-        <a href="/tags.html#Seattle" class="writing-tag">Seattle</a>
-        <a href="/tags.html#Y2K" class="writing-tag">Y2K</a>
-      </div>
-      <div class="writing-kicker">Personal Journal · 1999–2001 · Recovered from the Wayback Machine · 🔒</div>
-      <a href="https://y2k.brooksgroves.com" class="writing-title-link">
-        <h2 class="writing-hed">📼 The Y2K Journal</h2>
-      </a>
-      <p class="writing-dek">A personal journal written at the turn of the millennium — geocaching, triathlon, the scanner, the ferrets, the Westin, the Pacific Northwest. Recovered from the Wayback Machine and archived. A time capsule of life at the edge of Y2K.</p>
-      <a href="https://y2k.brooksgroves.com" class="writing-read">Browse archive →</a>
-    </div>
-
+  <div class="starter-list">
+    <a href="https://memoir.brooksgroves.com/an-island-below-an-island.html" class="starter">
+      <span class="starter-emoji">🏝️</span>
+      <span class="starter-body">
+        <span class="starter-title">An Island Below an Island</span>
+        <span class="starter-meta">Memoir · ~30 min · 🔒</span>
+        <span class="starter-desc">Two trips to Tasmania, five years apart — once by accident, once on foot across the Overland Track. A trail family, a tiger snake under the deck, and the long pull south.</span>
+      </span>
+    </a>
+    <a href="https://journal.brooksgroves.com/myles.html" class="starter">
+      <span class="starter-emoji">🦆</span>
+      <span class="starter-body">
+        <span class="starter-title">Myles</span>
+        <span class="starter-meta">Fiction · ~25 min · 🔒</span>
+        <span class="starter-desc">One rubber duck, the American West, and every duck telling the same story. A lyric meditation on movement and impermanence from Death Valley to the Canadian Rockies.</span>
+      </span>
+    </a>
+    <a href="/blog/sierra-alert-bot-post.html" class="starter">
+      <span class="starter-emoji">🌪️</span>
+      <span class="starter-body">
+        <span class="starter-title">Sierra Nevada Alert Bot</span>
+        <span class="starter-meta">Blog · Build Post · Open</span>
+        <span class="starter-desc">Seven federal data streams on one free runner. The vision-quest project that became near-real-time intel for an entire mountain range.</span>
+      </span>
+    </a>
+    <a href="https://westin.brooksgroves.com/cantina-wrestling.html" class="starter">
+      <span class="starter-emoji">🛎️</span>
+      <span class="starter-body">
+        <span class="starter-title">Cantina Wrestling</span>
+        <span class="starter-meta">Westin Stories · 🔒</span>
+        <span class="starter-desc">One of the hospitality-era stories — a good window into the world of the lobby, the graveyard shift, and the people who passed through.</span>
+      </span>
+    </a>
   </div>
 
-  <!-- RECIPES -->
-  <div class="section-label">
-    <span>Recipes</span>
-    <span class="section-note">brooksgroves.com/recipes</span>
-  </div>
-  <div class="writing-list">
-
-    <div class="writing-item">
-      <div class="writing-tags">
-        <a href="/tags.html#Recipes" class="writing-tag">Recipes</a>
-        <a href="/tags.html#Cooking" class="writing-tag">Cooking</a>
-        <a href="/tags.html#Food" class="writing-tag">Food</a>
-      </div>
-      <div class="writing-kicker">Recipe Collection · Searchable · AI-extracted · brooksgroves.com/recipes</div>
-      <a href="/recipes.html" class="writing-title-link">
-        <h2 class="writing-hed">🍳 Recipes</h2>
-      </a>
-      <p class="writing-dek">A working recipe box — searchable by ingredient, cuisine, cook time, and dietary preference. Recipes extracted from URLs or text using Claude, stored in a Cloudflare Worker backend. Everything from weeknight staples to things worth making on a Saturday.</p>
-      <a href="/recipes.html" class="writing-read">Browse recipes →</a>
-    </div>
-
-  </div>
-
-  <!-- FIELD NOTES -->
-  <div class="section-label">
-    <span>Field Notes &amp; Journal</span>
-    <span class="section-note">journal.brooksgroves.com</span>
-  </div>
-  <div class="writing-list">
-
-    <div class="writing-item">
-      <div class="writing-tags">
-        <a href="/tags.html#Travel" class="writing-tag">Travel</a>
-        <a href="/tags.html#Oregon%20Coast" class="writing-tag">Oregon Coast</a>
-        <a href="/tags.html#Field%20Notes" class="writing-tag">Field Notes</a>
-        <a href="/tags.html#Fort%20George" class="writing-tag">Fort George</a>
-      </div>
-      <div class="writing-kicker">Field Notes · Oregon Coast · March 2026 · ~10 min read</div>
-      <a href="https://journal.brooksgroves.com/cannon-beach.html" class="writing-title-link">
-        <h2 class="writing-hed">Cannon Beach — Tide Pools, Dogs, and the Goonies Coast</h2>
-      </a>
-      <p class="writing-dek">Haystack Rock at low tide. Mussels older than comprehension. A disco dog with a green light. Fort George beers in Astoria. Sitting somewhere between the tide and a new website.</p>
-      <a href="https://journal.brooksgroves.com/cannon-beach.html" class="writing-read">Read →</a>
-    </div>
-
-  </div>
-
-  <!-- TECHNICAL BLOG -->
-  <div class="section-label">
-    <span>Technical Blog</span>
-    <span class="section-note">brooksgroves.com/blog</span>
-  </div>
-  <div class="writing-list">
-
-    <div class="writing-item">
-      <div class="writing-tags">
-        <a href="/tags.html#GIS" class="writing-tag">GIS</a>
-        <a href="/tags.html#Python" class="writing-tag">Python</a>
-        <a href="/tags.html#GitHub%20Actions" class="writing-tag">GitHub Actions</a>
-        <a href="/tags.html#Remote%20Sensing" class="writing-tag">Remote Sensing</a>
-      </div>
-      <div class="writing-kicker">Blog · Data Engineering · GIS · Python · 12 posts</div>
-      <a href="/blog/" class="writing-title-link">
-        <h2 class="writing-hed">All Technical Posts →</h2>
-      </a>
-      <p class="writing-dek">Terrain rendering with forge3d, Python environments with pixi, Sierra streamflow dashboards, COBOL in 2026, live Kīlauea eruption tracking, archaeoastronomy at Chaco Canyon, and more.</p>
-      <a href="/blog/" class="writing-read">Browse all posts →</a>
-    </div>
-
+  <div class="tags-cta">
+    <p>Looking for something specific? Every piece across every collection is cross-indexed by topic.</p>
+    <a href="/tags.html">Browse by tag →</a>
   </div>
 
 </div>
@@ -375,8 +209,8 @@
       <a href="/">Home</a>
       <a href="/blog/">Blog</a>
       <a href="/tags.html">Tags</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub ↗</a>
     </div>
-    <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
   </div>
 </footer>
 </body>
