@@ -554,11 +554,28 @@ async function loadCycling() {
     const res = await fetch('/cycling.json?t='+Date.now());
     if (!res.ok) throw new Error();
     const data = await res.json();
+    // Self-correct stale statuses: a race whose date is well in the past can't be 'upcoming'.
+    // If the data pipeline lags, fix the label here based on today's date.
+    const today = new Date(); today.setHours(0,0,0,0);
+    data.races.forEach(r=>{
+      const d = new Date(r.date+'T12:00:00');
+      // Single-day races: if date has passed and still flagged upcoming, treat as final.
+      // (Grand tours/stage races get a ~24-day window before we call them past.)
+      const isStage = (r.category||'').toLowerCase().includes('grand tour') || (r.stages && r.stages>1);
+      const endApprox = new Date(d); endApprox.setDate(endApprox.getDate() + (isStage ? 24 : 1));
+      if(r.status==='upcoming' && d < today){
+        // race start is in the past
+        r.status = (today <= endApprox) ? 'live' : 'final';
+      }
+    });
     const live = data.races.filter(r=>r.status==='live');
     const finals = data.races.filter(r=>r.status==='final')
       .sort((a,b) => new Date(b.date) - new Date(a.date))
       .slice(0,1);
-    const upcoming = data.races.filter(r=>r.status==='upcoming').slice(0,4);
+    const upcoming = data.races
+      .filter(r=>r.status==='upcoming')
+      .sort((a,b) => new Date(a.date) - new Date(b.date))
+      .slice(0,4);
     const mono = "font-family:'DM Mono',monospace;font-size:0.46rem;color:var(--stone);font-weight:normal;";
 
     const RACE_URLS = {
