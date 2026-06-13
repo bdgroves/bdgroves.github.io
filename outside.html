@@ -121,6 +121,8 @@
     .beer-item:hover { background:var(--cream); margin:0 -0.5rem; padding-left:0.5rem; padding-right:0.5rem; }
     .beer-item:last-child { border-bottom:none; }
     .beer-thumb { width:38px; min-width:38px; height:38px; object-fit:cover; border-radius:2px; }
+    .beer-thumb-wrap { display:inline-flex; flex-shrink:0; }
+    .beer-thumb-wrap.img-failed::before { content:'🍺'; width:38px; min-width:38px; height:38px; background:var(--cream); border:1px solid var(--mist); border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
     .beer-thumb-placeholder { width:38px; min-width:38px; height:38px; background:var(--cream); border:1px solid var(--mist); border-radius:2px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0; }
     .beer-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; margin-bottom:0.1rem; line-height:1.2; }
     .beer-brewery { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); text-transform:uppercase; }
@@ -674,7 +676,7 @@ async function loadBeers() {
       let brewery=match?match[2].trim():'';
       const date=new Date(b.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
       const thumb=b.image
-        ?`<img src="${esc(b.image)}" class="beer-thumb" alt="" onerror="this.outerHTML='<div class=\\"beer-thumb-placeholder\\">🍺</div>'">`
+        ?`<span class="beer-thumb-wrap"><img src="${esc(b.image)}" class="beer-thumb" alt="" onerror="this.style.display='none';this.parentNode.classList.add('img-failed');"></span>`
         :`<div class="beer-thumb-placeholder">🍺</div>`;
       return `<a href="${esc(b.link)}" target="_blank" class="beer-item">${thumb}<div style="flex:1;"><p class="beer-name">${esc(beerName)}</p><p class="beer-brewery">${esc(brewery)}</p>${b.description?`<p class="beer-comment">"${esc(b.description)}"</p>`:''}<p class="beer-date">${esc(date)}</p></div></a>`;
     }).join('');
