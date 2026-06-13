@@ -553,8 +553,8 @@ async function loadCycling() {
     const live = data.races.filter(r=>r.status==='live');
     const finals = data.races.filter(r=>r.status==='final')
       .sort((a,b) => new Date(b.date) - new Date(a.date))
-      .slice(0,6).reverse();
-    const upcoming = data.races.filter(r=>r.status==='upcoming').slice(0,5);
+      .slice(0,1);
+    const upcoming = data.races.filter(r=>r.status==='upcoming').slice(0,4);
     const mono = "font-family:'DM Mono',monospace;font-size:0.46rem;color:var(--stone);font-weight:normal;";
 
     const RACE_URLS = {
@@ -711,7 +711,7 @@ function renderYTD(ytd) {
 
 function renderActivities(acts) {
   if(!acts||!acts.length){document.getElementById('activity-list').innerHTML='<p class="loading">No recent activities.</p>';return;}
-  document.getElementById('activity-list').innerHTML=acts.map(a=>`
+  document.getElementById('activity-list').innerHTML=acts.slice(0,5).map(a=>`
     <a href="${a.map_url}" target="_blank" class="activity-item">
       <div class="activity-icon">${a.icon}</div>
       <div><div class="activity-name">${a.name}</div>
