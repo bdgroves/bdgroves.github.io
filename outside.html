@@ -223,6 +223,8 @@
     .race-card .event-loc { font-size:0.78rem; color:var(--stone); margin-top:0.15rem; }
     .race-card .event-meta { margin-left:auto; text-align:right; flex-shrink:0; }
     .race-card .event-meta span { display:block; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); }
+    .tour-card.tour-finished { opacity:0.62; }
+    .tour-card.tour-live { box-shadow:0 0 0 2px var(--rust); }
   </style>
 </head>
 <body>
@@ -389,21 +391,21 @@
       </div>
       <div class="col-label">Grand Tours 2026</div>
       <div class="tour-cards">
-        <a href="/giro-2026.html" class="tour-card giro">
+        <a href="/giro-2026.html" class="tour-card giro" data-start="2026-05-08" data-end="2026-05-31" data-edition="109th Edition">
           <div class="tour-card-country">Italy</div>
           <div class="tour-card-name">Giro d'Italia</div>
           <div class="tour-card-dates">May 8–31 · Bulgaria → Rome · 21 stages</div>
           <div class="tour-card-status">Upcoming · 109th Edition</div>
           <div class="tour-card-cta">Stage Tracker →</div>
         </a>
-        <a href="/tdf-2026.html" class="tour-card tdf">
+        <a href="/tdf-2026.html" class="tour-card tdf" data-start="2026-07-04" data-end="2026-07-26" data-edition="113th Edition">
           <div class="tour-card-country">France</div>
           <div class="tour-card-name">Tour de France</div>
           <div class="tour-card-dates">Jul 4–26 · Barcelona → Paris · 21 stages</div>
           <div class="tour-card-status">Upcoming · 113th Edition</div>
           <div class="tour-card-cta">Stage Tracker →</div>
         </a>
-        <a href="/vuelta-2026.html" class="tour-card vuelta">
+        <a href="/vuelta-2026.html" class="tour-card vuelta" data-start="2026-08-22" data-end="2026-09-13" data-edition="81st Edition">
           <div class="tour-card-country">Spain</div>
           <div class="tour-card-name">Vuelta a España</div>
           <div class="tour-card-dates">Aug 22–Sep 13 · Monaco → Granada · 21 stages</div>
@@ -666,14 +668,15 @@ async function loadBeers() {
     const beers=data.checkins.slice(0,5);
     if(!beers.length) throw new Error();
     el.innerHTML=beers.map(b=>{
-      const match=b.title.match(/drinking an? (.+?) by\s+(.+?) at/);
-      const beerName=match?match[1].trim():b.title;
-      const brewery=match?match[2].trim():'';
+      const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      let match=b.title.match(/drinking an? (.+?) by\s+(.+?)(?:\s+at\s+.+)?$/i);
+      let beerName=match?match[1].trim():b.title.replace(/^.*?drinking an?\s+/i,'').trim();
+      let brewery=match?match[2].trim():'';
       const date=new Date(b.date).toLocaleDateString('en-US',{month:'short',day:'numeric'});
       const thumb=b.image
-        ?`<img src="${b.image}" class="beer-thumb" alt="" onerror="this.outerHTML='<div class=\\"beer-thumb-placeholder\\">🍺</div>'">`
+        ?`<img src="${esc(b.image)}" class="beer-thumb" alt="" onerror="this.outerHTML='<div class=\\"beer-thumb-placeholder\\">🍺</div>'">`
         :`<div class="beer-thumb-placeholder">🍺</div>`;
-      return `<a href="${b.link}" target="_blank" class="beer-item">${thumb}<div style="flex:1;"><p class="beer-name">${beerName}</p><p class="beer-brewery">${brewery}</p>${b.description?`<p class="beer-comment">"${b.description}"</p>`:''}<p class="beer-date">${date}</p></div></a>`;
+      return `<a href="${esc(b.link)}" target="_blank" class="beer-item">${thumb}<div style="flex:1;"><p class="beer-name">${esc(beerName)}</p><p class="beer-brewery">${esc(brewery)}</p>${b.description?`<p class="beer-comment">"${esc(b.description)}"</p>`:''}<p class="beer-date">${esc(date)}</p></div></a>`;
     }).join('');
   } catch(e) { el.innerHTML='<p class="sport-note">Check back soon.</p>'; }
 }
@@ -860,6 +863,25 @@ loadFuelcast();
 checkFortGeorge();
 checkKingsDaughters();
 setInterval(()=>{if(!document.hidden){loadMLB();loadStandings();}},5*60*1000);
+
+// Auto-set Grand Tour card status from today's date (no more hand-editing)
+(function(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  document.querySelectorAll('.tour-card[data-start]').forEach(card=>{
+    const start = new Date(card.dataset.start+'T00:00:00');
+    const end = new Date(card.dataset.end+'T23:59:59');
+    const ed = card.dataset.edition || '';
+    const statusEl = card.querySelector('.tour-card-status');
+    if(!statusEl) return;
+    let label;
+    if(today < start){ label='Upcoming'; }
+    else if(today > end){ label='Finished'; }
+    else { label='Racing now'; }
+    statusEl.textContent = ed ? `${label} · ${ed}` : label;
+    card.classList.toggle('tour-finished', today > end);
+    card.classList.toggle('tour-live', today >= start && today <= end);
+  });
+})();
 </script>
 </body>
 </html>
