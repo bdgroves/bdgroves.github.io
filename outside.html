@@ -206,6 +206,23 @@
     .fuelcast-cta { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--rust); display:flex; justify-content:space-between; align-items:center; }
     .fuelcast-loading, .fuelcast-error { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--mist); letter-spacing:0.05em; padding:0.5rem 0; }
     .fuelcast-error a { color:var(--gold); text-decoration:none; }
+    /* ZONE HEADERS — the three big territories */
+    .zone { margin-top:4rem; }
+    .zone:first-of-type { margin-top:0; }
+    .zone-header { margin-bottom:1.75rem; padding-bottom:0.9rem; border-bottom:3px solid var(--ink); }
+    .zone-title { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3.5vw,2.2rem); font-weight:900; line-height:1.1; letter-spacing:-0.01em; color:var(--ink); }
+    .zone-title em { font-style:italic; color:var(--rust); }
+    .zone-sub { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--stone); margin-top:0.5rem; }
+    .zone-grid { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; align-items:start; }
+    @media(max-width:900px) { .zone-grid { grid-template-columns:1fr; gap:0; } }
+
+    /* RACE CALENDAR — card treatment to match the rest */
+    .race-card { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--gold); padding:1rem 1.25rem; margin-bottom:0.75rem; display:flex; align-items:center; gap:1rem; text-decoration:none; color:inherit; transition:background 0.12s,border-color 0.12s; }
+    .race-card:hover { background:var(--white); border-left-color:var(--rust); }
+    .race-card .event-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; }
+    .race-card .event-loc { font-size:0.78rem; color:var(--stone); margin-top:0.15rem; }
+    .race-card .event-meta { margin-left:auto; text-align:right; flex-shrink:0; }
+    .race-card .event-meta span { display:block; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); }
   </style>
 </head>
 <body>
@@ -239,147 +256,182 @@
 
 <div class="page-content">
 
-  <div class="outside-grid">
+  <!-- ========== ZONE 1: MY SEASON ========== -->
+  <div class="zone">
+    <div class="zone-header">
+      <div class="zone-title"><em>My Season</em></div>
+      <div class="zone-sub">Racing · Training · Fueling — the year in motion</div>
+    </div>
 
-    <!-- LEFT: Scores · Seahawks · Peaks & Pints -->
-    <div>
+    <div class="zone-grid">
 
-      <div class="section-label">
-        <span>Seattle Mariners</span>
-        <a href="https://bdgroves.github.io/EDGAR" target="_blank">EDGAR ↗</a>
-      </div>
-      <div class="quick-links">
-        <a href="https://www.mlb.com/mariners" target="_blank" class="quick-link">MLB.com ↗</a>
-        <a href="https://www.mlb.com/mariners/schedule" target="_blank" class="quick-link">Schedule ↗</a>
-        <a href="https://bdgroves.github.io/EDGAR" target="_blank" class="quick-link">EDGAR ↗</a>
-      </div>
-      <div class="col-label">Recent Games</div>
-      <div id="mlb-scores"><p class="loading">Loading scores…</p></div>
-      <div class="col-label">AL West</div>
-      <div id="mlb-standings"><p class="loading">Loading standings…</p></div>
+      <!-- LEFT: Races -->
+      <div>
+        <div class="section-label">
+          <span>Race Calendar 2026</span>
+          <a href="https://www.ironman.com" target="_blank">Ironman ↗</a>
+        </div>
+        <a href="https://www.ironman.com" target="_blank" class="race-card">
+          <div>
+            <p class="event-name">Ironman World Championship</p>
+            <p class="event-loc">Nice, France</p>
+          </div>
+          <div class="event-meta"><span>Sep 6, 2026</span><span class="score-status sched">Upcoming ↗</span></div>
+        </a>
+        <a href="https://www.ironman.com/im703-washington-tri-cities" target="_blank" class="race-card">
+          <div>
+            <p class="event-name">Ironman 70.3 Washington</p>
+            <p class="event-loc">Tri-Cities, WA · Columbia River</p>
+          </div>
+          <div class="event-meta"><span>Sep 20, 2026</span><span class="score-status sched">Upcoming ↗</span></div>
+        </a>
 
-      <div class="section-label">
-        <span>Seattle Seahawks</span>
-        <a href="https://www.seahawks.com" target="_blank">seahawks.com ↗</a>
+        <div class="col-label" style="margin-top:1.5rem;">Today's Fueling</div>
+        <a href="/fuelcast.html" class="fuelcast-card" id="fuelcast-card">
+          <div class="fuelcast-loading" id="fuelcast-loading">Loading today's plan…</div>
+        </a>
       </div>
-      <div class="quick-links">
-        <a href="https://www.nfl.com/teams/seattle-seahawks" target="_blank" class="quick-link">NFL.com ↗</a>
-        <a href="https://www.seahawks.com/schedule" target="_blank" class="quick-link">Schedule ↗</a>
-        <a href="https://www.seahawks.com/roster" target="_blank" class="quick-link">Roster ↗</a>
+
+      <!-- RIGHT: Training Log -->
+      <div>
+        <div class="section-label">
+          <span>Training Log — <span id="current-year">2026</span></span>
+          <a href="https://www.strava.com/athletes/59148" target="_blank">Strava ↗</a>
+        </div>
+        <div class="quick-links">
+          <a href="https://www.strava.com/athletes/59148" target="_blank" class="quick-link">Strava Profile ↗</a>
+          <a href="https://www.ironman.com" target="_blank" class="quick-link">Ironman ↗</a>
+          <a href="https://www.ironman.com/im703-washington-tri-cities" target="_blank" class="quick-link">IM 70.3 Tri-Cities ↗</a>
+        </div>
+
+        <div class="col-label">Year to Date</div>
+        <div class="ytd-grid" id="ytd-grid">
+          <div class="ytd-card"><p class="loading">…</p></div>
+          <div class="ytd-card"></div>
+          <div class="ytd-card"></div>
+          <div class="ytd-card"></div>
+        </div>
+
+        <div class="col-label">Recent Activities</div>
+        <div class="activity-list" id="activity-list"><p class="loading">Loading activities…</p></div>
+        <a href="https://www.strava.com/athletes/59148" target="_blank" class="strava-btn">Full profile on Strava ↗</a>
+
+        <div class="col-label" style="margin-top:1.5rem;">All Time</div>
+        <div class="alltime-grid" id="alltime-grid"><p class="loading">Loading…</p></div>
+        <div class="updated-note" id="updated-note"></div>
       </div>
-      <div class="nfl-banner">
-        <div class="nfl-trophy">🏆</div>
-        <div>
-          <div class="nfl-result">Super Bowl LX Champions · 29–13</div>
-          <div class="nfl-sub">vs New England Patriots · Feb 8, 2026</div>
-          <div class="nfl-sub">MVP: Kenneth Walker III</div>
-          <div class="nfl-sub" style="margin-top:0.3rem;">2026 NFL Draft — Apr 23–25 · Green Bay</div>
+
+    </div>
+  </div>
+
+  <!-- ========== ZONE 2: THE TEAMS ========== -->
+  <div class="zone">
+    <div class="zone-header">
+      <div class="zone-title"><em>The Teams</em></div>
+      <div class="zone-sub">Mariners · Seahawks · Pro Cycling — what I'm following</div>
+    </div>
+
+    <div class="zone-grid">
+
+      <!-- LEFT: Mariners -->
+      <div>
+        <div class="section-label">
+          <span>Seattle Mariners</span>
+          <a href="https://bdgroves.github.io/EDGAR" target="_blank">EDGAR ↗</a>
+        </div>
+        <div class="quick-links">
+          <a href="https://www.mlb.com/mariners" target="_blank" class="quick-link">MLB.com ↗</a>
+          <a href="https://www.mlb.com/mariners/schedule" target="_blank" class="quick-link">Schedule ↗</a>
+          <a href="https://bdgroves.github.io/EDGAR" target="_blank" class="quick-link">EDGAR ↗</a>
+        </div>
+        <div class="col-label">Recent Games</div>
+        <div id="mlb-scores"><p class="loading">Loading scores…</p></div>
+        <div class="col-label">AL West</div>
+        <div id="mlb-standings"><p class="loading">Loading standings…</p></div>
+      </div>
+
+      <!-- RIGHT: Seahawks -->
+      <div>
+        <div class="section-label">
+          <span>Seattle Seahawks</span>
+          <a href="https://www.seahawks.com" target="_blank">seahawks.com ↗</a>
+        </div>
+        <div class="quick-links">
+          <a href="https://www.nfl.com/teams/seattle-seahawks" target="_blank" class="quick-link">NFL.com ↗</a>
+          <a href="https://www.seahawks.com/schedule" target="_blank" class="quick-link">Schedule ↗</a>
+          <a href="https://www.seahawks.com/roster" target="_blank" class="quick-link">Roster ↗</a>
+        </div>
+        <div class="nfl-banner">
+          <div class="nfl-trophy">🏆</div>
+          <div>
+            <div class="nfl-result">Super Bowl LX Champions · 29–13</div>
+            <div class="nfl-sub">vs New England Patriots · Feb 8, 2026</div>
+            <div class="nfl-sub">MVP: Kenneth Walker III</div>
+            <div class="nfl-sub" style="margin-top:0.3rem;">2026 NFL Draft — Apr 23–25 · Green Bay</div>
+          </div>
         </div>
       </div>
 
-      <div class="section-label">
-        <span>Race Calendar 2026</span>
-      </div>
-      <a href="https://www.ironman.com" target="_blank" class="event-row" style="text-decoration:none;color:inherit;display:flex;transition:background 0.1s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-        <div style="flex:1;"><p class="event-name">Ironman World Championship</p><p class="event-loc">Nice, France</p></div>
-        <div class="event-meta"><span>Sep 6, 2026</span><span class="score-status sched">Upcoming ↗</span></div>
-      </a>
-      <a href="https://www.ironman.com/im703-washington-tri-cities" target="_blank" class="event-row" style="text-decoration:none;color:inherit;display:flex;transition:background 0.1s;" onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background=''">
-        <div style="flex:1;"><p class="event-name">Ironman 70.3 Washington</p><p class="event-loc">Tri-Cities, WA · Columbia River</p></div>
-        <div class="event-meta"><span>Sep 20, 2026</span><span class="score-status sched">Upcoming ↗</span></div>
-      </a>
-
     </div>
 
-    <!-- RIGHT: Training + Beer -->
-    <div>
-
+    <!-- Pro Cycling — full width within the zone -->
+    <div style="margin-top:2.5rem;">
       <div class="section-label">
-        <span>Training Log — <span id="current-year">2026</span></span>
-        <a href="https://www.strava.com/athletes/59148" target="_blank">Strava ↗</a>
+        <span>Pro Cycling</span>
+        <a href="https://www.cyclingnews.com" target="_blank">Cyclingnews ↗</a>
       </div>
       <div class="quick-links">
-        <a href="https://www.strava.com/athletes/59148" target="_blank" class="quick-link">Strava Profile ↗</a>
-        <a href="https://www.ironman.com" target="_blank" class="quick-link">Ironman ↗</a>
-        <a href="https://www.ironman.com/im703-washington-tri-cities" target="_blank" class="quick-link">IM 70.3 Tri-Cities ↗</a>
+        <a href="https://www.procyclingstats.com" target="_blank" class="quick-link">PCS Stats ↗</a>
+        <a href="https://www.cyclingnews.com" target="_blank" class="quick-link">Cycling News ↗</a>
+        <a href="https://www.velonews.com" target="_blank" class="quick-link">VeloNews ↗</a>
+        <a href="https://www.letour.fr" target="_blank" class="quick-link">Tour de France ↗</a>
+        <a href="https://www.giroditalia.it" target="_blank" class="quick-link">Giro d'Italia ↗</a>
       </div>
-
-      <div class="col-label">Year to Date</div>
-      <div class="ytd-grid" id="ytd-grid">
-        <div class="ytd-card"><p class="loading">…</p></div>
-        <div class="ytd-card"></div>
-        <div class="ytd-card"></div>
-        <div class="ytd-card"></div>
+      <div class="col-label">Grand Tours 2026</div>
+      <div class="tour-cards">
+        <a href="/giro-2026.html" class="tour-card giro">
+          <div class="tour-card-country">Italy</div>
+          <div class="tour-card-name">Giro d'Italia</div>
+          <div class="tour-card-dates">May 8–31 · Bulgaria → Rome · 21 stages</div>
+          <div class="tour-card-status">Upcoming · 109th Edition</div>
+          <div class="tour-card-cta">Stage Tracker →</div>
+        </a>
+        <a href="/tdf-2026.html" class="tour-card tdf">
+          <div class="tour-card-country">France</div>
+          <div class="tour-card-name">Tour de France</div>
+          <div class="tour-card-dates">Jul 4–26 · Barcelona → Paris · 21 stages</div>
+          <div class="tour-card-status">Upcoming · 113th Edition</div>
+          <div class="tour-card-cta">Stage Tracker →</div>
+        </a>
+        <a href="/vuelta-2026.html" class="tour-card vuelta">
+          <div class="tour-card-country">Spain</div>
+          <div class="tour-card-name">Vuelta a España</div>
+          <div class="tour-card-dates">Aug 22–Sep 13 · Monaco → Granada · 21 stages</div>
+          <div class="tour-card-status">Upcoming · 81st Edition</div>
+          <div class="tour-card-cta">Stage Tracker →</div>
+        </a>
       </div>
-
-      <div class="col-label">Recent Activities</div>
-      <div class="activity-list" id="activity-list"><p class="loading">Loading activities…</p></div>
-      <a href="https://www.strava.com/athletes/59148" target="_blank" class="strava-btn">Full profile on Strava ↗</a>
-
-      <div class="col-label" style="margin-top:1.5rem;">Today's Fueling</div>
-      <a href="/fuelcast.html" class="fuelcast-card" id="fuelcast-card">
-        <div class="fuelcast-loading" id="fuelcast-loading">Loading today's plan…</div>
-      </a>
-
-      <div class="col-label" style="margin-top:1.5rem;">All Time</div>
-      <div class="alltime-grid" id="alltime-grid"><p class="loading">Loading…</p></div>
-      <div class="updated-note" id="updated-note"></div>
-
-    </div>
-  </div>
-
-  <!-- FULL WIDTH: CYCLING -->
-  <div style="margin-top:3rem;padding-top:0;">
-    <div class="section-label">
-      <span>Pro Cycling</span>
-      <a href="https://www.cyclingnews.com" target="_blank">Cyclingnews ↗</a>
-    </div>
-    <div class="quick-links">
-      <a href="https://www.procyclingstats.com" target="_blank" class="quick-link">PCS Stats ↗</a>
-      <a href="https://www.cyclingnews.com" target="_blank" class="quick-link">Cycling News ↗</a>
-      <a href="https://www.velonews.com" target="_blank" class="quick-link">VeloNews ↗</a>
-      <a href="https://www.letour.fr" target="_blank" class="quick-link">Tour de France ↗</a>
-      <a href="https://www.giroditalia.it" target="_blank" class="quick-link">Giro d'Italia ↗</a>
-    </div>
-    <div class="col-label">Grand Tours 2026</div>
-    <div class="tour-cards">
-      <a href="/giro-2026.html" class="tour-card giro">
-        <div class="tour-card-country">Italy</div>
-        <div class="tour-card-name">Giro d'Italia</div>
-        <div class="tour-card-dates">May 8–31 · Bulgaria → Rome · 21 stages</div>
-        <div class="tour-card-status">Upcoming · 109th Edition</div>
-        <div class="tour-card-cta">Stage Tracker →</div>
-      </a>
-      <a href="/tdf-2026.html" class="tour-card tdf">
-        <div class="tour-card-country">France</div>
-        <div class="tour-card-name">Tour de France</div>
-        <div class="tour-card-dates">Jul 4–26 · Barcelona → Paris · 21 stages</div>
-        <div class="tour-card-status">Upcoming · 113th Edition</div>
-        <div class="tour-card-cta">Stage Tracker →</div>
-      </a>
-      <a href="/vuelta-2026.html" class="tour-card vuelta">
-        <div class="tour-card-country">Spain</div>
-        <div class="tour-card-name">Vuelta a España</div>
-        <div class="tour-card-dates">Aug 22–Sep 13 · Monaco → Granada · 21 stages</div>
-        <div class="tour-card-status">Upcoming · 81st Edition</div>
-        <div class="tour-card-cta">Stage Tracker →</div>
-      </a>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-top:2rem;">
-      <div>
-        <div class="col-label" style="margin-top:0;">Recent Races</div>
-        <div id="cycling-races"><p class="loading">Loading races…</p></div>
-      </div>
-      <div>
-        <div class="col-label" style="margin-top:0;">Latest News</div>
-        <div id="cycling-news"><p class="loading">Loading news…</p></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:2rem;">
+        <div>
+          <div class="col-label" style="margin-top:0;">Recent Races</div>
+          <div id="cycling-races"><p class="loading">Loading races…</p></div>
+        </div>
+        <div>
+          <div class="col-label" style="margin-top:0;">Latest News</div>
+          <div id="cycling-news"><p class="loading">Loading news…</p></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- BEER -->
-  <div style="margin-top:3rem;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;">
+  <!-- ========== ZONE 3: THE TAPROOM ========== -->
+  <div class="zone">
+    <div class="zone-header">
+      <div class="zone-title"><em>The Taproom</em></div>
+      <div class="zone-sub">Untappd · Peaks &amp; Pints — what's in the glass</div>
+    </div>
+
+    <div class="zone-grid">
       <div>
         <div class="section-label">
           <span>Recent Check-ins</span>
