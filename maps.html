@@ -453,6 +453,9 @@ const COUNTRIES = [
   { name:'Cascadia', flag:'🌲', lat:47.5, lng:-121.5, wiki:'https://en.wikipedia.org/wiki/Cascadia_(independence_movement)', note:'Not internationally recognized', airport:false },
   { name:'Jefferson', flag:'⛏️', lat:41.5, lng:-122.5, wiki:'https://en.wikipedia.org/wiki/State_of_Jefferson', note:'Not internationally recognized', airport:false },
   { name:'Kingdom of Hawaii', flag:'🏝️', lat:19.6, lng:-155.5, wiki:'https://en.wikipedia.org/wiki/Hawaiian_Kingdom', note:'Not internationally recognized', airport:false },
+  // SOVEREIGN TRIBAL NATIONS — visited
+  { name:'Navajo Nation', flag:'🟡', lat:35.6790, lng:-109.0674, wiki:'https://en.wikipedia.org/wiki/Navajo_Nation', note:'Sovereign tribal nation · Window Rock, capital', airport:false, tribal:true },
+  { name:'Makah Nation', flag:'🐋', lat:48.3686, lng:-124.6242, wiki:'https://en.wikipedia.org/wiki/Makah', note:'Sovereign tribal nation · Neah Bay · Cape Flattery', airport:false, tribal:true },
 ];
 
 const travelLayer = L.layerGroup();
@@ -464,7 +467,9 @@ COUNTRIES.forEach(c => {
   // gold = visited, grey = airport only, blue = home (USA),
   // green = fun/unrecognized
   let fillColor, label;
-  if (FUN.includes(c.name)) {
+  if (c.tribal) {
+    fillColor = '#9a6b3a'; label = 'Sovereign tribal nation';
+  } else if (FUN.includes(c.name)) {
     fillColor = '#4a5c45'; label = 'Not internationally recognized';
   } else if (c.airport) {
     fillColor = '#7a7268'; label = 'Airport transit only';
@@ -498,7 +503,8 @@ COUNTRIES.forEach(c => {
 
 // Stats note in coming-soon panel
 const FUN_NAMES = ['Conch Republic','Cascadia','Jefferson','Kingdom of Hawaii'];
-const visitedCount = COUNTRIES.filter(c => !c.airport && !FUN_NAMES.includes(c.name)).length;
+const visitedCount = COUNTRIES.filter(c => !c.airport && !FUN_NAMES.includes(c.name) && !c.tribal).length;
+const tribalCount = COUNTRIES.filter(c => c.tribal).length;
 const airportCount = COUNTRIES.filter(c => c.airport).length;
 document.querySelector('.coming-soon-panel').innerHTML +=
   `<div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--mist);">
@@ -512,6 +518,9 @@ document.querySelector('.coming-soon-panel').innerHTML +=
       </div>
       <div style="display:flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);">
         <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#2a4a7a;border:1.5px solid #1c1a16;flex-shrink:0;"></span> Home
+      </div>
+      <div style="display:flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);">
+        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#9a6b3a;border:1.5px solid #1c1a16;flex-shrink:0;"></span> Sovereign tribal nation (${tribalCount})
       </div>
       <div style="display:flex;align-items:center;gap:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);">
         <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a5c45;border:1.5px solid #1c1a16;flex-shrink:0;"></span> Not internationally recognized
