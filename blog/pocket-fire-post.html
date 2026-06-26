@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Pocket Fire Will Not Go Quietly — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+
+  <!-- Open Graph / Twitter Card -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The Pocket Fire Will Not Go Quietly — Brooks Groves">
+  <meta property="og:description" content="1,467 acres. 0% contained. 969 personnel. A GIS-powered field report on the Pocket Fire burning 7 miles north of Sedona, AZ. Red Flag Warning in effect through Sunday.">
+  <meta property="og:url" content="https://brooksgroves.com/blog/pocket-fire-post.html">
+  <meta property="og:image" content="https://brooksgroves.com/images/pocket-fire-map.png">
+  <meta property="og:site_name" content="Brooks Groves">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <meta name="twitter:creator" content="@bdgroves">
+  <meta name="twitter:title" content="🔥 The Pocket Fire Will Not Go Quietly">
+  <meta name="twitter:description" content="1,467 acres · 0% contained · 969 personnel · Red Flag Warning in effect. GIS field report — live data from NIFC, QGIS, and ArcGIS Pro.">
+  <meta name="twitter:image" content="https://brooksgroves.com/images/pocket-fire-map.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --storm:#2a5a8a; --deep:#1e2d44; --fire:#c0392b;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+
+    .topline { height:4px; background:linear-gradient(90deg,var(--deep) 0%,var(--storm) 40%,var(--fire) 75%,var(--gold) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--storm); }
+    nav a.live { border:1px solid var(--fire); padding:0.3rem 0.7rem; color:var(--fire); animation:pulse-border 2s infinite; }
+    nav a.live:hover { background:var(--fire); color:var(--white); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+    @keyframes pulse-border { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--storm); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--fire); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-deck { font-family:'Libre Baskerville',serif; font-size:1.1rem; font-style:italic; color:var(--stone); line-height:1.6; margin-bottom:1.25rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:1.5rem; border-bottom:1px solid var(--mist); margin-bottom:2rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+    /* ── STAT STRIP ── */
+    .stat-strip { display:grid; grid-template-columns:repeat(5,1fr); border:1.5px solid var(--ink); margin:2rem 0; }
+    .stat-cell { padding:14px 10px; border-right:1px solid var(--mist); text-align:center; }
+    .stat-cell:last-child { border-right:none; }
+    .stat-cell.alert { background:var(--fire); color:var(--white); }
+    .stat-num { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; line-height:1; display:block; }
+    .stat-cell.alert .stat-num { color:#fde8e4; }
+    .stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-top:4px; display:block; }
+    .stat-cell.alert .stat-lbl { color:rgba(255,255,255,0.75); }
+
+    /* ── ARTICLE BODY ── */
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--fire); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--deep); }
+    .article-body blockquote { border-left:3px solid var(--fire); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body blockquote cite { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; font-style:normal; display:block; margin-top:0.5rem; color:var(--stone); }
+    .article-body a { color:var(--storm); text-decoration:underline; text-underline-offset:3px; }
+    .article-body strong { font-weight:700; }
+
+    /* ── RED FLAG BOX ── */
+    .red-flag { background:var(--fire); color:var(--white); padding:1.25rem 1.5rem; margin:1.75rem 0; }
+    .red-flag h3 { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:900; margin-bottom:0.75rem; }
+    .red-flag p, .red-flag li { font-size:0.9rem; line-height:1.6; color:rgba(255,255,255,0.92); }
+    .red-flag ul { list-style:none; margin-top:0.5rem; }
+    .red-flag li { padding:0.2rem 0; }
+    .red-flag li::before { content:'⚑ '; font-size:0.7rem; }
+    .red-flag p + p { margin-top:0.75rem; }
+
+    /* ── DATA TABLE ── */
+    .data-table { width:100%; border-collapse:collapse; margin:1.75rem 0; font-size:0.88rem; }
+    .data-table th { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; background:var(--ink); color:var(--white); padding:8px 12px; text-align:left; }
+    .data-table td { padding:7px 12px; border-bottom:1px solid var(--mist); }
+    .data-table tr:nth-child(even) td { background:var(--cream); }
+    .data-table .val-alert { color:var(--fire); font-weight:700; }
+    .data-table .val-ok { color:var(--storm); }
+
+    /* ── TIMELINE ── */
+    .timeline { margin:1.75rem 0; border-left:2px solid var(--mist); padding-left:1.5rem; }
+    .tl-item { position:relative; margin-bottom:1.25rem; }
+    .tl-item::before { content:''; position:absolute; left:-1.65rem; top:0.4rem; width:8px; height:8px; border-radius:50%; background:var(--fire); border:2px solid var(--parchment); }
+    .tl-date { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--fire); margin-bottom:0.2rem; }
+    .tl-text { font-size:0.9rem; line-height:1.6; color:var(--ink); }
+
+    /* ── MAP FIGURE ── */
+    .map-figure { margin:1.75rem 0; border:2px solid var(--ink); }
+    .map-figure img { width:100%; display:block; }
+    .map-caption { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); padding:0.5rem 0; text-transform:uppercase; }
+
+    /* ── CLOSURES BOX ── */
+    .closures { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--gold); padding:1.25rem 1.5rem; margin:1.75rem 0; }
+    .closures h3 { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+    .closures ul { list-style:none; font-size:0.9rem; line-height:1.8; }
+    .closures li::before { content:'▸ '; color:var(--fire); font-size:0.7rem; }
+
+    /* ── CONTACTS BOX ── */
+    .contacts { background:var(--ink); color:var(--white); padding:1.25rem 1.5rem; margin:1.75rem 0; }
+    .contacts h3 { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
+    .contacts-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.4rem 1.5rem; font-size:0.85rem; }
+    .contact-lbl { color:rgba(255,255,255,0.5); font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; }
+    .contact-val { color:var(--white); }
+    .contact-val a { color:var(--gold); text-decoration:none; }
+
+    /* ── SHARE BAR ── */
+    .share-bar { display:flex; align-items:center; gap:0.75rem; padding:1.5rem 0; border-top:1px solid var(--mist); border-bottom:1px solid var(--mist); margin:2rem 0; flex-wrap:wrap; }
+    .share-lbl { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-right:0.25rem; }
+    .share-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; border:1px solid var(--mist); padding:0.4rem 0.9rem; color:var(--ink); background:transparent; cursor:pointer; display:inline-block; transition:all 0.15s; }
+    .share-btn:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+    .share-btn.tw { border-color:#1DA1F2; color:#1DA1F2; }
+    .share-btn.tw:hover { background:#1DA1F2; color:#fff; border-color:#1DA1F2; }
+    .share-btn.bsky { border-color:#0085ff; color:#0085ff; }
+    .share-btn.bsky:hover { background:#0085ff; color:#fff; border-color:#0085ff; }
+
+    /* ── LIVE BADGE ── */
+    .live-badge { display:inline-flex; align-items:center; gap:0.5rem; background:var(--ink); color:var(--white); font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; padding:0.4rem 0.8rem; margin:0.5rem 0 1.5rem; text-decoration:none; }
+    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--fire); animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    /* ── FOOTER ── */
+    footer { border-top:2px solid var(--ink); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:900; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--storm); }
+    .footer-copy { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.08em; }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a class="site-name" href="https://brooksgroves.com">Brooks Groves</a>
+    <nav>
+      <a href="https://brooksgroves.com/blog/">Blog</a>
+      <a href="https://brooksgroves.com/geospatial.html">Geospatial</a>
+      <a href="https://brooksgroves.com/meteorology.html">Meteorology</a>
+      <a href="https://brooksgroves.com/maps.html">Maps</a>
+      <a href="https://brooksgroves.com/about.html">About</a>
+      <a class="live" href="https://ein.az.gov/" target="_blank">⚑ Pocket Fire Live</a>
+      <a class="github" href="https://github.com/bdgroves" target="_blank">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main class="article-wrap">
+
+  <a class="article-back" href="https://brooksgroves.com/blog/">← Back to Blog</a>
+
+  <div class="article-kicker">🔥 Wildfire · GIS Field Report · Coconino National Forest · June 26, 2026</div>
+
+  <h1 class="article-title">The Pocket Fire<br>Will Not Go Quietly</h1>
+
+  <p class="article-deck">Seven miles from Sedona's doorstep, 1,467 acres of ancient canyon country are burning. Nearly a thousand firefighters are holding the line — and a Red Flag Weekend threatens to undo their work.</p>
+
+  <div class="article-meta">
+    <span>By Brooks Groves</span>
+    <span>GIS Analyst · GISP</span>
+    <span>June 26, 2026 — 7:00 a.m. MST</span>
+  </div>
+
+  <div class="article-tags">
+    <a class="article-tag-pill" href="https://brooksgroves.com/tags.html#wildfire">Wildfire</a>
+    <a class="article-tag-pill" href="https://brooksgroves.com/tags.html#geospatial">Geospatial</a>
+    <a class="article-tag-pill" href="https://brooksgroves.com/tags.html#arizona">Arizona</a>
+    <a class="article-tag-pill" href="https://brooksgroves.com/tags.html#qgis">QGIS</a>
+    <a class="article-tag-pill" href="https://brooksgroves.com/tags.html#arcgis">ArcGIS Pro</a>
+    <a class="article-tag-pill" href="https://brooksgroves.com/tags.html#nifc">NIFC</a>
+    <a class="article-tag-pill" href="https://brooksgroves.com/tags.html#sedona">Sedona</a>
+  </div>
+
+  <a class="live-badge" href="https://ein.az.gov/" target="_blank">
+    <span class="live-dot"></span>
+    Live incident updates — Arizona Emergency Information Network
+  </a>
+
+  <!-- STAT STRIP -->
+  <div class="stat-strip">
+    <div class="stat-cell alert">
+      <span class="stat-num">1,467</span>
+      <span class="stat-lbl">Acres Burned</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">0%</span>
+      <span class="stat-lbl">Contained</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">969</span>
+      <span class="stat-lbl">Personnel</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">—</span>
+      <span class="stat-lbl">Injuries (unconfirmed)</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">Day 7</span>
+      <span class="stat-lbl">Since Discovery</span>
+    </div>
+  </div>
+
+  <!-- SHARE BAR -->
+  <div class="share-bar">
+    <span class="share-lbl">Share</span>
+    <a class="share-btn tw"
+       href="https://twitter.com/intent/tweet?text=%F0%9F%94%A5%20The%20Pocket%20Fire%20Will%20Not%20Go%20Quietly%20%E2%80%94%201%2C467%20acres%2C%200%25%20contained%2C%20969%20personnel.%20Red%20Flag%20Warning%20in%20effect.%20GIS%20field%20report%20by%20%40bdgroves&url=https%3A%2F%2Fbrooksgroves.com%2Fblog%2Fpocket-fire-post.html&hashtags=PocketFire%2CSedona%2CWildfire%2CGeoSpatial"
+       target="_blank" rel="noopener">𝕏 Post to X</a>
+    <a class="share-btn bsky"
+       href="https://bsky.app/intent/compose?text=%F0%9F%94%A5%20The%20Pocket%20Fire%20Will%20Not%20Go%20Quietly%20%E2%80%94%201%2C467%20acres%2C%200%25%20contained.%20Red%20Flag%20Warning%20in%20effect%20through%20Sunday.%20GIS%20field%20report%3A%20https%3A%2F%2Fbrooksgroves.com%2Fblog%2Fpocket-fire-post.html%20%23PocketFire%20%23Sedona"
+       target="_blank" rel="noopener">🦋 Bluesky</a>
+    <button class="share-btn" onclick="navigator.clipboard.writeText('https://brooksgroves.com/blog/pocket-fire-post.html').then(()=>{this.textContent='✓ Copied!'})">📋 Copy Link</button>
+  </div>
+
+  <!-- ARTICLE BODY -->
+  <div class="article-body">
+
+    <p>The Pocket Fire, burning in the rugged Red Rock–Secret Mountain Wilderness seven miles north of Sedona, grew overnight to 1,467 acres Friday morning with zero percent containment — up from 1,187 acres the night before. Weather conditions that suppression crews have been dreading all week are now arriving: the National Weather Service issued a Red Flag Warning running Friday through Sunday, with gusts forecast to reach 45 miles per hour, humidity diving below 15 percent, and no rain in sight.</p>
+
+    <p>The fire was first spotted around 5:30 p.m. on Friday, June 19, near the Coconino–Yavapai county line northwest of Indian Gardens. Its cause remains officially undetermined. Within hours, Coconino County issued a GO evacuation order for all Oak Creek Canyon residents and visitors from Sedona to Forest Highlands, and Sedona police sealed northbound State Route 89A at Owenby Way.</p>
+
+    <blockquote>
+      "The potential for growth continues to be very high. Steep, difficult terrain prevented ground support — the fire remains very active."
+      <cite>— Southwest Complex Incident Management Team 2</cite>
+    </blockquote>
+
+    <p>Southwest Area Incident Management Team 2 assumed command of the fire, inheriting a battlefield defined by geography. The Mogollon Rim's broken terrain — sheer canyon walls, talus slopes, and choke points in continuous fuel — has consistently prevented crews from mounting a direct attack without undue risk to life. Aircraft have been the primary weapon: 90 percent of the fire area has been treated with aerial retardant drops, with six helicopters staging out of Sedona Airport around the clock. The historic East Pocket Lookout, a beloved landmark on the rim above the canyon, has been successfully protected.</p>
+
+    <div class="red-flag">
+      <h3>⚑ Red Flag Warning — What It Means This Weekend</h3>
+      <p>Red Flag conditions occur when fire can spread catastrophically fast. This weekend's forecast meets all three trigger criteria simultaneously:</p>
+      <ul>
+        <li>Relative humidity at or below 15% for three or more hours</li>
+        <li>Sustained winds 20+ mph, gusts exceeding 35–45 mph</li>
+        <li>10-hour fuel moisture at 7.8% — drier than kiln-dried framing lumber</li>
+      </ul>
+      <p>The incident management team's primary concern: winds pushing the fire north up to the rim of the San Francisco Plateau, where wind-carried embers could ignite spot fires beyond current perimeter lines.</p>
+    </div>
+
+    <h2>Operations on the Ground</h2>
+
+    <p>Crews spent Thursday widening and reinforcing containment lines in preparation for the weekend's weather. On the north side of the fire, mechanical equipment extended breaks toward the plateau rim. To the south, scouts identified a natural choke point where two rocky ridges nearly converge, cutting a saw line across the gap — a potential helicopter-supported suppression point if the fire pushes that direction.</p>
+
+    <p>Wednesday night's firing operations — intentionally set burns to deprive the main fire of fuel — produced a dramatic increase in smoke visible across the Verde Valley. A shift in southerly winds that same evening pushed that smoke directly into Sedona, obscuring the iconic red rock formations with a thick haze and filling the city's streets with the smell of burning pinyon and juniper. Wednesday's brief rain had little measurable effect on the fire's advance.</p>
+
+    <div class="map-figure">
+      <img src="../images/pocket-fire-map.png"
+           alt="Pocket Fire map — QGIS live data showing fire perimeter, evacuation zone, MODIS thermal hotspots and Coconino National Forest">
+    </div>
+    <p class="map-caption">▲ Map rendered live from QGIS — Pocket Fire perimeter (orange), SET evacuation zone (dashed), MODIS 48-hr thermal hotspots (triangles), Coconino National Forest (green). Sedona visible bottom-center. SR-89A runs north–south through Oak Creek Canyon. Source: NIFC / MODIS / USFS / OpenStreetMap · June 26, 2026</p>
+
+    <h2>Evacuations &amp; Community Impact</h2>
+
+    <p>Evacuation orders were downgraded earlier this week — around June 22–23 — from GO to SET for Oak Creek Canyon residents, a cautious improvement that nonetheless leaves the canyon largely sealed to the public. State Route 89A remains closed to non-residents in both directions between mileposts 374 and 397. Residents returning to their properties must present proof of identity and residency at checkpoints. Coconino County Sheriff's deputies are staffing the highway closure around the clock.</p>
+
+    <p>An emergency shelter operated by the American Red Cross Arizona remains open at Sedona Red Rock High School, 995 Upper Red Rock Loop Road. High Country Humane has partnered with Coconino County to temporarily house small pets for shelter residents. All campgrounds, day-use areas, and trails within Oak Creek Canyon remain closed, as does Lake Mary, which has been restricted to support helicopter water operations.</p>
+
+    <p>Sedona's interim Mayor Holli Ploog visited the fire camp on Monday, June 22, and addressed crews personally. "There are 432 selfless individuals currently working tirelessly to suppress this fire and ensure it does not spread south to Sedona," she said at that time, speaking also to the deep historical significance of Oak Creek Canyon to the native tribes and pioneer families who shaped the region. Personnel have since grown to 969 as the incident escalated through the week.</p>
+
+    <p>A public meeting, originally scheduled for Saturday in Sedona, has been moved to 7 p.m., Monday, June 29, at Sedona Red Rock Middle School and High School, 995 Upper Red Rock Loop Road. The meeting will also be live-streamed on the Coconino National Forest's Facebook page.</p>
+
+    <div class="closures">
+      <h3>Active Closures &amp; Orders — June 26, 2026</h3>
+      <ul>
+        <li>SR-89A closed to public (mileposts 374–397) — residents with proof of residency only</li>
+        <li>Woody Mountain Road (Forest Road 231) closed</li>
+        <li>Oak Creek Canyon — residents only, proof of identity required</li>
+        <li>All Oak Creek Canyon campgrounds, day-use sites, and trails closed</li>
+        <li>Lake Mary closed to recreation (helicopter water ops)</li>
+        <li>Coconino National Forest closure order in effect around fire perimeter</li>
+        <li>Temporary drone flight restriction active — do not fly</li>
+      </ul>
+    </div>
+
+    <h2>Fuel Conditions &amp; Historical Context</h2>
+
+    <p>The Pocket Fire burns primarily in timber and brush with a grass-and-understory fuel model — the dense, layered vegetation of a canyon system that has absorbed years of fire-suppression policy. The 10-hour fuel moisture reading of 7.8 percent recorded Thursday afternoon underscores just how combustible the landscape has become: kiln-dried framing lumber, by comparison, holds 12–19 percent moisture. Under Red Flag conditions, these fuels can carry fire faster than crews can reposition.</p>
+
+    <p>The fire's position in the Red Rock–Secret Mountain Wilderness adds a layer of legal and logistical complexity. Mechanized equipment faces restrictions in designated wilderness areas, limiting the tools available to crews. The terrain itself — the same dramatic escarpments that draw millions of visitors to Sedona each year — becomes an adversary when it channels wind, hides spot fires, and prevents vehicle access.</p>
+
+    <h2>Incident Data</h2>
+
+    <table class="data-table">
+      <tr><th>Field</th><th>Value</th></tr>
+      <tr><td>Fire Name</td><td>Pocket</td></tr>
+      <tr><td>Unique ID</td><td>2026-AZCOF-000781</td></tr>
+      <tr><td>Discovery Date</td><td>June 19, 2026 (~5:30 p.m. MST)</td></tr>
+      <tr><td>Location</td><td>7 miles north of Sedona, AZ</td></tr>
+      <tr><td>County</td><td>Yavapai / Coconino</td></tr>
+      <tr><td>Daily Acres</td><td class="val-alert">1,467</td></tr>
+      <tr><td>Contained</td><td class="val-alert">0%</td></tr>
+      <tr><td>Personnel</td><td>969</td></tr>
+      <tr><td>Injuries</td><td>Not confirmed in official releases</td></tr>
+      <tr><td>Structures Destroyed</td><td class="val-ok">None reported</td></tr>
+      <tr><td>Cause</td><td>Undetermined</td></tr>
+      <tr><td>Primary Fuel</td><td>Timber / Grass &amp; Understory</td></tr>
+      <tr><td>GACC</td><td>Southwest Coordination Center (SWCC)</td></tr>
+      <tr><td>Management Team</td><td>SW Complex Incident Management Team 2</td></tr>
+      <tr><td>Severity Class</td><td class="val-alert">HIGH (GIS analysis)</td></tr>
+    </table>
+
+    <h2>Fire Timeline</h2>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-date">Jun 19</div>
+        <div class="tl-text">Fire reported ~5:30 p.m. near Coconino–Yavapai county line. GO evacuation order issued for Oak Creek Canyon. SR-89A sealed at both ends.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Jun 20</div>
+        <div class="tl-text">Red Cross shelter opens at Red Rock High School. Fire mapped at 257 acres. Six helicopters staging at Sedona Airport.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Jun 21</div>
+        <div class="tl-text">SW Complex IMT 2 takes command. 7 Hotshot crews, 13 engines, 6 helicopters assigned. 90% of fire area treated with aerial retardant.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Jun 22–23</div>
+        <div class="tl-text">Evacuation order downgraded from GO to SET. SR-89A reopened to residents with proof of residency. Mayor Ploog visits fire camp.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Jun 24</div>
+        <div class="tl-text">Firing operations increase smoke significantly. Southerly winds push haze into Sedona. Brief rain has no measurable effect on fire.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Jun 25</div>
+        <div class="tl-text">Fire at 1,187 acres. Crews reinforce lines ahead of weekend Red Flag. Public meeting held in Flagstaff at Sinagua Middle School.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-date">Jun 26</div>
+        <div class="tl-text">Fire grows to 1,467 acres overnight. Red Flag Warning issued Friday through Sunday. Gusts to 45 mph forecast. Public Sedona meeting moved to June 29.</div>
+      </div>
+    </div>
+
+    <div class="contacts">
+      <h3>Resources &amp; Emergency Contacts</h3>
+      <div class="contacts-grid">
+        <div><div class="contact-lbl">Fire Info Line</div><div class="contact-val">928-260-0543</div></div>
+        <div><div class="contact-lbl">Email</div><div class="contact-val"><a href="mailto:2026.pocket@firenet.gov">2026.pocket@firenet.gov</a></div></div>
+        <div><div class="contact-lbl">Sheriff (evac questions)</div><div class="contact-val">928-774-4523</div></div>
+        <div><div class="contact-lbl">Road closures</div><div class="contact-val"><a href="https://az511.com" target="_blank">az511.com</a></div></div>
+        <div><div class="contact-lbl">Evac map</div><div class="contact-val"><a href="https://coconino.az.gov/ready" target="_blank">coconino.az.gov/ready</a></div></div>
+        <div><div class="contact-lbl">Red Cross shelter</div><div class="contact-val">Red Rock HS · 995 Upper Red Rock Loop Rd</div></div>
+        <div><div class="contact-lbl">Public meeting</div><div class="contact-val">June 29 · 7 p.m. · Sedona RRHS</div></div>
+        <div><div class="contact-lbl">Live stream</div><div class="contact-val"><a href="https://facebook.com/CoconinoNF" target="_blank">facebook.com/CoconinoNF</a></div></div>
+      </div>
+    </div>
+
+    <hr>
+    <p style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);letter-spacing:0.08em;">
+      <strong>Data sources:</strong> NIFC WFIGS Active Wildfires · Arizona Emergency Information Network (ein.az.gov) · Coconino National Forest · MODIS Thermal (48-hr) · U.S. Census TIGER 2023 · OpenStreetMap · ArcGIS Pro 3.5 live session · QGIS 4.0. Map generated June 26, 2026 via QGIS MCP bridge. Incident data pulled via ArcGIS Pro MCP bridge. All acreage and containment figures reflect morning briefing of June 26, 2026.
+    </p>
+
+  </div><!-- /article-body -->
+
+  <!-- SHARE BAR (bottom) -->
+  <div class="share-bar">
+    <span class="share-lbl">Share this report</span>
+    <a class="share-btn tw"
+       href="https://twitter.com/intent/tweet?text=%F0%9F%94%A5%20The%20Pocket%20Fire%20Will%20Not%20Go%20Quietly%20%E2%80%94%201%2C467%20acres%2C%200%25%20contained%2C%20969%20personnel.%20Red%20Flag%20Warning%20in%20effect.%20GIS%20field%20report%20by%20%40bdgroves&url=https%3A%2F%2Fbrooksgroves.com%2Fblog%2Fpocket-fire-post.html&hashtags=PocketFire%2CSedona%2CWildfire%2CGeoSpatial"
+       target="_blank" rel="noopener">𝕏 Post to X</a>
+    <a class="share-btn bsky"
+       href="https://bsky.app/intent/compose?text=%F0%9F%94%A5%20The%20Pocket%20Fire%20Will%20Not%20Go%20Quietly%20%E2%80%94%201%2C467%20acres%2C%200%25%20contained.%20Red%20Flag%20Warning%20in%20effect%20through%20Sunday.%20GIS%20field%20report%3A%20https%3A%2F%2Fbrooksgroves.com%2Fblog%2Fpocket-fire-post.html%20%23PocketFire%20%23Sedona"
+       target="_blank" rel="noopener">🦋 Bluesky</a>
+    <button class="share-btn" onclick="navigator.clipboard.writeText('https://brooksgroves.com/blog/pocket-fire-post.html').then(()=>{this.textContent='✓ Copied!'})">📋 Copy Link</button>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-name">Brooks Groves</span>
+    <div class="footer-links">
+      <a href="https://brooksgroves.com/blog/">Blog</a>
+      <a href="https://brooksgroves.com/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub ↗</a>
+      <a href="https://x.com/bdgroves" target="_blank">X ↗</a>
+      <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky ↗</a>
+    </div>
+    <span class="footer-copy">© 2026 Brooks Groves · Lakewood, WA</span>
+  </div>
+</footer>
+
+</body>
+</html>
