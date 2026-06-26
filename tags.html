@@ -1112,7 +1112,10 @@ const sortedTags = Object.entries(tagMap).sort((a,b) => b[1]-a[1] || a[0].locale
 
 let activeTag = null;
 if (window.location.hash) {
-  activeTag = decodeURIComponent(window.location.hash.slice(1));
+  const raw = decodeURIComponent(window.location.hash.slice(1));
+  // Case-insensitive match against known tags
+  const allTags = Object.keys(tagMap);
+  activeTag = allTags.find(t => t.toLowerCase() === raw.toLowerCase()) || raw;
 }
 
 const tagCloud = document.getElementById('tagCloud');
@@ -1157,6 +1160,11 @@ function renderPosts() {
 }
 
 renderPosts();
+if (activeTag) {
+  setTimeout(() => {
+    document.getElementById('postList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
 </script>
 </body>
 </html>
