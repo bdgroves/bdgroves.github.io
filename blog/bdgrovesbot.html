@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BdgrovesBot — A Wildfire Bot That Edits Wikipedia at 7am — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#16130f; --parchment:#f6f1e7; --cream:#ece5d6;
+      --stone:#7c7264; --gold:#c8922a; --mist:#d8d0c0;
+      --white:#fdfaf3; --ember:#d6481f; --char:#3a2418; --smoke:#8a5a3a;
+      --flame:#e8821e; --contain:#5a7d3a;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--char) 0%,var(--smoke) 30%,var(--ember) 60%,var(--flame) 82%,var(--gold) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--ember); }
+    nav a.live { border:1px solid var(--ember); padding:0.3rem 0.7rem; color:var(--ember); }
+    nav a.live:hover { background:var(--ember); color:var(--white); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--ember); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--ember); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--ember); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--char); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body blockquote { border-left:3px solid var(--ember); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--ember); text-decoration:underline; text-underline-offset:3px; }
+
+    .live-badge { display:inline-flex; align-items:center; gap:0.5rem; background:var(--ink); color:var(--white); font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; padding:0.4rem 0.8rem; margin:1.5rem 0; text-decoration:none; }
+    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--ember); animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .live-badge:hover { background:var(--ember); }
+
+    .code-block { background:var(--ink); color:#e8e4dc; font-family:'DM Mono',monospace; font-size:0.78rem; padding:1.25rem 1.5rem; margin:1.5rem 0; overflow-x:auto; line-height:1.7; }
+    .code-comment { color:#7a7268; }
+
+    .feature-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0; }
+    .feature-card { background:var(--cream); padding:1rem 1.25rem; border-left:3px solid var(--ember); }
+    .feature-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--ember); margin-bottom:0.4rem; }
+    .feature-body { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    @media(max-width:560px) { .feature-grid { grid-template-columns:1fr; } }
+
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); margin-left:1.5rem; }
+    .article-footer-nav a:hover { color:var(--ember); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+
+    .article-body code { font-family:'DM Mono',monospace; font-size:0.82em; background:var(--cream); border:1px solid var(--mist); border-radius:3px; padding:0.08em 0.4em; color:var(--char); }
+    .code-block code { background:none; border:none; padding:0; color:inherit; }
+
+    .pipeline { display:flex; align-items:center; flex-wrap:wrap; gap:0.6rem; justify-content:center; background:var(--char); padding:1.4rem 1rem; margin:1.8rem 0; position:relative; }
+    .pipe-node { font-family:'DM Mono',monospace; font-size:0.72rem; letter-spacing:0.06em; color:var(--parchment); background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.18); padding:0.5rem 0.9rem; white-space:nowrap; }
+    .pipe-node.pipe-bot { background:var(--ember); border-color:var(--flame); color:var(--white); font-weight:400; box-shadow:0 0 18px rgba(214,72,31,0.5); }
+    .pipe-arrow { color:var(--flame); font-size:1rem; }
+    .pipe-branch { flex-basis:100%; text-align:center; font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.06em; color:var(--smoke); margin-top:0.4rem; }
+
+    .compliance { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--contain); padding:1.1rem 1.4rem; margin:1.8rem 0; }
+    .compliance-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--contain); margin-bottom:0.7rem; }
+    .compliance ul { list-style:none; margin:0; padding:0; }
+    .compliance li { font-size:0.86rem; color:var(--stone); line-height:1.5; padding-left:1.1rem; position:relative; margin-bottom:0.45rem; }
+    .compliance li::before { content:'✓'; position:absolute; left:0; color:var(--contain); font-size:0.8rem; }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://en.wikipedia.org/wiki/2026_Tuolumne_County_wildfires" target="_blank" class="live">Live on Wikipedia ↗</a>
+      <a href="https://github.com/bdgroves/bdgrovesbot" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/index.html" class="article-back">← Blog</a>
+
+  <p class="article-kicker">Project Build · Wildfire · WFIGS · Pywikibot · GitHub Actions · June 2026</p>
+  <h1 class="article-title">🔥 BdgrovesBot — A Wildfire Bot That Edits Wikipedia at 7am</h1>
+  <div class="article-meta">
+    <span>Brooks Groves</span>
+    <span>June 26, 2026</span>
+    <span>Python · Pywikibot · WFIGS · pixi · QGIS</span>
+  </div>
+  <div class="article-tags">
+    <a href="/tags.html#Wildfire" class="article-tag-pill">Wildfire</a>
+    <a href="/tags.html#GIS" class="article-tag-pill">GIS</a>
+    <a href="/tags.html#WFIGS" class="article-tag-pill">WFIGS</a>
+    <a href="/tags.html#Python" class="article-tag-pill">Python</a>
+    <a href="/tags.html#Pywikibot" class="article-tag-pill">Pywikibot</a>
+    <a href="/tags.html#GitHub%20Actions" class="article-tag-pill">GitHub Actions</a>
+    <a href="/tags.html#Wikipedia" class="article-tag-pill">Wikipedia</a>
+    <a href="/tags.html#Tuolumne%20County" class="article-tag-pill">Tuolumne County</a>
+  </div>
+
+  <a href="https://en.wikipedia.org/wiki/2026_Tuolumne_County_wildfires" target="_blank" class="live-badge">
+    <span class="live-dot"></span>
+    Live on Wikipedia · 2026 Tuolumne County wildfires
+  </a>
+
+  <div class="article-body">
+
+    <p>There's a particular kind of restlessness that comes with watching fire weather. QGIS open on one monitor, WFIGS on the other, an eye on the Red Flag warnings, and somewhere in the back of your mind you're already doing the math on fuel moisture and wind direction. Most people don't live this way. GIS analysts who also run Wikipedia bots absolutely do.</p>
+
+    <p>Today I finished something I've wanted to build for a while: a fully automated pipeline that watches for wildfires in Tuolumne County and updates Wikipedia without me touching a thing. It went from zero to live in a single day, and that's worth writing down.</p>
+
+    <div class="pipeline">
+      <span class="pipe-node">WFIGS API</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-node pipe-bot">BdgrovesBot</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-node">Wikipedia</span>
+      <span class="pipe-branch">↳ GeoJSON → QGIS live layer</span>
+    </div>
+
+    <h2>The problem</h2>
+
+    <p>I created two Wikipedia pages yesterday — <a href="https://en.wikipedia.org/wiki/2026_Tuolumne_County_wildfires" target="_blank">2026 Tuolumne County wildfires</a> and <a href="https://en.wikipedia.org/wiki/Wildfires_in_Tuolumne_County,_California" target="_blank">Wildfires in Tuolumne County, California</a>. The county I work in, the terrain I map, the fires I monitor. These pages needed to exist, and now they do.</p>
+
+    <p>But the moment I published them I saw the problem: keeping them current is manual labor. A fire breaks out at 3am, I wake up to a Twitter alert from my own bot (<a href="https://twitter.com/SierraNevadaWX" target="_blank">@SierraNevadaWX</a>), and then I'm supposed to go hand-edit a Wikipedia table while half asleep? That's not a system. That's just being reactive. The fix was obvious: automate it.</p>
+
+    <h2>The build</h2>
+
+    <p>BdgrovesBot was already half-built. It was querying WFIGS — the National Interagency Fire Center's wildland fire geospatial API — and refreshing a GeoJSON layer for my QGIS fire-monitoring setup. The Wikipedia piece existed too, but it only updated acreages for fires already in the table. New fires still meant a manual row entry.</p>
+
+    <p>So today I rewrote the core logic to handle both cases:</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-head">Existing fire</div>
+        <div class="feature-body">If a fire already has a row in the Wikipedia table, the bot updates the acreage cell automatically. Every morning, fresh numbers from WFIGS.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-head">New fire · over 10 acres</div>
+        <div class="feature-body">The bot inserts a stub row — name, acreage, start date, coordinates — and drops <code>&lt;!-- bot-stub --&gt;</code> markers in the location and notes cells so I know exactly where to fill in by hand.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-head">The 10-acre threshold</div>
+        <div class="feature-body">Below 10 acres, it logs the fire but stays out of the table. Small slapdown fires don't belong in a historical record.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-head">Traceability</div>
+        <div class="feature-body">It logs the WFIGS unique fire identifier in the reference stub, so I can trace any row straight back to the source without hunting.</div>
+      </div>
+    </div>
+
+    <h2>The authentication rabbit hole</h2>
+
+    <p>Getting Pywikibot to authenticate cleanly for automated runs took longer than it should have. My first test run prompted me for a password interactively — fine for local development, completely broken for a GitHub Actions runner at 7am when no human is watching.</p>
+
+    <p>The fix was a Wikipedia bot password through <code>Special:BotPasswords</code>, stored as a GitHub Secret, with the workflow writing a <code>passwords.py</code> file at runtime from that secret. The file never touches the repo. The password never appears in logs. The runner writes it, uses it, and it's gone.</p>
+
+    <blockquote>The moment it worked — <code>Page [[2026 Tuolumne County wildfires]] saved</code> in the GitHub Actions log, with no password prompt — was genuinely satisfying. That's the whole pipeline: WFIGS → Python → Pywikibot → Wikipedia, headless, on a cron job, every morning.</blockquote>
+
+    <h2>The test insert</h2>
+
+    <p>Before going live I needed to verify the write pipeline end-to-end, which meant actually writing to Wikipedia and confirming it landed. So I added a <code>--test-insert</code> flag that creates a clearly-labelled fake fire called "BdgrovesBot Test" and pushes it to the page.</p>
+
+    <div class="code-block"><span class="code-comment"># Dry run — safe, no edits, shows what the bot would do</span>
+pixi run dryrun
+
+<span class="code-comment"># Verify the full write path with a labelled test row</span>
+pixi run python bot/tuolumne_bot.py --test-insert --no-dry-run</div>
+
+    <p>It worked on the first try. The row appeared exactly as designed — name, coordinates stub, acreage cell, start date, notes stub, reference stub. I deleted it manually a few minutes later. The whole thing took about two minutes.</p>
+
+    <p>That test insert is the kind of thing you can't fake in a dry run. A dry run tells you the <em>code</em> runs. A live test insert tells you the auth works, the table parser works, the row builder works, and the Wikipedia API accepted the edit. All different things.</p>
+
+    <h2>BRFA: doing it by the book</h2>
+
+    <p>Here's the thing about Wikipedia bots: you're supposed to have approval before you run them. The process is a BRFA — Bot Request for Approval. You file a page, join a queue, get reviewed by a member of the Bot Approvals Group, run a supervised trial, then get full approval.</p>
+
+    <p>I filed today: <a href="https://en.wikipedia.org/wiki/Wikipedia:Bots/Requests_for_approval/BdgrovesBot" target="_blank">Wikipedia:Bots/Requests for approval/BdgrovesBot</a>. The task is non-controversial — data maintenance on pages I created, sourced from a federal government API, no prose editing, no cross-article changes. The dry-run log is attached. The live test insert is documented. The GitHub Actions logs confirm headless authentication.</p>
+
+    <p>Then I switched the workflow back to dry-run mode while the BRFA is pending. The bot still runs every morning at 7am. It still queries WFIGS. It still refreshes the QGIS GeoJSON. It just doesn't write to Wikipedia until BAG signs off. When that happens, <strong>one line in the workflow file flips it live.</strong></p>
+
+    <div class="compliance">
+      <div class="compliance-head">Bot compliance</div>
+      <ul>
+        <li><code>DRY_RUN=True</code> by default — edits require an explicit <code>--no-dry-run</code></li>
+        <li>Edit summaries always cite WFIGS as the data source</li>
+        <li>Operated under Wikipedia bot policy · account <code>User:BdgrovesBot</code></li>
+        <li>BRFA filed and pending BAG review</li>
+      </ul>
+    </div>
+
+    <h2>The fire situation, while I built this</h2>
+
+    <p>The whole time, I had an eye on the actual map. The <strong>Pocket Fire</strong> in Yavapai County, Arizona had reached 1,467 acres at zero containment — a Type 1 incident, the highest level, 969 personnel on scene, an estimated final cost pushing $20 million. A southeast wind event was forecast for the weekend, and the Tucson and Flagstaff NWS offices had Red Flag Warnings posted through Saturday night.</p>
+
+    <p>My QGIS project pulls the national active-fires layer and the NWS watches-and-warnings layer both live. I could watch the Red Flag polygon sitting right over Yavapai County while I worked — the Pocket Fire flanking, main behavior running along the sides of the perimeter. Not the most aggressive behavior, but with a wind event incoming and zero containment, it's the kind of thing you stay up watching.</p>
+
+    <p>Nothing active in California. Nothing in Tuolumne County. The TuCo monitoring setup was running and quiet — which, when you build tools like this, is the best possible update.</p>
+
+    <h2>What comes next</h2>
+
+    <p>BRFA review usually takes one to two weeks. If BAG approves a trial — probably 20 edits — I'll run it, post the results, and wait for full approval. After that the bot runs fully autonomously, no human in the loop between WFIGS and Wikipedia unless it flags something.</p>
+
+    <p>The longer-term vision is coverage. Nevada fires. California statewide. Maybe a sister page for every county that needs one. The framework is the same every time — WFIGS query, table parser, stub inserter, acreage updater. Honestly, the Wikipedia pages are the hard part. The code is the easy part.</p>
+
+    <p>For now: one county, one bot, one BRFA in the queue. The fire map is quiet. The workflow is live. The code is clean.</p>
+
+    <p><em>Going to go watch the Pocket Fire radar loop for a while.</em></p>
+
+    <p>Source at <a href="https://github.com/bdgroves/bdgrovesbot" target="_blank">github.com/bdgroves/bdgrovesbot</a>. Built in Tuolumne County territory — if you can see the smoke from your porch, the bot already knows.</p>
+
+  </div>
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · June 26, 2026 · Tuolumne County, CA</span>
+    <div class="article-footer-nav">
+      <a href="/geospatial.html">Geospatial Hub →</a>
+      <a href="/blog/index.html">← All Posts</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves/bdgrovesbot" target="_blank">BdgrovesBot ↗</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
