@@ -121,6 +121,10 @@
     .ology-card:last-child { border-right:none; }
     @media(max-width:1100px) { .ologies-grid { grid-template-columns:repeat(3,1fr); } }
     @media(max-width:560px) { .ologies-grid { grid-template-columns:1fr 1fr; } }
+    .stories-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0; border:1px solid var(--mist); }
+    @media(max-width:1100px) { .stories-grid { grid-template-columns:repeat(3,1fr); } }
+    @media(max-width:680px) { .stories-grid { grid-template-columns:1fr 1fr; } }
+    @media(max-width:480px) { .stories-grid { grid-template-columns:1fr; } }
     .ology-card:hover { background:var(--cream); }
     .ology-card::after { content:''; position:absolute; bottom:0; left:0; right:0; height:3px; transform:scaleX(0); transform-origin:left; transition:transform 0.3s; }
     .ology-card.met::after { background:var(--sky); }
@@ -590,17 +594,16 @@
   <!-- WRITING + READING -->
   
 <!-- DAILY QUOTE -->
-
     <div class="lead-section-label">
       <span>Stories &amp; Journeys</span>
       <a href="https://memoir.brooksgroves.com">Memoir →</a>
     </div>
-    <div class="ologies-grid">
+    <div class="stories-grid">
       <a href="https://journal.brooksgroves.com" target="_blank" class="ology-card">
         <span class="ology-icon">🧭</span>
         <h3 class="ology-name">Travel Journals</h3>
         <p class="ology-desc">Day-by-day logbooks from the road and the water — research sidebars, maps, and the small absurdities of going places.</p>
-        <p class="ology-projects">The Koningsdam Logs · Aimeeland · Big Island · Vancouver</p>
+        <p class="ology-projects">The Koningsdam Logs · Aimeeland · Big Island</p>
         <span class="ology-link">Read the journals →</span>
       </a>
       <a href="https://memoir.brooksgroves.com" target="_blank" class="ology-card">
@@ -613,8 +616,15 @@
       <a href="https://memoir.brooksgroves.com" target="_blank" class="ology-card">
         <span class="ology-icon">📻</span>
         <h3 class="ology-name">Seattle Stories</h3>
-        <p class="ology-desc">True stories from a Seattle life — the radio, the Westin, the basement studios and the bars, the years after the foothills.</p>
+        <p class="ology-desc">True stories from a Seattle life — the radio, the basement studios and the bars, the years after the foothills.</p>
         <p class="ology-projects">The RV Has Spoken · more to come</p>
+        <span class="ology-link">Read the stories →</span>
+      </a>
+      <a href="https://memoir.brooksgroves.com" target="_blank" class="ology-card">
+        <span class="ology-icon">🛎️</span>
+        <h3 class="ology-name">Westin Stories</h3>
+        <p class="ology-desc">Tales from the graveyard shift at the Westin Seattle — the doormen, the bellmen, the after-hours crew, and the beautiful chaos of hotel life.</p>
+        <p class="ology-projects">The Cantina · Elmo · Room 1331 · The Gnar BBQ</p>
         <span class="ology-link">Read the stories →</span>
       </a>
       <a href="https://journal.brooksgroves.com/myles.html" target="_blank" class="ology-card">
@@ -889,7 +899,6 @@
     }
   }
 
-  // ── ROTATING FEATURED PROJECT (evergreen; rotates each load) ──
   const FEATURED = [
     { url:"https://bdgroves.github.io/PELE", kicker:"Volcanology · Kīlauea · USGS HVO · Erupting Now", hed:"🌋 PELE:<br><em>Hawaiʻi Volcanoes</em>", dek:"Kīlauea is in an ongoing eruption at Halemaʻumaʻu, fountaining in episodic bursts since December 2024. PELE tracks it live — real-time summit earthquakes, HVO webcams, alert levels, and a full episodic-fountaining log. Refreshes every six hours, no human in the loop.", stack:["Python","USGS HVO","GitHub Actions","Leaflet","HVO Webcams","ANSS Quakes"] },
     { url:"https://github.com/bdgroves/bdgrovesbot", kicker:"Wildfire · WFIGS · Pywikibot · GitHub Actions", hed:"🔥 BdgrovesBot:<br><em>Wildfire → Wikipedia</em>", dek:"A headless pipeline that watches WFIGS fire data and updates Wikipedia's Tuolumne County wildfire tables automatically — every morning at 7am Pacific, no human in the loop. Zero to live in a day, BRFA filed by the book.", stack:["Python","Pywikibot","WFIGS","GitHub Actions","pixi","QGIS"] },
