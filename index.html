@@ -80,22 +80,26 @@
     .lead-section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
     .lead-section-label a { color:var(--stone); text-decoration:none; font-size:0.55rem; }
     .lead-section-label a:hover { color:var(--rust); }
-    .lead-grid { display:grid; grid-template-columns:3fr 2fr; gap:0; border:1px solid var(--mist); }
+    .lead-grid { display:block; border:1px solid var(--mist); }
     @media(max-width:768px) { .lead-grid { grid-template-columns:1fr; } }
-    .lead-story { padding:2rem; border-right:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; }
+    .lead-story { padding:2.5rem; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; }
     .lead-story:hover { background:var(--cream); }
     .lead-story::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); display:block; margin-bottom:0.75rem; }
     .lead-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
-    .lead-hed { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .lead-hed { font-family:'Playfair Display',serif; font-size:clamp(2rem,4vw,3rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:0.75rem; }
     .lead-hed em { font-style:italic; color:var(--rust); }
-    .lead-dek { font-size:0.95rem; color:var(--stone); line-height:1.75; }
+    .lead-dek { font-size:1rem; color:var(--stone); line-height:1.75; max-width:70ch; }
     .lead-quote { border-left:3px solid var(--rust); padding-left:1rem; margin:1rem 0; font-style:italic; font-size:0.9rem; color:var(--stone); }
     .lead-stack { display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1rem; }
     .stack-pill { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); border:1px solid var(--mist); padding:0.2rem 0.6rem; }
     .lead-link { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--rust); margin-top:1.25rem; display:block; }
-    .support-stories { display:flex; flex-direction:column; }
-    .support-story { padding:1.25rem 1.5rem; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; flex:1; }
-    .support-story:last-child { border-bottom:none; }
+    .support-more-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--stone); padding:1rem 1.5rem 0.75rem; border-bottom:1px solid var(--mist); }
+    .support-stories { display:grid; grid-template-columns:repeat(4,1fr); gap:0; }
+    @media(max-width:1000px) { .support-stories { grid-template-columns:repeat(2,1fr); } }
+    @media(max-width:560px) { .support-stories { grid-template-columns:1fr; } }
+    .support-story { padding:1.5rem; border-right:1px solid var(--mist); border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:block; transition:background 0.2s; }
+    .support-story:nth-child(4n) { border-right:none; }
+    .support-story:last-child { border-right:none; }
     .support-story:hover { background:var(--cream); }
     .support-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.3rem; }
     .support-hed { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; line-height:1.25; margin-bottom:0.35rem; }
@@ -352,7 +356,6 @@
         <a href="https://bdgroves.github.io/rainier-snowpack" target="_blank">❄️ Rainier Snowpack</a>
         <a href="https://bdgroves.github.io/lahar-watch" target="_blank">🌋 lahar-watch</a>
         <a href="https://bdgroves.github.io/PELE" target="_blank">🌋 PELE</a>
-        <a href="https://bdgroves.github.io/solstice" target="_blank">☀️ SOLSTICE</a>
         <a href="https://bdgroves.github.io/aftershock" target="_blank">🌍 AFTERSHOCK</a>
         <a href="https://bdgroves.github.io/weather-station" target="_blank">🌡️ Weather Station</a>
         <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank">🛰️ Sentinel Stockpile</a>
@@ -365,7 +368,7 @@
         <a href="https://github.com/bdgroves/Project-PaleoWave" target="_blank">🌊 PaleoWave</a>
         <a href="https://github.com/bdgroves/project_ice_wave" target="_blank">🦣 IceWave</a>
         <a href="https://bdgroves.github.io/project-kiva" target="_blank">🏜 Project Kiva</a>
-        <a href="https://github.com/bdgroves/streamchaser" target="_blank">πÇ░ streamchaser</a>
+        <a href="https://github.com/bdgroves/streamchaser" target="_blank">🎣 streamchaser</a>
         <a href="https://bdgroves.github.io/sierra-flow-cobol/" target="_blank">📟 sierra-flow-cobol</a>
         <a href="https://bdgroves.github.io/cascadia-wx/" target="_blank">🌨 cascadia-wx</a>
         <div class="dropdown-label">More</div>
@@ -476,48 +479,79 @@
         </div>
         <span class="lead-link">View live dashboard →</span>
       </a>
+      <div class="support-more-label">More Live Projects</div>
       <div class="support-stories">
         <a href="https://x.com/SierraNevadaWX" target="_blank" class="support-story">
-          <p class="support-kicker">New · Meteorology · NEXRAD · 7 Federal Feeds</p>
+          <p class="support-kicker">Meteorology · NEXRAD · 7 Federal Feeds</p>
           <h3 class="support-hed">🌪️ Sierra Nevada Alert Bot</h3>
-          <p class="support-dek">Autonomous monitoring for the Sierra — fires, floods, quakes, air quality, severe weather — across seven federal data streams on a free runner. MetPy Skew-T and Py-ART NEXRAD tools. Intel the moment it happens. Posts to @SierraNevadaWX.</p>
+          <p class="support-dek">Autonomous monitoring for the Sierra — fires, floods, quakes, air quality, severe weather — across seven federal data streams on a free runner. MetPy Skew-T and Py-ART NEXRAD tools. Posts to @SierraNevadaWX.</p>
           <span class="support-link">Follow @SierraNevadaWX →</span>
+        </a>
+        <a href="https://bdgroves.github.io/PELE" target="_blank" class="support-story">
+          <p class="support-kicker">Volcanology · Kīlauea · USGS HVO</p>
+          <h3 class="support-hed">🌋 PELE — Hawaiʻi Volcanoes</h3>
+          <p class="support-dek">Real-time Kīlauea eruption tracker — lava-lake activity, SO₂ emissions, and episodic fountaining via USGS Hawaiian Volcano Observatory feeds. Updated every 6 hours.</p>
+          <span class="support-link">View dashboard →</span>
+        </a>
+        <a href="https://bdgroves.github.io/aftershock" target="_blank" class="support-story">
+          <p class="support-kicker">Seismology · USGS FDSN · Cascadia</p>
+          <h3 class="support-hed">🌍 AFTERSHOCK — PNW Quakes</h3>
+          <p class="support-dek">Pacific Northwest earthquake tracker — USGS M2.5+ events, depth, intensity, and aftershock-sequence analysis on an interactive dashboard.</p>
+          <span class="support-link">View dashboard →</span>
         </a>
         <a href="https://bdgroves.github.io/EDGAR" target="_blank" class="support-story">
           <p class="support-kicker">Baseball · Mariners · MLB Stats API</p>
           <h3 class="support-hed">⚾ EDGAR — Mariners Analytics</h3>
-          <p class="support-dek">Automated daily Mariners & Rainiers stats dashboard. Spray charts, pitch movement, live scores. Launched Opening Day 2026.</p>
+          <p class="support-dek">Early Data & Game Analytics Report — an automated Mariners & Rainiers dashboard built with pybaseball, mlb-statsapi, and nightly GitHub Actions.</p>
           <span class="support-link">View dashboard →</span>
-        </a>
-        <a href="https://bdgroves.github.io/ridgeline" target="_blank" class="support-story">
-          <p class="support-kicker">WUI · Search & Rescue · Phoenix FD</p>
-          <h3 class="support-hed">🔥 RIDGELINE — WUI Call Volume</h3>
-          <p class="support-dek">86K+ Phoenix Fire Department dispatch incidents. Behavioral cluster analysis, interactive maps, CI/CD pipeline.</p>
-          <span class="support-link">View project →</span>
         </a>
         <a href="https://bdgroves.github.io/sierra-streamflow" target="_blank" class="support-story">
-          <p class="support-kicker">Hydrology · Sierra Nevada · USGS</p>
+          <p class="support-kicker">Hydrology · USGS · Sierra Nevada</p>
           <h3 class="support-hed">💧 Sierra Streamflow Monitor</h3>
-          <p class="support-dek">8 USGS stream gages across Sierra Nevada watersheds. Historical spaghetti charts, Leaflet map, weekly cron.</p>
+          <p class="support-dek">Eight USGS gages across the Tuolumne, Merced, Stanislaus, and Big Creek watersheds — live flow with historical spaghetti charts on a Leaflet map.</p>
           <span class="support-link">View dashboard →</span>
         </a>
-        <a href="https://bdgroves.github.io/PELE" target="_blank" class="support-story">
-          <p class="support-kicker">Volcanology · Kīlauea · USGS HVO</p>
-          <h3 class="support-hed">🌋 PELE — Hawai'i Volcanoes Dashboard</h3>
-          <p class="support-dek">Live Kīlauea eruption tracker. Real-time earthquakes, HVO webcams, alert levels, episodic fountaining log. Updated every 6 hours.</p>
+        <a href="https://bdgroves.github.io/lahar-watch" target="_blank" class="support-story">
+          <p class="support-kicker">Hazard · Volcano · USGS · USACE</p>
+          <h3 class="support-hed">🌋 LAHAR-WATCH — Flank Hazard</h3>
+          <p class="support-dek">Volcanic lahar hazard monitor — rainfall and stream-sensor data on Pacific Northwest volcano flanks via USGS and Army Corps of Engineers feeds.</p>
           <span class="support-link">View dashboard →</span>
         </a>
-        <a href="https://bdgroves.github.io/weather-station" target="_blank" class="support-story">
-          <p class="support-kicker">Meteorology · Open-Meteo · NWS · 4 Stations</p>
-          <h3 class="support-hed">🌡️ Weather Station</h3>
-          <p class="support-dek">High-end weather dashboard monitoring Lakewood WA, Groveland CA, Reno NV, and Death Valley. Wind compass, pressure trends, NWS alerts, moon phase. Updates every 15 min.</p>
+        <a href="https://bdgroves.github.io/cascadia-wx" target="_blank" class="support-story">
+          <p class="support-kicker">Meteorology · FORTRAN · Retro</p>
+          <h3 class="support-hed">📟 CASCADIA-WX — Mountain Weather</h3>
+          <p class="support-dek">A Pacific Northwest mountain-weather monitor written in GFortran — amber-phosphor vintage-computing aesthetic, live on GitHub Pages. Because why not FORTRAN.</p>
           <span class="support-link">View dashboard →</span>
         </a>
-        <a href="https://brooksgroves.com/plate-hunter/" target="_blank" class="support-story">
-          <p class="support-kicker">Mobile · Family · Road Trip</p>
-          <h3 class="support-hed">🚗 Plate Hunter</h3>
-          <p class="support-dek">72 Washington specialty plates, rarity tiers from DOL data, zero frameworks. Spot a plate in real life, tap it, it unlocks. Points, confetti, the whole deal.</p>
-          <span class="support-link">Play now →</span>
+        <a href="https://bdgroves.github.io/sierra-flow-cobol" target="_blank" class="support-story">
+          <p class="support-kicker">Hydrology · COBOL · Retro</p>
+          <h3 class="support-hed">🖥️ SIERRA-FLOW — in COBOL</h3>
+          <p class="support-dek">A Sierra Nevada streamflow monitor written in GnuCOBOL — green-phosphor vintage-computing aesthetic with a live GitHub Pages dashboard. Yes, COBOL.</p>
+          <span class="support-link">View dashboard →</span>
+        </a>
+        <a href="https://github.com/bdgroves/weather-report-bot" target="_blank" class="support-story">
+          <p class="support-kicker">Automation · Python · Twitter + Bluesky</p>
+          <h3 class="support-hed">🌡️ Weather Report Bot</h3>
+          <p class="support-dek">Automated station cards for Lakewood, Groveland, Death Valley, and Reno — Python + Matplotlib, posted to Twitter and Bluesky via GitHub Actions.</p>
+          <span class="support-link">View on GitHub →</span>
+        </a>
+        <a href="https://github.com/bdgroves/wildfire-response-gaps" target="_blank" class="support-story">
+          <p class="support-kicker">GIS · WUI · Spatial Analysis</p>
+          <h3 class="support-hed">🚒 Wildfire Response Gaps</h3>
+          <p class="support-dek">GIS analysis of wildfire response coverage in WUI zones — fire-station coverage, road-network access, and response-time modeling. Built in R.</p>
+          <span class="support-link">View on GitHub →</span>
+        </a>
+        <a href="https://github.com/bdgroves/project-paleowave" target="_blank" class="support-story">
+          <p class="support-kicker">Paleoclimate · Oceanography · Proxy Records</p>
+          <h3 class="support-hed">🌊 PaleoWave — Ocean Dynamics</h3>
+          <p class="support-dek">Paleoclimate reconstruction of Pacific wave and ocean dynamics using proxy records and sediment-core data. Python and R, digging into deep-time climate signals.</p>
+          <span class="support-link">View on GitHub →</span>
+        </a>
+        <a href="https://github.com/bdgroves/project-ice-wave" target="_blank" class="support-story">
+          <p class="support-kicker">Cryosphere · Remote Sensing · Glaciers</p>
+          <h3 class="support-hed">🧊 IceWave — Cryosphere Change</h3>
+          <p class="support-dek">Cryosphere change analysis — glacial retreat and ice dynamics across the Pacific Northwest, tracked with remote-sensing data. Watching the ice recede, frame by frame.</p>
+          <span class="support-link">View on GitHub →</span>
         </a>
       </div>
     </div>
