@@ -716,24 +716,6 @@
         <div class="writing-hed">Plate Hunter — A Road Trip App for the Back Seat</div>
         <div class="writing-dek">License plate spotting for families. 50 states, badges, and a leaderboard. The app I wish existed when I was eight in a station wagon on I-5.</div>
       </a>
-      <a href="/blog/solstice-post.html" class="writing-item">
-        <div class="writing-type">GIS · Archaeology · Python</div>
-        <div class="writing-date">2026</div>
-        <div class="writing-hed">☀️ SOLSTICE — Watching the Same Sky Over Chaco Canyon</div>
-        <div class="writing-dek">A LiDAR and archaeoastronomy project tracking solar alignment at Chaco Canyon great houses using Python and NAIP imagery.</div>
-      </a>
-      <a href="/blog/aftershock-post.html" class="writing-item">
-        <div class="writing-type">GIS · Geology · USGS</div>
-        <div class="writing-date">2026</div>
-        <div class="writing-hed">🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor</div>
-        <div class="writing-dek">Building a real-time earthquake dashboard with USGS FDSN, Leaflet, and GitHub Actions. Cascadia Subduction Zone focus.</div>
-      </a>
-      <a href="/blog/dipodomys-post.html" class="writing-item">
-        <div class="writing-type">Ecology · iNaturalist · Data</div>
-        <div class="writing-date">2026</div>
-        <div class="writing-hed">🐾 DIPODOMYS — A Data Portrait of Death Valley's Kangaroo Rats</div>
-        <div class="writing-dek">Species distribution modeling and iNaturalist data analysis for kangaroo rat populations across the Mojave and Great Basin.</div>
-      </a>
       
 
 
@@ -929,10 +911,11 @@
 
   const FEATURED = [
     { url:"https://bdgroves.github.io/PELE", kicker:"Volcanology · Kīlauea · USGS HVO · Erupting Now", hed:"🌋 PELE:<br><em>Hawaiʻi Volcanoes</em>", dek:"Kīlauea is in an ongoing eruption at Halemaʻumaʻu, fountaining in episodic bursts since December 2024. PELE tracks it live — real-time summit earthquakes, HVO webcams, alert levels, and a full episodic-fountaining log. Refreshes every six hours, no human in the loop.", stack:["Python","USGS HVO","GitHub Actions","Leaflet","HVO Webcams","ANSS Quakes"] },
-    { url:"https://github.com/bdgroves/bdgrovesbot", kicker:"Wildfire · WFIGS · Pywikibot · GitHub Actions", hed:"🔥 BdgrovesBot:<br><em>Wildfire → Wikipedia</em>", dek:"A headless pipeline that watches WFIGS fire data and updates Wikipedia's Tuolumne County wildfire tables automatically — every morning at 7am Pacific, no human in the loop. Zero to live in a day, BRFA filed by the book.", stack:["Python","Pywikibot","WFIGS","GitHub Actions","pixi","QGIS"] },
     { url:"https://x.com/SierraNevadaWX", kicker:"Meteorology · NEXRAD · 7 Federal Feeds", hed:"🌪️ Sierra Alert Bot:<br><em>Intel the Moment It Happens</em>", dek:"Autonomous monitoring for the Sierra — fires, floods, quakes, air quality, severe weather — across seven federal data streams on one free runner. MetPy Skew-T and Py-ART NEXRAD tools. Posts to @SierraNevadaWX.", stack:["Python","MetPy","Py-ART","NEXRAD","GitHub Actions","7 Feeds"] },
     { url:"https://bdgroves.github.io/aftershock", kicker:"Seismology · USGS FDSN · Cascadia", hed:"🌍 AFTERSHOCK:<br><em>Real-Time Seismic Monitor</em>", dek:"A live earthquake dashboard pulling USGS FDSN feeds on an automated cadence — Leaflet maps, magnitude and depth filtering, and a Cascadia Subduction Zone focus. Built to watch the ground that watches us.", stack:["Python","USGS FDSN","Leaflet","GitHub Actions","GeoJSON"] },
-    { url:"https://bdgroves.github.io/rainier-snowpack", kicker:"Snowpack · SNOTEL · NASA MODIS · Cascades", hed:"❄️ STORM CHASER:<br><em>Rainier Snowpack</em>", dek:"Automated Mt. Rainier snowpack monitoring — 7 SNOTEL ground stations and NASA MODIS, hourly. Nine panels track basin SWE, melt, freeze-thaw, and live NPS webcams. Runs every hour, forever, all winter and through the melt-out.", stack:["Python","R","GitHub Actions","NASA Earthdata","NRCS SNOTEL","NPS Webcam"] }
+    { url:"https://bdgroves.github.io/rainier-snowpack", kicker:"Snowpack · SNOTEL · NASA MODIS · Cascades", hed:"❄️ STORM CHASER:<br><em>Rainier Snowpack</em>", dek:"Automated Mt. Rainier snowpack monitoring — 7 SNOTEL ground stations and NASA MODIS, hourly. Nine panels track basin SWE, melt, freeze-thaw, and live NPS webcams. Runs every hour, forever, all winter and through the melt-out.", stack:["Python","R","GitHub Actions","NASA Earthdata","NRCS SNOTEL","NPS Webcam"] },
+    { url:"https://github.com/bdgroves/project-paleowave", kicker:"Machine Learning · Paleontology · Nevada", hed:"🌊 PaleoWave:<br><em>Fossil Finder</em>", dek:"A Random Forest trained on the terrain signature of every known Triassic ichthyosaur locality in central Nevada, scoring where to dig next. Formation-stratified model, LiDAR-validated, 50 priority targets. They ruled the Triassic seas — this finds where they're buried.", stack:["Python","R","Random Forest","LiDAR","USGS 3DEP","QGIS"] },
+    { url:"https://github.com/bdgroves/project-ice-wave", kicker:"Machine Learning · Megafauna · Pacific NW", hed:"🦣 IceWave:<br><em>Megafauna Intelligence</em>", dek:"A split-ecoregion Random Forest predicting Pleistocene mammoth and mastodon fossil localities across five states. It called its shot: target E02 was ranked #1 before an active Columbian mammoth dig was confirmed at that exact pixel. Three methods, one answer.", stack:["Python","Random Forest","LiDAR","USGS 3DEP","PBDB","SGMC"] }
   ];
   function loadFeatured() {
     const el = document.getElementById('featured-hero');
