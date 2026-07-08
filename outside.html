@@ -249,6 +249,33 @@
     .fb-standings th:first-child, .fb-standings td:first-child { text-align:left; }
     .fb-standings tr.fb-own td { background:rgba(255,193,7,0.12); font-weight:700; color:var(--ink); }
     .fb-standings tr:last-child td { border-bottom:0; }
+
+    /* BASEBALL — team cards to match football, with recent-game row */
+    .bb-card { background:var(--cream); border:1px solid var(--mist); padding:0.75rem 0.9rem; margin-bottom:0.75rem; border-radius:2px; }
+    .bb-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:0.4rem; border-bottom:1px solid var(--mist); margin-bottom:0.5rem; }
+    .bb-header-left { flex:1; }
+    .bb-name { font-family:'Playfair Display',serif; font-size:0.98rem; font-weight:700; line-height:1.1; }
+    .bb-sub { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.08em; color:var(--stone); text-transform:uppercase; margin-top:0.15rem; }
+    .bb-record { font-family:'DM Mono',monospace; font-size:0.85rem; font-weight:700; color:var(--ink); }
+    .bb-record-tag { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); text-transform:uppercase; letter-spacing:0.08em; }
+    .bb-logo { height:2rem; width:auto; margin-left:0.75rem; }
+    .bb-logo.hidden { display:none; }
+    .bb-game { font-family:'DM Mono',monospace; font-size:0.66rem; color:var(--ink); padding:0.2rem 0; display:flex; gap:0.5rem; }
+    .bb-game-label { color:var(--stone); text-transform:uppercase; font-size:0.55rem; letter-spacing:0.1em; min-width:2.6rem; flex-shrink:0; padding-top:0.1rem; }
+    .bb-game-detail { flex:1; }
+    .bb-game-time { color:var(--stone); font-size:0.6rem; }
+    .bb-game-score { font-weight:700; }
+    .bb-game-score.win { color:var(--forest, #2d6a4f); }
+    .bb-game-score.loss { color:var(--rust); }
+    .bb-empty { font-family:'DM Mono',monospace; font-size:0.66rem; color:var(--stone); padding:0.35rem 0; font-style:italic; }
+    .bb-standings { margin-top:0.55rem; padding-top:0.5rem; border-top:1px dashed var(--mist); }
+    .bb-standings-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--stone); margin-bottom:0.3rem; }
+    .bb-standings table { width:100%; font-family:'DM Mono',monospace; font-size:0.6rem; border-collapse:collapse; }
+    .bb-standings th { text-align:right; padding:0.15rem 0.3rem; color:var(--stone); font-weight:400; border-bottom:1px solid var(--mist); font-size:0.52rem; text-transform:uppercase; letter-spacing:0.1em; }
+    .bb-standings td { text-align:right; padding:0.2rem 0.3rem; border-bottom:1px solid rgba(0,0,0,0.03); }
+    .bb-standings th:first-child, .bb-standings td:first-child { text-align:left; }
+    .bb-standings tr.bb-own td { background:rgba(255,193,7,0.12); font-weight:700; color:var(--ink); }
+    .bb-standings tr:last-child td { border-bottom:0; }
   </style>
 </head>
 <body>
@@ -359,21 +386,18 @@
 
     <div class="zone-grid">
 
-      <!-- LEFT: Mariners -->
+      <!-- LEFT: Baseball (MLB + MiLB) -->
       <div>
         <div class="section-label">
-          <span>Seattle Mariners</span>
-          <a href="https://bdgroves.github.io/EDGAR" target="_blank">EDGAR ↗</a>
+          <span>Baseball</span>
+          <a href="https://www.mlb.com/scores" target="_blank">MLB.com ↗</a>
         </div>
         <div class="quick-links">
-          <a href="https://www.mlb.com/mariners" target="_blank" class="quick-link">MLB.com ↗</a>
-          <a href="https://www.mlb.com/mariners/schedule" target="_blank" class="quick-link">Schedule ↗</a>
+          <a href="https://www.mlb.com/mariners" target="_blank" class="quick-link">Mariners ↗</a>
+          <a href="https://www.milb.com/tacoma" target="_blank" class="quick-link">Rainiers ↗</a>
           <a href="https://bdgroves.github.io/EDGAR" target="_blank" class="quick-link">EDGAR ↗</a>
         </div>
-        <div class="col-label">Recent Games</div>
-        <div id="mlb-scores"><p class="loading">Loading scores…</p></div>
-        <div class="col-label">AL West</div>
-        <div id="mlb-standings"><p class="loading">Loading standings…</p></div>
+        <div id="baseball-teams"><p class="loading">Loading teams…</p></div>
       </div>
 
       <!-- RIGHT: Football (NFL + NCAA) -->
@@ -670,6 +694,177 @@ function renderFootballCard(cfg, team, standingsRoot) {
     ${nextHTML}
     ${standingsHTML}
   </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BASEBALL — MLB + MiLB team cards using the official MLB Stats API
+// Same visual pattern as football. Config-driven; add teams below.
+// ═══════════════════════════════════════════════════════════════════
+const BASEBALL_TEAMS = [
+  {
+    teamId: 136, sportId: 1, leagueId: 103,      // Mariners (AL)
+    shortName: 'Mariners',
+    subLabel: 'Seattle · AL West',
+    homepage: 'https://www.mlb.com/mariners',
+    espnPage: 'https://www.espn.com/mlb/team/_/name/sea',
+    logoUrl: 'https://www.mlbstatic.com/team-logos/136.svg',
+  },
+  {
+    teamId: 529, sportId: 11, leagueId: 112,     // Tacoma Rainiers (AAA · PCL)
+    shortName: 'Tacoma Rainiers',
+    subLabel: 'Tacoma · Pacific Coast League',
+    homepage: 'https://www.milb.com/tacoma',
+    espnPage: null,
+    logoUrl: 'https://www.mlbstatic.com/team-logos/529.svg',
+  },
+];
+
+function bbFormatDate(d) {
+  const t = new Date(d);
+  return t.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+function bbFormatTime(d) {
+  const t = new Date(d);
+  return t.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+       + ' · ' + t.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+}
+
+function bbRenderGame(game, myTeamId, label) {
+  if (!game) return `<div class="bb-game"><span class="bb-game-label">${label}</span><span class="bb-empty">—</span></div>`;
+  const home = game.teams?.home, away = game.teams?.away;
+  if (!home || !away) return '';
+  const iAmHome = String(home.team?.id) === String(myTeamId);
+  const opp = (iAmHome ? away.team : home.team) || {};
+  const oppAbbr = opp.abbreviation || opp.teamCode || opp.teamName?.split(' ').slice(-1)[0] || 'OPP';
+  const state = game.status?.abstractGameState;           // Preview | Live | Final
+  const detailedState = game.status?.detailedState || state;
+
+  if (state === 'Final') {
+    const myScore = iAmHome ? home.score : away.score;
+    const oppScore = iAmHome ? away.score : home.score;
+    const won = Number(myScore) > Number(oppScore);
+    return `<div class="bb-game">
+      <span class="bb-game-label">${label}</span>
+      <span class="bb-game-detail">
+        <span class="bb-game-score ${won ? 'win' : 'loss'}">${won ? 'W' : 'L'} ${myScore}–${oppScore}</span>
+        · ${iAmHome ? 'vs' : '@'} ${oppAbbr}
+        <span class="bb-game-time">${bbFormatDate(game.gameDate)}</span>
+      </span>
+    </div>`;
+  }
+  if (state === 'Live') {
+    const myScore = iAmHome ? home.score ?? 0 : away.score ?? 0;
+    const oppScore = iAmHome ? away.score ?? 0 : home.score ?? 0;
+    const inn = game.linescore?.currentInningOrdinal || detailedState || 'Live';
+    return `<div class="bb-game">
+      <span class="bb-game-label">${label}</span>
+      <span class="bb-game-detail">
+        <span class="bb-game-score" style="color:var(--rust);">${myScore}–${oppScore}</span>
+        · ${iAmHome ? 'vs' : '@'} ${oppAbbr}
+        <span class="bb-game-time"><span class="live-dot"></span>${inn}</span>
+      </span>
+    </div>`;
+  }
+  // Preview
+  return `<div class="bb-game">
+    <span class="bb-game-label">${label}</span>
+    <span class="bb-game-detail">
+      ${iAmHome ? 'vs' : '@'} ${oppAbbr}
+      <span class="bb-game-time">${bbFormatTime(game.gameDate)}</span>
+    </span>
+  </div>`;
+}
+
+function bbRenderStandings(standingsData, cfg) {
+  if (!standingsData?.records?.length) return '';
+  // Find the division that contains our team
+  let ownDivision = null;
+  for (const rec of standingsData.records) {
+    if (rec.teamRecords?.some(t => String(t.team?.id) === String(cfg.teamId))) {
+      ownDivision = rec;
+      break;
+    }
+  }
+  if (!ownDivision) return '';
+  const divName = ownDivision.division?.name || ownDivision.league?.name || 'Standings';
+  const rows = (ownDivision.teamRecords || []).slice(0, 10).map(t => {
+    const isOwn = String(t.team?.id) === String(cfg.teamId);
+    const shortName = t.team?.teamName || t.team?.name?.replace(/^(Los Angeles|Seattle|Houston|Texas|Oakland|Sacramento) /, '') || t.team?.name || '—';
+    const gb = t.gamesBack === '-' ? '—' : t.gamesBack;
+    return `<tr class="${isOwn ? 'bb-own' : ''}"><td>${shortName}</td><td>${t.wins ?? 0}</td><td>${t.losses ?? 0}</td><td>${gb}</td></tr>`;
+  }).join('');
+  return `<div class="bb-standings">
+    <div class="bb-standings-label">${divName}</div>
+    <table><thead><tr><th>Team</th><th>W</th><th>L</th><th>GB</th></tr></thead><tbody>${rows}</tbody></table>
+  </div>`;
+}
+
+function bbRenderCard(cfg, teamData, schedule, standings) {
+  const rec = teamData?.record;
+  const wins = rec?.wins ?? 0, losses = rec?.losses ?? 0;
+  const pct = (wins + losses) > 0 ? (wins / (wins + losses)).toFixed(3).replace(/^0/, '') : '.000';
+  const summary = `${wins}–${losses}`;
+
+  // Schedule endpoint returns games under dates[].games[]. Flatten to chronological array.
+  const allGames = [];
+  (schedule?.dates || []).forEach(d => (d.games || []).forEach(g => allGames.push(g)));
+  const now = Date.now();
+  const finished = allGames.filter(g => g.status?.abstractGameState === 'Final')
+                           .sort((a,b) => new Date(b.gameDate) - new Date(a.gameDate));
+  const upcoming = allGames.filter(g => g.status?.abstractGameState !== 'Final')
+                           .sort((a,b) => new Date(a.gameDate) - new Date(b.gameDate));
+  const live = allGames.find(g => g.status?.abstractGameState === 'Live');
+  const recent = live || finished[0] || null;
+  const next = upcoming[0] || null;
+
+  return `<div class="bb-card">
+    <div class="bb-header">
+      <div class="bb-header-left">
+        <div class="bb-name">${cfg.espnPage
+          ? `<a href="${cfg.espnPage}" target="_blank" style="color:inherit;text-decoration:none;">${cfg.shortName}</a>`
+          : `<a href="${cfg.homepage}" target="_blank" style="color:inherit;text-decoration:none;">${cfg.shortName}</a>`}</div>
+        <div class="bb-sub">${cfg.subLabel}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="bb-record">${summary}</div>
+        <div class="bb-record-tag">${pct} · 2026</div>
+      </div>
+      ${cfg.logoUrl ? `<img class="bb-logo" src="${cfg.logoUrl}" alt="" onerror="this.classList.add('hidden')">` : ''}
+    </div>
+    ${bbRenderGame(recent, cfg.teamId, 'Recent')}
+    ${bbRenderGame(next,   cfg.teamId, 'Next')}
+    ${bbRenderStandings(standings, cfg)}
+  </div>`;
+}
+
+async function loadBaseball() {
+  const el = document.getElementById('baseball-teams');
+  if (!el) return;
+
+  // 7-day window: 5 back, next scheduled ahead. MLB schedules 2 weeks out.
+  const today = new Date();
+  const start = new Date(today); start.setDate(start.getDate() - 7);
+  const end   = new Date(today); end.setDate(end.getDate() + 14);
+  const fmt = (d) => d.toISOString().slice(0, 10);
+
+  try {
+    const cards = await Promise.all(BASEBALL_TEAMS.map(async cfg => {
+      const [teamRes, schedRes, standRes] = await Promise.all([
+        fetch(`https://statsapi.mlb.com/api/v1/teams/${cfg.teamId}?season=2026&sportId=${cfg.sportId}&hydrate=record`)
+          .then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=${cfg.teamId}&sportId=${cfg.sportId}&startDate=${fmt(start)}&endDate=${fmt(end)}`)
+          .then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch(`https://statsapi.mlb.com/api/v1/standings?leagueId=${cfg.leagueId}&season=2026&standingsTypes=regularSeason&sportId=${cfg.sportId}`)
+          .then(r => r.ok ? r.json() : null).catch(() => null),
+      ]);
+      const teamData = teamRes?.teams?.[0] || null;
+      return bbRenderCard(cfg, teamData, schedRes, standRes);
+    }));
+    el.innerHTML = cards.join('');
+  } catch (e) {
+    console.error('baseball load error:', e);
+    el.innerHTML = `<p class="sport-note">Baseball data loading… check back soon.</p>`;
+  }
 }
 
 async function loadFootball() {
@@ -1059,8 +1254,7 @@ async function loadFuelcast() {
 }
 
 document.getElementById('current-year').textContent=new Date().getFullYear();
-loadMLB();
-loadStandings();
+loadBaseball();
 loadFootball();
 loadCycling();
 loadCyclingNews();
@@ -1069,7 +1263,7 @@ loadStrava();
 loadFuelcast();
 checkFortGeorge();
 checkKingsDaughters();
-setInterval(()=>{if(!document.hidden){loadMLB();loadStandings();}},5*60*1000);
+setInterval(()=>{if(!document.hidden){loadBaseball();loadFootball();}},5*60*1000);
 
 // Auto-set Grand Tour card status from today's date (no more hand-editing)
 (function(){
