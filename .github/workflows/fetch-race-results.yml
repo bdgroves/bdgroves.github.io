@@ -287,24 +287,26 @@ jobs:
 
           def extract_result_blocks(wikitext):
               """Find all {{cyclingresult start|title=X}}...{{cyclingresult end}} blocks.
-              Returns list of (title, [rows])."""
+              Returns list of (title, [rows]). Case-insensitive on template name."""
+              # Lower-cased copy for searching, but slice from the original for the body.
+              lc = wikitext.lower()
               blocks = []
               i = 0
               while i < len(wikitext):
-                  idx = wikitext.find('{{cyclingresult start', i)
+                  idx = lc.find('{{cyclingresult start', i)
                   if idx < 0:
                       break
                   start_end = find_template_end(wikitext, idx)
                   if start_end < 0:
                       break
                   start_body = wikitext[idx+2:start_end-2]
-                  m = re.match(r'cyclingresult start\s*\|\s*title=', start_body)
+                  m = re.match(r'cyclingresult start\s*\|\s*title=', start_body, re.IGNORECASE)
                   if not m:
                       i = start_end
                       continue
                   title = clean_title(start_body[m.end():])
 
-                  end_idx = wikitext.find('{{cyclingresult end}}', start_end)
+                  end_idx = lc.find('{{cyclingresult end}}', start_end)
                   if end_idx < 0:
                       i = start_end
                       continue
@@ -312,8 +314,9 @@ jobs:
 
                   rows = []
                   j = 0
+                  body_lc = body.lower()
                   while j < len(body):
-                      t_idx = body.find('{{cyclingresult|', j)
+                      t_idx = body_lc.find('{{cyclingresult|', j)
                       if t_idx < 0:
                           break
                       t_end = find_template_end(body, t_idx)
@@ -370,6 +373,22 @@ jobs:
 
               blocks = extract_result_blocks(all_wikitext)
               print(f"  [parse] found {len(blocks)} result blocks")
+
+              # Diagnostic: if we got zero blocks, dump a snippet of the wikitext
+              # so we can see what template structure the article is actually using.
+              # Prints only on failure so we don't flood the log on normal runs.
+              if len(blocks) == 0 and all_wikitext:
+                  snippet = all_wikitext[:3000]
+                  print(f"  [DIAG] zero blocks found. First 3000 chars of wikitext:")
+                  print("  [DIAG] " + "─" * 60)
+                  for line in snippet.splitlines():
+                      print(f"  [DIAG] {line}")
+                  print("  [DIAG] " + "─" * 60)
+                  # Also look for any templates that MIGHT be results
+                  import re as _re
+                  templates_seen = set(_re.findall(r'\{\{([A-Za-z][A-Za-z0-9 _-]+?)[\s|}]', all_wikitext))
+                  print(f"  [DIAG] template names seen in article: "
+                        f"{sorted(templates_seen)[:40]}")
 
               winners = {}        # stage_num -> {winner, winner_team}
               latest_gc = None
@@ -545,6 +564,7 @@ jobs:
                       continue
 
                   # Count stages_done (stages with a winner recorded)
+                  total_stages = len(d.get('stages', []))
                   stages_done = sum(
                       1 for s in d.get('stages', []) if s.get('winner')
                   )
@@ -570,8 +590,31 @@ jobs:
                       target['stages_done'] = stages_done
                       changed = True
 
+                  # Promote a completed race: all stages have winners AND today is
+                  # past the race window → mark final, set winner/team from GC.
+                  race_complete = (
+                      total_stages > 0
+                      and stages_done >= total_stages
+                      and today > cfg['window_end']
+                      and gc
+                  )
+                  if race_complete:
+                      new_status = 'final'
+                      new_winner = gc[0].get('name', '') or ''
+                      new_wteam  = gc[0].get('team', '') or ''
+                      if target.get('status') != new_status:
+                          target['status'] = new_status
+                          changed = True
+                      if target.get('winner') != new_winner:
+                          target['winner'] = new_winner
+                          changed = True
+                      if target.get('team') != new_wteam:
+                          target['team'] = new_wteam
+                          changed = True
+
                   print(f"  [sync] {race_key}: leader={target.get('gc_leader','?')}, "
-                        f"stages_done={target.get('stages_done',0)}")
+                        f"stages_done={target.get('stages_done',0)}, "
+                        f"status={target.get('status')}")
 
               if changed:
                   cy['updated'] = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
