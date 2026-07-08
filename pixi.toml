@@ -1,0 +1,22 @@
+[workspace]
+name = "bdgroves-website"
+version = "0.1.0"
+description = "Data-fetch scripts that power brooksgroves.com's live dashboards"
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64", "win-64"]
+
+[dependencies]
+python = ">=3.11,<3.13"
+
+[pypi-dependencies]
+garminconnect = "*"
+curl_cffi = "*"
+
+[tasks]
+fetch-garmin = "python scripts/fetch_garmin.py"
+
+# Other workflows (fetch-cycling, fetch-race-results, fetch-cycling-news)
+# still use plain pip in their own workflow files for now — say the word
+# if you want those folded into this manifest too, they'd just need their
+# extra deps (cloudscraper, selectolax, beautifulsoup4, requests, pyyaml)
+# added to [pypi-dependencies] above and a matching [tasks] entry each.

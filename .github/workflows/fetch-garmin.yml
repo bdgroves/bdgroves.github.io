@@ -1,0 +1,45 @@
+name: Fetch Garmin Data
+
+on:
+  schedule:
+    - cron: '0 8 * * *'   # 8am UTC daily — catches overnight activities
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up pixi
+        uses: prefix-dev/setup-pixi@v0.10.0
+        with:
+          pixi-version: v0.66.0
+          cache: true
+
+      - name: Fetch Garmin data
+        env:
+          GARMIN_TOKENS_JSON: ${{ secrets.GARMIN_TOKENS_JSON }}
+        run: pixi run fetch-garmin
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/training.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            for i in 1 2 3; do
+              git commit -m "chore: garmin training data $(date -u +%Y-%m-%d)"
+              git pull --rebase origin main
+              if git push; then
+                echo "Push succeeded"
+                exit 0
+              fi
+              echo "Push attempt $i failed, retrying..."
+              sleep $((i * 3))
+            done
+            echo "Push failed after retries"
+            exit 1
+          fi
