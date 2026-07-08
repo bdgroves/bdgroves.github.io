@@ -73,10 +73,7 @@
     .gb-neg { color:var(--rust); }
 
     /* NFL */
-    .nfl-banner { background:var(--cream); border-left:3px solid var(--gold); padding:1rem 1.25rem; display:flex; align-items:center; gap:1rem; }
-    .nfl-trophy { font-size:1.5rem; flex-shrink:0; }
-    .nfl-result { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:900; line-height:1.2; }
-    .nfl-sub { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
+    /* NFL banner replaced by .fb-* football team card styles (see below). */
 
     /* PEAKS */
     .peaks-card { background:var(--cream); border:1px solid var(--mist); padding:1.1rem; }
@@ -227,6 +224,31 @@
     .race-card .event-meta span { display:block; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); }
     .tour-card.tour-finished { opacity:0.62; }
     .tour-card.tour-live { box-shadow:0 0 0 2px var(--rust); }
+
+    /* FOOTBALL — team cards + compact standings */
+    .fb-card { background:var(--cream); border:1px solid var(--mist); padding:0.75rem 0.9rem; margin-bottom:0.75rem; border-radius:2px; }
+    .fb-card.fb-champ { border-left:3px solid var(--gold); }
+    .fb-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:0.4rem; border-bottom:1px solid var(--mist); margin-bottom:0.5rem; }
+    .fb-header-left { flex:1; }
+    .fb-name { font-family:'Playfair Display',serif; font-size:0.98rem; font-weight:700; line-height:1.1; }
+    .fb-sub { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.08em; color:var(--stone); text-transform:uppercase; margin-top:0.15rem; }
+    .fb-record { font-family:'DM Mono',monospace; font-size:0.85rem; font-weight:700; color:var(--ink); }
+    .fb-record-tag { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); text-transform:uppercase; letter-spacing:0.08em; }
+    .fb-logo { height:2rem; width:auto; margin-left:0.75rem; }
+    .fb-game { font-family:'DM Mono',monospace; font-size:0.66rem; color:var(--ink); padding:0.2rem 0; display:flex; gap:0.5rem; }
+    .fb-game-label { color:var(--stone); text-transform:uppercase; font-size:0.55rem; letter-spacing:0.1em; min-width:2.4rem; flex-shrink:0; padding-top:0.1rem; }
+    .fb-game-detail { flex:1; }
+    .fb-game-time { color:var(--stone); font-size:0.6rem; }
+    .fb-offseason { font-family:'DM Mono',monospace; font-size:0.66rem; color:var(--stone); padding:0.4rem 0.5rem; background:rgba(0,0,0,0.02); border-left:2px solid var(--gold); margin-top:0.35rem; }
+    .fb-champ-badge { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; color:var(--gold); text-transform:uppercase; font-weight:700; margin-top:0.35rem; }
+    .fb-standings { margin-top:0.55rem; padding-top:0.5rem; border-top:1px dashed var(--mist); }
+    .fb-standings-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--stone); margin-bottom:0.3rem; }
+    .fb-standings table { width:100%; font-family:'DM Mono',monospace; font-size:0.6rem; border-collapse:collapse; }
+    .fb-standings th { text-align:right; padding:0.15rem 0.3rem; color:var(--stone); font-weight:400; border-bottom:1px solid var(--mist); font-size:0.52rem; text-transform:uppercase; letter-spacing:0.1em; }
+    .fb-standings td { text-align:right; padding:0.2rem 0.3rem; border-bottom:1px solid rgba(0,0,0,0.03); }
+    .fb-standings th:first-child, .fb-standings td:first-child { text-align:left; }
+    .fb-standings tr.fb-own td { background:rgba(255,193,7,0.12); font-weight:700; color:var(--ink); }
+    .fb-standings tr:last-child td { border-bottom:0; }
   </style>
 </head>
 <body>
@@ -332,7 +354,7 @@
   <div class="zone">
     <div class="zone-header">
       <div class="zone-title"><em>The Teams</em></div>
-      <div class="zone-sub">Mariners · Seahawks · Pro Cycling — what I'm following</div>
+      <div class="zone-sub">Mariners · Football · Pro Cycling — what I'm following</div>
     </div>
 
     <div class="zone-grid">
@@ -354,26 +376,18 @@
         <div id="mlb-standings"><p class="loading">Loading standings…</p></div>
       </div>
 
-      <!-- RIGHT: Seahawks -->
+      <!-- RIGHT: Football (NFL + NCAA) -->
       <div>
         <div class="section-label">
-          <span>Seattle Seahawks</span>
-          <a href="https://www.seahawks.com" target="_blank">seahawks.com ↗</a>
+          <span>Football</span>
+          <a href="https://www.espn.com/nfl/scoreboard" target="_blank">ESPN ↗</a>
         </div>
         <div class="quick-links">
-          <a href="https://www.nfl.com/teams/seattle-seahawks" target="_blank" class="quick-link">NFL.com ↗</a>
-          <a href="https://www.seahawks.com/schedule" target="_blank" class="quick-link">Schedule ↗</a>
-          <a href="https://www.seahawks.com/roster" target="_blank" class="quick-link">Roster ↗</a>
+          <a href="https://www.seahawks.com" target="_blank" class="quick-link">Seahawks ↗</a>
+          <a href="https://gohuskies.com/sports/football" target="_blank" class="quick-link">UW Huskies ↗</a>
+          <a href="https://nevadawolfpack.com/sports/football" target="_blank" class="quick-link">Nevada ↗</a>
         </div>
-        <div class="nfl-banner">
-          <div class="nfl-trophy">🏆</div>
-          <div>
-            <div class="nfl-result">Super Bowl LX Champions · 29–13</div>
-            <div class="nfl-sub">vs New England Patriots · Feb 8, 2026</div>
-            <div class="nfl-sub">MVP: Kenneth Walker III</div>
-            <div class="nfl-sub" style="margin-top:0.3rem;">2026 NFL Draft — Apr 23–25 · Green Bay</div>
-          </div>
-        </div>
+        <div id="football-teams"><p class="loading">Loading teams…</p></div>
       </div>
 
     </div>
@@ -523,6 +537,172 @@ function renderGames(el, games) {
       <div class="team-away"><div class="team-name ${status!=='Preview'?(rightWin?'winner':'loser'):''}">${rightTeam}</div></div>
     </div>`;
   }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FOOTBALL — NFL + NCAA team cards with records, next games, standings
+// Config-driven: add teams by editing FOOTBALL_TEAMS below. ESPN's public
+// site.api.espn.com is CORS-open and no key is required.
+// ═══════════════════════════════════════════════════════════════════
+const FOOTBALL_TEAMS = [
+  {
+    league: 'nfl',
+    id: 'sea',                          // ESPN abbreviation for NFL
+    shortName: 'Seahawks',
+    subLabel: 'Seattle · NFC West',
+    homepage: 'https://www.seahawks.com',
+    espnPage: 'https://www.espn.com/nfl/team/_/name/sea',
+    // Off-season celebration — swaps out when regular-season games appear
+    offseasonNote: '🏆 Super Bowl LX Champions · beat NE 29–13 · MVP: Kenneth Walker III',
+    isChamp: true,
+    // Which standings group to render below this team
+    standingsGroup: 'NFC West',
+  },
+  {
+    league: 'college-football',
+    id: '264',                          // Washington Huskies
+    shortName: 'UW Huskies',
+    subLabel: 'Washington · Big Ten',
+    homepage: 'https://gohuskies.com/sports/football',
+    espnPage: 'https://www.espn.com/college-football/team/_/id/264',
+    standingsGroup: 'Big Ten',
+  },
+  {
+    league: 'college-football',
+    id: '2440',                         // Nevada Wolf Pack
+    shortName: 'Nevada Wolf Pack',
+    subLabel: 'Reno · Mountain West',
+    homepage: 'https://nevadawolfpack.com/sports/football',
+    espnPage: 'https://www.espn.com/college-football/team/_/id/2440',
+    standingsGroup: 'Mountain West',
+  },
+];
+
+// Recursively search a nested standings tree for a group with the given name.
+// ESPN's standings response is a tree with `children[]` and `standings.entries[]`.
+function findStandingsGroup(node, name) {
+  if (!node) return null;
+  const nm = (node.name || node.abbreviation || '').toLowerCase();
+  const target = name.toLowerCase();
+  if (nm === target && node.standings?.entries?.length) return node;
+  if (nm.includes(target) && node.standings?.entries?.length) return node;
+  for (const child of (node.children || [])) {
+    const hit = findStandingsGroup(child, name);
+    if (hit) return hit;
+  }
+  return null;
+}
+
+function renderStandingsTable(group, ownTeamId) {
+  if (!group || !group.standings?.entries?.length) return '';
+  // Sort by wins desc, then win pct desc — safe fallback if API doesn't presort
+  const entries = [...group.standings.entries].sort((a, b) => {
+    const getW = (e) => Number(e.stats?.find(s => s.name === 'wins')?.value ?? 0);
+    const getWP = (e) => Number(e.stats?.find(s => s.name === 'winPercent')?.value ?? 0);
+    return (getW(b) - getW(a)) || (getWP(b) - getWP(a));
+  });
+  // Cap at 10 rows to keep the section compact; always include the own team
+  let visible = entries.slice(0, 10);
+  const ownEntry = entries.find(e => String(e.team?.id) === String(ownTeamId));
+  if (ownEntry && !visible.includes(ownEntry)) visible = [...visible.slice(0, 9), ownEntry];
+
+  const rows = visible.map(e => {
+    const tName = e.team?.abbreviation || e.team?.shortDisplayName || e.team?.displayName || '—';
+    const w = e.stats?.find(s => s.name === 'wins')?.displayValue ?? '0';
+    const l = e.stats?.find(s => s.name === 'losses')?.displayValue ?? '0';
+    const isOwn = String(e.team?.id) === String(ownTeamId);
+    return `<tr class="${isOwn ? 'fb-own' : ''}"><td>${tName}</td><td>${w}</td><td>${l}</td></tr>`;
+  }).join('');
+  return `<div class="fb-standings">
+    <div class="fb-standings-label">${group.name || 'Standings'}</div>
+    <table><thead><tr><th>Team</th><th>W</th><th>L</th></tr></thead><tbody>${rows}</tbody></table>
+  </div>`;
+}
+
+function renderFootballCard(cfg, team, standingsRoot) {
+  if (!team) {
+    return `<div class="fb-card"><div class="fb-name">${cfg.shortName}</div>
+      <div class="fb-sub">Data unavailable</div></div>`;
+  }
+  const rec = team.record?.items?.[0];
+  const summary = rec?.summary || '0–0';
+  const hasStarted = rec && (Number(rec.stats?.find(s => s.name === 'wins')?.value ?? 0)
+                          + Number(rec.stats?.find(s => s.name === 'losses')?.value ?? 0)
+                          + Number(rec.stats?.find(s => s.name === 'ties')?.value ?? 0)) > 0;
+  const logo = team.logos?.[0]?.href || '';
+
+  // Next event
+  const next = team.nextEvent?.[0];
+  let nextHTML = '';
+  if (next) {
+    const dt = new Date(next.date);
+    const dateStr = dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const timeStr = dt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    const opp = next.shortName || next.name || 'TBD';
+    const bcast = next.competitions?.[0]?.broadcasts?.[0]?.names?.[0] || '';
+    nextHTML = `<div class="fb-game">
+      <span class="fb-game-label">Next</span>
+      <span class="fb-game-detail">${opp}<div class="fb-game-time">${dateStr} · ${timeStr}${bcast ? ' · ' + bcast : ''}</div></span>
+    </div>`;
+  } else if (!hasStarted && cfg.offseasonNote) {
+    nextHTML = `<div class="fb-offseason">${cfg.offseasonNote}</div>`;
+  } else if (!hasStarted) {
+    nextHTML = `<div class="fb-offseason">Season starts soon — check back August.</div>`;
+  }
+
+  // Standings for this team's division/conference
+  const standingsHTML = cfg.standingsGroup && standingsRoot
+    ? renderStandingsTable(findStandingsGroup(standingsRoot, cfg.standingsGroup), team.id)
+    : '';
+
+  return `<div class="fb-card${cfg.isChamp ? ' fb-champ' : ''}">
+    <div class="fb-header">
+      <div class="fb-header-left">
+        <div class="fb-name"><a href="${cfg.espnPage}" target="_blank" style="color:inherit;text-decoration:none;">${cfg.shortName}</a></div>
+        <div class="fb-sub">${cfg.subLabel}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="fb-record">${summary}</div>
+        <div class="fb-record-tag">2026 season</div>
+      </div>
+      ${logo ? `<img class="fb-logo" src="${logo}" alt="">` : ''}
+    </div>
+    ${nextHTML}
+    ${standingsHTML}
+  </div>`;
+}
+
+async function loadFootball() {
+  const el = document.getElementById('football-teams');
+  if (!el) return;
+  try {
+    // Team fetches — one per configured team
+    const teamPromises = FOOTBALL_TEAMS.map(cfg =>
+      fetch(`https://site.api.espn.com/apis/site/v2/sports/football/${cfg.league}/teams/${cfg.id}`)
+        .then(r => r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)))
+        .then(d => ({ cfg, team: d.team }))
+        .catch(err => { console.warn('team fetch failed', cfg.shortName, err); return { cfg, team: null }; })
+    );
+    // Standings fetches — one per unique league (dedupes NFL/CFB across configs)
+    const leagues = [...new Set(FOOTBALL_TEAMS.map(t => t.league))];
+    const standingsPromises = leagues.map(league =>
+      fetch(`https://site.api.espn.com/apis/v2/sports/football/${league}/standings`)
+        .then(r => r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)))
+        .then(d => ({ league, root: d }))
+        .catch(err => { console.warn('standings fetch failed', league, err); return { league, root: null }; })
+    );
+    const [teamResults, standingsResults] = await Promise.all([
+      Promise.all(teamPromises),
+      Promise.all(standingsPromises),
+    ]);
+    const standingsByLeague = Object.fromEntries(standingsResults.map(s => [s.league, s.root]));
+    el.innerHTML = teamResults.map(({ cfg, team }) =>
+      renderFootballCard(cfg, team, standingsByLeague[cfg.league])
+    ).join('');
+  } catch (e) {
+    console.error('football load error:', e);
+    el.innerHTML = `<p class="sport-note">Football data loading… check back soon.</p>`;
+  }
 }
 
 async function loadStandings() {
@@ -881,6 +1061,7 @@ async function loadFuelcast() {
 document.getElementById('current-year').textContent=new Date().getFullYear();
 loadMLB();
 loadStandings();
+loadFootball();
 loadCycling();
 loadCyclingNews();
 loadBeers();
