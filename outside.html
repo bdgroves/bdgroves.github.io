@@ -276,6 +276,41 @@
     .bb-standings th:first-child, .bb-standings td:first-child { text-align:left; }
     .bb-standings tr.bb-own td { background:rgba(255,193,7,0.12); font-weight:700; color:var(--ink); }
     .bb-standings tr:last-child td { border-bottom:0; }
+
+    /* SEASON — Race card, YTD trisport/xt grids, Strava badge */
+    .race-card .event-days { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
+    .race-hero { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--gold); padding:1.25rem 1.4rem; text-decoration:none; color:inherit; display:block; margin-bottom:0.75rem; transition:background 0.12s,border-color 0.12s; }
+    .race-hero:hover { background:var(--white); border-left-color:var(--rust); }
+    .race-hero-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.5rem; }
+    .race-hero-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); }
+    .race-hero-countdown { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--rust); font-weight:700; }
+    .race-hero-name { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; line-height:1.15; }
+    .race-hero-loc { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--stone); margin-top:0.25rem; }
+    .race-hero-meta { display:flex; gap:1.5rem; margin-top:0.7rem; padding-top:0.55rem; border-top:1px dashed var(--mist); }
+    .race-hero-meta div { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--ink); }
+    .race-hero-meta .meta-label { display:block; font-size:0.5rem; color:var(--stone); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:0.1rem; }
+
+    /* Strava badge — inline chevron mark in brand orange */
+    .strava-badge { display:inline-flex; align-items:center; gap:0.35rem; font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--strava); text-decoration:none; }
+    .strava-badge svg { width:0.85rem; height:0.85rem; fill:var(--strava); }
+
+    /* YTD split — trisport (3-col) + crosstraining (2-col) */
+    .ts-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; margin-bottom:0.5rem; }
+    .ts-card { background:var(--cream); border:1px solid var(--mist); padding:0.7rem 0.5rem; text-align:center; }
+    .ts-icon { font-size:1.15rem; line-height:1; }
+    .ts-sport { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--stone); margin-top:0.3rem; }
+    .ts-val-row { margin-top:0.2rem; }
+    .ts-val { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:900; color:var(--ink); }
+    .ts-unit { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); }
+    .ts-sub { font-family:'DM Mono',monospace; font-size:0.53rem; color:var(--stone); margin-top:0.2rem; line-height:1.3; }
+    .xt-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0.5rem; }
+    .xt-card { background:var(--white); border:1px solid var(--mist); padding:0.5rem 0.75rem; display:flex; align-items:center; gap:0.5rem; }
+    .xt-icon { font-size:0.95rem; }
+    .xt-body { flex:1; display:flex; justify-content:space-between; align-items:baseline; }
+    .xt-name { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
+    .xt-value { font-family:'Playfair Display',serif; font-size:0.9rem; font-weight:700; color:var(--ink); }
+    .xt-sub { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); margin-left:0.5rem; }
+    @media(max-width:500px) { .ts-grid { grid-template-columns:repeat(3,1fr); } .xt-grid { grid-template-columns:repeat(2,1fr); } }
   </style>
 </head>
 <body>
@@ -318,28 +353,30 @@
 
     <div class="zone-grid">
 
-      <!-- LEFT: Races -->
+      <!-- LEFT: Racing + Fueling -->
       <div>
         <div class="section-label">
-          <span>Race Calendar 2026</span>
+          <span>Racing</span>
           <a href="https://www.ironman.com" target="_blank">Ironman ↗</a>
         </div>
-        <a href="https://www.ironman.com" target="_blank" class="race-card">
-          <div>
-            <p class="event-name">Ironman World Championship</p>
-            <p class="event-loc">Nice, France</p>
+        <a href="https://www.ironman.com/im703-victoria" target="_blank" class="race-hero" id="race-hero">
+          <div class="race-hero-top">
+            <div class="race-hero-label">Next Race</div>
+            <div class="race-hero-countdown" id="race-countdown">—</div>
           </div>
-          <div class="event-meta"><span>Sep 6, 2026</span><span class="score-status sched">Upcoming ↗</span></div>
-        </a>
-        <a href="https://www.ironman.com/im703-washington-tri-cities" target="_blank" class="race-card">
-          <div>
-            <p class="event-name">Ironman 70.3 Washington</p>
-            <p class="event-loc">Tri-Cities, WA · Columbia River</p>
+          <div class="race-hero-name">Ironman 70.3 Victoria</div>
+          <div class="race-hero-loc">Victoria, BC · Canada</div>
+          <div class="race-hero-meta">
+            <div><span class="meta-label">Date</span>May 30, 2027</div>
+            <div><span class="meta-label">Distance</span>1.2 · 56 · 13.1</div>
+            <div><span class="meta-label">Edition</span>2027 Season</div>
           </div>
-          <div class="event-meta"><span>Sep 20, 2026</span><span class="score-status sched">Upcoming ↗</span></div>
         </a>
 
-        <div class="col-label" style="margin-top:1.5rem;">Today's Fueling</div>
+        <div class="section-label">
+          <span>Today's Fueling</span>
+          <a href="/fuelcast.html" target="_blank">FuelCast ↗</a>
+        </div>
         <a href="/fuelcast.html" class="fuelcast-card" id="fuelcast-card">
           <div class="fuelcast-loading" id="fuelcast-loading">Loading today's plan…</div>
         </a>
@@ -348,21 +385,23 @@
       <!-- RIGHT: Training Log -->
       <div>
         <div class="section-label">
-          <span>Training Log — <span id="current-year">2026</span></span>
-          <a href="https://www.strava.com/athletes/59148" target="_blank">Strava ↗</a>
+          <span>Training Log · <span id="current-year">2026</span></span>
+          <a href="https://www.strava.com/athletes/59148" target="_blank" class="strava-badge">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg>
+            Strava ↗
+          </a>
         </div>
         <div class="quick-links">
-          <a href="https://www.strava.com/athletes/59148" target="_blank" class="quick-link">Strava Profile ↗</a>
-          <a href="https://www.ironman.com" target="_blank" class="quick-link">Ironman ↗</a>
-          <a href="https://www.ironman.com/im703-washington-tri-cities" target="_blank" class="quick-link">IM 70.3 Tri-Cities ↗</a>
+          <a href="https://www.strava.com/athletes/59148" target="_blank" class="quick-link">Profile ↗</a>
+          <a href="https://www.strava.com/athletes/59148/training/log" target="_blank" class="quick-link">Training Log ↗</a>
+          <a href="https://bdgroves.github.io/EDGAR" target="_blank" class="quick-link">EDGAR ↗</a>
         </div>
 
         <div class="col-label">Year to Date</div>
-        <div class="ytd-grid" id="ytd-grid">
-          <div class="ytd-card"><p class="loading">…</p></div>
-          <div class="ytd-card"></div>
-          <div class="ytd-card"></div>
-          <div class="ytd-card"></div>
+        <div id="ytd-grid" class="ts-grid">
+          <div class="ts-card"><p class="loading">…</p></div>
+          <div class="ts-card"></div>
+          <div class="ts-card"></div>
         </div>
 
         <div class="col-label">Recent Activities</div>
@@ -1102,15 +1141,44 @@ async function loadStrava() {
 }
 
 function renderYTD(ytd) {
-  const yogaCard=ytd.yoga&&ytd.yoga.count>0
-    ?`<div class="ytd-card"><div class="ytd-icon">🧘</div><div class="ytd-sport">Yoga</div><div><span class="ytd-val">${ytd.yoga.count}</span></div><div class="ytd-sub">${ytd.yoga.time||''}</div></div>`:'';
-  const strengthCard=ytd.strength&&ytd.strength.count>0
-    ?`<div class="ytd-card"><div class="ytd-icon">🏋️</div><div class="ytd-sport">Strength</div><div><span class="ytd-val">${ytd.strength.count}</span></div><div class="ytd-sub">${ytd.strength.time||''}</div></div>`:'';
-  document.getElementById('ytd-grid').innerHTML=
-    `<div class="ytd-card"><div class="ytd-icon">🏃</div><div class="ytd-sport">Running</div><div><span class="ytd-val">${ytd.run.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div><div class="ytd-sub">${ytd.run.count} runs · ${ytd.run.time}</div></div>
-    <div class="ytd-card"><div class="ytd-icon">🚴</div><div class="ytd-sport">Cycling</div><div><span class="ytd-val">${ytd.ride.miles.toLocaleString()}</span><span class="ytd-unit">mi</span></div><div class="ytd-sub">${ytd.ride.count} rides · ${ytd.ride.time}</div></div>
-    <div class="ytd-card"><div class="ytd-icon">🏊</div><div class="ytd-sport">Swimming</div><div><span class="ytd-val">${ytd.swim.yards.toLocaleString()}</span><span class="ytd-unit">yd</span></div><div class="ytd-sub">${ytd.swim.count} swims · ${ytd.swim.time}</div></div>
-    ${yogaCard}${strengthCard}`;
+  // Trisport trio: Running, Cycling, Swimming — always shown
+  const triHTML = `
+    <div class="ts-card"><div class="ts-icon">🏃</div><div class="ts-sport">Running</div>
+      <div class="ts-val-row"><span class="ts-val">${ytd.run.miles.toLocaleString()}</span><span class="ts-unit">mi</span></div>
+      <div class="ts-sub">${ytd.run.count} runs · ${ytd.run.time}</div></div>
+    <div class="ts-card"><div class="ts-icon">🚴</div><div class="ts-sport">Cycling</div>
+      <div class="ts-val-row"><span class="ts-val">${ytd.ride.miles.toLocaleString()}</span><span class="ts-unit">mi</span></div>
+      <div class="ts-sub">${ytd.ride.count} rides · ${ytd.ride.time}</div></div>
+    <div class="ts-card"><div class="ts-icon">🏊</div><div class="ts-sport">Swimming</div>
+      <div class="ts-val-row"><span class="ts-val">${ytd.swim.yards.toLocaleString()}</span><span class="ts-unit">yd</span></div>
+      <div class="ts-sub">${ytd.swim.count} swims · ${ytd.swim.time}</div></div>`;
+
+  // Cross-training pair — only rendered if there's data
+  const xtParts = [];
+  if (ytd.yoga && ytd.yoga.count > 0) {
+    xtParts.push(`<div class="xt-card"><span class="xt-icon">🧘</span>
+      <div class="xt-body"><span class="xt-name">Yoga</span>
+        <span><span class="xt-value">${ytd.yoga.count}</span><span class="xt-sub">${ytd.yoga.time||''}</span></span></div></div>`);
+  }
+  if (ytd.strength && ytd.strength.count > 0) {
+    xtParts.push(`<div class="xt-card"><span class="xt-icon">🏋️</span>
+      <div class="xt-body"><span class="xt-name">Strength</span>
+        <span><span class="xt-value">${ytd.strength.count}</span><span class="xt-sub">${ytd.strength.time||''}</span></span></div></div>`);
+  }
+
+  const el = document.getElementById('ytd-grid');
+  el.className = 'ts-grid';
+  el.innerHTML = triHTML;
+  // Remove any prior xt-grid sibling from earlier renders, then append new one if we have parts
+  const prevXt = el.nextElementSibling;
+  if (prevXt && prevXt.classList.contains('xt-grid')) prevXt.remove();
+  if (xtParts.length) {
+    const div = document.createElement('div');
+    div.className = 'xt-grid';
+    div.style.marginTop = '0.5rem';
+    div.innerHTML = xtParts.join('');
+    el.after(div);
+  }
 }
 
 function renderActivities(acts) {
@@ -1254,6 +1322,17 @@ async function loadFuelcast() {
 }
 
 document.getElementById('current-year').textContent=new Date().getFullYear();
+
+// Race countdown — Victoria 2027 IM 70.3
+(function updateRaceCountdown(){
+  const el = document.getElementById('race-countdown');
+  if (!el) return;
+  const race = new Date('2027-05-30T00:00:00');
+  const now = new Date();
+  const days = Math.ceil((race - now) / (1000 * 60 * 60 * 24));
+  el.textContent = days > 0 ? days + ' days to go' : days === 0 ? 'Race day' : 'Past';
+})();
+
 loadBaseball();
 loadFootball();
 loadCycling();
