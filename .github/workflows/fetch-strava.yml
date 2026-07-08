@@ -26,59 +26,173 @@ jobs:
           STRAVA_REFRESH_TOKEN: ${{ secrets.STRAVA_REFRESH_TOKEN }}
         run: |
           python3 << 'EOF'
-          import json, requests, os
+          import json, requests, os, sys
           from datetime import datetime, timezone
 
           CLIENT_ID     = os.environ['STRAVA_CLIENT_ID']
           CLIENT_SECRET = os.environ['STRAVA_CLIENT_SECRET']
           REFRESH_TOKEN = os.environ['STRAVA_REFRESH_TOKEN']
 
-          # --- Refresh access token ---
-          token_res = requests.post('https://www.strava.com/oauth/token', data={
-              'client_id':     CLIENT_ID,
-              'client_secret': CLIENT_SECRET,
-              'refresh_token': REFRESH_TOKEN,
-              'grant_type':    'refresh_token'
-          })
-          token_res.raise_for_status()
-          access_token = token_res.json()['access_token']
-          headers = {'Authorization': f'Bearer {access_token}'}
-          print(f"Token refreshed OK")
+          # ─── Load cached data as fallback ───
+          # If any API call fails, we preserve whatever's in the existing file
+          # so the site keeps showing yesterday's numbers instead of blanks.
+          cached = {}
+          try:
+              with open('data/strava.json', encoding='utf-8') as f:
+                  cached = json.load(f)
+              print(f"Loaded cache: updated {cached.get('updated','?')}")
+          except (FileNotFoundError, json.JSONDecodeError) as e:
+              print(f"No usable cache: {e}")
 
-          # --- Athlete stats ---
-          stats_res = requests.get('https://www.strava.com/api/v3/athletes/59148/stats', headers=headers)
-          stats_res.raise_for_status()
-          stats = stats_res.json()
+          # ─── Refresh access token ───
+          try:
+              token_res = requests.post('https://www.strava.com/oauth/token', data={
+                  'client_id':     CLIENT_ID,
+                  'client_secret': CLIENT_SECRET,
+                  'refresh_token': REFRESH_TOKEN,
+                  'grant_type':    'refresh_token'
+              }, timeout=20)
+              token_res.raise_for_status()
+              token_data = token_res.json()
+              access_token = token_data['access_token']
+              scope = token_data.get('scope', '(scope not returned)')
+              headers = {'Authorization': f'Bearer {access_token}'}
+              print(f"Token refreshed OK · scope: {scope}")
+          except Exception as e:
+              print(f"FATAL: token refresh failed: {e}")
+              sys.exit(0)  # Exit clean — keep cached data
 
-          ytd_run   = stats.get('ytd_run_totals', {})
-          ytd_ride  = stats.get('ytd_ride_totals', {})
-          ytd_swim  = stats.get('ytd_swim_totals', {})
-          all_run   = stats.get('all_run_totals', {})
-          all_ride  = stats.get('all_ride_totals', {})
-          all_swim  = stats.get('all_swim_totals', {})
-
-          def m_to_mi(m): return round(m * 0.000621371, 1)
-          def m_to_yd(m): return round(m * 1.09361)
+          def m_to_mi(m): return round(m * 0.000621371, 1) if m else 0
+          def m_to_yd(m): return round(m * 1.09361) if m else 0
           def sec_to_hm(s):
+              s = int(s or 0)
               h = s // 3600
               m = (s % 3600) // 60
               return f"{h}h {m}m"
 
-          # --- Recent activities (last 10) ---
-          acts_res = requests.get(
-              'https://www.strava.com/api/v3/athlete/activities',
-              headers=headers,
-              params={'per_page': 10, 'page': 1}
-          )
-          acts_res.raise_for_status()
-          activities_raw = acts_res.json()
+          # ─── Verify token + get authenticated athlete ID ───
+          # /athlete needs only 'read' scope. If this fails, everything else will too.
+          athlete_id = None
+          try:
+              a_res = requests.get('https://www.strava.com/api/v3/athlete',
+                                   headers=headers, timeout=20)
+              a_res.raise_for_status()
+              athlete_id = a_res.json().get('id')
+              print(f"Authenticated as athlete {athlete_id}")
+          except Exception as e:
+              print(f"WARN: /athlete failed: {e} (proceeding with fallback ID 59148)")
+              athlete_id = 59148
 
+          # ─── Try stats endpoint (needs profile:read_all scope) ───
+          stats = None
+          try:
+              stats_res = requests.get(
+                  f'https://www.strava.com/api/v3/athletes/{athlete_id}/stats',
+                  headers=headers, timeout=20
+              )
+              if stats_res.status_code == 403:
+                  print("WARN: /stats returned 403 — token likely lacks profile:read_all scope")
+                  print("      Will compute YTD from activities; keep cached all-time.")
+              else:
+                  stats_res.raise_for_status()
+                  stats = stats_res.json()
+                  print("Stats fetched OK")
+          except Exception as e:
+              print(f"WARN: stats fetch failed: {e}")
+
+          # ─── Fetch recent activities (last 10) ───
+          activities_raw = []
+          try:
+              acts_res = requests.get(
+                  'https://www.strava.com/api/v3/athlete/activities',
+                  headers=headers,
+                  params={'per_page': 10, 'page': 1},
+                  timeout=20
+              )
+              acts_res.raise_for_status()
+              activities_raw = acts_res.json()
+              print(f"Recent activities: {len(activities_raw)} fetched")
+          except Exception as e:
+              print(f"WARN: recent activities fetch failed: {e}")
+
+          # ─── Fetch YTD activities (Jan 1 → now) for cross-training + fallback stats ───
+          ytd_activities = []
+          try:
+              jan1 = int(datetime(datetime.now().year, 1, 1, tzinfo=timezone.utc).timestamp())
+              ytd_res = requests.get(
+                  'https://www.strava.com/api/v3/athlete/activities',
+                  headers=headers,
+                  params={'per_page': 200, 'page': 1, 'after': jan1},
+                  timeout=30
+              )
+              ytd_res.raise_for_status()
+              ytd_activities = ytd_res.json()
+              print(f"YTD activities: {len(ytd_activities)} fetched")
+          except Exception as e:
+              print(f"WARN: YTD activities fetch failed: {e}")
+
+          # ─── Compute yoga + strength totals from YTD activities ───
+          yoga_count = 0; yoga_secs = 0
+          strength_count = 0; strength_secs = 0
+          for a in ytd_activities:
+              sport = a.get('sport_type', a.get('type', ''))
+              if sport == 'Yoga':
+                  yoga_count += 1
+                  yoga_secs  += a.get('moving_time', 0)
+              elif sport == 'WeightTraining':
+                  strength_count += 1
+                  strength_secs  += a.get('moving_time', 0)
+
+          # ─── Compute run/ride/swim YTD ───
+          # Preferred: use /stats response. Fallback: sum YTD activities ourselves.
+          if stats:
+              ytd_run   = stats.get('ytd_run_totals', {})
+              ytd_ride  = stats.get('ytd_ride_totals', {})
+              ytd_swim  = stats.get('ytd_swim_totals', {})
+              all_run   = stats.get('all_run_totals', {})
+              all_ride  = stats.get('all_ride_totals', {})
+              all_swim  = stats.get('all_swim_totals', {})
+              ytd_block = {
+                  'run':  {'miles': m_to_mi(ytd_run.get('distance',0)),  'time': sec_to_hm(ytd_run.get('moving_time',0)),  'count': ytd_run.get('count',0)},
+                  'ride': {'miles': m_to_mi(ytd_ride.get('distance',0)), 'time': sec_to_hm(ytd_ride.get('moving_time',0)), 'count': ytd_ride.get('count',0)},
+                  'swim': {'yards': m_to_yd(ytd_swim.get('distance',0)), 'time': sec_to_hm(ytd_swim.get('moving_time',0)), 'count': ytd_swim.get('count',0)},
+              }
+              alltime_block = {
+                  'run':  {'miles': m_to_mi(all_run.get('distance',0)),  'count': all_run.get('count',0)},
+                  'ride': {'miles': m_to_mi(all_ride.get('distance',0)), 'count': all_ride.get('count',0)},
+                  'swim': {'yards': m_to_yd(all_swim.get('distance',0)), 'count': all_swim.get('count',0)},
+              }
+          else:
+              # Compute from activities (only YTD — can't reconstruct all-time this way)
+              r_dist, r_secs, r_n = 0, 0, 0
+              b_dist, b_secs, b_n = 0, 0, 0
+              s_dist, s_secs, s_n = 0, 0, 0
+              for a in ytd_activities:
+                  sport = a.get('sport_type', a.get('type', ''))
+                  d = a.get('distance', 0); t = a.get('moving_time', 0)
+                  if sport == 'Run':                    r_dist += d; r_secs += t; r_n += 1
+                  elif sport in ('Ride','VirtualRide'): b_dist += d; b_secs += t; b_n += 1
+                  elif sport == 'Swim':                 s_dist += d; s_secs += t; s_n += 1
+              ytd_block = {
+                  'run':  {'miles': m_to_mi(r_dist), 'time': sec_to_hm(r_secs), 'count': r_n},
+                  'ride': {'miles': m_to_mi(b_dist), 'time': sec_to_hm(b_secs), 'count': b_n},
+                  'swim': {'yards': m_to_yd(s_dist), 'time': sec_to_hm(s_secs), 'count': s_n},
+              }
+              # Preserve cached all-time — API not accessible without stats endpoint
+              alltime_block = cached.get('all_time', {
+                  'run':  {'miles': 0, 'count': 0},
+                  'ride': {'miles': 0, 'count': 0},
+                  'swim': {'yards': 0, 'count': 0},
+              })
+              print("Computed YTD from activities; preserving cached all-time")
+
+          # ─── Format recent activities for the site ───
           SPORT_ICONS = {
-              'Run': '🏃', 'Ride': '🚴', 'Swim': '🏊',
-              'Hike': '🥾', 'Walk': '🚶', 'VirtualRide': '🚴',
-              'WeightTraining': '🏋️', 'Yoga': '🧘',
-              'Kayaking': '🚣', 'Rowing': '🚣',
-              'Workout': '⚡', 'EBikeRide': '⚡'
+              'Run':'🏃', 'Ride':'🚴', 'Swim':'🏊',
+              'Hike':'🥾', 'Walk':'🚶', 'VirtualRide':'🚴',
+              'WeightTraining':'🏋️', 'Yoga':'🧘',
+              'Kayaking':'🚣', 'Rowing':'🚣',
+              'Workout':'⚡', 'EBikeRide':'⚡'
           }
 
           activities = []
@@ -86,102 +200,70 @@ jobs:
               sport = a.get('sport_type', a.get('type', 'Workout'))
               dist_m = a.get('distance', 0)
               elev_m = a.get('total_elevation_gain', 0)
-
-              # Format distance based on sport
               if sport == 'Swim':
                   dist_str = f"{m_to_yd(dist_m):,} yd" if dist_m else ''
               else:
                   dist_str = f"{m_to_mi(dist_m)} mi" if dist_m else ''
-
-              # Format moving time
               move_secs = a.get('moving_time', 0)
-              h = move_secs // 3600
-              m = (move_secs % 3600) // 60
-              s = move_secs % 60
-              if h > 0:
-                  time_str = f"{h}:{m:02d}:{s:02d}"
-              else:
-                  time_str = f"{m}:{s:02d}"
-
-              # Pace for runs (min/mi)
+              h = move_secs // 3600; m = (move_secs % 3600) // 60; s = move_secs % 60
+              time_str = f"{h}:{m:02d}:{s:02d}" if h > 0 else f"{m}:{s:02d}"
               pace_str = ''
               if sport == 'Run' and dist_m > 0:
                   pace_secs = move_secs / (dist_m * 0.000621371)
-                  pm = int(pace_secs // 60)
-                  ps = int(pace_secs % 60)
+                  pm = int(pace_secs // 60); ps = int(pace_secs % 60)
                   pace_str = f"{pm}:{ps:02d}/mi"
-
-              # Date
               start = a.get('start_date_local', '')
               try:
                   dt = datetime.fromisoformat(start.replace('Z',''))
                   date_str = dt.strftime('%b %d')
-              except:
+              except Exception:
                   date_str = ''
-
               activities.append({
-                  'id':       a.get('id'),
-                  'name':     a.get('name', 'Activity'),
-                  'sport':    sport,
-                  'icon':     SPORT_ICONS.get(sport, '⚡'),
-                  'distance': dist_str,
-                  'time':     time_str,
-                  'pace':     pace_str,
+                  'id':        a.get('id'),
+                  'name':      a.get('name', 'Activity'),
+                  'sport':     sport,
+                  'icon':      SPORT_ICONS.get(sport, '⚡'),
+                  'distance':  dist_str,
+                  'time':      time_str,
+                  'pace':      pace_str,
                   'elevation': f"{round(elev_m * 3.28084)} ft" if elev_m else '',
-                  'date':     date_str,
-                  'kudos':    a.get('kudos_count', 0),
-                  'map_url':  f"https://www.strava.com/activities/{a.get('id')}"
+                  'date':      date_str,
+                  'kudos':     a.get('kudos_count', 0),
+                  'map_url':   f"https://www.strava.com/activities/{a.get('id')}"
               })
 
-          # --- Yoga + WeightTraining YTD (fetch full year) ---
-          jan1 = int(datetime(datetime.now().year, 1, 1, tzinfo=timezone.utc).timestamp())
-          ytd_res = requests.get(
-              'https://www.strava.com/api/v3/athlete/activities',
-              headers=headers,
-              params={'per_page': 200, 'page': 1, 'after': jan1}
-          )
-          yoga_count = 0
-          yoga_secs = 0
-          strength_count = 0
-          strength_secs = 0
-          if ytd_res.ok:
-              for a in ytd_res.json():
-                  sport = a.get('sport_type', a.get('type', ''))
-                  if sport == 'Yoga':
-                      yoga_count += 1
-                      yoga_secs += a.get('moving_time', 0)
-                  elif sport == 'WeightTraining':
-                      strength_count += 1
-                      strength_secs += a.get('moving_time', 0)
+          # If we got NO activities and NO stats, don't write — keep cache intact
+          if not activities and not stats and not ytd_activities:
+              print("ABORT: no fresh data acquired — leaving cached data/strava.json untouched")
+              sys.exit(0)
 
-          # --- Build output JSON ---
+          # Add cross-training onto the ytd block (independent of stats path)
+          ytd_block['yoga']     = {'count': yoga_count,     'time': sec_to_hm(yoga_secs)}
+          ytd_block['strength'] = {'count': strength_count, 'time': sec_to_hm(strength_secs)}
+
+          # If recent activities failed but we have cached ones, keep them
+          if not activities and cached.get('activities'):
+              print("Preserving cached recent activities")
+              activities = cached['activities']
+
           output = {
-              'updated': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
-              'ytd': {
-                  'run':  {'miles': m_to_mi(ytd_run.get('distance',0)),  'time': sec_to_hm(ytd_run.get('moving_time',0)),  'count': ytd_run.get('count',0)},
-                  'ride': {'miles': m_to_mi(ytd_ride.get('distance',0)), 'time': sec_to_hm(ytd_ride.get('moving_time',0)), 'count': ytd_ride.get('count',0)},
-                  'swim': {'yards': m_to_yd(ytd_swim.get('distance',0)), 'time': sec_to_hm(ytd_swim.get('moving_time',0)), 'count': ytd_swim.get('count',0)},
-                  'yoga': {'count': yoga_count, 'time': sec_to_hm(yoga_secs)},
-                  'strength': {'count': strength_count, 'time': sec_to_hm(strength_secs)},
-              },
-              'all_time': {
-                  'run':  {'miles': m_to_mi(all_run.get('distance',0)),  'count': all_run.get('count',0)},
-                  'ride': {'miles': m_to_mi(all_ride.get('distance',0)), 'count': all_ride.get('count',0)},
-                  'swim': {'yards': m_to_yd(all_swim.get('distance',0)), 'count': all_swim.get('count',0)},
-              },
-              'activities': activities
+              'updated':    datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+              'ytd':        ytd_block,
+              'all_time':   alltime_block,
+              'activities': activities,
+              'stats_available': bool(stats),
           }
 
           os.makedirs('data', exist_ok=True)
           with open('data/strava.json', 'w') as f:
               json.dump(output, f, indent=2)
 
-          print(f"Strava data written — {len(activities)} activities")
-          print(f"YTD Run: {output['ytd']['run']['miles']} mi")
-          print(f"YTD Ride: {output['ytd']['ride']['miles']} mi")
-          print(f"YTD Swim: {output['ytd']['swim']['yards']} yd")
-          print(f"YTD Yoga: {output['ytd']['yoga']['count']} sessions")
-          print(f"YTD Strength: {output['ytd']['strength']['count']} sessions")
+          print(f"Strava data written — {len(activities)} activities · stats_available={bool(stats)}")
+          print(f"  YTD Run: {ytd_block['run']['miles']} mi · {ytd_block['run']['count']} runs")
+          print(f"  YTD Ride: {ytd_block['ride']['miles']} mi · {ytd_block['ride']['count']} rides")
+          print(f"  YTD Swim: {ytd_block['swim']['yards']} yd · {ytd_block['swim']['count']} swims")
+          print(f"  YTD Yoga: {yoga_count} sessions")
+          print(f"  YTD Strength: {strength_count} sessions")
           EOF
 
       - name: Commit data
@@ -189,5 +271,19 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add data/strava.json
-          git diff --staged --quiet || git commit -m "chore: strava data $(date -u +%Y-%m-%d)"
-          git push
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            for i in 1 2 3; do
+              git commit -m "chore: strava data $(date -u +%Y-%m-%d)"
+              git pull --rebase origin main
+              if git push; then
+                echo "Push succeeded"
+                exit 0
+              fi
+              echo "Push attempt $i failed, retrying..."
+              sleep $((i * 3))
+            done
+            echo "Push failed after retries"
+            exit 1
+          fi
