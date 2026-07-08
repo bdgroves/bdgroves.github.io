@@ -277,6 +277,16 @@
     .bb-standings tr.bb-own td { background:rgba(255,193,7,0.12); font-weight:700; color:var(--ink); }
     .bb-standings tr:last-child td { border-bottom:0; }
 
+    /* MOTIVATION CARD — daily-rotating endurance/sports quote */
+    .mo-card { background:var(--parchment,var(--cream)); border:1px solid var(--mist); border-left:3px solid var(--rust); padding:1.1rem 1.25rem; margin-top:0.75rem; }
+    .mo-label { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--rust); margin-bottom:0.55rem; display:flex; align-items:center; gap:0.4rem; }
+    .mo-label::before { content:''; display:inline-block; width:0.9rem; height:1px; background:var(--rust); }
+    .mo-quote { font-family:'Playfair Display',serif; font-style:italic; font-size:0.95rem; line-height:1.45; color:var(--ink); font-weight:400; }
+    .mo-quote::before { content:'\201C'; color:var(--gold); font-size:1.5rem; line-height:0; vertical-align:-0.2em; margin-right:0.1rem; }
+    .mo-quote::after { content:'\201D'; color:var(--gold); font-size:1.5rem; line-height:0; vertical-align:-0.4em; margin-left:0.05rem; }
+    .mo-attrib { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.06em; color:var(--stone); margin-top:0.65rem; padding-top:0.5rem; border-top:1px dashed var(--mist); text-align:right; }
+    .mo-attrib strong { color:var(--ink); font-weight:700; letter-spacing:0.08em; text-transform:uppercase; font-size:0.58rem; }
+
     /* SEASON — Race card, YTD trisport/xt grids, Strava badge */
     .race-card .event-days { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
     .race-hero { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--gold); padding:1.25rem 1.4rem; text-decoration:none; color:inherit; display:block; margin-bottom:0.75rem; transition:background 0.12s,border-color 0.12s; }
@@ -437,6 +447,13 @@
           <a href="https://bdgroves.github.io/EDGAR" target="_blank" class="quick-link">EDGAR ↗</a>
         </div>
         <div id="baseball-teams"><p class="loading">Loading teams…</p></div>
+
+        <!-- Daily motivation — rotates by day-of-year -->
+        <div class="mo-card" id="mo-card">
+          <div class="mo-label">Today's Push</div>
+          <div class="mo-quote" id="mo-quote">…</div>
+          <div class="mo-attrib" id="mo-attrib">—</div>
+        </div>
       </div>
 
       <!-- RIGHT: Football (NFL + NCAA) -->
@@ -1320,6 +1337,52 @@ async function loadFuelcast() {
     `;
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// TODAY'S PUSH — rotating sports/endurance quote, changes at midnight
+// Deterministic by day-of-year, so the same quote shows all day and
+// picks a fresh one every calendar day.
+// ═══════════════════════════════════════════════════════════════════
+const MOTIVATION_QUOTES = [
+  // — Cycling —
+  { q: "It never gets easier, you just get faster.", by: "Greg LeMond", ctx: "3× Tour de France winner" },
+  { q: "As long as I breathe, I attack.", by: "Bernard Hinault", ctx: "5× Tour de France winner" },
+  { q: "Ride as much or as little, as long or as short as you feel. But ride.", by: "Eddy Merckx", ctx: "The Cannibal" },
+  { q: "The race is won by the rider who can suffer the most.", by: "Eddy Merckx", ctx: "The Cannibal" },
+  { q: "Nothing compares to the simple pleasure of riding a bike.", by: "John F. Kennedy" },
+  // — Running & Triathlon —
+  { q: "To give anything less than your best is to sacrifice the gift.", by: "Steve Prefontaine", ctx: "American distance runner" },
+  { q: "Somebody may beat me, but they are going to have to bleed to do it.", by: "Steve Prefontaine", ctx: "American distance runner" },
+  { q: "No human is limited.", by: "Eliud Kipchoge", ctx: "Marathon world record" },
+  { q: "Pain is inevitable. Suffering is optional.", by: "Haruki Murakami", ctx: "What I Talk About When I Talk About Running" },
+  { q: "The obsession with running is really an obsession with the potential for more and more life.", by: "George Sheehan", ctx: "Running writer & cardiologist" },
+  { q: "Anything is possible.", by: "Jan Frodeno", ctx: "3× Ironman World Champion" },
+  { q: "You are an Ironman.", by: "Mike Reilly", ctx: "Ironman finish-line voice" },
+  // — Baseball —
+  { q: "It ain't over till it's over.", by: "Yogi Berra", ctx: "Yankees catcher, 3× MVP" },
+  { q: "You can observe a lot by just watching.", by: "Yogi Berra", ctx: "Yankees catcher, 3× MVP" },
+  { q: "Baseball is ninety percent mental. The other half is physical.", by: "Yogi Berra", ctx: "Yankees catcher, 3× MVP" },
+  // — Football —
+  { q: "The dictionary is the only place where success comes before work.", by: "Vince Lombardi", ctx: "Packers head coach" },
+  { q: "Always compete.", by: "Pete Carroll", ctx: "Seahawks head coach" },
+  { q: "Winners never quit and quitters never win.", by: "Vince Lombardi", ctx: "Packers head coach" },
+  // — Grit / age / endurance mindset —
+  { q: "It's not the mountain we conquer, but ourselves.", by: "Sir Edmund Hillary", ctx: "First to summit Everest" },
+  { q: "The best time to plant a tree was twenty years ago. The second best time is now.", by: "Chinese proverb" },
+  { q: "Do not go where the path may lead, go instead where there is no path and leave a trail.", by: "Ralph Waldo Emerson" },
+];
+
+(function renderMotivation() {
+  const qEl = document.getElementById('mo-quote');
+  const aEl = document.getElementById('mo-attrib');
+  if (!qEl || !aEl) return;
+  const now = new Date();
+  const startOfYear = new Date(now.getFullYear(), 0, 0);
+  const doy = Math.floor((now - startOfYear) / 86400000);
+  const pick = MOTIVATION_QUOTES[doy % MOTIVATION_QUOTES.length];
+  qEl.textContent = pick.q;
+  aEl.innerHTML = `<strong>${pick.by}</strong>${pick.ctx ? ' · ' + pick.ctx : ''}`;
+})();
 
 document.getElementById('current-year').textContent=new Date().getFullYear();
 
