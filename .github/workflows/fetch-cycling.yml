@@ -408,9 +408,12 @@ jobs:
                   print(f"  Live: {r['name']}")
 
           # ── AUTO-UPDATE RACE RESULTS ──
-          # For any race past its date still showing upcoming, try PCS
+          # For any race past its date still showing upcoming, try PCS.
+          # SKIP Grand Tours — those are owned by fetch-race-results.yml (Wikipedia-based).
           for r in races:
               if r["status"] != "upcoming":
+                  continue
+              if r.get("category") == "Grand Tour":
                   continue
               race_date = date.fromisoformat(r["date"])
               if (today - race_date).days < 1:
@@ -440,8 +443,11 @@ jobs:
                   print(f"  {name}: {stats.get('wins_2026', 0)} wins in 2026, PCS rank #{stats.get('pcs_ranking', '?')}")
 
           # ── FETCH GC DATA FOR LIVE RACES ──
+          # SKIP Grand Tours — owned by fetch-race-results.yml (Wikipedia).
           for r in races:
               if r["status"] != "live":
+                  continue
+              if r.get("category") == "Grand Tour":
                   continue
               slug = PCS_RACE_SLUGS.get(r["name"])
               if not slug:
@@ -477,6 +483,8 @@ jobs:
                   for r in races:
                       if r["status"] != "upcoming":
                           continue
+                      if r.get("category") == "Grand Tour":
+                          continue
                       cal_norm = norm(r["name"])
                       w_words = set(w for w in win_norm.split() if len(w) > 3)
                       c_words = set(w for w in cal_norm.split() if len(w) > 3)
@@ -487,16 +495,40 @@ jobs:
                           print(f"  Cross-ref HIT: {r['name']} -> {rider['name']}")
                           break
 
-          # Keep cached rider profiles if scraping failed
+          # ── Merge in cached data from cycling.json ──
+          # (1) Rider profiles — keep if all fresh fetches failed
+          # (2) Grand Tour rows — always preserve status/winner/team/gc_leader/
+          #     gc_leader_team/live_gc/stages_done. Those are owned by
+          #     fetch-race-results.yml (Wikipedia). We never overwrite them from PCS.
           merged_riders = riders
-          if not any(r.get("fetched") for r in riders):
-              print("No rider data -- keeping cached")
-              try:
-                  with open("cycling.json", encoding="utf-8") as ef:
-                      cached = json.load(ef)
+          try:
+              with open("cycling.json", encoding="utf-8") as ef:
+                  cached = json.load(ef)
+                  # (1) riders
+                  if not any(r.get("fetched") for r in riders):
+                      print("No rider data -- keeping cached")
                       merged_riders = cached.get("riders", riders)
-              except Exception:
-                  pass
+                  # (2) grand tour rows
+                  cached_by_name = {
+                      r.get("name"): r for r in cached.get("races", []) if r.get("name")
+                  }
+                  gt_preserved_fields = (
+                      "status", "winner", "team",
+                      "gc_leader", "gc_leader_team", "live_gc", "stages_done",
+                  )
+                  for r in races:
+                      if r.get("category") != "Grand Tour":
+                          continue
+                      cached_row = cached_by_name.get(r.get("name"))
+                      if not cached_row:
+                          continue
+                      for key in gt_preserved_fields:
+                          if key in cached_row and cached_row[key] is not None:
+                              r[key] = cached_row[key]
+                      print(f"  Preserved cached GT: {r['name']} "
+                            f"(status={r.get('status')}, leader={r.get('gc_leader','—')})")
+          except (FileNotFoundError, json.JSONDecodeError) as e:
+              print(f"  Could not merge cached cycling.json: {e}")
 
           output = {
               "races": races,
@@ -516,191 +548,21 @@ jobs:
           EOF
 
 
-      - name: Fetch grand tour stage results
-        continue-on-error: true
-        run: |
-          python3 << 'GTEOF'
-          import json, os, re
-          from datetime import date, timedelta
-          import cloudscraper
-          from selectolax.parser import HTMLParser
-
-          DATA_DIR = "data"
-          GRAND_TOURS = [
-              {"name": "Giro d'Italia",  "slug": "giro-d-italia",  "file": "giro-2026.json",  "start": "2026-05-09", "end": "2026-06-01"},
-              {"name": "Tour de France", "slug": "tour-de-france", "file": "tdf-2026.json",   "start": "2026-07-04", "end": "2026-07-26"},
-              {"name": "Vuelta",         "slug": "vuelta-a-espana","file": "vuelta-2026.json", "start": "2026-08-22", "end": "2026-09-13"},
-          ]
-          today = date.today()
-          scraper = cloudscraper.create_scraper()
-          headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
-          KNOWN = {
-              "pogacar": ("Tadej Pogacar", "UAE Team Emirates XRG"),
-              "vingegaard": ("Jonas Vingegaard", "Visma-Lease a Bike"),
-              "evenepoel": ("Remco Evenepoel", "Red Bull - BORA - hansgrohe"),
-              "roglic": ("Primoz Roglic", "Red Bull - BORA - hansgrohe"),
-              "van der poel": ("Mathieu van der Poel", "Alpecin-Premier Tech"),
-              "seixas": ("Paul Seixas", "Decathlon CMA CGM"),
-          }
-          def canonical(name, team):
-              for key, (cn, ct) in KNOWN.items():
-                  if key.lower() in name.lower():
-                      return cn, ct
-              return name, team
-
-          def get_rank1(table):
-              if not table:
-                  return None, None
-              for row in table.css("tr"):
-                  cols = row.css("td")
-                  if not cols:
-                      continue
-                  rank = cols[0].text(strip=True).strip(".")
-                  el = cols[0].css_first("span,b,div")
-                  if not rank.isdigit() and el:
-                      rank = el.text(strip=True).strip(".")
-                  if rank != "1":
-                      continue
-                  name = team = ""
-                  for col in cols:
-                      a = col.css_first("a[href*='/rider/']")
-                      if a and not name:
-                          name = a.text(strip=True)
-                      a2 = col.css_first("a[href*='/team/']")
-                      if a2 and not team:
-                          team = a2.text(strip=True)
-                  if name:
-                      return canonical(name, team)
-              return None, None
-
-          def first_table(tree):
-              for sel in ["table.rdrResults", "table.results", "table"]:
-                  t = tree.css_first(sel)
-                  if t:
-                      return t
-              return None
-
-          def scrape_stage(slug, num):
-              try:
-                  r = scraper.get(f"https://www.procyclingstats.com/race/{slug}/2026/stage-{num}", headers=headers, timeout=15)
-                  if r.status_code != 200:
-                      return None, None
-                  return get_rank1(first_table(HTMLParser(r.text)))
-              except Exception as e:
-                  print(f"    S{num} error: {e}")
-                  return None, None
-
-          def scrape_gc(slug):
-              for url in [
-                  f"https://www.procyclingstats.com/race/{slug}/2026/gc",
-                  f"https://www.procyclingstats.com/race/{slug}/2026/general-classification",
-              ]:
-                  try:
-                      r = scraper.get(url, headers=headers, timeout=15)
-                      if r.status_code != 200:
-                          continue
-                      gc = []
-                      table = first_table(HTMLParser(r.text))
-                      if not table:
-                          continue
-                      for row in table.css("tr"):
-                          cols = row.css("td")
-                          if not cols:
-                              continue
-                          rank = cols[0].text(strip=True).strip(".")
-                          el = cols[0].css_first("span,b,div")
-                          if not rank.isdigit() and el:
-                              rank = el.text(strip=True).strip(".")
-                          if not rank.isdigit():
-                              continue
-                          if int(rank) > 10:
-                              break
-                          name = team = gap = ""
-                          for col in cols:
-                              a = col.css_first("a[href*='/rider/']")
-                              if a and not name:
-                                  name = a.text(strip=True)
-                              a2 = col.css_first("a[href*='/team/']")
-                              if a2 and not team:
-                                  team = a2.text(strip=True)
-                          for col in reversed(cols):
-                              t = col.text(strip=True)
-                              if re.match(r"^\d+:\d+|^\+\d|^s\.t\.$|^0:00$", t):
-                                  gap = t
-                                  break
-                          if name:
-                              cn, ct = canonical(name, team)
-                              gc.append({"name": cn, "team": ct, "gap": "Leader" if not gc else gap})
-                      if gc:
-                          return gc
-                  except Exception as e:
-                      print(f"    GC error: {e}")
-              return []
-
-          for gt in GRAND_TOURS:
-              start = date.fromisoformat(gt["start"])
-              end = date.fromisoformat(gt["end"])
-              if today < start:
-                  print(f"Skipping {gt['name']} (starts {gt['start']})")
-                  continue
-              fpath = os.path.join(DATA_DIR, gt["file"])
-              if not os.path.exists(fpath):
-                  print(f"No data file: {fpath}")
-                  continue
-              with open(fpath, encoding="utf-8") as f:
-                  data = json.load(f)
-              print(f"\nUpdating {gt['name']}...")
-              updated = False
-              for stage in data["stages"]:
-                  if date.fromisoformat(stage["date"]) > today:
-                      break
-                  if stage.get("winner"):
-                      continue
-                  print(f"  Scraping S{stage['num']}...")
-                  winner, team = scrape_stage(gt["slug"], stage["num"])
-                  if winner:
-                      stage["winner"] = winner
-                      stage["winner_team"] = team
-                      print(f"  S{stage['num']}: {winner}")
-                      updated = True
-              if start <= today <= end + timedelta(days=1):
-                  gc = scrape_gc(gt["slug"])
-                  if gc:
-                      data["gc"] = gc
-                      print(f"  GC: {gc[0]['name']} leads")
-                      updated = True
-                  # Scrape jersey leaders
-                  for jersey, path, key in [
-                      ("Points", "points", "points_leader"),
-                      ("KOM",    "kom",    "kom_leader"),
-                      ("Youth",  "youth",  "young_rider"),
-                  ]:
-                      try:
-                          r = scraper.get(f"https://www.procyclingstats.com/race/{gt['slug']}/2026/{path}", headers=headers, timeout=10)
-                          if r.status_code == 200:
-                              tree = HTMLParser(r.text)
-                              table = first_table(tree)
-                              name, _ = get_rank1(table)
-                              if name:
-                                  data[key] = name
-                                  print(f"  {jersey} jersey: {name}")
-                                  updated = True
-                      except Exception as e:
-                          print(f"  {jersey} jersey error: {e}")
-              if updated:
-                  if data.get("stages") and len(data["stages"]) > 0:
-                      with open(fpath, "w", encoding="utf-8") as f:
-                          json.dump(data, f, indent=2, ensure_ascii=False)
-                      print(f"  Saved {gt['file']}")
-                  else:
-                      print("  Skipping save -- no stages")
-          print("Grand tour update done.")
-          GTEOF
-
       - name: Commit cycling.json
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add cycling.json data/giro-2026.json data/tdf-2026.json data/vuelta-2026.json
-          git diff --staged --quiet || git commit -m "chore: update cycling + grand tours [skip ci]"
-          git push
+          git add cycling.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: update cycling [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase origin "$(git rev-parse --abbrev-ref HEAD)" && \
+            git push && exit 0
+            echo "Push retry $i…"
+            sleep 5
+          done
+          echo "Failed to push after 3 retries"
+          exit 1

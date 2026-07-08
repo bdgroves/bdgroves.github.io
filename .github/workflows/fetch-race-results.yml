@@ -3,12 +3,12 @@ name: Fetch Race Results
 on:
   schedule:
     # Twice daily during active windows: once mid-afternoon UTC (after early-finishing stages)
-    # and once late-evening UTC (after late-finishing stages + Wikipedia editors have had time)
+    # and once late-evening UTC (after late-finishing stages + Wikipedia editors have had time).
     - cron: '0 17,22 * * *'
   workflow_dispatch:
     inputs:
       race:
-        description: 'Which race to update (giro, tdf, or both)'
+        description: 'Which race to update (giro, tdf, vuelta, or both)'
         required: false
         default: 'both'
 
@@ -39,15 +39,17 @@ jobs:
           echo "race=$INPUT" >> "$GITHUB_OUTPUT"
           echo "Will process: $INPUT"
 
-      - name: Fetch race data from Wikipedia
+      - name: Fetch race data from Wikipedia + sync cycling.json
         env:
           RACE_INPUT: ${{ steps.which.outputs.race }}
         run: |
           python3 << 'PYEOF'
           """
-          Fetch stage winners + GC from Wikipedia for cycling Grand Tours.
+          Fetch stage winners + GC from Wikipedia for cycling Grand Tours,
+          write data/{giro,tdf,vuelta}-2026.json, then sync the resulting
+          live standings into cycling.json (which powers outside.html).
 
-          Wikipedia uses cycling-specific templates inside the Stage sections:
+          Wikipedia cycling templates inside Stage sections:
 
               {{cyclingresult start|title=Stage N Result<ref ...>}}
               {{cyclingresult|1|[[Rider Name]]|NAT|{{UCI team code|CODE|2026}}|TIME}}
@@ -55,15 +57,16 @@ jobs:
               ...
               {{cyclingresult end}}
 
-          And the same for "General classification after Stage N",
+          Same shape for "General classification after Stage N",
           "Points classification after Stage N", etc.
 
           Strategy:
-          1. Fetch Stage-1-to-11 and Stage-12-to-21 articles
-          2. For each ==Stage N== section, find the cyclingresult blocks within
-          3. The block whose title starts with "Stage N Result" gives the winner
-          4. Track the latest GC / points / mountains / young-rider tables across all stages
-          5. Merge into existing JSON, preserving manual fields
+            1. Fetch Stage-1-to-11 and Stage-12-to-21 articles
+            2. For each ==Stage N== section, find the cyclingresult blocks
+            3. The block whose title starts with "Stage N Result" gives the winner
+            4. Track the latest GC / points / mountains / young-rider tables
+            5. Merge into existing data/*.json, preserving manual fields
+            6. Sync grand tour rows in cycling.json
           """
           import json
           import os
@@ -84,9 +87,14 @@ jobs:
           RACE_INPUT = os.environ.get('RACE_INPUT', 'both').lower()
           today = date.today()
 
+          # ─────────────────────────────────────────────────────────────────
+          # Race configuration
+          # ─────────────────────────────────────────────────────────────────
+          # cycling_name must match the entry in cycling.json exactly (for sync).
           RACES = {
               'giro': {
                   'json_path': 'data/giro-2026.json',
+                  'cycling_name': "Giro d'Italia",
                   'wiki_articles': [
                       "2026 Giro d'Italia, Stage 1 to Stage 11",
                       "2026 Giro d'Italia, Stage 12 to Stage 21",
@@ -96,12 +104,23 @@ jobs:
               },
               'tdf': {
                   'json_path': 'data/tdf-2026.json',
+                  'cycling_name': "Tour de France",
                   'wiki_articles': [
                       "2026 Tour de France, Stage 1 to Stage 11",
                       "2026 Tour de France, Stage 12 to Stage 21",
                   ],
                   'window_start': date(2026, 7, 4),
                   'window_end':   date(2026, 7, 26),
+              },
+              'vuelta': {
+                  'json_path': 'data/vuelta-2026.json',
+                  'cycling_name': "Vuelta a España",
+                  'wiki_articles': [
+                      "2026 Vuelta a España, Stage 1 to Stage 11",
+                      "2026 Vuelta a España, Stage 12 to Stage 21",
+                  ],
+                  'window_start': date(2026, 8, 22),
+                  'window_end':   date(2026, 9, 13),
               },
           }
 
@@ -132,11 +151,15 @@ jobs:
               'IPT':     'Israel–Premier Tech',
               'ARK':     'Arkéa–B&B Hotels',
               'INW':     'Intermarché–Wanty',
-              # ProTeams / wildcards that often appear in Giro/TDF
+              # ProTeams / wildcards that often appear in Giro/TDF/Vuelta
               'TPC':     'Team Polti VisitMalta',
               'VBK':     'Bingoal WB',
               'TBL':     'Tropicana–Loto–Caja Rural',
               'PCT':     'Picnic PostNL',
+              'UXM':     'Uno-X Mobility',
+              'CJR':     'Caja Rural–Seguros RGA',
+              'NSN':     'NSN Cycling Team',
+              'TEN':     'TotalEnergies',
           }
 
           # ─────────────────────────────────────────────────────────────────
@@ -354,7 +377,6 @@ jobs:
               latest_points = None
               latest_kom = None
               latest_youth = None
-              # Track which stage the latest jerseys came from
               latest_points_stage = 0
               latest_kom_stage = 0
               latest_youth_stage = 0
@@ -479,6 +501,87 @@ jobs:
                     f"latest GC after Stage {parsed['latest_stage']}")
               return changes > 0
 
+          # ─────────────────────────────────────────────────────────────────
+          # Sync grand-tour rows into cycling.json
+          # ─────────────────────────────────────────────────────────────────
+
+          def sync_cycling_json():
+              """
+              Read data/{giro,tdf,vuelta}-2026.json and update the matching grand
+              tour entries in cycling.json (which powers outside.html):
+                  gc_leader, gc_leader_team, live_gc, stages_done
+              Also stamps cycling.json's 'updated' timestamp. Idempotent — only
+              writes if something changed. Never overwrites good data with empty.
+              """
+              cycling_path = 'cycling.json'
+              if not os.path.exists(cycling_path):
+                  print("  [sync] cycling.json not found — skipping")
+                  return False
+
+              with open(cycling_path, 'r', encoding='utf-8') as f:
+                  cy = json.load(f)
+
+              changed = False
+              for race_key, cfg in RACES.items():
+                  data_path = cfg['json_path']
+                  cy_name = cfg['cycling_name']
+                  if not os.path.exists(data_path):
+                      continue
+                  try:
+                      with open(data_path, 'r', encoding='utf-8') as f:
+                          d = json.load(f)
+                  except Exception as e:
+                      print(f"  [sync] {race_key}: couldn't read {data_path}: {e}")
+                      continue
+
+                  # Find matching race row in cycling.json
+                  target = None
+                  for r in cy.get('races', []):
+                      if r.get('name') == cy_name:
+                          target = r
+                          break
+                  if target is None:
+                      print(f"  [sync] {race_key}: no matching row for '{cy_name}' in cycling.json")
+                      continue
+
+                  # Count stages_done (stages with a winner recorded)
+                  stages_done = sum(
+                      1 for s in d.get('stages', []) if s.get('winner')
+                  )
+
+                  gc = d.get('gc') or []
+                  # Guard: don't wipe good data with empty
+                  if gc:
+                      leader = gc[0]
+                      new_leader = leader.get('name', '') or ''
+                      new_team   = leader.get('team', '') or ''
+                      new_livegc = gc[:10]
+                      if target.get('gc_leader') != new_leader:
+                          target['gc_leader'] = new_leader
+                          changed = True
+                      if target.get('gc_leader_team') != new_team:
+                          target['gc_leader_team'] = new_team
+                          changed = True
+                      if target.get('live_gc') != new_livegc:
+                          target['live_gc'] = new_livegc
+                          changed = True
+
+                  if stages_done and target.get('stages_done') != stages_done:
+                      target['stages_done'] = stages_done
+                      changed = True
+
+                  print(f"  [sync] {race_key}: leader={target.get('gc_leader','?')}, "
+                        f"stages_done={target.get('stages_done',0)}")
+
+              if changed:
+                  cy['updated'] = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+                  with open(cycling_path, 'w', encoding='utf-8') as f:
+                      json.dump(cy, f, ensure_ascii=False, indent=2)
+                  print("  [sync] cycling.json updated")
+              else:
+                  print("  [sync] cycling.json unchanged")
+              return changed
+
           # ──────────────────────────────────────────────────────────
           # MAIN
           # ──────────────────────────────────────────────────────────
@@ -496,14 +599,19 @@ jobs:
               update_json(race_key, parsed)
 
           if not any_run:
-              print("\nNo races in active window. Workflow no-op.")
+              print("\nNo races in active window. Skipping Wikipedia parse.")
+
+          # Always sync cycling.json — even if we didn't fetch anything this
+          # run, existing data/*.json values should stay reflected in cycling.json.
+          print("\n=== SYNC cycling.json ===")
+          sync_cycling_json()
           PYEOF
 
       - name: Commit data
         run: |
           git config user.name  "github-actions"
           git config user.email "actions@github.com"
-          git add data/giro-2026.json data/tdf-2026.json 2>/dev/null || true
+          git add data/giro-2026.json data/tdf-2026.json data/vuelta-2026.json cycling.json 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
