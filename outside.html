@@ -562,7 +562,14 @@ async function loadCycling() {
       // Single-day races: if date has passed and still flagged upcoming, treat as final.
       // (Grand tours/stage races get a ~24-day window before we call them past.)
       const isStage = (r.category||'').toLowerCase().includes('grand tour') || (r.stages && r.stages>1);
-      const endApprox = new Date(d); endApprox.setDate(endApprox.getDate() + (isStage ? 24 : 1));
+      // Prefer explicit end_date if provided; fall back to a rough window
+      // (24 days for stage races, 1 day for one-day races).
+      let endApprox;
+      if (r.end_date) {
+        endApprox = new Date(r.end_date+'T23:59:59');
+      } else {
+        endApprox = new Date(d); endApprox.setDate(endApprox.getDate() + (isStage ? 24 : 1));
+      }
       if(r.status==='upcoming' && d < today){
         // race start is in the past
         r.status = (today <= endApprox) ? 'live' : 'final';

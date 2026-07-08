@@ -23,130 +23,93 @@ jobs:
           import traceback
           from datetime import datetime, timezone, date
 
-          # ── RIDER SPOTLIGHT ──
-          def get_rider_stats(pcs_slug, display_name, nationality_flag):
-              try:
-                  import cloudscraper
-                  from selectolax.parser import HTMLParser
-                  import re
-                  print(f"  Fetching rider: {display_name}...")
+          # ── RIDER SPOTLIGHT (compute from calendar) ──
+          # Rider spotlight stats are derived from cycling.json's own race list
+          # + the GT stage data in data/*.json (owned by fetch-race-results.yml).
+          # We stopped scraping PCS for rider profiles — the class names moved
+          # and 403s were frequent. Computing keeps the display self-consistent:
+          # anything shown as a win in the calendar counts as a win for the rider.
+          def _rider_key(s):
+              """Normalize a name/winner string for matching (strip emoji, accents)."""
+              import unicodedata
+              s = s or ""
+              # Strip common decorative emoji (rainbow, flags, medals)
+              s = re.sub(r"[\U0001F1E6-\U0001F1FF\U0001F300-\U0001FAFF\U00002600-\U000027BF]", "", s)
+              s = unicodedata.normalize("NFKD", s)
+              s = s.encode("ascii", "ignore").decode("ascii")
+              return re.sub(r"\s+", " ", s).strip().lower()
 
-                  headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0", "Accept": "text/html,application/xhtml+xml"}
+          def _matches_rider(winner_str, target_full_name):
+              """True if winner_str refers to target_full_name (last-name based)."""
+              import re
+              if not winner_str:
+                  return False
+              w = _rider_key(winner_str)
+              t = _rider_key(target_full_name)
+              parts = t.split()
+              if not parts:
+                  return False
+              last = parts[-1]
+              # last name must appear as a whole word in winner_str
+              return re.search(r"\b" + re.escape(last) + r"\b", w) is not None
 
-                  def fetch_url(url):
-                      try:
-                          import requests as req_lib
-                          r = req_lib.get(url, headers=headers, timeout=15)
-                          if r.status_code == 200 and len(r.text) > 1000:
-                              return r
-                      except Exception:
-                          pass
-                      sc = cloudscraper.create_scraper()
-                      return sc.get(url, headers=headers, timeout=15)
-
-                  results_url = f"https://www.procyclingstats.com/rider/{pcs_slug}/results/2026"
-                  r2 = fetch_url(results_url)
-                  tree2 = HTMLParser(r2.text)
-
-                  results = []
-                  table = tree2.css_first("table.rdrResults")
-                  if table:
-                      rows = table.css("tr")
-                      print(f"    rdrResults rows: {len(rows)}")
-                      for row in rows:
-                          cols = row.css("td")
-                          if len(cols) >= 3:
-                              date_val = cols[0].text(strip=True)
-                              result_val = cols[1].text(strip=True)
-                              race_val = ""
-                              for col in cols[2:]:
-                                  a = col.css_first("a")
-                                  if a:
-                                      race_val = a.text(strip=True)
-                                      race_val = re.sub(r'\s*\(.*?\)\s*', '', race_val).strip()
-                                      break
-                              if not race_val:
-                                  race_val = cols[2].text(strip=True)
-                                  race_val = re.sub(r'\s*\(.*?\)\s*', '', race_val).strip()
-                              if race_val and len(race_val) > 2:
-                                  results.append({"date": date_val, "result": result_val, "race": race_val})
-                  else:
-                      print(f"    No rdrResults table found")
-
-                  wins_2026 = [r for r in results if str(r.get("result","")).strip() == "1"]
-
-                  def clean_race_name(name):
-                      import re
-                      name = re.sub(r'^S\d+Stage \d+[-–]\s*', '', name)
-                      name = re.sub(r'^General classification\s*', 'GC ', name)
-                      name = re.sub(r'\s*ME$', '', name)
-                      return name.strip()
-
-                  for r in results:
-                      r["race"] = clean_race_name(r["race"])
-                  for w in wins_2026:
-                      w["race"] = clean_race_name(w["race"])
-
-                  print(f"    {len(results)} results, {len(wins_2026)} wins")
-                  if wins_2026:
-                      print(f"    Wins: {[w['race'] for w in wins_2026]}")
-
+          def compute_rider_stats(races, gt_files, watch_list):
+              """Count wins from finalized calendar races + Grand Tour stage wins."""
+              import re, os, json
+              out = []
+              for slug, name, flag in watch_list:
+                  wins = []
                   team = ""
-                  pcs_ranking = None
-                  pcs_points = None
-                  try:
-                      profile_url = f"https://www.procyclingstats.com/rider/{pcs_slug}"
-                      rp = fetch_url(profile_url)
-                      tp = HTMLParser(rp.text)
-
-                      teams_ul = tp.css_first("ul[class*='rdr-teams']")
-                      if teams_ul:
-                          for a in teams_ul.css("a"):
-                              txt = a.text(strip=True)
-                              if txt and "(WT)" not in txt and len(txt) > 3:
-                                  team = txt
-                                  break
-                          if not team:
-                              full = teams_ul.text(strip=True)
-                              m = re.search(r'\d{4}(.*?)\(WT\)', full)
-                              if m:
-                                  team = m.group(1).strip()
-
-                      for ul in tp.css("ul.list.horizontal, ul[class='list horizontal']"):
-                          txt = ul.text(strip=True)
-                          m = re.search(r'PCS Ranking(\d+)', txt)
-                          if m:
-                              pcs_ranking = m.group(1)
-                              break
-
-                      basic = tp.css_first("table[class*='basic small'], table[class=' basic small']")
-                      if basic:
-                          for row in basic.css("tr"):
-                              cols = row.css("td")
-                              col_texts = [c.text(strip=True) for c in cols]
-                              if col_texts and col_texts[0] == "2026":
-                                  pcs_points = col_texts[1] if len(col_texts) > 1 else None
-                                  break
-
-                      print(f"    Team: {team or '?'}, Rank: #{pcs_ranking or '?'}, Pts: {pcs_points or '?'}")
-                  except Exception as ep:
-                      print(f"    Profile error: {ep}")
-
-                  return {
-                      "name": display_name,
-                      "flag": nationality_flag,
+                  # Race-level wins from the calendar
+                  for r in races:
+                      if r.get("status") != "final":
+                          continue
+                      if _matches_rider(r.get("winner"), name):
+                          wins.append({
+                              "race": r["name"],
+                              "date": r["date"],
+                              "kind": "race",
+                          })
+                          if not team and r.get("team"):
+                              team = r["team"]
+                  # Grand Tour stage wins from data/*.json
+                  for label, path in gt_files:
+                      if not os.path.exists(path):
+                          continue
+                      try:
+                          with open(path, encoding="utf-8") as f:
+                              gt = json.load(f)
+                      except Exception as e:
+                          print(f"  compute: couldn't read {path}: {e}")
+                          continue
+                      for stg in gt.get("stages", []):
+                          if _matches_rider(stg.get("winner"), name):
+                              wins.append({
+                                  "race": f"{label} S{stg.get('num','?')}",
+                                  "date": stg.get("date", ""),
+                                  "kind": "stage",
+                              })
+                              if not team and stg.get("winner_team"):
+                                  team = stg["winner_team"]
+                  # Most recent first
+                  wins.sort(key=lambda w: w.get("date", ""), reverse=True)
+                  out.append({
+                      "name": name,
+                      "flag": flag,
                       "team": team,
-                      "pcs_ranking": pcs_ranking,
-                      "pcs_points": pcs_points,
-                      "wins_2026": len(wins_2026),
-                      "win_list": [{"race": w.get("race",""), "date": w.get("date","")} for w in wins_2026[:8]],
-                      "recent_results": results[:6],
-                      "fetched": True
-                  }
-              except Exception as e:
-                  print(f"  ERROR fetching {display_name}: {e}")
-                  traceback.print_exc()
-                  return {"name": display_name, "flag": nationality_flag, "fetched": False, "error": str(e)}
+                      "pcs_ranking": None,
+                      "pcs_points": None,
+                      "wins_2026": len(wins),
+                      "win_list": [{"race": w["race"], "date": w["date"]} for w in wins[:8]],
+                      "recent_results": [
+                          {"result": "1", "race": w["race"], "date": w["date"]}
+                          for w in wins[:6]
+                      ],
+                      "fetched": True,
+                  })
+                  win_summary = ", ".join(w["race"] for w in wins[:5]) or "no wins"
+                  print(f"  {name}: {len(wins)} wins ({win_summary})")
+              return out
 
           # ── FETCH LIVE RACE GC DATA ──
           def fetch_live_race(race_name, pcs_slug):
@@ -387,7 +350,7 @@ jobs:
             {"name":"Tour de Romandie","emoji":"🇨🇭","category":"2.UWT","date":"2026-04-28","end_date":"2026-05-03","stages":6,"status":"final","winner":"Tadej Pogačar 🌈","team":"UAE Team Emirates XRG","notes":"4 stage wins · GC by 42s over Lipowitz · Martinez 3rd"},
             {"name":"Eschborn-Frankfurt","emoji":"🇩🇪","category":"1.UWT","date":"2026-05-01","status":"final","winner":"Georg Zimmermann","team":"Lotto Intermárché","notes":"Pidcock 2nd, Tulett 3rd · Biggest win of Zimmermann's career"},
             {"name":"Giro d'Italia","emoji":"🇮🇹","category":"Grand Tour","date":"2026-05-09","end_date":"2026-06-01","stages":21,"status":"upcoming","winner":None,"team":None,"notes":"May 9–Jun 1 · Bulgaria → Rome"},
-            {"name":"Tour de Suisse","emoji":"🇨🇭","category":"2.UWT","date":"2026-06-17","end_date":"2026-06-25","stages":8,"status":"upcoming","winner":None,"team":None,"notes":""},
+            {"name":"Tour de Suisse","emoji":"🇨🇭","category":"2.UWT","date":"2026-06-17","end_date":"2026-06-25","stages":8,"status":"final","winner":"Tadej Pogačar 🌈","team":"UAE Team Emirates XRG","notes":"3 stage wins · Carapaz 2nd, Vacek 3rd"},
             {"name":"Tour de France","emoji":"🇫🇷","category":"Grand Tour","date":"2026-07-04","end_date":"2026-07-26","stages":21,"status":"upcoming","winner":None,"team":None,"notes":"Jul 4–26"},
             {"name":"ADAC Cyclassics","emoji":"🇩🇪","category":"1.UWT","date":"2026-08-16","status":"upcoming","winner":None,"team":None,"notes":"Hamburg"},
             {"name":"Vuelta a España","emoji":"🇪🇸","category":"Grand Tour","date":"2026-08-22","end_date":"2026-09-13","stages":21,"status":"upcoming","winner":None,"team":None,"notes":"Aug 22–Sep 13"},
@@ -428,19 +391,15 @@ jobs:
               else:
                   print(f"  ✗ Could not auto-fetch {r['name']} — leaving as upcoming")
 
-          # ── FETCH RIDER STATS ──
+          # ── DEFER RIDER STATS ──
+          # Rider stats are computed AFTER the merge step below, so they see the
+          # final race state (including Wikipedia-owned GT rows). Set placeholder.
           riders = []
           watch_list = [
               ("tadej-pogacar", "Tadej Pogačar", "🇸🇮"),
               ("mathieu-van-der-poel", "Mathieu van der Poel", "🇳🇱"),
               ("remco-evenepoel", "Remco Evenepoel", "🇧🇪"),
           ]
-
-          for slug, name, flag in watch_list:
-              stats = get_rider_stats(slug, name, flag)
-              riders.append(stats)
-              if stats.get("fetched"):
-                  print(f"  {name}: {stats.get('wins_2026', 0)} wins in 2026, PCS rank #{stats.get('pcs_ranking', '?')}")
 
           # ── FETCH GC DATA FOR LIVE RACES ──
           # SKIP Grand Tours — owned by fetch-race-results.yml (Wikipedia).
@@ -463,52 +422,13 @@ jobs:
                       r["gc_leader_team"] = leader.get("team", "")
                   print(f"    GC: {r.get('gc_leader','?')} leads, {r.get('stages_done','?')} stages done")
 
-          # Cross-reference rider wins against calendar
-          import unicodedata
-          def norm(s):
-              # Replace dashes/en-dashes BEFORE stripping accents
-              s = s.replace("\u2013", " ").replace("\u2014", " ").replace("-", " ")
-              s = unicodedata.normalize("NFKD", s)
-              s = s.encode("ascii", "ignore").decode("ascii")
-              return s.lower().strip()
-
-          for rider in riders:
-              if not rider.get("fetched"):
-                  continue
-              for win in rider.get("win_list", []):
-                  win_raw = win.get("race", "")
-                  if not win_raw:
-                      continue
-                  win_norm = norm(win_raw)
-                  for r in races:
-                      if r["status"] != "upcoming":
-                          continue
-                      if r.get("category") == "Grand Tour":
-                          continue
-                      cal_norm = norm(r["name"])
-                      w_words = set(w for w in win_norm.split() if len(w) > 3)
-                      c_words = set(w for w in cal_norm.split() if len(w) > 3)
-                      if w_words and c_words and len(w_words & c_words) >= 1:
-                          r["status"] = "final"
-                          r["winner"] = rider["name"]
-                          r["team"] = rider.get("team", "")
-                          print(f"  Cross-ref HIT: {r['name']} -> {rider['name']}")
-                          break
-
-          # ── Merge in cached data from cycling.json ──
-          # (1) Rider profiles — keep if all fresh fetches failed
-          # (2) Grand Tour rows — always preserve status/winner/team/gc_leader/
-          #     gc_leader_team/live_gc/stages_done. Those are owned by
-          #     fetch-race-results.yml (Wikipedia). We never overwrite them from PCS.
-          merged_riders = riders
+          # ── Preserve cached Grand Tour rows ──
+          # GT rows are owned by fetch-race-results.yml (Wikipedia). We always
+          # preserve status/winner/team/gc_leader/gc_leader_team/live_gc/stages_done
+          # from the cached cycling.json so PCS-side updates don't clobber them.
           try:
               with open("cycling.json", encoding="utf-8") as ef:
                   cached = json.load(ef)
-                  # (1) riders
-                  if not any(r.get("fetched") for r in riders):
-                      print("No rider data -- keeping cached")
-                      merged_riders = cached.get("riders", riders)
-                  # (2) grand tour rows
                   cached_by_name = {
                       r.get("name"): r for r in cached.get("races", []) if r.get("name")
                   }
@@ -529,6 +449,16 @@ jobs:
                             f"(status={r.get('status')}, leader={r.get('gc_leader','—')})")
           except (FileNotFoundError, json.JSONDecodeError) as e:
               print(f"  Could not merge cached cycling.json: {e}")
+
+          # ── Compute rider spotlight stats from the final race state ──
+          # (After GT preservation so Grand Tour winners count toward totals.)
+          gt_data_files = [
+              ("Giro",   "data/giro-2026.json"),
+              ("TDF",    "data/tdf-2026.json"),
+              ("Vuelta", "data/vuelta-2026.json"),
+          ]
+          print("Computing rider spotlight stats...")
+          merged_riders = compute_rider_stats(races, gt_data_files, watch_list)
 
           output = {
               "races": races,
