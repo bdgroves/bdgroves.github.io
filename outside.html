@@ -13,7 +13,7 @@
       --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
       --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
       --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
-      --sky:#2a4a6b; --strava:#fc4c02;
+      --sky:#2a4a6b; --garmin:#007cc3;
     }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
@@ -85,7 +85,7 @@
     .peaks-btn { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--gold); border:1px solid var(--gold); padding:0.3rem 0.7rem; display:inline-block; transition:all 0.15s; }
     .peaks-btn:hover { background:var(--gold); color:var(--white); }
 
-    /* STRAVA */
+    /* TRAINING LOG (data source: Garmin) */
     .ytd-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:1px; background:var(--mist); border:1px solid var(--mist); }
     @media(max-width:600px) { .ytd-grid { grid-template-columns:repeat(2,1fr); } }
     .ytd-card { background:var(--white); padding:1rem; text-align:center; }
@@ -100,7 +100,7 @@
     .activity-item:last-child { border-bottom:none; }
     .activity-icon { font-size:1.1rem; text-align:center; }
     .activity-name { font-weight:700; font-size:0.88rem; color:var(--ink); margin-bottom:0.1rem; }
-    .activity-item:hover .activity-name { color:var(--strava); }
+    .activity-item:hover .activity-name { color:var(--garmin); }
     .activity-meta { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); display:flex; gap:0.5rem; flex-wrap:wrap; }
     .activity-date { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--mist); text-align:right; white-space:nowrap; }
     .alltime-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; }
@@ -110,8 +110,9 @@
     .alltime-val { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:900; color:var(--ink); }
     .alltime-unit { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); }
     .alltime-count { font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--mist); margin-top:0.15rem; }
-    .strava-btn { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--strava); border:1px solid var(--strava); padding:0.3rem 0.7rem; }
-    .strava-btn:hover { background:var(--strava); color:var(--white); }
+    /* .strava-btn removed — see .garmin-btn below */
+    .garmin-btn { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--garmin); border:1px solid var(--garmin); padding:0.3rem 0.7rem; }
+    .garmin-btn:hover { background:var(--garmin); color:var(--white); }
 
     /* BEER */
     .beer-item { display:flex; align-items:flex-start; gap:0.75rem; padding:0.8rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.1s; }
@@ -287,7 +288,7 @@
     .mo-attrib { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.06em; color:var(--stone); margin-top:0.65rem; padding-top:0.5rem; border-top:1px dashed var(--mist); text-align:right; }
     .mo-attrib strong { color:var(--ink); font-weight:700; letter-spacing:0.08em; text-transform:uppercase; font-size:0.58rem; }
 
-    /* SEASON — Race card, YTD trisport/xt grids, Strava badge */
+    /* SEASON — Race card, YTD trisport/xt grids, Garmin badge */
     .race-card .event-days { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
     .race-hero { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--gold); padding:1.25rem 1.4rem; text-decoration:none; color:inherit; display:block; margin-bottom:0.75rem; transition:background 0.12s,border-color 0.12s; }
     .race-hero:hover { background:var(--white); border-left-color:var(--rust); }
@@ -300,9 +301,11 @@
     .race-hero-meta div { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--ink); }
     .race-hero-meta .meta-label { display:block; font-size:0.5rem; color:var(--stone); text-transform:uppercase; letter-spacing:0.12em; margin-bottom:0.1rem; }
 
-    /* Strava badge — inline chevron mark in brand orange */
-    .strava-badge { display:inline-flex; align-items:center; gap:0.35rem; font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--strava); text-decoration:none; }
-    .strava-badge svg { width:0.85rem; height:0.85rem; fill:var(--strava); }
+    /* .strava-badge removed — see .garmin-badge below */
+
+    /* Garmin badge — simple monogram, not a logo reproduction */
+    .garmin-badge { display:inline-flex; align-items:center; gap:0.35rem; font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--garmin); text-decoration:none; }
+    .garmin-badge .g-mark { display:inline-flex; align-items:center; justify-content:center; width:0.95rem; height:0.95rem; border-radius:50%; background:var(--garmin); color:var(--white); font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700; line-height:1; }
 
     /* YTD split — trisport (3-col) + crosstraining (2-col) */
     .ts-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; margin-bottom:0.5rem; }
@@ -348,7 +351,7 @@
     <a href="/tags.html#Triathlon" class="page-tag">Triathlon</a>
     <a href="/tags.html#Running" class="page-tag">Running</a>
     <a href="/tags.html#Beer" class="page-tag">Beer</a>
-    <a href="/tags.html#Strava" class="page-tag">Strava</a>
+    <a href="/tags.html#Garmin" class="page-tag">Garmin</a>
   </div>
 </div>
 
@@ -396,14 +399,14 @@
       <div>
         <div class="section-label">
           <span>Training Log · <span id="current-year">2026</span></span>
-          <a href="https://www.strava.com/athletes/59148" target="_blank" class="strava-badge">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg>
-            Strava ↗
+          <a href="https://connect.garmin.com/modern/" target="_blank" class="garmin-badge">
+            <span class="g-mark">G</span>
+            Garmin ↗
           </a>
         </div>
         <div class="quick-links">
-          <a href="https://www.strava.com/athletes/59148" target="_blank" class="quick-link">Profile ↗</a>
-          <a href="https://www.strava.com/athletes/59148/training/log" target="_blank" class="quick-link">Training Log ↗</a>
+          <a href="https://connect.garmin.com/modern/" target="_blank" class="quick-link">Profile ↗</a>
+          <a href="https://connect.garmin.com/modern/activities" target="_blank" class="quick-link">Activities ↗</a>
           <a href="https://bdgroves.github.io/EDGAR" target="_blank" class="quick-link">EDGAR ↗</a>
         </div>
 
@@ -416,7 +419,7 @@
 
         <div class="col-label">Recent Activities</div>
         <div class="activity-list" id="activity-list"><p class="loading">Loading activities…</p></div>
-        <a href="https://www.strava.com/athletes/59148" target="_blank" class="strava-btn">Full profile on Strava ↗</a>
+        <a href="https://connect.garmin.com/modern/" target="_blank" class="garmin-btn">Full profile on Garmin ↗</a>
 
         <div class="col-label" style="margin-top:1.5rem;">All Time</div>
         <div class="alltime-grid" id="alltime-grid"><p class="loading">Loading…</p></div>
@@ -563,7 +566,7 @@
   <div class="footer-inner">
     <div>
       <p class="footer-name">Brooks Groves</p>
-      <p class="footer-tagline">Strava · MLB Stats API · Untappd · Peaks &amp; Pints</p>
+      <p class="footer-tagline">Garmin Connect · MLB Stats API · Untappd · Peaks &amp; Pints</p>
     </div>
     <div class="footer-links">
       <a href="/">Home</a>
@@ -1138,9 +1141,9 @@ async function loadBeers() {
   } catch(e) { el.innerHTML='<p class="sport-note">Check back soon.</p>'; }
 }
 
-async function loadStrava() {
+async function loadTraining() {
   try {
-    const res=await fetch('/data/strava.json?t='+Date.now());
+    const res=await fetch('/data/training.json?t='+Date.now());
     if(!res.ok) throw new Error();
     const d=await res.json();
     renderYTD(d.ytd);
@@ -1148,10 +1151,10 @@ async function loadStrava() {
     renderAllTime(d.all_time);
     if(d.updated){
       const dt=new Date(d.updated);
-      document.getElementById('updated-note').textContent='Strava data last updated '+dt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+      document.getElementById('updated-note').textContent='Garmin data last updated '+dt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
     }
   } catch(e) {
-    document.getElementById('ytd-grid').innerHTML='<div class="ytd-card" style="grid-column:1/-1"><p class="loading">Training data loading — <a href="https://www.strava.com/athletes/59148" target="_blank" style="color:var(--strava)">view on Strava ↗</a></p></div>';
+    document.getElementById('ytd-grid').innerHTML='<div class="ytd-card" style="grid-column:1/-1"><p class="loading">Training data loading — <a href="https://connect.garmin.com/modern/" target="_blank" style="color:var(--garmin)">view on Garmin ↗</a></p></div>';
     document.getElementById('activity-list').innerHTML='';
     document.getElementById('alltime-grid').innerHTML='';
   }
@@ -1401,7 +1404,7 @@ loadFootball();
 loadCycling();
 loadCyclingNews();
 loadBeers();
-loadStrava();
+loadTraining();
 loadFuelcast();
 checkFortGeorge();
 checkKingsDaughters();

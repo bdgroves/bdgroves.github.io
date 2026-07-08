@@ -135,14 +135,27 @@ ytd_block = {
 }
 
 # ─── All-time totals: NOT recomputed daily (would need full history) ───
-# Preserved from cache. Seed this once during migration from the last
-# known-good Strava all_time numbers; it will not auto-update from
-# Garmin. Revisit later with an incremental backfill if this matters.
-alltime_block = cached.get('all_time', {
-    'run':  {'miles': 0, 'count': 0},
-    'ride': {'miles': 0, 'count': 0},
-    'swim': {'yards': 0, 'count': 0},
-})
+# Preserved from cache. Seeded once from the last known-good Strava
+# all_time snapshot (as of 2026-06-30, the last successful Strava pull
+# before the paywall). Will not auto-update from Garmin day to day —
+# revisit later with an incremental backfill if this matters more.
+# Self-heals: if the cache is missing OR was previously written as all
+# zeros (e.g. the very first Garmin run before this seed existed), we
+# fall back to the seed instead of perpetuating zeros forever.
+ALLTIME_SEED = {
+    'run':  {'miles': 11367.2, 'count': 2958},
+    'ride': {'miles': 12957.2, 'count': 1008},
+    'swim': {'yards': 110108,  'count': 84},
+}
+cached_alltime = cached.get('all_time')
+looks_unseeded = (
+    not cached_alltime
+    or all(cached_alltime.get(k, {}).get('miles', cached_alltime.get(k, {}).get('yards', 0)) == 0
+           for k in ('run', 'ride', 'swim'))
+)
+alltime_block = ALLTIME_SEED if looks_unseeded else cached_alltime
+if looks_unseeded:
+    print("All-time cache missing or zeroed — using seed snapshot (2026-06-30)")
 
 # ─── Format recent activities for the site ───
 activities = []
