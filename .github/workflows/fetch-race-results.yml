@@ -27,7 +27,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install requests
+        run: pip install requests beautifulsoup4
 
       - name: Determine which races to update
         id: which
@@ -91,34 +91,27 @@ jobs:
           # Race configuration
           # ─────────────────────────────────────────────────────────────────
           # cycling_name must match the entry in cycling.json exactly (for sync).
+          # main_article is the primary Wikipedia article that carries the
+          # live classification tables (updated by editors after each stage).
           RACES = {
               'giro': {
                   'json_path': 'data/giro-2026.json',
                   'cycling_name': "Giro d'Italia",
-                  'wiki_articles': [
-                      "2026 Giro d'Italia, Stage 1 to Stage 11",
-                      "2026 Giro d'Italia, Stage 12 to Stage 21",
-                  ],
+                  'main_article': "2026 Giro d'Italia",
                   'window_start': date(2026, 5, 8),
                   'window_end':   date(2026, 5, 31),
               },
               'tdf': {
                   'json_path': 'data/tdf-2026.json',
                   'cycling_name': "Tour de France",
-                  'wiki_articles': [
-                      "2026 Tour de France, Stage 1 to Stage 11",
-                      "2026 Tour de France, Stage 12 to Stage 21",
-                  ],
+                  'main_article': "2026 Tour de France",
                   'window_start': date(2026, 7, 4),
                   'window_end':   date(2026, 7, 26),
               },
               'vuelta': {
                   'json_path': 'data/vuelta-2026.json',
                   'cycling_name': "Vuelta a España",
-                  'wiki_articles': [
-                      "2026 Vuelta a España, Stage 1 to Stage 11",
-                      "2026 Vuelta a España, Stage 12 to Stage 21",
-                  ],
+                  'main_article': "2026 Vuelta a España",
                   'window_start': date(2026, 8, 22),
                   'window_end':   date(2026, 9, 13),
               },
@@ -166,14 +159,17 @@ jobs:
           # Wikipedia API
           # ─────────────────────────────────────────────────────────────────
 
-          def fetch_wikipedia_article(title, retries=3):
+          def fetch_wikipedia_html(title, retries=3):
+              """Fetch a Wikipedia article as rendered HTML (prop=text).
+              Returns HTML string or None on failure / missing page."""
               url = "https://en.wikipedia.org/w/api.php"
               params = {
                   'action': 'parse',
                   'page': title,
                   'format': 'json',
-                  'prop': 'wikitext',
+                  'prop': 'text',
                   'redirects': 1,
+                  'formatversion': '2',
               }
               headers = {'User-Agent': USER_AGENT}
               for attempt in range(retries):
@@ -186,7 +182,11 @@ jobs:
                               print(f"  [WP] article not yet created: {title}")
                               return None
                           raise RuntimeError(f"Wikipedia API error: {data['error']}")
-                      return data['parse']['wikitext']['*']
+                      # formatversion=2 returns text as string; v1 as {'*': str}
+                      text = data['parse']['text']
+                      if isinstance(text, dict):
+                          text = text.get('*', '')
+                      return text
                   except Exception as e:
                       print(f"  [WP] attempt {attempt+1}/{retries} failed for {title}: {e}")
                       if attempt < retries - 1:
@@ -194,156 +194,56 @@ jobs:
               return None
 
           # ─────────────────────────────────────────────────────────────────
-          # Template parsing (brace-depth aware)
+          # HTML table parsing (wikitables)
           # ─────────────────────────────────────────────────────────────────
 
-          def find_template_end(text, start_idx):
-              """Given text[start_idx:start_idx+2]=='{{', return index just after matching '}}'.
-              Handles nested {{ }}. Returns -1 if unbalanced."""
-              if text[start_idx:start_idx+2] != '{{':
-                  return -1
-              depth = 0
-              i = start_idx
-              while i < len(text):
-                  if text[i:i+2] == '{{':
-                      depth += 1
-                      i += 2
-                  elif text[i:i+2] == '}}':
-                      depth -= 1
-                      i += 2
-                      if depth == 0:
-                          return i
-                  else:
-                      i += 1
-              return -1
-
-          def split_template_args(template_body):
-              """Split template body on | respecting balanced [[ ]] and {{ }}."""
-              args = []
-              current = []
-              depth_square = 0
-              depth_curly = 0
-              i = 0
-              while i < len(template_body):
-                  c2 = template_body[i:i+2]
-                  if c2 == '[[':
-                      depth_square += 1
-                      current.append(c2); i += 2; continue
-                  if c2 == ']]':
-                      depth_square -= 1
-                      current.append(c2); i += 2; continue
-                  if c2 == '{{':
-                      depth_curly += 1
-                      current.append(c2); i += 2; continue
-                  if c2 == '}}':
-                      depth_curly -= 1
-                      current.append(c2); i += 2; continue
-                  c = template_body[i]
-                  if c == '|' and depth_square == 0 and depth_curly == 0:
-                      args.append(''.join(current))
-                      current = []
-                      i += 1; continue
-                  current.append(c)
-                  i += 1
-              if current:
-                  args.append(''.join(current))
-              return args
-
-          def clean_title(s):
-              s = re.sub(r'<ref[^>]*?/>', '', s)
-              s = re.sub(r'<ref[^>]*>.*?</ref>', '', s, flags=re.DOTALL)
-              return s.strip()
-
-          def clean_rider(s):
-              s = s.strip()
-              # Strip optional flag template prefix: {{flagicon|XX}} [[Rider]]
-              s = re.sub(r'^\{\{flagicon\|[^}]+\}\}\s*', '', s)
-              m = re.match(r'^\[\[([^\]|]+)\|([^\]]+)\]\]$', s)
-              if m:
-                  return m.group(2).strip()
-              m = re.match(r'^\[\[([^\]]+)\]\]$', s)
-              if m:
-                  name = m.group(1)
-                  name = re.sub(r'\s*\([^)]+\)\s*$', '', name)
-                  return name.strip()
+          def clean_text(s):
+              """Collapse whitespace and strip citation markers like [27]."""
+              if not s:
+                  return ""
+              # Strip citation refs
+              s = re.sub(r'\[\d+\]', '', s)
+              # Collapse whitespace
+              s = re.sub(r'\s+', ' ', s).strip()
               return s
 
-          def parse_team(s):
-              """Parse {{UCI team code|XXX|2026}} -> 'XXX' (looked up in TEAM_CODE_MAP)."""
-              s = s.strip()
-              m = re.match(r'\{\{UCI team code\|([^|}]+)', s)
-              if m:
-                  code = m.group(1).strip()
-                  return TEAM_CODE_MAP.get(code, code)
-              # Sometimes raw [[Team]] link
-              m = re.match(r'^\[\[([^\]|]+)(?:\|[^\]]+)?\]\]$', s)
-              if m:
-                  return m.group(1).strip()
-              return s
+          def cell_text_no_jerseys(cell):
+              """Get cell text, skipping jersey/flag images that leave weird spacing."""
+              # Remove <img> tags entirely (jersey icons show as image alt text otherwise)
+              for img in cell.find_all('img'):
+                  img.decompose()
+              return clean_text(cell.get_text())
 
-          # ─────────────────────────────────────────────────────────────────
-          # Result block extraction
-          # ─────────────────────────────────────────────────────────────────
+          def cell_primary_link_text(cell):
+              """Return the first <a> link's text (usually the rider or team name).
+              Falls back to full cell text if no link. Strips flags/jerseys first."""
+              # Drop jersey/flag images so their alt text doesn't pollute
+              for img in cell.find_all('img'):
+                  img.decompose()
+              a = cell.find('a')
+              if a:
+                  return clean_text(a.get_text())
+              return clean_text(cell.get_text())
 
-          def extract_result_blocks(wikitext):
-              """Find all {{cyclingresult start|title=X}}...{{cyclingresult end}} blocks.
-              Returns list of (title, [rows]). Case-insensitive on template name."""
-              # Lower-cased copy for searching, but slice from the original for the body.
-              lc = wikitext.lower()
-              blocks = []
-              i = 0
-              while i < len(wikitext):
-                  idx = lc.find('{{cyclingresult start', i)
-                  if idx < 0:
-                      break
-                  start_end = find_template_end(wikitext, idx)
-                  if start_end < 0:
-                      break
-                  start_body = wikitext[idx+2:start_end-2]
-                  m = re.match(r'cyclingresult start\s*\|\s*title=', start_body, re.IGNORECASE)
-                  if not m:
-                      i = start_end
-                      continue
-                  title = clean_title(start_body[m.end():])
+          def caption_text(table):
+              cap = table.find('caption')
+              if not cap:
+                  return ""
+              return clean_text(cap.get_text())
 
-                  end_idx = lc.find('{{cyclingresult end}}', start_end)
-                  if end_idx < 0:
-                      i = start_end
-                      continue
-                  body = wikitext[start_end:end_idx]
+          def rows_of(table):
+              """Return all <tr> rows in the table, excluding nested tables."""
+              # Get direct tbody rows if present; else all tr under table
+              tbody = table.find('tbody')
+              if tbody:
+                  return [tr for tr in tbody.find_all('tr', recursive=False)]
+              return [tr for tr in table.find_all('tr', recursive=False)]
 
-                  rows = []
-                  j = 0
-                  body_lc = body.lower()
-                  while j < len(body):
-                      t_idx = body_lc.find('{{cyclingresult|', j)
-                      if t_idx < 0:
-                          break
-                      t_end = find_template_end(body, t_idx)
-                      if t_end < 0:
-                          break
-                      template_body = body[t_idx+2:t_end-2]
-                      parts = split_template_args(template_body)
-                      if len(parts) >= 6:
-                          try:
-                              rank = int(parts[1].strip())
-                              rider = clean_rider(parts[2])
-                              nation = parts[3].strip()
-                              team = parse_team(parts[4])
-                              time_str = parts[5].strip()
-                              # Strip jersey templates from time if present
-                              time_str = re.sub(r'\{\{cjersey[^}]+\}\}', '', time_str).strip()
-                              rows.append({
-                                  'rank': rank, 'rider': rider, 'nation': nation,
-                                  'team': team, 'time': time_str,
-                              })
-                          except ValueError:
-                              pass
-                      j = t_end
-                  if rows:
-                      blocks.append((title, rows))
-                  i = end_idx + len('{{cyclingresult end}}')
-              return blocks
+          def parse_rank(cell):
+              """Extract integer rank from first cell of a classification row."""
+              txt = clean_text(cell.get_text())
+              m = re.match(r'^(\d+)', txt)
+              return int(m.group(1)) if m else None
 
           # ─────────────────────────────────────────────────────────────────
           # Race processing
@@ -360,111 +260,205 @@ jobs:
               return True, "active"
 
           def parse_race(race_key):
+              """Parse the main Wikipedia article for a Grand Tour by finding
+              the classification wikitables and the stage characteristics table."""
               cfg = RACES[race_key]
-              all_wikitext = ''
-              for title in cfg['wiki_articles']:
-                  print(f"  [WP] fetching: {title}")
-                  text = fetch_wikipedia_article(title)
-                  if text:
-                      all_wikitext += '\n\n' + text
-                      time.sleep(2)
-              if not all_wikitext:
+              html = fetch_wikipedia_html(cfg['main_article'])
+              if not html:
                   return None
 
-              blocks = extract_result_blocks(all_wikitext)
-              print(f"  [parse] found {len(blocks)} result blocks")
+              try:
+                  from bs4 import BeautifulSoup
+              except ImportError:
+                  print("  [parse] bs4 not installed — aborting")
+                  return None
 
-              # Diagnostic: if we got zero blocks, dump a snippet of the wikitext
-              # so we can see what template structure the article is actually using.
-              # Prints only on failure so we don't flood the log on normal runs.
-              if len(blocks) == 0 and all_wikitext:
-                  snippet = all_wikitext[:3000]
-                  print(f"  [DIAG] zero blocks found. First 3000 chars of wikitext:")
-                  print("  [DIAG] " + "─" * 60)
-                  for line in snippet.splitlines():
-                      print(f"  [DIAG] {line}")
-                  print("  [DIAG] " + "─" * 60)
-                  # Also look for any templates that MIGHT be results
-                  import re as _re
-                  templates_seen = set(_re.findall(r'\{\{([A-Za-z][A-Za-z0-9 _-]+?)[\s|}]', all_wikitext))
-                  print(f"  [DIAG] template names seen in article: "
-                        f"{sorted(templates_seen)[:40]}")
+              soup = BeautifulSoup(html, 'html.parser')
+              tables = soup.find_all('table', class_='wikitable')
+              print(f"  [parse] found {len(tables)} wikitables in article")
 
-              winners = {}        # stage_num -> {winner, winner_team}
+              winners = {}         # stage_num -> {winner, winner_team}
               latest_gc = None
               latest_gc_stage = 0
-              latest_points = None
-              latest_kom = None
-              latest_youth = None
+              points_leader = None
+              kom_leader = None
+              young_rider = None
               latest_points_stage = 0
               latest_kom_stage = 0
               latest_youth_stage = 0
 
-              for title, rows in blocks:
-                  # Stage N Result
-                  m = re.match(r'Stage\s+(\d+)\s+Result\b', title, re.IGNORECASE)
-                  if m and rows:
-                      n = int(m.group(1))
-                      w = rows[0]
-                      winners[n] = {
-                          'winner':      w['rider'],
-                          'winner_team': w['team'],
-                      }
-                      print(f"  [parse] Stage {n} winner: {w['rider']} ({w['team']})")
+              # Team lookup — populate from GC/points/etc rows so we can attach
+              # a team to stage winners (which appear in a rider-only column).
+              rider_team = {}
+
+              # ── Pass 1: classification tables (GC / points / KOM / young rider) ──
+              for table in tables:
+                  cap = caption_text(table)
+                  if not cap:
                       continue
 
-                  # General classification after Stage N
-                  m = re.match(r'General\s+classification\s+after\s+Stage\s+(\d+)\b',
-                               title, re.IGNORECASE)
-                  if m and rows:
+                  # General classification after Stage N (1–10)
+                  m = re.match(r'General classification after Stage (\d+)', cap, re.IGNORECASE)
+                  if m:
                       n = int(m.group(1))
-                      if n > latest_gc_stage:
-                          latest_gc = rows
+                      if n <= latest_gc_stage:
+                          continue
+                      gc_rows = []
+                      for tr in rows_of(table):
+                          cells = tr.find_all(['th', 'td'], recursive=False)
+                          if len(cells) < 4:
+                              continue
+                          rank = parse_rank(cells[0])
+                          if rank is None:
+                              continue
+                          rider = cell_primary_link_text(cells[1])
+                          team  = cell_primary_link_text(cells[2])
+                          time_str = clean_text(cells[3].get_text())
+                          if rider:
+                              gc_rows.append({
+                                  'rank': rank, 'rider': rider,
+                                  'nation': '', 'team': team, 'time': time_str,
+                              })
+                              if team:
+                                  rider_team[rider] = team
+                      if gc_rows:
+                          latest_gc = gc_rows
                           latest_gc_stage = n
+                          print(f"  [parse] GC after Stage {n}: {len(gc_rows)} rows, "
+                                f"leader {gc_rows[0]['rider']} ({gc_rows[0]['team']})")
                       continue
 
                   # Points classification after Stage N
-                  m = re.match(r'Points\s+classification\s+after\s+Stage\s+(\d+)\b',
-                               title, re.IGNORECASE)
-                  if m and rows:
+                  m = re.match(r'Points classification after Stage (\d+)', cap, re.IGNORECASE)
+                  if m:
                       n = int(m.group(1))
                       if n > latest_points_stage:
-                          latest_points = rows[0]
-                          latest_points_stage = n
+                          for tr in rows_of(table):
+                              cells = tr.find_all(['th', 'td'], recursive=False)
+                              if len(cells) < 3:
+                                  continue
+                              rank = parse_rank(cells[0])
+                              if rank != 1:
+                                  continue
+                              rider = cell_primary_link_text(cells[1])
+                              team  = cell_primary_link_text(cells[2])
+                              if rider:
+                                  points_leader = {'rider': rider, 'team': team}
+                                  latest_points_stage = n
+                                  if team:
+                                      rider_team[rider] = team
+                              break
                       continue
 
                   # Mountains classification after Stage N
-                  m = re.match(r'Mountains\s+classification\s+after\s+Stage\s+(\d+)\b',
-                               title, re.IGNORECASE)
-                  if m and rows:
+                  m = re.match(r'Mountains classification after Stage (\d+)', cap, re.IGNORECASE)
+                  if m:
                       n = int(m.group(1))
                       if n > latest_kom_stage:
-                          latest_kom = rows[0]
-                          latest_kom_stage = n
+                          for tr in rows_of(table):
+                              cells = tr.find_all(['th', 'td'], recursive=False)
+                              if len(cells) < 3:
+                                  continue
+                              rank = parse_rank(cells[0])
+                              if rank != 1:
+                                  continue
+                              rider = cell_primary_link_text(cells[1])
+                              team  = cell_primary_link_text(cells[2])
+                              if rider:
+                                  kom_leader = {'rider': rider, 'team': team}
+                                  latest_kom_stage = n
+                                  if team:
+                                      rider_team[rider] = team
+                              break
                       continue
 
                   # Young rider classification after Stage N
-                  m = re.match(r'Young\s+rider\s+classification\s+after\s+Stage\s+(\d+)\b',
-                               title, re.IGNORECASE)
-                  if m and rows:
+                  m = re.match(r'Young rider classification after Stage (\d+)', cap, re.IGNORECASE)
+                  if m:
                       n = int(m.group(1))
                       if n > latest_youth_stage:
-                          latest_youth = rows[0]
-                          latest_youth_stage = n
+                          for tr in rows_of(table):
+                              cells = tr.find_all(['th', 'td'], recursive=False)
+                              if len(cells) < 3:
+                                  continue
+                              rank = parse_rank(cells[0])
+                              if rank != 1:
+                                  continue
+                              rider = cell_primary_link_text(cells[1])
+                              team  = cell_primary_link_text(cells[2])
+                              if rider:
+                                  young_rider = {'rider': rider, 'team': team}
+                                  latest_youth_stage = n
+                                  if team:
+                                      rider_team[rider] = team
+                              break
                       continue
 
+              # ── Pass 2: stage winners from Stage characteristics table ──
+              # Table caption contains "Stage characteristics"; header row has
+              # Stage / Date / Course / Distance / Type / Winner columns. The
+              # Stage cell is a <th> starting with a stage number (may be blank
+              # for rest days). Winner cell is the last <td> in the row.
+              for table in tables:
+                  cap = caption_text(table)
+                  if not cap or 'Stage characteristics' not in cap:
+                      continue
+                  print(f"  [parse] found Stage characteristics table")
+                  for tr in rows_of(table):
+                      cells = tr.find_all(['th', 'td'], recursive=False)
+                      if len(cells) < 6:
+                          continue
+                      # First cell is <th> with the stage number (linked)
+                      stage_txt = clean_text(cells[0].get_text())
+                      m = re.match(r'^(\d+)$', stage_txt)
+                      if not m:
+                          continue
+                      stage_num = int(m.group(1))
+                      # Winner is the last cell
+                      winner_cell = cells[-1]
+                      # Prefer the linked rider name if present
+                      winner = cell_primary_link_text(winner_cell)
+                      if not winner:
+                          continue
+                      # For TTT (Stage 1), the "winner" is the team name.
+                      # Detect by whether the linked entity matches any team
+                      # code we saw; otherwise treat as rider.
+                      is_team = False
+                      # Team names typically contain hyphen or specific words;
+                      # easier: check if rider_team maps this to itself later.
+                      winners[stage_num] = {
+                          'winner': winner,
+                          'winner_team': rider_team.get(winner, ''),
+                      }
+                  break  # only first Stage characteristics table
+
+              # Fill missing stage winner teams from rider_team lookup
+              for n, w in winners.items():
+                  if not w['winner_team'] and w['winner'] in rider_team:
+                      w['winner_team'] = rider_team[w['winner']]
+
+              print(f"  [parse] {len(winners)} stage winners extracted")
               print(f"  [parse] latest GC: after Stage {latest_gc_stage} "
                     f"({len(latest_gc) if latest_gc else 0} riders)")
               print(f"  [parse] latest points/KOM/youth stages: "
                     f"{latest_points_stage}/{latest_kom_stage}/{latest_youth_stage}")
 
+              # Diagnostic: if we got nothing, dump table captions so we can
+              # see whether the article structure is unfamiliar.
+              if not winners and not latest_gc:
+                  print(f"  [DIAG] parse found nothing. Table captions:")
+                  for t in tables:
+                      c = caption_text(t)
+                      if c:
+                          print(f"  [DIAG]  - {c[:100]}")
+
               return {
                   'winners': winners,
                   'gc': latest_gc,
                   'latest_stage': latest_gc_stage,
-                  'points_leader': latest_points['rider'] if latest_points else None,
-                  'kom_leader':    latest_kom['rider']    if latest_kom    else None,
-                  'young_rider':   latest_youth['rider']  if latest_youth  else None,
+                  'points_leader': points_leader['rider'] if points_leader else None,
+                  'kom_leader':    kom_leader['rider']    if kom_leader    else None,
+                  'young_rider':   young_rider['rider']  if young_rider   else None,
               }
 
           def update_json(race_key, parsed):
