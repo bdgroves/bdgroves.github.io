@@ -198,6 +198,9 @@ else:
 
 # ─── Format recent activities for the site ───
 activities = []
+if recent_raw:
+    sample_keys = set(recent_raw[0].keys())
+    print(f"DEBUG activity fields available: {sorted(sample_keys)}")
 for a in recent_raw:
     type_key = (a.get('activityType') or {}).get('typeKey', '')
     cat = categorize(type_key)
@@ -215,6 +218,10 @@ for a in recent_raw:
         pm = int(pace_secs // 60); ps = int(pace_secs % 60)
         pace_str = f"{pm}:{ps:02d}/mi"
     elev_m = a.get('elevationGain', 0) or 0
+    avg_hr = a.get('avgHR') or a.get('averageHR')
+    hr_str = f"{round(avg_hr)} bpm" if avg_hr else ''
+    calories = a.get('calories')
+    cal_str = f"{round(calories):,} cal" if calories else ''
     start = a.get('startTimeLocal', '')
     try:
         dt = datetime.fromisoformat(start.replace('Z',''))
@@ -231,6 +238,8 @@ for a in recent_raw:
         'time':      time_str,
         'pace':      pace_str,
         'elevation': f"{round(elev_m * 3.28084)} ft" if elev_m else '',
+        'hr':        hr_str,
+        'calories':  cal_str,
         'date':      date_str,
         'kudos':     0,  # Garmin has no kudos equivalent
         'map_url':   f"https://connect.garmin.com/modern/activity/{activity_id}" if activity_id else '',
