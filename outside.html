@@ -324,6 +324,26 @@
     .xt-value { font-family:'Playfair Display',serif; font-size:0.9rem; font-weight:700; color:var(--ink); }
     .xt-sub { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); margin-left:0.5rem; }
     @media(max-width:500px) { .ts-grid { grid-template-columns:repeat(3,1fr); } .xt-grid { grid-template-columns:repeat(2,1fr); } }
+
+    /* PERFORMANCE + READINESS — full-width pair below My Season grid */
+    .pr-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+    @media(max-width:700px) { .pr-grid { grid-template-columns:1fr; } }
+    .pr-card { background:var(--cream); border:1px solid var(--mist); padding:1rem 1.1rem; }
+    .pr-stat-row { display:grid; grid-template-columns:repeat(4,1fr); gap:0.5rem; margin-bottom:0.7rem; }
+    .pr-stat { background:var(--white); border:1px solid var(--mist); padding:0.55rem 0.4rem; text-align:center; }
+    .pr-stat-label { font-family:'DM Mono',monospace; font-size:0.46rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); margin-bottom:0.25rem; }
+    .pr-stat-value { font-family:'Playfair Display',serif; font-size:1rem; font-weight:900; color:var(--ink); }
+    .pr-stat-value.empty { color:var(--mist); font-size:0.7rem; font-weight:400; font-family:'DM Mono',monospace; }
+    .pr-list { display:flex; flex-direction:column; gap:0.35rem; }
+    .pr-list-row { display:flex; justify-content:space-between; align-items:baseline; font-family:'DM Mono',monospace; font-size:0.65rem; padding:0.3rem 0; border-bottom:1px solid rgba(0,0,0,0.04); }
+    .pr-list-row:last-child { border-bottom:0; }
+    .pr-list-label { color:var(--stone); }
+    .pr-list-value { color:var(--ink); font-weight:700; }
+    .pr-readiness-score { display:flex; align-items:baseline; gap:0.6rem; margin-bottom:0.7rem; }
+    .pr-readiness-num { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; color:var(--ink); line-height:1; }
+    .pr-readiness-of { font-family:'DM Mono',monospace; font-size:0.65rem; color:var(--stone); }
+    .pr-readiness-level { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--sage); background:rgba(74,92,69,0.1); padding:0.2rem 0.55rem; border-radius:4px; display:inline-block; }
+    .pr-empty-note { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); font-style:italic; }
   </style>
 </head>
 <body>
@@ -426,6 +446,24 @@
         <div class="updated-note" id="updated-note"></div>
       </div>
 
+    </div>
+
+    <!-- Performance + Readiness — full width, sourced from the same Garmin fetch -->
+    <div style="margin-top:2.5rem;">
+      <div class="section-label">
+        <span>Performance &amp; Readiness</span>
+        <a href="https://connect.garmin.com/modern/" target="_blank">Garmin ↗</a>
+      </div>
+      <div class="pr-grid">
+        <div class="pr-card">
+          <div class="col-label" style="margin-top:0;">Race Predictions &amp; Fitness</div>
+          <div id="pr-performance"><p class="loading">Loading…</p></div>
+        </div>
+        <div class="pr-card">
+          <div class="col-label" style="margin-top:0;">Today's Readiness</div>
+          <div id="pr-readiness"><p class="loading">Loading…</p></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1157,6 +1195,61 @@ async function loadBeers() {
   } catch(e) { el.innerHTML='<p class="sport-note">Check back soon.</p>'; }
 }
 
+function renderPerformance(perf) {
+  const el = document.getElementById('pr-performance');
+  if (!el) return;
+  if (!perf) { el.innerHTML = '<p class="pr-empty-note">Not available yet.</p>'; return; }
+
+  const rp = perf.race_predictions || {};
+  const hasAnyPrediction = rp['5k'] || rp['10k'] || rp['half'] || rp['full'];
+  const statRow = `<div class="pr-stat-row">
+    <div class="pr-stat"><div class="pr-stat-label">5K</div><div class="pr-stat-value${rp['5k']?'':' empty'}">${rp['5k'] || '—'}</div></div>
+    <div class="pr-stat"><div class="pr-stat-label">10K</div><div class="pr-stat-value${rp['10k']?'':' empty'}">${rp['10k'] || '—'}</div></div>
+    <div class="pr-stat"><div class="pr-stat-label">Half</div><div class="pr-stat-value${rp['half']?'':' empty'}">${rp['half'] || '—'}</div></div>
+    <div class="pr-stat"><div class="pr-stat-label">Full</div><div class="pr-stat-value${rp['full']?'':' empty'}">${rp['full'] || '—'}</div></div>
+  </div>`;
+
+  const fitnessRow = (perf.vo2max_running || perf.vo2max_cycling || perf.fitness_age) ? `<div class="pr-stat-row">
+    <div class="pr-stat"><div class="pr-stat-label">VO2 Run</div><div class="pr-stat-value${perf.vo2max_running?'':' empty'}">${perf.vo2max_running || '—'}</div></div>
+    <div class="pr-stat"><div class="pr-stat-label">VO2 Bike</div><div class="pr-stat-value${perf.vo2max_cycling?'':' empty'}">${perf.vo2max_cycling || '—'}</div></div>
+    <div class="pr-stat"><div class="pr-stat-label">Fitness Age</div><div class="pr-stat-value${perf.fitness_age?'':' empty'}">${perf.fitness_age || '—'}</div></div>
+    <div class="pr-stat"></div>
+  </div>` : '';
+
+  const prs = perf.personal_records || [];
+  const prList = prs.length ? `<div class="pr-list">${prs.slice(0,5).map(pr =>
+    `<div class="pr-list-row"><span class="pr-list-label">${pr.label}</span><span class="pr-list-value">${pr.value}</span></div>`
+  ).join('')}</div>` : '';
+
+  if (!hasAnyPrediction && !fitnessRow && !prList) {
+    el.innerHTML = '<p class="pr-empty-note">Garmin hasn\'t computed these yet — usually needs a bit more training history.</p>';
+    return;
+  }
+  el.innerHTML = statRow + fitnessRow + prList;
+}
+
+function renderReadiness(readiness) {
+  const el = document.getElementById('pr-readiness');
+  if (!el) return;
+  if (!readiness || readiness.score == null) {
+    el.innerHTML = '<p class="pr-empty-note">Not available yet — check back after your watch syncs today\'s data.</p>';
+    return;
+  }
+  const scoreHTML = `<div class="pr-readiness-score">
+    <span class="pr-readiness-num">${readiness.score}</span>
+    <span class="pr-readiness-of">/ 100</span>
+    ${readiness.level ? `<span class="pr-readiness-level">${readiness.level}</span>` : ''}
+  </div>`;
+  const rows = [];
+  if (readiness.training_status) rows.push(['Training Status', readiness.training_status]);
+  if (readiness.hrv_status) rows.push(['HRV Status', readiness.hrv_status]);
+  if (readiness.body_battery != null) rows.push(['Body Battery', readiness.body_battery + ' / 100']);
+  const listHTML = rows.length ? `<div class="pr-list">${rows.map(([label,value]) =>
+    `<div class="pr-list-row"><span class="pr-list-label">${label}</span><span class="pr-list-value">${value}</span></div>`
+  ).join('')}</div>` : '';
+  el.innerHTML = scoreHTML + listHTML;
+}
+
 async function loadTraining() {
   try {
     const res=await fetch('/data/training.json?t='+Date.now());
@@ -1165,6 +1258,8 @@ async function loadTraining() {
     renderYTD(d.ytd);
     renderActivities(d.activities);
     renderAllTime(d.all_time);
+    renderPerformance(d.performance);
+    renderReadiness(d.readiness);
     if(d.updated){
       const dt=new Date(d.updated);
       document.getElementById('updated-note').textContent='Garmin data last updated '+dt.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
@@ -1173,6 +1268,8 @@ async function loadTraining() {
     document.getElementById('ytd-grid').innerHTML='<div class="ytd-card" style="grid-column:1/-1"><p class="loading">Training data loading — <a href="https://connect.garmin.com/modern/" target="_blank" style="color:var(--garmin)">view on Garmin ↗</a></p></div>';
     document.getElementById('activity-list').innerHTML='';
     document.getElementById('alltime-grid').innerHTML='';
+    const perfEl = document.getElementById('pr-performance'); if (perfEl) perfEl.innerHTML = '';
+    const readyEl = document.getElementById('pr-readiness'); if (readyEl) readyEl.innerHTML = '';
   }
 }
 
