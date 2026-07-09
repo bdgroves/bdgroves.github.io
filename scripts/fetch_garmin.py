@@ -235,14 +235,34 @@ try:
 except Exception as e:
     print(f"WARN: race predictions fetch failed: {e}")
 
+def most_recent_nonempty(fetch_fn, max_days_back=10):
+    """
+    Try fetch_fn(date_str) for today, then walk backward up to max_days_back
+    days until a non-empty result comes back. Several of Garmin's metrics
+    (training readiness, HRV, VO2 max) are computed once overnight from
+    sleep data — if this workflow runs before that sync happens for the
+    current day, "today" comes back empty even though yesterday has real
+    data. Returns (result, date_str_used) or (None, None).
+    """
+    from datetime import timedelta
+    for offset in range(max_days_back):
+        d = (date.today() - timedelta(days=offset)).isoformat()
+        try:
+            result = fetch_fn(d)
+        except Exception:
+            continue
+        is_empty = result is None or result == [] or result == {}
+        if not is_empty:
+            return result, d
+    return None, None
+
 # --- Max metrics (VO2 max + fitness age) ---
 vo2max_running = None
 vo2max_cycling = None
 fitness_age = None
 try:
-    mm = client.get_max_metrics(today_str)
-    print(f"DEBUG max_metrics shape: {type(mm)} — {mm if not isinstance(mm, (list, dict)) else (list(mm.keys()) if isinstance(mm, dict) else f'list of {len(mm)}')}")
-    # Response has historically been a list of daily records; be flexible.
+    mm, mm_date = most_recent_nonempty(client.get_max_metrics)
+    print(f"DEBUG max_metrics: found data for {mm_date}" if mm_date else "DEBUG max_metrics: empty for last 10 days")
     entries = mm if isinstance(mm, list) else ([mm] if isinstance(mm, dict) else [])
     for entry in entries:
         gvm = entry.get('generic', {}).get('vo2MaxPreciseValue') or entry.get('generic', {}).get('vo2MaxValue')
@@ -251,20 +271,59 @@ try:
         cvm = entry.get('cycling', {}).get('vo2MaxPreciseValue') or entry.get('cycling', {}).get('vo2MaxValue')
         if cvm:
             vo2max_cycling = round(cvm)
-    try:
-        fa = client.get_fitnessage_data(today_str) if hasattr(client, 'get_fitnessage_data') else None
-        if isinstance(fa, dict):
-            fitness_age = fa.get('fitnessAge') or fa.get('chronologicalAge')
-    except Exception as e:
-        print(f"WARN: fitness age fetch failed: {e}")
 except Exception as e:
     print(f"WARN: max metrics fetch failed: {e}")
 
+try:
+    fa = client.get_fitnessage_data(today_str) if hasattr(client, 'get_fitnessage_data') else None
+    if isinstance(fa, dict):
+        fitness_age = fa.get('fitnessAge') or fa.get('chronologicalAge')
+except Exception as e:
+    print(f"WARN: fitness age fetch failed: {e}")
+
+# --- Training status (also gives us a reliable VO2 fallback) ---
+training_status_label = None
+try:
+    ts = client.get_training_status(today_str)
+    print(f"DEBUG training_status top-level keys: {list(ts.keys()) if isinstance(ts, dict) else 'n/a'}")
+    if isinstance(ts, dict):
+        # VO2 fallback — this key was confirmed present even when max_metrics
+        # for "today" came back empty. Dump its shape so we can wire it up
+        # precisely; try a couple of plausible direct fields meanwhile.
+        vo2_block = ts.get('mostRecentVO2Max')
+        print(f"DEBUG mostRecentVO2Max shape: {json.dumps(vo2_block, default=str)[:500] if vo2_block else 'empty'}")
+        if isinstance(vo2_block, dict) and vo2max_running is None:
+            generic = vo2_block.get('generic', {})
+            if isinstance(generic, dict):
+                vo2max_running = generic.get('vo2MaxPreciseValue') or generic.get('vo2MaxValue')
+                if vo2max_running:
+                    vo2max_running = round(vo2max_running)
+
+        status_block = ts.get('mostRecentTrainingStatus')
+        print(f"DEBUG mostRecentTrainingStatus shape: {json.dumps(status_block, default=str)[:500] if status_block else 'empty'}")
+        if isinstance(status_block, dict):
+            latest = status_block.get('latestTrainingStatusData')
+            if isinstance(latest, dict) and latest:
+                first_device = next(iter(latest.values()), {})
+                if isinstance(first_device, dict):
+                    training_status_label = (
+                        first_device.get('trainingStatusFeedbackPhrase')
+                        or first_device.get('trainingStatusLabel')
+                        or first_device.get('trainingStatus')
+                    )
+except Exception as e:
+    print(f"WARN: training status fetch failed: {e}")
+
 # --- Personal records ---
+# NOTE: method is get_personal_record() -- singular -- confirmed from the
+# library's own reference notebook. get_personal_records() (plural) does
+# not exist and raises AttributeError.
 personal_records = []
 try:
-    prs = client.get_personal_records()
-    print(f"DEBUG personal_records shape: {type(prs)} — {len(prs) if isinstance(prs, list) else 'n/a'} entries")
+    prs = client.get_personal_record()
+    print(f"DEBUG personal_record shape: {type(prs)} — {len(prs) if isinstance(prs, list) else 'n/a'} entries")
+    if isinstance(prs, list) and prs:
+        print(f"DEBUG personal_record[0] sample: {json.dumps(prs[0], default=str)[:400]}")
     PR_TYPE_LABELS = {
         1: 'Longest Run', 2: 'Fastest 1K', 3: 'Fastest 5K', 4: 'Fastest 10K',
         7: 'Longest Ride', 8: 'Fastest Half Marathon', 9: 'Fastest Marathon',
@@ -275,7 +334,7 @@ try:
             type_id = pr.get('typeId')
             label = PR_TYPE_LABELS.get(type_id, pr.get('prTypeLabel', f'PR {type_id}'))
             value = pr.get('value')
-            pr_date = pr.get('prStartTimeGmtFormatted', pr.get('prStartTimeGmt', ''))[:10]
+            pr_date = (pr.get('prStartTimeGmtFormatted') or pr.get('prStartTimeGmt') or '')[:10]
             if value is not None:
                 personal_records.append({'label': label, 'value': value, 'date': pr_date})
 except Exception as e:
@@ -285,55 +344,48 @@ except Exception as e:
 readiness_score = None
 readiness_level = None
 try:
-    tr = client.get_training_readiness(today_str)
-    print(f"DEBUG training_readiness shape: {type(tr)} — {tr if not isinstance(tr, (list, dict)) else (list(tr[0].keys()) if isinstance(tr, list) and tr else (list(tr.keys()) if isinstance(tr, dict) else 'empty'))}")
+    tr, tr_date = most_recent_nonempty(client.get_training_readiness)
+    print(f"DEBUG training_readiness: found data for {tr_date}" if tr_date else "DEBUG training_readiness: empty for last 10 days")
     entry = tr[0] if isinstance(tr, list) and tr else (tr if isinstance(tr, dict) else None)
     if entry:
+        print(f"DEBUG training_readiness entry sample: {json.dumps(entry, default=str)[:400]}")
         readiness_score = entry.get('score')
         readiness_level = entry.get('level') or entry.get('feedbackShort') or entry.get('feedbackLong')
 except Exception as e:
     print(f"WARN: training readiness fetch failed: {e}")
 
-# --- Training status ---
-training_status_label = None
-try:
-    ts = client.get_training_status(today_str)
-    print(f"DEBUG training_status shape: {type(ts)} — {list(ts.keys()) if isinstance(ts, dict) else 'n/a'}")
-    if isinstance(ts, dict):
-        # Nested under mostRecentTrainingStatus in past observations; try a few paths.
-        candidates = ts.get('mostRecentTrainingStatus', {})
-        if isinstance(candidates, dict):
-            latest = candidates.get('latestTrainingStatusData', {})
-            if isinstance(latest, dict) and latest:
-                first_device = next(iter(latest.values()), {})
-                training_status_label = first_device.get('trainingStatusFeedbackPhrase') or first_device.get('trainingStatus')
-except Exception as e:
-    print(f"WARN: training status fetch failed: {e}")
-
 # --- HRV status ---
 hrv_status = None
 try:
-    hrv = client.get_hrv_data(today_str)
-    print(f"DEBUG hrv shape: {type(hrv)} — {list(hrv.keys()) if isinstance(hrv, dict) else 'n/a'}")
+    hrv, hrv_date = most_recent_nonempty(client.get_hrv_data)
+    print(f"DEBUG hrv: found data for {hrv_date}" if hrv_date else "DEBUG hrv: empty for last 10 days")
     if isinstance(hrv, dict):
+        print(f"DEBUG hrv keys: {list(hrv.keys())}")
         summary = hrv.get('hrvSummary', {})
         hrv_status = summary.get('status') or summary.get('feedbackPhrase')
 except Exception as e:
     print(f"WARN: HRV fetch failed: {e}")
 
 # --- Body battery (today) ---
+# Garmin's daily value arrays are shaped [timestamp_ms, status_string, value, ...]
+# -- confirmed via the library's own reference notebook (using the sibling
+# get_all_day_stress endpoint's bodyBatteryValuesArray as a shape precedent).
+# The value sits at index 2, not index 1 as a naive guess would assume.
 body_battery_today = None
 try:
     bb = client.get_body_battery(today_str, today_str)
     print(f"DEBUG body_battery shape: {type(bb)} — {len(bb) if isinstance(bb, list) else 'n/a'} entries")
     if isinstance(bb, list) and bb:
         latest = bb[-1]
+        print(f"DEBUG body_battery[-1] top-level keys: {list(latest.keys()) if isinstance(latest, dict) else 'n/a'}")
         values = latest.get('bodyBatteryValuesArray') or []
         if values:
-            # Each entry is typically [timestamp, value] — take the last reading.
+            print(f"DEBUG body_battery first row shape: {values[0]}")
             last_point = values[-1]
-            body_battery_today = last_point[1] if isinstance(last_point, list) and len(last_point) > 1 else None
-        body_battery_today = body_battery_today or latest.get('charged')
+            if isinstance(last_point, list) and len(last_point) > 2:
+                body_battery_today = last_point[2]
+        if body_battery_today is None:
+            body_battery_today = latest.get('charged') or latest.get('bodyBatteryChargedValue')
 except Exception as e:
     print(f"WARN: body battery fetch failed: {e}")
 
