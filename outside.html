@@ -794,7 +794,11 @@ function bbRenderGame(game, myTeamId, label) {
   if (!home || !away) return '';
   const iAmHome = String(home.team?.id) === String(myTeamId);
   const opp = (iAmHome ? away.team : home.team) || {};
-  const oppAbbr = opp.abbreviation || opp.teamCode || opp.teamName?.split(' ').slice(-1)[0] || 'OPP';
+  // Schedule's embedded team objects are minimal — usually just {id, name}.
+  // abbreviation/teamCode aren't reliably present, so derive a short form
+  // from the full name (e.g. "Miami Marlins" -> "Marlins") as the primary path.
+  const oppAbbr = opp.abbreviation || opp.teamCode || opp.teamName
+    || (opp.name ? opp.name.split(' ').slice(-1)[0] : '') || 'Opp';
   const state = game.status?.abstractGameState;           // Preview | Live | Final
   const detailedState = game.status?.detailedState || state;
 
@@ -834,6 +838,15 @@ function bbRenderGame(game, myTeamId, label) {
   </div>`;
 }
 
+function bbFindOwnStandingsRow(standingsData, teamId) {
+  if (!standingsData?.records?.length) return null;
+  for (const rec of standingsData.records) {
+    const row = rec.teamRecords?.find(t => String(t.team?.id) === String(teamId));
+    if (row) return row;
+  }
+  return null;
+}
+
 function bbRenderStandings(standingsData, cfg) {
   if (!standingsData?.records?.length) return '';
   // Find the division that contains our team
@@ -858,19 +871,25 @@ function bbRenderStandings(standingsData, cfg) {
   </div>`;
 }
 
-function bbRenderCard(cfg, teamData, schedule, standings) {
-  const rec = teamData?.record;
-  const wins = rec?.wins ?? 0, losses = rec?.losses ?? 0;
+function bbRenderCard(cfg, schedule, standings) {
+  // Record comes from the standings payload — same shape already proven
+  // correct by the standings table below (t.wins/t.losses direct, no
+  // nesting). The separate /teams?hydrate=record endpoint nests wins/
+  // losses under record.leagueRecord instead, which silently produced
+  // 0-0 everywhere — dropped that fetch entirely in favor of this.
+  const ownRow = bbFindOwnStandingsRow(standings, cfg.teamId);
+  const wins = ownRow?.wins ?? 0, losses = ownRow?.losses ?? 0;
   const pct = (wins + losses) > 0 ? (wins / (wins + losses)).toFixed(3).replace(/^0/, '') : '.000';
-  const summary = `${wins}–${losses}`;
+  const summary = ownRow ? `${wins}–${losses}` : '—';
 
   // Schedule endpoint returns games under dates[].games[]. Flatten to chronological array.
   const allGames = [];
   (schedule?.dates || []).forEach(d => (d.games || []).forEach(g => allGames.push(g)));
-  const now = Date.now();
   const finished = allGames.filter(g => g.status?.abstractGameState === 'Final')
                            .sort((a,b) => new Date(b.gameDate) - new Date(a.gameDate));
-  const upcoming = allGames.filter(g => g.status?.abstractGameState !== 'Final')
+  // Strictly "Preview" only — a Live game must not also count as "upcoming",
+  // otherwise it renders identically under both Recent and Next.
+  const upcoming = allGames.filter(g => g.status?.abstractGameState === 'Preview')
                            .sort((a,b) => new Date(a.gameDate) - new Date(b.gameDate));
   const live = allGames.find(g => g.status?.abstractGameState === 'Live');
   const recent = live || finished[0] || null;
@@ -908,16 +927,13 @@ async function loadBaseball() {
 
   try {
     const cards = await Promise.all(BASEBALL_TEAMS.map(async cfg => {
-      const [teamRes, schedRes, standRes] = await Promise.all([
-        fetch(`https://statsapi.mlb.com/api/v1/teams/${cfg.teamId}?season=2026&sportId=${cfg.sportId}&hydrate=record`)
-          .then(r => r.ok ? r.json() : null).catch(() => null),
+      const [schedRes, standRes] = await Promise.all([
         fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=${cfg.teamId}&sportId=${cfg.sportId}&startDate=${fmt(start)}&endDate=${fmt(end)}`)
           .then(r => r.ok ? r.json() : null).catch(() => null),
         fetch(`https://statsapi.mlb.com/api/v1/standings?leagueId=${cfg.leagueId}&season=2026&standingsTypes=regularSeason&sportId=${cfg.sportId}`)
           .then(r => r.ok ? r.json() : null).catch(() => null),
       ]);
-      const teamData = teamRes?.teams?.[0] || null;
-      return bbRenderCard(cfg, teamData, schedRes, standRes);
+      return bbRenderCard(cfg, schedRes, standRes);
     }));
     el.innerHTML = cards.join('');
   } catch (e) {
@@ -1178,12 +1194,12 @@ function renderYTD(ytd) {
   if (ytd.yoga && ytd.yoga.count > 0) {
     xtParts.push(`<div class="xt-card"><span class="xt-icon">🧘</span>
       <div class="xt-body"><span class="xt-name">Yoga</span>
-        <span><span class="xt-value">${ytd.yoga.count}</span><span class="xt-sub">${ytd.yoga.time||''}</span></span></div></div>`);
+        <span><span class="xt-value">${ytd.yoga.count}</span><span class="xt-sub"> · ${ytd.yoga.time||''}</span></span></div></div>`);
   }
   if (ytd.strength && ytd.strength.count > 0) {
     xtParts.push(`<div class="xt-card"><span class="xt-icon">🏋️</span>
       <div class="xt-body"><span class="xt-name">Strength</span>
-        <span><span class="xt-value">${ytd.strength.count}</span><span class="xt-sub">${ytd.strength.time||''}</span></span></div></div>`);
+        <span><span class="xt-value">${ytd.strength.count}</span><span class="xt-sub"> · ${ytd.strength.time||''}</span></span></div></div>`);
   }
 
   const el = document.getElementById('ytd-grid');
