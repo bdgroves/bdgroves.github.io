@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investment Club — Submit a Trade</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-brand">
+    <h1>Investment Club</h1>
+    <span class="divider">|</span>
+    <span>Trade Journal</span>
+  </div>
+  <div class="topbar-nav">
+    <a href="index.html" class="active">Submit</a>
+    <a href="review.html">Review Desk</a>
+  </div>
+</nav>
+
+<main class="page">
+  <p class="section-eyebrow">Member Submission</p>
+  <h2 class="section-title">Submit a Trade</h2>
+  <p class="section-sub">Complete your homework below. Every field matters — a strong submission helps the committee make a fast, well-informed decision.</p>
+
+  <!-- Block 1: Identification -->
+  <div class="form-block">
+    <div class="form-block-title">Trade Identification</div>
+    <div class="field-grid cols-2">
+      <div class="field">
+        <label>Stock / Company Name</label>
+        <input type="text" id="f-stock" placeholder="Apple Inc.">
+      </div>
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="f-date">
+      </div>
+    </div>
+    <div class="field-grid cols-3" style="margin-top:16px;">
+      <div class="field">
+        <label>Symbol</label>
+        <input type="text" id="f-ticker" class="ticker-input" placeholder="AAPL" maxlength="8">
+      </div>
+      <div class="field">
+        <label>Exchange</label>
+        <input type="text" id="f-exchange" class="num-input" placeholder="NASDAQ">
+      </div>
+      <div class="field">
+        <label>Suggesting / Monitoring Member</label>
+        <input type="text" id="f-member" placeholder="Club member name">
+      </div>
+    </div>
+  </div>
+
+  <!-- Block 2: Price Levels -->
+  <div class="form-block">
+    <div class="form-block-title">Price Levels</div>
+    <div class="field-grid cols-3">
+      <div class="field">
+        <label>Share Value Today ($)</label>
+        <input type="text" id="f-shareValue" class="num-input" inputmode="decimal" placeholder="0.00">
+      </div>
+      <div class="field">
+        <label>Entry Target ($)</label>
+        <input type="text" id="f-entryTarget" class="num-input" inputmode="decimal" placeholder="0.00">
+      </div>
+      <div class="field">
+        <label>Exit ($)</label>
+        <input type="text" id="f-exit" class="num-input" inputmode="decimal" placeholder="0.00">
+      </div>
+    </div>
+    <div class="field-grid cols-2" style="margin-top:16px;">
+      <div class="field">
+        <label>Previous 1-Year High ($)</label>
+        <input type="text" id="f-high52" class="num-input" inputmode="decimal" placeholder="0.00">
+      </div>
+      <div class="field">
+        <label>Previous 1-Year Low ($)</label>
+        <input type="text" id="f-low52" class="num-input" inputmode="decimal" placeholder="0.00">
+      </div>
+    </div>
+  </div>
+
+  <!-- Block 3: Company Fundamentals -->
+  <div class="form-block">
+    <div class="form-block-title">Company Fundamentals</div>
+    <div class="field-grid cols-3">
+      <div class="field">
+        <label>Sector Category</label>
+        <select id="f-sector">
+          <option value="">Select…</option>
+          <option>Technology</option>
+          <option>Financial</option>
+          <option>Energy</option>
+          <option>Healthcare</option>
+          <option>Consumer Discretionary</option>
+          <option>Consumer Staples</option>
+          <option>Industrials</option>
+          <option>Utilities</option>
+          <option>Materials</option>
+          <option>Real Estate</option>
+          <option>Communication Services</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Market Capitalization</label>
+        <select id="f-marketCap">
+          <option value="">Select…</option>
+          <option>Large</option>
+          <option>Mid</option>
+          <option>Small</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Growth or Income?</label>
+        <select id="f-growthIncome">
+          <option value="">Select…</option>
+          <option>Growth</option>
+          <option>Income</option>
+          <option>Both</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-grid cols-3" style="margin-top:16px;">
+      <div class="field">
+        <label>Beta (Mkt Volatility)</label>
+        <input type="text" id="f-beta" class="num-input" inputmode="decimal" placeholder="1.00">
+      </div>
+      <div class="field">
+        <label>P/E Ratio</label>
+        <input type="text" id="f-peRatio" class="num-input" inputmode="decimal" placeholder="0.0">
+      </div>
+      <div class="field">
+        <label>Price / Revenue per Share</label>
+        <input type="text" id="f-priceRevShare" class="num-input" inputmode="decimal" placeholder="0.0">
+      </div>
+    </div>
+    <div class="field-grid cols-3" style="margin-top:16px;">
+      <div class="field">
+        <label>Earnings per Share ($)</label>
+        <input type="text" id="f-eps" class="num-input" inputmode="decimal" placeholder="0.00">
+      </div>
+      <div class="field">
+        <label>Dividend per Share ($)</label>
+        <input type="text" id="f-dividend" class="num-input" inputmode="decimal" placeholder="0.00">
+      </div>
+      <div class="field">
+        <label>Dividend Frequency</label>
+        <select id="f-dividendFreq">
+          <option value="">Select…</option>
+          <option>Monthly</option>
+          <option>Quarterly</option>
+          <option>Semi-Annual</option>
+          <option>Annual</option>
+          <option>None</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block 4: Thesis -->
+  <div class="form-block">
+    <div class="form-block-title">Investment Thesis</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Core Thesis</label>
+        <textarea id="f-thesis" rows="3" placeholder="A strong thesis is a concise, 2–3 sentence argument that captures the investment opportunity and the nature of the company."></textarea>
+        <p class="hint">2–3 sentences capturing the investment opportunity and the nature of the company.</p>
+      </div>
+      <div class="field">
+        <label>Competitive Moat</label>
+        <textarea id="f-moat" rows="3" placeholder="What structural advantages protect this company? Brand, network effects, cost structure, switching costs, IP, regulatory position..."></textarea>
+      </div>
+      <div class="field">
+        <label>Why Now</label>
+        <textarea id="f-why-now" rows="3" placeholder="What's the catalyst or timing rationale? Earnings cycle, macro tailwind, management change, sector rotation, regulatory shift..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block 5: Pros & Cons -->
+  <div class="form-block">
+    <div class="form-block-title">Pros &amp; Cons for This Trade</div>
+    <div class="field-grid cols-2">
+      <div class="field">
+        <label>Pros for This Trade</label>
+        <textarea id="f-pros" rows="6" placeholder="List the key arguments in favor. Be specific and cite data where possible.&#10;&#10;— Revenue growth accelerating&#10;— Margin expansion thesis&#10;— Undervalued vs. peers at X multiple"></textarea>
+      </div>
+      <div class="field">
+        <label>Cons for This Trade</label>
+        <textarea id="f-cons" rows="6" placeholder="What could go wrong? What assumptions need to hold?&#10;&#10;— Key risk 1&#10;— Key risk 2&#10;— What would invalidate the thesis"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block 6: Trade Management -->
+  <div class="form-block">
+    <div class="form-block-title">Trade Management</div>
+    <div class="field-grid">
+      <div class="field">
+        <label>Think Through Every Possible Outcome</label>
+        <textarea id="f-management" rows="8" placeholder="Think of every possible outcome for this trade and describe how you will manage the trade for each outcome.&#10;&#10;Bull scenario: If price reaches $X, I will...&#10;Base scenario: If price trades between $X–$Y, I will...&#10;Bear / stop-loss: If price falls to $X, I will exit because...&#10;Time stop: If the thesis isn't proven by [date], I will..."></textarea>
+        <p class="hint">Describe how you will manage the trade for each outcome — no scenario should be "hope it goes up."</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:16px; margin-top:8px;">
+    <button class="btn btn-primary" onclick="submitTrade()">Submit Trade for Review →</button>
+    <span id="submit-status" style="font-size:.82rem; color:var(--mist);"></span>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+<script>
+  document.getElementById('f-date').valueAsDate = new Date();
+
+  const FIELD_IDS = [
+    'f-stock','f-date','f-ticker','f-exchange','f-member',
+    'f-shareValue','f-entryTarget','f-exit','f-high52','f-low52',
+    'f-sector','f-marketCap','f-growthIncome','f-beta','f-peRatio',
+    'f-priceRevShare','f-eps','f-dividend','f-dividendFreq',
+    'f-thesis','f-moat','f-why-now','f-pros','f-cons','f-management'
+  ];
+
+  function val(id) { return (document.getElementById(id).value || '').trim(); }
+
+  function submitTrade() {
+    const ticker = val('f-ticker').toUpperCase();
+    const member = val('f-member');
+    const thesis = val('f-thesis');
+
+    if (!ticker || !member || !thesis) {
+      showToast('Please fill in Symbol, Member, and Core Thesis at minimum.', true);
+      return;
+    }
+
+    const trade = {
+      stock:         val('f-stock'),
+      date:          val('f-date'),
+      ticker:        ticker,
+      exchange:      val('f-exchange').toUpperCase(),
+      member:        member,
+      shareValue:    val('f-shareValue'),
+      entryTarget:   val('f-entryTarget'),
+      exit:          val('f-exit'),
+      high52:        val('f-high52'),
+      low52:         val('f-low52'),
+      sector:        val('f-sector'),
+      marketCap:     val('f-marketCap'),
+      growthIncome:  val('f-growthIncome'),
+      beta:          val('f-beta'),
+      peRatio:       val('f-peRatio'),
+      priceRevShare: val('f-priceRevShare'),
+      eps:           val('f-eps'),
+      dividend:      val('f-dividend'),
+      dividendFreq:  val('f-dividendFreq'),
+      thesis:        thesis,
+      moat:          val('f-moat'),
+      whyNow:        val('f-why-now'),
+      pros:          val('f-pros'),
+      cons:          val('f-cons'),
+      management:    val('f-management')
+    };
+
+    saveTrade(trade);
+
+    FIELD_IDS.forEach(id => { document.getElementById(id).value = ''; });
+    document.getElementById('f-date').valueAsDate = new Date();
+
+    showToast('✓ Trade submitted. The committee can review it on the Review Desk.');
+    document.getElementById('submit-status').textContent = `${ticker} submitted at ${new Date().toLocaleTimeString()}`;
+  }
+</script>
+</body>
+</html>
