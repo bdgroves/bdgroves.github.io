@@ -702,7 +702,31 @@ function renderStandingsTable(group, ownTeamId) {
   </div>`;
 }
 
-function renderFootballCard(cfg, team, standingsRoot) {
+function renderFbRecentGame(recentEvent, teamId) {
+  if (!recentEvent) return '';
+  const comp = recentEvent.competitions?.[0];
+  const competitors = comp?.competitors || [];
+  const me = competitors.find(c => String(c.team?.id) === String(teamId));
+  const opp = competitors.find(c => String(c.team?.id) !== String(teamId));
+  if (!me || !opp) return '';
+  const myScore = Number(me.score ?? me.score?.value ?? 0);
+  const oppScore = Number(opp.score ?? opp.score?.value ?? 0);
+  const won = myScore > oppScore;
+  const oppAbbr = opp.team?.abbreviation || opp.team?.shortDisplayName || 'Opp';
+  const dt = new Date(recentEvent.date);
+  const dateStr = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const homeAway = me.homeAway === 'home' ? 'vs' : '@';
+  return `<div class="fb-game">
+    <span class="fb-game-label">Recent</span>
+    <span class="fb-game-detail">
+      <span style="font-weight:700;color:${won ? 'var(--sage,#4a5c45)' : 'var(--rust)'};">${won ? 'W' : 'L'} ${myScore}–${oppScore}</span>
+      · ${homeAway} ${oppAbbr}
+      <div class="fb-game-time">${dateStr}</div>
+    </span>
+  </div>`;
+}
+
+function renderFootballCard(cfg, team, standingsRoot, recentEvent) {
   if (!team) {
     return `<div class="fb-card"><div class="fb-name">${cfg.shortName}</div>
       <div class="fb-sub">Data unavailable</div></div>`;
@@ -713,6 +737,8 @@ function renderFootballCard(cfg, team, standingsRoot) {
                           + Number(rec.stats?.find(s => s.name === 'losses')?.value ?? 0)
                           + Number(rec.stats?.find(s => s.name === 'ties')?.value ?? 0)) > 0;
   const logo = team.logos?.[0]?.href || '';
+
+  const recentHTML = renderFbRecentGame(recentEvent, team.id);
 
   // Next event
   const next = team.nextEvent?.[0];
@@ -727,9 +753,9 @@ function renderFootballCard(cfg, team, standingsRoot) {
       <span class="fb-game-label">Next</span>
       <span class="fb-game-detail">${opp}<div class="fb-game-time">${dateStr} · ${timeStr}${bcast ? ' · ' + bcast : ''}</div></span>
     </div>`;
-  } else if (!hasStarted && cfg.offseasonNote) {
+  } else if (!hasStarted && !recentEvent && cfg.offseasonNote) {
     nextHTML = `<div class="fb-offseason">${cfg.offseasonNote}</div>`;
-  } else if (!hasStarted) {
+  } else if (!hasStarted && !recentEvent) {
     nextHTML = `<div class="fb-offseason">Season starts soon — check back August.</div>`;
   }
 
@@ -750,6 +776,7 @@ function renderFootballCard(cfg, team, standingsRoot) {
       </div>
       ${logo ? `<img class="fb-logo" src="${logo}" alt="">` : ''}
     </div>
+    ${recentHTML}
     ${nextHTML}
     ${standingsHTML}
   </div>`;
@@ -953,6 +980,20 @@ async function loadFootball() {
         .then(d => ({ cfg, team: d.team }))
         .catch(err => { console.warn('team fetch failed', cfg.shortName, err); return { cfg, team: null }; })
     );
+    // Schedule fetches — full-season schedule per team, gives us "Recent"
+    // (most recently completed game) the same way baseball has one.
+    const schedulePromises = FOOTBALL_TEAMS.map(cfg =>
+      fetch(`https://site.api.espn.com/apis/site/v2/sports/football/${cfg.league}/teams/${cfg.id}/schedule`)
+        .then(r => r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)))
+        .then(d => {
+          const events = d.events || [];
+          const completed = events
+            .filter(e => e.competitions?.[0]?.status?.type?.completed)
+            .sort((a, b) => new Date(b.date) - new Date(a.date));
+          return { id: cfg.id, recentEvent: completed[0] || null };
+        })
+        .catch(err => { console.warn('schedule fetch failed', cfg.shortName, err); return { id: cfg.id, recentEvent: null }; })
+    );
     // Standings fetches — one per unique league (dedupes NFL/CFB across configs)
     const leagues = [...new Set(FOOTBALL_TEAMS.map(t => t.league))];
     const standingsPromises = leagues.map(league =>
@@ -961,13 +1002,15 @@ async function loadFootball() {
         .then(d => ({ league, root: d }))
         .catch(err => { console.warn('standings fetch failed', league, err); return { league, root: null }; })
     );
-    const [teamResults, standingsResults] = await Promise.all([
+    const [teamResults, scheduleResults, standingsResults] = await Promise.all([
       Promise.all(teamPromises),
+      Promise.all(schedulePromises),
       Promise.all(standingsPromises),
     ]);
     const standingsByLeague = Object.fromEntries(standingsResults.map(s => [s.league, s.root]));
+    const recentByTeamId = Object.fromEntries(scheduleResults.map(s => [String(s.id), s.recentEvent]));
     el.innerHTML = teamResults.map(({ cfg, team }) =>
-      renderFootballCard(cfg, team, standingsByLeague[cfg.league])
+      renderFootballCard(cfg, team, standingsByLeague[cfg.league], recentByTeamId[String(cfg.id)])
     ).join('');
   } catch (e) {
     console.error('football load error:', e);

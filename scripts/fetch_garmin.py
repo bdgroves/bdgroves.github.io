@@ -134,28 +134,67 @@ ytd_block = {
     'strength': {'count': buckets['strength']['count'], 'time': sec_to_hm(buckets['strength']['secs'])},
 }
 
-# ─── All-time totals: NOT recomputed daily (would need full history) ───
-# Preserved from cache. Seeded once from the last known-good Strava
-# all_time snapshot (as of 2026-06-30, the last successful Strava pull
-# before the paywall). Will not auto-update from Garmin day to day —
-# revisit later with an incremental backfill if this matters more.
-# Self-heals: if the cache is missing OR was previously written as all
-# zeros (e.g. the very first Garmin run before this seed existed), we
-# fall back to the seed instead of perpetuating zeros forever.
+# ─── All-time totals: incremental, not recomputed from scratch ───
+# A one-time backfill (garmin_backfill_alltime.py) establishes the true
+# baseline + a "counted_through" marker (the newest activity ID already
+# folded in). Each daily run only needs to look at activities newer than
+# that marker and add them in — no need to ever re-paginate full history.
+# Falls back to the old frozen Strava-era seed only if no backfill has
+# been run yet at all.
 ALLTIME_SEED = {
     'run':  {'miles': 11367.2, 'count': 2958},
     'ride': {'miles': 12957.2, 'count': 1008},
     'swim': {'yards': 110108,  'count': 84},
 }
 cached_alltime = cached.get('all_time')
-looks_unseeded = (
-    not cached_alltime
-    or all(cached_alltime.get(k, {}).get('miles', cached_alltime.get(k, {}).get('yards', 0)) == 0
-           for k in ('run', 'ride', 'swim'))
-)
-alltime_block = ALLTIME_SEED if looks_unseeded else cached_alltime
-if looks_unseeded:
-    print("All-time cache missing or zeroed — using seed snapshot (2026-06-30)")
+counted_through_id = cached.get('all_time_counted_through_id')
+
+if not cached_alltime or all(
+    cached_alltime.get(k, {}).get('miles', cached_alltime.get(k, {}).get('yards', 0)) == 0
+    for k in ('run', 'ride', 'swim')
+):
+    print("All-time cache missing or zeroed — using frozen seed until a backfill is run")
+    alltime_block = ALLTIME_SEED
+    counted_through_id = None
+else:
+    alltime_block = {k: dict(v) for k, v in cached_alltime.items()}  # copy, don't mutate cache in place
+
+    # Fold in any activity newer than the last counted one. YTD activities
+    # already cover the whole current year, which is always a superset of
+    # "since last run" in practice (workflow runs daily), so we reuse that
+    # fetch rather than pulling a separate window.
+    new_run_dist = new_ride_dist = new_swim_dist = 0
+    new_run_n = new_ride_n = new_swim_n = 0
+    newest_seen_id = counted_through_id
+    newest_seen_date = cached.get('all_time_counted_through_date', '')
+
+    for a in ytd_raw:
+        act_id = a.get('activityId')
+        if counted_through_id is not None and act_id is not None and act_id <= counted_through_id:
+            continue  # already counted in a previous run
+        cat = categorize((a.get('activityType') or {}).get('typeKey'))
+        dist = a.get('distance', 0) or 0
+        if cat == 'run':
+            new_run_dist += dist; new_run_n += 1
+        elif cat == 'ride':
+            new_ride_dist += dist; new_ride_n += 1
+        elif cat == 'swim':
+            new_swim_dist += dist; new_swim_n += 1
+        if act_id is not None and (newest_seen_id is None or act_id > newest_seen_id):
+            newest_seen_id = act_id
+            newest_seen_date = a.get('startTimeLocal', newest_seen_date)
+
+    if new_run_n or new_ride_n or new_swim_n:
+        alltime_block['run']['miles']  = round(alltime_block['run']['miles']  + m_to_mi(new_run_dist), 1)
+        alltime_block['run']['count'] += new_run_n
+        alltime_block['ride']['miles'] = round(alltime_block['ride']['miles'] + m_to_mi(new_ride_dist), 1)
+        alltime_block['ride']['count'] += new_ride_n
+        alltime_block['swim']['yards'] = alltime_block['swim']['yards'] + m_to_yd(new_swim_dist)
+        alltime_block['swim']['count'] += new_swim_n
+        print(f"All-time incremented: +{new_run_n} runs, +{new_ride_n} rides, +{new_swim_n} swims "
+              f"(newest activity id now {newest_seen_id})")
+    counted_through_id = newest_seen_id
+    cached['all_time_counted_through_date'] = newest_seen_date  # carried into output below
 
 # ─── Format recent activities for the site ───
 activities = []
@@ -202,11 +241,13 @@ if not activities and cached.get('activities'):
     activities = cached['activities']
 
 output = {
-    'source':     'garmin',
-    'updated':    datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
-    'ytd':        ytd_block,
-    'all_time':   alltime_block,
-    'activities': activities,
+    'source':                       'garmin',
+    'updated':                      datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+    'ytd':                          ytd_block,
+    'all_time':                     alltime_block,
+    'all_time_counted_through_id':   counted_through_id,
+    'all_time_counted_through_date': cached.get('all_time_counted_through_date', ''),
+    'activities':                   activities,
 }
 
 os.makedirs('data', exist_ok=True)
@@ -219,3 +260,6 @@ print(f"  YTD Ride: {ytd_block['ride']['miles']} mi · {ytd_block['ride']['count
 print(f"  YTD Swim: {ytd_block['swim']['yards']} yd · {ytd_block['swim']['count']} swims")
 print(f"  YTD Yoga: {ytd_block['yoga']['count']} sessions")
 print(f"  YTD Strength: {ytd_block['strength']['count']} sessions")
+print(f"  All-Time Run: {alltime_block['run']['miles']} mi · {alltime_block['run']['count']} activities")
+print(f"  All-Time Ride: {alltime_block['ride']['miles']} mi · {alltime_block['ride']['count']} activities")
+print(f"  All-Time Swim: {alltime_block['swim']['yards']} yd · {alltime_block['swim']['count']} activities")
