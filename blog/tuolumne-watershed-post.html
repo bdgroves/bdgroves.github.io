@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thirty Minutes, Fifty Years of Fire — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
+
+  <!-- Open Graph / Twitter Card -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Thirty Minutes, Fifty Years of Fire — Brooks Groves">
+  <meta property="og:description" content="Running a full watershed and post-fire flood-risk analysis for Tuolumne County, California — 1,151 stream segments, 30 fires since 1950, and one fire that broke out on the exact ground I was mapping, while I was mapping it.">
+  <meta property="og:url" content="https://brooksgroves.com/blog/tuolumne-watershed-post.html">
+  <meta property="og:image" content="https://brooksgroves.com/images/tuolumne-watershed-map.png">
+  <meta property="og:site_name" content="Brooks Groves">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <meta name="twitter:creator" content="@bdgroves">
+  <meta name="twitter:title" content="🌊 Thirty Minutes, Fifty Years of Fire">
+  <meta name="twitter:description" content="1,151 streams · 24% of a county burned since 1950 · 3 canyons that keep catching on a schedule · 30 minutes to map it all. A hydrology love letter to Tuolumne County.">
+  <meta name="twitter:image" content="https://brooksgroves.com/images/tuolumne-watershed-map.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --storm:#2a5a8a; --deep:#1e2d44; --fire:#c0392b;
+      --contained:#5a7d3a; --river:#2a4a6b;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+
+    .topline { height:4px; background:linear-gradient(90deg,var(--deep) 0%,var(--storm) 40%,var(--river) 75%,var(--gold) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--storm); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--storm); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--river); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-deck { font-family:'Libre Baskerville',serif; font-size:1.1rem; font-style:italic; color:var(--stone); line-height:1.6; margin-bottom:1.25rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:1.5rem; border-bottom:1px solid var(--mist); margin-bottom:2rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+    /* ── STAT STRIP ── */
+    .stat-strip { display:grid; grid-template-columns:repeat(5,1fr); border:1.5px solid var(--ink); margin:2rem 0; }
+    .stat-cell { padding:14px 10px; border-right:1px solid var(--mist); text-align:center; }
+    .stat-cell:last-child { border-right:none; }
+    .stat-cell.river { background:var(--river); color:var(--white); }
+    .stat-cell.alert { background:var(--fire); color:var(--white); }
+    .stat-num { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; line-height:1; display:block; }
+    .stat-cell.river .stat-num,
+    .stat-cell.alert .stat-num { color:#f0f5ff; }
+    .stat-cell.alert .stat-num { color:#fde8e4; }
+    .stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-top:4px; display:block; }
+    .stat-cell.river .stat-lbl,
+    .stat-cell.alert .stat-lbl { color:rgba(255,255,255,0.75); }
+    @media (max-width: 600px) { .stat-strip { grid-template-columns:repeat(2,1fr); } .stat-cell { border-right:1px solid var(--mist); border-bottom:1px solid var(--mist); } }
+
+    /* ── ARTICLE BODY ── */
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-of-type::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--river); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--deep); }
+    .article-body h3 { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:400; letter-spacing:0.15em; text-transform:uppercase; color:var(--river); margin:1.5rem 0 0.5rem; }
+    .article-body blockquote { border-left:3px solid var(--river); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--storm); text-decoration:underline; text-underline-offset:3px; }
+    .article-body strong { font-weight:700; }
+
+    /* ── PULL QUOTE ── */
+    .pullquote { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:600; font-style:italic; line-height:1.35; color:var(--deep); border-top:2px solid var(--river); border-bottom:2px solid var(--river); padding:1.5rem 0; margin:2rem 0; text-align:center; }
+
+    /* ── DATA TABLE ── */
+    .data-table { width:100%; border-collapse:collapse; margin:1.75rem 0; font-size:0.88rem; }
+    .data-table th { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase; background:var(--ink); color:var(--white); padding:8px 12px; text-align:left; }
+    .data-table td { padding:7px 12px; border-bottom:1px solid var(--mist); }
+    .data-table tr:nth-child(even) td { background:var(--cream); }
+    .data-table .val-river { color:var(--river); font-weight:700; }
+    .data-table .val-alert { color:var(--fire); font-weight:700; }
+
+    /* ── MAP FIGURE ── */
+    .map-figure { margin:1.75rem 0; border:2px solid var(--ink); background:var(--cream); }
+    .map-figure img { width:100%; display:block; }
+    .map-placeholder { padding:3rem 1.5rem; text-align:center; font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--stone); border:1px dashed var(--mist); margin:1rem; line-height:2; }
+    .map-caption { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); padding:0.5rem 0; text-transform:uppercase; }
+
+    /* ── REBURN CALLOUT ── */
+    .reburn { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--fire); padding:1.25rem 1.5rem; margin:1.75rem 0; }
+    .reburn h3 { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--fire); margin-bottom:0.75rem; }
+    .reburn-row { display:flex; justify-content:space-between; padding:0.4rem 0; border-bottom:1px dotted var(--mist); font-size:0.95rem; }
+    .reburn-row:last-child { border-bottom:none; }
+    .reburn-name { font-family:'Playfair Display',serif; font-weight:700; color:var(--ink); }
+    .reburn-dates { font-family:'DM Mono',monospace; font-size:0.85rem; color:var(--fire); letter-spacing:0.04em; }
+
+    /* ── SCORECARD (closing signature) ── */
+    .scorecard { background:var(--ink); color:var(--white); padding:1.5rem 1.75rem; margin:2.5rem 0 1rem; }
+    .scorecard-lbl { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
+    .scorecard-row { padding:0.5rem 0; font-size:0.95rem; line-height:1.6; border-bottom:1px solid rgba(255,255,255,0.1); }
+    .scorecard-row:last-child { border-bottom:none; }
+    .scorecard .num { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:var(--gold); }
+
+    /* ── SHARE BAR ── */
+    .share-bar { display:flex; align-items:center; gap:0.75rem; padding:1.5rem 0; border-top:1px solid var(--mist); border-bottom:1px solid var(--mist); margin:2rem 0; flex-wrap:wrap; }
+    .share-lbl { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-right:0.25rem; }
+    .share-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; border:1px solid var(--mist); padding:0.4rem 0.9rem; color:var(--ink); background:transparent; cursor:pointer; display:inline-block; transition:all 0.15s; }
+    .share-btn:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+    .share-btn.tw { border-color:#1DA1F2; color:#1DA1F2; }
+    .share-btn.tw:hover { background:#1DA1F2; color:#fff; border-color:#1DA1F2; }
+    .share-btn.bsky { border-color:#0085ff; color:#0085ff; }
+    .share-btn.bsky:hover { background:#0085ff; color:#fff; border-color:#0085ff; }
+
+    /* ── FOOTER ── */
+    footer { border-top:2px solid var(--ink); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:900; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--storm); }
+    .footer-copy { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.08em; }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/">Blog</a>
+      <a href="/hydrology.html">Hydrology</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="/maps.html">Maps</a>
+      <a href="/about.html">About</a>
+      <a href="https://github.com/bdgroves" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/" class="article-back">← Back to Blog</a>
+
+  <div class="article-kicker">🌊 Hydrology · GIS Case Study · Tuolumne County · July 10, 2026</div>
+  <h1 class="article-title">Thirty Minutes,<br>Fifty Years of Fire</h1>
+  <p class="article-deck">A watershed and post-fire flood-risk analysis for the county where I grew up — 1,151 streams, 30 fires since 1950, and one fire that broke out on the exact ground I was mapping, while I was mapping it.</p>
+
+  <div class="article-meta">
+    <span>By <strong>Brooks Groves</strong></span>
+    <span>GIS Analyst · GISP</span>
+    <span>July 10, 2026</span>
+  </div>
+
+  <div class="article-tags">
+    <a href="/tags.html#Hydrology" class="article-tag-pill">Hydrology</a>
+    <a href="/tags.html#Geospatial" class="article-tag-pill">Geospatial</a>
+    <a href="/tags.html#Wildfire" class="article-tag-pill">Wildfire</a>
+    <a href="/tags.html#Tuolumne%20County" class="article-tag-pill">Tuolumne County</a>
+    <a href="/tags.html#Sierra%20Nevada" class="article-tag-pill">Sierra Nevada</a>
+    <a href="/tags.html#Groveland" class="article-tag-pill">Groveland</a>
+    <a href="/tags.html#QGIS" class="article-tag-pill">QGIS</a>
+    <a href="/tags.html#GRASS%20GIS" class="article-tag-pill">GRASS GIS</a>
+    <a href="/tags.html#USGS%203DEP" class="article-tag-pill">USGS 3DEP</a>
+    <a href="/tags.html#CAL%20FIRE" class="article-tag-pill">CAL FIRE</a>
+    <a href="/tags.html#MCP" class="article-tag-pill">MCP</a>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-cell river"><span class="stat-num">1,151</span><span class="stat-lbl">Streams</span></div>
+    <div class="stat-cell"><span class="stat-num">31s</span><span class="stat-lbl">Watershed Run</span></div>
+    <div class="stat-cell alert"><span class="stat-num">24%</span><span class="stat-lbl">County Burned</span></div>
+    <div class="stat-cell"><span class="stat-num">30</span><span class="stat-lbl">Major Fires<br>Since 1950</span></div>
+    <div class="stat-cell"><span class="stat-num">~30m</span><span class="stat-lbl">Total Runtime</span></div>
+  </div>
+
+  <div class="share-bar">
+    <span class="share-lbl">Share</span>
+    <a href="https://twitter.com/intent/tweet?text=%F0%9F%8C%8A%20Thirty%20Minutes%2C%20Fifty%20Years%20of%20Fire%20%E2%80%94%201%2C151%20streams%20mapped%2C%2024%25%20of%20Tuolumne%20County%20burned%20since%201950%2C%20and%20one%20fire%20that%20broke%20out%20on%20the%20exact%20ground%20I%20was%20mapping.%20By%20%40bdgroves&url=https%3A%2F%2Fbrooksgroves.com%2Fblog%2Ftuolumne-watershed-post.html&hashtags=Hydrology%2CQGIS%2CGRASS%2CTuolumneCounty" class="share-btn tw">𝕏 Post to X</a>
+    <a href="https://bsky.app/intent/compose?text=%F0%9F%8C%8A%20Thirty%20Minutes%2C%20Fifty%20Years%20of%20Fire%20%E2%80%94%20a%20hydrology%20%2B%20post-fire%20flood-risk%20analysis%20for%20Tuolumne%20County%2C%20CA.%20https%3A%2F%2Fbrooksgroves.com%2Fblog%2Ftuolumne-watershed-post.html" class="share-btn bsky">🦋 Bluesky</a>
+    <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href).then(()=>{this.textContent='✓ Copied';setTimeout(()=>this.textContent='📋 Copy Link',2000)})">📋 Copy Link</button>
+  </div>
+
+  <div class="article-body">
+
+    <p>I grew up in a place most people have never heard of, at the end of a road most people only drive once, on their way to somewhere else. Groveland sits on Highway 120, the northern gateway to Yosemite — which means most of the people who pass through it are looking past it, at the granite waiting forty-five minutes up the road. My parents were Forest Rangers on the Stanislaus National Forest. I grew up under that canopy, not passing through it.</p>
+
+    <p>I don't live there anymore. I live in Washington now. But Tuolumne County is still the place I measure other places against, and it's the place I went looking for the second I had a new tool in my hands.</p>
+
+    <h2>The Spark</h2>
+
+    <p>I was listening to the <a href="https://mapscaping.com" target="_blank">Mapscaping Podcast</a> — an episode called "10 Tools for Telling Stories With Maps," with Ryan Shields, who makes maps for Johnny Harris's YouTube channel. At some point Ryan described pointing Claude at GRASS GIS and running a full hydrology analysis on USGS elevation data, and said it "just plowed through it." I already had QGIS open with the <a href="https://github.com/jjsantos01/qgis_mcp" target="_blank">QGIS MCP</a> plugin connected to Claude — I'd been using it for exactly this kind of thing — and I remember the thought arriving almost before the episode ended: <em>let me try this right now, on the place I actually know.</em></p>
+
+    <p>Not a random county. Not a demo watershed. Home.</p>
+
+    <h2>What Thirty Minutes Gets You</h2>
+
+    <p>Here's the unglamorous part, told as fast as I can tell it, because the glamour isn't in the steps — it's in what the steps eventually show you.</p>
+
+    <p>USGS keeps a 30-meter elevation model of the entire country through its <a href="https://www.usgs.gov/3d-elevation-program" target="_blank">3D Elevation Program</a>, but the server that hands it out caps you at about four million pixels per request. Tuolumne County didn't fit in one bite, so I pulled it in four tiles, merged them with GDAL, and clipped the result down to the county line — a 5,240-by-2,875-pixel elevation model of home, 57.5 megabytes, sitting on my screen.</p>
+
+    <p>Then GRASS GIS took over. <code>r.watershed</code> ran a full drainage-basin delineation — D8 flow direction, a threshold of 5,000 cells, roughly 4.5 square kilometers as the smallest basin worth naming — across all fifteen million cells of that DEM in <strong>thirty-one seconds</strong>. <code>r.stream.extract</code> followed and pulled out 2,338 features: 1,151 individual stream segments and 1,187 junctions where they meet.</p>
+
+    <p>Every one of those 1,151 segments got classified by <a href="https://en.wikipedia.org/wiki/Strahler_number" target="_blank">Strahler order</a> — the standard way hydrologists rank a stream by how many smaller streams feed into it. Order 1 is a headwater trickle with nothing upstream of it; order 6 is a river that's already swallowed everything above it.</p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Order</th><th>Count</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td class="val-river">131</td><td>Headwater creeks, seasonal, High Sierra meadows</td></tr>
+        <tr><td><strong>2</strong></td><td class="val-river">329</td><td>Small tributaries, named foothill streams</td></tr>
+        <tr><td><strong>3</strong></td><td class="val-river">244</td><td>Major tributaries with year-round flow</td></tr>
+        <tr><td><strong>4</strong></td><td class="val-river">201</td><td>Cherry Creek, Clavey River, South Fork Tuolumne</td></tr>
+        <tr><td><strong>5</strong></td><td class="val-river">189</td><td>Tuolumne River through the canyons above Don Pedro</td></tr>
+        <tr><td><strong>6</strong></td><td class="val-river">57</td><td>Tuolumne mainstem below major confluences</td></tr>
+      </tbody>
+    </table>
+
+    <div class="map-figure">
+      <div class="map-placeholder">
+        Map: Watershed &amp; Stream Network<br>
+        <span style="opacity:0.6;font-size:0.65rem;">Hillshade + Strahler-classified streams — pale headwaters to navy mainstem</span>
+      </div>
+      <div class="map-caption">▲ Tuolumne County stream network — QGIS 4.0 + GRASS GIS r.watershed / r.stream.extract, USGS 3DEP 30m DEM. Map export forthcoming.</div>
+    </div>
+
+    <p>I colored it on the canvas the way it deserved: pale blue threads up in the granite, deepening step by step into navy by the time it reaches the reservoir. Watching that render — watching the whole county's water figure out where it's going, all at once, on my own screen — was the best thirty seconds of my week.</p>
+
+    <h2>Then I Kept Going</h2>
+
+    <p>I could have stopped there. A watershed map of home is already more than I expected to have by lunchtime. But once the stream network existed, the next question wasn't optional, not for someone from there: <em>which of these creeks run through country that's already burned?</em></p>
+
+    <p><a href="https://frap.fire.ca.gov" target="_blank">CAL FIRE keeps a historical fire-perimeter database</a> — FRAP, 23,334 records statewide going back to 1878. I pulled every major fire over 1,000 acres that had touched Tuolumne County since 1950. Thirty of them. Overlaid against the stream network, they told me something I didn't fully know until the map said it plainly: <strong>24% of Tuolumne County has burned at least once since 1950.</strong> Twenty percent of the stream network — 235 of those 1,151 segments — flows through ground that fire has already been over.</p>
+
+    <div class="map-figure">
+      <div class="map-placeholder">
+        Map: 30 Major Fires · 1950–2026<br>
+        <span style="opacity:0.6;font-size:0.65rem;">FRAP historical perimeters overlaid on Tuolumne County</span>
+      </div>
+      <div class="map-caption">▲ Fire history — CAL FIRE FRAP, 30 perimeters &gt; 1,000 acres. Rim Fire (2013, 256,176 acres) dominates. Map export forthcoming.</div>
+    </div>
+
+    <h2>The Part That Actually Got Me</h2>
+
+    <p>It's not just that the county burns. It's that the same canyons burn <em>again.</em></p>
+
+    <div class="reburn">
+      <h3>Reburn Cycle · Same Canyon, Different Decade</h3>
+      <div class="reburn-row"><span class="reburn-name">Moccasin</span><span class="reburn-dates">1972 · 1992 · 1999</span></div>
+      <div class="reburn-row"><span class="reburn-name">Parrotts</span><span class="reburn-dates">1994 · 2000 · 2018</span></div>
+      <div class="reburn-row"><span class="reburn-name">Milton</span><span class="reburn-dates">1966 · 2006 · 2011 · 2019</span></div>
+      <div class="reburn-row"><span class="reburn-name">Priest</span><span class="reburn-dates">1997 · <strong style="color:var(--fire)">2026</strong></span></div>
+    </div>
+
+    <p>These aren't different fires finding new ground — they're the same drainages, catching again on something close to a generational clock, like the landscape has a memory and a short one. When you grow up near these place names, they're not rows in a database. They're the canyon your dad patrolled, the road you drove to school, the creek you fished. Seeing them line up on a timeline like that — 1972, 1992, 1999 — did something a statewide statistic never could have.</p>
+
+    <p>Burned soil doesn't just look bad and grow back. For two to five years it turns <a href="https://en.wikipedia.org/wiki/Hydrophobic_soil" target="_blank">hydrophobic</a> — it stops absorbing water at all. Combine that with steep Sierra terrain and no vegetation left to slow anything down, and you get debris flows and flash floods that are frequently worse for a downstream community than the fire itself was. I classified every fire-touched stream segment by years since burn: <strong>extreme</strong> risk at zero-to-two years, when the soil is still actively repelling water; <strong>moderate</strong> out to fifteen years, still-recovering ground; <strong>historical</strong> beyond that, mostly healed but not entirely.</p>
+
+    <p>A hundred and sixty segments — <strong>14% of the whole network</strong> — are still sitting in that moderate band because of two fires: the 2013 Rim Fire, at 256,176 acres the largest in county history, and the 2018 Donnell Fire. Thirteen years on, and the water still hasn't forgotten either one.</p>
+
+    <p>Two segments are sitting in the extreme band right now, for a much smaller, much more recent fire: the TCU 6-5 Fire, which broke out near Chinese Camp in September 2025, burned less than 7,000 acres, and took 95 structures with it anyway.</p>
+
+    <div class="map-figure">
+      <div class="map-placeholder">
+        Map: Post-Fire Flood Risk<br>
+        <span style="opacity:0.6;font-size:0.65rem;">235 stream segments · classified extreme / moderate / historical</span>
+      </div>
+      <div class="map-caption">▲ Post-fire flood risk — 235 of 1,151 stream segments flow through fire-affected drainages. Extreme in red, moderate in orange, historical in yellow. Map export forthcoming.</div>
+    </div>
+
+    <h2>Then the Universe Interrupted</h2>
+
+    <p>On July 6th, while I was in the middle of building this, a fire broke out on Old Priest Grade — the steep old highway grade that drops down into Groveland. It stayed small, about fifteen acres, and crews had it out fast. But it was burning the <em>exact corridor</em> I had open on my screen at that exact moment, feeding data into a model built to answer the question of what happens next time a fire hits that ground.</p>
+
+    <p class="pullquote">"I don't have a tidy way to explain how that felt. Mostly I just sat there for a second, looking at the map, and then looking at the actual smoke, forty-five minutes from where I grew up."</p>
+
+    <h2>Why Any of This Should Matter to You</h2>
+
+    <p><strong>Groveland</strong> and <strong>Big Oak Flat</strong> sit on Highway 120, downstream of drainages that have already burned more than once, including now, technically, this one. <strong>Chinese Camp</strong> is still inside its two-year hydrophobic window from the TCU fire. <strong>Don Pedro Reservoir</strong> — the county's main water storage — takes sediment-laden runoff straight off the Rim Fire scar every time it rains hard. The <strong>Hetch Hetchy Aqueduct</strong> and <strong>O'Shaughnessy Dam</strong>, which supply San Francisco's drinking water, sit inside that same Rim Fire perimeter. <strong>Highway 120</strong> itself, the only real road to Yosemite from this side, crosses several of these drainages directly. None of this is hypothetical or far away — it's the same physics currently generating <a href="https://www.weather.gov/pub/hazards" target="_blank">hundreds of National Weather Service flood watches</a> around burn scars across the West, for the exact same reason: burned ground doesn't stay burned in place. It moves downhill, fast, onto whoever's underneath it.</p>
+
+    <h2>Why This Was Even Possible</h2>
+
+    <p>This kind of analysis — real drainage modeling, real fire-history overlay, run against a specific county's actual terrain — used to take days of setup, GIS licenses, and someone trained specifically to run them. Nobody does this work for a county of 55,000 people. There's no budget line for it, no newsroom assigned to it. Ryan Shields made a point on that same podcast episode about how tools like this finally make real data journalism viable for the places big outlets never get to. That's the part that's stuck with me the most.</p>
+
+    <p>It's not that I built something impressive in thirty minutes. It's that thirty minutes is now enough — and the place that gets that thirty minutes doesn't have to be a place anyone's already paying attention to.</p>
+
+    <p>It can just be the place you're from.</p>
+
+    <div class="scorecard">
+      <div class="scorecard-lbl">By the Numbers</div>
+      <div class="scorecard-row"><span class="num">1</span> DEM · <span class="num">4</span> tiles · <span class="num">15 million</span> cells · <span class="num">31</span> seconds</div>
+      <div class="scorecard-row"><span class="num">1,151</span> stream segments · <span class="num">1,187</span> junctions · <span class="num">6</span> Strahler orders</div>
+      <div class="scorecard-row"><span class="num">30</span> major fires since 1950 · <span class="num">24%</span> of a county burned · <span class="num">3</span> canyons that keep catching on a schedule</div>
+      <div class="scorecard-row"><span class="num">1</span> fire that broke out on the exact ground I was mapping, while I was mapping it</div>
+    </div>
+
+    <h2>Tools &amp; Sources</h2>
+
+    <p><strong>Software:</strong> QGIS 4.0 · <a href="https://github.com/jjsantos01/qgis_mcp" target="_blank">QGIS MCP Plugin 0.6.0</a> · GRASS GIS (<code>r.watershed</code>, <code>r.stream.extract</code>) · GDAL · Claude (Anthropic)</p>
+
+    <p><strong>Data:</strong> <a href="https://www.usgs.gov/3d-elevation-program" target="_blank">USGS 3DEP 30m DEM</a> · <a href="https://frap.fire.ca.gov" target="_blank">CAL FIRE FRAP historical perimeters</a> · Zillow RegionMaster county boundary</p>
+
+    <p><strong>Inspiration:</strong> <a href="https://mapscaping.com" target="_blank">Mapscaping Podcast</a> · "10 Tools for Telling Stories With Maps" with Ryan Shields</p>
+
+  </div>
+
+  <div class="share-bar">
+    <span class="share-lbl">Share this piece</span>
+    <a href="https://twitter.com/intent/tweet?text=%F0%9F%8C%8A%20Thirty%20Minutes%2C%20Fifty%20Years%20of%20Fire%20%E2%80%94%201%2C151%20streams%20mapped%2C%2024%25%20of%20Tuolumne%20County%20burned%20since%201950%2C%20and%20one%20fire%20that%20broke%20out%20on%20the%20exact%20ground%20I%20was%20mapping.%20By%20%40bdgroves&url=https%3A%2F%2Fbrooksgroves.com%2Fblog%2Ftuolumne-watershed-post.html&hashtags=Hydrology%2CQGIS%2CGRASS%2CTuolumneCounty" class="share-btn tw">𝕏 Post to X</a>
+    <a href="https://bsky.app/intent/compose?text=%F0%9F%8C%8A%20Thirty%20Minutes%2C%20Fifty%20Years%20of%20Fire%20%E2%80%94%20a%20hydrology%20%2B%20post-fire%20flood-risk%20analysis%20for%20Tuolumne%20County%2C%20CA.%20https%3A%2F%2Fbrooksgroves.com%2Fblog%2Ftuolumne-watershed-post.html" class="share-btn bsky">🦋 Bluesky</a>
+    <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href).then(()=>{this.textContent='✓ Copied';setTimeout(()=>this.textContent='📋 Copy Link',2000)})">📋 Copy Link</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-name">Brooks Groves</div>
+    <div class="footer-links">
+      <a href="/blog/">Blog</a>
+      <a href="/hydrology.html">Hydrology</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves">GitHub ↗</a>
+      <a href="https://x.com/bdgroves">X ↗</a>
+      <a href="https://bsky.app/profile/bdgroves.bsky.social">Bluesky ↗</a>
+    </div>
+    <div class="footer-copy">© 2026 Brooks Groves · Lakewood, WA</div>
+  </div>
+</footer>
+
+</body>
+</html>
