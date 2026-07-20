@@ -37,7 +37,10 @@ except (FileNotFoundError, json.JSONDecodeError) as e:
 token_json = os.environ.get('GARMIN_TOKENS_JSON', '')
 if not token_json.strip():
     print("FATAL: GARMIN_TOKENS_JSON secret is empty or missing")
-    sys.exit(0)  # exit clean — keep cached data
+    print("       Set the secret in repo Settings -> Secrets and variables -> Actions.")
+    # Exit non-zero so GitHub Actions marks the run as failed and emails.
+    # Cached data/training.json is untouched since we never wrote anything.
+    sys.exit(1)
 
 tokendir = tempfile.mkdtemp()
 with open(os.path.join(tokendir, 'garmin_tokens.json'), 'w', encoding='utf-8') as f:
@@ -52,12 +55,17 @@ except GarminConnectAuthenticationError as e:
     print("       The saved token has likely expired. Re-run the local")
     print("       garmin_login_setup.py script and update the")
     print("       GARMIN_TOKENS_JSON secret with a fresh token.")
-    sys.exit(0)
+    # Exit non-zero so GitHub Actions marks the run as failed and emails you.
+    # Cached training.json is untouched — the site just serves stale numbers
+    # until the token is refreshed and the next run succeeds.
+    sys.exit(1)
 except GarminConnectTooManyRequestsError as e:
     print(f"WARN: rate limited — {e}. Leaving cached data untouched.")
+    # Exit clean — this is transient, next day's run will likely work.
     sys.exit(0)
 except GarminConnectConnectionError as e:
     print(f"WARN: connection error — {e}. Leaving cached data untouched.")
+    # Exit clean — network blip, not something to email about.
     sys.exit(0)
 
 def m_to_mi(m): return round((m or 0) * 0.000621371, 1)
