@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Punk Rock — Learning — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --punk:#c1121f; --safety:#e09f00; --bone:#d8d0c0;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,#c1121f 0%,#1c1a16 50%,#c1121f 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--punk); }
+    .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--punk); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+    .page-stats { display:flex; gap:2rem; margin-top:1.5rem; flex-wrap:wrap; }
+    .page-stat-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--punk); }
+    .page-stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
+    .progress-wrap { background:var(--cream); border:1px solid var(--mist); padding:1.25rem 1.5rem; margin-top:1.5rem; }
+    .progress-bar-track { height:6px; background:var(--mist); border-radius:3px; margin:0.75rem 0 0.4rem; }
+    .progress-bar-fill { height:6px; background:var(--punk); border-radius:3px; transition:width 0.4s ease; width:0%; }
+    .progress-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); }
+    .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+    .phase-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1.25rem; display:flex; justify-content:space-between; }
+    .phase-label:first-child { margin-top:0; }
+    .phase-name { color:var(--punk); }
+    .lesson { border:1px solid var(--mist); margin-bottom:0.75rem; }
+    .lesson-header { padding:1.1rem 1.25rem; cursor:pointer; display:grid; grid-template-columns:2.5rem 1fr auto; gap:0.75rem; align-items:start; transition:background 0.15s; }
+    .lesson-header:hover { background:var(--cream); }
+    .lesson-num { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--stone); padding-top:0.1rem; }
+    .lesson-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.3; }
+    .lesson-sub { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; font-style:italic; }
+    .lesson-time { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); text-align:right; white-space:nowrap; padding-top:0.2rem; }
+    .lesson-expand { display:none; padding:1.25rem 1.5rem; border-top:1px solid var(--mist); background:var(--cream); }
+    .lesson.open .lesson-expand { display:block; }
+    .lesson.open .lesson-header { background:var(--cream); }
+    .lesson.done .lesson-num { color:var(--sage); }
+    .lesson.done .lesson-num::after { content:' ✓'; }
+    .expand-section { margin-bottom:1.25rem; }
+    .expand-section:last-child { margin-bottom:0; }
+    .expand-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--punk); margin-bottom:0.5rem; }
+    .expand-body { font-size:0.88rem; line-height:1.75; color:var(--stone); }
+    .expand-body p { margin-bottom:0.6rem; }
+    .expand-body p:last-child { margin-bottom:0; }
+    .cocktail-box { background:var(--ink); color:#e8e4d8; padding:1rem 1.25rem; margin-top:1rem; border-left:3px solid var(--punk); }
+    .cocktail-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--punk); margin-bottom:0.4rem; }
+    .cocktail-line { font-size:0.88rem; font-style:italic; line-height:1.7; }
+    .vocab-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .vocab-grid { grid-template-columns:1fr; } }
+    .vocab-item { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    .vocab-item strong { color:var(--ink); font-weight:700; }
+    .resources { border:1px solid var(--mist); padding:1.75rem; margin-top:3rem; }
+    .resources-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:var(--punk); }
+    .resource-list { display:flex; flex-direction:column; gap:0.6rem; }
+    .resource-item { font-size:0.85rem; color:var(--stone); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:baseline; }
+    .resource-item a { color:var(--rust); text-decoration:underline; text-underline-offset:3px; font-size:0.75rem; font-family:'DM Mono',monospace; }
+    .mark-done-btn { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--mist); background:none; color:var(--stone); padding:0.3rem 0.75rem; cursor:pointer; margin-top:1rem; transition:all 0.15s; }
+    .mark-done-btn:hover { border-color:var(--sage); color:var(--sage); }
+    .mark-done-btn.done { border-color:var(--sage); color:var(--sage); }
+    .qa-widget { border:2px solid var(--ink); margin-top:3rem; }
+    .qa-header { background:var(--ink); color:var(--white); padding:1rem 1.5rem; }
+    .qa-header-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; }
+    .qa-header-sub { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:#888; margin-top:0.2rem; }
+    .qa-body { padding:1.5rem; }
+    .qa-input-row { display:flex; gap:0.75rem; margin-bottom:1rem; }
+    .qa-input { flex:1; padding:0.75rem 1rem; font-family:'Libre Baskerville',serif; font-size:0.88rem; border:1px solid var(--mist); background:var(--white); color:var(--ink); outline:none; }
+    .qa-input:focus { border-color:var(--punk); }
+    .qa-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; background:var(--punk); color:var(--white); border:none; padding:0.75rem 1.25rem; cursor:pointer; white-space:nowrap; }
+    .qa-btn:hover { background:var(--ink); }
+    .qa-response { font-size:0.88rem; line-height:1.75; color:var(--stone); min-height:3rem; }
+    .qa-loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--mist); }
+    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav><a href="/learning/">← Learning</a><a href="/">Home</a></nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/learning/">Learning</a></p>
+  <h1 class="page-title">🎸 <em>Punk Rock</em></h1>
+  <p class="page-sub">From a New York bowery in 1974 to a global stance that never really died. The Ramones, the Sex Pistols, the Clash, hardcore, post-punk, riot grrrl, and pop-punk — sixty seconds of noise that rewired popular music and told everyone they could do it themselves.</p>
+  <div class="page-stats">
+    <div><div class="page-stat-val">14</div><div class="page-stat-lbl">Lessons</div></div><div><div class="page-stat-val">4</div><div class="page-stat-lbl">Phases</div></div><div><div class="page-stat-val">~12 hrs</div><div class="page-stat-lbl">Estimated time</div></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Progress — <span id="done-count">0</span> of 14 lessons complete</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-pct">0%</div>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <div class="phase-label"><span>Phase 1 — <span class="phase-name">Roots & the Proto-Punks, 1965–1974</span></span><span>Lessons 1–3</span></div>
+  <div class="lesson" id="l1">
+    <div class="lesson-header" onclick="toggle('l1')">
+      <div class="lesson-num">1</div>
+      <div><div class="lesson-title">The Ancestors — Garage, the Velvets & Proto-Punk</div><div class="lesson-sub">Where the noise came from before it had a name</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Punk didn't appear from nowhere in 1976. Its DNA runs back through the mid-1960s American garage bands — thousands of teenage groups inspired by the British Invasion who played crude, aggressive, two-chord rock in basements and at high-school dances. Compilations like the 1972 double LP <em>Nuggets</em>, assembled by future Patti Smith guitarist Lenny Kaye, codified this sound and effectively wrote the first draft of the punk aesthetic: short, loud, amateurish on purpose, and gloriously direct.</p>
+          <p>The Velvet Underground, operating in Andy Warhol's orbit in New York from 1965, supplied the other half of the inheritance. Commercially ignored in their time, they introduced drone, feedback, deadpan vocals, and lyrics about drugs, sex, and urban alienation that mainstream rock wouldn't touch. Brian Eno's famous line — that only a few thousand people bought the first Velvets album but every one of them started a band — is the truest sentence ever written about influence. Punk, post-punk, and indie all descend from that record.</p>
+          <p>By the late 1960s the direct proto-punk lineage was audible in Detroit. The music was getting harder, faster, and more confrontational — a reaction against both hippie utopianism and the bloating of rock into arena spectacle. The stage was being set for bands who would strip rock back down to its aggressive essentials and hand it to anyone willing to pick up a guitar.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Nuggets</strong> — 1972 Lenny Kaye compilation of 1960s US garage rock; the proto-punk canon in one box</div>
+          <div class="vocab-item"><strong>Garage rock</strong> — mid-60s amateur teen bands; crude, aggressive, two-chord; punk's earliest ancestor</div>
+          <div class="vocab-item"><strong>The Velvet Underground</strong> — Warhol-era NY band; drone, feedback, taboo lyrics; the source code for punk and indie</div>
+          <div class="vocab-item"><strong>Lenny Kaye</strong> — critic-guitarist; compiled Nuggets; later Patti Smith Group</div>
+          <div class="vocab-item"><strong>Proto-punk</strong> — late-60s/early-70s bands prefiguring punk's speed and aggression</div>
+          <div class="vocab-item"><strong>The Nuggets aesthetic</strong> — short, loud, amateur-on-purpose, direct — the punk template before punk</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Punk's two grandparents are 1960s garage rock and the Velvet Underground. Garage gave it the crude two-chord energy — Lenny Kaye's Nuggets compilation is basically punk's family album. The Velvets gave it the art-damage: feedback, drone, and lyrics about the stuff rock wasn't supposed to mention. Brian Eno said only a few thousand people bought the first Velvet Underground record but every one of them started a band. That's the whole story of underground music in one sentence."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l1" onclick="markDone('l1')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l2">
+    <div class="lesson-header" onclick="toggle('l2')">
+      <div class="lesson-num">2</div>
+      <div><div class="lesson-title">Detroit Burns — The Stooges & the MC5</div><div class="lesson-sub">The loudest, most dangerous bands in America</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Detroit in the late 1960s produced the two bands that make the strongest claim to being the first punk groups: the MC5 and the Stooges. The MC5 — Motor City Five — fused garage rock with free jazz, revolutionary politics, and sheer volume. Their 1969 live debut <em>Kick Out the Jams</em> was recorded in front of a Detroit crowd and captured a band operating at the absolute edge of control, managed by White Panther activist John Sinclair and explicitly tying rock energy to political revolution.</p>
+          <p>The Stooges, fronted by Iggy Pop, were less political and more primal — reducing rock to its most basic, confrontational components. Iggy's stage act (self-laceration, crowd invasion, the invention of the stage dive) redefined what a rock performance could be, and the band's first two albums delivered nihilism, boredom, and menace over caveman-simple riffs. "I Wanna Be Your Dog" is three chords and a sleigh bell; it is also one of the most influential recordings in rock history.</p>
+          <p>Neither band sold many records or lasted long, and both burned out amid drugs and industry indifference. But every punk musician who came after cited them. The Stooges gave punk its physical performance language and its embrace of the primitive; the MC5 gave it the model of rock as a political weapon. Detroit, not New York or London, is where the fuse was actually lit.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>MC5</strong> — Detroit; garage + free jazz + revolution; Kick Out the Jams (1969); White Panther ties</div>
+          <div class="vocab-item"><strong>The Stooges</strong> — Iggy Pop's band; primal, nihilistic, three-chord menace; two era-defining albums</div>
+          <div class="vocab-item"><strong>Iggy Pop</strong> — Stooges frontman; invented the stage dive; the template for punk performance</div>
+          <div class="vocab-item"><strong>Kick Out the Jams</strong> — 1969 MC5 live LP; rock as political revolution, recorded in Detroit</div>
+          <div class="vocab-item"><strong>John Sinclair</strong> — MC5 manager, White Panther activist; tied the band to radical politics</div>
+          <div class="vocab-item"><strong>Raw Power</strong> — 1973 Stooges album (Bowie-mixed); the bridge from proto-punk to punk proper</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"If you want the actual birthplace of punk, it's Detroit, not New York or London. The MC5 played garage rock crossed with free jazz and revolutionary politics — Kick Out the Jams is a manifesto with a backbeat. The Stooges, with Iggy Pop, stripped rock down to three chords and pure menace and invented the punk stage act — Iggy basically invented the stage dive. Neither band sold anything. Both got name-checked by every punk who followed. The fuse was lit in Detroit years before anyone said the word punk."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l2" onclick="markDone('l2')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l3">
+    <div class="lesson-header" onclick="toggle('l3')">
+      <div class="lesson-num">3</div>
+      <div><div class="lesson-title">The New York Dolls & the Glam Bridge</div><div class="lesson-sub">Trash, drag, and the missing link to CBGB</div></div>
+      <div class="lesson-time">~35 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Between the proto-punk of Detroit and the CBGB explosion sits the New York Dolls — a band that took the Stooges' primitivism, dressed it in drag and platform boots, and played sloppy, joyous, Rolling-Stones-gone-wrong rock and roll. Their two early-70s albums flopped commercially and their look alienated much of the rock press, but their attitude — amateurish, outrageous, gleefully trashy — was a direct rehearsal for punk.</p>
+          <p>Crucially, the Dolls connected the dots between glam rock's theatricality and punk's raw energy. They proved you could be a shambolic, barely-competent band and still matter enormously if your attitude and image were strong enough. Their manager for a time was a young British clothing-shop owner named Malcolm McLaren, who watched how a scandalous image could generate attention out of all proportion to record sales — a lesson he would carry back to London.</p>
+          <p>The Dolls' importance is less musical than genealogical: they were the hinge. The downtown New York scene that produced the Ramones and Television grew directly out of the world the Dolls came from, and McLaren's Sex Pistols were in part an attempt to recreate the Dolls' chaos with tighter management and a sharper political edge. Without the Dolls, the two great punk cities don't connect.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>New York Dolls</strong> — early-70s NY; glam-trash proto-punk; drag, platform boots, shambolic energy</div>
+          <div class="vocab-item"><strong>Glam rock</strong> — early-70s theatrical rock (Bowie, T. Rex); punk's flamboyant older cousin</div>
+          <div class="vocab-item"><strong>Malcolm McLaren</strong> — managed the Dolls briefly, then the Sex Pistols; image-as-provocation strategist</div>
+          <div class="vocab-item"><strong>David Johansen</strong> — Dolls frontman; Jagger-esque swagger without the polish</div>
+          <div class="vocab-item"><strong>Johnny Thunders</strong> — Dolls guitarist; later the Heartbreakers; junkie-guitar archetype</div>
+          <div class="vocab-item"><strong>The hinge</strong> — the Dolls connected Detroit proto-punk to CBGB and, via McLaren, to London</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The New York Dolls are the missing link. They took the Stooges' primitivism, put it in drag and platform heels, and played gloriously sloppy trash-rock that no one bought. But their manager for a while was a young Londoner named Malcolm McLaren, who learned one lesson watching them: a scandalous image generates attention far beyond record sales. He took that lesson home and built the Sex Pistols around it. The Dolls are how New York and London punk secretly connect."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l3" onclick="markDone('l3')">Mark done</button>
+    </div>
+  </div>
+  <div class="phase-label"><span>Phase 2 — <span class="phase-name">The Explosion: New York & London, 1974–1978</span></span><span>Lessons 4–7</span></div>
+  <div class="lesson" id="l4">
+    <div class="lesson-header" onclick="toggle('l4')">
+      <div class="lesson-num">4</div>
+      <div><div class="lesson-title">CBGB & the Ramones — Year Zero, 1974–76</div><div class="lesson-sub">Four chords, two minutes, and the reset button</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>In 1974 a scene coalesced around CBGB, a grimy bar on the Bowery in downtown New York whose owner had intended to book country, bluegrass, and blues (hence the name) but instead became the birthplace of American punk. Television, fronted by Tom Verlaine, convinced the owner to let unknown original bands play, and a community formed: Television, Patti Smith, Blondie, the Ramones, Talking Heads, the Heartbreakers. It was a scene built on original songs, cheap rent, and a rejection of the polished arena rock dominating the airwaves.</p>
+          <p>The Ramones were the purest distillation of the idea. Four leather-jacketed misfits from Queens who all took the surname Ramone, they played songs that were often under two minutes, built from three chords played as fast and loud as possible, with lyrics that were funny, dumb, and perfect. Their 1976 self-titled debut — fourteen songs in under half an hour — is arguably the first true punk album: it eliminated the guitar solo, the ballad, and every trace of virtuosity in favor of speed, volume, and hooks.</p>
+          <p>The Ramones' genius was compression and repetition. By reducing rock to its absolute minimum and playing it with total commitment, they made a statement that anyone could grasp instantly: you do not need to be a virtuoso, you need three chords and the truth. When they toured Britain in July 1976, they detonated the nascent London scene — members of the Sex Pistols, the Clash, and the Damned were in the audiences, and the British punk explosion followed within months.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>CBGB</strong> — Bowery bar; birthplace of US punk; Television, Ramones, Blondie, Talking Heads, Patti Smith</div>
+          <div class="vocab-item"><strong>The Ramones</strong> — Queens four-piece; two-minute three-chord songs; the 1976 debut = first true punk LP</div>
+          <div class="vocab-item"><strong>Television</strong> — Tom Verlaine's band; art-punk; convinced CBGB to book originals; Marquee Moon (1977)</div>
+          <div class="vocab-item"><strong>Patti Smith</strong> — poet-rocker; Horses (1975); punk's literary and feminist conscience</div>
+          <div class="vocab-item"><strong>Blondie / Talking Heads</strong> — CBGB bands who carried punk energy toward new wave and pop</div>
+          <div class="vocab-item"><strong>Year Zero</strong> — punk's myth of starting over; erasing virtuosity and arena bombast</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"American punk starts at a country bar. CBGB on the Bowery was supposed to book bluegrass — the name stands for Country, BlueGrass, and Blues — but it became the clubhouse for Television, Patti Smith, Blondie, Talking Heads, and the Ramones. The Ramones were the purest version of the idea: fourteen songs in under thirty minutes, no solos, no ballads, three chords played as fast as humanly possible. When they toured England in 1976, everyone who would form the Sex Pistols and the Clash was in the crowd. British punk happened basically on contact."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l4" onclick="markDone('l4')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l5">
+    <div class="lesson-header" onclick="toggle('l5')">
+      <div class="lesson-num">5</div>
+      <div><div class="lesson-title">London Calling — The Sex Pistols & Year Zero UK</div><div class="lesson-sub">How to start a moral panic in eighteen months</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>British punk compressed everything American punk did over two years into roughly eighteen months of maximum scandal. The Sex Pistols, assembled and managed by Malcolm McLaren around his and Vivienne Westwood's Chelsea boutique, were designed as much as a provocation as a band. With Johnny Rotten's sneering vocals, Steve Jones's wall of guitar, and lyrics aimed directly at the monarchy, the record industry, and British complacency, they turned punk into a national emergency.</p>
+          <p>The flashpoints came fast: a profanity-laden live TV interview in December 1976 that made front-page news; "Anarchy in the UK" and then "God Save the Queen," released to coincide with the 1977 Silver Jubilee and effectively banned while allegedly outselling everything else in the country. The Pistols made punk feel genuinely dangerous to the British establishment in a way the more musically-minded New York scene never had. The look — ripped clothes, safety pins, spiked hair, swastikas worn to shock — became the global visual shorthand for punk.</p>
+          <p>The band burned out almost immediately, collapsing during a shambolic 1978 US tour, with bassist Sid Vicious dead of an overdose within a year. But the eighteen months were enough. The Sex Pistols proved that punk could be a weapon aimed at an entire culture, and they inspired a wave of British bands — while also, in their nihilism and self-destruction, defining one of the two paths punk could take. The other path belonged to the Clash.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Sex Pistols</strong> — McLaren-managed London band; punk as national scandal; brief, incendiary, era-defining</div>
+          <div class="vocab-item"><strong>Johnny Rotten</strong> — John Lydon; sneering frontman; later Public Image Ltd; punk's great antagonist</div>
+          <div class="vocab-item"><strong>God Save the Queen</strong> — 1977 single timed to the Jubilee; banned; punk vs the monarchy</div>
+          <div class="vocab-item"><strong>Malcolm McLaren</strong> — manager-provocateur; treated the band as a Situationist art prank</div>
+          <div class="vocab-item"><strong>Vivienne Westwood</strong> — designer; the SEX shop; invented punk's ripped-and-pinned visual language</div>
+          <div class="vocab-item"><strong>Sid Vicious</strong> — bassist; the doomed icon; embodied punk's self-destructive path</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The Sex Pistols did in eighteen months what New York took two years to do, but as pure scandal. Malcolm McLaren built them as a provocation around his clothing shop, Johnny Rotten sneered at the Queen and the record industry, and 'God Save the Queen' got banned during the 1977 Jubilee while outselling everything in Britain. They made punk feel genuinely dangerous to the establishment. Then they self-destructed almost instantly — which, weirdly, was also the point. They defined one of punk's two futures: glorious, nihilistic self-destruction. The Clash defined the other one."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l5" onclick="markDone('l5')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l6">
+    <div class="lesson-header" onclick="toggle('l6')">
+      <div class="lesson-num">6</div>
+      <div><div class="lesson-title">The Only Band That Matters — The Clash</div><div class="lesson-sub">Punk with politics, ambition, and a future</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>If the Sex Pistols represented punk as nihilism and self-destruction, the Clash represented punk as engaged political ambition. Formed in London in 1976, fronted by Joe Strummer and Mick Jones, they took punk's energy and married it to left-wing politics, genuine songwriting craft, and a restless musical curiosity that would eventually carry them far beyond three-chord thrash. They were serious in a way the Pistols made a point of never being.</p>
+          <p>Their self-titled 1977 debut is a landmark of first-wave punk — fast, angry, and specifically political, addressing unemployment, racism, police violence, and British identity. But the Clash refused to stay in the punk box. By 1979's <em>London Calling</em> — a sprawling double album — they had absorbed reggae, rockabilly, ska, R&B, and pop into a sound that proved punk's energy could power almost anything. Their embrace of reggae in particular reflected the multiracial reality of London and connected punk to the Rock Against Racism movement.</p>
+          <p>The Clash's ambition and openness made them punk's most influential band in the long run. Where the Pistols showed what punk could destroy, the Clash showed what it could build — a template of politically-engaged, musically-omnivorous rock that shaped everyone from U2 to the alt-rock of the 1990s. Their nickname, "the only band that matters," was hype, but it captured how completely they expanded what punk could be.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>The Clash</strong> — London; punk with politics and musical ambition; punk's most influential band long-term</div>
+          <div class="vocab-item"><strong>Joe Strummer</strong> — frontman; political conscience; the moral center of British punk</div>
+          <div class="vocab-item"><strong>Mick Jones</strong> — guitarist-songwriter; the melodic and musical curiosity of the band</div>
+          <div class="vocab-item"><strong>London Calling</strong> — 1979 double LP; punk absorbs reggae, ska, rockabilly, pop; a landmark</div>
+          <div class="vocab-item"><strong>Rock Against Racism</strong> — late-70s UK movement; punk and reggae united against the far right</div>
+          <div class="vocab-item"><strong>The two paths</strong> — Pistols = nihilist self-destruction; Clash = engaged, expansive ambition</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The Sex Pistols and the Clash are punk's two futures. The Pistols were nihilism and self-destruction; the Clash were politics, craft, and ambition. Joe Strummer's band took punk energy and pointed it at unemployment, racism, and police violence — and then refused to stay in the punk box. By London Calling in 1979 they'd absorbed reggae, ska, and rockabilly and proven punk could power almost any kind of music. The Pistols showed what punk could burn down. The Clash showed what it could build. That's why the Clash won the long game."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l6" onclick="markDone('l6')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l7">
+    <div class="lesson-header" onclick="toggle('l7')">
+      <div class="lesson-num">7</div>
+      <div><div class="lesson-title">The First Wave Spreads — Damned, Buzzcocks, Jam & the 45</div><div class="lesson-sub">The scene becomes a movement</div></div>
+      <div class="lesson-time">~35 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Behind the two giants, a whole first wave of British punk bands defined the movement's range in 1976–78. The Damned were the fastest and most fun — the first UK punk band to release a single ("New Rose," 1976) and the first to tour America, playing horror-tinged, breakneck rock without the Pistols' political weight. The Buzzcocks, from Manchester, added melody and wit, inventing the template for pop-punk with brilliantly concise songs about love and frustration, and — crucially — self-releasing their debut EP, proving bands didn't need a label at all.</p>
+          <p>That last point mattered enormously. The Buzzcocks' 1977 <em>Spiral Scratch</em> EP, put out on their own New Hormones label, was a founding act of DIY culture: it demonstrated that anyone could record, press, and distribute their own record. Independent labels — Rough Trade, Stiff, Fast Product — sprang up to serve the exploding scene, building an alternative music economy that would outlast punk itself and shape indie music for decades.</p>
+          <p>The Jam, led by Paul Weller, connected punk back to the sharp mod styling of the 1960s and to a very English songwriting tradition, while bands across Britain formed at a furious rate. The message of the Ramones and the Pistols had been received and understood: you don't need permission, you don't need virtuosity, you need a couple of chords, something to say, and the will to do it yourself. Punk had become a movement with its own infrastructure.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>The Damned</strong> — first UK punk single (New Rose, 1976); first to tour the US; fast, fun, horror-tinged</div>
+          <div class="vocab-item"><strong>Buzzcocks</strong> — Manchester; melodic pop-punk; Spiral Scratch EP invented DIY self-releasing</div>
+          <div class="vocab-item"><strong>Spiral Scratch</strong> — 1977 self-released Buzzcocks EP; founding document of DIY culture</div>
+          <div class="vocab-item"><strong>The Jam</strong> — Paul Weller; punk crossed with 60s mod; sharp, English, songwriterly</div>
+          <div class="vocab-item"><strong>Rough Trade / Stiff</strong> — independent labels born from punk; built the indie economy</div>
+          <div class="vocab-item"><strong>DIY</strong> — do-it-yourself; record, press, distribute your own music; punk's most durable idea</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Behind the Pistols and the Clash, the first wave filled in punk's range. The Damned were the fun, fast, horror-movie version and put out the first UK punk single. The Buzzcocks invented pop-punk and did something even bigger: they self-released their debut EP on their own label in 1977, proving you didn't need a record company at all. That EP, Spiral Scratch, basically founded DIY culture — and the indie label economy it kicked off outlived punk by decades. The most durable thing punk invented wasn't a sound, it was do-it-yourself."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l7" onclick="markDone('l7')">Mark done</button>
+    </div>
+  </div>
+  <div class="phase-label"><span>Phase 3 — <span class="phase-name">After the Blast: Hardcore & Post-Punk, 1978–1985</span></span><span>Lessons 8–11</span></div>
+  <div class="lesson" id="l8">
+    <div class="lesson-header" onclick="toggle('l8')">
+      <div class="lesson-num">8</div>
+      <div><div class="lesson-title">Hardcore — Faster, Louder, Harder (USA)</div><div class="lesson-sub">Punk goes underground and gets extreme</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>By 1979–80, the first wave had crested and much of the original scene was drifting toward new wave and post-punk. In America, a younger, angrier generation — largely suburban, often teenage — took punk's speed and aggression and pushed them to a violent extreme. Hardcore stripped away the last traces of rock-and-roll swing, playing at blistering tempos with shouted vocals and short, blunt songs about alienation, conformity, and rage. It was punk with the melody and the fun burned off, and it was ferociously regional.</p>
+          <p>Los Angeles produced Black Flag, whose relentless touring built the American underground circuit almost single-handedly, and whose logo (four black bars) became hardcore's universal symbol; their label, SST, became the movement's hub. Washington, D.C. produced Minor Threat, whose singer Ian MacKaye articulated "straight edge" — a rejection of drugs and alcohol that turned punk's self-destruction on its head — and whose Dischord label modeled ethical, band-run DIY. Bad Brains, an all-Black D.C. band of former jazz musicians, played hardcore faster and tighter than anyone and fused it with reggae.</p>
+          <p>Hardcore's significance is partly musical and partly infrastructural. It built a genuinely independent, coast-to-coast network of clubs, labels, fanzines, and touring routes that operated entirely outside the mainstream industry — the physical architecture that would later make the 1990s alternative explosion possible. Black Flag's van tours and Dischord's business model taught a generation how to build a music culture from nothing, on their own terms.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Hardcore</strong> — early-80s US punk; faster, harder, shorter; suburban, teenage, ferociously regional</div>
+          <div class="vocab-item"><strong>Black Flag</strong> — LA; relentless touring built the US underground; SST label; the four-bar logo</div>
+          <div class="vocab-item"><strong>Minor Threat</strong> — DC; Ian MacKaye; coined straight edge; Dischord label; ethical DIY</div>
+          <div class="vocab-item"><strong>Straight edge</strong> — MacKaye's no-drugs/no-alcohol ethic; inverted punk's self-destruction</div>
+          <div class="vocab-item"><strong>Bad Brains</strong> — all-Black DC band; fastest, tightest hardcore; fused it with reggae</div>
+          <div class="vocab-item"><strong>Dead Kennedys</strong> — SF; satirical, political hardcore; Jello Biafra; Alternative Tentacles label</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Around 1980 a younger, suburban, mostly teenage generation took punk and made it extreme: hardcore. Faster, harder, shorter, angrier, and intensely local. Black Flag toured relentlessly and basically built the American underground circuit — their four-bar logo is hardcore's flag. Minor Threat's Ian MacKaye invented straight edge, rejecting drugs and booze, flipping punk's self-destruction inside out, and ran Dischord as ethical DIY. Bad Brains, an all-Black band of ex-jazz players, played it faster than anyone. Hardcore built the club-and-label network that made 1990s alternative rock physically possible."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l8" onclick="markDone('l8')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l9">
+    <div class="lesson-header" onclick="toggle('l9')">
+      <div class="lesson-num">9</div>
+      <div><div class="lesson-title">Post-Punk — Punk Learns to Experiment</div><div class="lesson-sub">Taking the freedom and dropping the formula</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>While hardcore made punk more extreme, post-punk did the opposite: it took punk's do-it-yourself freedom and its year-zero permission to start over, then abandoned the three-chord formula entirely in favor of experimentation. If punk said "anyone can do this," post-punk asked "so what else can we do?" — pulling in dub reggae, funk, electronics, krautrock, and art-school theory to build something angular, spacious, and strange.</p>
+          <p>The range was enormous. Joy Division, from Manchester, made stark, cavernous, emotionally desolate music that (after singer Ian Curtis's suicide in 1980) evolved into New Order and the birth of electronic dance-rock. Gang of Four welded punk aggression to funk rhythms and Marxist critique. Wire made minimalist art-punk of astonishing economy. Public Image Ltd — Johnny Rotten's post-Pistols band — abandoned rock almost entirely for dub-inflected abstraction. The Fall, Siouxsie and the Banshees, and Talking Heads each pushed in their own direction.</p>
+          <p>Post-punk proved that punk's real gift was permission, not a template. By treating the studio and the song as open questions, these bands laid the groundwork for goth, industrial, synth-pop, and the entire alternative and indie tradition that followed. The independent-label infrastructure punk built (Rough Trade, Factory) gave post-punk somewhere to live. Much of what would later be called "alternative" is, at root, the post-punk idea: use punk's freedom to go anywhere except back to the same three chords.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Post-punk</strong> — late-70s/early-80s; punk's freedom minus the three-chord formula; angular, experimental</div>
+          <div class="vocab-item"><strong>Joy Division</strong> — Manchester; stark, desolate; Ian Curtis; became New Order after his death</div>
+          <div class="vocab-item"><strong>Gang of Four</strong> — punk aggression + funk rhythm + Marxist critique; hugely influential</div>
+          <div class="vocab-item"><strong>Public Image Ltd</strong> — Lydon's post-Pistols band; dub-inflected, anti-rock abstraction</div>
+          <div class="vocab-item"><strong>Wire / The Fall</strong> — minimalist art-punk (Wire); relentless, cryptic post-punk (the Fall)</div>
+          <div class="vocab-item"><strong>Factory / Rough Trade</strong> — independent labels that housed post-punk; built the indie tradition</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Hardcore made punk more extreme; post-punk did the opposite. It kept punk's do-it-yourself freedom and its permission to start from scratch, then threw out the three chords and got weird — pulling in dub, funk, electronics, and art theory. Joy Division made desolate, cavernous music and became New Order and dance-rock. Gang of Four welded punk to funk and Marxism. Public Image Ltd, Johnny Rotten's next band, abandoned rock almost completely. Post-punk proved punk's real gift was permission, not a formula. Basically all of 'alternative' music descends from it."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l9" onclick="markDone('l9')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l10">
+    <div class="lesson-header" onclick="toggle('l10')">
+      <div class="lesson-num">10</div>
+      <div><div class="lesson-title">2-Tone & the Political Frontlines</div><div class="lesson-sub">Ska revival, Rock Against Racism, and Oi!</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Punk's collision with Britain's multiracial reality produced one of its most joyful and politically pointed offshoots: 2-Tone. Centered on the Coventry label of the same name and bands like the Specials, Madness, and the Selecter, 2-Tone revived Jamaican ska at punk tempo and, crucially, in deliberately racially-integrated bands. The black-and-white checkerboard imagery wasn't just style; it was a statement of unity at a moment when the far-right National Front was recruiting aggressively among disaffected white youth.</p>
+          <p>This was punk as active anti-racism. The Specials' 1981 single "Ghost Town" — a haunting, dread-filled portrait of Thatcher-era urban decay and rioting — reached number one in Britain as actual riots broke out in English cities, one of the great examples of a pop record capturing a national moment exactly. 2-Tone connected directly to Rock Against Racism, the movement (also involving the Clash) that mobilized punk and reggae fans against the far right through concerts and organizing.</p>
+          <p>Not all of punk's politics ran left. The same period saw Oi! — a working-class street-punk style that mostly rejected art-school pretension in favor of football-terrace anthems, and whose scene became a contested battleground as both anti-racist skinheads and far-right elements laid claim to it. The politics of late punk were genuinely fought over, on the streets and in the music, and 2-Tone represents the movement's most successful attempt to make punk a force for unity.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>2-Tone</strong> — late-70s/early-80s ska revival; racially-integrated bands; anti-racist by design</div>
+          <div class="vocab-item"><strong>The Specials</strong> — Coventry; 2-Tone's flagship; "Ghost Town" (1981) hit #1 amid real UK riots</div>
+          <div class="vocab-item"><strong>Ghost Town</strong> — 1981 Specials single; captured Thatcher-era decay and unrest exactly</div>
+          <div class="vocab-item"><strong>Rock Against Racism</strong> — punk + reggae mobilized against the National Front; the Clash involved</div>
+          <div class="vocab-item"><strong>Oi!</strong> — working-class street punk; football-terrace anthems; a contested political battleground</div>
+          <div class="vocab-item"><strong>The checkerboard</strong> — 2-Tone's black-and-white imagery; unity as an explicit statement</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"When punk hit Britain's multiracial reality, you got 2-Tone: a ska revival played at punk speed by deliberately racially-integrated bands like the Specials and the Selecter, with black-and-white checkerboard imagery as an anti-racist statement. This mattered because the far-right National Front was recruiting white youth hard. The Specials' 'Ghost Town' hit number one in 1981 as actual riots broke out — a pop song landing on a national moment perfectly. Punk's politics were genuinely fought over in this era, and 2-Tone was its best shot at being a force for unity rather than just rage."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l10" onclick="markDone('l10')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l11">
+    <div class="lesson-header" onclick="toggle('l11')">
+      <div class="lesson-num">11</div>
+      <div><div class="lesson-title">Anarcho-Punk, Goth & the Underground Deepens</div><div class="lesson-sub">Crass, the black-clad, and punk as a way of life</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>As the mainstream moved on, punk's underground fractured into committed sub-scenes that took its ideas to their logical ends. Anarcho-punk, led by the English collective Crass, treated punk not as a music style but as a total way of life — genuine anarchism, pacifism, animal rights, and radical DIY. Crass ran their own label, sold records at cost, plastered stark black-and-white graphics everywhere, and rejected the music industry so completely that they made the Sex Pistols look like careerists. They proved punk could be a serious, sustained political practice.</p>
+          <p>Simultaneously, the darker and more atmospheric end of post-punk hardened into goth. Bands like Bauhaus, Siouxsie and the Banshees, and the Cure took post-punk's spaciousness, added dread, romanticism, and a black-clad aesthetic, and built a subculture that — like punk itself — proved remarkably durable. Goth was punk's introspective, theatrical cousin, trading rage outward for melodrama and interiority.</p>
+          <p>What both scenes demonstrated was that punk had become a permanent underground rather than a passing trend. By the early-to-mid 1980s the mainstream had largely written punk off as dead, but beneath the surface it had metastasized into a self-sustaining network of subcultures — anarcho, goth, hardcore, street-punk — each with its own labels, venues, fanzines, and codes. Punk didn't die; it went underground and became a way of living.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Anarcho-punk</strong> — Crass-led; punk as total political practice — anarchism, pacifism, radical DIY</div>
+          <div class="vocab-item"><strong>Crass</strong> — English collective; sold records at cost; rejected the industry entirely; stark graphics</div>
+          <div class="vocab-item"><strong>Goth</strong> — darker post-punk offshoot; dread, romanticism, black-clad aesthetic; a durable subculture</div>
+          <div class="vocab-item"><strong>Bauhaus / Siouxsie / the Cure</strong> — founding goth-adjacent bands; atmosphere over aggression</div>
+          <div class="vocab-item"><strong>Fanzine</strong> — photocopied DIY magazine; the underground's nervous system and memory</div>
+          <div class="vocab-item"><strong>Permanent underground</strong> — by the mid-80s punk was a self-sustaining network, not a trend</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"When the mainstream declared punk dead in the early 80s, it just went underground and got more committed. Anarcho-punk, led by the collective Crass, treated punk as a total way of life — real anarchism, pacifism, records sold at cost, total rejection of the industry. Meanwhile the darker side of post-punk hardened into goth: Bauhaus, Siouxsie, the Cure, all dread and romance and black clothes. Both proved punk had become a permanent underground with its own labels, venues, and fanzines. Punk didn't die in the 80s. It just stopped needing the mainstream's permission to exist."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l11" onclick="markDone('l11')">Mark done</button>
+    </div>
+  </div>
+  <div class="phase-label"><span>Phase 4 — <span class="phase-name">The Long Tail: Revival, Riot Grrrl & Legacy</span></span><span>Lessons 12–14</span></div>
+  <div class="lesson" id="l12">
+    <div class="lesson-header" onclick="toggle('l12')">
+      <div class="lesson-num">12</div>
+      <div><div class="lesson-title">Riot Grrrl — Punk Confronts Itself</div><div class="lesson-sub">The revolution turns its politics inward</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>By the early 1990s, punk had a problem it had largely refused to face: for all its politics of liberation, its scenes were often male-dominated, and its shows could be physically hostile to women. Riot grrrl, emerging from Olympia, Washington and Washington, D.C. around 1991, confronted this directly. Bands like Bikini Kill, Bratmobile, and Heavens to Betsy fused hardcore's energy with explicit feminism, addressing sexual assault, body image, patriarchy, and abuse in songs that were raw, confrontational, and unmistakably personal.</p>
+          <p>Riot grrrl was as much a movement as a music. It ran on fanzines, meetings, and manifestos as much as records, building a network for young women to organize, share experiences, and reclaim space in a scene that had marginalized them. Bikini Kill's Kathleen Hanna famously called women to the front of shows, physically inverting punk's gender dynamics. The movement drew intense, often hostile mainstream media attention, which it met with a deliberate media blackout to keep control of its own message.</p>
+          <p>Its influence far outlasted its early-90s peak. Riot grrrl put feminism at the center of underground music, opened doors for generations of women in punk and beyond, and modeled a way of using DIY culture for explicitly liberatory ends. It also exposed a real contradiction at punk's heart — a movement built on rebellion and inclusion that had reproduced the very hierarchies it claimed to oppose — and insisted the movement live up to its own stated values.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Riot grrrl</strong> — early-90s feminist punk; Olympia/DC; confronted punk's own sexism head-on</div>
+          <div class="vocab-item"><strong>Bikini Kill</strong> — Kathleen Hanna's band; the movement's flagship; "girls to the front"</div>
+          <div class="vocab-item"><strong>Bratmobile</strong> — co-founders of riot grrrl; helped coin the name; fanzine culture</div>
+          <div class="vocab-item"><strong>Kathleen Hanna</strong> — frontwoman, organizer; called women to the front; the movement's public voice</div>
+          <div class="vocab-item"><strong>Zine network</strong> — fanzines and manifestos; riot grrrl ran on print as much as records</div>
+          <div class="vocab-item"><strong>Media blackout</strong> — riot grrrl's refusal to talk to mainstream press to keep control of its message</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"By the early 90s punk had to face an embarrassing truth: a movement built on liberation was often male-dominated and its shows could be hostile to women. Riot grrrl, out of Olympia and D.C., confronted that directly — Bikini Kill, Bratmobile, and others fused hardcore with explicit feminism and songs about assault, patriarchy, and abuse. Kathleen Hanna literally called women to the front of shows. It ran on fanzines and manifestos as much as records. Riot grrrl put feminism at the center of underground music and forced punk to live up to its own values instead of just its attitude."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l12" onclick="markDone('l12')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l13">
+    <div class="lesson-header" onclick="toggle('l13')">
+      <div class="lesson-num">13</div>
+      <div><div class="lesson-title">Punk Goes Platinum — The 1994 Breakthrough</div><div class="lesson-sub">The underground infrastructure meets the mainstream</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>For nearly two decades punk had been commercially marginal by design, sustained by the independent network hardcore built. Then, in 1994, it broke through on a massive scale. Green Day, a trio from the East Bay punk scene centered on Berkeley's 924 Gilman Street club, released <em>Dookie</em> — melodic, fast, funny pop-punk with impeccable hooks — and sold it by the millions. The Offspring's <em>Smash</em>, released the same year on the independent Epitaph label, became the best-selling independent album of all time.</p>
+          <p>This was pop-punk: the Buzzcocks' melodic template and the Ramones' speed, polished for radio and MTV in the wake of grunge's opening of the mainstream to guitar-based alternative rock. It made punk, or a version of it, one of the dominant commercial sounds of the mid-to-late 1990s, paving the way for Rancid, Blink-182, and an entire wave of bands, plus the touring juggernaut of the Warped Tour.</p>
+          <p>The breakthrough split punk's community bitterly. To many in the underground — especially at Gilman Street, which had a strict no-major-label policy — signing to a big label and courting MTV was a betrayal of everything DIY stood for; Green Day were effectively exiled from the scene that raised them. To others, it was punk finally reaching the alienated suburban kids who needed it most. The "sellout" debate was punk arguing with itself about what it had ever actually been for — and it never fully resolved.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Pop-punk</strong> — melodic + fast + polished; Buzzcocks template meets Ramones speed, radio-ready</div>
+          <div class="vocab-item"><strong>Green Day</strong> — East Bay trio; Dookie (1994) sold millions; pop-punk's mainstream breakthrough</div>
+          <div class="vocab-item"><strong>924 Gilman Street</strong> — Berkeley DIY club; strict no-major-label ethos; Green Day's exile</div>
+          <div class="vocab-item"><strong>The Offspring</strong> — Smash (1994) on Epitaph; best-selling independent album ever</div>
+          <div class="vocab-item"><strong>Warped Tour</strong> — touring festival that carried pop-punk to a mass audience for years</div>
+          <div class="vocab-item"><strong>The sellout debate</strong> — punk arguing with itself over major labels, MTV, and what it was for</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"For twenty years punk was commercially marginal on purpose. Then in 1994 it exploded: Green Day's Dookie sold millions, and the Offspring's Smash became the best-selling independent album ever. This was pop-punk — the Buzzcocks' melody plus the Ramones' speed, polished for MTV in grunge's wake. It also tore the community apart. Green Day came from Berkeley's 924 Gilman club, which banned major-label bands, so signing to one got them exiled as sellouts. That fight — is reaching millions a betrayal or the whole point? — was punk finally arguing about what it had ever actually been for."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l13" onclick="markDone('l13')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l14">
+    <div class="lesson-header" onclick="toggle('l14')">
+      <div class="lesson-num">14</div>
+      <div><div class="lesson-title">The Long Tail — Punk's Permanent Afterlife</div><div class="lesson-sub">Why a movement that keeps 'dying' never does</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Punk has been declared dead more times than almost any music, and yet it persists everywhere — precisely because its most important inventions were never really about a specific sound. The DIY ethic, the independent-label economy, the fanzine (reborn as the blog and the zine and the Bandcamp page), the idea that you don't need permission or virtuosity to make something and put it into the world — these ideas escaped the music entirely and reshaped how culture gets made. Every bedroom producer and self-released record is downstream of Spiral Scratch.</p>
+          <p>Musically, punk's descendants are everywhere: emo and its revivals, riot grrrl's feminist lineage running into contemporary artists, the global spread of hardcore and street-punk scenes on every continent, the aging first-wave bands still touring, and the constant re-emergence of raw guitar bands who rediscover the three-chord truth for a new generation. Punk also became an aesthetic vocabulary — safety pins, ripped clothes, the graphic language of the photocopied flyer — endlessly recycled by fashion and advertising, to the eternal irritation of purists.</p>
+          <p>The deepest legacy is an attitude that outlived its original context: a suspicion of authority and polish, a belief in participation over spectatorship, and the conviction that the gap between audience and artist should be as small as possible. Punk's real revolution wasn't the music — it was the permission. It told millions of people that they were allowed to pick up the instrument, start the band, print the zine, book the show. That idea doesn't die, which is why punk never quite does either.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>DIY legacy</strong> — punk's most durable export; self-release, independent economy, no gatekeepers</div>
+          <div class="vocab-item"><strong>Emo</strong> — punk's melodic-confessional descendant; multiple revivals since the 90s</div>
+          <div class="vocab-item"><strong>Global punk</strong> — hardcore and street-punk scenes on every continent; a worldwide network</div>
+          <div class="vocab-item"><strong>Aesthetic afterlife</strong> — safety pins, ripped clothes, flyer graphics recycled endlessly by fashion</div>
+          <div class="vocab-item"><strong>Participation over spectatorship</strong> — the core attitude; shrink the gap between audience and artist</div>
+          <div class="vocab-item"><strong>"Punk's not dead"</strong> — true because its core inventions were ideas, not a sound</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Punk gets declared dead every few years and never actually dies, because its biggest inventions were never really about a sound. DIY culture, independent labels, the fanzine, and the idea that you don't need permission or virtuosity to make something — those ideas escaped the music and reshaped all of culture. Every bedroom producer self-releasing on Bandcamp is downstream of the Buzzcocks pressing their own EP in 1977. Punk's real revolution was permission: it told millions of people they were allowed to pick up the instrument and start. That idea doesn't die, so neither does punk."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l14" onclick="markDone('l14')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="resources">
+    <div class="resources-hed">Further Reading &amp; Resources</div>
+    <div class="resource-list">
+      <div class="resource-item"><span>England's Dreaming — Jon Savage (1991) — the definitive history of the Sex Pistols and UK punk; essential</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Essential</span></div>
+      <div class="resource-item"><span>Please Kill Me — McNeil & McCain (1996) — oral history of the New York scene; the CBGB bible</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Oral History</span></div>
+      <div class="resource-item"><span>American Hardcore — Steven Blush (2001) — the standard account of US hardcore, 1980–86</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Hardcore</span></div>
+      <div class="resource-item"><span>Girls to the Front — Sara Marcus (2010) — the definitive history of riot grrrl</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Riot Grrrl</span></div>
+      <div class="resource-item"><span>Rip It Up and Start Again — Simon Reynolds (2005) — the post-punk history; comprehensive</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Post-Punk</span></div>
+    </div>
+  </div>
+
+  <div class="qa-widget">
+    <div class="qa-header">
+      <div class="qa-header-title">Ask the Tutor</div>
+      <div class="qa-header-sub">Punk · CBGB to Hardcore to Riot Grrrl · Powered by Claude</div>
+    </div>
+    <div class="qa-body">
+      <div class="qa-input-row">
+        <input type="text" class="qa-input" id="qa-input" placeholder="Ask about the Ramones, Sex Pistols, the Clash, CBGB, hardcore, DIY, post-punk, riot grrrl…" onkeydown="if(event.key==='Enter') askTutor()">
+        <button class="qa-btn" onclick="askTutor()">Ask</button>
+      </div>
+      <div class="qa-response" id="qa-response"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div><p class="footer-name">Brooks Groves</p></div>
+    <div class="footer-links"><a href="/learning/">Learning</a><a href="/">Home</a></div>
+  </div>
+</footer>
+
+<script>
+function toggle(id) { document.getElementById(id).classList.toggle('open'); }
+function markDone(id) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById('check-' + id);
+  el.classList.toggle('done');
+  const isDone = el.classList.contains('done');
+  btn.textContent = isDone ? '✓ Done' : 'Mark done';
+  btn.classList.toggle('done', isDone);
+  localStorage.setItem('punk-' + id, isDone ? '1' : '');
+  updateProgress();
+}
+function updateProgress() {
+  const total = 14;
+  const done = document.querySelectorAll('.lesson.done').length;
+  document.getElementById('done-count').textContent = done;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+window.addEventListener('DOMContentLoaded', () => {
+  for (let i = 1; i <= 14; i++) {
+    if (localStorage.getItem('punk-l' + i) === '1') {
+      const el = document.getElementById('l' + i);
+      const btn = document.getElementById('check-l' + i);
+      if (el) el.classList.add('done');
+      if (btn) { btn.textContent = '✓ Done'; btn.classList.add('done'); }
+    }
+  }
+  updateProgress();
+});
+async function askTutor() {
+  const input = document.getElementById('qa-input');
+  const response = document.getElementById('qa-response');
+  const question = input.value.trim();
+  if (!question) return;
+  input.value = '';
+  response.innerHTML = '<span class="qa-loading">Thinking…</span>';
+  try {
+    const res = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: "You are an expert tutor for a self-directed curriculum on the history of punk rock \u2014 from the proto-punk of the Stooges, MC5, and the Velvet Underground through the 1974-77 explosions in New York (CBGB, the Ramones, Television, Patti Smith) and London (the Sex Pistols, the Clash, the Damned), into hardcore (Black Flag, Minor Threat, Bad Brains, Dead Kennedys), post-punk (Joy Division, Wire, Gang of Four, Public Image Ltd), the DIY and straight-edge movements, riot grrrl (Bikini Kill, Bratmobile), pop-punk and the 1990s mainstream breakthrough (Green Day, Rancid, the Offspring), and punk's global and political legacy. Be historically precise about dates, labels, scenes, and personnel; take the music's politics seriously; and be honest about its contradictions and myths. Keep answers to 3-4 paragraphs unless asked for more.",
+        messages: [{ role: 'user', content: question }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'No response.';
+    response.innerHTML = text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+  } catch(e) { response.innerHTML = 'Tutor unavailable. Try again in a moment.'; }
+}
+</script>
+</body>
+</html>

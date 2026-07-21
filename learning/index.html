@@ -3,222 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Amsterdam &amp; London Logs — Nine Days, Two Cities, One 50th Birthday — Brooks Groves</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦊</text></svg>">
+  <title>Learning — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
     :root {
       --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
-      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
-      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4;
-      --fire:#c0392b;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --study:#2a4a6b;
     }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     html { scroll-behavior:smooth; }
     body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
     body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
-    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+    .topline { height:4px; background:linear-gradient(90deg,var(--study) 0%,var(--gold) 50%,var(--sage) 100%); }
 
     header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
     .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
     .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
-    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav { display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap; }
     nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
-    nav a:hover { color:var(--rust); }
-    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
-    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+    nav a:hover { color:var(--study); }
 
-    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
-    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; transition:color 0.2s; }
-    .article-back:hover { color:var(--rust); }
-    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.75rem; }
-    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:0.75rem; }
-    .article-title em { font-style:italic; color:var(--rust); }
-    .article-subtitle { font-family:'Playfair Display',serif; font-style:italic; font-size:1.2rem; font-weight:400; color:var(--stone); margin-bottom:1rem; line-height:1.4; }
-    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .page-header { max-width:1400px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--study); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--study); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+    .page-distinction { display:inline-block; margin-top:1rem; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; color:var(--stone); border-left:3px solid var(--gold); padding-left:0.75rem; line-height:1.8; }
 
-    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
-    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
-    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+    .page-content { max-width:1400px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
 
-    .article-toc { background:var(--cream); border:1px solid var(--mist); padding:1.5rem; margin-bottom:2.5rem; }
-    .article-toc-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); margin-bottom:0.75rem; }
-    .article-toc ol { list-style:none; padding:0; margin:0; counter-reset:toc; }
-    .article-toc li { counter-increment:toc; padding:0.3rem 0; font-family:'DM Mono',monospace; font-size:0.7rem; }
-    .article-toc li::before { content:counter(toc,decimal-leading-zero); color:var(--gold); margin-right:0.65rem; }
-    .article-toc a { color:var(--ink); text-decoration:none; transition:color 0.15s; }
-    .article-toc a:hover { color:var(--rust); }
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; }
 
-    .article-body { font-size:1.05rem; line-height:1.85; }
-    .article-body p { margin-bottom:1.5rem; }
-    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); line-height:1.2; scroll-margin-top:5rem; }
-    .article-body h2 em { font-style:italic; color:var(--rust); }
-    .article-body h3 { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; margin:2rem 0 0.75rem; line-height:1.3; }
-    .article-body h3 em { font-style:italic; color:var(--rust); }
-    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
-    .article-body a { color:var(--rust); text-decoration:underline; text-underline-offset:3px; }
-    .article-body a:hover { color:var(--ink); }
-    .article-body strong { font-weight:700; }
-    .article-body em { font-style:italic; }
-    .article-body blockquote { border-left:3px solid var(--rust); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
-    .article-body ul { padding-left:1.5rem; margin-bottom:1.5rem; }
-    .article-body ul li { margin-bottom:0.4rem; }
+    /* TOPIC GRID */
+    .topic-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--mist); border:1px solid var(--mist); margin-bottom:3rem; }
+    @media(max-width:900px) { .topic-grid { grid-template-columns:repeat(2,1fr); } }
+    @media(max-width:560px) { .topic-grid { grid-template-columns:1fr; } }
 
-    /* FACTS BOX — sage-bordered sidebar for geology/definition/history blocks */
-    .facts-box { background:var(--white); border:1px solid var(--mist); border-left:3px solid var(--sage); padding:1.1rem 1.3rem; margin:1.75rem 0; font-size:0.92rem; line-height:1.75; }
-    .facts-box-title { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--sage); margin-bottom:0.5rem; }
-    .facts-box p { margin-bottom:0.65rem; }
-    .facts-box p:last-child { margin-bottom:0; }
+    .topic-card { background:var(--parchment); padding:1.75rem; text-decoration:none; color:inherit; display:block; transition:background 0.15s; position:relative; }
+    .topic-card:hover { background:var(--cream); }
+    .topic-card.live::after { content:'LIVE'; font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.12em; background:var(--study); color:var(--white); padding:0.15rem 0.45rem; position:absolute; top:1rem; right:1rem; }
+    .topic-card.soon { opacity:0.55; cursor:default; pointer-events:none; }
+    .topic-card.soon::after { content:'SOON'; font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.12em; background:var(--mist); color:var(--stone); padding:0.15rem 0.45rem; position:absolute; top:1rem; right:1rem; }
+    .topic-icon { font-size:2rem; display:block; margin-bottom:0.75rem; }
+    .topic-category { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.35rem; }
+    .topic-name { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:900; margin-bottom:0.5rem; }
+    .topic-dek { font-size:0.82rem; color:var(--stone); line-height:1.65; margin-bottom:0.75rem; }
+    .topic-meta { display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.5rem; }
+    .topic-meta span { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.2rem 0.6rem; border-radius:4px; }
+    .topic-link { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--study); margin-top:0.75rem; display:block; }
 
-    /* CROSSOVER BOX — gold-bordered sidebar for thematic through-lines */
-    .crossover-box { background:var(--cream); border:1px solid var(--gold); padding:1.25rem 1.4rem; margin:2rem 0; font-size:0.95rem; line-height:1.75; }
-    .crossover-box-title { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.6rem; }
-    .crossover-box p { margin-bottom:0.7rem; }
-    .crossover-box p:last-child { margin-bottom:0; }
-
-    /* FIRE BOX — rust/fire-bordered sidebar for the Pocket Fire through-line */
-    .fire-box { background:var(--cream); border:1px solid var(--fire); border-left:3px solid var(--fire); padding:1.25rem 1.4rem; margin:2rem 0; font-size:0.95rem; line-height:1.75; }
-    .fire-box-title { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--fire); margin-bottom:0.6rem; }
-    .fire-box p { margin-bottom:0.7rem; }
-    .fire-box p:last-child { margin-bottom:0; }
-
-    /* HIGHLIGHTS LIST — emoji-led recap rows */
-    .highlight-list { list-style:none; padding:0; margin:1rem 0 1.5rem; border-top:1px solid var(--mist); }
-    .highlight-list li { padding:0.7rem 0; border-bottom:1px solid var(--mist); display:grid; grid-template-columns:2rem 1fr; gap:0.75rem; font-size:0.95rem; line-height:1.6; }
-
-    /* BEER LIST */
-    .beer-list { display:flex; flex-direction:column; gap:0; border:1px solid var(--mist); margin:1.5rem 0 2rem; }
-    .beer-row { display:grid; grid-template-columns:1fr auto; gap:1rem; padding:0.7rem 1rem; border-bottom:1px solid var(--mist); font-family:'DM Mono',monospace; font-size:0.62rem; align-items:baseline; }
-    .beer-row:last-child { border-bottom:none; }
-    .beer-row-name { color:var(--ink); }
-    .beer-row-note { color:var(--stone); font-size:0.58rem; text-align:right; }
-
-    /* CODA */
-    .coda { text-align:center; font-family:'Playfair Display',serif; font-style:italic; font-size:1.15rem; line-height:1.9; color:var(--rust); margin:2.5rem 0 1rem; }
-    .coda-credit { text-align:center; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:var(--stone); margin-bottom:1rem; }
-
-    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
-    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
-    .article-footer-nav { display:flex; gap:1.5rem; }
-    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
-    .article-footer-nav a:hover { color:var(--rust); }
+    /* ABOUT SECTION */
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-bottom:3rem; }
+    @media(max-width:700px) { .about-grid { grid-template-columns:1fr; } }
+    .about-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:0.75rem; color:var(--study); }
+    .about-body { font-size:0.88rem; color:var(--stone); line-height:1.75; }
+    .about-body p { margin-bottom:0.75rem; }
 
     footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
     .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
     .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
-    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
-    .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
-    .footer-tagline a:hover { color:var(--gold); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
     .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
-    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
     .footer-links a:hover { color:var(--gold); }
-  
-    /* ── INDEX: voyage hub ── */
-    .voyage-hero { max-width:760px; margin:0 auto; padding:clamp(2.5rem,6vw,4rem) clamp(1.5rem,5vw,2rem) 1rem; }
-    .voyage-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
-    .voyage-title { font-family:'Playfair Display',serif; font-size:clamp(2.4rem,7vw,4rem); font-weight:900; line-height:1.04; letter-spacing:-0.02em; margin-bottom:1rem; }
-    .voyage-title em { font-style:italic; color:var(--rust); }
-    .voyage-intro { font-size:1.08rem; line-height:1.85; color:var(--ink); margin-bottom:1.25rem; }
-    .voyage-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; display:flex; gap:1.5rem; flex-wrap:wrap; padding-top:1rem; border-top:1px solid var(--mist); }
-    .voyage-wrap { max-width:760px; margin:0 auto; padding:1rem clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
-    .act-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--rust); margin:2.5rem 0 0.4rem; padding-top:2rem; border-top:2px solid var(--ink); }
-    .act-sub { font-family:'Playfair Display',serif; font-style:italic; font-size:1.05rem; color:var(--stone); margin-bottom:1.25rem; }
-    .day-row { display:grid; grid-template-columns:auto 1fr; gap:1rem; align-items:baseline; padding:0.85rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.15s; }
-    .day-row:hover { background:var(--cream); margin:0 -0.75rem; padding-left:0.75rem; padding-right:0.75rem; }
-    .day-num { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.08em; color:var(--gold); white-space:nowrap; padding-top:0.15rem; }
-    .day-hed { font-family:'Playfair Display',serif; font-size:1.12rem; font-weight:700; line-height:1.3; }
-    .day-hed:hover { color:var(--rust); }
-    .day-place { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.06em; color:var(--stone); text-transform:uppercase; margin-top:0.15rem; }
-    .day-flag { font-style:normal; }
-
   </style>
+</head>
 <body>
-
 <div class="topline"></div>
-
 <header>
   <div class="masthead-inner">
-    <a href="https://brooksgroves.com" class="site-name">Brooks Groves</a>
+    <a href="/" class="site-name">Brooks Groves</a>
     <nav>
-      <a href="https://brooksgroves.com/blog/index.html">Blog</a>
-      <a href="https://journal.brooksgroves.com">Journal</a>
-      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
-      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
-      <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
-      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+      <a href="/">Home</a>
+      <a href="/learning/" style="color:var(--study);">Learning</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub ↗</a>
     </nav>
   </div>
 </header>
 
-<div class="voyage-hero">
-  <p class="voyage-kicker">A Travel Journal · July 2026 · Delta &amp; British Airways</p>
-  <h1 class="voyage-title">The <em>Amsterdam &amp; London</em> Logs</h1>
-  <p class="voyage-intro">Nine days, two cities, and one 50th birthday. From the canals of Amsterdam to a flat in Chelsea — a medieval convent turned six-hundred-year-old hotel, a giant swing hanging a hundred meters over the IJ, a food tour through the Dutch Golden Age, the water pump where modern epidemiology was born, a power station famous for a runaway pig, and an exclusive London club with a fox on the lawn. There were four World Cup matches that resolved somewhere over Greenland, a beer arc that started resigned and ended rewarded, and one castle robe that remains, to this day, unaccounted for. This is the whole logbook.</p>
-  <div class="voyage-meta">
-    <span>July 10 – 19, 2026</span>
-    <span>9 days · 9 entries</span>
-    <span>2 countries · 1 milestone</span>
-    <span>🧥 robe: at large · 🦊 fox: operational</span>
-  </div>
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a></p>
+  <h1 class="page-title">📚 <em>Learning</em></h1>
+  <p class="page-sub">Self-directed curricula across science, history, music, and culture. Not credentials — comprehension. Built for the kind of person who wants to understand something properly, not just know its name.</p>
+  <p class="page-distinction">Ologies = what I build. Learning = what I study. Different things, cross-linked.</p>
 </div>
 
-<div class="voyage-wrap">
+<div class="page-content">
 
-  <div class="crossover-box">
-    <div class="crossover-box-title">The Trip in Brief</div>
-    <p><strong>The route:</strong> Seattle 🇺🇸 → Amsterdam 🇳🇱 — five days of canals, Van Gogh, and the last day of Aimee's forties — then London 🏴󠁧󠁢󠁥󠁮󠁧󠁿, four days in Chelsea with old friends, and home over the North Atlantic chasing the sunset.</p>
-    <p><strong>The cast:</strong> me and Aimee — the clever fox 🦊, who turned fifty and celebrated it dangling off a building. Our hosts David &amp; Michele in Chelsea; Barney the Amsterdam food-tour guide; a Greek-Bulgarian bartender-philosopher; and a boatful of pin-gifting Australians.</p>
-    <p><strong>The running threads:</strong> the fox, the beer arc, purple drinks in two cities, a World Cup that threaded through the whole trip, Pink Floyd's <em>Animals</em> from Battersea to the flight home, two Amazing Race airport sprints as bookends — and, told to us near the very end, the Case of the Missing Robe.</p>
+  <div class="section-label"><span>Curricula</span></div>
+
+  <div class="topic-grid">
+
+    <a href="/learning/quantum-physics/" class="topic-card live">
+      <span class="topic-icon">⚛️</span>
+      <div class="topic-category">Physics</div>
+      <div class="topic-name">Quantum Physics</div>
+      <div class="topic-dek">From the photoelectric effect to the multiverse. 15 lessons across 4 phases — the actual science, not the pop-science version.</div>
+      <div class="topic-meta"><span>15 lessons</span><span>~12–16 hrs</span><span>4 phases</span></div>
+      <span class="topic-link">Start curriculum →</span>
+    </a>
+
+    <a href="/learning/volcanology/" class="topic-card live">
+      <span class="topic-icon">🌋</span>
+      <div class="topic-category">Volcanology</div>
+      <div class="topic-name">Volcanology & Eruption Science</div>
+      <div class="topic-dek">Shield volcanoes, stratovolcanoes, calderas, lahars, pyroclastic flows, Kilauea, the Cascades, supervolcanoes. 16 lessons built before Hawaii 2026.</div>
+      <div class="topic-meta"><span>16 lessons</span><span>~15 hrs</span><span>4 phases</span></div>
+      <span class="topic-link">Start curriculum →</span>
+    </a>
+
+    <a href="/learning/desert-montane-ecosystems/" class="topic-card live">
+      <span class="topic-icon">🌵</span>
+      <div class="topic-category">Ecology</div>
+      <div class="topic-name">Desert & Montane Ecosystems</div>
+      <div class="topic-dek">The ecology of extremes — American West deserts, the Great Basin, Sierra Nevada, the Namib, and the Kalahari. Kangaroo rats, bristlecone pines, cheatgrass, and the Colorado River reckoning.</div>
+      <div class="topic-meta"><span>14 lessons</span><span>~12 hrs</span><span>4 phases</span></div>
+      <span class="topic-link">Start curriculum →</span>
+    </a>
+
+    <a href="/learning/ecogeomorphology/" class="topic-card live">
+      <span class="topic-icon">🌊</span>
+      <div class="topic-category">Earth Science</div>
+      <div class="topic-name">Ecogeomorphology</div>
+      <div class="topic-dek">How organisms reshape the land — Darwin's earthworms, beaver dams, Pacific salmon, large woody debris, PNW slope stability, dam removal, and Puget Sound estuary science.</div>
+      <div class="topic-meta"><span>12 lessons</span><span>~10 hrs</span><span>4 phases</span></div>
+      <span class="topic-link">Start curriculum →</span>
+    </a>
+
+    <a href="/learning/grunge/" class="topic-card live">
+      <span class="topic-icon">🎸</span>
+      <div class="topic-category">Music History</div>
+      <div class="topic-name">Grunge</div>
+      <div class="topic-dek">Seattle, 1984–1994. Sub Pop, Green River, Nirvana, Pearl Jam, Soundgarden, Alice in Chains. The most geographically specific musical revolution since the Delta blues — and you were in the room for some of it.</div>
+      <div class="topic-meta"><span>14 lessons</span><span>~12 hrs</span><span>4 phases</span></div>
+      <span class="topic-link">Start curriculum →</span>
+    </a>
+
+    <a href="/learning/reggae/" class="topic-card live">
+      <span class="topic-icon">🎵</span>
+      <div class="topic-category">Music History</div>
+      <div class="topic-name">Reggae</div>
+      <div class="topic-dek">Ska to rocksteady to roots to dancehall to reggaeton. One small island, sixty years, and the most globally distributed rhythm tradition on Earth. Rastafari, dub, Lee Perry, Marley, Tosh, Bad Bunny.</div>
+      <div class="topic-meta"><span>14 lessons</span><span>~12 hrs</span><span>4 phases</span></div>
+      <span class="topic-link">Start curriculum →</span>
+    </a>
+
+    <a href="/learning/afropop/" class="topic-card live">
+      <span class="topic-icon">🌍</span>
+      <div class="topic-category">Music History</div>
+      <div class="topic-name">Afropop</div>
+      <div class="topic-dek">A continent of music — Mali kora, Nigerian Afrobeat, Ethiopian jazz, South African township, Congolese rumba, Tuareg desert guitar, and contemporary Afrobeats. In the Afropop Worldwide tradition.</div>
+      <div class="topic-meta"><span>14 lessons</span><span>~12 hrs</span><span>4 phases</span></div>
+      <span class="topic-link">Start curriculum →</span>
+    </a>
+
+    <a href="/learning/punk/" class="topic-card live">
+      <span class="topic-icon">🎸</span>
+      <div class="topic-category">Music History</div>
+      <div class="topic-name">Punk Rock</div>
+      <div class="topic-dek">Detroit proto-punk to CBGB to the Sex Pistols and the Clash, then hardcore, post-punk, 2-Tone, riot grrrl, and the 1994 pop-punk explosion. Sixty seconds of noise, DIY forever, and a movement that keeps refusing to die.</div>
+      <div class="topic-meta"><span>14 lessons</span><span>~12 hrs</span><span>4 phases</span></div>
+      <span class="topic-link">Start curriculum →</span>
+    </a>
+
+    <a href="/learning/newwave/" class="topic-card live">
+      <span class="topic-icon">🎹</span>
+      <div class="topic-category">Music History</div>
+      <div class="topic-name">New Wave</div>
+      <div class="topic-dek">When punk met the synthesizer, art school, and MTV. Talking Heads, Blondie, Devo, Kraftwerk's shadow, synth-pop, the New Romantics, the Second British Invasion, and the sound that became the 1980s — then never stopped coming back.</div>
+      <div class="topic-meta"><span>14 lessons</span><span>~12 hrs</span><span>4 phases</span></div>
+      <span class="topic-link">Start curriculum →</span>
+    </a>
+
+    <div class="topic-card soon">
+      <span class="topic-icon">🌌</span>
+      <div class="topic-category">Cosmology</div>
+      <div class="topic-name">Cosmology & the Early Universe</div>
+      <div class="topic-dek">The Big Bang, dark matter, dark energy, and the large-scale structure of spacetime. How we know what we know.</div>
+      <div class="topic-meta"><span>Building</span></div>
+    </div>
+
+    <div class="topic-card soon">
+      <span class="topic-icon">🏺</span>
+      <div class="topic-category">Archaeology</div>
+      <div class="topic-name">Ancestral Puebloans</div>
+      <div class="topic-dek">Chaco Canyon, Mesa Verde, the great houses, the road network, the archaeoastronomy. The people who built it into the stone.</div>
+      <div class="topic-meta"><span>Building</span></div>
+    </div>
+
+    <div class="topic-card soon">
+      <span class="topic-icon">🧊</span>
+      <div class="topic-category">Cryosphere</div>
+      <div class="topic-name">The Cryosphere</div>
+      <div class="topic-dek">Glaciers, sea ice, permafrost, ice sheets. The frozen layer of Earth and what happens when it melts.</div>
+      <div class="topic-meta"><span>Building</span></div>
+    </div>
+
   </div>
 
-  <div class="act-label">Act I · Amsterdam</div>
-  <p class="act-sub">Five days in the Low Countries — a floating city built on a submerged forest, and a birthday that turned fifty a hundred meters in the air.</p>
-
-  <a href="/amsterdam-london/day-01.html" class="day-row">
-    <span class="day-num">Day 01 · Jul 10–11</span>
-    <span><span class="day-hed">Across the Atlantic to the Low Countries <span class="day-flag">✈️</span></span><span class="day-place">Seattle → Amsterdam</span></span>
-  </a>
-  <a href="/amsterdam-london/day-02.html" class="day-row">
-    <span class="day-num">Day 02 · Jul 12</span>
-    <span><span class="day-hed">Brushstrokes, Brown Cafés &amp; the Soul of Amsterdam <span class="day-flag">🎨</span></span><span class="day-place">Amsterdam · Van Gogh &amp; the Food Tour</span></span>
-  </a>
-  <a href="/amsterdam-london/day-03.html" class="day-row">
-    <span class="day-num">Day 03 · Jul 13</span>
-    <span><span class="day-hed">Secret Rooms, Stroopwafels &amp; the Last Day of Forty-Nine <span class="day-flag">🏛️</span></span><span class="day-place">Amsterdam · The Grand &amp; Albert Cuyp</span></span>
-  </a>
-  <a href="/amsterdam-london/day-04.html" class="day-row">
-    <span class="day-num">Day 04 · Jul 14</span>
-    <span><span class="day-hed">The Birthday Fox, the Giant Swing &amp; Fifty Years Around the Sun <span class="day-flag">🦊</span></span><span class="day-place">Amsterdam · Aimee's 50th</span></span>
-  </a>
-  <a href="/amsterdam-london/day-05.html" class="day-row">
-    <span class="day-num">Day 05 · Jul 15</span>
-    <span><span class="day-hed">Farewell Amsterdam, Hello London <span class="day-flag">🚆</span></span><span class="day-place">Amsterdam → London</span></span>
-  </a>
-
-  <div class="act-label">Act II · London &amp; Home</div>
-  <p class="act-sub">Four days in Chelsea with old friends — power stations, cholera pumps, an exclusive club, and the long way home over the ocean.</p>
-
-  <a href="/amsterdam-london/day-06.html" class="day-row">
-    <span class="day-num">Day 06 · Jul 16</span>
-    <span><span class="day-hed">Chelsea, The Trembling Lady &amp; A Pig Over London <span class="day-flag">🐷</span></span><span class="day-place">London · Battersea &amp; the Thames</span></span>
-  </a>
-  <a href="/amsterdam-london/day-07.html" class="day-row">
-    <span class="day-num">Day 07 · Jul 17</span>
-    <span><span class="day-hed">Cholera, Cacti &amp; Chelsea Society <span class="day-flag">🗺️</span></span><span class="day-place">London · The John Snow Pump &amp; Physic Garden</span></span>
-  </a>
-  <a href="/amsterdam-london/day-08.html" class="day-row">
-    <span class="day-num">Day 08 · Jul 18</span>
-    <span><span class="day-hed">The Hurlingham, the Cream Tea Wars &amp; A Fox on the Green <span class="day-flag">🦊</span></span><span class="day-place">London · The Last Full Day</span></span>
-  </a>
-  <a href="/amsterdam-london/day-09.html" class="day-row">
-    <span class="day-num">Day 09 · Jul 19</span>
-    <span><span class="day-hed">Chasing the Sunset Home <span class="day-flag">✈️</span></span><span class="day-place">London → Seattle · Reflections at 39,000 ft</span></span>
-  </a>
-
-  <div class="coda">"Trips end. That's part of the deal. But some places stay with you."</div>
-  <div class="coda-credit">— the last entry · somewhere over the North Atlantic</div>
+  <div class="section-label"><span>About This Section</span></div>
+  <div class="about-grid">
+    <div>
+      <h3 class="about-hed">How These Curricula Work</h3>
+      <div class="about-body">
+        <p>Each curriculum is a self-contained study path — lessons that expand with core concepts, vocabulary, and what I call the Cocktail Party Line: the one precise thing you can say at a dinner party that signals you actually understand the subject, not just the surface.</p>
+        <p>The goal is genuine comprehension. Not "I read a pop-science book about it" — more like "I could explain it to a physicist without embarrassing myself." That bar is higher than it sounds.</p>
+      </div>
+    </div>
+    <div>
+      <h3 class="about-hed">Ologies ↔ Learning</h3>
+      <div class="about-body">
+        <p>The Ologies section is where I build things — dashboards, pipelines, instruments. The Learning section is where I study the underlying science. They're related but different.</p>
+        <p>PELE tracks Kīlauea eruptions. The Volcanology curriculum explains why volcanoes work the way they do. SOLSTICE tracks the Casa Rinconada alignment. The Ancestral Puebloans curriculum explains who built it and why. The projects and the study inform each other.</p>
+      </div>
+    </div>
+  </div>
 
 </div>
 
@@ -226,55 +233,15 @@
   <div class="footer-inner">
     <div>
       <p class="footer-name">Brooks Groves</p>
-      <p class="footer-tagline">🌲 Made in the Pacific Northwest · ❤️ Born in <a href="https://www.visittuolumne.com/" target="_blank">Tuolumne County, CA</a></p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
     </div>
     <div class="footer-links">
-      <a href="https://journal.brooksgroves.com">Home</a>
-      <a href="https://brooksgroves.com/blog/index.html">Blog</a>
-      <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
-      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
-      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+      <a href="/">Home</a>
+      <a href="/learning/">Learning</a>
+      <a href="/blog/index.html">Blog</a>
     </div>
     <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--stone);">© 2026 Brooks Groves</p>
   </div>
 </footer>
-
-<script>
-  (function(){
-    const KEY = 'journal_auth', PW = 'cascade';
-    if (sessionStorage.getItem(KEY) === 'true') return;
-    document.documentElement.style.visibility = 'hidden';
-    function buildGate() {
-      var o = document.createElement('div');
-      o.id = 'gate-overlay';
-      o.style.cssText = 'position:fixed;inset:0;background:#f5f0e8;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:Georgia,serif;';
-      o.innerHTML = '<div style="text-align:center;padding:3rem;max-width:380px;width:90%;border:2px solid #1c1a16;background:#f5f0e8;">'
-        + '<div style="font-family:monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:#7a7268;margin-bottom:1rem;">Brooks Groves · Journal</div>'
-        + '<div style="font-family:Georgia,serif;font-size:1.6rem;font-weight:700;color:#1c1a16;margin-bottom:0.5rem;">Private Archive</div>'
-        + '<div style="font-size:0.85rem;color:#7a7268;margin-bottom:2rem;font-style:italic;">Password required</div>'
-        + '<input id="gate-pw" type="password" placeholder="password" style="width:100%;padding:0.75rem 1rem;background:#ede8dc;border:1px solid #d6d0c4;color:#1c1a16;font-size:1rem;outline:none;margin-bottom:0.75rem;box-sizing:border-box;text-align:center;letter-spacing:0.1em;"/>'
-        + '<div id="gate-err" style="color:#8b3a2a;font-size:0.75rem;margin-bottom:0.75rem;min-height:1rem;"></div>'
-        + '<button id="gate-btn" style="width:100%;padding:0.75rem;background:#1c1a16;border:none;color:#fdfaf4;font-size:0.85rem;cursor:pointer;letter-spacing:0.1em;font-family:monospace;text-transform:uppercase;">Enter</button>'
-        + '<div style="margin-top:1rem;"><a href="https://journal.brooksgroves.com" style="font-family:monospace;font-size:0.6rem;color:#7a7268;text-transform:uppercase;letter-spacing:0.1em;text-decoration:none;">← Journal</a></div>'
-        + '</div>';
-      document.body.appendChild(o);
-      document.documentElement.style.visibility = 'visible';
-      var inp = document.getElementById('gate-pw');
-      inp.focus();
-      function tryPw() {
-        if (inp.value.trim().toLowerCase() === PW) {
-          sessionStorage.setItem(KEY, 'true');
-          document.getElementById('gate-overlay').remove();
-        } else {
-          document.getElementById('gate-err').textContent = 'Incorrect password.';
-          inp.value = ''; inp.focus();
-        }
-      }
-      document.getElementById('gate-btn').addEventListener('click', tryPw);
-      inp.addEventListener('keydown', function(e){ if(e.key==='Enter') tryPw(); });
-    }
-    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', buildGate); } else { buildGate(); }
-  })();
-  </script>
 </body>
 </html>

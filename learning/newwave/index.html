@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Wave — Learning — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --neon:#c81e6f; --cyan:#0aa2c0; --synth:#6b3fa0;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,#c81e6f 0%,#6b3fa0 50%,#0aa2c0 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--neon); }
+    .page-header { max-width:1000px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.5rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--neon); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+    .page-stats { display:flex; gap:2rem; margin-top:1.5rem; flex-wrap:wrap; }
+    .page-stat-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--neon); }
+    .page-stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
+    .progress-wrap { background:var(--cream); border:1px solid var(--mist); padding:1.25rem 1.5rem; margin-top:1.5rem; }
+    .progress-bar-track { height:6px; background:var(--mist); border-radius:3px; margin:0.75rem 0 0.4rem; }
+    .progress-bar-fill { height:6px; background:var(--neon); border-radius:3px; transition:width 0.4s ease; width:0%; }
+    .progress-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; color:var(--stone); }
+    .page-content { max-width:1000px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+    .phase-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin:2.5rem 0 1.25rem; display:flex; justify-content:space-between; }
+    .phase-label:first-child { margin-top:0; }
+    .phase-name { color:var(--neon); }
+    .lesson { border:1px solid var(--mist); margin-bottom:0.75rem; }
+    .lesson-header { padding:1.1rem 1.25rem; cursor:pointer; display:grid; grid-template-columns:2.5rem 1fr auto; gap:0.75rem; align-items:start; transition:background 0.15s; }
+    .lesson-header:hover { background:var(--cream); }
+    .lesson-num { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:600; color:var(--stone); padding-top:0.1rem; }
+    .lesson-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; line-height:1.3; }
+    .lesson-sub { font-size:0.78rem; color:var(--stone); margin-top:0.2rem; font-style:italic; }
+    .lesson-time { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); text-align:right; white-space:nowrap; padding-top:0.2rem; }
+    .lesson-expand { display:none; padding:1.25rem 1.5rem; border-top:1px solid var(--mist); background:var(--cream); }
+    .lesson.open .lesson-expand { display:block; }
+    .lesson.open .lesson-header { background:var(--cream); }
+    .lesson.done .lesson-num { color:var(--sage); }
+    .lesson.done .lesson-num::after { content:' ✓'; }
+    .expand-section { margin-bottom:1.25rem; }
+    .expand-section:last-child { margin-bottom:0; }
+    .expand-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--neon); margin-bottom:0.5rem; }
+    .expand-body { font-size:0.88rem; line-height:1.75; color:var(--stone); }
+    .expand-body p { margin-bottom:0.6rem; }
+    .expand-body p:last-child { margin-bottom:0; }
+    .cocktail-box { background:var(--ink); color:#e8e4d8; padding:1rem 1.25rem; margin-top:1rem; border-left:3px solid var(--neon); }
+    .cocktail-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--neon); margin-bottom:0.4rem; }
+    .cocktail-line { font-size:0.88rem; font-style:italic; line-height:1.7; }
+    .vocab-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.5rem 1.5rem; margin-top:0.5rem; }
+    @media(max-width:560px) { .vocab-grid { grid-template-columns:1fr; } }
+    .vocab-item { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    .vocab-item strong { color:var(--ink); font-weight:700; }
+    .resources { border:1px solid var(--mist); padding:1.75rem; margin-top:3rem; }
+    .resources-hed { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin-bottom:1rem; color:var(--neon); }
+    .resource-list { display:flex; flex-direction:column; gap:0.6rem; }
+    .resource-item { font-size:0.85rem; color:var(--stone); display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:baseline; }
+    .resource-item a { color:var(--rust); text-decoration:underline; text-underline-offset:3px; font-size:0.75rem; font-family:'DM Mono',monospace; }
+    .mark-done-btn { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; border:1px solid var(--mist); background:none; color:var(--stone); padding:0.3rem 0.75rem; cursor:pointer; margin-top:1rem; transition:all 0.15s; }
+    .mark-done-btn:hover { border-color:var(--sage); color:var(--sage); }
+    .mark-done-btn.done { border-color:var(--sage); color:var(--sage); }
+    .qa-widget { border:2px solid var(--ink); margin-top:3rem; }
+    .qa-header { background:var(--ink); color:var(--white); padding:1rem 1.5rem; }
+    .qa-header-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; }
+    .qa-header-sub { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:#888; margin-top:0.2rem; }
+    .qa-body { padding:1.5rem; }
+    .qa-input-row { display:flex; gap:0.75rem; margin-bottom:1rem; }
+    .qa-input { flex:1; padding:0.75rem 1rem; font-family:'Libre Baskerville',serif; font-size:0.88rem; border:1px solid var(--mist); background:var(--white); color:var(--ink); outline:none; }
+    .qa-input:focus { border-color:var(--neon); }
+    .qa-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; background:var(--neon); color:var(--white); border:none; padding:0.75rem 1.25rem; cursor:pointer; white-space:nowrap; }
+    .qa-btn:hover { background:var(--ink); }
+    .qa-response { font-size:0.88rem; line-height:1.75; color:var(--stone); min-height:3rem; }
+    .qa-loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--mist); }
+    footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-links { display:flex; gap:1.5rem; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav><a href="/learning/">← Learning</a><a href="/">Home</a></nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/learning/">Learning</a></p>
+  <h1 class="page-title">🎹 <em>New Wave</em></h1>
+  <p class="page-sub">When punk's energy met synthesizers, art school, and the recording studio, it mutated into something sleeker and stranger. From late-70s CBGB and British art-punk to MTV, the Second British Invasion, and the synth-pop that defined the 1980s — angular, danceable, self-aware, and impossibly stylish.</p>
+  <div class="page-stats">
+    <div><div class="page-stat-val">14</div><div class="page-stat-lbl">Lessons</div></div><div><div class="page-stat-val">4</div><div class="page-stat-lbl">Phases</div></div><div><div class="page-stat-val">~12 hrs</div><div class="page-stat-lbl">Estimated time</div></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Progress — <span id="done-count">0</span> of 14 lessons complete</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <div class="progress-label" id="progress-pct">0%</div>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <div class="phase-label"><span>Phase 1 — <span class="phase-name">From Punk to New Wave, 1977–1979</span></span><span>Lessons 1–3</span></div>
+  <div class="lesson" id="l1">
+    <div class="lesson-header" onclick="toggle('l1')">
+      <div class="lesson-num">1</div>
+      <div><div class="lesson-title">What New Wave Even Is — Punk's Smarter Sibling</div><div class="lesson-sub">Defining a genre that resisted definition</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>New wave is one of the hardest genres to define because it began as a marketing term and ended as a catch-all. In 1977, record companies and the music press, wary of the word "punk" and its violent connotations, began using "new wave" to describe the more musically adventurous, art-school-inflected, radio-friendly bands emerging from the same scenes. At first the terms were nearly interchangeable — the Ramones were called new wave — but over the next two years the meanings split.</p>
+          <p>Where punk prized rawness, speed, and three-chord simplicity, new wave kept punk's energy and do-it-yourself spirit but added things punk had rejected: melody, studio craft, keyboards, wit, irony, danceability, and a self-conscious relationship to style. New wave bands were happy to be clever, arty, and produced. They embraced the recording studio as an instrument and, crucially, embraced the synthesizer — the machine punk purists distrusted as inauthentic.</p>
+          <p>The simplest way to hold the distinction: punk is a stance, new wave is a sensibility. Punk wanted to tear rock down; new wave wanted to rebuild it as something angular, modern, and knowing. The two overlap massively at the edges — many bands (Blondie, Talking Heads, the Jam) get filed under both — and the boundary with post-punk is genuinely fuzzy. But at its core, new wave is what happened when punk's revolution met people who wanted to make sophisticated pop records with it.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>New wave</strong> — punk's studio-savvy, melodic, art-conscious sibling; began as a marketing term</div>
+          <div class="vocab-item"><strong>Punk vs new wave</strong> — punk = raw stance; new wave = clever, produced, keyboard-friendly sensibility</div>
+          <div class="vocab-item"><strong>Skinny tie</strong> — the power-pop end of new wave; sharp suits, sharp hooks (the Knack, the Cars)</div>
+          <div class="vocab-item"><strong>Art school</strong> — new wave's intellectual DNA; many bands came from art rather than rock backgrounds</div>
+          <div class="vocab-item"><strong>The studio as instrument</strong> — new wave embraced production and technology punk had rejected</div>
+          <div class="vocab-item"><strong>The fuzzy boundary</strong> — punk, post-punk, and new wave overlap constantly; many bands fit all three</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"New wave is one of the slipperiest terms in music because it started as a marketing word — the industry wanted to sell punk-adjacent bands without the word 'punk' scaring people. The clean way to think about it: punk is a stance, new wave is a sensibility. Punk wanted to tear rock down with three chords; new wave kept punk's energy but added melody, studio polish, wit, danceability, and synthesizers — all the stuff punk purists thought was cheating. It's what happened when punk's revolution met people who actually wanted to make sophisticated pop."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l1" onclick="markDone('l1')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l2">
+    <div class="lesson-header" onclick="toggle('l2')">
+      <div class="lesson-num">2</div>
+      <div><div class="lesson-title">The CBGB Art-Rockers — Talking Heads & Blondie</div><div class="lesson-sub">The New York scene's brainier, poppier wing</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The same CBGB scene that produced the Ramones also produced the bands that would define new wave's American origins — and they were, tellingly, the art-school kids. Talking Heads, formed by three Rhode Island School of Design students led by the twitchy, cerebral David Byrne, played nervous, angular, funk-inflected rock about anxiety and modern life. They were punk-adjacent in their minimalism and their CBGB pedigree, but their intelligence, rhythmic sophistication, and eventual embrace of African polyrhythms and studio experimentation put them squarely in new wave's brainy vanguard.</p>
+          <p>Blondie, fronted by Debbie Harry, took the opposite but complementary route: pure pop ambition dressed in downtown cool. Emerging from the same CBGB world, they fused punk energy with 1960s girl-group melodies, disco, and even (on "Rapture," 1981) the first rap vocal on a number-one US single. Blondie proved new wave could top the charts without losing its edge, and Debbie Harry became one of the era's defining icons.</p>
+          <p>Together these bands showed new wave's two great strengths. Talking Heads demonstrated its intellectual and artistic ceiling — how far you could push rhythm, concept, and studio craft. Blondie demonstrated its pop ceiling — how completely new wave energy could conquer the mainstream. Both were produced, both were smart, both were danceable, and neither could be mistaken for the Ramones. New wave had found its American identity.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Talking Heads</strong> — RISD art-school band; David Byrne; nervous, funk-inflected, cerebral; new wave's brain</div>
+          <div class="vocab-item"><strong>David Byrne</strong> — frontman; anxiety, modern life, African polyrhythms; new wave's great intellectual</div>
+          <div class="vocab-item"><strong>Blondie</strong> — Debbie Harry's band; punk energy + girl-group pop + disco; new wave conquers the charts</div>
+          <div class="vocab-item"><strong>Debbie Harry</strong> — frontwoman; downtown cool made pop icon; one of the era's defining faces</div>
+          <div class="vocab-item"><strong>"Rapture"</strong> — 1981 Blondie #1; first rap vocal on a chart-topping US single; new wave's reach</div>
+          <div class="vocab-item"><strong>Remain in Light</strong> — 1980 Talking Heads album (with Eno); polyrhythmic peak of art new wave</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The same CBGB scene that made the Ramones also made new wave's American founders — and they were the art-school kids. Talking Heads, led by David Byrne out of the Rhode Island School of Design, made nervous, funky, intellectual rock about modern anxiety — that's new wave's brain. Blondie, with Debbie Harry, fused punk energy with 60s girl-group pop and disco and stormed the charts — that's new wave's pop ceiling. They even put the first rap vocal on a number-one US single. Both were smart, produced, and danceable, and neither sounded remotely like the Ramones."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l2" onclick="markDone('l2')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l3">
+    <div class="lesson-header" onclick="toggle('l3')">
+      <div class="lesson-num">3</div>
+      <div><div class="lesson-title">Devo, Elvis Costello & the Skinny-Tie Wave</div><div class="lesson-sub">Irony, spectacles, and impossibly sharp songwriting</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>New wave's first years threw up a cluster of artists who shared a sensibility more than a sound: smart, ironic, tightly-wound, and visually self-aware. Devo, from Akron, Ohio, built an entire art-project around the satirical theory of "de-evolution" — that humanity was regressing — expressed through robotic rhythms, jerky synth-rock, matching yellow hazmat suits, and flowerpot hats. They were conceptual art disguised as a pop band, and their deadpan cover of the Rolling Stones' "Satisfaction" perfectly captured new wave's knowing, slightly alienated relationship to rock tradition.</p>
+          <p>Elvis Costello arrived in 1977 as one of the era's great songwriters — a bespectacled, angry, verbally dazzling figure whose early records combined punk's bile with pub-rock craft and wordplay worthy of the best pop tradition. Alongside acts like the Cars (sleek American power pop), the Knack, and Squeeze, Costello represented new wave's songwriting wing: musicians who wanted the energy of the new scene but were unashamed to write brilliantly-crafted, melodic, hook-laden songs.</p>
+          <p>What unified this loose cohort was a set of new wave signatures: the skinny tie and sharp suit replacing punk's ripped denim, spectacles and self-conscious nerdiness worn as style, irony as a default mode, and an embrace of pop songcraft. This was punk's energy filtered through intelligence and design sense — angular but tuneful, aggressive but clever, and always aware of itself as a performance.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Devo</strong> — Akron art-rockers; "de-evolution" theory; hazmat suits, flowerpot hats; conceptual synth-rock</div>
+          <div class="vocab-item"><strong>De-evolution</strong> — Devo's satirical thesis that humanity is regressing; their whole aesthetic</div>
+          <div class="vocab-item"><strong>Elvis Costello</strong> — 1977 debut; bespectacled, verbally brilliant; new wave's great songwriter</div>
+          <div class="vocab-item"><strong>The Cars</strong> — sleek American power pop; studio gloss + hooks; new wave radio staple</div>
+          <div class="vocab-item"><strong>Skinny tie</strong> — the visual shorthand for power-pop new wave; sharp suits replace ripped denim</div>
+          <div class="vocab-item"><strong>Irony</strong> — new wave's default mode; self-aware, knowing, a step back from punk's sincerity</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"New wave's early years produced a bunch of artists united by attitude more than sound: smart, ironic, tightly wound, visually self-aware. Devo turned a satirical theory that humanity is 'de-evolving' into robotic synth-rock played in yellow hazmat suits and flowerpot hats — conceptual art disguised as a band. Elvis Costello showed up in 1977 as a bespectacled, furious, brilliant songwriter. Add the Cars and the skinny-tie power-pop crowd and you get new wave's signature: punk energy filtered through art-school intelligence, sharp suits instead of ripped denim, and irony as the house style."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l3" onclick="markDone('l3')">Mark done</button>
+    </div>
+  </div>
+  <div class="phase-label"><span>Phase 2 — <span class="phase-name">The Synthesizer Takes Over, 1978–1981</span></span><span>Lessons 4–7</span></div>
+  <div class="lesson" id="l4">
+    <div class="lesson-header" onclick="toggle('l4')">
+      <div class="lesson-num">4</div>
+      <div><div class="lesson-title">The Synthesizer Arrives — Kraftwerk's Long Shadow</div><div class="lesson-sub">The machine that rewired popular music</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The single most important thing that separated new wave from punk was the synthesizer — and the band that made it thinkable was German. Kraftwerk, from Düsseldorf, spent the 1970s building precise, hypnotic, entirely electronic music around drum machines and synthesizers, imagining a future in which humans and machines made music together. Albums like <em>Autobahn</em> (1974) and <em>Trans-Europe Express</em> (1977) were unlike anything in rock, and their influence would prove almost impossibly vast — on new wave, synth-pop, hip-hop, techno, and electronic dance music generally.</p>
+          <p>For a generation of young British musicians in particular, Kraftwerk offered a revelation: you didn't need to be a guitar virtuoso, or even own a guitar. A synthesizer and a drum machine could make a complete, futuristic, danceable record, often played by one or two people. This was punk's do-it-yourself promise realized through technology rather than three chords — and it was, if anything, even more democratic, because a single affordable synth could replace an entire band.</p>
+          <p>The timing was crucial. As affordable synthesizers (the Minimoog, and later cheaper models) and drum machines reached the market in the late 1970s, punk had already blown away the idea that you needed permission or virtuosity to make music. The synthesizer handed that liberated generation a machine capable of sounds rock had never made — cold, precise, futuristic, and irresistibly modern. New wave's electronic wing was born in the space between punk's attitude and Kraftwerk's machines.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Kraftwerk</strong> — Düsseldorf electronic pioneers; Autobahn, Trans-Europe Express; the source of synth-pop</div>
+          <div class="vocab-item"><strong>Synthesizer</strong> — the machine that split new wave from punk; futuristic, cold, modern; no guitar needed</div>
+          <div class="vocab-item"><strong>Drum machine</strong> — programmable electronic percussion; let one or two people make a full record</div>
+          <div class="vocab-item"><strong>Minimoog</strong> — affordable synth that democratized electronic sound in the late 70s</div>
+          <div class="vocab-item"><strong>Man-machine</strong> — Kraftwerk's vision of human-machine musical collaboration; new wave's philosophy</div>
+          <div class="vocab-item"><strong>DIY via technology</strong> — punk's no-permission ethic realized through a synth instead of three chords</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The thing that really split new wave from punk was the synthesizer, and the band that made it possible was German: Kraftwerk. Through the 70s they built precise, hypnotic, all-electronic music on synths and drum machines and imagined a future of humans and machines making music together. For young British musicians this was a revelation — you didn't need to be a guitar virtuoso or even own a guitar; one affordable synth and a drum machine could make a complete futuristic record. It was punk's do-it-yourself promise realized through technology. Their influence runs through synth-pop, hip-hop, techno — basically all electronic music."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l4" onclick="markDone('l4')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l5">
+    <div class="lesson-header" onclick="toggle('l5')">
+      <div class="lesson-num">5</div>
+      <div><div class="lesson-title">Gary Numan & the First Synth-Pop Stars</div><div class="lesson-sub">When the machines went to number one</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>The moment new wave's electronic wing broke through commercially came in 1979, when Gary Numan — first with Tubeway Army's "Are 'Friends' Electric?" and then solo with "Cars" — took cold, alienated, entirely synthesizer-driven music to number one in Britain. Numan's android persona, dystopian lyrics, and glacial synth textures proved that electronic music wasn't a novelty or an art-project curiosity but a genuinely commercial pop form. He was the first true synth-pop star.</p>
+          <p>Numan drew openly on Kraftwerk and on the science-fiction anxieties of the era, presenting himself as a detached, alienated figure in a machine world — a persona that would echo through decades of electronic music. Crucially, he demonstrated that a solo artist with synthesizers could dominate the charts previously ruled by rock bands, accelerating a shift in what a pop star could look and sound like. The guitar was no longer the mandatory center of popular music.</p>
+          <p>The breakthrough opened the floodgates. A wave of British synth acts — many of them one- or two-person operations working with cheap equipment in bedrooms and small studios — followed Numan into the charts over the next few years. The economics were irresistible: no expensive band, no rehearsal space full of amplifiers, just a synth, a drum machine, and ideas. New wave's electronic strand was about to become the defining pop sound of the early 1980s.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Gary Numan</strong> — first synth-pop star; "Cars," "Are 'Friends' Electric?" (1979); android persona</div>
+          <div class="vocab-item"><strong>Tubeway Army</strong> — Numan's band; "Are 'Friends' Electric?" hit #1; electronic music goes commercial</div>
+          <div class="vocab-item"><strong>Synth-pop</strong> — pop built primarily on synthesizers and drum machines; new wave's electronic core</div>
+          <div class="vocab-item"><strong>The android persona</strong> — Numan's detached, alienated machine-world image; hugely influential</div>
+          <div class="vocab-item"><strong>Bedroom production</strong> — cheap synths let solo artists make hits without a band or big studio</div>
+          <div class="vocab-item"><strong>The guitar dethroned</strong> — Numan proved a synth act could rule charts once owned by rock bands</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"The electronic wing of new wave broke through in 1979 when Gary Numan took cold, alienated, all-synthesizer music to number one — first with 'Are Friends Electric?' and then 'Cars.' His android persona and dystopian lyrics proved electronic music wasn't a novelty but a genuine commercial pop form. He was the first real synth-pop star, and he showed that a solo artist with a synth could dominate charts that rock bands used to own. The economics were unbeatable — no expensive band, just a synth and a drum machine — and it opened the floodgates for the sound that would define the early 80s."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l5" onclick="markDone('l5')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l6">
+    <div class="lesson-header" onclick="toggle('l6')">
+      <div class="lesson-num">6</div>
+      <div><div class="lesson-title">Synth-Pop Proper — Human League, Depeche Mode, OMD</div><div class="lesson-sub">Sheffield, Basildon, and the sound of the new decade</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>By 1981 synth-pop had matured into the defining sound of British pop, led by a cluster of bands who made lush, fully-electronic music with real emotional depth and pop instincts. The Human League, from Sheffield, perfected the form with <em>Dare</em> (1981) and its global smash "Don't You Want Me" — glossy, danceable, melodically irresistible synth-pop featuring, deliberately, singers recruited from a nightclub rather than trained musicians. It was the genre's commercial and artistic arrival.</p>
+          <p>Depeche Mode, from Basildon, began as bright synth-pop and evolved into one of the most important and enduring bands of the era, gradually darkening their sound toward the industrial-tinged electronic rock that would make them one of the biggest cult bands in the world. Orchestral Manoeuvres in the Dark (OMD) brought art-school conceptualism and gorgeous melody, writing hit singles about subjects like the atomic bomb ("Enola Gay") and Joan of Arc. Soft Cell scored a defining hit with "Tainted Love."</p>
+          <p>What these bands shared was proof that the synthesizer could carry not just novelty or coldness but genuine warmth, hooks, and feeling. Synth-pop became fully-fledged pop music — emotional, melodic, and massively commercial — while retaining new wave's modernity and studio sophistication. Sheffield and the other industrial towns of the English Midlands and North, with their cheap rents and post-industrial atmosphere, became unlikely capitals of the futuristic sound that would soon conquer America.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>The Human League</strong> — Sheffield; Dare (1981), "Don't You Want Me"; synth-pop's commercial peak</div>
+          <div class="vocab-item"><strong>Depeche Mode</strong> — Basildon; bright synth-pop that darkened into enduring electronic rock; huge cult</div>
+          <div class="vocab-item"><strong>OMD</strong> — art-school synth-pop; gorgeous melody, odd subjects ("Enola Gay," Joan of Arc)</div>
+          <div class="vocab-item"><strong>"Don't You Want Me"</strong> — 1981 Human League smash; synth-pop as irresistible global pop</div>
+          <div class="vocab-item"><strong>Soft Cell</strong> — "Tainted Love" (1981); synth-pop's other defining early hit</div>
+          <div class="vocab-item"><strong>The industrial North</strong> — Sheffield and the Midlands as unlikely capitals of futuristic pop</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"By 1981 synth-pop had matured into the defining sound of British pop. The Human League perfected it with 'Don't You Want Me' — glossy, danceable, irresistible, and deliberately sung by people recruited from a nightclub instead of trained musicians. Depeche Mode started bright and gradually darkened into one of the most enduring bands of the era. OMD wrote gorgeous synth hits about the atomic bomb and Joan of Arc. The point they collectively proved was that the synthesizer could carry real warmth and feeling, not just novelty. And it mostly came from cheap-rent industrial towns in the English North."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l6" onclick="markDone('l6')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l7">
+    <div class="lesson-header" onclick="toggle('l7')">
+      <div class="lesson-num">7</div>
+      <div><div class="lesson-title">The New Romantics — Style as Substance</div><div class="lesson-sub">Clubland, glamour, and the peacock revolt</div></div>
+      <div class="lesson-time">~35 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Running parallel to synth-pop's rise was a scene that made style its entire manifesto: the New Romantics. Emerging from London clubs like the Blitz around 1979–80, the movement was a deliberate reaction against punk's dressed-down, anti-glamour aesthetic. Where punk wore ripped denim and safety pins, the New Romantics wore ruffles, makeup, elaborate hairstyles, and outrageous costumes — a peacock revolt built on the idea that glamour, artifice, and self-invention were themselves rebellious acts.</p>
+          <p>Musically the scene fed directly into the biggest synth-driven acts of the early 1980s. Spandau Ballet and Duran Duran emerged from this world, pairing synth-pop and funk with impossibly stylish image-making. Visual Arts, fashion, and nightclub culture were as central as the records; the movement understood, ahead of almost everyone, that in the coming decade image and music would become inseparable — a prophecy MTV was about to fulfill spectacularly.</p>
+          <p>The New Romantics represent new wave's fullest embrace of surface, style, and self-conscious performance. If punk had insisted on authenticity and rejected glamour as a lie, the New Romantics argued the opposite: that identity is something you construct and perform, that artifice can be liberating, and that how you look is part of what you mean. It was a philosophy perfectly suited to the visual, image-saturated pop era just beginning.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>New Romantics</strong> — 1979–80 London club scene; glamour and costume as rebellion against punk's drabness</div>
+          <div class="vocab-item"><strong>The Blitz</strong> — London club; the movement's birthplace; Steve Strange, Rusty Egan</div>
+          <div class="vocab-item"><strong>Spandau Ballet</strong> — New Romantic band; synth-funk; sharp style; "True"</div>
+          <div class="vocab-item"><strong>Duran Duran</strong> — the scene's biggest export; synth-pop-funk + cinematic image-making</div>
+          <div class="vocab-item"><strong>Style as substance</strong> — the belief that glamour, artifice, and self-invention are themselves rebellious</div>
+          <div class="vocab-item"><strong>Constructed identity</strong> — New Romantic philosophy; you build and perform who you are</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Alongside synth-pop came a scene that made style its whole manifesto: the New Romantics. Out of London clubs like the Blitz around 1980, it was a deliberate revolt against punk's dressed-down look — ruffles, makeup, elaborate costumes, glamour as rebellion. Spandau Ballet and Duran Duran came out of this world. The New Romantics understood ahead of everyone that image and music were about to become inseparable, which MTV would prove within a year. Where punk said authenticity is everything and glamour is a lie, the New Romantics said the opposite: identity is something you construct and perform."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l7" onclick="markDone('l7')">Mark done</button>
+    </div>
+  </div>
+  <div class="phase-label"><span>Phase 3 — <span class="phase-name">MTV & the Second British Invasion, 1981–1984</span></span><span>Lessons 8–11</span></div>
+  <div class="lesson" id="l8">
+    <div class="lesson-header" onclick="toggle('l8')">
+      <div class="lesson-num">8</div>
+      <div><div class="lesson-title">MTV Changes Everything — August 1, 1981</div><div class="lesson-sub">The channel that made the eye as important as the ear</div></div>
+      <div class="lesson-time">~50 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>On August 1, 1981, MTV launched in the United States, and — fittingly — the first video it played was "Video Killed the Radio Star" by the Buggles, a new wave act. The channel's arrival transformed the music industry overnight by making the music video, and therefore image and visual style, as commercially important as the song itself. And no genre was better positioned to exploit this than new wave.</p>
+          <p>The reasons were structural. New wave and synth-pop bands were already visually self-conscious, style-obsessed, and comfortable with artifice and performance — everything the New Romantics had been rehearsing. They were also, in 1981–82, making a huge number of cheap, striking, imaginative videos, partly because MTV in its early days was desperate for content and would play almost anything. British acts in particular had been making promotional videos for years and had a ready supply. American rock radio, by contrast, was slow and conservative.</p>
+          <p>The result was a spectacular mismatch that new wave exploited completely. While American guitar rock hesitated, the visually-fluent, video-ready British new wave and synth-pop acts flooded MTV, reached American teenagers directly, and launched what the press dubbed the Second British Invasion. MTV didn't just help new wave — it made new wave, or a glossy commercial version of it, the dominant sound and look of American pop in the early-to-mid 1980s.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>MTV</strong> — launched Aug 1, 1981; made the music video and image as important as the song</div>
+          <div class="vocab-item"><strong>"Video Killed the Radio Star"</strong> — the Buggles; MTV's first video; a new wave act, fittingly</div>
+          <div class="vocab-item"><strong>The music video</strong> — new wave's killer app; the genre was already visual, stylish, and image-ready</div>
+          <div class="vocab-item"><strong>Content-hungry MTV</strong> — early MTV would play almost anything; British acts had videos ready to go</div>
+          <div class="vocab-item"><strong>Visual fluency</strong> — new wave's art-school image sense made it perfect for the video age</div>
+          <div class="vocab-item"><strong>Radio vs video</strong> — conservative US rock radio hesitated; new wave went straight to the eye</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"On August 1, 1981, MTV launched, and the first video it ever played was 'Video Killed the Radio Star' by the Buggles — a new wave act. That's almost too perfect. MTV made image as commercially important as the song overnight, and no genre was better positioned than new wave, which was already obsessed with style and comfortable with artifice thanks to the New Romantics. British bands had loads of cheap, striking videos ready, and early MTV would play anything. American guitar rock hesitated; new wave flooded the channel and reached American teenagers directly. MTV basically made new wave the dominant sound and look of early-80s America."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l8" onclick="markDone('l8')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l9">
+    <div class="lesson-header" onclick="toggle('l9')">
+      <div class="lesson-num">9</div>
+      <div><div class="lesson-title">The Second British Invasion — New Wave Conquers America</div><div class="lesson-sub">Duran Duran, Culture Club, and the video-fuelled takeover</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Powered by MTV, a wave of British new wave and synth-pop acts swept American charts between 1982 and 1984 so completely that the press revived the phrase "British Invasion" — the term first used for the Beatles-led takeover of 1964. This time the weapon was video. Duran Duran led the charge with lavish, cinematic, exotic-location videos ("Rio," "Hungry Like the Wolf") that turned the band into global heartthrobs and demonstrated exactly how powerful the new medium could be.</p>
+          <p>The roster was deep and stylistically varied: Culture Club, fronted by the flamboyant, gender-bending Boy George, scored massive hits with soulful, reggae-tinged pop; the Eurythmics paired Annie Lennox's extraordinary voice and androgynous image with Dave Stewart's synth productions; the Police (though closer to reggae-rock) and countless others rode the wave. What united them was British origin, visual sophistication, radio-friendly hooks, and total fluency in the MTV format.</p>
+          <p>The Second British Invasion marked the commercial peak of new wave and the moment its aesthetic became simply the sound of mainstream 1980s pop. It also marked a subtle transformation: as the music got bigger, glossier, and more video-driven, the punk energy and art-school edge that had birthed new wave increasingly gave way to pure, luxurious pop production. New wave had won so completely that it was starting to stop being new wave and simply become the pop mainstream of its decade.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Second British Invasion</strong> — 1982–84 MTV-fuelled British takeover of US charts; named for the Beatles era</div>
+          <div class="vocab-item"><strong>Duran Duran</strong> — led the invasion; lavish cinematic videos ("Rio"); global heartthrobs</div>
+          <div class="vocab-item"><strong>Culture Club</strong> — Boy George; soulful, reggae-tinged pop; gender-bending MTV icon</div>
+          <div class="vocab-item"><strong>Eurythmics</strong> — Annie Lennox + Dave Stewart; powerhouse vocals, androgyny, synth production</div>
+          <div class="vocab-item"><strong>Video fluency</strong> — the shared weapon; British acts mastered the MTV format completely</div>
+          <div class="vocab-item"><strong>Peak and transformation</strong> — new wave's commercial summit; edge giving way to glossy pop</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Between 1982 and 1984, British new wave and synth-pop swept American charts so completely the press revived the phrase 'British Invasion' from the Beatles era — except this time the weapon was video. Duran Duran led with lavish, exotic, cinematic clips like 'Rio' that made them global heartthrobs. Culture Club had Boy George, the Eurythmics had Annie Lennox, and on it went — all British, all visually fluent, all fluent in MTV. It was new wave's commercial peak. It was also where the punk energy that birthed it started dissolving into pure glossy 80s pop. New wave won so hard it basically became the mainstream."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l9" onclick="markDone('l9')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l10">
+    <div class="lesson-header" onclick="toggle('l10')">
+      <div class="lesson-num">10</div>
+      <div><div class="lesson-title">New Wave in America — College Rock & the B-52s</div><div class="lesson-sub">The scrappier, weirder homegrown response</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>While Britain exported glossy synth-pop, America developed its own scrappier, guitar-based new wave that would prove enormously influential in a different way. The B-52s, from Athens, Georgia, made gloriously eccentric party music — thrift-store aesthetics, surf guitar, call-and-response vocals, beehive hairdos, and sheer camp joy ("Rock Lobster"). They embodied a distinctly American new wave that was quirky, danceable, and fun rather than sleek and futuristic.</p>
+          <p>More consequentially, Athens also produced R.E.M., whose jangly, cryptic, guitar-driven sound — closer to new wave's art-rock roots than to synth-pop — became the foundation of "college rock": music that thrived on college radio stations and in small clubs outside the mainstream industry, building the American alternative network. R.E.M. and their peers kept alive new wave's original values of intelligence, independence, and artistic ambition even as the mainstream version turned to glossy video-pop.</p>
+          <p>This American strand mattered enormously in the long run. College rock's network of stations, clubs, independent labels, and fanzines — overlapping with the one hardcore had built — became the infrastructure of American alternative music, and R.E.M.'s eventual crossover in the late 1980s helped set the stage for the alternative explosion of the 1990s. The glossy synth-pop of the Second British Invasion defined the era's sound; the scrappier American new wave defined its future.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>The B-52s</strong> — Athens, GA; camp, thrift-store party new wave; surf guitar, beehives ("Rock Lobster")</div>
+          <div class="vocab-item"><strong>R.E.M.</strong> — Athens, GA; jangly, cryptic guitar rock; the foundation of college rock</div>
+          <div class="vocab-item"><strong>College rock</strong> — new wave's American guitar strand; thrived on college radio; alt-rock's seedbed</div>
+          <div class="vocab-item"><strong>Athens, Georgia</strong> — unlikely capital of American new wave; both the B-52s and R.E.M.</div>
+          <div class="vocab-item"><strong>The alternative network</strong> — college radio + clubs + indie labels; the base for 90s alt-rock</div>
+          <div class="vocab-item"><strong>Glossy vs scrappy</strong> — British synth-pop defined the era's sound; US new wave defined its future</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"While Britain exported glossy synth-pop, America grew its own scrappier, guitar-based new wave — and it mattered more in the long run. The B-52s from Athens, Georgia made gloriously camp thrift-store party music like 'Rock Lobster.' But Athens also produced R.E.M., whose jangly, cryptic guitar rock became the foundation of 'college rock' — music that lived on college radio and in small clubs outside the industry. That network of stations, clubs, and indie labels became the infrastructure of American alternative music. British synth-pop defined the 80s sound; scrappy American new wave quietly built the 90s."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l10" onclick="markDone('l10')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l11">
+    <div class="lesson-header" onclick="toggle('l11')">
+      <div class="lesson-num">11</div>
+      <div><div class="lesson-title">The Sophisticated Peak — Kate Bush, Talking Heads, Peter Gabriel</div><div class="lesson-sub">New wave grows up and gets ambitious</div></div>
+      <div class="lesson-time">~45 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>As the decade progressed, new wave's most ambitious artists pushed the genre toward genuine artistic sophistication, using the studio, the synthesizer, and emerging sampling technology to make richly textured, conceptually daring records. Kate Bush, a singular figure who resists easy categorization, made intensely personal, theatrical, sonically adventurous art-pop — <em>Hounds of Love</em> (1985) stands as one of the era's masterpieces — pioneering the use of the Fairlight sampler and total creative control at a time when few women controlled their own productions.</p>
+          <p>Talking Heads reached their commercial and artistic peak in this period, with <em>Remain in Light</em>'s polyrhythmic experiments giving way to the accessible brilliance of "Once in a Lifetime" and the concert film <em>Stop Making Sense</em> (1984), often called the greatest concert film ever made. Peter Gabriel, having left prog band Genesis, embraced world music, sampling, and cutting-edge production to make sophisticated art-pop that culminated in the massive <em>So</em> (1986). Tears for Fears made grandly ambitious, emotionally serious synth-rock.</p>
+          <p>This was new wave demonstrating that it could produce work of lasting artistic weight, not just catchy singles. The Fairlight sampler and increasingly powerful studio technology let these artists build sonic worlds impossible a few years earlier. In their hands, the genre that began as punk's clever sibling matured into a vehicle for genuine artistic ambition — sophisticated, textured, emotionally serious, and technologically pioneering.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Kate Bush</strong> — singular art-pop auteur; Hounds of Love (1985); Fairlight pioneer; total creative control</div>
+          <div class="vocab-item"><strong>Fairlight</strong> — early sampling synthesizer; let artists build sonic worlds from recorded sound</div>
+          <div class="vocab-item"><strong>Stop Making Sense</strong> — 1984 Talking Heads concert film; often called the best ever made</div>
+          <div class="vocab-item"><strong>Peter Gabriel</strong> — post-Genesis; world music, sampling, art-pop; peaked with So (1986)</div>
+          <div class="vocab-item"><strong>Tears for Fears</strong> — grandly ambitious, emotionally serious synth-rock; "Everybody Wants to Rule the World"</div>
+          <div class="vocab-item"><strong>New wave grows up</strong> — the genre matures from catchy singles to lasting, ambitious art</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"As the 80s went on, new wave's most ambitious artists pushed it into genuine art. Kate Bush made intensely personal, theatrical art-pop and pioneered the Fairlight sampler with total creative control — 'Hounds of Love' is a masterpiece. Talking Heads peaked with 'Stop Making Sense,' often called the greatest concert film ever. Peter Gabriel embraced world music and sampling. Tears for Fears made grandly serious synth-rock. New wave started as punk's clever little sibling, and here it grew all the way up — sophisticated, textured, emotionally serious, and technologically pioneering."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l11" onclick="markDone('l11')">Mark done</button>
+    </div>
+  </div>
+  <div class="phase-label"><span>Phase 4 — <span class="phase-name">Maturity, Legacy & the Long Echo</span></span><span>Lessons 12–14</span></div>
+  <div class="lesson" id="l12">
+    <div class="lesson-header" onclick="toggle('l12')">
+      <div class="lesson-num">12</div>
+      <div><div class="lesson-title">The Fade and the Transformation — Late 1980s</div><div class="lesson-sub">How new wave stopped being new</div></div>
+      <div class="lesson-time">~35 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>By the mid-to-late 1980s, new wave as a distinct movement was dissolving — partly through its own total success. When a genre becomes the mainstream sound of its decade, it stops being a movement and just becomes pop; the synth textures, gated drums, and glossy production of new wave and synth-pop had become the default sound of 1980s music generally, from film soundtracks to adult contemporary. The edge that had once distinguished it was everywhere and therefore nowhere.</p>
+          <p>Several forces accelerated the fade. The synth-pop sound aged as production trends shifted; a new generation reacted against 80s gloss just as new wave had reacted against 70s excess; and guitar-based music began to reassert itself, first through college rock and then, at the decade's very end, through the alternative and grunge movements that would explicitly reject the slick, image-driven pop new wave had become. What had been rebellious in 1979 looked, by 1989, like the establishment.</p>
+          <p>But new wave didn't so much die as disperse into its component descendants. Its synth-pop wing evolved directly into house, techno, and the entire dance-electronic future. Its guitar wing had already seeded alternative rock. Its production techniques and its marriage of image and music became permanent features of pop. New wave ended as a named genre precisely because it had won so completely that its innovations were absorbed into the bloodstream of everything that followed.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Dissolution by success</strong> — new wave became the mainstream 80s sound and stopped being a movement</div>
+          <div class="vocab-item"><strong>80s gloss</strong> — gated drums, glossy synths; the default production of the decade; eventually dated</div>
+          <div class="vocab-item"><strong>The guitar reasserts</strong> — college rock, then alternative and grunge, reacted against 80s pop gloss</div>
+          <div class="vocab-item"><strong>Dispersal not death</strong> — new wave scattered into dance music, alt-rock, and pop production</div>
+          <div class="vocab-item"><strong>Synth-pop to dance</strong> — the electronic wing evolved directly into house and techno</div>
+          <div class="vocab-item"><strong>Absorbed into the bloodstream</strong> — new wave ended because its innovations became universal</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"New wave faded in the late 80s partly by winning too completely. When your sound becomes the default of an entire decade — the synths, the gated drums, the gloss on every film soundtrack — you stop being a movement and just become pop. A new generation reacted against 80s slickness exactly the way new wave had reacted against 70s excess, and guitars came back through college rock and then grunge. But new wave didn't really die; it dispersed. Its synth wing became house and techno, its guitar wing became alternative rock, and its marriage of image and music became permanent. It ended because it won."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l12" onclick="markDone('l12')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l13">
+    <div class="lesson-header" onclick="toggle('l13')">
+      <div class="lesson-num">13</div>
+      <div><div class="lesson-title">The Revival Machine — New Wave's Endless Return</div><div class="lesson-sub">Why every decade rediscovers 1982</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>Few genres have been revived as persistently as new wave. Beginning in the late 1990s and accelerating through the 2000s, wave after wave of bands rediscovered its angular guitars, its synths, and its danceable art-rock. The post-punk revival — the Strokes, Interpol, Franz Ferdinand, the Killers, LCD Soundsystem — explicitly drew on new wave and post-punk's sounds and styles, introducing them to new generations who often weren't born when the originals were made.</p>
+          <p>The synth-pop wing proved equally revivable. Electroclash in the early 2000s, the synth-heavy indie of the 2000s and 2010s, and the broad "synthwave" movement — with its deliberate 1980s nostalgia, neon aesthetics, and vintage synth sounds — all mined new wave's electronic legacy. Film and television soundtracks (most famously the retro-80s world of shows like <em>Stranger Things</em>) made the synth textures of the era ubiquitous again, and vintage synthesizers became prized collector's items.</p>
+          <p>The persistence of these revivals points to something durable in new wave's DNA. Its combination of danceability, melody, style-consciousness, and technological modernity turns out to be endlessly renewable — a toolkit that each generation can pick up and make its own. Unlike movements tied to a specific moment of rebellion, new wave was always partly about the pleasures of surface, style, and sound, and those pleasures never really go out of date.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Post-punk revival</strong> — 2000s; the Strokes, Interpol, Franz Ferdinand, the Killers; new wave rediscovered</div>
+          <div class="vocab-item"><strong>Electroclash</strong> — early-2000s synth-pop revival; new wave's electronic wing returns</div>
+          <div class="vocab-item"><strong>Synthwave</strong> — deliberate 80s-nostalgia electronic music; neon, vintage synths, retro-futurism</div>
+          <div class="vocab-item"><strong>Stranger Things effect</strong> — retro-80s soundtracks made new wave's synth textures ubiquitous again</div>
+          <div class="vocab-item"><strong>Endlessly renewable</strong> — new wave's danceable, stylish, modern toolkit each generation reclaims</div>
+          <div class="vocab-item"><strong>Pleasures of surface</strong> — new wave's style-and-sound focus never dates the way pure rebellion does</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"Almost no genre gets revived as often as new wave. The 2000s post-punk revival — the Strokes, Interpol, Franz Ferdinand, the Killers, LCD Soundsystem — openly rebuilt it for a generation that wasn't alive for the originals. The synth wing came back too, through electroclash and then the whole synthwave movement with its neon 80s nostalgia, boosted by soundtracks like Stranger Things. The reason it keeps returning is that new wave was always partly about the pleasures of danceability, melody, style, and modern sound — and unlike pure rebellion, those pleasures just don't go out of date."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l13" onclick="markDone('l13')">Mark done</button>
+    </div>
+  </div>
+  <div class="lesson" id="l14">
+    <div class="lesson-header" onclick="toggle('l14')">
+      <div class="lesson-num">14</div>
+      <div><div class="lesson-title">The Legacy — New Wave's Fingerprints on Everything</div><div class="lesson-sub">The quiet victory of punk's clever sibling</div></div>
+      <div class="lesson-time">~40 min</div>
+    </div>
+    <div class="lesson-expand">
+      <div class="expand-section">
+        <div class="expand-label">Core Concepts</div>
+        <div class="expand-body">
+          <p>New wave's ultimate legacy is that it won so thoroughly its victory became invisible. The marriage of image and music that it pioneered and MTV amplified is now simply how pop works — every artist is a visual brand, every song has a video, style and sound are inseparable. The synthesizer and drum machine it normalized became the foundation of virtually all subsequent popular music; hip-hop, dance, R&B, and modern pop are all built on the electronic tools new wave made mainstream.</p>
+          <p>Its structural legacy runs just as deep. The independent, college-radio, small-club network its American guitar wing built became the infrastructure of alternative rock and, through R.E.M.'s and others' crossover, helped make the 1990s alternative explosion possible. Its embrace of the studio as a compositional instrument, of production as an art, and of technology as a creative partner became the default working method of modern music-making. The bedroom producer with a laptop is new wave's grandchild as surely as any guitar band.</p>
+          <p>Perhaps most enduringly, new wave legitimized a certain sensibility — smart, ironic, style-conscious, comfortable with artifice and pop pleasure, unashamed of both intelligence and danceability. It proved you could be arty and catchy, clever and commercial, modern and melodic all at once. That sensibility is now so pervasive across pop, indie, and electronic music that we no longer notice it. New wave was punk's clever sibling, and in the very long run, the clever sibling quietly inherited the house.</p>
+        </div>
+      </div>
+      <div class="expand-section">
+        <div class="expand-label">Key Vocabulary</div>
+        <div class="vocab-grid">
+          <div class="vocab-item"><strong>Image + music</strong> — new wave's MTV-amplified marriage of visual and sound; now simply how pop works</div>
+          <div class="vocab-item"><strong>Electronic foundation</strong> — the synth and drum machine it normalized underpin all modern pop</div>
+          <div class="vocab-item"><strong>Alternative infrastructure</strong> — its college-rock network became the base of 90s alt-rock</div>
+          <div class="vocab-item"><strong>Studio as instrument</strong> — production-as-art and technology-as-partner became the default method</div>
+          <div class="vocab-item"><strong>The bedroom producer</strong> — the laptop musician is new wave's direct descendant</div>
+          <div class="vocab-item"><strong>The clever sibling wins</strong> — arty + catchy, clever + commercial; new wave's sensibility is now everywhere</div>
+        </div>
+      </div>
+      <div class="cocktail-box">
+        <div class="cocktail-label">Cocktail Party Line</div>
+        <div class="cocktail-line">"New wave's real legacy is that it won so completely you stopped noticing. The marriage of image and music it pioneered is now just how pop works — every artist is a visual brand. The synthesizer and drum machine it normalized are the foundation of basically all modern pop, hip-hop, and dance. Its college-radio network became the infrastructure of 90s alternative rock. And its whole sensibility — smart, ironic, style-conscious, arty AND catchy, clever AND commercial — is now so universal it's invisible. Punk got the mythology, but new wave, the clever sibling, quietly inherited the house."</div>
+      </div>
+      <button class="mark-done-btn" id="check-l14" onclick="markDone('l14')">Mark done</button>
+    </div>
+  </div>
+
+  <div class="resources">
+    <div class="resources-hed">Further Reading &amp; Resources</div>
+    <div class="resource-list">
+      <div class="resource-item"><span>Rip It Up and Start Again — Simon Reynolds (2005) — post-punk and new wave; the definitive history</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Essential</span></div>
+      <div class="resource-item"><span>Mad World — Lori Majewski & Jonathan Bernstein (2014) — oral history of new wave via its key songs</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Oral History</span></div>
+      <div class="resource-item"><span>I Want My MTV — Marks & Tannenbaum (2011) — oral history of MTV and the video era; essential context</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">MTV</span></div>
+      <div class="resource-item"><span>Please Kill Me — McNeil & McCain (1996) — the New York scene that birthed Talking Heads and Blondie</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Origins</span></div>
+      <div class="resource-item"><span>Stop Making Sense — Jonathan Demme (1984) — the Talking Heads concert film; watch it</span><span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);">Film</span></div>
+    </div>
+  </div>
+
+  <div class="qa-widget">
+    <div class="qa-header">
+      <div class="qa-header-title">Ask the Tutor</div>
+      <div class="qa-header-sub">New Wave · Synth-Pop · Post-Punk to MTV · Powered by Claude</div>
+    </div>
+    <div class="qa-body">
+      <div class="qa-input-row">
+        <input type="text" class="qa-input" id="qa-input" placeholder="Ask about Talking Heads, Blondie, Devo, synth-pop, MTV, the Second British Invasion, new romantics…" onkeydown="if(event.key==='Enter') askTutor()">
+        <button class="qa-btn" onclick="askTutor()">Ask</button>
+      </div>
+      <div class="qa-response" id="qa-response"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div><p class="footer-name">Brooks Groves</p></div>
+    <div class="footer-links"><a href="/learning/">Learning</a><a href="/">Home</a></div>
+  </div>
+</footer>
+
+<script>
+function toggle(id) { document.getElementById(id).classList.toggle('open'); }
+function markDone(id) {
+  const el = document.getElementById(id);
+  const btn = document.getElementById('check-' + id);
+  el.classList.toggle('done');
+  const isDone = el.classList.contains('done');
+  btn.textContent = isDone ? '✓ Done' : 'Mark done';
+  btn.classList.toggle('done', isDone);
+  localStorage.setItem('newwave-' + id, isDone ? '1' : '');
+  updateProgress();
+}
+function updateProgress() {
+  const total = 14;
+  const done = document.querySelectorAll('.lesson.done').length;
+  document.getElementById('done-count').textContent = done;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+window.addEventListener('DOMContentLoaded', () => {
+  for (let i = 1; i <= 14; i++) {
+    if (localStorage.getItem('newwave-l' + i) === '1') {
+      const el = document.getElementById('l' + i);
+      const btn = document.getElementById('check-l' + i);
+      if (el) el.classList.add('done');
+      if (btn) { btn.textContent = '✓ Done'; btn.classList.add('done'); }
+    }
+  }
+  updateProgress();
+});
+async function askTutor() {
+  const input = document.getElementById('qa-input');
+  const response = document.getElementById('qa-response');
+  const question = input.value.trim();
+  if (!question) return;
+  input.value = '';
+  response.innerHTML = '<span class="qa-loading">Thinking…</span>';
+  try {
+    const res = await fetch('https://tiny-dawn-75f1.bdgroves1970.workers.dev', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: "You are an expert tutor for a self-directed curriculum on new wave music \u2014 the broad, studio-savvy, synthesizer-embracing offshoot of punk that ran from roughly 1977 through the late 1980s. Cover its origins at CBGB (Talking Heads, Blondie) and in British art-punk, the role of the synthesizer and the studio, key strands (skinny-tie power pop, synth-pop, the New Romantics, 2-Tone's overlap, no wave, college/alternative), landmark artists (Talking Heads, Blondie, Devo, Elvis Costello, the Cars, Gary Numan, the Human League, Depeche Mode, Duran Duran, Eurythmics, New Order, the Police, Kate Bush, the B-52s, Tears for Fears), the MTV revolution and the Second British Invasion, and new wave's evolution into synth-pop, college rock, and modern indie/synthwave. Be precise about the fuzzy boundary between punk, post-punk, and new wave; about production and technology (drum machines, sequencers, the Fairlight); and about the genre's self-conscious relationship to style and irony. Keep answers to 3-4 paragraphs unless asked for more.",
+        messages: [{ role: 'user', content: question }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'No response.';
+    response.innerHTML = text.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+  } catch(e) { response.innerHTML = 'Tutor unavailable. Try again in a moment.'; }
+}
+</script>
+</body>
+</html>
