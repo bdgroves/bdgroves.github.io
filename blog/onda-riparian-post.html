@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eight Years Later — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+
+  <!-- Open Graph / Twitter Card -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Eight Years Later, a 2018 Volunteer GIS Project Gets Its Answer — Brooks Groves">
+  <meta property="og:description" content="Rebuilding a Google Earth Engine NDVI prototype as a modern Python remote-sensing pipeline. What 40 years of Landsat, a Sentinel-1 cross-check, and real statistics say about three ONDA restoration sites in eastern Oregon.">
+  <meta property="og:url" content="https://brooksgroves.com/blog/onda-riparian-post.html">
+  <meta property="og:image" content="https://raw.githubusercontent.com/bdgroves/onda-riparian-2026/main/outputs/hero_figure.png">
+  <meta property="og:site_name" content="Brooks Groves">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <meta name="twitter:creator" content="@bdgroves">
+  <meta name="twitter:title" content="🌿 Eight Years Later — A 2018 Volunteer GIS Project Gets Its Answer">
+  <meta name="twitter:description" content="3 sites · 42 years of Landsat · 2 sensors · 8 years from cold email to finished analysis. A remote-sensing field report on ONDA riparian restoration in eastern Oregon.">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/bdgroves/onda-riparian-2026/main/outputs/hero_figure.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --storm:#2a5a8a; --deep:#1e2d44; --fire:#c0392b;
+      --contained:#5a7d3a; --river:#2a4a6b;
+      /* Accent for this piece — sage for vegetation/restoration */
+      --accent:#5a7d3a; --accent-deep:#3d5426;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+
+    .topline { height:4px; background:linear-gradient(90deg,var(--accent-deep) 0%,var(--accent) 40%,var(--gold) 75%,var(--river) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--accent); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--accent); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--accent); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-deck { font-family:'Libre Baskerville',serif; font-size:1.1rem; font-style:italic; color:var(--stone); line-height:1.6; margin-bottom:1.25rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:1.5rem; border-bottom:1px solid var(--mist); margin-bottom:2rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+    /* ── STAT STRIP ── */
+    .stat-strip { display:grid; grid-template-columns:repeat(5,1fr); border:1.5px solid var(--ink); margin:2rem 0; }
+    .stat-cell { padding:14px 10px; border-right:1px solid var(--mist); text-align:center; }
+    .stat-cell:last-child { border-right:none; }
+    .stat-cell.accent { background:var(--accent); color:var(--white); }
+    .stat-cell.gold { background:var(--gold); color:var(--white); }
+    .stat-num { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:900; line-height:1; display:block; }
+    .stat-cell.accent .stat-num,
+    .stat-cell.gold .stat-num { color:#fdfaf4; }
+    .stat-lbl { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-top:4px; display:block; }
+    .stat-cell.accent .stat-lbl,
+    .stat-cell.gold .stat-lbl { color:rgba(255,255,255,0.8); }
+    @media (max-width: 600px) { .stat-strip { grid-template-columns:repeat(2,1fr); } .stat-cell { border-right:1px solid var(--mist); border-bottom:1px solid var(--mist); } }
+
+    /* ── ARTICLE BODY ── */
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-of-type::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--accent); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--accent-deep); }
+    .article-body h3 { font-family:'DM Mono',monospace; font-size:0.7rem; font-weight:400; letter-spacing:0.15em; text-transform:uppercase; color:var(--accent); margin:2rem 0 0.5rem; }
+    .article-body blockquote { border-left:3px solid var(--accent); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--accent-deep); text-decoration:underline; text-underline-offset:3px; }
+    .article-body strong { font-weight:700; }
+    .article-body code { font-family:'DM Mono',monospace; font-size:0.9em; background:var(--cream); padding:0.1em 0.35em; border-radius:3px; }
+
+    /* ── PULL QUOTE ── */
+    .pullquote { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:600; font-style:italic; line-height:1.35; color:var(--accent-deep); border-top:2px solid var(--accent); border-bottom:2px solid var(--accent); padding:1.5rem 0; margin:2rem 0; text-align:center; }
+
+    /* ── HERO IMAGE FIGURE ── */
+    .hero-figure { margin:1.75rem 0; border:2px solid var(--ink); background:var(--cream); }
+    .hero-figure img { width:100%; display:block; }
+    .hero-caption { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); padding:0.6rem 0.9rem; text-transform:uppercase; border-top:1px solid var(--mist); background:var(--cream); }
+
+    /* ── FINDINGS CARDS ── */
+    .site-card { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--accent); padding:1.25rem 1.5rem; margin:1.5rem 0; }
+    .site-card h3 { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; font-style:normal; letter-spacing:0; text-transform:none; color:var(--accent-deep); margin-bottom:0.5rem; padding:0; }
+    .site-card p { font-size:1rem; line-height:1.75; margin-bottom:0.75rem; }
+    .site-card p:last-child { margin-bottom:0; }
+    .site-card.disagreement { border-left-color:var(--gold); }
+    .site-card.disagreement h3 { color:#8a6410; }
+
+    /* ── SCORECARD (closing signature) ── */
+    .scorecard { background:var(--ink); color:var(--white); padding:1.5rem 1.75rem; margin:2.5rem 0 1rem; }
+    .scorecard-lbl { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:1rem; }
+    .scorecard-row { padding:0.5rem 0; font-size:0.95rem; line-height:1.6; border-bottom:1px solid rgba(255,255,255,0.1); }
+    .scorecard-row:last-child { border-bottom:none; }
+    .scorecard .num { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:var(--gold); }
+
+    /* ── SHARE BAR ── */
+    .share-bar { display:flex; align-items:center; gap:0.75rem; padding:1.5rem 0; border-top:1px solid var(--mist); border-bottom:1px solid var(--mist); margin:2rem 0; flex-wrap:wrap; }
+    .share-lbl { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-right:0.25rem; }
+    .share-btn { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; border:1px solid var(--mist); padding:0.4rem 0.9rem; color:var(--ink); background:transparent; cursor:pointer; display:inline-block; transition:all 0.15s; }
+    .share-btn:hover { background:var(--ink); color:var(--white); border-color:var(--ink); }
+    .share-btn.tw { border-color:#1DA1F2; color:#1DA1F2; }
+    .share-btn.tw:hover { background:#1DA1F2; color:#fff; border-color:#1DA1F2; }
+    .share-btn.bsky { border-color:#0085ff; color:#0085ff; }
+    .share-btn.bsky:hover { background:#0085ff; color:#fff; border-color:#0085ff; }
+
+    /* ── FOOTER ── */
+    footer { border-top:2px solid var(--ink); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:900; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--accent); }
+    .footer-copy { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.08em; }
+  </style>
+</head>
+<body>
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/">Blog</a>
+      <a href="/hydrology.html">Hydrology</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="/maps.html">Maps</a>
+      <a href="/about.html">About</a>
+      <a href="https://github.com/bdgroves" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/" class="article-back">← Back to Blog</a>
+
+  <div class="article-kicker">🌿 Remote Sensing · Field Report · Eastern Oregon · July 24, 2026</div>
+  <h1 class="article-title">Eight Years Later, a 2018 Volunteer GIS Project Gets Its Answer</h1>
+  <p class="article-deck">Rebuilding a Google Earth Engine NDVI prototype as a modern Python remote-sensing pipeline — and what 40 years of Landsat, a Sentinel-1 cross-check, and real statistics say about three ONDA restoration sites in eastern Oregon.</p>
+
+  <div class="article-meta">
+    <span>By <strong>Brooks Groves</strong></span>
+    <span>GIS Analyst · GISP</span>
+    <span>July 24, 2026</span>
+  </div>
+
+  <div class="article-tags">
+    <a href="/tags.html#Remote%20Sensing" class="article-tag-pill">Remote Sensing</a>
+    <a href="/tags.html#Geospatial" class="article-tag-pill">Geospatial</a>
+    <a href="/tags.html#ONDA" class="article-tag-pill">ONDA</a>
+    <a href="/tags.html#Oregon" class="article-tag-pill">Oregon</a>
+    <a href="/tags.html#Landsat" class="article-tag-pill">Landsat</a>
+    <a href="/tags.html#Sentinel-1" class="article-tag-pill">Sentinel-1</a>
+    <a href="/tags.html#Google%20Earth%20Engine" class="article-tag-pill">Google Earth Engine</a>
+    <a href="/tags.html#Python" class="article-tag-pill">Python</a>
+    <a href="/tags.html#NDVI" class="article-tag-pill">NDVI</a>
+    <a href="/tags.html#Riparian" class="article-tag-pill">Riparian</a>
+    <a href="/tags.html#Field%20Report" class="article-tag-pill">Field Report</a>
+    <a href="/tags.html#Reproducibility" class="article-tag-pill">Reproducibility</a>
+  </div>
+
+  <div class="stat-strip">
+    <div class="stat-cell accent"><span class="stat-num">8 yrs</span><span class="stat-lbl">Cold Email<br>to Answer</span></div>
+    <div class="stat-cell"><span class="stat-num">3</span><span class="stat-lbl">Study<br>Reaches</span></div>
+    <div class="stat-cell gold"><span class="stat-num">42 yrs</span><span class="stat-lbl">Landsat<br>Record</span></div>
+    <div class="stat-cell"><span class="stat-num">2</span><span class="stat-lbl">Independent<br>Sensors</span></div>
+    <div class="stat-cell"><span class="stat-num">~10m</span><span class="stat-lbl">Full<br>Rebuild</span></div>
+  </div>
+
+  <div class="share-bar">
+    <span class="share-lbl">Share</span>
+    <a href="https://twitter.com/intent/tweet?text=%F0%9F%8C%BF%20Eight%20years%20later%2C%20a%202018%20volunteer%20GIS%20project%20gets%20its%20answer%20%E2%80%94%2040%20years%20of%20Landsat%20on%20three%20ONDA%20restoration%20sites%20in%20eastern%20Oregon.%20By%20%40bdgroves&url=https%3A%2F%2Fbrooksgroves.com%2Fblog%2Fonda-riparian-post.html&hashtags=RemoteSensing%2CGIS%2CONDA%2CLandsat" class="share-btn tw">𝕏 Post to X</a>
+    <a href="https://bsky.app/intent/compose?text=%F0%9F%8C%BF%20Eight%20years%20later%2C%20a%202018%20volunteer%20GIS%20project%20gets%20its%20answer%20%E2%80%94%2040%20years%20of%20Landsat%20on%20three%20ONDA%20restoration%20sites%20in%20eastern%20Oregon.%20https%3A%2F%2Fbrooksgroves.com%2Fblog%2Fonda-riparian-post.html" class="share-btn bsky">🦋 Bluesky</a>
+    <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href).then(()=>{this.textContent='✓ Copied';setTimeout(()=>this.textContent='📋 Copy Link',2000)})">📋 Copy Link</button>
+  </div>
+
+  <div class="article-body">
+
+    <p>In April 2018 I sent a cold email to a nonprofit I had never worked with.</p>
+
+    <p>I was finishing a GIS certificate at the University of Washington and looking for a volunteer project — something with real stakes, not another Portland light-rail bike-lane analysis. I had spent enough time in the Great Basin as a biology undergrad at Reno to have opinions about the high desert, and I had recently heard about the <a href="https://onda.org" target="_blank">Oregon Natural Desert Association</a> on an NPR story. They protect exactly the landscape I cared about. So I emailed their outreach coordinator asking if they had any GIS work a Seattle-based volunteer could do remotely.</p>
+
+    <p>Two weeks later, ONDA's riparian restoration coordinator, Jefferson Jacobs, wrote back with two project ideas. One involved Oregon Department of Transportation right-of-ways. The other was an idea he had been sitting on:</p>
+
+    <blockquote>"This project uses a google-earth based engine (Not ARC GIS) to look at changes in NDVI over time for different locations. In eastern Oregon if imagery from August (or late July through early Sept…) is used (when there is little to no rain) the plants that are green and happy have tapped into ground-water sources and are a great indicator of ground-water extent. Our restoration efforts target the increase in groundwater so being able to map this extent is critical."</blockquote>
+
+    <p>I want to sit on that idea for a moment, because I still find it beautiful eight years later. Eastern Oregon in late summer is a dead-dry landscape. It rains in the winter and it doesn't rain from July through September. Any plant that stays green in August has to be pulling water from somewhere, and in these drainages "somewhere" almost always means a shallow groundwater aquifer connected to the creek. <strong>Map the green pixels in August, and you have mapped the shape of the functional groundwater system.</strong> Do it every year, and you can watch groundwater expand or contract in response to whatever intervention ONDA is doing — beaver dam analogs, riparian plantings, channel-plug-and-pond, grazing exclusion.</p>
+
+    <p>Jefferson pointed me at three drainages where ONDA had been working: Hay Creek, Pine Creek, and the South Fork of the Crooked River. He said "I have no idea how to use this tool, so I need you to figure it out and then teach me."</p>
+
+    <p>I got a prototype working by fall 2018 in the Google Earth Engine Code Editor. It computed NDVI over each drainage from NAIP imagery, averaged it over polygons stored in a Google Fusion Table, and produced a screenshot of Pine Creek. Jefferson was happy. I moved on to a job in Seattle.</p>
+
+    <p>That was in 2018. This week I finally came back to finish it.</p>
+
+    <h2>Why now, and what changed</h2>
+
+    <p>Two things happened between 2018 and 2026 that made a rebuild worth doing.</p>
+
+    <p><strong>The infrastructure moved on.</strong> Google Fusion Tables — where the site polygons lived — was shut down in December 2019. The GEE JavaScript editor is still fine for quick looks, but the Python geospatial ecosystem grew up. <code>earthengine-api</code> + <code>geemap</code> + <code>xarray</code> + <code>geopandas</code> is now the standard for anything reproducible. Landsat Collection 2 replaced Collection 1 in 2021, with cleaner geometry and radiometry back to 1984. Sentinel-2 started producing usable imagery in 2016 (10 m resolution vs Landsat's 30 m). Sentinel-1 SAR (2015 onward) added a completely independent moisture-sensing capability that doesn't care about clouds. <code>pymannkendall</code> and <code>ruptures</code> turned trend testing into two-line imports.</p>
+
+    <p><strong>And the science question got better.</strong> NDVI was the right tool for a first pass, but the <a href="https://en.wikipedia.org/wiki/Normalized_difference_moisture_index" target="_blank">Normalized Difference Moisture Index (NDMI)</a> — which uses the shortwave-infrared band to measure leaf water content directly — turned out to be a much more precise fit for the groundwater question Jefferson was really asking.</p>
+
+    <p class="pullquote">"NDVI tells you a plant is green.<br>NDMI tells you a plant is <em>wet</em>."</p>
+
+    <p>So the 2026 rebuild is not the 2018 tool with better graphics. It is a different analysis: <strong>40+ years of Landsat, multiple indices, a completely independent SAR check, real statistics, and full reproducibility.</strong></p>
+
+    <p>Code and data are public at <a href="https://github.com/bdgroves/onda-riparian-2026" target="_blank">github.com/bdgroves/onda-riparian-2026</a>. MIT license. Anyone can clone it, run <code>pixi install</code>, authenticate to Earth Engine, and reproduce every figure in this post.</p>
+
+    <h2>What we did</h2>
+
+    <p>The pipeline is boring in the good way. For each of three ONDA study reaches:</p>
+
+    <p><strong>1.</strong> Build one late-summer (Jul 15 – Sep 15) composite per year from 1984 through 2025 using every Landsat mission that was flying that year (5, 7, 8, 9). Apply proper cloud/shadow/snow masking. Rename bands to a common vocabulary so downstream code doesn't care which sensor produced the composite. Reduce to a single median value per polygon per year.</p>
+    <p><strong>2.</strong> Compute NDVI, NDMI, NDWI, EVI, NBR on each composite.</p>
+    <p><strong>3.</strong> Do the same for Sentinel-1 VV/VH backscatter, 2015 through 2024.</p>
+    <p><strong>4.</strong> Run Mann-Kendall trend tests, Theil-Sen slope estimation, and PELT change-point detection on every index series.</p>
+    <p><strong>5.</strong> Cross-check the optical (Landsat) moisture story against the radar (SAR) moisture story on the years where both exist.</p>
+
+    <p>The whole thing runs in about 10 minutes. Every intermediate result is a versioned CSV or GeoJSON in the repo. Every figure is regenerated from a script.</p>
+
+    <div class="hero-figure">
+      <img src="https://raw.githubusercontent.com/bdgroves/onda-riparian-2026/main/outputs/hero_figure.png" alt="Three ONDA study sites shown on a map of Oregon with per-site trend summary cards for South Fork Crooked River, Pine Creek, and Hay Creek" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div class="hero-caption" style="display:none;">▲ Hero figure — pulled from the onda-riparian-2026 GitHub repo. Image not yet published.</div>
+      <div class="hero-caption">▲ Three ONDA study sites in eastern Oregon with per-site trend summaries. Source: <a href="https://github.com/bdgroves/onda-riparian-2026" target="_blank" style="color:var(--accent-deep);">onda-riparian-2026</a></div>
+    </div>
+
+    <h2>What the data says</h2>
+
+    <p>Three sites, three different stories.</p>
+
+    <div class="site-card">
+      <h3>South Fork Crooked River — the most interesting</h3>
+      <p>Every index at SF Crooked goes the direction restoration would predict, and the effect sizes are the largest of the three sites. NDVI is significantly increasing (p &lt; 0.0001). NDMI is significantly increasing (p = 0.013). NDWI — open surface water — is significantly decreasing (p &lt; 0.0001).</p>
+      <p>The temporal structure is even more interesting. The change-point algorithm finds an NDWI shift around 2005, an NDVI shift around 2010, and another NDWI shift around 2015. That's a decade-long transformation, not a single event. <strong>That is exactly the temporal signature you'd predict from a beaver dam analog network aging into the landscape</strong> — BDAs are cheap wooden structures that mimic beaver dams, and they take years to catch sediment, spread water laterally, and expand the wet footprint. If ONDA installed BDAs at SF Crooked in the 2005–2010 window, the data would look like this.</p>
+      <p>I don't know if they did. I emailed to ask.</p>
+    </div>
+
+    <div class="site-card">
+      <h3>Pine Creek — the 2019 regime shift</h3>
+      <p>Pine Creek shows what a <em>single-event</em> signature looks like. All three Landsat indices have a change point in 2019, and the pattern is different from SF Crooked's slow decade-long shift. NDVI jumped, NDMI stayed flat, NDWI dropped — all in one year and stuck there.</p>
+      <p>That could be a lot of things. A restoration project completing. A wildfire. A grazing management change. A drought pattern shift. Only ONDA can tell me which.</p>
+    </div>
+
+    <div class="site-card disagreement">
+      <h3>Hay Creek — the two-sensor disagreement</h3>
+      <p>Hay Creek is where the SAR analysis paid off. The Landsat record shows the same "green but drying" story as Pine Creek — NDVI up, NDMI flat, NDWI significantly down — with a 2019 change point in NDVI. On the Landsat evidence alone I would have said Hay Creek is drying out.</p>
+      <p>But Sentinel-1 VV backscatter at Hay Creek is <em>significantly increasing</em> over 2015-2024 (p = 0.032). Radar and optics see different things: optical NDVI/NDMI/NDWI respond mostly to leaf chlorophyll and structure, while C-band SAR responds to soil moisture and biomass volume. When they disagree, that disagreement is a signal.</p>
+      <p>The most honest read is that Hay Creek has been experiencing <strong>something recent that optical sensors can't fully see</strong> — likely a soil-moisture-level change under vegetation that doesn't itself look particularly wet. If I had to bet, I'd bet on grazing pressure changes or a subtle groundwater response, but I would not bet with much confidence.</p>
+    </div>
+
+    <h2>The uncomfortable part</h2>
+
+    <p>I am not going to overstate what this shows. It's real, it's reproducible, and it's from two independent sensors — but it is also <strong>hypothesis-generating, not conclusive</strong>.</p>
+
+    <p>Three specific limitations I want to name:</p>
+
+    <p><strong>No ground truth.</strong> ONDA installed beaver dam analogs and did other work at various sites, but I don't yet know where or when. The single most useful piece of information I could get right now is a spreadsheet from Jefferson saying "SF Crooked BDAs installed 2008-2012 along these specific stream miles." With that in hand, the SF Crooked interpretation goes from "consistent with restoration success" to "predicted by restoration date." Without it, I'm guessing.</p>
+
+    <p><strong>No control drainage.</strong> All three sites could be responding to regional climate — eastern Oregon has been warming and getting less reliable snowpack, which affects riparian systems everywhere in the high desert. A nearby, similar-sized drainage where ONDA has <em>not</em> done restoration would give me a control. If SF Crooked's wetting signal holds up against a drier climate-only trend at a control site, that's the causal-quality evidence.</p>
+
+    <p><strong>Polygon means dilute local effects.</strong> SF Crooked's ONDA polygon is 6.7 km². If BDAs were installed on 200 meters of stream and had a huge effect there, that effect gets diluted 30-to-1 in the polygon mean. Pixel-level analysis (LandTrendr) is the natural next step — actually mapping <em>which pixels</em> changed the most and comparing that to project locations.</p>
+
+    <h2>What I've learned</h2>
+
+    <p>Three specific things.</p>
+
+    <p><strong>Late-summer imagery is real signal, but late-summer averages hide event-scale change.</strong> The 5-year rolling means look smooth. The annual dots do not. Wildfire years, drought years, and specific restoration events show up as departures from the trend that you would completely miss if you only looked at the linear fit. If I do this again, I'll build a system that keeps both — the trend for the long story, the anomalies for the short one.</p>
+
+    <p><strong>Two sensors is not twice as much as one sensor. It is qualitatively different.</strong> Landsat and Sentinel-1 disagree at Hay Creek because they physically measure different things (light bouncing off leaves versus microwaves bouncing off wet soil). The disagreement is more informative than agreement would be. Any future remote-sensing work I do that claims to detect environmental change should include an independent second sensor by default.</p>
+
+    <p><strong>Reproducibility is not overhead.</strong> I spent probably 30% of the project time on pixi environments, tests, CI, gitignore rules, and documentation. That felt like tax at the time. But when I regenerated the whole analysis last week after finding a bug in the empty-year handling for SF Crooked, it took 12 minutes and I got the same numbers I got the first time. The tax paid for itself once, and it will pay again every time I revisit this or someone else picks it up.</p>
+
+    <h2>What's next</h2>
+
+    <p>If Jefferson replies, I'll do a follow-up post with the actual restoration dates layered on the change points. I have suspicions about the 2019 Pine Creek shift and about the mid-decade SF Crooked transformation, but I want to be told, not to guess in public.</p>
+
+    <p>Independent of that, there is another 2018 project in the same volunteer email — Jefferson asked me to identify where Oregon Department of Transportation road right-of-ways overlap with creek and river banks, so ODOT could plant shade vegetation without needing to acquire land. That is a totally different kind of analysis — public GIS layers, spatial intersections, aspect calculations — and it does not depend on ONDA ground truth. I'll do that one next and put it in the same repo.</p>
+
+    <p>And someday, a field trip. Every quantitative story wants a qualitative ground-truth visit. I want to stand at the SF Crooked BDA site in August 2027 and see whether the ground is actually wetter than it looks in Landsat. That's the trip I've been meaning to make since 2018.</p>
+
+    <div class="scorecard">
+      <div class="scorecard-lbl">By the Numbers</div>
+      <div class="scorecard-row"><span class="num">1</span> cold email · <span class="num">2</span> project ideas · <span class="num">8</span> years to answer</div>
+      <div class="scorecard-row"><span class="num">3</span> study reaches · <span class="num">42</span> years of Landsat · <span class="num">5</span> spectral indices</div>
+      <div class="scorecard-row"><span class="num">2</span> independent sensors (Landsat + Sentinel-1) · <span class="num">1</span> qualitative disagreement that turned out to be the signal</div>
+      <div class="scorecard-row"><span class="num">10</span> minutes to regenerate the entire analysis · <span class="num">1</span> field trip still owed</div>
+    </div>
+
+    <h2>Credits</h2>
+
+    <p>None of this happens without Jefferson Jacobs at ONDA. He framed the science question in 2018, was patient with me when I disappeared for eight years, and is still doing the actual on-the-ground restoration work that this analysis pretends to measure. The polygons in the analysis are his. The insight about late-summer NDVI is his. I just added 40 years of Landsat.</p>
+
+    <p>Tooling credit goes to Qiusheng Wu at OpenGeos — his <a href="https://geemap.org" target="_blank">geemap</a> library did most of the heavy lifting for the Earth Engine work, and his newer <a href="https://geolibre.app" target="_blank">GeoLibre</a> is where the next round of interactive maps for this project will live.</p>
+
+    <p>Full code, data, and figures at <a href="https://github.com/bdgroves/onda-riparian-2026" target="_blank">github.com/bdgroves/onda-riparian-2026</a>. Questions, corrections, or ideas: <a href="mailto:brooks@brooksgroves.com">brooks@brooksgroves.com</a>.</p>
+
+  </div>
+
+  <div class="share-bar">
+    <span class="share-lbl">Share this piece</span>
+    <a href="https://twitter.com/intent/tweet?text=%F0%9F%8C%BF%20Eight%20years%20later%2C%20a%202018%20volunteer%20GIS%20project%20gets%20its%20answer%20%E2%80%94%2040%20years%20of%20Landsat%20on%20three%20ONDA%20restoration%20sites%20in%20eastern%20Oregon.%20By%20%40bdgroves&url=https%3A%2F%2Fbrooksgroves.com%2Fblog%2Fonda-riparian-post.html&hashtags=RemoteSensing%2CGIS%2CONDA%2CLandsat" class="share-btn tw">𝕏 Post to X</a>
+    <a href="https://bsky.app/intent/compose?text=%F0%9F%8C%BF%20Eight%20years%20later%2C%20a%202018%20volunteer%20GIS%20project%20gets%20its%20answer%20%E2%80%94%2040%20years%20of%20Landsat%20on%20three%20ONDA%20restoration%20sites%20in%20eastern%20Oregon.%20https%3A%2F%2Fbrooksgroves.com%2Fblog%2Fonda-riparian-post.html" class="share-btn bsky">🦋 Bluesky</a>
+    <button class="share-btn" onclick="navigator.clipboard.writeText(window.location.href).then(()=>{this.textContent='✓ Copied';setTimeout(()=>this.textContent='📋 Copy Link',2000)})">📋 Copy Link</button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-name">Brooks Groves</div>
+    <div class="footer-links">
+      <a href="/blog/">Blog</a>
+      <a href="/hydrology.html">Hydrology</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves">GitHub ↗</a>
+      <a href="https://x.com/bdgroves">X ↗</a>
+      <a href="https://bsky.app/profile/bdgroves.bsky.social">Bluesky ↗</a>
+    </div>
+    <div class="footer-copy">© 2026 Brooks Groves · Lakewood, WA</div>
+  </div>
+</footer>
+
+</body>
+</html>
