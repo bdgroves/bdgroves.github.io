@@ -241,7 +241,13 @@
 
     <h2>What the data says</h2>
 
-    <p>Three sites, three different stories.</p>
+    <p>Three sites, three different stories. Here's the whole thing at once — every index, every site, every year from 1984 to 2025:</p>
+
+    <div class="hero-figure">
+      <img src="https://raw.githubusercontent.com/bdgroves/onda-riparian-2026/main/outputs/three_site_grid.png" alt="Three-by-three grid of time series: NDVI, NDMI, and NDWI at Hay Creek, Pine Creek, and South Fork Crooked River from 1984 to 2025, with 5-year rolling means, Theil-Sen regression lines, and change-point markers" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div class="hero-caption" style="display:none;">▲ Three sites × three indices, Landsat 1984–2025. Figure not yet published.</div>
+      <div class="hero-caption">▲ Three sites × three indices, Landsat 1984–2025. Thin lines are annual medians. Dark line is 5-year rolling mean. Red dashed line is the Theil-Sen slope. Purple dotted verticals mark change-points from the PELT algorithm. Full pipeline at <a href="https://github.com/bdgroves/onda-riparian-2026" target="_blank" style="color:var(--accent-deep);">onda-riparian-2026</a>.</div>
+    </div>
 
     <div class="site-card">
       <h3>South Fork Crooked River — the most interesting</h3>
@@ -272,6 +278,14 @@
     <p><strong>No ground truth.</strong> ONDA installed beaver dam analogs and did other work at various sites, but I don't yet know where or when. The single most useful piece of information I could get right now is a spreadsheet from Jefferson saying "SF Crooked BDAs installed 2008-2012 along these specific stream miles." With that in hand, the SF Crooked interpretation goes from "consistent with restoration success" to "predicted by restoration date." Without it, I'm guessing.</p>
 
     <p><strong>No control drainage.</strong> All three sites could be responding to regional climate — eastern Oregon has been warming and getting less reliable snowpack, which affects riparian systems everywhere in the high desert. A nearby, similar-sized drainage where ONDA has <em>not</em> done restoration would give me a control. If SF Crooked's wetting signal holds up against a drier climate-only trend at a control site, that's the causal-quality evidence.</p>
+
+    <p>Something a normalized cross-site view <em>can</em> show, even without a true control, is whether the three sites are moving together or apart. If they were locked in step, you'd read that as "everything is climate." They're not:</p>
+
+    <div class="hero-figure">
+      <img src="https://raw.githubusercontent.com/bdgroves/onda-riparian-2026/main/outputs/three_site_ndmi_comparison.png" alt="NDMI z-score comparison across Hay Creek, Pine Creek, and South Fork Crooked River from 1984 to 2025 — three colored lines diverging around 2000 and reconverging in recent years" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div class="hero-caption" style="display:none;">▲ NDMI cross-site z-score comparison. Figure not yet published.</div>
+      <div class="hero-caption">▲ NDMI (leaf-moisture) z-scored across sites, 1984–2025. Notice the ~2000 low all three share, then Hay and Pine staying dry through the 2010s while SF Crooked climbs, then all three converging back upward in recent years. Not the signature of a single regional climate signal driving everything.</div>
+    </div>
 
     <p><strong>Polygon means dilute local effects.</strong> SF Crooked's ONDA polygon is 6.7 km². If BDAs were installed on 200 meters of stream and had a huge effect there, that effect gets diluted 30-to-1 in the polygon mean. Pixel-level analysis (LandTrendr) is the natural next step — actually mapping <em>which pixels</em> changed the most and comparing that to project locations.</p>
 
