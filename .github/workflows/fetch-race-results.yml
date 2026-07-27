@@ -245,6 +245,53 @@ jobs:
               m = re.match(r'^(\d+)', txt)
               return int(m.group(1)) if m else None
 
+          def classification_tables_by_heading(soup):
+              """
+              Post-race article structure: Wikipedia editors typically strip the
+              per-classification caption and identify each table only via a
+              preceding <h3> heading like 'General classification' (no 'after
+              Stage N' suffix). This function returns a dict mapping the four
+              classifications to the FIRST wikitable that follows each heading:
+
+                  {'gc': <table>, 'points': <table>, 'kom': <table>, 'youth': <table>}
+
+              Only classifications actually present in the article are included.
+              Safe to call at any time — if a heading isn't there, its key is
+              simply absent from the result.
+              """
+              result = {}
+              # Canonical heading text (lowercased) → key we use internally.
+              heading_map = [
+                  ('general classification', 'gc'),
+                  ('points classification',  'points'),
+                  ('mountains classification','kom'),
+                  ('young rider classification', 'youth'),
+                  # A few variant phrasings Wikipedia has used across seasons:
+                  ('king of the mountains',  'kom'),
+                  ('best young rider',       'youth'),
+              ]
+              for tag in soup.find_all(['h2', 'h3', 'h4']):
+                  txt = clean_text(tag.get_text()).lower()
+                  # Strip 'after stage N' if present so we match both mid- and post-race.
+                  txt = re.sub(r'\s+after stage \d+\b.*$', '', txt).strip()
+                  key = None
+                  for prefix, canonical in heading_map:
+                      if txt == prefix or txt.startswith(prefix + ' '):
+                          key = canonical
+                          break
+                  if not key or key in result:
+                      continue  # unrecognized, or we already found the first match
+                  # Find the first wikitable that follows this heading. Stop if
+                  # we run into a new H2 first — that means we left the section.
+                  for sib in tag.find_all_next(['table', 'h2']):
+                      if sib.name == 'h2':
+                          break
+                      classes = sib.get('class') or []
+                      if sib.name == 'table' and 'wikitable' in classes:
+                          result[key] = sib
+                          break
+              return result
+
           # ─────────────────────────────────────────────────────────────────
           # Race processing
           # ─────────────────────────────────────────────────────────────────
@@ -255,7 +302,7 @@ jobs:
               cfg = RACES[race_key]
               if today < cfg['window_start'] - timedelta(days=1):
                   return False, f"outside window (race starts {cfg['window_start']})"
-              if today > cfg['window_end'] + timedelta(days=2):
+              if today > cfg['window_end'] + timedelta(days=5):
                   return False, f"outside window (race ended {cfg['window_end']})"
               return True, "active"
 
@@ -394,6 +441,82 @@ jobs:
                               break
                       continue
 
+              # ── Pass 1b: heading-based fallback for post-race final tables ──
+              # After the race, Wikipedia editors typically strip captions from
+              # the classification tables and identify them only via a preceding
+              # H3 heading (e.g. "General classification" — no "after Stage N").
+              # We use a large "stage number" to guarantee these override any
+              # in-race snapshot we might have picked up in Pass 1.
+              FINAL_STAGE_MARKER = 999
+              heading_tables = classification_tables_by_heading(soup)
+
+              def _parse_gc_table(table):
+                  rows = []
+                  for tr in rows_of(table):
+                      cells = tr.find_all(['th', 'td'], recursive=False)
+                      if len(cells) < 4:
+                          continue
+                      rank = parse_rank(cells[0])
+                      if rank is None:
+                          continue
+                      rider = cell_primary_link_text(cells[1])
+                      team  = cell_primary_link_text(cells[2])
+                      time_str = clean_text(cells[3].get_text())
+                      if rider:
+                          rows.append({
+                              'rank': rank, 'rider': rider,
+                              'nation': '', 'team': team, 'time': time_str,
+                          })
+                          if team:
+                              rider_team[rider] = team
+                  return rows
+
+              def _parse_leader_row(table):
+                  """Parse the first-place row from a jersey-classification table."""
+                  for tr in rows_of(table):
+                      cells = tr.find_all(['th', 'td'], recursive=False)
+                      if len(cells) < 3:
+                          continue
+                      rank = parse_rank(cells[0])
+                      if rank != 1:
+                          continue
+                      rider = cell_primary_link_text(cells[1])
+                      team  = cell_primary_link_text(cells[2])
+                      if rider:
+                          if team:
+                              rider_team[rider] = team
+                          return {'rider': rider, 'team': team}
+                  return None
+
+              if 'gc' in heading_tables and latest_gc_stage < FINAL_STAGE_MARKER:
+                  gc_rows = _parse_gc_table(heading_tables['gc'])
+                  if gc_rows:
+                      latest_gc = gc_rows
+                      latest_gc_stage = FINAL_STAGE_MARKER
+                      print(f"  [parse] GC via heading (final): {len(gc_rows)} rows, "
+                            f"leader {gc_rows[0]['rider']} ({gc_rows[0]['team']})")
+
+              if 'points' in heading_tables and latest_points_stage < FINAL_STAGE_MARKER:
+                  leader = _parse_leader_row(heading_tables['points'])
+                  if leader:
+                      points_leader = leader
+                      latest_points_stage = FINAL_STAGE_MARKER
+                      print(f"  [parse] Points via heading (final): {leader['rider']}")
+
+              if 'kom' in heading_tables and latest_kom_stage < FINAL_STAGE_MARKER:
+                  leader = _parse_leader_row(heading_tables['kom'])
+                  if leader:
+                      kom_leader = leader
+                      latest_kom_stage = FINAL_STAGE_MARKER
+                      print(f"  [parse] KOM via heading (final): {leader['rider']}")
+
+              if 'youth' in heading_tables and latest_youth_stage < FINAL_STAGE_MARKER:
+                  leader = _parse_leader_row(heading_tables['youth'])
+                  if leader:
+                      young_rider = leader
+                      latest_youth_stage = FINAL_STAGE_MARKER
+                      print(f"  [parse] Youth via heading (final): {leader['rider']}")
+
               # ── Pass 2: stage winners from Stage characteristics table ──
               # Table caption contains "Stage characteristics"; header row has
               # Stage / Date / Course / Distance / Type / Winner columns. The
@@ -406,11 +529,12 @@ jobs:
                   print(f"  [parse] found Stage characteristics table")
                   for tr in rows_of(table):
                       cells = tr.find_all(['th', 'td'], recursive=False)
-                      if len(cells) < 6:
+                      if len(cells) < 5:
                           continue
-                      # First cell is <th> with the stage number (linked)
+                      # First cell is <th> with the stage number (may be linked
+                      # or followed by a footnote reference marker).
                       stage_txt = clean_text(cells[0].get_text())
-                      m = re.match(r'^(\d+)$', stage_txt)
+                      m = re.match(r'^(\d+)\b', stage_txt)
                       if not m:
                           continue
                       stage_num = int(m.group(1))
@@ -584,15 +708,26 @@ jobs:
                       target['stages_done'] = stages_done
                       changed = True
 
-                  # Promote a completed race: all stages have winners AND today is
-                  # past the race window → mark final, set winner/team from GC.
-                  race_complete = (
+                  # Promote a completed race:
+                  #   Tier 1 (full data): nearly all stages have winners AND we
+                  #     have a parsed GC AND today is past the race window → set
+                  #     status=final and populate winner/team from GC.
+                  #   Tier 2 (insurance fallback): today > window_end + 3 days
+                  #     AND status still 'live' → flip status to 'final' even
+                  #     without GC. Prevents a Wikipedia parse hiccup from
+                  #     stranding the row as 'live' forever. Winner/team stay
+                  #     whatever they are (usually null, easily hand-filled).
+                  tier1_complete = (
                       total_stages > 0
-                      and stages_done >= total_stages
+                      and stages_done >= max(1, total_stages - 1)
                       and today > cfg['window_end']
                       and gc
                   )
-                  if race_complete:
+                  tier2_grace_expired = (
+                      today > cfg['window_end'] + timedelta(days=3)
+                      and target.get('status') == 'live'
+                  )
+                  if tier1_complete:
                       new_status = 'final'
                       new_winner = gc[0].get('name', '') or ''
                       new_wteam  = gc[0].get('team', '') or ''
@@ -605,6 +740,11 @@ jobs:
                       if target.get('team') != new_wteam:
                           target['team'] = new_wteam
                           changed = True
+                  elif tier2_grace_expired:
+                      target['status'] = 'final'
+                      changed = True
+                      print(f"  [sync] {race_key}: >3 days past end with no GC — "
+                            f"flipping status → final as insurance; winner/team untouched")
 
                   print(f"  [sync] {race_key}: leader={target.get('gc_leader','?')}, "
                         f"stages_done={target.get('stages_done',0)}, "
