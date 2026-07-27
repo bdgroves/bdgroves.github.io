@@ -1,6 +1,6 @@
 # Site Architecture — Quick Reference
 
-*Last updated: July 9, 2026. This doc exists so future-Brooks doesn't have to
+*Last updated: July 27, 2026. This doc exists so future-Brooks doesn't have to
 reverse-engineer past-Brooks's reasoning. If something on the site breaks or
 looks weird, start here before diving into code.*
 
@@ -24,7 +24,10 @@ console.
 - **Wikipedia owns Grand Tour data, not PCS.** PCS's live-race GC page URL
   changes mid-race and its rider-stats page class names break without
   notice. Wikipedia's GC/stage-winner tables are stable and crowd-maintained
-  in real time during a live Tour.
+  in real time during a live Tour. *Caveat: Wikipedia articles restructure
+  heavily in the 48–72 hours after a Grand Tour finishes — captions get
+  stripped, classifications get consolidated. See "Race results parser"
+  below for how the workflow handles that.*
 - **`fetch-cycling.yml` explicitly guards `category == "Grand Tour"`** and
   preserves cached GT fields from `cycling.json` every run. Without this,
   PCS's stale scrape would silently clobber Wikipedia's correct data. Look
@@ -42,9 +45,8 @@ console.
   `garmin_backfill_alltime.py` pages through full history ONCE, stores a
   true baseline + the newest activity ID seen (`all_time_counted_through_id`
   in `training.json`). Each daily run only adds what's newer than that
-  marker. Real backfilled numbers as of July 9, 2026: **19,219.2 mi
-  running (4,659 activities) · 15,386.7 mi cycling (1,003) · 135,681 yd
-  swimming (88)**.
+  marker. Numbers as of July 27, 2026: **19,280.5 mi running (4,683
+  activities) · 15,386.7 mi cycling (1,003) · 135,681 yd swimming (88)**.
 - **Strava was replaced, not fixed.** Their Developer Program went
   subscriber-only for API access June 30, 2026 — a policy change, not a
   bug. `fetch-strava.yml` is disabled but left in the repo in case that
@@ -66,12 +68,110 @@ console.
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
-| TDF/Giro/Vuelta stuck | Wikipedia article structure changed | Check `fetch-race-results.yml` log for `"[parse] found N wikitables"` — 0 means the article changed, re-inspect it |
+| TDF/Giro/Vuelta stuck as "live" after end date | Wikipedia article restructure or parser hiccup | See "Race results parser" below — Tier 2 insurance flip should self-heal within 3 days; manual patch to `cycling.json` is safe |
 | Rider win-counts wrong | Race not marked `"final"`, or winner name doesn't match rider's last name | Check `cycling.json` winner field spelling |
-| Garmin data stale | Token expired | Re-run `garmin_login_setup.py`, update `GARMIN_TOKENS_JSON` |
+| Garmin data stale | Token expired | See "Refreshing the Garmin token" below |
 | All-Time looks wrong | Counted-through marker corrupted | Re-run `garmin_backfill_alltime.py` (safe, always recomputes clean) |
 | Baseball/Football cards blank | ESPN/MLB API hiccup (client-side, no workflow) | Check browser console — nothing server-side to check |
 | Workflow push fails repeatedly | Two workflows raced on a commit | Should self-heal via retry-with-rebase (3 attempts); beyond that, check for a real merge conflict |
+
+## Refreshing the Garmin token
+
+The `fetch-garmin.yml` workflow will fail loudly (non-zero exit, GitHub email)
+when the saved token gets rejected — that's the signal to run this.
+Observed cadence: **~11–15 days between rejections** based on three real
+data points across July 2026. Not "6-18 months" as the script's SUCCESS
+banner claims. Set an expectation of doing this roughly bi-weekly.
+
+Runbook — about 90 seconds:
+
+1. Confirm the failure — GitHub email will show "FATAL: token rejected" in the log
+2. `cd C:\data\01_Projects\bdgroves.github.io`
+3. `pixi run python garmin_login_setup.py` — enter email, password, MFA if enabled
+4. Open `garmin_tokens_output\garmin_tokens.json`, copy the entire contents
+5. GitHub → repo Settings → Secrets and variables → Actions → `GARMIN_TOKENS_JSON` → Update → paste → Save
+6. Actions tab → Fetch Garmin Data → Run workflow → confirm "Token login OK" in the log
+7. `Remove-Item -Recurse -Force garmin_tokens_output` (local scratch, don't leave it lying around)
+
+The `garmin_tokens_output/` folder is gitignored, so accidentally committing
+a token isn't a risk, but deleting it after each refresh keeps the working
+directory clean and the GitHub Secret as the single source of truth.
+
+## Race results parser (Grand Tours)
+
+The `fetch-race-results.yml` workflow scrapes Wikipedia articles for the three
+Grand Tours and writes to `data/{giro,tdf,vuelta}-2026.json` plus syncs the
+final state into `cycling.json`. Runs twice daily at 17:00 and 22:00 UTC while
+a race is in its active window (window_start-1 day to window_end+5 days).
+
+### Two-tier "live" → "final" status transition
+
+Wikipedia articles restructure heavily in the 48–72 hours after a Grand Tour
+finishes. The parser has two fallback tiers so the sync can never leave
+`cycling.json`'s row stuck as `live` past the race's actual end:
+
+- **Tier 1 (full data):** `stages_done >= total-1` AND parsed GC exists AND
+  `today > window_end` → set `status=final`, populate `winner` / `team`
+  from `gc[0]`.
+- **Tier 2 (insurance flip):** `today > window_end + 3 days` AND status is
+  still `live` → flip `status='final'` regardless of GC. Better to display
+  "Final" with no winner name than "Live" a week after the race ended.
+
+The sync step runs unconditionally at the end of every workflow run — even
+for races past the active parsing window — so Tier 2 fires without depending
+on the parser succeeding.
+
+### What the parser handles about post-race Wikipedia
+
+Once a Grand Tour ends, Wikipedia editors typically do one or more of:
+
+1. **Strip captions** from classification tables. Mid-race a caption reads
+   "General classification after Stage 10"; post-race the same table is
+   often uncaptioned and identified only by its section heading.
+2. **Rename headings** ("Mountains classification" ↔ "King of the mountains",
+   "Young rider classification" ↔ "Best young rider").
+3. **Restructure the entire "Classification standings" section** into a
+   "Final standings" section or split it across sub-articles.
+
+The parser tries two passes in sequence:
+
+- **Pass 1 (caption-based):** matches "General classification after Stage N"
+  and similar. Only fires while the race is still running.
+- **Pass 1b (heading-based fallback):** scans H2/H3 headings for "General
+  classification", "Points classification", "Mountains classification" /
+  "King of the mountains", "Young rider classification" / "Best young rider".
+  Uses a sentinel stage marker (999) so post-race data always overrides any
+  in-race snapshot Pass 1 might have picked up.
+
+### Known quirks — not bugs, just Wikipedia data quirks
+
+- **Team time trials have no rider winner.** If Stage 1 of a Grand Tour is
+  a TTT (as it was for the 2026 TDF), Wikipedia's Stage characteristics
+  table leaves the Winner cell empty because the "winner" is a team, not
+  a rider. The parser silently skips it and extracts 20 of 21 stages. This
+  is why Tier 1's threshold is `stages_done >= total-1` and not
+  `>= total` — one missing TTT stage is expected and shouldn't block the
+  status transition. If a TTT winner team is needed for the standalone
+  tracker page, fill it by hand in `data/{race}-2026.json`.
+- **Empty winner cells during the race.** Individual stages sometimes
+  appear in the Stage characteristics table before the winner cell is
+  populated. Self-heals on the next run — nothing to do.
+
+### If it stalls anyway
+
+Check the workflow log for two key lines:
+
+```
+[parse] N stage winners extracted           ← should be >= total-1
+[sync] tdf: leader=..., stages_done=N, status=...   ← target: status=final
+```
+
+If Tier 1 didn't fire and Tier 2 hasn't fired yet (< 3 days past end), a
+manual patch to `cycling.json` is completely safe: set `status="final"`,
+`winner="<Name>"`, `team="<Team>"`. `fetch-cycling.yml` explicitly preserves
+cached Grand Tour rows (see "Why things are built this way" above), and the
+race-results workflow will happily agree with the manual values on its next
+run rather than overwriting them.
 
 ## Repo notes
 
