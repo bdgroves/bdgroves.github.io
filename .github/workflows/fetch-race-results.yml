@@ -562,18 +562,16 @@ jobs:
                       w['winner_team'] = rider_team[w['winner']]
 
               print(f"  [parse] {len(winners)} stage winners extracted")
-              # If a stage looks missing, dump the tail of the Stage table so we
-              # can see exactly what row structure the parser is choking on.
-              # Only triggers on partial parses; silent on clean full runs.
-              expected_max = max(winners) if winners else 0
-              if winners and expected_max not in winners:
-                  # We got some stages but not the final one — dump the last
-                  # ~4 rows so we can inspect the structure of the missed row.
+              # Diagnostic: dump the tail of the Stage characteristics table so
+              # we can see the row structure directly. Only fires when we did
+              # find the table and got at least some stages — enough info to
+              # identify a missed row without noise.
+              if winners:
                   for table in tables:
                       cap = caption_text(table)
                       if cap and 'Stage characteristics' in cap:
                           all_rows = rows_of(table)
-                          print(f"  [DIAG] Stage table has {len(all_rows)} rows total; dumping last 4:")
+                          print(f"  [DIAG] Stage table: {len(all_rows)} rows total; dumping last 4:")
                           for tr in all_rows[-4:]:
                               cells = tr.find_all(['th', 'td'], recursive=False)
                               cell_summaries = []
