@@ -562,24 +562,6 @@ jobs:
                       w['winner_team'] = rider_team[w['winner']]
 
               print(f"  [parse] {len(winners)} stage winners extracted")
-              # Diagnostic: dump the tail of the Stage characteristics table so
-              # we can see the row structure directly. Only fires when we did
-              # find the table and got at least some stages — enough info to
-              # identify a missed row without noise.
-              if winners:
-                  for table in tables:
-                      cap = caption_text(table)
-                      if cap and 'Stage characteristics' in cap:
-                          all_rows = rows_of(table)
-                          print(f"  [DIAG] Stage table: {len(all_rows)} rows total; dumping last 4:")
-                          for tr in all_rows[-4:]:
-                              cells = tr.find_all(['th', 'td'], recursive=False)
-                              cell_summaries = []
-                              for c in cells:
-                                  txt = clean_text(c.get_text())[:40]
-                                  cell_summaries.append(f"[{c.name}]{txt!r}")
-                              print(f"  [DIAG]   {len(cells)} cells: {' | '.join(cell_summaries)}")
-                          break
               print(f"  [parse] latest GC: after Stage {latest_gc_stage} "
                     f"({len(latest_gc) if latest_gc else 0} riders)")
               print(f"  [parse] latest points/KOM/youth stages: "
