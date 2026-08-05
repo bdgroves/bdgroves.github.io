@@ -15,6 +15,41 @@
       --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
       --sky:#2a4a6b; --garmin:#007cc3;
     }
+
+    /* ── DARK MODE ──────────────────────────────────────────────
+       --ink and --white are a light/dark PAIR in this stylesheet:
+       --ink is body text but also the background of the inverted
+       cards (tour, fuelcast, badges) and the footer. Flipping them
+       alone would invert those surfaces backwards, so the handful
+       of rules that use them as backgrounds are overridden below. */
+    [data-theme="dark"] {
+      --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
+      --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
+      --white:#12100d; --rust:#cf6b52; --sage:#83a077;
+      --sky:#6fa0cc; --garmin:#3aa5e0;
+    }
+    [data-theme="dark"] footer { background:#0f0d0a; }
+    [data-theme="dark"] .tour-card,
+    [data-theme="dark"] .fuelcast-card { background:#2a251c; color:#ece6da; }
+    [data-theme="dark"] .fort-george-badge { background:#2a251c; }
+    [data-theme="dark"] .quick-link:hover { background:#2a251c; color:#ece6da; border-color:#2a251c; }
+    /* --white also serves as "text on a dark surface" in these rules, so it has
+       to stay light when the variable itself flips dark. */
+    [data-theme="dark"] .footer-name,
+    [data-theme="dark"] .tour-card-name,
+    [data-theme="dark"] .fuelcast-macro .v,
+    [data-theme="dark"] .garmin-badge .g-mark,
+    [data-theme="dark"] .page-tag:hover,
+    [data-theme="dark"] .peaks-btn:hover,
+    [data-theme="dark"] .garmin-btn:hover { color:#ece6da; }
+    [data-theme="dark"] img, [data-theme="dark"] .bb-logo { filter:brightness(.92); }
+
+    .theme-toggle {
+      background:none; border:none; cursor:pointer; padding:0;
+      font-family:'DM Mono',monospace; font-size:0.8rem;
+      color:var(--stone); line-height:1;
+    }
+    .theme-toggle:hover { color:var(--gold); }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
     body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
@@ -325,6 +360,18 @@
     .xt-sub { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); margin-left:0.5rem; }
     @media(max-width:500px) { .ts-grid { grid-template-columns:repeat(3,1fr); } .xt-grid { grid-template-columns:repeat(2,1fr); } }
   </style>
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  (function(){
+    try {
+      var saved = localStorage.getItem('outside_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
 </head>
 <body>
 <div class="topline"></div>
@@ -335,6 +382,7 @@
       <a href="/about.html">About</a>
       <a href="/tags.html">Tags</a>
       <a href="/">Home</a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
     </nav>
   </div>
 </header>
@@ -799,6 +847,20 @@ function renderFootballCard(cfg, team, standingsRoot, recentEvent, scheduleNext)
 // BASEBALL — MLB + MiLB team cards using the official MLB Stats API
 // Same visual pattern as football. Config-driven; add teams below.
 // ═══════════════════════════════════════════════════════════════════
+// Set true by bbRenderCard whenever any tracked game is in progress; the
+// refresh scheduler polls faster while it is.
+let LIVE_GAME_ACTIVE = false;
+
+// MLB StatsAPI exposes run differential and a Pythagorean "expected" record on
+// each standings row. Both are optional and the shape varies, so dig defensively.
+function bbExpectedRecord(row) {
+  const arr = row?.records?.expectedRecords;
+  if (!Array.isArray(arr)) return null;
+  const x = arr.find(r => r.type === 'xWinLoss') || arr[0];
+  if (!x || x.wins == null || x.losses == null) return null;
+  return `${x.wins}\u2013${x.losses}`;
+}
+
 const BASEBALL_TEAMS = [
   {
     teamId: 136, sportId: 1, leagueId: 103,      // Mariners (AL)
@@ -932,6 +994,7 @@ function bbRenderCard(cfg, schedule, standings) {
   const upcoming = allGames.filter(g => g.status?.abstractGameState === 'Preview')
                            .sort((a,b) => new Date(a.gameDate) - new Date(b.gameDate));
   const live = allGames.find(g => g.status?.abstractGameState === 'Live');
+  if (live) LIVE_GAME_ACTIVE = true;
   const recent = live || finished[0] || null;
   // A game in progress is not "Recent" — label it accordingly, otherwise an
   // early-innings 0–0 renders under Recent and reads like broken data.
@@ -949,6 +1012,15 @@ function bbRenderCard(cfg, schedule, standings) {
       <div style="text-align:right;">
         <div class="bb-record">${summary}</div>
         <div class="bb-record-tag">${pct} · ${MLB_SEASON_YEAR}</div>
+        ${(() => {
+          const diff = ownRow?.runDifferential;
+          const exp  = bbExpectedRecord(ownRow);
+          if (diff == null && !exp) return '';
+          const parts = [];
+          if (diff != null) parts.push(`${diff > 0 ? '+' : ''}${diff}`);
+          if (exp) parts.push(`exp ${exp}`);
+          return `<div class="bb-record-tag" style="opacity:.75;">${parts.join(' · ')}</div>`;
+        })()}
       </div>
       ${cfg.logoUrl ? `<img class="bb-logo" src="${cfg.logoUrl}" alt="" onerror="this.classList.add('hidden')">` : ''}
     </div>
@@ -959,6 +1031,7 @@ function bbRenderCard(cfg, schedule, standings) {
 }
 
 async function loadBaseball() {
+  LIVE_GAME_ACTIVE = false;   // re-evaluated by bbRenderCard below
   const el = document.getElementById('baseball-teams');
   if (!el) return;
 
@@ -1499,7 +1572,30 @@ loadTraining();
 loadFuelcast();
 checkFortGeorge();
 checkKingsDaughters();
-setInterval(()=>{if(!document.hidden){loadBaseball();loadFootball();}},5*60*1000);
+// Theme toggle — the initial state is set in <head> to avoid a flash.
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  const sync = () => { if (btn) btn.textContent = root.getAttribute('data-theme') === 'dark' ? '◐' : '◑'; };
+  sync();
+  if (btn) btn.addEventListener('click', () => {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    if (isDark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('outside_theme', isDark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+
+// Sports refresh — every 5 minutes normally, but once a minute while a game
+// is actually in progress, so a live score does not sit stale on screen.
+// LIVE_GAME_ACTIVE is set by bbRenderCard on each pass.
+(function scheduleSportsRefresh(){
+  const delay = (typeof LIVE_GAME_ACTIVE !== 'undefined' && LIVE_GAME_ACTIVE) ? 60*1000 : 5*60*1000;
+  setTimeout(() => {
+    if (!document.hidden) { loadBaseball(); loadFootball(); }
+    scheduleSportsRefresh();
+  }, delay);
+})();
 
 // Auto-set Grand Tour card status from today's date (no more hand-editing)
 (function(){
@@ -1511,9 +1607,18 @@ setInterval(()=>{if(!document.hidden){loadBaseball();loadFootball();}},5*60*1000
     const statusEl = card.querySelector('.tour-card-status');
     if(!statusEl) return;
     let label;
-    if(today < start){ label='Upcoming'; }
+    if(today < start){
+      // Show how far out it is, the way the race card does for Ironman.
+      const days = Math.round((start - today) / 86400000);
+      label = days === 0 ? 'Starts today'
+            : days === 1 ? 'Starts tomorrow'
+            : `Starts in ${days} days`;
+    }
     else if(today > end){ label='Finished'; }
-    else { label='Racing now'; }
+    else {
+      const stageDay = Math.floor((today - start) / 86400000) + 1;
+      label = `Racing now · day ${stageDay}`;
+    }
     statusEl.textContent = ed ? `${label} · ${ed}` : label;
     card.classList.toggle('tour-finished', today > end);
     card.classList.toggle('tour-live', today >= start && today <= end);
