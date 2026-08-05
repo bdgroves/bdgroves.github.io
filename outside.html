@@ -737,7 +737,7 @@ function renderFbRecentGame(recentEvent, teamId) {
   </div>`;
 }
 
-function renderFootballCard(cfg, team, standingsRoot, recentEvent) {
+function renderFootballCard(cfg, team, standingsRoot, recentEvent, scheduleNext) {
   if (!team) {
     return `<div class="fb-card"><div class="fb-name">${cfg.shortName}</div>
       <div class="fb-sub">Data unavailable</div></div>`;
@@ -752,7 +752,9 @@ function renderFootballCard(cfg, team, standingsRoot, recentEvent) {
   const recentHTML = renderFbRecentGame(recentEvent, team.id);
 
   // Next event
-  const next = team.nextEvent?.[0];
+  // ESPN's team endpoint is authoritative when populated; during the offseason
+  // it is empty, so fall back to the game we derived from the schedule.
+  const next = team.nextEvent?.[0] || scheduleNext || null;
   let nextHTML = '';
   if (next) {
     const dt = new Date(next.date);
@@ -1010,9 +1012,18 @@ async function loadFootball() {
           const completed = events
             .filter(e => e.competitions?.[0]?.status?.type?.completed)
             .sort((a, b) => new Date(b.date) - new Date(a.date));
-          return { id: cfg.id, recentEvent: completed[0] || null };
+          // ESPN's team endpoint leaves nextEvent empty during the NFL offseason,
+          // so derive the next game from the schedule ourselves. Because the
+          // preseason payload is merged in above, this surfaces August exhibition
+          // games instead of showing nothing until September.
+          const now = Date.now();
+          const upcoming = events
+            .filter(e => !e.competitions?.[0]?.status?.type?.completed
+                      && new Date(e.date).getTime() >= now)
+            .sort((a, b) => new Date(a.date) - new Date(b.date));
+          return { id: cfg.id, recentEvent: completed[0] || null, nextEvent: upcoming[0] || null };
         })
-        .catch(err => { console.warn('schedule fetch failed', cfg.shortName, err); return { id: cfg.id, recentEvent: null }; });
+        .catch(err => { console.warn('schedule fetch failed', cfg.shortName, err); return { id: cfg.id, recentEvent: null, nextEvent: null }; });
     });
     // Standings fetches — one per unique league (dedupes NFL/CFB across configs)
     const leagues = [...new Set(FOOTBALL_TEAMS.map(t => t.league))];
@@ -1029,8 +1040,9 @@ async function loadFootball() {
     ]);
     const standingsByLeague = Object.fromEntries(standingsResults.map(s => [s.league, s.root]));
     const recentByTeamId = Object.fromEntries(scheduleResults.map(s => [String(s.id), s.recentEvent]));
+    const nextByTeamId   = Object.fromEntries(scheduleResults.map(s => [String(s.id), s.nextEvent]));
     el.innerHTML = teamResults.map(({ cfg, team }) =>
-      renderFootballCard(cfg, team, standingsByLeague[cfg.league], recentByTeamId[String(cfg.id)])
+      renderFootballCard(cfg, team, standingsByLeague[cfg.league], recentByTeamId[String(cfg.id)], nextByTeamId[String(cfg.id)])
     ).join('');
   } catch (e) {
     console.error('football load error:', e);
