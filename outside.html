@@ -627,6 +627,17 @@ function renderGames(el, games) {
 // Config-driven: add teams by editing FOOTBALL_TEAMS below. ESPN's public
 // site.api.espn.com is CORS-open and no key is required.
 // ═══════════════════════════════════════════════════════════════════
+// Season-year helpers — computed, not hardcoded, so these panels keep working
+// after the calendar rolls over.
+// MLB: the season shares its calendar year (Feb–Oct).
+const MLB_SEASON_YEAR = new Date().getFullYear();
+// NFL: a season spans two calendar years, so Jan/Feb still belong to the
+// previous year's season (Feb 2027 is still the 2026 season).
+const NFL_SEASON_YEAR = (() => {
+  const now = new Date();
+  return now.getMonth() >= 2 ? now.getFullYear() : now.getFullYear() - 1;
+})();
+
 const FOOTBALL_TEAMS = [
   {
     league: 'nfl',
@@ -772,7 +783,7 @@ function renderFootballCard(cfg, team, standingsRoot, recentEvent) {
       </div>
       <div style="text-align:right;">
         <div class="fb-record">${summary}</div>
-        <div class="fb-record-tag">2026 season</div>
+        <div class="fb-record-tag">${NFL_SEASON_YEAR} season</div>
       </div>
       ${logo ? `<img class="fb-logo" src="${logo}" alt="">` : ''}
     </div>
@@ -920,6 +931,9 @@ function bbRenderCard(cfg, schedule, standings) {
                            .sort((a,b) => new Date(a.gameDate) - new Date(b.gameDate));
   const live = allGames.find(g => g.status?.abstractGameState === 'Live');
   const recent = live || finished[0] || null;
+  // A game in progress is not "Recent" — label it accordingly, otherwise an
+  // early-innings 0–0 renders under Recent and reads like broken data.
+  const recentLabel = live ? 'Live' : 'Recent';
   const next = upcoming[0] || null;
 
   return `<div class="bb-card">
@@ -932,11 +946,11 @@ function bbRenderCard(cfg, schedule, standings) {
       </div>
       <div style="text-align:right;">
         <div class="bb-record">${summary}</div>
-        <div class="bb-record-tag">${pct} · 2026</div>
+        <div class="bb-record-tag">${pct} · ${MLB_SEASON_YEAR}</div>
       </div>
       ${cfg.logoUrl ? `<img class="bb-logo" src="${cfg.logoUrl}" alt="" onerror="this.classList.add('hidden')">` : ''}
     </div>
-    ${bbRenderGame(recent, cfg.teamId, 'Recent')}
+    ${bbRenderGame(recent, cfg.teamId, recentLabel)}
     ${bbRenderGame(next,   cfg.teamId, 'Next')}
     ${bbRenderStandings(standings, cfg)}
   </div>`;
@@ -957,7 +971,7 @@ async function loadBaseball() {
       const [schedRes, standRes] = await Promise.all([
         fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=${cfg.teamId}&sportId=${cfg.sportId}&startDate=${fmt(start)}&endDate=${fmt(end)}`)
           .then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch(`https://statsapi.mlb.com/api/v1/standings?leagueId=${cfg.leagueId}&season=2026&standingsTypes=regularSeason&sportId=${cfg.sportId}`)
+        fetch(`https://statsapi.mlb.com/api/v1/standings?leagueId=${cfg.leagueId}&season=${MLB_SEASON_YEAR}&standingsTypes=regularSeason&sportId=${cfg.sportId}`)
           .then(r => r.ok ? r.json() : null).catch(() => null),
       ]);
       return bbRenderCard(cfg, schedRes, standRes);
@@ -982,18 +996,24 @@ async function loadFootball() {
     );
     // Schedule fetches — full-season schedule per team, gives us "Recent"
     // (most recently completed game) the same way baseball has one.
-    const schedulePromises = FOOTBALL_TEAMS.map(cfg =>
-      fetch(`https://site.api.espn.com/apis/site/v2/sports/football/${cfg.league}/teams/${cfg.id}/schedule`)
-        .then(r => r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)))
-        .then(d => {
-          const events = d.events || [];
+    const schedulePromises = FOOTBALL_TEAMS.map(cfg => {
+      const base = `https://site.api.espn.com/apis/site/v2/sports/football/${cfg.league}/teams/${cfg.id}/schedule`;
+      // ESPN defaults to the regular season. For the NFL we also pull seasontype=1
+      // (preseason) so August exhibition results still land in "Recent" during the
+      // weeks before the regular season opens.
+      const urls = cfg.league === 'nfl' ? [base, `${base}?seasontype=1`] : [base];
+      return Promise.all(
+        urls.map(u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null))
+      )
+        .then(results => {
+          const events = results.filter(Boolean).flatMap(d => d.events || []);
           const completed = events
             .filter(e => e.competitions?.[0]?.status?.type?.completed)
             .sort((a, b) => new Date(b.date) - new Date(a.date));
           return { id: cfg.id, recentEvent: completed[0] || null };
         })
-        .catch(err => { console.warn('schedule fetch failed', cfg.shortName, err); return { id: cfg.id, recentEvent: null }; })
-    );
+        .catch(err => { console.warn('schedule fetch failed', cfg.shortName, err); return { id: cfg.id, recentEvent: null }; });
+    });
     // Standings fetches — one per unique league (dedupes NFL/CFB across configs)
     const leagues = [...new Set(FOOTBALL_TEAMS.map(t => t.league))];
     const standingsPromises = leagues.map(league =>
@@ -1021,7 +1041,7 @@ async function loadFootball() {
 async function loadStandings() {
   const el = document.getElementById('mlb-standings');
   try {
-    const res = await fetch('https://statsapi.mlb.com/api/v1/standings?leagueId=103&season=2026&standingsTypes=regularSeason');
+    const res = await fetch(`https://statsapi.mlb.com/api/v1/standings?leagueId=103&season=${MLB_SEASON_YEAR}&standingsTypes=regularSeason`);
     if (!res.ok) throw new Error();
     const data = await res.json();
     const alWest = data.records?.find(r=>r.division?.id===200);
