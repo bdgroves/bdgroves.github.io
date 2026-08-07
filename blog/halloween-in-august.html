@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boo Before You're Ready — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --satellite:#2a5c3a; --data:#8b6914;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--satellite) 0%,var(--data) 50%,var(--ink) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--satellite); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .article-wrap { max-width:760px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--satellite); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--satellite); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--satellite); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--satellite); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body blockquote { border-left:3px solid var(--satellite); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--satellite); text-decoration:underline; text-underline-offset:3px; }
+
+    /* IMAGE FIGURES */
+    .fig { margin:2rem 0; }
+    .fig img { width:100%; border:1px solid var(--mist); display:block; }
+    .fig-caption { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); margin-top:0.5rem; line-height:1.6; }
+    .fig-caption strong { color:var(--data); }
+
+    /* SIDE BY SIDE */
+    .fig-pair { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:2rem 0; }
+    .fig-pair .fig { margin:0; }
+    @media(max-width:600px) { .fig-pair { grid-template-columns:1fr; } }
+
+    /* SEASONAL TABLE */
+    .season-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.88rem; }
+    .season-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .season-table td { padding:0.65rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; line-height:1.55; }
+    .season-table tr:last-child td { border-bottom:none; }
+    .season-table td:first-child { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--data); font-weight:600; white-space:nowrap; }
+
+    /* INDICES TABLE */
+    .index-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.85rem; }
+    .index-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .index-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    .index-table tr:last-child td { border-bottom:none; }
+    .index-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--satellite); font-weight:600; }
+
+    /* USES BOX */
+    .uses-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0; }
+    .use-card { background:var(--cream); padding:1rem 1.25rem; border-left:3px solid var(--data); }
+    .use-card-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--data); margin-bottom:0.4rem; }
+    .use-card-body { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    @media(max-width:560px) { .uses-grid { grid-template-columns:1fr; } }
+
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--satellite); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  
+    .aside { background:var(--cream); border-top:2px solid var(--data); padding:1.3rem 1.5rem; margin:1.5rem 0; }
+    .aside-title { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--data); margin-bottom:0.6rem; }
+    .aside p { margin:0 0 0.7rem; color:var(--stone); line-height:1.7; font-size:0.9rem; }
+    .aside p:last-child { margin-bottom:0; }
+    .pull-quote { border-left:3px solid var(--data); margin:2rem 0; padding:0.5rem 0 0.5rem 1.5rem; font-family:'Playfair Display',serif; font-style:italic; font-size:1.2rem; line-height:1.6; color:var(--stone); }
+    .article-kicker-inline { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); margin:2.5rem 0 1.5rem; }
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/" class="article-back">← Blog</a>
+  <div class="article-num">Essay · Retail &amp; Trade Policy · August 2026</div>
+  <p class="article-kicker">Inventory Economics · A Tariff Timeline · A Government Statistician's Bad Month</p>
+  <h1 class="article-title">Boo Before You're Ready</h1>
+  <div class="article-meta">
+    <span>Lakewood, WA · August 2026</span>
+    <span>Brooks Groves</span>
+  </div>
+  <div class="article-tags">
+    <a href="https://brooksgroves.com/tags.html#Retail" class="article-tag-pill">Retail</a>
+    <a href="https://brooksgroves.com/tags.html#Economics" class="article-tag-pill">Economics</a>
+    <a href="https://brooksgroves.com/tags.html#Trade%20Policy" class="article-tag-pill">Trade Policy</a>
+    <a href="https://brooksgroves.com/tags.html#Tariffs" class="article-tag-pill">Tariffs</a>
+    <a href="https://brooksgroves.com/tags.html#Halloween" class="article-tag-pill">Halloween</a>
+    <a href="https://brooksgroves.com/tags.html#Consumer%20Culture" class="article-tag-pill">Consumer Culture</a>
+  </div>
+
+  <div class="disclaimer"></div>
+
+  <div class="article-body">
+
+  <p style="font-style:italic; color:var(--stone); font-size:0.95rem; border-left:3px solid var(--mist); padding-left:1.2rem; margin-bottom:2.5rem;">Halloween has colonised August. Skip the jokes about American excess &mdash; the more interesting question is what a twelve-foot animatronic skeleton in July reveals about inventory economics, a tariff schedule that keeps changing its mind, and a government statistician having a genuinely bad month.</p>
+
+  <p>There is a particular flavour of American disorientation that arrives each summer somewhere around the second week of July: air-conditioning set to arctic, sunscreen still tacky on the skin, and a twelve-foot animatronic skeleton named Skelly grinning from the garden-center aisle at Home Depot. This year the moment came even earlier, and with a new twist. In Denver, Spirit Halloween has taken over a dead Forever 21 on the 16th Street Mall &mdash; prime downtown frontage, not the usual exiled strip-mall unit. Roughly two thousand people turned out for the chain's flagship opening in Egg Harbor Township, New Jersey, on August 1st. It is not yet mid-August. Halloween is not until October 31st.</p>
+  <p>Skip the easy jokes about American excess, though feel free to enjoy them; a nation that can produce an &ldquo;Ultra Skelly&rdquo; with app-controlled animation has earned the mockery. The more interesting question is what this annual creep of costumes and cobwebs reveals about three things that have nothing to do with Halloween at all: how firms manage risk on perishable inventory, how a trade war gets laundered into a shopping calendar, and how badly government statistics cope with a holiday that refuses to sit still.</p>
+  <hr>
+  <div class="article-kicker-inline">The Economics of the Pointy Hat</div>
+  <p>Start with the retailer's problem, which is a textbook case of the &ldquo;newsvendor&rdquo; model beloved of operations-research professors. A witch hat has almost no value on November 1st; whatever a store paid to import, ship and shelve it is largely sunk. The cost of guessing too high is thus brutal, while the cost of guessing too low is merely a lost sale. Faced with that asymmetry, the rational response is not to guess better &mdash; it is to buy time. Every extra week of full-price selling converts inventory that would otherwise be marked down into inventory sold at margin. August openings are not marketing whimsy; they are a hedge.</p>
+  <div class="aside">
+    <div class="aside-title">The Newsvendor Problem, in Brief</div>
+    <p>It's one of the oldest models in operations research: a vendor has to decide how many perishable newspapers to buy each morning, knowing that unsold copies are worthless by evening and every copy sold short is a customer turned away. The optimal order quantity balances the cost of overstock against the cost of understock &mdash; and because those two costs are almost never equal, the &ldquo;right&rdquo; answer is almost never the average forecast.</p>
+    <p>A witch hat is a newspaper with a nine-month shelf life instead of a one-day one, which sounds like it should make the problem easier. It doesn't. It just moves the entire decision earlier, into a customs broker's spreadsheet in June, long before anyone knows what the weather or the economy will be doing in October.</p>
+  </div>
+  <p>They are also, this year, a side-effect of customs paperwork. In February America's Supreme Court struck down the broad IEEPA tariff on Chinese goods, and the administration replaced it within hours with a flat 10 percent global surcharge under a different statute. Then, just as this year's costumes were clearing port, that stopgap expired and was replaced by a new Section 301 action &mdash; effective July 24th &mdash; adding a further 10 to 12.5 percent on top of the existing duties, which together with ordinary Section 301 rates run to roughly 35 percent on most Chinese product categories. Halloween is a peculiarly China-dependent holiday: by most industry estimates, nine in ten pieces of Halloween merchandise contain at least one component sourced there. Importers who got containers moving early caught the lower rate; once landed and duty-paid, that plastic pumpkin has to go on a shelf somewhere, and &ldquo;somewhere&rdquo; turns out to mean August. The gothic window display, in other words, is downstream of a customs broker's spreadsheet.</p>
+  <div class="aside">
+    <div class="aside-title">A Tariff That Changed Its Legal Basis Twice This Year</div>
+    <p>The sequence is worth having straight, because it's genuinely unusual. On February 20th the Supreme Court ruled that the International Emergency Economic Powers Act does not authorize the president to impose tariffs, striking down the broad, country-specific &ldquo;reciprocal&rdquo; duties that had been in place since 2025. Within hours, the White House imposed a flat 10&ndash;15 percent global surcharge under Section 122 of the Trade Act of 1974 &mdash; a statute that had essentially never been used for this purpose before, and one that carries a hard statutory cap of 150 days.</p>
+    <p>That clock ran out on July 24th. On that date the Section 122 surcharge expired by law and was replaced by a new Section 301 action, addressing forced labor and manufacturing overcapacity, at 10 to 12.5 percent on goods from roughly sixty economies. For most Chinese imports the net effect is close to a wash &mdash; but the legal foundation under the tariff changed twice in five months, which is exactly the kind of instability that makes an importer want to move a shipment earlier rather than risk the next change of law.</p>
+  </div>
+  <hr>
+  <div class="article-kicker-inline">A Pop-Up in Every Vacancy</div>
+  <p>Spirit Halloween deserves particular attention, because its business model is not really retail at all &mdash; it is a real-estate arbitrage. A landlord sitting on an empty former Kirkland's or Safeway earns nothing on it and still pays tax and insurance; signing a conventional ten-year tenant at today's soft rents forfeits the chance of a better one tomorrow. A ten-week tenant forfeits nothing. Almost nobody else wants a lease that short, so Spirit captures most of the surplus, doubly so where the empty space also deters loitering, vandalism, or a co-tenancy clause tripping elsewhere in the center. This year the chain is opening a record 1,575 stores across the United States and Canada, filling former Safeways, Kirkland's, and at least one Forever 21. That is worth reading less as a story about consumer enthusiasm and more as a rather efficient index of how much desirable retail space America currently has standing empty &mdash; a sort of pumpkin-flavored vacancy indicator, updated annually and, refreshingly, free.</p>
+  <div class="pull-quote">A ten-week tenant forfeits nothing. Almost nobody else wants a lease that short, so Spirit captures most of the surplus.</div>
+  <p>The temporary format also solves the discounting problem more elegantly than a normal shop can. A department store's Halloween aisle competes against shoppers' rational expectation of a post-holiday markdown, which erodes full-price sales all October. A Spirit Halloween store will simply not exist on November 1st. There is no later date to wait for. Scarcity, cheaply manufactured by the lease itself, is doing the work that a permanent retailer would have to buy with margin.</p>
+  <hr>
+  <div class="article-kicker-inline">When the Calendar Lies to the Statisticians</div>
+  <p>The subtler cost of all this falls not on shoppers but on anyone trying to read the economy through the government's eyes. Seasonal-adjustment models such as America's X-13ARIMA-SEATS learn what &ldquo;normal&rdquo; August and October look like from years of past data; a holiday's gradual migration earlier in the calendar is exactly the sort of slow structural drift such models are bad at detecting until several years' worth has accumulated. The practical result: retail-sales prints and payroll figures both start to overstate August strength and understate October's, not because Americans are spending or working differently, but because the same spending and hiring is landing a few weeks sooner than the model expects. Spirit's 52,000 seasonal hires, brought on from August 1st rather than September, will show up in a payroll survey that samples the pay period including the 12th of the month &mdash; a timing quirk with real consequences for anyone parsing the jobs report for signs of a slowing consumer.</p>
+  <div class="aside">
+    <div class="aside-title">Why a Seasonal-Adjustment Model Gets Fooled</div>
+    <p>X-13ARIMA-SEATS, the Census Bureau's seasonal-adjustment engine, works by learning a repeating annual pattern from several years of history and then subtracting that pattern out, so that what's left is the signal analysts actually care about &mdash; is the economy speeding up or slowing down, net of the calendar. It's very good at this when the calendar behaves.</p>
+    <p>A holiday that migrates a little earlier every year isn't a repeating pattern in the sense the model wants; it's a slow drift, and drift is precisely what a model trained on the past is bad at anticipating. For a few years, the model will keep expecting October hiring and October spending, and keep being mildly wrong in the same direction, until enough years accumulate that it learns the new normal. In the meantime, anyone reading a single month's retail or payroll number as a clean signal about the health of the consumer is, in a small but real way, reading a report that hasn't caught up to a candy company's real-estate strategy.</p>
+  </div>
+  <p>None of this means Halloween itself is thriving or wilting; that verdict awaits the September data, and claims of a &ldquo;record&rdquo; this year are, at the time of writing, recycling last September's figure rather than reporting a new one. What can be said with more confidence is that the holiday has not so much grown as smeared itself across the calendar &mdash; a consequence of inventory economics, a real-estate market with holes to fill, and a tariff schedule that keeps changing its mind.</p>
+  <div class="pull-quote">The skeletons in the garden center are, on reflection, a fairly honest read of the American economy in August 2026: twitchy, over-leveraged on timing, and dressed up as something scarier than it actually is.</div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-footer-author">Brooks Groves · Lakewood, WA</div>
+    <div class="article-footer-nav">
+      <a href="/blog/">← All Posts</a>
+      <a href="/writing/">Writing</a>
+      <a href="/tags.html">Tags</a>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
