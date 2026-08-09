@@ -50,34 +50,45 @@ print("Garmin Connect — one-time login to generate a token file")
 print("=" * 60)
 print()
 
-email = input("Garmin email: ").strip()
-password = getpass("Garmin password (hidden, not saved): ")
+# If a previous run already logged in successfully, reuse those tokens rather
+# than hitting Garmin's login endpoint again — it rate-limits (429) hard.
+_existing = (TOKEN_DIR / "oauth1_token.json").exists() and (TOKEN_DIR / "oauth2_token.json").exists()
+client = None
 
-try:
-    client = Garmin(
-        email=email,
-        password=password,
-        prompt_mfa=lambda: input("MFA one-time code (check your phone/email): ").strip(),
-    )
-    client.login(str(TOKEN_DIR))
+if _existing:
+    print("Found tokens from a previous login in", TOKEN_DIR)
+    print("Exporting those instead of logging in again (avoids Garmin's rate limit).")
+    print("Delete that folder and re-run if you want a completely fresh login.")
     print()
-    print("✅ Login successful!")
+else:
+    email = input("Garmin email: ").strip()
+    password = getpass("Garmin password (hidden, not saved): ")
 
-except GarminConnectAuthenticationError:
-    print()
-    print("❌ Wrong email or password. Run this script again to retry.")
-    sys.exit(1)
+    try:
+        client = Garmin(
+            email=email,
+            password=password,
+            prompt_mfa=lambda: input("MFA one-time code (check your phone/email): ").strip(),
+        )
+        client.login(str(TOKEN_DIR))
+        print()
+        print("✅ Login successful!")
 
-except GarminConnectTooManyRequestsError as e:
-    print()
-    print(f"❌ Rate limited by Garmin: {e}")
-    print("   Wait a while and try again.")
-    sys.exit(1)
+    except GarminConnectAuthenticationError:
+        print()
+        print("❌ Wrong email or password. Run this script again to retry.")
+        sys.exit(1)
 
-except GarminConnectConnectionError as e:
-    print()
-    print(f"❌ Connection error: {e}")
-    sys.exit(1)
+    except GarminConnectTooManyRequestsError as e:
+        print()
+        print(f"❌ Rate limited by Garmin: {e}")
+        print("   Wait a while and try again.")
+        sys.exit(1)
+
+    except GarminConnectConnectionError as e:
+        print()
+        print(f"❌ Connection error: {e}")
+        sys.exit(1)
 
 # Garmin auth has two halves and BOTH have to reach GitHub:
 #
@@ -91,10 +102,32 @@ except GarminConnectConnectionError as e:
 # and then stops — which is exactly the "why do I keep re-adding this?"
 # failure. So we export the portable base64 form instead, which carries
 # both halves in a single string.
-try:
-    token_string = client.garth.dumps()
-except Exception as e:
-    print(f"❌ Could not export the token: {e}")
+def export_token_string(token_dir):
+    """Build the portable both-halves token from what login() wrote to disk.
+
+    Reading the files is version-proof: the attribute holding the underlying
+    garth client has moved around between garminconnect releases (.garth vs
+    .client), but the on-disk filenames have not.
+    """
+    o1 = token_dir / "oauth1_token.json"
+    o2 = token_dir / "oauth2_token.json"
+    if o1.exists() and o2.exists():
+        return base64.b64encode(json.dumps([
+            json.loads(o1.read_text(encoding="utf-8")),
+            json.loads(o2.read_text(encoding="utf-8")),
+        ]).encode()).decode()
+    # Fall back to asking the client directly, whatever it calls its garth.
+    for attr in ("client", "garth"):
+        inner = getattr(client, attr, None)
+        if inner is not None and hasattr(inner, "dumps"):
+            return inner.dumps()
+    return None
+
+
+token_string = export_token_string(TOKEN_DIR)
+if not token_string:
+    print("❌ Could not find the token files login() should have written.")
+    print(f"   Look in: {TOKEN_DIR.resolve()}")
     sys.exit(1)
 
 # Sanity check it round-trips and actually contains both halves
