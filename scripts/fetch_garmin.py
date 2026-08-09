@@ -52,36 +52,70 @@ if not token_json.strip():
 token_json = token_json.strip()
 
 
+def _jwt_exp(tok):
+    """Read the exp claim out of a JWT without verifying it. Local only."""
+    try:
+        payload = tok.split(".")[1]
+        payload += "=" * (-len(payload) % 4)
+        claims = json.loads(base64.urlsafe_b64decode(payload))
+        return claims.get("exp")
+    except Exception:
+        return None
+
+
+def describe_di(tok):
+    """Report on Garmin's DI (Digital Identity) token format.
+
+    This is the modern format: di_token is a short-lived JWT Bearer token and
+    di_refresh_token is exchanged for a new one. There is no OAuth1 half here
+    at all, so its absence is not a fault.
+    """
+    exp = _jwt_exp(tok.get("di_token") or "")
+    has_refresh = bool(tok.get("di_refresh_token"))
+    if exp:
+        when = datetime.fromtimestamp(exp, tz=timezone.utc)
+        mins = (when - datetime.now(timezone.utc)).total_seconds() / 60
+        print(f"   di_token expires {when:%Y-%m-%d %H:%M} UTC ({mins:.0f} min)")
+    print(f"   di_refresh_token: {'present' if has_refresh else 'MISSING'}")
+    return has_refresh
+
+
 def describe_token(blob):
     """Report what's in the token and when it runs out.
 
-    Best-effort and never fatal — this is diagnostics, not auth.
-    Returns days remaining on the OAuth1 half, or None if unknown.
+    Handles both formats this repo has seen: Garmin's current DI tokens
+    (di_token + di_refresh_token) and the older OAuth1/OAuth2 pair.
+    Best-effort and never fatal — diagnostics, not auth.
+    Returns days remaining where that is knowable, else None.
     """
+    # DI format: plain JSON dict
+    try:
+        tok = json.loads(blob)
+        if isinstance(tok, dict) and "di_token" in tok:
+            print("Token: Garmin DI format")
+            describe_di(tok)
+            return None
+    except Exception:
+        pass
+
+    # Older portable OAuth1+OAuth2 pair, base64-encoded
     try:
         parts = json.loads(base64.b64decode(blob))
     except Exception:
-        print("NOTE: token is not the portable base64 format produced by")
-        print("      garmin_login_setup.py. It may be an older single-file")
-        print("      token. Re-run that script to get the current format.")
+        print("NOTE: token is in an unrecognised format. Re-run")
+        print("      garmin_login_setup.py to regenerate it.")
         return None
 
     has_oauth1 = isinstance(parts, list) and len(parts) >= 1 and 'oauth_token' in (parts[0] or {})
     oauth2 = parts[1] if isinstance(parts, list) and len(parts) > 1 else {}
-
-    if not has_oauth1:
-        print("WARN: token contains no OAuth1 half. Without it the OAuth2")
-        print("      refresh token expires in about a week and this secret")
-        print("      will need replacing constantly. Re-run garmin_login_setup.py.")
-
     exp = oauth2.get('refresh_token_expires_at')
     if exp:
         when = datetime.fromtimestamp(exp, tz=timezone.utc)
         days = (when - datetime.now(timezone.utc)).days
-        print(f"Token: OAuth1 {'present' if has_oauth1 else 'MISSING'} | "
+        print(f"Token: OAuth1 {'present' if has_oauth1 else 'missing'} | "
               f"OAuth2 refresh valid until {when:%Y-%m-%d} ({days}d)")
         return days
-    print(f"Token: OAuth1 {'present' if has_oauth1 else 'MISSING'}")
+    print(f"Token: OAuth1 {'present' if has_oauth1 else 'missing'}")
     return None
 
 

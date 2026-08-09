@@ -103,6 +103,34 @@ else:
 # and then stops — which is exactly the "why do I keep re-adding this?"
 # failure. So we export the portable base64 form instead, which carries
 # both halves in a single string.
+def _jwt_exp(tok):
+    """Read the exp claim out of a JWT without verifying it. Local only."""
+    try:
+        payload = tok.split(".")[1]
+        payload += "=" * (-len(payload) % 4)
+        claims = json.loads(base64.urlsafe_b64decode(payload))
+        return claims.get("exp")
+    except Exception:
+        return None
+
+
+def describe_di(tok):
+    """Report on Garmin's DI (Digital Identity) token format.
+
+    This is the modern format: di_token is a short-lived JWT Bearer token and
+    di_refresh_token is exchanged for a new one. There is no OAuth1 half here
+    at all, so its absence is not a fault.
+    """
+    exp = _jwt_exp(tok.get("di_token") or "")
+    has_refresh = bool(tok.get("di_refresh_token"))
+    if exp:
+        when = datetime.fromtimestamp(exp, tz=timezone.utc)
+        mins = (when - datetime.now(timezone.utc)).total_seconds() / 60
+        print(f"   di_token expires {when:%Y-%m-%d %H:%M} UTC ({mins:.0f} min)")
+    print(f"   di_refresh_token: {'present' if has_refresh else 'MISSING'}")
+    return has_refresh
+
+
 def _garth_client(c):
     for attr in ("client", "garth"):
         inner = getattr(c, attr, None)
@@ -155,6 +183,8 @@ single = TOKEN_DIR / "garmin_tokens.json"
 token_string = None
 has_oauth1 = False
 oauth2_blob = {}
+di_format = False
+has_refresh = False
 
 if o1f.exists() and o2f.exists():
     a = json.loads(o1f.read_text(encoding="utf-8"))
@@ -175,6 +205,10 @@ elif single.exists():
         if isinstance(parsed, list) and len(parsed) == 2:
             has_oauth1 = isinstance(parsed[0], dict) and "oauth_token" in parsed[0]
             oauth2_blob = parsed[1] if isinstance(parsed[1], dict) else {}
+        elif isinstance(parsed, dict) and "di_token" in parsed:
+            # Garmin's modern DI format — no OAuth1/OAuth2 pair exists here.
+            di_format = True
+            has_refresh = describe_di(parsed)
         elif isinstance(parsed, dict):
             has_oauth1 = "oauth_token" in parsed or "oauth1_token" in parsed
             oauth2_blob = parsed.get("oauth2_token") if isinstance(parsed.get("oauth2_token"), dict) else parsed
@@ -203,8 +237,7 @@ print("SUCCESS — here's what to do next:")
 print("=" * 60)
 print()
 print(f"1. Open this file:  {out_file.resolve()}")
-print("2. Copy the ENTIRE contents — it's one long line of base64,")
-print("   no quotes, no line breaks.")
+print("2. Copy the ENTIRE contents, exactly as-is.")
 print("3. GitHub repo -> Settings -> Secrets and variables -> Actions")
 print("4. Update (or create) the secret named:  GARMIN_TOKENS_JSON")
 print("5. Paste as the value and save.")
@@ -214,15 +247,19 @@ print("Secret is the source of truth from here.")
 print()
 print("-" * 60)
 print("What you just exported:")
-print(f"  OAuth1 token : {'present (good for ~1 year)' if has_oauth1 else 'NOT FOUND — this is why it expires weekly'}")
-if when:
-    print(f"  OAuth2 refresh: valid until {when:%Y-%m-%d}")
-print()
-if has_oauth1:
-    print("The long-lived OAuth1 half is included, so the workflow refreshes")
-    print("itself on every run. This should hold for months.")
+if di_format:
+    print("  Format       : Garmin DI (di_token + di_refresh_token)")
+    print(f"  Refresh token: {'present' if has_refresh else 'MISSING'}")
+    print()
+    print("  This is Garmin's current token format. There is no long-lived")
+    print("  OAuth1 half in this flow, so nothing is missing — the workflow")
+    print("  exchanges di_refresh_token for a fresh access token each run.")
+    print()
+    print("  If the secret still stops working after a week or so, that is")
+    print("  Garmin rotating the refresh token rather than anything wrong")
+    print("  with this export.")
 else:
-    print("NOTE: no long-lived OAuth1 half was found in what Garmin issued.")
-    print("That is why the secret keeps expiring. Worth checking whether MFA")
-    print("is enabled on the account — it changes which tokens Garmin hands out.")
+    print(f"  OAuth1 token : {'present (good for ~1 year)' if has_oauth1 else 'not present in this token'}")
+    if when:
+        print(f"  OAuth2 refresh: valid until {when:%Y-%m-%d}")
 print("-" * 60)
