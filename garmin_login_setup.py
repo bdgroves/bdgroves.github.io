@@ -52,7 +52,8 @@ print()
 
 # If a previous run already logged in successfully, reuse those tokens rather
 # than hitting Garmin's login endpoint again — it rate-limits (429) hard.
-_existing = (TOKEN_DIR / "oauth1_token.json").exists() and (TOKEN_DIR / "oauth2_token.json").exists()
+_existing = (((TOKEN_DIR / "oauth1_token.json").exists() and (TOKEN_DIR / "oauth2_token.json").exists())
+              or (TOKEN_DIR / "garmin_tokens.json").exists())
 client = None
 
 if _existing:
@@ -103,7 +104,6 @@ else:
 # failure. So we export the portable base64 form instead, which carries
 # both halves in a single string.
 def _garth_client(c):
-    """Return the underlying garth client, whatever this release calls it."""
     for attr in ("client", "garth"):
         inner = getattr(c, attr, None)
         if inner is not None and hasattr(inner, "dump"):
@@ -111,47 +111,77 @@ def _garth_client(c):
     return None, None
 
 
-def export_token_string(token_dir, c):
-    """Build the portable both-halves token.
-
-    garminconnect persists tokens inside contextlib.suppress(Exception), so a
-    failed write is invisible — which is exactly how you end up with a token
-    that is missing its OAuth1 half. So dump explicitly here and say what
-    happened, rather than trusting the files to appear.
-    """
-    attr, inner = _garth_client(c)
-    if inner is not None:
-        print(f"   (using client.{attr})")
-        try:
-            inner.dump(str(token_dir))
-        except Exception as e:
-            print(f"   note: explicit dump failed: {e}")
-
-    present = sorted(p.name for p in token_dir.glob("*.json"))
-    print(f"   token files on disk: {present or 'none'}")
-
-    o1, o2 = token_dir / "oauth1_token.json", token_dir / "oauth2_token.json"
-    if o1.exists() and o2.exists():
-        a = json.loads(o1.read_text(encoding="utf-8"))
-        b = json.loads(o2.read_text(encoding="utf-8"))
-        if not a:
-            print("   note: oauth1_token.json is empty — the OAuth1 half was never issued.")
-        return base64.b64encode(json.dumps([a, b]).encode()).decode(), a, b
-
-    # Files missing entirely — ask the client for its serialised form.
-    if inner is not None and hasattr(inner, "dumps"):
-        try:
-            s = inner.dumps()
-            parts = json.loads(base64.b64decode(s))
-            return s, parts[0], parts[1]
-        except Exception as e:
-            print(f"   note: dumps() failed: {e}")
-    return None, None, None
+def _summarise(name, obj):
+    """Describe a token structure without printing any secret values."""
+    if isinstance(obj, dict):
+        keys = sorted(obj)
+        print(f"   {name}: dict with keys {keys}")
+        return keys
+    if isinstance(obj, list):
+        print(f"   {name}: list of {len(obj)} items")
+        for i, item in enumerate(obj):
+            _summarise(f"{name}[{i}]", item)
+        return []
+    print(f"   {name}: {type(obj).__name__}")
+    return []
 
 
 print()
 print("Exporting token...")
-token_string, part1, part2 = export_token_string(TOKEN_DIR, client)
+
+try:
+    import garminconnect as _gc
+    print(f"   garminconnect {getattr(_gc, '__version__', '?')}")
+except Exception:
+    pass
+
+attr, inner = _garth_client(client) if client is not None else (None, None)
+if inner is not None:
+    print(f"   (using client.{attr})")
+    try:
+        inner.dump(str(TOKEN_DIR))
+    except Exception as e:
+        print(f"   note: explicit dump failed: {e}")
+
+present = sorted(p.name for p in TOKEN_DIR.glob("*"))
+print(f"   token files on disk: {present or 'none'}")
+
+# Different garminconnect releases store this differently: some write a single
+# garmin_tokens.json, others write oauth1_token.json + oauth2_token.json.
+# Take whatever is actually there rather than assuming a layout.
+o1f, o2f = TOKEN_DIR / "oauth1_token.json", TOKEN_DIR / "oauth2_token.json"
+single = TOKEN_DIR / "garmin_tokens.json"
+
+token_string = None
+has_oauth1 = False
+oauth2_blob = {}
+
+if o1f.exists() and o2f.exists():
+    a = json.loads(o1f.read_text(encoding="utf-8"))
+    b = json.loads(o2f.read_text(encoding="utf-8"))
+    print("   layout: two-file (oauth1 + oauth2)")
+    _summarise("oauth1", a); _summarise("oauth2", b)
+    has_oauth1 = bool(a) and "oauth_token" in a
+    oauth2_blob = b if isinstance(b, dict) else {}
+    token_string = base64.b64encode(json.dumps([a, b]).encode()).decode()
+
+elif single.exists():
+    raw = single.read_text(encoding="utf-8").strip()
+    print("   layout: single-file (garmin_tokens.json)")
+    try:
+        parsed = json.loads(raw)
+        _summarise("token", parsed)
+        # Find the oauth1/oauth2 parts wherever they live in this layout.
+        if isinstance(parsed, list) and len(parsed) == 2:
+            has_oauth1 = isinstance(parsed[0], dict) and "oauth_token" in parsed[0]
+            oauth2_blob = parsed[1] if isinstance(parsed[1], dict) else {}
+        elif isinstance(parsed, dict):
+            has_oauth1 = "oauth_token" in parsed or "oauth1_token" in parsed
+            oauth2_blob = parsed.get("oauth2_token") if isinstance(parsed.get("oauth2_token"), dict) else parsed
+    except json.JSONDecodeError:
+        print("   (not JSON — passing through verbatim)")
+    # This file IS the tokenstore for this release; the secret is its contents.
+    token_string = raw
 
 if not token_string:
     print()
@@ -159,25 +189,8 @@ if not token_string:
     print(f"   Check {TOKEN_DIR.resolve()} for what login() left behind.")
     sys.exit(1)
 
-# Validate, and say precisely what is wrong rather than a generic failure.
-problems = []
-if not isinstance(part1, dict) or "oauth_token" not in part1:
-    problems.append(f"OAuth1 half missing or malformed (got keys: {sorted(part1) if isinstance(part1, dict) else type(part1).__name__})")
-if not isinstance(part2, dict) or "refresh_token_expires_at" not in part2:
-    problems.append(f"OAuth2 half missing or malformed (got keys: {sorted(part2) if isinstance(part2, dict) else type(part2).__name__})")
-
-if problems:
-    print()
-    print("❌ The exported token is incomplete:")
-    for p in problems:
-        print(f"   - {p}")
-    print()
-    print("   The OAuth1 half is the long-lived one. Without it the secret")
-    print("   expires in about a week. Delete the garmin_tokens_output/ folder")
-    print("   and run this again; if it keeps happening, paste this output.")
-    sys.exit(1)
-
-parts = [part1, part2]
+exp = (oauth2_blob or {}).get("refresh_token_expires_at")
+parts = [{"oauth_token": "present"} if has_oauth1 else {}, oauth2_blob or {}]
 exp = parts[1].get("refresh_token_expires_at")
 when = datetime.fromtimestamp(exp, tz=timezone.utc) if exp else None
 
@@ -201,12 +214,15 @@ print("Secret is the source of truth from here.")
 print()
 print("-" * 60)
 print("What you just exported:")
-print(f"  OAuth1 token : present (good for ~1 year)")
+print(f"  OAuth1 token : {'present (good for ~1 year)' if has_oauth1 else 'NOT FOUND — this is why it expires weekly'}")
 if when:
     print(f"  OAuth2 refresh: valid until {when:%Y-%m-%d}")
 print()
-print("Because both halves are included, the workflow refreshes itself on")
-print("every run. You should not need to redo this for months. If you were")
-print("re-adding this weekly before, that's the bug this fixes — only the")
-print("short-lived half was reaching GitHub.")
+if has_oauth1:
+    print("The long-lived OAuth1 half is included, so the workflow refreshes")
+    print("itself on every run. This should hold for months.")
+else:
+    print("NOTE: no long-lived OAuth1 half was found in what Garmin issued.")
+    print("That is why the secret keeps expiring. Worth checking whether MFA")
+    print("is enabled on the account — it changes which tokens Garmin hands out.")
 print("-" * 60)
