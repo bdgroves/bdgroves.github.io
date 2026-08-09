@@ -9,7 +9,10 @@ platforms = ["linux-64", "osx-arm64", "win-64"]
 python = ">=3.11,<3.13"
 
 [pypi-dependencies]
-garminconnect = "*"
+# Pinned deliberately. garminconnect has changed its token handling before,
+# and an unpinned "*" means an upstream release can break the nightly fetch
+# with no change on our side. Bump this on purpose, not by surprise.
+garminconnect = ">=0.3.6,<0.4"
 curl_cffi = "*"
 
 [tasks]

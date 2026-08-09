@@ -6,12 +6,19 @@ Run via: pixi run fetch-garmin
 (or directly: python3 scripts/fetch_garmin.py, with garminconnect + curl_cffi
 installed and GARMIN_TOKENS_JSON set in the environment)
 
-Auth: token-only. Expects a saved Garmin token (see garmin_login_setup.py)
-in the GARMIN_TOKENS_JSON environment variable. Never touches a real
-Garmin password — if the token is missing or expired, this exits cleanly
-and preserves whatever's already in data/training.json.
+Auth: token-only. Expects the portable token string produced by
+garmin_login_setup.py (repo root) in the GARMIN_TOKENS_JSON environment
+variable. Never touches a real Garmin password — if the token is missing
+or expired, this exits cleanly and preserves data/training.json.
+
+The token string is a base64 blob carrying BOTH halves of Garmin's auth:
+the long-lived OAuth1 token (good for roughly a year) and the short-lived
+OAuth2 token. Both must travel together — with the OAuth1 half present the
+library mints a fresh OAuth2 on every run, so the secret keeps working for
+months. If only the OAuth2 half is stored, its refresh token dies in about
+a week and the secret has to be replaced constantly.
 """
-import json, os, sys, tempfile
+import base64, json, os, sys, tempfile
 from datetime import datetime, timezone, date
 
 from garminconnect import (
@@ -42,19 +49,82 @@ if not token_json.strip():
     # Cached data/training.json is untouched since we never wrote anything.
     sys.exit(1)
 
-tokendir = tempfile.mkdtemp()
-with open(os.path.join(tokendir, 'garmin_tokens.json'), 'w', encoding='utf-8') as f:
-    f.write(token_json)
+token_json = token_json.strip()
+
+
+def describe_token(blob):
+    """Report what's in the token and when it runs out.
+
+    Best-effort and never fatal — this is diagnostics, not auth.
+    Returns days remaining on the OAuth1 half, or None if unknown.
+    """
+    try:
+        parts = json.loads(base64.b64decode(blob))
+    except Exception:
+        print("NOTE: token is not the portable base64 format produced by")
+        print("      garmin_login_setup.py. It may be an older single-file")
+        print("      token. Re-run that script to get the current format.")
+        return None
+
+    has_oauth1 = isinstance(parts, list) and len(parts) >= 1 and 'oauth_token' in (parts[0] or {})
+    oauth2 = parts[1] if isinstance(parts, list) and len(parts) > 1 else {}
+
+    if not has_oauth1:
+        print("WARN: token contains no OAuth1 half. Without it the OAuth2")
+        print("      refresh token expires in about a week and this secret")
+        print("      will need replacing constantly. Re-run garmin_login_setup.py.")
+
+    exp = oauth2.get('refresh_token_expires_at')
+    if exp:
+        when = datetime.fromtimestamp(exp, tz=timezone.utc)
+        days = (when - datetime.now(timezone.utc)).days
+        print(f"Token: OAuth1 {'present' if has_oauth1 else 'MISSING'} | "
+              f"OAuth2 refresh valid until {when:%Y-%m-%d} ({days}d)")
+        return days
+    print(f"Token: OAuth1 {'present' if has_oauth1 else 'MISSING'}")
+    return None
+
+
+days_left = describe_token(token_json)
 
 try:
     client = Garmin()  # no email/password — token-only auth
+    tokendir = tempfile.mkdtemp()
+
+    # The library reads two files — oauth1_token.json and oauth2_token.json.
+    # The old code wrote a single garmin_tokens.json, which it never looks for.
+    # Unpack the portable blob into the two files it actually expects. Doing
+    # it explicitly (rather than relying on login()'s >512-character
+    # pass-the-string-directly heuristic) means this works whatever the
+    # token's length happens to be.
+    unpacked = False
+    try:
+        parts = json.loads(base64.b64decode(token_json))
+        if isinstance(parts, list) and len(parts) == 2:
+            with open(os.path.join(tokendir, 'oauth1_token.json'), 'w', encoding='utf-8') as f:
+                json.dump(parts[0], f)
+            with open(os.path.join(tokendir, 'oauth2_token.json'), 'w', encoding='utf-8') as f:
+                json.dump(parts[1], f)
+            unpacked = True
+    except Exception:
+        pass
+
+    if not unpacked:
+        # Legacy single-file secret. Written so the failure below is a clean
+        # auth error with instructions rather than a confusing traceback.
+        with open(os.path.join(tokendir, 'garmin_tokens.json'), 'w', encoding='utf-8') as f:
+            f.write(token_json)
+
     client.login(tokendir)
     print("Token login OK")
+    if days_left is not None and days_left <= 21:
+        print(f"NOTICE: token refresh window has {days_left} days left — "
+              f"re-run garmin_login_setup.py soon.")
 except GarminConnectAuthenticationError as e:
     print(f"FATAL: token rejected — {e}")
-    print("       The saved token has likely expired. Re-run the local")
-    print("       garmin_login_setup.py script and update the")
-    print("       GARMIN_TOKENS_JSON secret with a fresh token.")
+    print("       Re-run garmin_login_setup.py (in the repo root) and update")
+    print("       the GARMIN_TOKENS_JSON secret with the string it prints.")
+    print("       Settings -> Secrets and variables -> Actions.")
     # Exit non-zero so GitHub Actions marks the run as failed and emails you.
     # Cached training.json is untouched — the site just serves stale numbers
     # until the token is refreshed and the next run succeeds.
