@@ -185,3 +185,146 @@ run rather than overwriting them.
   (`pixi run fetch-garmin`).
 - **`garmin_login_setup.py`** and **`garmin_backfill_alltime.py`** are
   one-time LOCAL scripts. Never run in CI, never touch GitHub directly.
+
+# Cloudflare Workers
+
+Two Workers currently in production, both under the free tier. Both
+were built by Brooks; both power live features on brooksgroves.com. If
+either goes down, the corresponding features on the site stop working.
+
+Neither has a Custom Domain attached — they run on `.workers.dev` URLs.
+That means the URLs appear directly in the site's HTML source (someone
+viewing page source can see them). Traffic is low (~20 requests/day
+total across both), so hardening beyond current CORS restrictions
+hasn't been necessary yet.
+
+## brooks-anthropic-proxy
+
+**URL:** `brooks-anthropic-proxy.bdgroves1970.workers.dev`
+
+**Purpose:** Backs the recipe management system + the "Nora Reader" +
+"Recipe Extractor" tools. Handles four routes:
+
+| Method / Path | What it does |
+|---|---|
+| `POST /` | Forwards request body to Anthropic Messages API (used by Nora Reader + Recipe Extractor) |
+| `POST /save-recipe` | Appends a recipe to `recipes.json` in this repo via the GitHub API, auto-commits with message `feat: add <title>` |
+| `POST /delete-recipe` | Removes a recipe from `recipes.json`, auto-commits `chore: remove <title>` |
+| `POST /update-recipe` | Edits an existing recipe in `recipes.json`, auto-commits `chore: edit <title>` |
+
+**Secrets stored in the Worker:**
+- `ANTHROPIC_API_KEY` — for the Claude API calls
+- `GITHUB_TOKEN` — fine-grained PAT with Contents R+W on this repo
+
+**CORS:** properly restricted. `DEFAULT_ORIGINS` in the code allows only:
+- `https://brooksgroves.com`
+- `https://bdgroves.github.io`
+- `http://localhost:8000` (for local dev)
+- `http://127.0.0.1:8000`
+
+Overridable via the `ALLOWED_ORIGINS` env var.
+
+**Key files that depend on this Worker:**
+- Whatever pages implement the recipe UI + Nora Reader (grep the repo
+  for `brooks-anthropic-proxy` to find current callers)
+- `recipes.json` at the repo root — the data file this Worker writes to
+
+**Deploy method:** Manual via the Cloudflare dashboard. No Git
+integration — code is edited/uploaded directly in the Cloudflare
+editor. Source lives inside Cloudflare only, not in this repo.
+
+## tiny-dawn-75f1
+
+**URL:** `tiny-dawn-75f1.bdgroves1970.workers.dev`
+
+**Purpose:** Utility Worker that does TWO different jobs on the same
+domain. Kept the auto-generated Cloudflare name to avoid breaking
+callers — it's fine, just don't be surprised by it.
+
+| Method / Path | What it does |
+|---|---|
+| `POST /` | AI tutor for learning curricula (desert, ecogeo, volcanology, reggae, quantum-physics). Accepts two request formats — new `{system, messages}` and legacy `{question, lesson}` — and forwards to Anthropic Messages API. Model: `claude-sonnet-4-5`, max_tokens 800. |
+| `GET /proxy?url=...` | Generic CORS proxy — fetches the target URL server-side and returns the HTML, letting front-end JS pull cross-origin content that would otherwise be blocked. |
+
+**Secrets stored in the Worker:**
+- `ANTHROPIC_API_KEY` — for the Claude API calls
+
+**Known callers:**
+- `index.html` (line 673) — reggae music tutor Q&A widget
+- `outside.html` (line 1390) — Peaks and Pints beer taplist scraper
+  (fetches `peaksandpints.com/on-tap/` and parses for specific breweries)
+- Learning pages at `brooksgroves.com/learning/*` — desert, ecogeo,
+  volcanology, quantum-physics curricula. Each uses a curriculum-specific
+  system prompt.
+
+**CORS:** OPEN — `Access-Control-Allow-Origin: *`. Anyone from any
+website can call this Worker. Low risk given low traffic, but if you
+ever see requests spike unexpectedly, this is the first thing to
+tighten (change the `*` to an allowlist like `brooks-anthropic-proxy`
+uses).
+
+**Deploy method:** Same as brooks-anthropic-proxy — manual, Cloudflare
+dashboard only, no Git.
+
+## Runbooks
+
+### Someone's using the reggae tutor / recipe manager and it broke
+
+1. Cloudflare dashboard → **Compute → Workers & Pages**
+2. Click the relevant Worker (`tiny-dawn-75f1` for tutors, `brooks-anthropic-proxy` for recipes)
+3. Check the **Metrics** tab for errors
+4. Check the **Deployments** tab — is the latest version the one you expect?
+5. Common cause: Anthropic API key expired or rate-limited. Rotate at
+   [console.anthropic.com](https://console.anthropic.com), update the
+   Worker's `ANTHROPIC_API_KEY` secret.
+
+### Change what a Worker does
+
+1. Cloudflare dashboard → **Compute → Workers & Pages** → click the Worker
+2. Look for **"Edit code"** button (top of overview page)
+3. Modify the JS in Cloudflare's inline editor
+4. **Save and Deploy** — takes effect immediately
+
+Note: there's no Git backup of these Workers. If you make a bad edit,
+you can roll back via the **Deployments** tab (older versions listed
+there can be restored).
+
+### Rotate the Anthropic API key
+
+Both Workers use the same `ANTHROPIC_API_KEY` (they're independent
+secret bindings, but happen to point at the same underlying key). To
+rotate:
+
+1. [console.anthropic.com](https://console.anthropic.com) → API Keys →
+   generate new key
+2. Cloudflare → **brooks-anthropic-proxy → Settings → Variables and
+   secrets** → click `ANTHROPIC_API_KEY` → update with new value → save
+3. Repeat for `tiny-dawn-75f1`
+4. **Test both**: hit the reggae tutor and the recipe manager, verify
+   they still work
+5. Revoke the old key on Anthropic's site
+
+### Tighten CORS on tiny-dawn-75f1
+
+If you ever want to lock it down like `brooks-anthropic-proxy`:
+
+1. Edit the Worker code
+2. Replace `'Access-Control-Allow-Origin': '*'` with an origin-check
+   pattern (borrow the `DEFAULT_ORIGINS` + `buildCorsHeaders` pattern
+   from `brooks-anthropic-proxy` — it's clean, tested, and already
+   living in this account)
+3. Save + deploy
+4. Test each site that calls the Worker to confirm it still works
+
+## History
+
+- **2026-05 (approx):** Both Workers built as part of learning
+  experiments. Names left as Cloudflare auto-generated defaults
+  (`tiny-dawn-75f1`, later a `bitter-bush-83f0` that turned out to be
+  an unmodified Hello World template).
+- **2026-08-10:** Audit + cleanup. Deleted `bitter-bush-83f0` (unused
+  Hello World). Kept both real Workers. Documented what each does.
+  Decision: don't rename `tiny-dawn-75f1` — the URL is embedded in
+  multiple HTML files across brooksgroves.com and the learning site,
+  and renaming would require a coordinated multi-file update. Docs are
+  a better investment than a rename.
