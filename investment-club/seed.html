@@ -117,13 +117,8 @@
         // strip UI-only fields; give each a fresh id so rows are unique
         const trade = Object.assign({}, t);
         delete trade.open;
-        trade.id = 'seed-' + trade.ticker + '-' + Date.now();
-        fetch(SHEET_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'submit', trade: trade })
-        }).catch(function (e) { console.error(e); });
+        trade.id = 'seed-' + trade.ticker + '-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        sheetWrite({ action: 'submit', data: JSON.stringify({ trade: trade }) });
         sent++;
       });
       showToast('✓ Sent ' + sent + ' starter trades to the sheet. Give it a few seconds, then open the Review Desk.');

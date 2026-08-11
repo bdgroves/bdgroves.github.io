@@ -20,6 +20,28 @@ function cacheTrades(trades) {
   try { localStorage.setItem('ic_trades', JSON.stringify(trades)); } catch (e) {}
 }
 
+/* ── Fire a write through JSONP (GET) — survives Apps Script's redirect,
+      which a no-cors POST does not. Fire-and-forget; we don't need the reply. ── */
+function sheetWrite(paramObj) {
+  if (!SHEET_URL) return;
+  const cbName = '__icW_' + Math.random().toString(36).slice(2);
+  let script;
+  function cleanup() {
+    try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+    if (script && script.parentNode) script.parentNode.removeChild(script);
+  }
+  window[cbName] = function () { cleanup(); };
+  const qs = Object.keys(paramObj).map(function (k) {
+    return k + '=' + encodeURIComponent(paramObj[k]);
+  }).join('&');
+  script = document.createElement('script');
+  script.src = SHEET_URL + '?' + qs + '&callback=' + cbName + '&t=' + Date.now();
+  script.onerror = cleanup;
+  document.head.appendChild(script);
+  // safety cleanup in case callback never fires
+  setTimeout(cleanup, 15000);
+}
+
 /* ── Write: new submission ── */
 function saveTrade(trade) {
   trade.id     = String(Date.now());
@@ -32,15 +54,8 @@ function saveTrade(trade) {
   trades.unshift(trade);
   cacheTrades(trades);
 
-  // shared sheet (fire-and-forget; response is opaque in no-cors)
-  if (SHEET_URL) {
-    fetch(SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'submit', trade: trade })
-    }).catch(function (err) { console.error('submit failed', err); });
-  }
+  // shared sheet (via JSONP GET)
+  sheetWrite({ action: 'submit', data: JSON.stringify({ trade: trade }) });
 }
 
 /* ── Write: committee decision (status + notes) ── */
@@ -49,19 +64,14 @@ function updateTrade(updatedTrade) {
   const idx = trades.findIndex(function (t) { return t.id === updatedTrade.id; });
   if (idx !== -1) { trades[idx] = updatedTrade; cacheTrades(trades); }
 
-  if (SHEET_URL) {
-    fetch(SHEET_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        action: 'decision',
-        id:     updatedTrade.id,
-        status: updatedTrade.status,
-        notes:  updatedTrade.notes
-      })
-    }).catch(function (err) { console.error('decision failed', err); });
-  }
+  sheetWrite({
+    action: 'decision',
+    data: JSON.stringify({
+      id:     updatedTrade.id,
+      status: updatedTrade.status,
+      notes:  updatedTrade.notes
+    })
+  });
 }
 
 /* ── Read: pull all submissions from the sheet (JSONP) ──
