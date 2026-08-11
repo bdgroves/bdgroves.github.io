@@ -6,7 +6,7 @@
 */
 
 // ▼▼▼ APPS SCRIPT WEB APP URL (ends in /exec) — set = shared/sheet mode ▼▼▼
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbynxzSMwcZ4tAENK3mkS78CGjjujSM6mw_zLh72EE_Sq0twKlQqylxsHyr8Sf_QnxAMmA/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwxivmeZrARKTvao5_cJejqqPgxE76A6ELvdt4A-HOB9Uz48Z1iFoX-A-70D74g2-NWVA/exec';
 // ▲▲▲ set to '' to fall back to local prototype mode ▲▲▲
 
 /* ── Local cache (also the store when SHEET_URL is blank) ── */
