@@ -6,7 +6,7 @@
 */
 
 // ▼▼▼ APPS SCRIPT WEB APP URL (ends in /exec) — set = shared/sheet mode ▼▼▼
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbziVWrGBxWNLz-BRaPJVbstKu3KGXVw6p8ATzV_wp86Tot-z3WA8qoo-3s3ILtxn7EM3w/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbynxzSMwcZ4tAENK3mkS78CGjjujSM6mw_zLh72EE_Sq0twKlQqylxsHyr8Sf_QnxAMmA/exec';
 // ▲▲▲ set to '' to fall back to local prototype mode ▲▲▲
 
 /* ── Local cache (also the store when SHEET_URL is blank) ── */
@@ -96,6 +96,39 @@ function loadTradesFromSheet(callback) {
     clearTimeout(timeout);
     cleanup();
     callback(loadTrades());
+  };
+  document.head.appendChild(script);
+}
+
+/* ── Ask the backend for an AI synthesis (JSONP; Claude runs server-side) ── */
+function requestSynthesis(callback) {
+  if (!SHEET_URL) { callback({ error: 'No backend configured.' }); return; }
+
+  const cbName = '__icSyn_' + Date.now();
+  let script;
+
+  function cleanup() {
+    try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+    if (script && script.parentNode) script.parentNode.removeChild(script);
+  }
+
+  const timeout = setTimeout(function () {
+    cleanup();
+    callback({ error: 'Timed out reaching the synthesis service.' });
+  }, 60000);
+
+  window[cbName] = function (data) {
+    clearTimeout(timeout);
+    cleanup();
+    callback(data || {});
+  };
+
+  script = document.createElement('script');
+  script.src = SHEET_URL + '?action=synthesize&callback=' + cbName + '&t=' + Date.now();
+  script.onerror = function () {
+    clearTimeout(timeout);
+    cleanup();
+    callback({ error: 'Could not reach the synthesis service.' });
   };
   document.head.appendChild(script);
 }
