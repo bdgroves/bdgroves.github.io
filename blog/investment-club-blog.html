@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bob's Gang Wanted a Trade Journal. GitHub Pages Wanted Me Dead. — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --satellite:#2a5c3a; --data:#8b6914;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--satellite) 0%,var(--data) 50%,var(--ink) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--satellite); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .article-wrap { max-width:760px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--satellite); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--satellite); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--satellite); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--satellite); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body blockquote { border-left:3px solid var(--satellite); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--satellite); text-decoration:underline; text-underline-offset:3px; }
+
+    /* IMAGE FIGURES */
+    .fig { margin:2rem 0; }
+    .fig img { width:100%; border:1px solid var(--mist); display:block; }
+    .fig-caption { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); margin-top:0.5rem; line-height:1.6; }
+    .fig-caption strong { color:var(--data); }
+
+    /* SIDE BY SIDE */
+    .fig-pair { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:2rem 0; }
+    .fig-pair .fig { margin:0; }
+    @media(max-width:600px) { .fig-pair { grid-template-columns:1fr; } }
+
+    /* SEASONAL TABLE */
+    .season-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.88rem; }
+    .season-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .season-table td { padding:0.65rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; line-height:1.55; }
+    .season-table tr:last-child td { border-bottom:none; }
+    .season-table td:first-child { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--data); font-weight:600; white-space:nowrap; }
+
+    /* INDICES TABLE */
+    .index-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.85rem; }
+    .index-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .index-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    .index-table tr:last-child td { border-bottom:none; }
+    .index-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--satellite); font-weight:600; }
+
+    /* USES BOX */
+    .uses-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0; }
+    .use-card { background:var(--cream); padding:1rem 1.25rem; border-left:3px solid var(--data); }
+    .use-card-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--data); margin-bottom:0.4rem; }
+    .use-card-body { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    @media(max-width:560px) { .uses-grid { grid-template-columns:1fr; } }
+
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--satellite); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  
+    .aside { background:var(--cream); border-top:2px solid var(--data); padding:1.3rem 1.5rem; margin:1.5rem 0; }
+    .aside-title { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--data); margin-bottom:0.6rem; }
+    .aside p { margin:0 0 0.7rem; color:var(--stone); line-height:1.7; font-size:0.9rem; }
+    .aside p:last-child { margin-bottom:0; }
+    .pull-quote { border-left:3px solid var(--data); margin:2rem 0; padding:0.5rem 0 0.5rem 1.5rem; font-family:'Playfair Display',serif; font-style:italic; font-size:1.2rem; line-height:1.6; color:var(--stone); }
+    .article-kicker-inline { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); margin:2.5rem 0 1.5rem; }
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank" class="github">GitHub ↗</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/" class="article-back">← Blog</a>
+  <div class="article-num">Field Notes · Deployment War Story · August 2026</div>
+  <p class="article-kicker">A Google Sheet, an AI Committee Chair, and Five Ways to Lose a Domain</p>
+  <h1 class="article-title">Bob's Gang Wanted a Trade Journal. GitHub Pages Wanted Me Dead.</h1>
+  <div class="article-meta">
+    <span>Lakewood, WA · August 2026</span>
+    <span>Brooks Groves</span>
+  </div>
+  <div class="article-tags">
+    <a href="https://brooksgroves.com/tags.html#Web%20Development" class="article-tag-pill">Web Development</a>
+    <a href="https://brooksgroves.com/tags.html#GitHub%20Pages" class="article-tag-pill">GitHub Pages</a>
+    <a href="https://brooksgroves.com/tags.html#Google%20Apps%20Script" class="article-tag-pill">Google Apps Script</a>
+    <a href="https://brooksgroves.com/tags.html#AI" class="article-tag-pill">AI</a>
+    <a href="https://brooksgroves.com/tags.html#Investment%20Club" class="article-tag-pill">Investment Club</a>
+    <a href="https://brooksgroves.com/tags.html#Deployment" class="article-tag-pill">Deployment</a>
+  </div>
+
+  <div class="disclaimer"></div>
+
+  <div class="article-body">
+
+  <p style="font-style:italic; color:var(--stone); font-size:0.95rem; border-left:3px solid var(--mist); padding-left:1.2rem; margin-bottom:2.5rem;">How I built an AI-assisted trade journal for a Rotary investment club, lost a fight with a folder, briefly deleted my own website, and eventually won &mdash; all for the going rate of craft beer.</p>
+
+  <p>There's a moment in every side project where you realize the hard part isn't the part you thought was hard.</p>
+  <p>I said yes to building a trade journal for Bob Zawilski's investment club &mdash; twenty-odd members of the Lakewood Rotary crowd who meet on Wednesdays, argue about stocks, and pass around a paper &ldquo;Trade Journal&rdquo; template like it's 1994. Bob wanted to drag it into the present: a member fills out their homework, everyone sees it before the meeting, and &mdash; because it's the future &mdash; an AI reads the whole batch and tells the committee what to argue about.</p>
+  <p>Simple, right? The app took an afternoon. The <em>deployment</em> took my sanity, most of a day, and one genuinely terrifying moment where my entire website went dark.</p>
+  <p>Let me tell you about it. There's beer at the end.</p>
+  <hr>
+  <div class="article-kicker-inline" style="font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);margin:2.5rem 0 1.5rem;">What We Were Actually Building</div>
+  <p>The pitch is boring and the pitch is good: a web form that matches the club's paper template exactly &mdash; ticker, price levels, valuation, thesis, moat, &ldquo;why now,&rdquo; the pros and cons, the exit plan. Members submit. The submissions land in a shared Google Sheet. A committee dashboard reads them back, lets you stamp each one <strong>Approve / Watch / Pass</strong>, and &mdash; the fun part &mdash; hands the whole pile to Claude, which synthesizes the club's collective thinking into a briefing.</p>
+  <p>No servers to run. No database to babysit. Static HTML on the front, a Google Sheet on the back, a sprinkle of AI in the middle. The kind of thing I've shipped a dozen times. I have GitHub Actions humming all over my personal site pulling in cycling results and Garmin data. I <em>know</em> GitHub Pages.</p>
+  <p>Reader, I did not know GitHub Pages.</p>
+  <hr>
+  <div class="article-kicker-inline" style="font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);margin:2.5rem 0 1.5rem;">The Gauntlet, in Five Acts</div>
+  <p><strong>Act I: The folder that wasn't there.</strong> I dropped the app into a folder on my main site and pushed. The homepage worked. The <code>/investment-club/</code> path? 404. Turns out when your user site (<code>you.github.io</code>) and a project repo share a name, they fight over the same URL &mdash; and Jekyll, quietly, was skipping my folder entirely during the build. My files were <em>in the repo</em> and <em>not on the site</em> at the same time, like Schr&ouml;dinger's deploy.</p>
+  <p><strong>Act II: The ghost file.</strong> I fixed the code, pushed it, and the live site kept serving the <em>old</em> version. So I fixed it again. And again. I'd stare at <code>git show HEAD</code> &mdash; the correct file, right there in the repo &mdash; then load the live URL and get a corpse. GitHub's CDN had cached a stale <code>.js</code> file and would not let go. I was debugging a ghost. Incognito didn't help; caches laugh at incognito.</p>
+  <p><strong>Act III: The domain heist.</strong> Getting clever, I spun up a separate repo to host the app cleanly. It quietly grabbed <code>brooksgroves.com</code> as its own custom domain &mdash; and yanked the whole domain away from my main site. For a few minutes, <em>my entire website</em> was a 404. That's a special flavor of adrenaline: the &ldquo;I think I just deleted myself from the internet&rdquo; kind. (Everything was fine. It's always fine. It never <em>feels</em> fine.)</p>
+  <div class="aside">
+    <div class="aside-title">Why Two Repos Can&rsquo;t Share a Domain</div>
+    <p style="margin:0 0 0.7rem;color:var(--stone);line-height:1.7;font-size:0.9rem;">GitHub Pages maps exactly one live site to each custom domain at a time. The domain lives in a <code>CNAME</code> file inside whichever repo claims it last &mdash; there's no shared registry warning you a domain is already spoken for, and no merge conflict to catch it. Add a custom domain to a second repo and GitHub simply obeys the most recent instruction, silently detaching the domain from wherever it used to point.</p>
+    <p style="margin:0 0 0.7rem;color:var(--stone);line-height:1.7;font-size:0.9rem;">Which means the failure mode isn't a build error you'd notice in a log. It's your production site returning a 404 with no warning, because somewhere else in your GitHub account, a brand-new repo just told the DNS system it lives here now.</p>
+  </div>
+  <p><strong>Act IV: The Apps Script hydra.</strong> The Google side had its own trap. Every time I updated the backend code, I clicked &ldquo;New deployment&rdquo; &mdash; which mints a <em>brand-new URL</em> &mdash; instead of pushing a new <em>version</em> of the existing one. Before long I had a forest of deployments named &ldquo;Untitled,&rdquo; &ldquo;Untitled,&rdquo; &ldquo;new,&rdquo; &ldquo;Untitled,&rdquo; each at a different address, and my app pointing at whichever one was least correct. Apps Script's UI puts the trap and the fix one dropdown apart and wishes you luck.</p>
+  <p><strong>Act V: The writes that went nowhere.</strong> This was the good one &mdash; the bug that actually taught me something. Submissions would vanish. The form said &ldquo;submitted!&rdquo; The sheet stayed empty. Reads worked fine; writes disappeared into the void.</p>
+  <p>Here's the culprit: when a browser fires a <code>no-cors</code> POST at a Google Apps Script endpoint, the script answers with a 302 redirect to a different Google host &mdash; and the browser refuses to carry a <code>no-cors</code> POST body through that redirect. The write dies in transit, silently, with a cheerful success message. Reads survived because they used JSONP &mdash; a <code>&lt;script&gt;</code> tag, which <em>does</em> follow the redirect.</p>
+  <div class="aside">
+    <div class="aside-title">The no-cors Redirect Trap</div>
+    <p style="margin:0 0 0.7rem;color:var(--stone);line-height:1.7;font-size:0.9rem;">A <code>no-cors</code> fetch is deliberately half-blind by design: the browser will send the request, but refuses to let your JavaScript read anything back &mdash; not the status code, not the body, nothing. That's normally a reasonable trade-off for a fire-and-forget POST.</p>
+    <p style="margin:0 0 0.7rem;color:var(--stone);line-height:1.7;font-size:0.9rem;">The part almost nobody expects is what happens when the server answers with a redirect, which is exactly what Apps Script does on every request. Per the fetch spec, a <code>no-cors</code> request is not permitted to replay its body across a redirect to a different origin &mdash; so the browser quietly drops the POST payload and follows the redirect empty-handed. The server gets a valid, complete request. It's just missing everything you actually sent. And because <code>no-cors</code> never lets you see the response anyway, your code has no way to notice: the promise resolves, the UI says success, and the row that should exist simply doesn't.</p>
+  </div>
+  <p>The fix was to make writes travel the same road reads did: pack the payload into a URL and send it as JSONP too. Ugly? A little. Reliable? Completely. The moment I pasted a hand-built test URL into the browser and got back a clean <code>{&quot;ok&quot;:true}</code> &mdash; and watched a row actually appear in the sheet &mdash; I may have made a noise. My wife did not ask about it.</p>
+  <hr>
+  <div class="article-kicker-inline" style="font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);margin:2.5rem 0 1.5rem;">The Escape Hatch Was a Drag-and-Drop</div>
+  <p>After a day of fighting GitHub Pages' every head, I did the thing I should have done at hour two: I dragged the folder onto Netlify.</p>
+  <p>Thirty seconds. It just worked. Files served exactly as written, no Jekyll, no cache s&eacute;ance, no domain turf war. I renamed the site <code>lakewood-investment-club</code>, submitted a test trade &mdash; <em>my</em> semiconductor love, Intel &mdash; and watched it flow: form &rarr; sheet &rarr; dashboard &rarr; done.</p>
+  <div class="pull-quote">The anticlimax was the best part of the whole day. Sometimes the win isn&rsquo;t a clever fix. Sometimes it&rsquo;s admitting the tool you&rsquo;re wrestling with was the wrong tool.</div>
+  <hr>
+  <div class="article-kicker-inline" style="font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);margin:2.5rem 0 1.5rem;">And Then the AI Earned Its Keep</div>
+  <p>Here's where it stops being a war story and starts being the reason I built the thing.</p>
+  <p>I seeded the club's real worldview into the journal &mdash; three aggressive AI-infrastructure bets (a chip alt-play, a data-center cooling name, and a <em>space-based data center</em> moonshot, because of course) alongside three defensive hedges pulled from Bob's reading pile: gold, ag commodities, utilities. Then I hit <strong>Synthesize</strong> and let Claude read the whole book.</p>
+  <p>It was <em>good</em>. Not &ldquo;autocomplete&rdquo; good &mdash; <em>committee-chair</em> good. On its own it noticed the club was running a barbell: a high-beta AI-capex core with a real-asset insurance layer bolted on, and it flagged the quiet contradiction that the same gang buying the AI trade was reading a stack of research warning the AI trade was overheating. It ranked the theses on merit. It caught that the &ldquo;diversified&rdquo; hedges <em>all</em> secretly needed a weak dollar &mdash; so they weren't as diversified as they looked. And when I fed it a lazy test entry whose entire thesis was &ldquo;solid chip company,&rdquo; it replied, with a straight face, that this &ldquo;isn't a thesis &mdash; it's a vibe.&rdquo;</p>
+  <p>Every report now auto-archives to a tab in the sheet, timestamped, so the club builds a running record of how its thinking shifts week to week. Download a clean copy, or let the log stack up. That's the part Bob's actually excited about: not one clever analysis, but a memory.</p>
+  <hr>
+  <div class="article-kicker-inline" style="font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);margin:2.5rem 0 1.5rem;">What I'd Tell Past Me</div>
+  <p>A few things I now believe with the confidence of the recently burned:</p>
+  <ul style="margin:0 0 1.6rem;padding-left:1.3rem;color:var(--ink);line-height:1.85;">
+    <li><strong>The app is rarely the hard part. Hosting is.</strong> Budget accordingly.</li>
+    <li><strong>Caches and redirects lie to you.</strong> When a browser and a server disagree, build a test that bypasses both &mdash; a raw URL, a <code>git show</code>, a direct read. Ground truth beats guessing every time.</li>
+    <li><strong>When a platform fights you at every layer, change platforms.</strong> Loyalty to a deploy target is not a virtue.</li>
+    <li><strong>&ldquo;New version,&rdquo; not &ldquo;new deployment.&rdquo;</strong> If you know, you know. If you don't, you will.</li>
+    <li><strong>A dumb, reliable workaround beats an elegant, fragile one.</strong> JSONP writes aren't pretty. They ship.</li>
+  </ul>
+  <hr>
+  <div class="article-kicker-inline" style="font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--stone);margin:2.5rem 0 1.5rem;">The Tab</div>
+  <p>The club has its tool now. Members submit from any device, the committee reviews together, and an AI sits in the corner playing the world's most caffeinated analyst &mdash; one who will absolutely call your thesis a vibe.</p>
+  <p>Bob's gang can stop circling the neighborhood in their Teslas, black t-shirts and all, waiting on me to ship. It works. It even archives its own opinions for posterity.</p>
+  <p>My invoice, as agreed, is payable in craft microbrews. I intend to collect the full flight.</p>
+  <div class="pull-quote">None of the above is investment advice. Especially the space data centers.</div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-footer-author">Brooks Groves · Lakewood, WA</div>
+    <div class="article-footer-nav">
+      <a href="/blog/">← All Posts</a>
+      <a href="/writing/">Writing</a>
+      <a href="/tags.html">Tags</a>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
