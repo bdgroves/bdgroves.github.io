@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Creek That Isn&#39;t There — Brooks Groves</title>
+<meta name="description" content="Big Creek runs dry more than a third of the time, then floods 200 times over. What a Snowflake warehouse, a tested dbt model, and an AI agent found out about the creek behind my hometown.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+    --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+    --white:#fdfaf4; --satellite:#2a5c3a; --data:#8b6914;
+    --parchment-deep:#eae0cc; --ink-soft:#5c5347; --rule:#d6c9ae;
+    --ember:#8b3a2a; --water:#3c6478;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--parchment); color:var(--ink);
+    font-family:'Source Serif 4',Georgia,serif; font-weight:300;
+    font-size:19px; line-height:1.72;
+  }
+  .topline{height:4px;background:linear-gradient(90deg,var(--water),var(--gold),var(--satellite))}
+  header{padding:1.5rem clamp(1.5rem,5vw,2rem)}
+  .masthead-inner{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+  .site-name{font-family:'Playfair Display',serif;font-weight:900;font-size:1.15rem;color:var(--ink);text-decoration:none}
+  header nav a{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;color:var(--stone);margin-left:1.5rem}
+  header nav a:hover{color:var(--water)}
+  header nav a.github{border:1px solid var(--mist);border-radius:4px;padding:0.3rem 0.7rem}
+
+  .article-wrap { max-width:760px; margin:0 auto; padding:clamp(1rem,4vw,2rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+  .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+  .article-back:hover { color:var(--water); }
+  .article-num { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.6rem; }
+  .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--water); margin-bottom:0.75rem; }
+  .article-title { font-family:'Playfair Display',serif; font-size:clamp(2.1rem,6vw,3.2rem); font-weight:900; line-height:1.1; letter-spacing:-0.01em; margin-bottom:1rem; }
+  .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1.2rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+  .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--rule); margin-bottom:2.5rem; }
+  .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+  .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+  .article-body { font-size:19px; line-height:1.72; }
+  .article-body p { margin:0 0 1.15em; }
+  .article-body .dek { font-size:1.18rem; font-style:italic; color:var(--ink-soft); margin:0 0 1.6em; line-height:1.5; }
+  .article-body h2 {
+    font-family:'Playfair Display',serif; font-weight:600;
+    font-size:clamp(1.35rem,3.6vw,1.75rem); margin:2.6em 0 .6em; line-height:1.25;
+    padding-top:0; border-top:none; color:var(--ink);
+  }
+  .article-body h3 { font-family:'Playfair Display',serif; font-weight:400; font-style:italic; font-size:1.15rem; margin:2em 0 .4em; color:var(--ink-soft); }
+  .article-body p:first-child::first-letter{ font:inherit; float:none; margin:0; color:inherit; }
+
+.article-body p.lede::first-letter{font-family:'Playfair Display',serif;font-weight:600;float:left;
+    font-size:3.5em;line-height:.82;padding:.06em .09em 0 0;color:var(--water)}
+  .article-body figure{margin:2.4em 0;padding:0}
+  .article-body figure img{width:100%;height:auto;display:block;border:1px solid var(--rule);border-radius:2px}
+  .article-body figcaption{font-size:.88rem;color:var(--ink-soft);font-style:italic;margin-top:.7em;line-height:1.5}
+  .article-body blockquote{margin:2em 0;padding:.2em 0 .2em 1.4em;border-left:3px solid var(--water);
+    font-style:italic;color:var(--ink-soft)}
+  .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;
+    background:var(--rule);border:1px solid var(--rule);margin:2.2em 0}
+  .stat{background:var(--parchment-deep);padding:1.1em .9em;text-align:center}
+  .stat .n{font-family:'Playfair Display',serif;font-size:1.65rem;font-weight:600;display:block;line-height:1.1}
+  .stat .l{font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);
+    display:block;margin-top:.35em}
+  table{width:100%;border-collapse:collapse;margin:1.8em 0;font-size:.92rem}
+  th,td{text-align:left;padding:.55em .7em;border-bottom:1px solid var(--rule)}
+  th{font-family:'Playfair Display',serif;font-weight:600;font-size:.86rem}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .article-body .box{background:var(--parchment-deep);border-left:3px solid var(--ember);
+    padding:1.1em 1.3em;margin:2em 0;font-size:.94rem}
+  .article-body .box strong{font-family:'Playfair Display',serif}
+  hr{border:0;border-top:1px solid var(--rule);margin:3em 0}
+  .end{text-align:center;color:var(--ink-soft);font-size:.85rem;letter-spacing:.12em;margin:3.4em 0 1em}
+  code{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.86em;
+    background:var(--parchment-deep);padding:.1em .35em;border-radius:2px}
+  a{color:var(--water)}
+
+  .article-body .aside{
+    background:var(--cream); border-top:2px solid var(--water);
+    padding:1.3rem 1.5rem; margin:1.8rem 0;
+  }
+  .article-body .aside-title{
+    font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--water); margin-bottom:0.6rem;
+  }
+  .article-body .aside p{ margin:0 0 0.7rem; color:var(--ink-soft); font-size:0.92rem; line-height:1.7; }
+  .article-body .aside p:last-child{ margin-bottom:0; }
+
+  .article-body figure{ cursor:zoom-in; position:relative; }
+  .article-body figure img{ transition:opacity .15s; }
+  .article-body figure:hover img{ opacity:.94; }
+  .article-body .zoom-hint{
+    font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--stone); text-align:right;
+    margin:0.5rem 0 0; opacity:.8;
+  }
+  .article-body .legend{
+    display:flex; align-items:center; gap:0.6rem; margin-top:0.6rem;
+    font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--ink-soft); flex-wrap:wrap;
+  }
+  .article-body .legend .chip{
+    height:8px; width:20px; border-radius:2px; border:1px solid var(--rule); display:inline-block;
+  }
+  .article-body .legend .line{
+    height:2px; width:20px; display:inline-block;
+  }
+  .zoom-overlay{ position:fixed; inset:0; background:rgba(20,22,20,.92); z-index:9500;
+    display:none; align-items:center; justify-content:center; padding:2rem; cursor:zoom-out; }
+  .zoom-overlay.open{ display:flex; }
+  .zoom-overlay img{ max-width:96vw; max-height:92vh; border:1px solid var(--rule); }
+  .zoom-close{ position:absolute; top:1rem; right:1.3rem; background:none; border:none;
+    color:var(--parchment); font-size:1.6rem; line-height:1; cursor:pointer; font-family:'DM Mono',monospace; }
+  .zoom-close:hover{ color:var(--gold); }
+
+  .article-footer { max-width:760px; margin:0 auto; padding:0 clamp(1.5rem,5vw,2rem) clamp(2rem,5vw,3rem); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+  .article-footer-nav { display:flex; gap:1.5rem; }
+  .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+  .article-footer-nav a:hover { color:var(--water); }
+
+  footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:2rem; }
+  .footer-inner { max-width:860px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+  .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+  .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
+  .footer-links a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); margin-left:1.2rem; }
+  .footer-links a:hover { color:var(--white); }
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub &#8599;</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/" class="article-back">&larr; Blog</a>
+  <div class="article-num">Field Notes &middot; Data Engineering &middot; August 2026</div>
+  <p class="article-kicker">A Creek, a Warehouse, and an AI Agent That Only Works Because the Models Did</p>
+  <h1 class="article-title">&#127966; The Creek That Isn&#39;t There</h1>
+  <div class="article-meta">
+    <span>Groveland, CA &middot; August 2026</span>
+    <span>Brooks Groves</span>
+  </div>
+  <div class="article-tags">
+    <a href="https://brooksgroves.com/tags.html#Data%20Engineering" class="article-tag-pill">Data Engineering</a>
+    <a href="https://brooksgroves.com/tags.html#Snowflake" class="article-tag-pill">Snowflake</a>
+    <a href="https://brooksgroves.com/tags.html#dbt" class="article-tag-pill">dbt</a>
+    <a href="https://brooksgroves.com/tags.html#AI" class="article-tag-pill">AI</a>
+    <a href="https://brooksgroves.com/tags.html#Hydrology" class="article-tag-pill">Hydrology</a>
+    <a href="https://brooksgroves.com/tags.html#GIS" class="article-tag-pill">GIS</a>
+    <a href="https://brooksgroves.com/tags.html#Groveland" class="article-tag-pill">Groveland</a>
+  </div>
+
+  <div class="article-body">
+
+<p class="lede">I grew up in Groveland, in the Sierra Nevada foothills where Highway 120 climbs toward Yosemite. There is a creek there called Big Creek, and for a good part of every year it is not a creek at all. It is a dry bed with rocks in it.</p>
+
+<p>Last week I had a Snowflake warehouse full of streamgage data open for unrelated reasons, and I noticed one of the fourteen gages I had loaded was sitting in my own back yard. So I asked it some questions.</p>
+
+<p>The answers were more extreme than I expected.</p>
+
+<h2>Where this is</h2>
+
+<figure>
+  <img src="maps/bc_01_local.png" alt="OpenStreetMap detail of Groveland, California showing two USGS gage locations along Big Creek, with Highway 120 running east to west and Pine Mountain Lake to the north.">
+  <figcaption>The two USGS stations on Big Creek, just north of Groveland. Highway 120 is the orange line — the road to Yosemite. The developed area between the gages is Pine Mountain Lake; the green boundary is Stanislaus National Forest.</figcaption>
+  <div class="legend">
+    <span class="chip" style="background:#c8712a;"></span><span>USGS gage</span>
+    <span class="line" style="background:#e8973f;"></span><span>Highway 120</span>
+    <span class="line" style="background:#4a7c4a;"></span><span>National Forest boundary</span>
+  </div>
+</figure>
+
+<figure>
+  <img src="maps/bc_02_region.png" alt="Regional OpenStreetMap view showing Tuolumne County, with Big Creek's position between the Central Valley to the west and Yosemite National Park to the east.">
+  <figcaption>Regional context. Big Creek drains a small piece of the western Sierra foothills into the Tuolumne River system — the same watershed that, much further upstream and at much higher elevation, includes Hetch Hetchy.</figcaption>
+</figure>
+
+<h2>The numbers</h2>
+
+<div class="stat-row">
+  <div class="stat"><span class="n">36.8%</span><span class="l">Days at zero flow</span></div>
+  <div class="stat"><span class="n">1,028×</span><span class="l">Wettest vs driest year</span></div>
+  <div class="stat"><span class="n">244</span><span class="l">Longest dry streak, days</span></div>
+  <div class="stat"><span class="n">1,820</span><span class="l">Peak daily cfs</span></div>
+</div>
+
+<p>Of 13,373 daily values since January 1990, <strong>4,927 recorded exactly zero.</strong> Not "very low." Zero. Across the fourteen Sierra gages I had loaded, Big Creek is the only one that ever reaches it.</p>
+
+<p>The longest unbroken dry spell ran <strong>244 days</strong> — June 30, 1990 to February 28, 1991. Eight months. The 2013–14 drought nearly matched it at 234.</p>
+
+<h3>Then there is the other end</h3>
+
+<p>On March 9, 2023, daily mean flow was 87.6 cfs. On March 10 it was <strong>1,820</strong>. By March 11 it had already fallen to 695.</p>
+
+<p>Big Creek's ratio of peak flow to mean flow is roughly <strong>200×</strong> — the highest in my comparison set by a wide margin. The runner-up, Cherry Creek near Early Intake, sits at 111×. The Merced at Yosemite is 32×. The Tuolumne below Early Intake is 23×.</p>
+
+<blockquote>Big Creek is not simply variable. Its extremes are enormous relative to its ordinary condition — which is, most of the time, nothing at all.</blockquote>
+
+<h3>The thousand-fold year</h3>
+
+<table>
+  <thead><tr><th>Metric</th><th class="num">WY2015</th><th class="num">WY2017</th></tr></thead>
+  <tbody>
+    <tr><td>Annual volume</td><td class="num">24 af</td><td class="num"><strong>24,643 af</strong></td></tr>
+    <tr><td>Peak daily flow</td><td class="num">2.3 cfs</td><td class="num">1,330 cfs</td></tr>
+    <tr><td>Mean flow</td><td class="num">0.03 cfs</td><td class="num">34 cfs</td></tr>
+    <tr><td>Zero-flow days</td><td class="num">203</td><td class="num">61</td></tr>
+    <tr><td>Days above 100 cfs</td><td class="num">0</td><td class="num">20</td></tr>
+  </tbody>
+</table>
+
+<p>Same creek. Same 16.4 square miles of hillside. Two years apart. <strong>A 1,028-fold difference in annual volume.</strong></p>
+
+<p>If you want a single number that explains California hydroclimate to somebody, that is a strong candidate.</p>
+
+<h2>How this actually got answered</h2>
+
+<p>Here is the part that is really about data engineering rather than creeks.</p>
+
+<p>I did not write these queries. I asked <strong>CoCo</strong> — Snowflake's warehouse-native AI agent, renamed from Cortex Code at their Summit in June — and it produced the analysis and a dashboard inside Snowsight.</p>
+
+<p>That worked. It is worth being precise about <em>why</em> it worked, because the reason is not "the AI is good."</p>
+
+<p>Weeks earlier I had built the boring part. A dbt project with staging models that flatten raw USGS payloads, a conformed gage dimension, an incremental fact table of daily discharge, and a rollup called <code>fct_water_year_summary</code> that already knew what a water year is (October through September, so a snowpack and its own meltwater land in the same accounting year), already computed annual volume in acre-feet, already carried percentiles and a flashiness index. Seventy-three tests guarding all of it.</p>
+
+  <div class="aside">
+    <div class="aside-title">Why Water Years Start in October</div>
+    <p>A calendar year splits a Sierra winter in half. Snow that falls in December and the meltwater it becomes the following May end up in two different accounting years, even though they are the same event on a six-month delay.</p>
+    <p>A water year runs October 1 to September 30 instead, which puts the whole cycle &mdash; first storms, peak snowpack, spring melt, summer drought &mdash; inside one bucket. It is the standard USGS and DWR convention for exactly this reason, and it is why <code>WY2017</code> in the tables below means something a calendar year never could: one number that actually represents one winter.</p>
+  </div>
+
+<p>When I asked CoCo about Big Creek, it was reading <em>that</em>. Real column names, real grain, a semantic layer that had already made the hard decisions.</p>
+
+<blockquote><strong>An AI agent in your warehouse is exactly as good as the models underneath it.</strong> Point one at raw JSON in a landing table and it will flail, confidently. Point it at a tested dimensional model and it becomes genuinely useful.</blockquote>
+
+<p>The agent did not replace the modeling work. It made the modeling work pay off faster.</p>
+
+<h2>Two ways to be wrong about this creek</h2>
+
+<p>Both worth knowing, because both are easy traps.</p>
+
+<div class="aside">
+  <div class="aside-title">The Peak You Get Depends on the Clock</div>
+  <p>My table says WY2017 peaked at 1,330 cfs. The USGS annual peak table says 2,810 cfs on February 7, 2017. Both are correct. Mine is the highest <em>daily mean</em>; theirs is the highest <em>instantaneous</em> reading. A flood crest lasting three hours gets averaged down across twenty-four. Same flood, two legitimate measurements, and if you mix them you will misstate a flood by half.</p>
+</div>
+
+<div class="aside">
+  <div class="aside-title">Two Gages, Not the Same Watershed</div>
+  <p>Station 11284400 &mdash; "Big C above Whites Gulch" &mdash; drains <strong>16.4 square miles</strong> and is the active one behind everything above. Station 11284500, "Big C near Groveland," drains <strong>25.0</strong>. They sit about 1.6 miles apart, and that short distance adds roughly 52% more contributing area. Quote the wrong one and your runoff-per-acre math is off by half.</p>
+</div>
+
+<p>A small validation I liked: I derived the upstream basin independently from the USGS Network-Linked Data Index and computed its area geodesically in Snowflake. <strong>16.1 square miles</strong> against USGS's published 16.4. Two different paths, same hillside.</p>
+
+<h2>Before the gage, there was the ditch</h2>
+
+<p>The hydrology explains something about the town, which is the part I did not expect to find interesting.</p>
+
+<p>Groveland exists because of gold, and gold mining needs water. But the local creeks — Big Creek among them — go dry for months. They could not support hydraulic mining on their own.</p>
+
+<p>So in <strong>1855</strong> the miners organized the Golden Rock Water Company and built water in from somewhere else. First delivery came on <strong>March 29, 1860</strong>: roughly forty miles of ditch, including the Big Gap Flume, 2,200 feet long and 280 feet high.</p>
+
+<p>Then in 1915 a second water boom arrived, this one San Francisco's. Groveland became a railroad-shop town and Mountain Division headquarters for the Hetch Hetchy project. O'Shaughnessy Dam was dedicated in 1923.</p>
+
+<p>And today the town's domestic water comes from that same Hetch Hetchy system — not from the creek at the bottom of the hill.</p>
+
+<blockquote>Big Creek has been a hydroclimate sentinel for this landscape and never a water supply for it. One hundred and seventy years of local history is essentially a record of engineering around the fact that this creek is not there half the year.</blockquote>
+
+<h2>What I would not claim</h2>
+
+<p>Three things I checked and decided not to assert:</p>
+
+<p><strong>That Big Creek feeds Hetch Hetchy.</strong> It does not. It is in the broader Tuolumne basin, far downstream and much lower. The reservoir is fed from the high country above Yosemite.</p>
+
+<p><strong>That the gage is dam-controlled.</strong> I found a secondary source suggesting an upstream earthen dam. I could not confirm it in any authoritative dam inventory or USGS station record, so it stays out. The flow behavior looks unregulated to me — the zero-flow record alone argues against active control — but "looks like" is not a source.</p>
+
+<p><strong>That any of these numbers imply a recreation rating.</strong> Discharge alone does not determine whether a channel is safe or runnable. Gradient and channel geometry do.</p>
+
+<h2>Go watch it yourself</h2>
+
+<p>Station 11284400 is live. When the next atmospheric river comes through the western Sierra, you can watch this creek respond in something close to real time — <a href="https://waterdata.usgs.gov/monitoring-location/USGS-11284400/">USGS live monitoring page</a>.</p>
+
+<p>Median date it starts flowing again after going dry, across 34 analyzed seasons: <strong>November 26</strong>.</p>
+
+<p>Which makes a dry creek bed outside Groveland into something like a calendar. It tells you when the rain came back.</p>
+
+<hr>
+
+<p style="font-size:.88rem;color:var(--ink-soft);font-style:italic">Data: USGS Water Data for the Nation, stations 11284400 and 11284500; basin geometry from the USGS Network-Linked Data Index. Analysis in Snowflake and dbt; maps in QGIS over OpenStreetMap. Historical detail from the Tuolumne County Historical Society and the Groveland Community Services District. Daily-mean statistics here are computed from the January 1990–present record; the official USGS daily archive for this station extends back to May 1969, and the peak-measurement archive to a historic January 1965 entry. This is the modern chapter, not the whole book.</p>
+
+<p class="end">· · ·</p>  </div>
+
+  <div class="article-footer">
+    <div class="article-footer-author">Brooks Groves &middot; Lakewood, WA</div>
+    <div class="article-footer-nav">
+      <a href="/blog/">&larr; All Posts</a>
+      <a href="/writing/">Writing</a>
+      <a href="/tags.html">Tags</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub &#8599;</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var figs = document.querySelectorAll('.article-body figure');
+  if (!figs.length) return;
+  var ov = document.createElement('div');
+  ov.className = 'zoom-overlay';
+  ov.innerHTML = '<button class="zoom-close" aria-label="Close">&#10005;</button><img>';
+  document.body.appendChild(ov);
+  var img = ov.querySelector('img');
+  function open(src, alt){ img.src = src; img.alt = alt; ov.classList.add('open'); document.body.style.overflow='hidden'; }
+  function close(){ ov.classList.remove('open'); img.src=''; document.body.style.overflow=''; }
+  figs.forEach(function(f){
+    var el = f.querySelector('img');
+    if (!el) return;
+    f.addEventListener('click', function(){ open(el.src, el.alt); });
+    var hint = document.createElement('p');
+    hint.className = 'zoom-hint';
+    hint.textContent = 'Click to enlarge';
+    f.appendChild(hint);
+  });
+  ov.addEventListener('click', function(e){
+    if (e.target === ov || e.target.classList.contains('zoom-close')) close();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && ov.classList.contains('open')) close();
+  });
+})();
+</script>
+</body>
+</html>
