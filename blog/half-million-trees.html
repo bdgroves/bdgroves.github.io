@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Half a Million Trees — Brooks Groves</title>
+<meta name="description" content="Learning Snowflake and dbt on the Washington Forest Inventory and Analysis dataset — where the wood is, where it dies, what fire does to both, and five predictions that turned out wrong.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+    --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+    --white:#fdfaf4; --satellite:#2a5c3a; --data:#8b6914;
+    --parchment-deep:#eae0cc; --ink-soft:#5c5347; --rule:#d6c9ae;
+    --ember:#8b3a2a; --moss:#4a5c45;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--parchment); color:var(--ink);
+    font-family:'Source Serif 4',Georgia,serif; font-weight:300;
+    font-size:19px; line-height:1.72;
+  }
+  .topline{height:4px;background:linear-gradient(90deg,var(--ember),var(--gold),var(--satellite))}
+  header{padding:1.5rem clamp(1.5rem,5vw,2rem)}
+  .masthead-inner{max-width:760px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+  .site-name{font-family:'Playfair Display',serif;font-weight:900;font-size:1.15rem;color:var(--ink);text-decoration:none}
+  header nav a{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;color:var(--stone);margin-left:1.5rem}
+  header nav a:hover{color:var(--ember)}
+  header nav a.github{border:1px solid var(--mist);border-radius:4px;padding:0.3rem 0.7rem}
+
+  .article-wrap { max-width:760px; margin:0 auto; padding:clamp(1rem,4vw,2rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+  .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+  .article-back:hover { color:var(--ember); }
+  .article-num { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.6rem; }
+  .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--ember); margin-bottom:0.75rem; }
+  .article-title { font-family:'Playfair Display',serif; font-size:clamp(2.1rem,6vw,3.2rem); font-weight:900; line-height:1.1; letter-spacing:-0.01em; margin-bottom:1rem; }
+  .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1.2rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+  .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--rule); margin-bottom:2.5rem; }
+  .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+  .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+  .article-body { font-size:19px; line-height:1.72; }
+  .article-body p { margin:0 0 1.15em; }
+  .article-body .dek { font-size:1.18rem; font-style:italic; color:var(--ink-soft); margin:0 0 1.6em; line-height:1.5; }
+  .article-body h2 {
+    font-family:'Playfair Display',serif; font-weight:600;
+    font-size:clamp(1.35rem,3.6vw,1.75rem); margin:2.6em 0 .6em; line-height:1.25;
+    padding-top:0; border-top:none; color:var(--ink);
+  }
+  .article-body h3 { font-family:'Playfair Display',serif; font-weight:400; font-style:italic; font-size:1.15rem; margin:2em 0 .4em; color:var(--ink-soft); }
+  /* the shell drop-caps p:first-child by default — reset that here, since
+     this piece supplies its own explicit .lede rule below and we don't
+     want two competing drop-caps on the same paragraph */
+  .article-body p:first-child::first-letter{ font:inherit; float:none; margin:0; color:inherit; }
+
+.article-body .lede::first-letter{
+    font-family:'Playfair Display',serif;
+    font-weight:600;
+    float:left;
+    font-size:3.5em;
+    line-height:.82;
+    padding:.06em .09em 0 0;
+    color:var(--ember);
+  }
+  .article-body figure{margin:2.4em 0;padding:0}
+  .article-body figure img{
+    width:100%;
+    height:auto;
+    display:block;
+    border:1px solid var(--rule);
+    border-radius:2px;
+  }
+  .article-body figcaption{
+    font-size:.88rem;
+    color:var(--ink-soft);
+    font-style:italic;
+    margin-top:.7em;
+    line-height:1.5;
+  }
+  .article-body blockquote{
+    margin:2em 0;
+    padding:.2em 0 .2em 1.4em;
+    border-left:3px solid var(--ember);
+    font-style:italic;
+    color:var(--ink-soft);
+  }
+  .stat-row{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:1px;
+    background:var(--rule);
+    border:1px solid var(--rule);
+    margin:2.2em 0;
+  }
+  .stat{background:var(--parchment-deep);padding:1.1em .9em;text-align:center}
+  .stat .n{
+    font-family:'Playfair Display',serif;
+    font-size:1.65rem;
+    font-weight:600;
+    display:block;
+    line-height:1.1;
+  }
+  .stat .l{
+    font-size:.74rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    display:block;
+    margin-top:.35em;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:1.8em 0;
+    font-size:.92rem;
+  }
+  th,td{
+    text-align:left;
+    padding:.55em .7em;
+    border-bottom:1px solid var(--rule);
+  }
+  th{
+    font-family:'Playfair Display',serif;
+    font-weight:600;
+    font-size:.86rem;
+  }
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .kicker{
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    color:var(--ember);
+  }
+  hr{
+    border:0;
+    border-top:1px solid var(--rule);
+    margin:3em 0;
+  }
+  .end{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:.85rem;
+    letter-spacing:.12em;
+    margin:3.4em 0 1em;
+  }
+  code{
+    font-family:ui-monospace,'SF Mono',Menlo,monospace;
+    font-size:.86em;
+    background:var(--parchment-deep);
+    padding:.1em .35em;
+    border-radius:2px;
+  }
+
+  .article-footer { max-width:760px; margin:0 auto; padding:0 clamp(1.5rem,5vw,2rem) clamp(2rem,5vw,3rem); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+  .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+  .article-footer-nav { display:flex; gap:1.5rem; }
+  .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+  .article-footer-nav a:hover { color:var(--ember); }
+
+  footer { background:var(--ink); color:var(--stone); padding:2rem clamp(1.5rem,5vw,4rem); margin-top:2rem; }
+  .footer-inner { max-width:860px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+  .footer-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; color:var(--white); }
+  .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
+  .footer-links a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); margin-left:1.2rem; }
+  .footer-links a:hover { color:var(--white); }
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub &#8599;</a>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/" class="article-back">&larr; Blog</a>
+  <div class="article-num">Field Notes &middot; Data Engineering &middot; August 2026</div>
+  <p class="article-kicker">Snowflake, dbt, Five Wrong Guesses, and 531,490 Trees</p>
+  <h1 class="article-title">Half a Million Trees</h1>
+  <div class="article-meta">
+    <span>Lakewood, WA &middot; August 2026</span>
+    <span>Brooks Groves</span>
+  </div>
+  <div class="article-tags">
+    <a href="https://brooksgroves.com/tags.html#Data%20Engineering" class="article-tag-pill">Data Engineering</a>
+    <a href="https://brooksgroves.com/tags.html#Snowflake" class="article-tag-pill">Snowflake</a>
+    <a href="https://brooksgroves.com/tags.html#dbt" class="article-tag-pill">dbt</a>
+    <a href="https://brooksgroves.com/tags.html#GIS" class="article-tag-pill">GIS</a>
+    <a href="https://brooksgroves.com/tags.html#Forestry" class="article-tag-pill">Forestry</a>
+    <a href="https://brooksgroves.com/tags.html#Wildfire" class="article-tag-pill">Wildfire</a>
+    <a href="https://brooksgroves.com/tags.html#Washington" class="article-tag-pill">Washington</a>
+  </div>
+
+  <div class="article-body">
+
+  <p class="dek">Two days, one warehouse, and what the federal forest inventory says about Washington when you finally ask it properly.</p>
+
+  <p class="lede">I have been making maps for years and databases for almost as long, and somewhere in there I developed a habit I am not proud of: I would pull data, wrangle it in Python, write out a JSON file, and push it to a static site. It worked. It still works &mdash; half my projects run that way and they run without me touching them all summer.</p>
+
+  <p>But it is a script that computes and writes and <em>hopes</em>. There is nothing in it that tells you when you are wrong.</p>
+
+  <p>So I spent a weekend learning two tools I had read about and never touched &mdash; Snowflake and dbt &mdash; by pointing them at data I actually care about. Rivers first. Then, when the rivers ran out of things to say, forests.</p>
+
+  <p>This is what came out.</p>
+
+<h2>The pile</h2>
+
+<p>By the end of it the warehouse held six different shapes of data, which was the point. I did not want one clean dataset. I wanted the mess that real platforms have to swallow.</p>
+
+<div class="stat-row">
+  <div class="stat"><span class="n">531,490</span><span class="l">Trees measured</span></div>
+  <div class="stat"><span class="n">163,566</span><span class="l">Daily flow records</span></div>
+  <div class="stat"><span class="n">4,921</span><span class="l">Fire perimeters</span></div>
+  <div class="stat"><span class="n">~840k</span><span class="l">Rows total</span></div>
+</div>
+
+<p>Alpine lake chemistry, sampled by hand a few times a year. Streamgage telemetry every fifteen minutes. Thirty-six years of daily river flow. A stream network I derived myself from LiDAR. Then the big one: the <strong>Forest Inventory and Analysis</strong> database — the federal program that has been sending crews into the woods with calipers since Congress mandated it in 1928.</p>
+
+<p>FIA is a strange and wonderful thing. Real people walk to a fixed point in the forest and measure every tree: species, diameter, height, whether it is alive. They come back a decade later and do it again. For Washington that is 531,490 tree measurements across 23,099 plots, going back to 2001.</p>
+
+<h2>Where the wood is</h2>
+
+<figure>
+  <img src="maps/01_biomass.png" alt="Map of Washington State showing forest inventory plots colored by live biomass per acre. A dense band of high-biomass plots runs down the west slope of the Cascades and across the Olympic Peninsula; the northeast is sparse and low.">
+  <figcaption>Live standing biomass, tons per acre, on 6,157 forest plots. Green and teal are heavy; purple is light. The empty middle is the Columbia Basin — shrub-steppe, no trees, no plots.</figcaption>
+</figure>
+
+<p>The first thing the data does is draw Washington's geography without being asked. That bright band down the west slope of the Cascades and out across the Olympics is the wet forest — Douglas-fir, western hemlock, western redcedar, growing in a place that gets rain. East of the crest it falls off a cliff.</p>
+
+<p>Then ownership turned out to be the more interesting cut.</p>
+
+<table>
+  <thead><tr><th>Who owns it</th><th class="num">Plots</th><th class="num">Live biomass<br>(tons/acre)</th><th class="num">Old-growth<br>plots</th></tr></thead>
+  <tbody>
+    <tr><td>Other federal <span style="color:var(--ink-soft)">(mostly parks)</span></td><td class="num">427</td><td class="num"><strong>146.9</strong></td><td class="num">211</td></tr>
+    <tr><td>State &amp; local</td><td class="num">1,267</td><td class="num">92.2</td><td class="num">92</td></tr>
+    <tr><td>Forest Service</td><td class="num">7,283</td><td class="num">91.3</td><td class="num">1,942</td></tr>
+    <tr><td>Private</td><td class="num">3,830</td><td class="num"><strong>54.6</strong></td><td class="num"><strong>107</strong></td></tr>
+  </tbody>
+</table>
+
+<p>National park land carries <strong>2.7 times</strong> the standing wood per acre that private timberland does. Not because it grows better. Because nothing has ever been taken off it.</p>
+
+<p>The old-growth column is the whole story in one number. Forest Service: 1,942 plots older than 150 years. Private: 107. Industrial timberland never gets there — it is harvested at forty or fifty and planted again. Two entirely different objectives, and you can see both of them in a single <code>GROUP BY</code>.</p>
+
+<h2>Where it dies</h2>
+
+<figure>
+  <img src="maps/02_mortality.png" alt="Map of Washington State showing the same forest plots colored by percentage of dead trees. Pale plots dominate the west; dark red clusters appear in the northeast and along the eastern Cascade slope.">
+  <figcaption>Share of stems standing dead. Pale is healthy; dark red is not. Note that this map is close to the inverse of the one above.</figcaption>
+</figure>
+
+<p>About one tree in five in Washington is standing dead, which sounds alarming until you learn that FIA counts snags on purpose — dead wood is real forest structure and real habitat. The interesting part is <em>which</em> trees.</p>
+
+<table>
+  <thead><tr><th>Species</th><th>Where</th><th class="num">Trees</th><th class="num">Dead</th></tr></thead>
+  <tbody>
+    <tr><td>whitebark pine</td><td>Subalpine</td><td class="num">2,440</td><td class="num"><strong>57.9%</strong></td></tr>
+    <tr><td>western white pine</td><td>Upper montane</td><td class="num">1,466</td><td class="num"><strong>45.2%</strong></td></tr>
+    <tr><td>lodgepole pine</td><td>Subalpine</td><td class="num">17,177</td><td class="num">45.0%</td></tr>
+    <tr><td>Engelmann spruce</td><td>Subalpine</td><td class="num">5,787</td><td class="num">40.9%</td></tr>
+    <tr><td>Douglas-fir</td><td>all</td><td class="num">161,839</td><td class="num">21.3%</td></tr>
+    <tr><td>western redcedar</td><td>all</td><td class="num">29,456</td><td class="num">14.2%</td></tr>
+  </tbody>
+</table>
+
+<p>Those top two are not a coincidence. Whitebark and western white pine are both <em>five-needle</em> pines, and both are susceptible to white pine blister rust — a fungus that arrived from Europe over a century ago and has been working through their family ever since. Add mountain pine beetle and a hundred years of fire suppression and you get 58% mortality.</p>
+
+<p>Whitebark pine was listed as federally threatened in 2022. I did not know that when I ran the query. The data told me there was something wrong with that species before I went looking for why.</p>
+
+<blockquote>The bottom of the table is just as honest. Western redcedar at 14%. Alaska yellow-cedar at 12%. Pacific yew at 11%. Rot-resistant, long-lived, and they simply stand there.</blockquote>
+
+<p>And the reassuring one, if you happen to run a timber company: Douglas-fir, 161,839 trees, sitting at 21.3% — dead average. Boring. An entire regional industry depends on that number staying boring.</p>
+
+<h2>Then I added fire</h2>
+
+<figure>
+  <img src="maps/03_fire_state.png" alt="Map of Washington State showing wildfire perimeters since 2000 in orange, concentrated heavily on the dry eastern side of the Cascade crest, with forest plots overlaid.">
+  <figcaption>Every mapped fire perimeter in Washington since 2000, over 1,000 acres. Orange is burn scar. The wet west side is nearly untouched.</figcaption>
+</figure>
+
+<p>Here is the thing I had not appreciated until the two maps were sitting on top of each other:</p>
+
+<blockquote><strong>Washington's best timber ground and its worst fire ground are largely different places.</strong> The high-biomass west slope rarely burns. The east side burns hard and carries a fraction of the wood.</blockquote>
+
+<p>Zoom into Okanogan County and it stops being a pattern and starts being a scar.</p>
+
+<figure>
+  <img src="maps/04_fire_okanogan.png" alt="Detail map of Okanogan County, Washington, showing overlapping labeled wildfire perimeters including Tripod Complex 2006, Carlton Complex 2014, and North Star 2015.">
+  <figcaption>Okanogan County. Tripod Complex 2006. Colockum Tarps 2013. Carlton Complex 2014 — 256,000 acres, the largest single wildfire in state history, then and still. Then North Star, Reach, Stickpin and Carpenter Road, all in 2015. The darker patches burned twice inside a decade.</figcaption>
+</figure>
+
+<h3>The measurement that actually worked</h3>
+
+<p>I had tried this before with rivers and failed. The idea was simple — find a big fire, compare streamflow before and after. But every gage inside the burn had been decommissioned years before the fire happened. The instruments were gone.</p>
+
+<p>Forest plots do not have that problem. <strong>FIA revisits on a schedule regardless of what happens to the plot.</strong> Burn it to the ground and a crew still shows up a decade later to measure what is left.</p>
+
+<p>Which means a plot that burned in 2014 and got remeasured in 2019 carries <em>its own before-picture</em>. No control group needed. Each plot is its own control.</p>
+
+<div class="stat-row">
+  <div class="stat"><span class="n">874</span><span class="l">Plots that burned</span></div>
+  <div class="stat"><span class="n">440</span><span class="l">Measured both sides</span></div>
+  <div class="stat"><span class="n">−67.6%</span><span class="l">Biomass, megafires</span></div>
+  <div class="stat"><span class="n">73.9%</span><span class="l">Stems dead after</span></div>
+</div>
+
+<p>A megafire takes about two-thirds of the standing live wood and leaves three of every four stems dead. That is not a model. That is 203 identified plots, measured before, measured after.</p>
+
+<h2>Where I was wrong</h2>
+
+<p>I want to be straight about this part, because it is the actual reason I bothered learning any of this.</p>
+
+<p>Over two days I made six confident predictions. <strong>Five were wrong.</strong></p>
+
+<p>I said Sierra rivers should peak in the evening as snowmelt travelled downstream. They peak in the <em>morning</em> — because streamside trees pull water out of the ground all day while they photosynthesize, and the river only recovers overnight. The trees are breathing and you can see it in the discharge record.</p>
+
+<p>I said reservoir-controlled reaches would be flashy. They are the <em>smoothest</em> water in the dataset; a dam is a shock absorber.</p>
+
+<p>I said small watersheds would be flashier than big ones. The correlation was <span class="kicker">−0.60</span> and looked textbook, right up until I dropped a single outlier creek and it collapsed to <span class="kicker">−0.24</span>. One data point was carrying the whole finding.</p>
+
+<p>I said fire damage should scale with fire size. It does — but in mortality, not biomass, and I had been reading the wrong column.</p>
+
+<h3>And twice the data lied quietly</h3>
+
+<p>A float conversion appended <code>.0</code> to 157,871 identifiers. Nothing errored. Nothing warned. The join simply returned zero rows and the model built successfully with nothing in it.</p>
+
+<p>Then a percentage came back saying burned plots had <em>gained</em> 12.4% biomass, on ground where 71% of the stems were dead. That one was averaging ratios instead of taking a ratio of totals — a handful of near-empty plots with tiny denominators flipped the sign on 185 plots' worth of real destruction. The correct number was <strong>−62.3%</strong>.</p>
+
+<blockquote>Neither of those looked broken. Both produced numbers you could put in a slide deck.</blockquote>
+
+<p>What caught them was not cleverness. It was that the metrics were already modeled, already tested, and the next question was one query away — so checking cost thirty seconds instead of an afternoon. And it was knowing enough about forests to look at a number and think <em>that cannot be right</em>.</p>
+
+<h2>What I actually learned</h2>
+
+<p>The tools were the excuse. What I got instead was a working understanding of when to reach for them:</p>
+
+<p><strong>Separate storage from compute</strong> and you stop making tradeoffs between the two. The warehouse suspends sixty seconds after I stop typing. Two days of this cost approximately nothing.</p>
+
+<p><strong>Not everything should be JSON.</strong> API feeds with schemas I do not control go in as semi-structured. A documented federal CSV goes in as typed columns — 531,490 rows and 198 columns compressed to under ten megabytes because I chose correctly.</p>
+
+<p><strong>Transformations should be software.</strong> Version-controlled, dependency-ordered, and tested. Seventy-three automated tests, and they earned it — they caught duplicate lab records, wrong unit casing, a whole unit family I had never heard of, and a join key pointed at the wrong column.</p>
+
+<p>But the real lesson is smaller and older than any of that. Build the thing that argues back. A script gives you an answer. A modeled, tested warehouse gives you an answer <em>and</em> a fighting chance of noticing when the answer is nonsense.</p>
+
+<p>Five wrong guesses in two days is not a bad weekend. It is the job.</p>
+
+<hr>
+
+<p style="font-size:.88rem;color:var(--ink-soft);font-style:italic">Data: USDA Forest Service Forest Inventory and Analysis; USGS Water Data; NIFC InterAgencyFirePerimeterHistory; USFS and NPS boundaries. Maps built in QGIS. A caveat worth stating: FIA publishes plot coordinates fuzzed up to about a mile to protect landowner privacy, so everything here is honest at regional scale and unreliable at the parcel level. The fire perimeter record also under-represents state and private land and thins after 2019 — absence of a fire in that dataset does not mean the ground never burned.</p>
+
+<p class="end">· · ·</p>  </div>
+
+  <div class="article-footer">
+    <div class="article-footer-author">Brooks Groves &middot; Lakewood, WA</div>
+    <div class="article-footer-nav">
+      <a href="/blog/">&larr; All Posts</a>
+      <a href="/writing/">Writing</a>
+      <a href="/tags.html">Tags</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub &#8599;</a>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
