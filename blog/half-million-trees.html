@@ -164,6 +164,41 @@
   .footer-tagline { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.2rem; }
   .footer-links a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); margin-left:1.2rem; }
   .footer-links a:hover { color:var(--white); }
+  .article-body .aside{
+    background:var(--cream); border-top:2px solid var(--ember);
+    padding:1.3rem 1.5rem; margin:1.8rem 0;
+  }
+  .article-body .aside-title{
+    font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--ember); margin-bottom:0.6rem;
+  }
+  .article-body .aside p{ margin:0 0 0.7rem; color:var(--ink-soft); font-size:0.92rem; line-height:1.7; }
+  .article-body .aside p:last-child{ margin-bottom:0; }
+  .article-body figure{ cursor:zoom-in; position:relative; }
+  .article-body figure img{ transition:opacity .15s; }
+  .article-body figure:hover img{ opacity:.94; }
+  .article-body .zoom-hint{
+    font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--stone); text-align:right;
+    margin:0.5rem 0 0; opacity:.8;
+  }
+  .article-body .legend{
+    display:flex; align-items:center; gap:0.6rem; margin-top:0.6rem;
+    font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--ink-soft);
+  }
+  .article-body .legend .bar{
+    height:8px; width:120px; border-radius:2px; border:1px solid var(--rule);
+  }
+  .article-body .legend .chip{
+    height:8px; width:20px; border-radius:2px; border:1px solid var(--rule); display:inline-block;
+  }
+  .zoom-overlay{ position:fixed; inset:0; background:rgba(28,20,15,.92); z-index:9500;
+    display:none; align-items:center; justify-content:center; padding:2rem; cursor:zoom-out; }
+  .zoom-overlay.open{ display:flex; }
+  .zoom-overlay img{ max-width:96vw; max-height:92vh; border:1px solid var(--rule); }
+  .zoom-close{ position:absolute; top:1rem; right:1.3rem; background:none; border:none;
+    color:var(--parchment); font-size:1.6rem; line-height:1; cursor:pointer; font-family:'DM Mono',monospace; }
+  .zoom-close:hover{ color:var(--gold); }
 </style>
 </head>
 <body>
@@ -183,7 +218,7 @@
   <a href="/blog/" class="article-back">&larr; Blog</a>
   <div class="article-num">Field Notes &middot; Data Engineering &middot; August 2026</div>
   <p class="article-kicker">Snowflake, dbt, Five Wrong Guesses, and 531,490 Trees</p>
-  <h1 class="article-title">Half a Million Trees</h1>
+  <h1 class="article-title">&#127794; Half a Million Trees</h1>
   <div class="article-meta">
     <span>Lakewood, WA &middot; August 2026</span>
     <span>Brooks Groves</span>
@@ -195,6 +230,7 @@
     <a href="https://brooksgroves.com/tags.html#GIS" class="article-tag-pill">GIS</a>
     <a href="https://brooksgroves.com/tags.html#Forestry" class="article-tag-pill">Forestry</a>
     <a href="https://brooksgroves.com/tags.html#Wildfire" class="article-tag-pill">Wildfire</a>
+    <a href="https://brooksgroves.com/tags.html#Ecology" class="article-tag-pill">Ecology</a>
     <a href="https://brooksgroves.com/tags.html#Washington" class="article-tag-pill">Washington</a>
   </div>
 
@@ -225,11 +261,18 @@
 
 <p>FIA is a strange and wonderful thing. Real people walk to a fixed point in the forest and measure every tree: species, diameter, height, whether it is alive. They come back a decade later and do it again. For Washington that is 531,490 tree measurements across 23,099 plots, going back to 2001.</p>
 
+  <div class="aside">
+    <div class="aside-title">How the Decade-Later Part Actually Works</div>
+    <p>FIA does not survey a state all at once and then wait ten years to do it again. In the western US the plots are split into ten rotating panels, and one panel &mdash; roughly a tenth of all plots &mdash; gets measured every single year. By year ten the whole state has been covered once, and the crews are already back on panel one. The data arrives continuously; the ten-year figure is just how long a full lap takes.</p>
+    <p>That is also what makes a burned-and-remeasured plot possible without planning for it. Nobody scheduled a crew to revisit fire scars. The panel was already going to be there on its normal rotation, fire or no fire.</p>
+  </div>
+
 <h2>Where the wood is</h2>
 
 <figure>
   <img src="maps/01_biomass.png" alt="Map of Washington State showing forest inventory plots colored by live biomass per acre. A dense band of high-biomass plots runs down the west slope of the Cascades and across the Olympic Peninsula; the northeast is sparse and low.">
   <figcaption>Live standing biomass, tons per acre, on 6,157 forest plots. Green and teal are heavy; purple is light. The empty middle is the Columbia Basin — shrub-steppe, no trees, no plots.</figcaption>
+  <div class="legend"><span>Light</span><span class="bar" style="background:linear-gradient(90deg,#7b5ea7,#3f8f8a,#3a7a3a);"></span><span>Heavy</span></div>
 </figure>
 
 <p>The first thing the data does is draw Washington's geography without being asked. That bright band down the west slope of the Cascades and out across the Olympics is the wet forest — Douglas-fir, western hemlock, western redcedar, growing in a place that gets rain. East of the crest it falls off a cliff.</p>
@@ -255,6 +298,7 @@
 <figure>
   <img src="maps/02_mortality.png" alt="Map of Washington State showing the same forest plots colored by percentage of dead trees. Pale plots dominate the west; dark red clusters appear in the northeast and along the eastern Cascade slope.">
   <figcaption>Share of stems standing dead. Pale is healthy; dark red is not. Note that this map is close to the inverse of the one above.</figcaption>
+  <div class="legend"><span>Healthy</span><span class="bar" style="background:linear-gradient(90deg,#e8ddd0,#b5473a,#7a1f16);"></span><span>Not</span></div>
 </figure>
 
 <p>About one tree in five in Washington is standing dead, which sounds alarming until you learn that FIA counts snags on purpose — dead wood is real forest structure and real habitat. The interesting part is <em>which</em> trees.</p>
@@ -284,6 +328,7 @@
 <figure>
   <img src="maps/03_fire_state.png" alt="Map of Washington State showing wildfire perimeters since 2000 in orange, concentrated heavily on the dry eastern side of the Cascade crest, with forest plots overlaid.">
   <figcaption>Every mapped fire perimeter in Washington since 2000, over 1,000 acres. Orange is burn scar. The wet west side is nearly untouched.</figcaption>
+  <div class="legend"><span class="chip" style="background:#c8712a;"></span><span>Burned since 2000</span></div>
 </figure>
 
 <p>Here is the thing I had not appreciated until the two maps were sitting on top of each other:</p>
@@ -334,6 +379,12 @@
 
 <p>Then a percentage came back saying burned plots had <em>gained</em> 12.4% biomass, on ground where 71% of the stems were dead. That one was averaging ratios instead of taking a ratio of totals — a handful of near-empty plots with tiny denominators flipped the sign on 185 plots' worth of real destruction. The correct number was <strong>−62.3%</strong>.</p>
 
+  <div class="aside">
+    <div class="aside-title">Ratio of Totals, Not Average of Ratios</div>
+    <p>Say two plots burned. Plot A had 2 tons of biomass before and 3 after &mdash; some regrowth, a <em>+50%</em> reading. Plot B had 200 tons before and 20 after &mdash; a <em>&minus;90%</em> reading. Average those two percentages and you get +50% and &minus;90% split down the middle: <em>&minus;20%</em>. Sounds like a moderate loss.</p>
+    <p>But Plot B lost 180 real tons. Plot A gained 1. Add up what actually existed &mdash; 202 tons before, 23 after &mdash; and the true change is <em>&minus;88.6%</em>, not &minus;20%. Averaging the percentages let a nearly-empty plot's noise carry the same vote as a fully-forested plot's collapse. Sum first, divide once, and the small plots stop drowning out the big ones.</p>
+  </div>
+
 <blockquote>Neither of those looked broken. Both produced numbers you could put in a slide deck.</blockquote>
 
 <p>What caught them was not cleverness. It was that the metrics were already modeled, already tested, and the next question was one query away — so checking cost thirty seconds instead of an afternoon. And it was knowing enough about forests to look at a number and think <em>that cannot be right</em>.</p>
@@ -382,5 +433,34 @@
     </div>
   </div>
 </footer>
+
+<script>
+(function(){
+  var figs = document.querySelectorAll('.article-body figure');
+  if (!figs.length) return;
+  var ov = document.createElement('div');
+  ov.className = 'zoom-overlay';
+  ov.innerHTML = '<button class="zoom-close" aria-label="Close">&#10005;</button><img>';
+  document.body.appendChild(ov);
+  var img = ov.querySelector('img');
+  function open(src, alt){ img.src = src; img.alt = alt; ov.classList.add('open'); document.body.style.overflow='hidden'; }
+  function close(){ ov.classList.remove('open'); img.src=''; document.body.style.overflow=''; }
+  figs.forEach(function(f){
+    var el = f.querySelector('img');
+    if (!el) return;
+    f.addEventListener('click', function(){ open(el.src, el.alt); });
+    var hint = document.createElement('p');
+    hint.className = 'zoom-hint';
+    hint.textContent = 'Click to enlarge';
+    f.appendChild(hint);
+  });
+  ov.addEventListener('click', function(e){
+    if (e.target === ov || e.target.classList.contains('zoom-close')) close();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && ov.classList.contains('open')) close();
+  });
+})();
+</script>
 </body>
 </html>
