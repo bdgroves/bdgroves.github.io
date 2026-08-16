@@ -829,7 +829,13 @@ function renderFootballCard(cfg, team, standingsRoot, recentEvent, scheduleNext,
   // Next event
   // ESPN's team endpoint is authoritative when populated; during the offseason
   // it is empty, so fall back to the game we derived from the schedule.
-  const next = team.nextEvent?.[0] || scheduleNext || null;
+  // team.nextEvent comes straight from ESPN's /teams/{id} endpoint, which we
+  // never touch — it's on a slower update cycle than the live scoreboard and
+  // can keep pointing at today's game well after kickoff. That's the actual
+  // source of the "Live + Next, same game" duplicate: it bypasses the
+  // scoreboard-substitution fix entirely since it's a different field. Skip
+  // it outright whenever we already know there's a live game.
+  const next = liveEvent ? null : (team.nextEvent?.[0] || scheduleNext || null);
   let nextHTML = '';
   if (next) {
     const dt = new Date(next.date);
