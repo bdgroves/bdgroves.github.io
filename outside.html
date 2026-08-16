@@ -761,6 +761,30 @@ function renderStandingsTable(group, ownTeamId) {
   </div>`;
 }
 
+function renderFbLiveGame(liveEvent, teamId) {
+  if (!liveEvent) return '';
+  const comp = liveEvent.competitions?.[0];
+  const competitors = comp?.competitors || [];
+  const me = competitors.find(c => String(c.team?.id) === String(teamId));
+  const opp = competitors.find(c => String(c.team?.id) !== String(teamId));
+  if (!me || !opp) return '';
+  const myScore = me.score ?? 0;
+  const oppScore = opp.score ?? 0;
+  const oppAbbr = opp.team?.abbreviation || opp.team?.shortDisplayName || 'Opp';
+  const homeAway = me.homeAway === 'home' ? 'vs' : '@';
+  const clock = comp?.status?.type?.shortDetail
+    || (comp?.status?.period ? `Q${comp.status.period} \u00b7 ${comp?.status?.displayClock || ''}` : 'Live');
+  LIVE_GAME_ACTIVE = true;
+  return `<div class="fb-game">
+    <span class="fb-game-label">Live</span>
+    <span class="fb-game-detail">
+      <span style="font-weight:700;color:var(--rust);">${myScore}\u2013${oppScore}</span>
+      \u00b7 ${homeAway} ${oppAbbr}
+      <div class="fb-game-time"><span class="live-dot"></span>${clock}</div>
+    </span>
+  </div>`;
+}
+
 function renderFbRecentGame(recentEvent, teamId) {
   if (!recentEvent) return '';
   const comp = recentEvent.competitions?.[0];
@@ -785,7 +809,7 @@ function renderFbRecentGame(recentEvent, teamId) {
   </div>`;
 }
 
-function renderFootballCard(cfg, team, standingsRoot, recentEvent, scheduleNext) {
+function renderFootballCard(cfg, team, standingsRoot, recentEvent, scheduleNext, liveEvent) {
   if (!team) {
     return `<div class="fb-card"><div class="fb-name">${cfg.shortName}</div>
       <div class="fb-sub">Data unavailable</div></div>`;
@@ -797,7 +821,10 @@ function renderFootballCard(cfg, team, standingsRoot, recentEvent, scheduleNext)
                           + Number(rec.stats?.find(s => s.name === 'ties')?.value ?? 0)) > 0;
   const logo = team.logos?.[0]?.href || '';
 
-  const recentHTML = renderFbRecentGame(recentEvent, team.id);
+  const liveHTML = renderFbLiveGame(liveEvent, team.id);
+  // While a game is live, that IS the relevant score — don't also show the
+  // previous week's final underneath it.
+  const recentHTML = liveEvent ? '' : renderFbRecentGame(recentEvent, team.id);
 
   // Next event
   // ESPN's team endpoint is authoritative when populated; during the offseason
@@ -837,6 +864,7 @@ function renderFootballCard(cfg, team, standingsRoot, recentEvent, scheduleNext)
       </div>
       ${logo ? `<img class="fb-logo" src="${logo}" alt="">` : ''}
     </div>
+    ${liveHTML}
     ${recentHTML}
     ${nextHTML}
     ${standingsHTML}
@@ -1094,7 +1122,12 @@ async function loadFootball() {
             .filter(e => !e.competitions?.[0]?.status?.type?.completed
                       && new Date(e.date).getTime() >= now)
             .sort((a, b) => new Date(a.date) - new Date(b.date));
-          return { id: cfg.id, recentEvent: completed[0] || null, nextEvent: upcoming[0] || null };
+          // A game that has started but not finished has state 'in' — it fails
+          // both the completed filter (hasn't ended) and the upcoming filter
+          // (kickoff is already in the past), so without this it disappears
+          // from the card entirely for the game's whole duration.
+          const liveEvent = events.find(e => e.competitions?.[0]?.status?.type?.state === 'in') || null;
+          return { id: cfg.id, recentEvent: completed[0] || null, nextEvent: upcoming[0] || null, liveEvent };
         })
         .catch(err => { console.warn('schedule fetch failed', cfg.shortName, err); return { id: cfg.id, recentEvent: null, nextEvent: null }; });
     });
@@ -1114,8 +1147,9 @@ async function loadFootball() {
     const standingsByLeague = Object.fromEntries(standingsResults.map(s => [s.league, s.root]));
     const recentByTeamId = Object.fromEntries(scheduleResults.map(s => [String(s.id), s.recentEvent]));
     const nextByTeamId   = Object.fromEntries(scheduleResults.map(s => [String(s.id), s.nextEvent]));
+    const liveByTeamId   = Object.fromEntries(scheduleResults.map(s => [String(s.id), s.liveEvent]));
     el.innerHTML = teamResults.map(({ cfg, team }) =>
-      renderFootballCard(cfg, team, standingsByLeague[cfg.league], recentByTeamId[String(cfg.id)], nextByTeamId[String(cfg.id)])
+      renderFootballCard(cfg, team, standingsByLeague[cfg.league], recentByTeamId[String(cfg.id)], nextByTeamId[String(cfg.id)], liveByTeamId[String(cfg.id)])
     ).join('');
   } catch (e) {
     console.error('football load error:', e);
