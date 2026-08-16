@@ -1098,8 +1098,10 @@ async function loadFootball() {
         .catch(err => { console.warn('team fetch failed', cfg.shortName, err); return { cfg, team: null }; })
     );
     // Schedule fetches — full-season schedule per team, gives us "Recent"
-    // (most recently completed game) the same way baseball has one.
-    const schedulePromises = FOOTBALL_TEAMS.map(cfg => {
+    // (most recently completed game) the same way baseball has one. This
+    // payload is NOT reliable for a game that's live right now — see the
+    // scoreboard substitution below.
+    const rawSchedulePromises = FOOTBALL_TEAMS.map(cfg => {
       const base = `https://site.api.espn.com/apis/site/v2/sports/football/${cfg.league}/teams/${cfg.id}/schedule`;
       // ESPN defaults to the regular season. For the NFL we also pull seasontype=1
       // (preseason) so August exhibition results still land in "Recent" during the
@@ -1108,28 +1110,8 @@ async function loadFootball() {
       return Promise.all(
         urls.map(u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null))
       )
-        .then(results => {
-          const events = results.filter(Boolean).flatMap(d => d.events || []);
-          const completed = events
-            .filter(e => e.competitions?.[0]?.status?.type?.completed)
-            .sort((a, b) => new Date(b.date) - new Date(a.date));
-          // ESPN's team endpoint leaves nextEvent empty during the NFL offseason,
-          // so derive the next game from the schedule ourselves. Because the
-          // preseason payload is merged in above, this surfaces August exhibition
-          // games instead of showing nothing until September.
-          const now = Date.now();
-          const upcoming = events
-            .filter(e => !e.competitions?.[0]?.status?.type?.completed
-                      && new Date(e.date).getTime() >= now)
-            .sort((a, b) => new Date(a.date) - new Date(b.date));
-          // A game that has started but not finished has state 'in' — it fails
-          // both the completed filter (hasn't ended) and the upcoming filter
-          // (kickoff is already in the past), so without this it disappears
-          // from the card entirely for the game's whole duration.
-          const liveEvent = events.find(e => e.competitions?.[0]?.status?.type?.state === 'in') || null;
-          return { id: cfg.id, recentEvent: completed[0] || null, nextEvent: upcoming[0] || null, liveEvent };
-        })
-        .catch(err => { console.warn('schedule fetch failed', cfg.shortName, err); return { id: cfg.id, recentEvent: null, nextEvent: null }; });
+        .then(results => ({ id: cfg.id, events: results.filter(Boolean).flatMap(d => d.events || []) }))
+        .catch(err => { console.warn('schedule fetch failed', cfg.shortName, err); return { id: cfg.id, events: [] }; });
     });
     // Standings fetches — one per unique league (dedupes NFL/CFB across configs)
     const leagues = [...new Set(FOOTBALL_TEAMS.map(t => t.league))];
@@ -1139,12 +1121,53 @@ async function loadFootball() {
         .then(d => ({ league, root: d }))
         .catch(err => { console.warn('standings fetch failed', league, err); return { league, root: null }; })
     );
-    const [teamResults, scheduleResults, standingsResults] = await Promise.all([
+    // Same-day scoreboard, one per unique league — this is ESPN's actual
+    // live-score feed and is far fresher than the team/schedule endpoint.
+    // The two team/schedule fetches above (base + ?seasontype=1) can each
+    // return their own stale snapshot of today's game, which is where the
+    // "duplicate card, one live one not" bug and the "0-0 instead of the
+    // real score" bug both come from. Below, any event id that also shows
+    // up on today's scoreboard gets swapped for this fresher copy before
+    // we classify anything — same id, one entry, correct score.
+    const scoreboardPromises = leagues.map(league =>
+      fetch(`https://site.api.espn.com/apis/site/v2/sports/football/${league}/scoreboard`)
+        .then(r => r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)))
+        .then(d => ({ league, events: d.events || [] }))
+        .catch(err => { console.warn('scoreboard fetch failed', league, err); return { league, events: [] }; })
+    );
+    const [teamResults, rawScheduleResults, standingsResults, scoreboardResults] = await Promise.all([
       Promise.all(teamPromises),
-      Promise.all(schedulePromises),
+      Promise.all(rawSchedulePromises),
       Promise.all(standingsPromises),
+      Promise.all(scoreboardPromises),
     ]);
     const standingsByLeague = Object.fromEntries(standingsResults.map(s => [s.league, s.root]));
+
+    // event id -> freshest known copy, pooled from every league's scoreboard
+    const freshById = new Map();
+    scoreboardResults.forEach(({ events }) => events.forEach(e => freshById.set(String(e.id), e)));
+
+    const scheduleResults = rawScheduleResults.map(({ id, events }) => {
+      // Replace in place (not append) — this is what prevents the duplicate.
+      const merged = events.map(e => freshById.get(String(e.id)) || e);
+      const now = Date.now();
+      const completed = merged
+        .filter(e => e.competitions?.[0]?.status?.type?.completed)
+        .sort((a, b) => new Date(b.date) - new Date(a.date));
+      // ESPN's team endpoint leaves nextEvent empty during the NFL offseason,
+      // so derive the next game from the schedule ourselves. Explicitly
+      // exclude anything currently live, in addition to the date check —
+      // belt and suspenders against the same bug recurring if a stale date
+      // ever sneaks through.
+      const upcoming = merged
+        .filter(e => !e.competitions?.[0]?.status?.type?.completed
+                  && e.competitions?.[0]?.status?.type?.state !== 'in'
+                  && new Date(e.date).getTime() >= now)
+        .sort((a, b) => new Date(a.date) - new Date(b.date));
+      const liveEvent = merged.find(e => e.competitions?.[0]?.status?.type?.state === 'in') || null;
+      return { id, recentEvent: completed[0] || null, nextEvent: upcoming[0] || null, liveEvent };
+    });
+
     const recentByTeamId = Object.fromEntries(scheduleResults.map(s => [String(s.id), s.recentEvent]));
     const nextByTeamId   = Object.fromEntries(scheduleResults.map(s => [String(s.id), s.nextEvent]));
     const liveByTeamId   = Object.fromEntries(scheduleResults.map(s => [String(s.id), s.liveEvent]));
