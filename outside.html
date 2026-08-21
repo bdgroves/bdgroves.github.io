@@ -1666,32 +1666,58 @@ checkKingsDaughters();
   }, delay);
 })();
 
-// Auto-set Grand Tour card status from today's date (no more hand-editing)
+// ── Grand Tour cards: order by what's next, label with a countdown ──
+// Cards live in a CSS grid, so sorting the DOM sorts the display. Sort key is
+// "days until this race next happens": a race running now sorts first, then
+// races yet to start this year, then races already finished — which roll
+// forward to next year's edition and land at the back until the calendar
+// comes round again.
 (function(){
   const today = new Date(); today.setHours(0,0,0,0);
-  document.querySelectorAll('.tour-card[data-start]').forEach(card=>{
-    const start = new Date(card.dataset.start+'T00:00:00');
-    const end = new Date(card.dataset.end+'T23:59:59');
-    const ed = card.dataset.edition || '';
+  const container = document.querySelector('.tour-cards');
+  if(!container) return;
+
+  const MONTHS = ['January','February','March','April','May','June','July',
+                  'August','September','October','November','December'];
+
+  const scored = Array.from(container.querySelectorAll('.tour-card[data-start]')).map(card=>{
+    const start = new Date(card.dataset.start + 'T00:00:00');
+    const end   = new Date(card.dataset.end   + 'T23:59:59');
+    const ed    = card.dataset.edition || '';
     const statusEl = card.querySelector('.tour-card-status');
-    if(!statusEl) return;
-    let label;
-    if(today < start){
-      // Show how far out it is, the way the race card does for Ironman.
+    const live = today >= start && today <= end;
+    let label, sortKey;
+
+    if(live){
+      const stageDay = Math.floor((today - start) / 86400000) + 1;
+      label = `Racing now \u00b7 day ${stageDay}`;
+      sortKey = -1;                       // always leftmost
+      if(ed) label += ` \u00b7 ${ed}`;
+    } else if(today < start){
       const days = Math.round((start - today) / 86400000);
       label = days === 0 ? 'Starts today'
             : days === 1 ? 'Starts tomorrow'
             : `Starts in ${days} days`;
+      sortKey = days;
+      if(ed) label += ` \u00b7 ${ed}`;
+    } else {
+      // Finished. Next edition sits in roughly the same calendar slot a year
+      // on — good enough to sort by, and shown as a month rather than a day
+      // count because the exact 2027 dates aren't published yet.
+      const next = new Date(start);
+      next.setFullYear(start.getFullYear() + 1);
+      sortKey = Math.round((next - today) / 86400000);
+      label = `Finished \u00b7 back ${MONTHS[next.getMonth()]} ${next.getFullYear()}`;
     }
-    else if(today > end){ label='Finished'; }
-    else {
-      const stageDay = Math.floor((today - start) / 86400000) + 1;
-      label = `Racing now · day ${stageDay}`;
-    }
-    statusEl.textContent = ed ? `${label} · ${ed}` : label;
+
+    if(statusEl) statusEl.textContent = label;
     card.classList.toggle('tour-finished', today > end);
-    card.classList.toggle('tour-live', today >= start && today <= end);
+    card.classList.toggle('tour-live', live);
+    return { card, sortKey };
   });
+
+  scored.sort((a,b) => a.sortKey - b.sortKey)
+        .forEach(s => container.appendChild(s.card));
 })();
 </script>
 </body>
