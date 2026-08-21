@@ -761,6 +761,24 @@ function renderStandingsTable(group, ownTeamId) {
   </div>`;
 }
 
+// ESPN returns a competitor's score in three different shapes depending on
+// which endpoint it came from: a plain string ("24") from the scoreboard, a
+// number, or an object {value, displayValue} from the team-schedule feed.
+// `a ?? b` only falls through on null/undefined, so an object short-circuits
+// the fallback and Number({...}) yields NaN — which is how "NaN-NaN" reached
+// the page. Normalise explicitly instead.
+function fbScore(competitor) {
+  const s = competitor?.score;
+  if (s === null || s === undefined) return null;
+  if (typeof s === 'object') {
+    const v = s.value ?? s.displayValue;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+
 function renderFbLiveGame(liveEvent, teamId) {
   if (!liveEvent) return '';
   const comp = liveEvent.competitions?.[0];
@@ -768,8 +786,9 @@ function renderFbLiveGame(liveEvent, teamId) {
   const me = competitors.find(c => String(c.team?.id) === String(teamId));
   const opp = competitors.find(c => String(c.team?.id) !== String(teamId));
   if (!me || !opp) return '';
-  const myScore = me.score ?? 0;
-  const oppScore = opp.score ?? 0;
+  const myS = fbScore(me), oppS = fbScore(opp);
+  const myScore = myS === null ? '\u2013' : myS;
+  const oppScore = oppS === null ? '\u2013' : oppS;
   const oppAbbr = opp.team?.abbreviation || opp.team?.shortDisplayName || 'Opp';
   const homeAway = me.homeAway === 'home' ? 'vs' : '@';
   const clock = comp?.status?.type?.shortDetail
@@ -792,9 +811,11 @@ function renderFbRecentGame(recentEvent, teamId) {
   const me = competitors.find(c => String(c.team?.id) === String(teamId));
   const opp = competitors.find(c => String(c.team?.id) !== String(teamId));
   if (!me || !opp) return '';
-  const myScore = Number(me.score ?? me.score?.value ?? 0);
-  const oppScore = Number(opp.score ?? opp.score?.value ?? 0);
-  const won = myScore > oppScore;
+  const myS = fbScore(me), oppS = fbScore(opp);
+  const haveScores = myS !== null && oppS !== null;
+  const myScore = haveScores ? myS : '\u2013';
+  const oppScore = haveScores ? oppS : '\u2013';
+  const won = haveScores && myS > oppS;
   const oppAbbr = opp.team?.abbreviation || opp.team?.shortDisplayName || 'Opp';
   const dt = new Date(recentEvent.date);
   const dateStr = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -802,7 +823,7 @@ function renderFbRecentGame(recentEvent, teamId) {
   return `<div class="fb-game">
     <span class="fb-game-label">Recent</span>
     <span class="fb-game-detail">
-      <span style="font-weight:700;color:${won ? 'var(--sage,#4a5c45)' : 'var(--rust)'};">${won ? 'W' : 'L'} ${myScore}–${oppScore}</span>
+      <span style="font-weight:700;color:${!haveScores ? 'var(--stone)' : won ? 'var(--sage,#4a5c45)' : 'var(--rust)'};">${haveScores ? (won ? 'W ' : 'L ') : ''}${myScore}–${oppScore}</span>
       · ${homeAway} ${oppAbbr}
       <div class="fb-game-time">${dateStr}</div>
     </span>
