@@ -545,7 +545,7 @@
           <div class="tour-card-status">Upcoming · 109th Edition</div>
           <div class="tour-card-cta">Stage Tracker →</div>
         </a>
-        <a href="/tdf-2026.html" class="tour-card tdf" data-start="2026-07-04" data-end="2026-07-26" data-edition="113th Edition">
+        <a href="/tdf-2026.html" class="tour-card tdf" data-start="2026-07-04" data-end="2026-07-26" data-edition="113th Edition" data-next="2027-07-02" data-next-note="Edinburgh">
           <div class="tour-card-country">France</div>
           <div class="tour-card-name">Tour de France</div>
           <div class="tour-card-dates">Jul 4–26 · Barcelona → Paris · 21 stages</div>
@@ -1722,13 +1722,30 @@ checkKingsDaughters();
       sortKey = days;
       if(ed) label += ` \u00b7 ${ed}`;
     } else {
-      // Finished. Next edition sits in roughly the same calendar slot a year
-      // on — good enough to sort by, and shown as a month rather than a day
-      // count because the exact 2027 dates aren't published yet.
-      const next = new Date(start);
-      next.setFullYear(start.getFullYear() + 1);
-      sortKey = Math.round((next - today) / 86400000);
-      label = `Finished \u00b7 back ${MONTHS[next.getMonth()]} ${next.getFullYear()}`;
+      // Finished for this year. If the organiser has published next year's
+      // start date we use it and count exact days; otherwise we roll the
+      // start forward twelve months as an estimate and mark it with a tilde,
+      // so an announced date and a guess never look alike on the card.
+      const announced = card.dataset.next;
+      let next, exact;
+      if(announced){
+        next = new Date(announced + 'T00:00:00');
+        exact = true;
+      } else {
+        next = new Date(start);
+        next.setFullYear(start.getFullYear() + 1);
+        exact = false;
+      }
+      const days = Math.round((next - today) / 86400000);
+      sortKey = days;
+      const when = `${next.getDate()} ${MONTHS[next.getMonth()].slice(0,3)} ${next.getFullYear()}`;
+      label = exact
+        ? `Back in ${days} days \u00b7 ${when}`
+        : `Back in ~${days} days \u00b7 ${MONTHS[next.getMonth()]} ${next.getFullYear()}`;
+      if(exact && card.dataset.nextNote) label += ` \u00b7 ${card.dataset.nextNote}`;
+      if(statusEl) statusEl.title = exact
+        ? 'Start date confirmed by the organiser'
+        : 'Estimated \u2014 next year\u2019s route not yet announced';
     }
 
     if(statusEl) statusEl.textContent = label;
