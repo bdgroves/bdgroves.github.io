@@ -201,8 +201,11 @@ jobs:
               """Collapse whitespace and strip citation markers like [27]."""
               if not s:
                   return ""
-              # Strip citation refs
+              # Strip citation refs. Numeric ([27]) and lettered ([a], [note 1]) —
+              # the lettered form is what Wikipedia hangs on a cancelled stage, and
+              # it survived into the winner field as a literal "[a]".
               s = re.sub(r'\[\d+\]', '', s)
+              s = re.sub(r'\[(?:[a-z]|note\s*\d+)\]', '', s, flags=re.IGNORECASE)
               # Collapse whitespace
               s = re.sub(r'\s+', ' ', s).strip()
               return s
@@ -542,6 +545,16 @@ jobs:
                       winner_cell = cells[-1]
                       # Prefer the linked rider name if present
                       winner = cell_primary_link_text(winner_cell)
+                      # A cancelled stage has no winner. Wikipedia writes
+                      # "Stage cancelled" somewhere in the row, sometimes only
+                      # as a footnote, so scan the whole row rather than just
+                      # the winner cell.
+                      row_txt = clean_text(tr.get_text()).lower()
+                      if 'cancel' in row_txt:
+                          winners[stage_num] = {
+                              'winner': '', 'winner_team': '', 'cancelled': True,
+                          }
+                          continue
                       if not winner:
                           continue
                       # For TTT (Stage 1), the "winner" is the team name.
@@ -601,6 +614,9 @@ jobs:
                   num = stage.get('num')
                   if num in parsed['winners']:
                       w = parsed['winners'][num]
+                      if w.get('cancelled') and not stage.get('cancelled'):
+                          stage['cancelled'] = True
+                          changes += 1
                       if stage.get('winner') != w['winner']:
                           stage['winner'] = w['winner']
                           changes += 1
@@ -684,7 +700,8 @@ jobs:
                   # Count stages_done (stages with a winner recorded)
                   total_stages = len(d.get('stages', []))
                   stages_done = sum(
-                      1 for s in d.get('stages', []) if s.get('winner')
+                      1 for s in d.get('stages', [])
+                      if s.get('winner') or s.get('cancelled')
                   )
 
                   gc = d.get('gc') or []

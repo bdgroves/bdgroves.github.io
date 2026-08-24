@@ -278,7 +278,7 @@ function renderStages(data) {
  items.push({ rest: false, stage: s });
  }
 
- const completed = data.stages.filter(s => s.winner).length;
+ const completed = data.stages.filter(s => s.winner || s.cancelled).length;
  counter.textContent = completed === 0
  ? `Race starts August 22 · 0 of 21 stages complete`
  : `${completed} of 21 stages complete`;
@@ -300,10 +300,15 @@ function renderStages(data) {
  const climbTags = s.key_climbs.length
  ? `<div class="stage-climbs">${s.key_climbs.map(c=>`<span class="climb-tag">${c}</span>`).join('')}</div>`
  : '';
- const winnerLine = s.winner
- ? `<div class="stage-winner"> ${s.winner} (${s.winner_team})</div>` : '';
+ // A cancelled stage has no winner and no result. Render it as such rather
+// than as an empty winner row — and never print a bare "()" when the team
+// is missing, which is what a stray Wikipedia footnote produced.
+const winnerLine = s.cancelled
+ ? `<div class="stage-winner" style="color:var(--stone);">Stage cancelled${s.cancelled_note ? ' \u00b7 ' + s.cancelled_note : ''}</div>`
+ : s.winner
+ ? `<div class="stage-winner"> ${s.winner}${s.winner_team ? ` (${s.winner_team})` : ''}</div>` : '';
  const el = document.createElement('div');
- el.className = 'stage-item' + (s.date <= today && !s.winner ? ' active' : '');
+ el.className = 'stage-item' + (s.date <= today && !s.winner && !s.cancelled ? ' active' : '');
  el.innerHTML = `
  <div class="stage-num">S${s.num}</div>
  <div class="stage-date">${fmtDate(s.date)}<br><span style="color:var(--mist);font-size:0.5rem">${s.day.slice(0,3).toUpperCase()}</span></div>
@@ -321,7 +326,9 @@ function renderStages(data) {
  <span>↑${s.elevation.toLocaleString()}m gain</span>
  <span>${s.date}</span>
  </div>
- ${s.winner ? `<div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--green);font-weight:600;">WINNER: ${s.winner} — ${s.winner_team}</div>` : ''}
+ ${s.cancelled
+   ? `<div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);font-weight:600;">CANCELLED${s.cancelled_note ? ' — ' + s.cancelled_note : ''}</div>`
+   : s.winner ? `<div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--green);font-weight:600;">WINNER: ${s.winner}${s.winner_team ? ' — ' + s.winner_team : ''}</div>` : ''}
  <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:0.75rem;">
  <a href="https://www.procyclingstats.com/race/vuelta-a-espana/2026/stage-${s.num}" target="_blank" class="stage-pcs-link">Stage details on PCS →</a>
  <a href="https://www.procyclingstats.com/race/vuelta-a-espana/2026/startlist" target="_blank" class="stage-pcs-link">Startlist on PCS →</a>
