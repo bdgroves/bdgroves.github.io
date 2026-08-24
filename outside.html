@@ -523,6 +523,20 @@
 
     </div>
 
+    <!-- College Soccer — Whitman -->
+    <div style="margin-top:2.5rem;">
+      <div class="section-label">
+        <span>College Soccer</span>
+        <a href="https://www.ncaa.com/scoreboard/soccer-men/d3" target="_blank">NCAA D-III ↗</a>
+      </div>
+      <div class="quick-links">
+        <a href="https://whitmanblues.com/sports/mens-soccer/schedule/2026" target="_blank" class="quick-link">Whitman Blues ↗</a>
+        <a href="https://nwcsports.com/sports/mens-soccer" target="_blank" class="quick-link">Northwest Conf ↗</a>
+        <a href="https://go.flocollege.com/teams/whitman-college" target="_blank" class="quick-link">Watch Live ↗</a>
+      </div>
+      <div id="whitman-soccer"><p class="loading">Loading schedule…</p></div>
+    </div>
+
     <!-- Pro Cycling — full width within the zone -->
     <div style="margin-top:2.5rem;">
       <div class="section-label">
@@ -1686,6 +1700,126 @@ checkKingsDaughters();
     scheduleSportsRefresh();
   }, delay);
 })();
+
+
+// ── Whitman College men's soccer (NCAA D-III, Northwest Conference) ──
+// Same client-side pattern as the MLB and football cards. Two layers:
+//   1. The 2026 schedule is baked in from whitmanblues.com's published
+//      schedule page, so the card always renders something useful even
+//      with no network.
+//   2. Results are layered on from the NCAA D-III scoreboard when the
+//      API is reachable. If it isn't — offline, CORS, rate limit — the
+//      schedule still shows and we simply skip the scores.
+// Whitman's own /services/ feed is disallowed by their robots.txt, so we
+// deliberately do not touch it.
+const WHITMAN_SCHEDULE = [
+  {date:'2026-09-04', opp:'Mary Washington',        loc:'away', where:'Fredericksburg, VA', conf:false},
+  {date:'2026-09-06', opp:'Marymount',              loc:'away', where:'Arlington, VA',      conf:false},
+  {date:'2026-09-11', opp:'UC Santa Cruz',          loc:'neutral', where:'Spokane, WA',     conf:false},
+  {date:'2026-09-12', opp:'Mary Hardin-Baylor',     loc:'neutral', where:'Spokane, WA',     conf:false},
+  {date:'2026-09-19', opp:'Linfield',               loc:'home', where:'Hayner Field',       conf:true},
+  {date:'2026-09-20', opp:'Lewis & Clark',          loc:'home', where:'Hayner Field',       conf:true},
+  {date:'2026-09-23', opp:'Whitworth',              loc:'home', where:'Hayner Field',       conf:true},
+  {date:'2026-09-27', opp:'Pacific',                loc:'away', where:'Forest Grove, OR',   conf:true},
+  {date:'2026-10-03', opp:'Willamette',             loc:'home', where:'Hayner Field',       conf:true},
+  {date:'2026-10-04', opp:'George Fox',             loc:'home', where:'Hayner Field',       conf:true},
+  {date:'2026-10-10', opp:'Pacific Lutheran',       loc:'away', where:'Tacoma, WA',         conf:true},
+  {date:'2026-10-11', opp:'Puget Sound',            loc:'away', where:'Tacoma, WA',         conf:true},
+  {date:'2026-10-16', opp:'Lewis & Clark',          loc:'away', where:'Portland, OR',       conf:true},
+  {date:'2026-10-18', opp:'Linfield',               loc:'away', where:'McMinnville, OR',    conf:true},
+  {date:'2026-10-21', opp:'Whitworth',              loc:'away', where:'Spokane, WA',        conf:true},
+  {date:'2026-10-24', opp:'Pacific',                loc:'home', where:'Hayner Field',       conf:true},
+  {date:'2026-10-31', opp:'George Fox',             loc:'away', where:'Newberg, OR',        conf:true},
+  {date:'2026-11-01', opp:'Willamette',             loc:'away', where:'Salem, OR',          conf:true},
+  {date:'2026-11-07', opp:'Puget Sound',            loc:'home', where:'Hayner Field',       conf:true},
+  {date:'2026-11-08', opp:'Pacific Lutheran',       loc:'home', where:'Hayner Field',       conf:true},
+];
+
+const NCAA_API = 'https://ncaa-api.henrygd.me';
+
+function whitmanFmtDate(iso){
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+async function loadWhitmanSoccer(){
+  const el = document.getElementById('whitman-soccer');
+  if(!el) return;
+
+  const today = new Date().toISOString().slice(0,10);
+  const results = {};   // date -> {us, them, wl}
+
+  // Try the NCAA scoreboard for any date we've already played. One request
+  // per matchday, capped, and only for dates in the past — the public demo
+  // instance is rate limited to 5 req/sec so we stay well inside that.
+  const played = WHITMAN_SCHEDULE.filter(g => g.date < today).slice(-6);
+  await Promise.all(played.map(async g => {
+    try {
+      const [y,m,d] = g.date.split('-');
+      const r = await fetch(`${NCAA_API}/scoreboard/soccer-men/d3/${y}/${m}/${d}/all-conf`);
+      if(!r.ok) return;
+      const js = await r.json();
+      for(const game of (js.games||[])){
+        const gm = game.game || game;
+        const home = gm.home||{}, away = gm.away||{};
+        const hN = (home.names||{}).short || '', aN = (away.names||{}).short || '';
+        if(!/whitman/i.test(hN) && !/whitman/i.test(aN)) continue;
+        const usHome = /whitman/i.test(hN);
+        const us = Number(usHome ? home.score : away.score);
+        const them = Number(usHome ? away.score : home.score);
+        if(Number.isFinite(us) && Number.isFinite(them)){
+          results[g.date] = {us, them, wl: us>them ? 'W' : us<them ? 'L' : 'T'};
+        }
+      }
+    } catch(e) { /* schedule still renders without it */ }
+  }));
+
+  // record so far
+  let w=0,l=0,t=0;
+  for(const k in results){ const r=results[k]; if(r.wl==='W')w++; else if(r.wl==='L')l++; else t++; }
+  const anyResults = w+l+t > 0;
+
+  const next = WHITMAN_SCHEDULE.find(g => g.date >= today);
+  const recent = WHITMAN_SCHEDULE.filter(g => g.date < today).slice(-3).reverse();
+
+  let html = `<div class="fb-card${anyResults && w>=l ? ' fb-champ' : ''}">
+    <div class="fb-team-name">Whitman Blues</div>
+    <div class="fb-team-meta">NCAA Division III &middot; Northwest Conference &middot; Walla Walla</div>`;
+
+  if(anyResults){
+    html += `<div style="margin-top:0.4rem;">
+      <span class="fb-record">${w}-${l}-${t}</span>
+      <span class="fb-record-tag">overall</span></div>`;
+  }
+
+  if(next){
+    const days = Math.round((new Date(next.date+'T12:00:00') - new Date(today+'T12:00:00'))/86400000);
+    const when = days===0 ? 'Today' : days===1 ? 'Tomorrow' : `in ${days} days`;
+    html += `<div class="fb-game">
+      <span class="fb-game-label">Next</span>
+      <span class="fb-game-detail">${next.loc==='home'?'vs':next.loc==='away'?'at':'vs'} ${next.opp}${next.conf?' <span style="color:var(--gold);">NWC</span>':''}
+        <div class="fb-game-time">${whitmanFmtDate(next.date)} &middot; ${when} &middot; ${next.where}</div>
+      </span></div>`;
+  }
+
+  for(const g of recent){
+    const r = results[g.date];
+    const score = r
+      ? `<span style="font-weight:700;color:${r.wl==='W'?'var(--sage,#4a5c45)':r.wl==='L'?'var(--rust)':'var(--stone)'};">${r.wl} ${r.us}\u2013${r.them}</span>`
+      : `<span style="color:var(--stone);">result pending</span>`;
+    html += `<div class="fb-game">
+      <span class="fb-game-label">${whitmanFmtDate(g.date)}</span>
+      <span class="fb-game-detail">${score} &middot; ${g.loc==='away'?'at':'vs'} ${g.opp}</span></div>`;
+  }
+
+  if(!next && !recent.length){
+    html += `<div class="fb-game"><span class="fb-game-detail" style="color:var(--stone);">Season opens 4 September at Mary Washington</span></div>`;
+  }
+
+  html += `</div>`;
+  el.innerHTML = html;
+}
+loadWhitmanSoccer();
 
 // ── Grand Tour cards: order by what's next, label with a countdown ──
 // Cards live in a CSS grid, so sorting the DOM sorts the display. Sort key is
