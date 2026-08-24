@@ -297,8 +297,9 @@ function renderStages(data) {
  continue;
  }
  const s = item.stage;
- const climbTags = s.key_climbs.length
- ? `<div class="stage-climbs">${s.key_climbs.map(c=>`<span class="climb-tag">${c}</span>`).join('')}</div>`
+ const climbs = s.key_climbs || [];
+ const climbTags = climbs.length
+ ? `<div class="stage-climbs">${climbs.map(c=>`<span class="climb-tag">${c}</span>`).join('')}</div>`
  : '';
  // A cancelled stage has no winner and no result. Render it as such rather
 // than as an empty winner row — and never print a bare "()" when the team
@@ -311,7 +312,7 @@ const winnerLine = s.cancelled
  el.className = 'stage-item' + (s.date <= today && !s.winner && !s.cancelled ? ' active' : '');
  el.innerHTML = `
  <div class="stage-num">S${s.num}</div>
- <div class="stage-date">${fmtDate(s.date)}<br><span style="color:var(--mist);font-size:0.5rem">${s.day.slice(0,3).toUpperCase()}</span></div>
+ <div class="stage-date">${fmtDate(s.date)}<br><span style="color:var(--mist);font-size:0.5rem">${(s.day||'').slice(0,3).toUpperCase()}</span></div>
  <div class="stage-body">
  <div class="stage-route">${s.from} → ${s.to}</div>
  <div class="stage-desc-short">${s.desc}</div>
@@ -320,10 +321,10 @@ const winnerLine = s.cancelled
  <div class="stage-expand" id="expand-${s.num}" style="display:none;margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--mist);">
  <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);margin-bottom:0.3rem;">STAGE DETAILS</div>
  <div style="font-size:0.82rem;line-height:1.7;">${s.desc}</div>
- ${s.key_climbs.length ? `<div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink);margin-bottom:0.3rem;">Key Climbs</div><ul style="font-size:0.8rem;padding-left:1.2rem;color:var(--stone);">${s.key_climbs.map(c=>`<li>${c}</li>`).join('')}</ul>` : ''}
+ ${climbs.length ? `<div style="margin-top:0.5rem;font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--pink);margin-bottom:0.3rem;">Key Climbs</div><ul style="font-size:0.8rem;padding-left:1.2rem;color:var(--stone);">${climbs.map(c=>`<li>${c}</li>`).join('')}</ul>` : ''}
  <div style="margin-top:0.5rem;display:flex;gap:1.5rem;font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--stone);">
  <span>${s.km}km</span>
- <span>↑${s.elevation.toLocaleString()}m gain</span>
+ ${s.elevation ? `<span>↑${Number(s.elevation).toLocaleString()}m gain</span>` : ''}
  <span>${s.date}</span>
  </div>
  ${s.cancelled
