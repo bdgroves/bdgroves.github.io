@@ -288,7 +288,7 @@ footer.end a:hover{color:var(--rust)}
 
   <p>That is the whole idea. It is about forty lines of Python, it is what everybody does,
   and on my first real test it handed me numbers I wrote down immediately: <strong>78.4%
-  recall, 98.6% precision, height error of 0.44 metres</strong> &mdash; scored against 450
+  recall, 98.6% precision, height error of 0.44 meters</strong> &mdash; scored against 450
   trees whose exact positions I knew, because I had put them there myself.</p>
 
   <p>Good afternoon&rsquo;s work. I was pleased. I should not have been.</p>
@@ -356,7 +356,7 @@ footer.end a:hover{color:var(--rust)}
   trees are. Nobody hands you that for real forest &mdash; going out and surveying every stem
   across four hectares is somebody&rsquo;s entire summer. So I built a forest instead: a
   boreal stand modelled on Haukkalampi in Nuuksio National Park, north-west of Helsinki. Just over a million points
-  across 405 by 403 metres — 6.34 points per square metre — with 450 trees of known position,
+  across 405 by 403 meters — 6.34 points per square meter — with 450 trees of known position,
   height and species. 186 spruce, 182 pine, 82 birch. Fixed seed, fully reproducible.</p>
 
   <p>The pipeline ran clean. PDAL separated ground from canopy, produced a bare-earth DEM and
@@ -367,7 +367,7 @@ footer.end a:hover{color:var(--rust)}
   <figure class="bleed">
     <img loading="lazy" decoding="async" src="img/lidar-explore/nuuksio_overview.jpg" alt="Three panels: bare-earth DEM showing a ridge and lake basin, canopy height model with individual tree crowns, and the CHM with 450 ground-truth trees marked by species.">
     <figcaption><b>The synthetic sample.</b> Bare-earth DEM, canopy height model, and the 450
-    known trees coloured by species. Everything downstream is scored against that third panel.</figcaption>
+    known trees colored by species. Everything downstream is scored against that third panel.</figcaption>
   </figure>
 </div>
 
@@ -393,7 +393,7 @@ footer.end a:hover{color:var(--rust)}
 <span class="hi">occupied cells:</span>  62
 <span class="hi">densest cell:</span>    56 stems/ha</pre>
 
-  <p>Sixty-two occupied cells. A 400-metre plot on a 50-metre grid is exactly 64 cells, and
+  <p>Sixty-two occupied cells. A 400-meter plot on a 50-meter grid is exactly 64 cells, and
   two came back empty — the lake. The SQL had independently found the water body. Small thing,
   but it is the kind of thing that tells you the coordinates survived the round trip.</p>
 </div>
@@ -405,12 +405,12 @@ footer.end a:hover{color:var(--rust)}
   <p>Then I went looking for trouble on purpose.</p>
 
   <p>The question I actually wanted answered was how much LiDAR you really need. Finland
-  publishes free canopy data at 0.5 points per square metre. My sample was 6.34 &mdash;
+  publishes free canopy data at 0.5 points per square meter. My sample was 6.34 &mdash;
   thirteen times denser. Real-world data is going to be thinner than my sandbox. So how badly
   does this fall apart as the points run out?</p>
 
   <p>Because I had ground truth, I could measure it directly rather than guess. Decimate the
-  cloud to 0.5, 1, 2 and 4 points per square metre. Rebuild the canopy model at each. Re-score
+  cloud to 0.5, 1, 2 and 4 points per square meter. Rebuild the canopy model at each. Re-score
   against the same 450 trees. Hold the forest constant, vary only density.</p>
 
   <p>Recall went <em>up</em>.</p>
@@ -435,7 +435,7 @@ footer.end a:hover{color:var(--rust)}
     <tr class="spot"><td>6.31</td><td class="n">78.4%</td><td class="n">98.6%</td><td class="n">5</td><td class="n">0.44 m</td></tr>
   </table>
 
-  <p>At half a point per square metre a one-metre canopy raster has more empty cells than
+  <p>At half a point per square meter a one-meter canopy raster has more empty cells than
   filled ones. Missing data gets written as zero. The surface becomes a field of isolated
   spikes separated by artificial valleys, and that roughness manufactures extra local maxima.
   Some of them, by luck, land near real trees. Recall rises.</p>
@@ -452,8 +452,8 @@ footer.end a:hover{color:var(--rust)}
     is the one that degrades honestly, and it is the one I had barely looked at.</p>
   </div>
 
-  <p>A second result fell out of the same experiment, and it surprised me more: the 2-metre
-  canopy model lost to the 1-metre model at <em>every</em> density, with birch degrading
+  <p>A second result fell out of the same experiment, and it surprised me more: the 2-meter
+  canopy model lost to the 1-meter model at <em>every</em> density, with birch degrading
   worst. Resolution was the binding constraint, not point count. Coarse max-aggregation
   merges adjacent crowns, and wide flat crowns are exactly what gets merged.</p>
 </div>
@@ -472,10 +472,10 @@ footer.end a:hover{color:var(--rust)}
   <p>The famous Finnish 5-point LiDAR is not free. It requires payment and Finnish strong
   authentication — bank credentials or a national mobile certificate — which as an American I
   cannot obtain at any price. The genuinely open product is thinned to 0.5 points per square
-  metre, which my own density study had just shown is where height error goes bad.</p>
+  meter, which my own density study had just shown is where height error goes bad.</p>
 
   <p>But the Finnish Forest Centre publishes something better for my purposes: finished
-  canopy height models <em>derived</em> from that licensed data, at one metre, openly licensed,
+  canopy height models <em>derived</em> from that licensed data, at one meter, openly licensed,
   no registration. And alongside them, the actual forest inventory — 1,840 stand polygons for
   my map sheet, with measured heights, basal areas, species composition, and a professional
   management plan listing which stands foresters intend to cut between 2026 and 2035.</p>
@@ -491,8 +491,8 @@ footer.end a:hover{color:var(--rust)}
   <span class="hi">CHM_L4132D_2015</span>                2015   68.2   12.25  39.85
   <span class="hi">CHM_L4132D_2020</span>                2020   55.0   12.37  41.95</pre>
 
-  <p>Three epochs of the same six-kilometre sheet. Twelve years of canopy change over 3,600
-  hectares, at one-metre resolution, free.</p>
+  <p>Three epochs of the same six-kilometer sheet. Twelve years of canopy change over 3,600
+  hectares, at one-meter resolution, free.</p>
 </div>
 
 <div class="wide">
@@ -508,10 +508,10 @@ footer.end a:hover{color:var(--rust)}
 <div class="wrap">
   <h2><span class="num">Act Four</span>A bias that hid behind perfect calibration</h2>
 
-  <p>Look at those three mean heights again. 9.78 metres in 2008. 12.25 in 2015. 12.37 in
+  <p>Look at those three mean heights again. 9.78 meters in 2008. 12.25 in 2015. 12.37 in
   2020.</p>
 
-  <p>Two and a half metres of growth in seven years, then twelve centimetres in five.</p>
+  <p>Two and a half meters of growth in seven years, then twelve centimeters in five.</p>
 
   <p>Boreal forest does not do that. Boreal forest does not do anything that dramatic; it is
   famously, gloriously slow. Something in my data was wrong, and it took me most of a day to
@@ -523,7 +523,7 @@ footer.end a:hover{color:var(--rust)}
   compare them across flights. Ground is ground. It should read zero in any survey, and any
   systematic difference is the instrument, not the trees.</p>
 
-  <p>The ground offset came back <strong>+0.00 metres</strong>. All three epoch pairs. Perfect
+  <p>The ground offset came back <strong>+0.00 meters</strong>. All three epoch pairs. Perfect
   agreement.</p>
 
   <p>I took that as reassurance. It was not. My check verified <em>ground</em> calibration and
@@ -533,7 +533,7 @@ footer.end a:hover{color:var(--rust)}
   the one I was asking it.</p>
 
   <p>What worked was stratifying the change by tree size. Real height growth falls off steeply
-  as trees get big — a young stand adds half a metre a year, a thirty-metre spruce adds
+  as trees get big — a young stand adds half a meter a year, a thirty-meter spruce adds
   perhaps a tenth. So bin pixels by starting height, and if the growth rate does not decline
   across those bins, something is wrong.</p>
 
@@ -554,7 +554,7 @@ footer.end a:hover{color:var(--rust)}
   22-28 m    +0.263
   <span class="hi">28-60 m    +0.308   ← should be near zero</span></pre>
 
-  <p>Flat. Trees thirty metres tall apparently growing as fast as trees eight metres tall,
+  <p>Flat. Trees thirty meters tall apparently growing as fast as trees eight meters tall,
   which does not happen. A constant gain independent of tree size is not growth — it is an
   additive offset. The 2008 flight measured <strong>canopy</strong> low while measuring
   <strong>ground</strong> correctly.</p>
@@ -653,11 +653,11 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
   a hole.</p>
 
   <p class="pullquote">Same raster. Same forest. Two reasonable definitions of “mean canopy
-  height”, five metres apart, on opposite sides of the truth.</p>
+  height”, five meters apart, on opposite sides of the truth.</p>
 
   <div class="finding">
     <span class="tag">Finding 03</span>
-    <p><strong>A canopy height model measures dominant tree height to within about 1.2 metres
+    <p><strong>A canopy height model measures dominant tree height to within about 1.2 meters
     of a national forest inventory, at r = 0.96, while counting roughly one stem in six.</strong>
     Good at height. Bad at counting. And which of those you get depends entirely on which
     average you compute.</p>
@@ -758,7 +758,7 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
     shrinking, because I had written a ceiling and no floor.</li>
 
     <li><b>Say which estimator produced your number.</b>
-    Two defensible definitions of “mean canopy height” differed by five metres and fell on
+    Two defensible definitions of “mean canopy height” differed by five meters and fell on
     opposite sides of the truth.</li>
 
     <li><b>Score against the pool you actually chose from.</b>
@@ -788,7 +788,7 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
 
   <p>Having now measured it against a national inventory, I would say the honest version is
   narrower and more useful. Canopy height models are <em>excellent</em> at height and area-based
-  structure — 1.2 metres and r = 0.96 against field-measured stands is genuinely good, and it
+  structure — 1.2 meters and r = 0.96 against field-measured stands is genuinely good, and it
   scales to millions of hectares for the cost of a flight. They are <em>poor</em> at counting
   individual stems, and the shortfall is not a tuning problem. It is the physics of looking
   down at a closed canopy.</p>
