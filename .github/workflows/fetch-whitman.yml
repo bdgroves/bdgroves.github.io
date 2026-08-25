@@ -1,0 +1,188 @@
+name: Fetch Whitman Soccer
+
+on:
+  schedule:
+    - cron: '0 6 * * *'    # 06:00 UTC — after West Coast evening matches
+    - cron: '0 16 * * *'   # 16:00 UTC — catches morning/midday kickoffs
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: pip install requests beautifulsoup4
+
+      - name: Fetch Whitman men's soccer
+        run: |
+          python3 << 'PYEOF'
+          """
+          Pull Whitman men's soccer results + goalkeeper stats into
+          data/whitman-soccer.json.
+
+          Source: whitmanblues.com cumulative statistics page. Server-rendered
+          HTML tables, and it is the school's own official record — the same
+          numbers that feed the conference and NCAA.
+
+          Note on sources: whitmanblues.com/robots.txt disallows /services/,
+          so their schedule text feed is deliberately NOT used. The stats page
+          is not disallowed. One request per run, twice a day, in season.
+          """
+          import json, os, re, sys
+          from datetime import date, datetime, timezone
+
+          import requests
+          from bs4 import BeautifulSoup
+
+          YEAR = 2026
+          URL = f"https://whitmanblues.com/sports/mens-soccer/stats/{YEAR}"
+          OUT = "data/whitman-soccer.json"
+          WATCH = "Zawilski"          # highlight this keeper on the card
+
+          UA = ("BrooksGrovesSiteBot/1.0 "
+                "(https://github.com/bdgroves/bdgroves.github.io; "
+                "personal dashboard, 2 requests/day)")
+
+          # Only run in season. Outside it, leave the file alone rather than
+          # overwriting good data with an empty page.
+          today = date.today()
+          if not (date(YEAR, 8, 1) <= today <= date(YEAR, 12, 15)):
+              print(f"outside season window ({today}) — nothing to do")
+              sys.exit(0)
+
+          try:
+              r = requests.get(URL, headers={"User-Agent": UA}, timeout=30)
+              r.raise_for_status()
+          except Exception as e:
+              print(f"fetch failed: {e}")
+              sys.exit(0)          # leave existing data untouched
+
+          soup = BeautifulSoup(r.text, "html.parser")
+
+          def cells(tr):
+              return [c.get_text(" ", strip=True) for c in tr.find_all(["td", "th"])]
+
+          def num(s, cast=float):
+              try:
+                  return cast(str(s).replace(",", "").strip())
+              except Exception:
+                  return None
+
+          # ── overall record, e.g. heading "Team (14-1-6, 13-0-3)" ──
+          record = {"overall": None, "conference": None}
+          m = re.search(r"\((\d+-\d+-\d+)(?:,\s*(\d+-\d+-\d+))?\)", soup.get_text())
+          if m:
+              record["overall"] = m.group(1)
+              record["conference"] = m.group(2)
+
+          # ── goalkeeping table ──
+          # Header: # Player GP GS MIN GA GAA SV SV% W L T SHO/CBO SF
+          keepers = []
+          for table in soup.find_all("table"):
+              head = " ".join(cells(table.find("tr"))) if table.find("tr") else ""
+              if not ("GAA" in head and "SV%" in head):
+                  continue
+              for tr in table.find_all("tr")[1:]:
+                  c = cells(tr)
+                  if len(c) < 12:
+                      continue
+                  name = c[1]
+                  if not name or name.lower() in ("total", "totals", "opponent", "opponents"):
+                      continue
+                  # Sidearm renders the cell as "Last, First {jersey}Last, First"
+                  name = re.sub(r"^(.*?)\s*\d+\1$", r"\1", name.strip())
+                  name = re.sub(r"\s+", " ", name).strip()
+                  keepers.append({
+                      "name": name,
+                      "gp": num(c[2], int), "gs": num(c[3], int),
+                      "min": c[4],
+                      "ga": num(c[5], int), "gaa": num(c[6]),
+                      "sv": num(c[7], int), "sv_pct": num(c[8]),
+                      "w": num(c[9], int), "l": num(c[10], int), "t": num(c[11], int),
+                      "sho": c[12] if len(c) > 12 else None,
+                      "watch": WATCH.lower() in name.lower(),
+                  })
+              break     # first such table is the overall one
+
+          # ── game results table ──
+          # Header: Date Opponent W/L Score Overall Conference Attend ...
+          results = []
+          for table in soup.find_all("table"):
+              head = " ".join(cells(table.find("tr"))) if table.find("tr") else ""
+              if not ("W/L" in head and "Score" in head):
+                  continue
+              for tr in table.find_all("tr")[1:]:
+                  c = cells(tr)
+                  if len(c) < 4 or not re.match(r"\d{1,2}/\d{1,2}/\d{4}", c[0]):
+                      continue
+                  opp = c[1]
+                  home_away = "away" if opp.lower().startswith("at ") else "home"
+                  opp = re.sub(r"^(at|vs)\s+", "", opp, flags=re.I).strip()
+                  results.append({
+                      "date": datetime.strptime(c[0], "%m/%d/%Y").date().isoformat(),
+                      "opponent": opp, "loc": home_away,
+                      "wl": c[2].strip().upper()[:1],
+                      "score": c[3].strip(),
+                  })
+              break
+
+          if not keepers and not results:
+              print("parsed nothing — page structure may have changed; leaving data as-is")
+              for t in soup.find_all("table")[:8]:
+                  h = " ".join(cells(t.find("tr"))) if t.find("tr") else ""
+                  print("  [DIAG] table head:", h[:110])
+              sys.exit(0)
+
+          doc = {
+              "team": "Whitman Blues",
+              "season": YEAR,
+              "source": URL,
+              "updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+              "record": record,
+              "keepers": keepers,
+              "results": results,
+          }
+
+          os.makedirs("data", exist_ok=True)
+          prev = None
+          if os.path.exists(OUT):
+              try:
+                  with open(OUT, encoding="utf-8") as f:
+                      prev = json.load(f)
+              except Exception:
+                  pass
+          if prev:
+              prev.pop("updated", None)
+              cmp = dict(doc); cmp.pop("updated", None)
+              if prev == cmp:
+                  print("no change — not rewriting")
+                  sys.exit(0)
+
+          with open(OUT, "w", encoding="utf-8") as f:
+              json.dump(doc, f, ensure_ascii=False, indent=2)
+
+          print(f"record: {record}")
+          print(f"results: {len(results)}  keepers: {len(keepers)}")
+          for k in keepers:
+              star = " <-- watch" if k["watch"] else ""
+              print(f"  {k['name']}: {k['gp']}gp {k['ga']}ga {k['gaa']}gaa "
+                    f"{k['sv']}sv {k['sv_pct']}sv%{star}")
+          PYEOF
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data/whitman-soccer.json 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: whitman soccer $(date -u +%Y-%m-%d)"
+            git pull --rebase origin "$(git rev-parse --abbrev-ref HEAD)" && git push
+          fi
