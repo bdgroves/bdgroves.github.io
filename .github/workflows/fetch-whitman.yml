@@ -5,6 +5,15 @@ on:
     - cron: '0 6 * * *'    # 06:00 UTC — after West Coast evening matches
     - cron: '0 16 * * *'   # 16:00 UTC — catches morning/midday kickoffs
   workflow_dispatch:
+    inputs:
+      year:
+        description: 'Season to fetch (defaults to current). Use 2025 to test the parser against a completed season.'
+        required: false
+        default: ''
+      dry_run:
+        description: 'Parse and print, but do not write data/whitman-soccer.json'
+        type: boolean
+        default: false
 
 jobs:
   fetch:
@@ -20,6 +29,9 @@ jobs:
         run: pip install requests beautifulsoup4
 
       - name: Fetch Whitman men's soccer
+        env:
+          YEAR_OVERRIDE: ${{ github.event.inputs.year }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
           python3 << 'PYEOF'
           """
@@ -40,7 +52,8 @@ jobs:
           import requests
           from bs4 import BeautifulSoup
 
-          YEAR = 2026
+          YEAR = int(os.environ.get("YEAR_OVERRIDE") or 2026)
+          DRY = os.environ.get("DRY_RUN", "").lower() == "true"
           URL = f"https://whitmanblues.com/sports/mens-soccer/stats/{YEAR}"
           OUT = "data/whitman-soccer.json"
           WATCH = "Zawilski"          # highlight this keeper on the card
@@ -52,7 +65,7 @@ jobs:
           # Only run in season. Outside it, leave the file alone rather than
           # overwriting good data with an empty page.
           today = date.today()
-          if not (date(YEAR, 8, 1) <= today <= date(YEAR, 12, 15)):
+          if YEAR == today.year and not (date(YEAR, 8, 1) <= today <= date(YEAR, 12, 15)):
               print(f"outside season window ({today}) — nothing to do")
               sys.exit(0)
 
@@ -133,10 +146,17 @@ jobs:
               break
 
           if not keepers and not results:
-              print("parsed nothing — page structure may have changed; leaving data as-is")
-              for t in soup.find_all("table")[:8]:
+              heads = []
+              for t in soup.find_all("table"):
                   h = " ".join(cells(t.find("tr"))) if t.find("tr") else ""
-                  print("  [DIAG] table head:", h[:110])
+                  if h and h != "Team Period F":     # skip empty boxscore templates
+                      heads.append(h)
+              if not heads:
+                  print("no stat tables on the page yet — normal before the first match")
+              else:
+                  print("tables present but none matched — structure may have changed")
+                  for h in heads[:8]:
+                      print("  [DIAG] table head:", h[:110])
               sys.exit(0)
 
           doc = {
@@ -164,8 +184,11 @@ jobs:
                   print("no change — not rewriting")
                   sys.exit(0)
 
-          with open(OUT, "w", encoding="utf-8") as f:
-              json.dump(doc, f, ensure_ascii=False, indent=2)
+          if DRY:
+              print("DRY RUN — parsed successfully, not writing")
+          else:
+              with open(OUT, "w", encoding="utf-8") as f:
+                  json.dump(doc, f, ensure_ascii=False, indent=2)
 
           print(f"record: {record}")
           print(f"results: {len(results)}  keepers: {len(keepers)}")
