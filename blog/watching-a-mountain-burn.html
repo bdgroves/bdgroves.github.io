@@ -388,8 +388,8 @@ footer.end a:hover{color:var(--rust)}
     </table>
   </div>
 
-  <p>Ninety minutes to close 236 metres. Fire radiative power in that range is an active
-  flaming front, not a smoulder.</p>
+  <p>Eighty-one minutes to close 236 metres. Fire radiative power in that range is an
+  active flaming front, not a smoulder.</p>
 
   <p>And the brightness temperature on most of those detections came back at 367 K
   &mdash; which is not a measurement, it is the top of the sensor's scale. VIIRS could not
@@ -415,11 +415,24 @@ RdNBR          +772.8   ->  in the range studies call high severity</pre>
   </div>
 
   <p>The number that made it real to me, though, was NDVI &mdash; which just measures
-  greenness. At the cache pixel it went from <b>0.776 to 0.217</b>.</p>
+  greenness. Two ways of sampling it, both worth stating, because they answer slightly
+  different questions:</p>
 
-  <p>0.776 is dense, closed, healthy canopy, near the top of what vegetation reads. 0.217
-  is bare soil with scattered debris. This was not a surface fire that ran underneath the
-  grove and scorched some trunks on the way past. The crown went.</p>
+  <div class="c">
+    <table>
+      <tr><th></th><th>18 Aug (pre)</th><th>23 Aug (post)</th></tr>
+      <tr><td>Cache pixel (10 m)</td><td>0.776</td><td><b>0.217</b></td></tr>
+      <tr><td>Grove mean (150 m radius)</td><td>0.447</td><td><b>0.090</b></td></tr>
+    </table>
+  </div>
+
+  <p>The single pixel is the grove at its densest &mdash; 0.776 is closed healthy canopy,
+  near the top of what vegetation reads anywhere. The 150 m mean is lower because the ring
+  takes in surrounding sagebrush as well as aspen. Both collapse by roughly the same
+  proportion, and 0.217 at the cache pixel is bare soil with scattered debris.</p>
+
+  <p>This was not a surface fire that ran underneath the grove and scorched some trunks on
+  the way past. The crown went.</p>
 
   <figure class="bleed">
     <img src="img/peavine-watch/map_dnbr_site.png" alt="Burn severity map around the aspen grove, with VIIRS thermal detections approaching up the drainage from the southeast.">
@@ -505,8 +518,9 @@ RdNBR          +772.8   ->  in the range studies call high severity</pre>
 
   <p>Aspen regenerates aggressively from root suckers after fire, so the trees will very
   likely come back. I set up a monitoring loop to watch it happen &mdash; a script that
-  records NBR, NDVI and NDSI at the site every time Sentinel-2 passes over, appends a row
-  to a time series, and publishes it. It runs daily and needs nothing from me.</p>
+  records NBR, NDVI and NDSI at the burned grove and at an unburned control stand every
+  time Sentinel-2 passes over, appends a row to a time series, and publishes it. It runs
+  daily and needs nothing from me.</p>
 
   <p>My first instinct was that a rising NDVI curve would be the hopeful outcome. It is
   very nearly the opposite, and the reason is a detail of plant physiology I had to go
@@ -523,13 +537,36 @@ RdNBR          +772.8   ->  in the range studies call high severity</pre>
 
   <div class="c">
     <table>
-      <tr><th>Grove NDVI, summer 2027</th><th>What it would mean</th></tr>
+      <tr><th>Grove mean NDVI, summer 2027</th><th>What it would mean</th></tr>
       <tr><td>climbs to 0.3&ndash;0.5</td><td>vigorous suckering &mdash; roots alive, carved stems dead</td></tr>
       <tr><td>stays near 0.1&ndash;0.15</td><td>roots died too &mdash; rarer, and worse</td></tr>
     </table>
   </div>
 
-  <p>Pre-fire grove NDVI was 0.45. Five days after the fire it read 0.09.</p>
+  <p>All the figures in that table are the <b>150 m grove mean</b>, the same measurement
+  as the second row in Act Three &mdash; pre-fire 0.447, and 0.090 five days after the
+  fire.</p>
+
+  <p>There is one more piece I added after the first draft, because the raw curve is
+  harder to read than it looks. Vegetation senesces every autumn and greens up every
+  spring whether or not it burned, so an October decline at the grove could be fire or it
+  could just be October. Every satellite pass now also samples an <b>unburned control
+  stand</b> three kilometres west &mdash; comparable aspen, dNBR +0.001, none of its
+  pixels burned.</p>
+
+  <div class="c">
+    <table>
+      <tr><th></th><th>NDVI, 23 Aug 2026</th></tr>
+      <tr><td>Grove (burned)</td><td>0.090</td></tr>
+      <tr><td>Control (unburned)</td><td>0.548</td></tr>
+      <tr><td><b>Difference</b></td><td><b>&minus;0.458</b></td></tr>
+    </table>
+  </div>
+
+  <p>Both stands get the same season, sun angle and atmosphere, so the difference isolates
+  what the fire did. <b>&minus;0.458 is the finish line.</b> Recovery is not "does NDVI go
+  up" &mdash; spring answers that for you regardless. Recovery is whether that gap closes
+  toward zero.</p>
 
   <h2><span class="num">Act Six</span>What the satellites can never tell me</h2>
 
