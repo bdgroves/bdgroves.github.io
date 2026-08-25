@@ -1713,6 +1713,11 @@ checkKingsDaughters();
 // Whitman's own /services/ feed is disallowed by their robots.txt, so we
 // deliberately do not touch it.
 const WHITMAN_SCHEDULE = [
+  // Preseason exhibitions. Marked scrimmage:true so they render but never
+  // count toward the W-L-T record — and NCAA stats don't carry results for
+  // them, so a score generally will not exist to fetch.
+  {date:'2026-08-23', opp:'Western Washington',     loc:'away', where:'Bellingham, WA',     conf:false, scrimmage:true},
+  {date:'2026-08-29', opp:'Azusa Pacific',          loc:'home', where:'Hayner Field',       conf:false, scrimmage:true},
   {date:'2026-09-04', opp:'Mary Washington',        loc:'away', where:'Fredericksburg, VA', conf:false},
   {date:'2026-09-06', opp:'Marymount',              loc:'away', where:'Arlington, VA',      conf:false},
   {date:'2026-09-11', opp:'UC Santa Cruz',          loc:'neutral', where:'Spokane, WA',     conf:false},
@@ -1752,7 +1757,7 @@ async function loadWhitmanSoccer(){
   // Try the NCAA scoreboard for any date we've already played. One request
   // per matchday, capped, and only for dates in the past — the public demo
   // instance is rate limited to 5 req/sec so we stay well inside that.
-  const played = WHITMAN_SCHEDULE.filter(g => g.date < today).slice(-6);
+  const played = WHITMAN_SCHEDULE.filter(g => g.date < today && !g.scrimmage).slice(-6);
   await Promise.all(played.map(async g => {
     try {
       const [y,m,d] = g.date.split('-');
@@ -1797,7 +1802,7 @@ async function loadWhitmanSoccer(){
     const when = days===0 ? 'Today' : days===1 ? 'Tomorrow' : `in ${days} days`;
     html += `<div class="fb-game">
       <span class="fb-game-label">Next</span>
-      <span class="fb-game-detail">${next.loc==='home'?'vs':next.loc==='away'?'at':'vs'} ${next.opp}${next.conf?' <span style="color:var(--gold);">NWC</span>':''}
+      <span class="fb-game-detail">${next.loc==='home'?'vs':next.loc==='away'?'at':'vs'} ${next.opp}${next.conf?' <span style="color:var(--gold);">NWC</span>':''}${next.scrimmage?' <span style="color:var(--stone);font-size:0.9em;">exhibition</span>':''}
         <div class="fb-game-time">${whitmanFmtDate(next.date)} &middot; ${when} &middot; ${next.where}</div>
       </span></div>`;
   }
@@ -1806,10 +1811,13 @@ async function loadWhitmanSoccer(){
     const r = results[g.date];
     const score = r
       ? `<span style="font-weight:700;color:${r.wl==='W'?'var(--sage,#4a5c45)':r.wl==='L'?'var(--rust)':'var(--stone)'};">${r.wl} ${r.us}\u2013${r.them}</span>`
+      : g.scrimmage
+      ? `<span style="color:var(--stone);">played</span>`
       : `<span style="color:var(--stone);">result pending</span>`;
+    const tag = g.scrimmage ? ` <span style="color:var(--stone);font-size:0.9em;">exhibition</span>` : '';
     html += `<div class="fb-game">
       <span class="fb-game-label">${whitmanFmtDate(g.date)}</span>
-      <span class="fb-game-detail">${score} &middot; ${g.loc==='away'?'at':'vs'} ${g.opp}</span></div>`;
+      <span class="fb-game-detail">${score} &middot; ${g.loc==='away'?'at':'vs'} ${g.opp}${tag}</span></div>`;
   }
 
   if(!next && !recent.length){
