@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watching a Mountain Burn — Brooks Groves</title>
+<meta name="description" content="Building a LiDAR tree detector, then spending a week discovering what its numbers actually meant. Synthetic forest, Finnish national canopy data, and a national forest inventory as the referee.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=DM+Mono:wght@300;400;500&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* site standard palette — matches brooksgroves.com */
+  --parchment:#f5f0e8;
+  --parchment-deep:#ede8dc;
+  --ink:#1c1a16;
+  --ink-soft:#3a352c;
+  --muted:#7a7268;
+  --rust:#8b3a2a;
+  --gold:#c8922a;
+  --rule:#d6d0c4;
+  --white:#fdfaf4;
+  /* bespoke accents for this post — canopy + water */
+  --forest:#4a5c45;
+  --sky:#3d6a8f;
+  --maxw:none;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  background:var(--parchment);
+  background-image:
+    radial-gradient(circle at 15% 8%, rgba(184,134,59,.045), transparent 45%),
+    radial-gradient(circle at 85% 65%, rgba(63,97,54,.05), transparent 50%);
+  color:var(--ink);
+  font-family:"Source Serif 4",Georgia,serif;
+  font-weight:300;
+  font-size:19px;
+  line-height:1.72;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto;padding:0 26px}
+.wide{max-width:1180px;margin:0 auto;padding:0 26px}
+
+/* ---------- masthead ---------- */
+header.top{
+  border-bottom:1px solid var(--rule);
+  padding:22px 0;
+  margin-bottom:64px;
+  background:rgba(255,255,255,.25);
+}
+header.top .wrap{display:flex;justify-content:space-between;align-items:baseline;gap:20px}
+.brand{font-family:"Playfair Display",serif;font-size:19px;font-weight:700;letter-spacing:.01em}
+.brand a{color:var(--ink);text-decoration:none}
+.topnav{font-family:"DM Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.topnav a{color:var(--muted);text-decoration:none;margin-left:20px}
+.topnav a:hover{color:var(--rust)}
+
+/* ---------- title block ---------- */
+.kicker{
+  font-family:"DM Mono",monospace;
+  font-size:12px;letter-spacing:.20em;text-transform:uppercase;
+  color:var(--rust);margin-bottom:20px;
+}
+h1{
+  font-family:"Playfair Display",serif;
+  font-weight:700;font-size:clamp(2.4rem,6vw,4rem);
+  line-height:1.06;margin:0 0 24px;letter-spacing:-.015em;
+}
+.standfirst{
+  font-family:"Libre Baskerville",Georgia,serif;
+  font-size:1.16rem;line-height:1.66;color:var(--ink-soft);
+  font-style:italic;margin-bottom:30px;
+}
+.byline{
+  font-family:"DM Mono",monospace;font-size:12.5px;
+  letter-spacing:.06em;color:var(--muted);
+  padding:16px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  display:flex;flex-wrap:wrap;gap:8px 22px;
+}
+.byline b{font-weight:500;color:var(--ink-soft)}
+
+/* ---------- typography ---------- */
+h2{
+  font-family:"Playfair Display",serif;font-weight:700;
+  font-size:1.92rem;line-height:1.2;margin:76px 0 6px;letter-spacing:-.01em;
+}
+h2 .num{
+  display:block;font-family:"DM Mono",monospace;font-size:11.5px;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--rust);
+  margin-bottom:12px;font-weight:400;
+}
+h3{
+  font-family:"Playfair Display",serif;font-weight:500;
+  font-size:1.28rem;margin:44px 0 10px;color:var(--ink);
+}
+p{margin:0 0 22px}
+.lede::first-letter{
+  float:left;font-family:"Playfair Display",serif;font-weight:700;
+  font-size:4.4rem;line-height:.82;padding:8px 12px 0 0;color:var(--rust);
+}
+a{color:var(--rust);text-decoration:none;border-bottom:1px solid rgba(156,74,42,.32)}
+a:hover{border-bottom-color:var(--rust)}
+strong{font-weight:600}
+em{font-style:italic}
+
+/* ---------- figures ---------- */
+figure{margin:44px 0}
+figure.bleed{margin:52px 0}
+.bleed img{width:100%;height:auto;display:block;border:1px solid var(--rule)}
+.bleed figcaption{font-family:'DM Mono',monospace;font-size:.68rem;line-height:1.75;
+  color:var(--muted);margin-top:.75rem}
+figure img{
+  width:100%;height:auto;display:block;
+  border:1px solid var(--rule);border-radius:2px;
+  background:#fdfcf8;
+  box-shadow:0 2px 18px rgba(43,42,38,.09);
+}
+figcaption{
+  font-family:"DM Mono",monospace;font-size:12px;line-height:1.65;
+  color:var(--muted);margin-top:12px;padding-left:14px;
+  border-left:2px solid var(--gold);
+}
+figcaption b{color:var(--ink-soft);font-weight:500}
+
+/* ---------- pullquote ---------- */
+.pullquote{
+  font-family:"Playfair Display",serif;font-style:italic;
+  font-size:1.52rem;line-height:1.38;color:var(--ink);
+  margin:52px 0;padding:6px 0 6px 28px;
+  border-left:3px solid var(--gold);
+}
+
+/* ---------- callouts ---------- */
+.finding{
+  background:rgba(255,255,255,.5);
+  border:1px solid var(--rule);border-left:3px solid var(--forest);
+  padding:22px 26px;margin:38px 0;border-radius:2px;
+}
+.finding .tag{
+  font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--forest);display:block;margin-bottom:10px;
+}
+.wrong{
+  background:rgba(156,74,42,.05);
+  border:1px solid rgba(156,74,42,.22);border-left:3px solid var(--rust);
+  padding:22px 26px;margin:38px 0;border-radius:2px;
+}
+.wrong .tag{
+  font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--rust);display:block;margin-bottom:10px;
+}
+.finding p:last-child,.wrong p:last-child{margin-bottom:0}
+
+/* ---------- code & data ---------- */
+pre{
+  font-family:"DM Mono",monospace;font-size:13px;line-height:1.62;
+  background:#26251f;color:#ded9c8;
+  padding:20px 22px;border-radius:3px;overflow-x:auto;margin:30px 0;
+}
+pre .c{color:#8e8a76}
+pre .hi{color:#e0a45c}
+code{
+  font-family:"DM Mono",monospace;font-size:.87em;
+  background:var(--parchment-deep);padding:1px 6px;border-radius:2px;
+}
+
+table{
+  width:100%;border-collapse:collapse;margin:30px 0;
+  font-family:"DM Mono",monospace;font-size:13px;
+}
+th{
+  text-align:left;font-weight:500;color:var(--rust);
+  border-bottom:1.5px solid var(--rule);padding:9px 12px 9px 0;
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+}
+td{padding:9px 12px 9px 0;border-bottom:1px solid rgba(214,207,188,.55)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.spot td{background:rgba(184,134,59,.10);font-weight:500;color:var(--ink)}
+
+/* ---------- stack grid ---------- */
+.stack{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);
+  margin:34px 0;border-radius:2px;overflow:hidden;
+}
+.stack div{background:var(--parchment);padding:18px 20px}
+.stack h4{
+  font-family:"DM Mono",monospace;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--rust);margin:0 0 8px;font-weight:400;
+}
+.stack p{font-size:14.5px;line-height:1.6;margin:0;color:var(--ink-soft)}
+
+/* ---------- lessons ---------- */
+ol.lessons{counter-reset:l;list-style:none;padding:0;margin:34px 0}
+ol.lessons li{
+  counter-increment:l;position:relative;
+  padding:0 0 26px 54px;margin:0;
+}
+ol.lessons li::before{
+  content:counter(l,decimal-leading-zero);
+  position:absolute;left:0;top:2px;
+  font-family:"DM Mono",monospace;font-size:13px;
+  color:var(--gold);letter-spacing:.06em;
+}
+ol.lessons b{display:block;font-weight:600;margin-bottom:4px}
+
+hr.orn{
+  border:0;text-align:center;margin:64px 0;
+  font-family:"Playfair Display",serif;color:var(--gold);
+}
+hr.orn::before{content:"❦";font-size:20px}
+
+footer.end{
+  margin-top:88px;padding:34px 0 72px;border-top:1px solid var(--rule);
+  font-family:"DM Mono",monospace;font-size:12.5px;line-height:1.85;color:var(--muted);
+}
+footer.end a{color:var(--muted);border-bottom-color:rgba(125,122,112,.4)}
+footer.end a:hover{color:var(--rust)}
+
+@media(max-width:640px){
+  body{font-size:17.5px}
+  .lede::first-letter{font-size:3.5rem}
+  .pullquote{font-size:1.24rem;padding-left:20px}
+  figcaption{font-size:11.5px}
+}
+/* ── shell classes carried over from the standard blog post shell ── */
+.article-back{display:inline-block;font-family:'DM Mono',monospace;font-size:.62rem;
+  letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:var(--muted);
+  margin-bottom:1.4rem;transition:color .2s}
+.article-back:hover{color:var(--rust)}
+.article-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.1rem}
+.article-tag-pill{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;
+  text-transform:uppercase;text-decoration:none;color:var(--muted);
+  border:1px solid var(--rule);border-radius:2px;padding:.28rem .6rem;
+  background:var(--white);transition:color .2s,border-color .2s}
+.article-tag-pill:hover{color:var(--rust);border-color:var(--rust)}
+.article-footer-nav{display:flex;gap:1.5rem;flex-wrap:wrap;margin:1.4rem 0 1rem}
+.article-footer-nav a{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.12em;
+  text-transform:uppercase;text-decoration:none;color:var(--muted);transition:color .2s}
+.article-footer-nav a:hover{color:var(--rust)}
+.footer-name{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;
+  color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><a href="/">Brooks Groves</a></div>
+    <nav class="topnav">
+      <a href="/blog/index.html">Blog</a>
+      <a href="/geospatial.html">Geospatial</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub &#8599;</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<article>
+
+<div class="wrap">
+  <a href="/blog/index.html" class="article-back">&larr; Blog</a>
+  <div class="kicker">Remote Sensing &middot; Field Notes &middot; Washoe County, Nevada</div>
+  <h1>&#128293; Watching a Mountain Burn</h1>
+  <p class="standfirst">On 22 August a fire started five miles north of Reno. Ninety-two
+  minutes later a satellite saw it burning 315 metres from a spot I marked on a map
+  eighteen years ago. This is what I could work out about a small corner of it, from
+  eight hundred miles away, using only free public data.</p>
+  <div class="byline">
+    <span><b>Brooks Groves</b>, GISP</span>
+    <span>August 2026</span>
+    <span>~14 min</span>
+    <span><a href="https://github.com/bdgroves/peavine-watch">github.com/bdgroves/peavine-watch</a></span>
+  </div>
+  <div class="article-tags">
+    <a href="/tags.html#Remote%20Sensing" class="article-tag-pill">Remote Sensing</a>
+    <a href="/tags.html#Wildfire" class="article-tag-pill">Wildfire</a>
+    <a href="/tags.html#Sentinel-2" class="article-tag-pill">Sentinel-2</a>
+    <a href="/tags.html#Python" class="article-tag-pill">Python</a>
+    <a href="/tags.html#Nevada" class="article-tag-pill">Nevada</a>
+    <a href="/tags.html#Peavine" class="article-tag-pill">Peavine</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="wrong" style="margin-bottom:2.5rem;">
+    <div class="n">First, the part that matters</div>
+    <p>The Hawk Fire is still burning as I write this. It has destroyed <strong>32
+    homes</strong> and damaged six more. <strong>Seven people have been injured</strong>,
+    three of them responders. At its peak <strong>42,000 residents</strong> were under
+    mandatory evacuation, with the GO NOW zone reaching the edge of the University of
+    Nevada campus. The governor declared a state of emergency for Washoe County.</p>
+    <p>One man who had lived on that mountain for over twenty years got out with his two
+    golden retrievers and nothing else. Crews thought the line would hold; the wind
+    changed and it came in about thirty minutes.</p>
+    <p>What follows is about a hillside, some trees, and a container I hid in 2008. It is
+    a very small part of this fire, and it is not the important part. I am writing it
+    because it is the part I could actually measure, and because measuring something is
+    the only useful thing I could do from Washington State.</p>
+  </div>
+
+  <p class="lede">There is a spot on Peavine Mountain, north of Reno, where a spring comes
+  out of a drainage and feeds a stand of aspens. Basque sheepherders camped there in the
+  summers and carved their names into the trunks &mdash; names, dates, initials, drawings.
+  Some of them from the 1920s.</p>
+
+  <p>In 2008 I hid a geocache in that grove and called it
+  <a href="https://www.geocaching.com/geocache/GC1CG0A_basque-sheepherder-the-high-camp">Basque
+  Sheepherder: The High Camp</a>. The description I wrote then says <em>plan to spend some
+  time checking out all the tree carvings</em>, and calls the place a time capsule in the
+  mountains. Sixty-three people have found it since.</p>
+
+  <p>On 22 August 2026 at 11:23 in the morning, someone started a fire about five miles
+  north of Reno. By 12:55 PM &mdash; ninety-two minutes later &mdash; a thermal sensor in
+  low Earth orbit registered it burning 315 metres from that grove.</p>
+
+  <p>I know that grove because I used to ride there. In the nineties I lived in downtown
+  Reno and spent whole days climbing Peavine on a black Gary Fisher Paragon, and the aspens
+  on the back side &mdash; the sudden green shade after hours of sagebrush and no water
+  &mdash; were the reason to keep going over the top. I wrote about those rides
+  <a href="https://memoir.brooksgroves.com/paragon-peavine.html">here</a>, as it happens,
+  the same week this fire started.</p>
+
+  <p>I could not go there. I live eight hundred miles away and the whole area was under
+  evacuation. So I did the only thing available, which was to point every free satellite
+  product I know how to use at a single hillside and find out what happened to it.</p>
+
+  <h2><span class="num">The Stack</span>What this was built on</h2>
+
+  <div class="stack">
+    <div><b>Sentinel-2 L2A</b><span>ESA. 10 m optical, ~5 day revisit. Free, no key, no login.</span></div>
+    <div><b>AWS Earth Search</b><span>STAC catalogue. The reason none of this costs anything.</span></div>
+    <div><b>VIIRS</b><span>NASA thermal. Two satellites, roughly twice-daily passes.</span></div>
+    <div><b>USGS 3DEP</b><span>Elevation. Feeds the watershed analysis.</span></div>
+    <div><b>GRASS r.watershed</b><span>Flow accumulation &mdash; where water goes.</span></div>
+    <div><b>Python / rasterio</b><span>rioxarray, numpy, pystac-client. Nothing exotic.</span></div>
+  </div>
+
+  <p>Total cost: nothing. No API key, no registration, no institutional access. That is
+  worth saying out loud, because this kind of assessment used to require a federal
+  agency's imagery contract.</p>
+
+  <h2><span class="num">Act One</span>Why there was anything there to burn</h2>
+
+  <p>Before asking what the fire did, I wanted to know why the grove existed at all. A
+  stand of aspens at 7,574 feet in the Great Basin is not a given &mdash; the surrounding
+  hillside is sagebrush. Something puts water there.</p>
+
+  <p>So I ran <code>r.watershed</code> over USGS elevation data and looked at flow
+  accumulation, which counts how many upslope cells drain through each pixel.</p>
+
+  <div class="c">
+    <table>
+      <tr><th></th><th>Flow accumulation</th><th>Distance to channel</th></tr>
+      <tr><td>Cache / aspen grove</td><td><b>214 cells</b></td><td>31 m</td></tr>
+      <tr><td>Parking area, 500 m away</td><td><b>1 cell</b></td><td>&mdash;</td></tr>
+    </table>
+  </div>
+
+  <p>Two numbers, five hundred metres apart, and they explain the entire site. The grove
+  sits essentially on a drainage line. The parking area sits on flat dry ridge.</p>
+
+  <div class="finding">
+    <div class="n">Finding 01</div>
+    <p>The spring is why the grove is there. The grove is why the sheepherders camped
+    there. The camping is why the carvings are there.</p>
+    <p>Hold on to that chain. It comes back in Act Four, and it does not end well.</p>
+  </div>
+
+  <h2><span class="num">Act Two</span>Ninety-two minutes</h2>
+
+  <p>VIIRS is a thermal sensor flying on two polar-orbiting satellites. Under normal
+  circumstances it does not let you watch a fire arrive at a specific coordinate &mdash;
+  you get a pass or two a day and a fire moves between them. Hawk moved fast enough, and
+  the overpasses lined up well enough, that here it essentially does.</p>
+
+  <div class="c">
+    <table>
+      <tr><th>Time (PDT)</th><th>Distance from grove</th><th>Fire radiative power</th></tr>
+      <tr><td>11:23 AM</td><td>&mdash;</td><td>ignition</td></tr>
+      <tr><td>12:55 PM</td><td>315 m</td><td>first detection</td></tr>
+      <tr><td>1:40 PM</td><td>222 m</td><td>216 MW</td></tr>
+      <tr><td><b>2:16 PM</b></td><td><b>79 m</b></td><td>142.7 MW</td></tr>
+      <tr><td>2:36 PM</td><td>282 m</td><td>230 MW</td></tr>
+    </table>
+  </div>
+
+  <p>Ninety minutes to close 236 metres. Fire radiative power in that range is an active
+  flaming front, not a smoulder.</p>
+
+  <p>And the brightness temperature on most of those detections came back at 367 K
+  &mdash; which is not a measurement, it is the top of the sensor's scale. VIIRS could not
+  register how hot it actually was.</p>
+
+  <h2><span class="num">Act Three</span>What burned</h2>
+
+  <p>The workhorse index for burn severity is NBR, the Normalized Burn Ratio. It contrasts
+  near-infrared against shortwave-infrared. Healthy leaves are bright in NIR and dark in
+  SWIR, so NBR runs high; fire strips the canopy and exposes char and bare soil, which
+  flips the relationship hard.</p>
+
+  <p>What you actually want is the <em>change</em> &mdash; dNBR, before minus after
+  &mdash; because that isolates what the fire did from whatever the ground looked like to
+  begin with.</p>
+
+  <div class="c">
+<pre>NBR pre-fire   +0.481   (Aug 18, four days before ignition, 0.9% cloud)
+NBR post-fire  -0.055   (Aug 23, fire still burning, 15.1% cloud)
+
+dNBR           +0.536   ->  moderate-high severity
+RdNBR          +772.8   ->  in the range studies call high severity</pre>
+  </div>
+
+  <p>The number that made it real to me, though, was NDVI &mdash; which just measures
+  greenness. At the cache pixel it went from <b>0.776 to 0.217</b>.</p>
+
+  <p>0.776 is dense, closed, healthy canopy, near the top of what vegetation reads. 0.217
+  is bare soil with scattered debris. This was not a surface fire that ran underneath the
+  grove and scorched some trunks on the way past. The crown went.</p>
+
+  <figure class="bleed">
+    <img src="img/peavine-watch/map_dnbr_site.png" alt="Burn severity map around the aspen grove, with VIIRS thermal detections approaching up the drainage from the southeast.">
+    <figcaption>The fire's approach. VIIRS detections sized by radiative power, walking up
+    the drainage: 315 m at 12:55 PM, 222 m at 1:40, 79 m at 2:16. Gold star is the cache;
+    the dashed ring is the 150 m sampling radius. USGS/FIREMON severity ramp over Esri
+    imagery.</figcaption>
+  </figure>
+
+  <h2><span class="num">Act Four</span>Terrain, or just more fuel?</h2>
+
+  <p>Here is where it got interesting, and where I nearly published something wrong.</p>
+
+  <p>Same fire, same afternoon, five hundred metres apart: the grove in its drainage
+  burned at dNBR +0.536. The parking area on the dry ridge burned at +0.126. Four times
+  the severity.</p>
+
+  <p>The obvious reading is terrain. Fire runs uphill, because flames preheat the fuel
+  above them; a drainage concentrates the front and channels its own wind up the gully.
+  The grove sat at the top of a natural chimney. Tidy story, fits the watershed analysis
+  from Act One, and I believed it for about an hour.</p>
+
+  <div class="wrong">
+    <div class="n">Where I was wrong</div>
+    <p>The two points did not start equal. The grove was <em>dense aspen</em>; the ridge
+    was <em>sparse sagebrush</em>. Denser vegetation burns hotter more or less everywhere,
+    because it has more to lose. Some unknown fraction of that 4&times; was never terrain
+    at all &mdash; it was just fuel load.</p>
+    <p>A dNBR comparison between two places with different pre-fire vegetation cannot
+    separate those two effects. Reporting it as a terrain result would have been
+    asserting something the measurement does not support.</p>
+  </div>
+
+  <p>The fix is to hold fuel constant. Rather than comparing the grove to the ridge,
+  compare the grove only to ground that was <em>equally vegetated before the fire</em>
+  &mdash; pixels with a pre-fire NBR between 0.40 and 0.55, the same band the grove sits
+  in. Whatever difference survives that control cannot be explained by how much fuel was
+  standing there.</p>
+
+  <div class="c">
+<pre>Ground with pre-fire NBR 0.40-0.55:
+
+  grove ring          n =   129    mean dNBR  +0.731
+  elsewhere in AOI    n = 6,891    mean dNBR  +0.453
+                      terrain-attributable    +0.278</pre>
+  </div>
+
+  <div class="finding">
+    <div class="n">Finding 02</div>
+    <p>Even against equally-fuelled ground, the grove burned harder than 79% of it
+    &mdash; <b>+0.731 against +0.453</b>. That residual is not fuel load, because fuel load
+    is what was controlled for. What is left is terrain and moisture regime.</p>
+    <p>Both effects are real and they compound. The raw 4&times; overstated the terrain
+    effect; the honest figure is +0.278 dNBR.</p>
+  </div>
+
+  <p>Across the whole area, severity climbs steadily with pre-fire density &mdash; +0.344
+  on the sparsest ground, +0.657 on the densest. The grove sat at the intersection of both
+  effects: the heaviest fuel on the hillside, standing in the feature that concentrated
+  the fire into it.</p>
+
+  <p>Which brings back the chain from Act One, and closes it badly.</p>
+
+  <p class="pullquote">Water collects in that drainage. Water grew the aspens. The aspens
+  were the heaviest fuel on the hill, standing in the feature that funnelled the fire to
+  them. Every reason the grove existed is a reason it burned.</p>
+
+  <figure class="bleed">
+    <img src="img/peavine-watch/map_dnbr_aoi.png" alt="Burn severity across the full seven-kilometre area of interest, showing the grove as one of the hottest points in the burn.">
+    <figcaption>The grove within the wider burn. Only 20.3% of this area reached
+    moderate-high severity or above; the grove mean of +0.548 exceeds 92.1% of the
+    surrounding three kilometres. It was not caught in a generally severe fire &mdash; it
+    was one of the hottest spots in it.</figcaption>
+  </figure>
+
+  <p>One caution on my own metaphor. The slope there is 13.3&deg;, which is moderate. A
+  textbook chimney is a steep narrow gully with a violent convective draft; this is a broad
+  southeast-facing drainage near a summit. Fire running upslope with a drainage
+  concentrating the front is the accurate description. Directionally right, but I should
+  not oversell it.</p>
+
+  <h2><span class="num">Act Five</span>The recovery curve is not good news</h2>
+
+  <p>Aspen regenerates aggressively from root suckers after fire, so the trees will very
+  likely come back. I set up a monitoring loop to watch it happen &mdash; a script that
+  records NBR, NDVI and NDSI at the site every time Sentinel-2 passes over, appends a row
+  to a time series, and publishes it. It runs daily and needs nothing from me.</p>
+
+  <p>My first instinct was that a rising NDVI curve would be the hopeful outcome. It is
+  very nearly the opposite, and the reason is a detail of plant physiology I had to go
+  and look up.</p>
+
+  <div class="finding">
+    <div class="n">Finding 03</div>
+    <p>Aspen root suckering is suppressed by auxin flowing down from the living parent
+    stem. Kill the stem and that suppression lifts &mdash; which is precisely why aspen
+    regenerates so vigorously after fire.</p>
+    <p><b>The regrowth is caused by the death of the overstory.</b> The healthier the
+    green-up looks, the more confident you can be that the carved trunks are dead.</p>
+  </div>
+
+  <div class="c">
+    <table>
+      <tr><th>Grove NDVI, summer 2027</th><th>What it would mean</th></tr>
+      <tr><td>climbs to 0.3&ndash;0.5</td><td>vigorous suckering &mdash; roots alive, carved stems dead</td></tr>
+      <tr><td>stays near 0.1&ndash;0.15</td><td>roots died too &mdash; rarer, and worse</td></tr>
+    </table>
+  </div>
+
+  <p>Pre-fire grove NDVI was 0.45. Five days after the fire it read 0.09.</p>
+
+  <h2><span class="num">Act Six</span>What the satellites can never tell me</h2>
+
+  <p>The cache itself is a steel ammo can, which is about the best-case container for
+  surviving a fast-moving grass and brush fire. A front like that passes in a minute or
+  two, not hours. It is scorched almost certainly and it is plausibly still sitting
+  there.</p>
+
+  <p>The carvings are a different problem entirely. They live in bark and cambium &mdash;
+  thin living tissue, which is exactly what makes aspen carvable in the first place and
+  exactly what gives it no defence against heat.</p>
+
+  <p>And no index I have can see bark. NDVI and NBR measure canopy and soil from 786
+  kilometres up. The carvings are millimetres deep. Every number in this piece is
+  consistent with the carvings having survived and equally consistent with their being
+  gone.</p>
+
+  <p>That question needs a person standing in the grove. Which will be me, eventually,
+  when it is safe and open and I can get down there. In the meantime I have written to
+  UNR's Center for Basque Studies, who catalogue Peavine's arborglyphs and may hold
+  photographs of what was there before August.</p>
+
+  <p>An ammo can is replaceable. A hundred years of a vanishing culture's handwriting on a
+  mountainside is not.</p>
+
+  <h2><span class="num">Lessons</span>What I'd tell someone doing this</h2>
+
+  <div class="lessons">
+    <p><b>Control your comparison or don't make it.</b> Two points burning differently
+    tells you nothing if they started different. Holding pre-fire vegetation constant
+    turned a story I liked into a number I can defend &mdash; and shrank it from 4&times;
+    to +0.278.</p>
+    <p><b>Restrict both sides, or neither.</b> An early version of that analysis compared
+    an unrestricted ring against a density-restricted comparison group. RdNBR divides by
+    the square root of pre-fire NBR, so it explodes where that value is near zero, and the
+    ring mean came back dominated by sparse sagebrush rather than the grove. It produced a
+    dramatic number that meant nothing.</p>
+    <p><b>Check the projection before differencing.</b> Peavine sits almost exactly on the
+    UTM zone 10/11 boundary, so it is covered by two satellite tiles. An early run
+    differenced a scene from each &mdash; different reprojection paths for the same ground,
+    introducing error precisely at feature boundaries like a grove edge.</p>
+    <p><b>Smoke can fake a snow signal.</b> The snow index reported plausible positive
+    values on smoky scenes. Smoke and cloud share the bright-green, dark-SWIR signature the
+    index is built on. Masking the scene classification layer first, and reporting what
+    fraction of pixels survived, turned three confident wrong numbers into three honest
+    UNRELIABLE flags.</p>
+    <p><b>Hand-verify the formula.</b> My first RdNBR implementation was off by a factor of
+    about 31&mdash;a missing square root of 1000. I caught it by sanity-checking the output
+    against published ranges rather than trusting my own refactor.</p>
+  </div>
+
+  <h2><span class="num">Limits</span>What this does not establish</h2>
+
+  <p>The headline number is provisional. The only post-fire scene available when I ran this
+  was taken while the fire was still burning at 0% containment, and both active flame and
+  smoke distort NBR upward. It needs re-running against a clean post-containment scene.</p>
+
+  <p>More importantly: dNBR and RdNBR are not soil burn severity. They measure surface and
+  canopy change from above. Soil burn severity &mdash; the number that actually drives
+  debris-flow risk &mdash; requires a field team on the ground. A site can read high on
+  dNBR with only lightly-burned soil underneath, or the reverse.</p>
+
+  <p>That matters here more than usual, because of what comes next. Post-fire debris flow
+  is usually discussed as a monsoon problem: a thirty-minute cloudburst on burnt,
+  water-repellent soil. At 7,574 feet the bigger driver is snowmelt &mdash; no canopy to
+  intercept it, no roots to hold the slope, and weeks of sustained meltwater rather than
+  one storm. The grove sits 31 metres from the channel that will carry it.</p>
+
+  <p>And there may never be an official assessment to check my work against. BAER is a
+  <em>federal</em> post-fire response, and Peavine is a patchwork of BLM, City of Reno and
+  private land. If the burn is mostly non-federal, no official severity product may ever be
+  published for this hillside &mdash; in which case a repository built on a laptop in
+  Washington State is the only one that will exist.</p>
+
+  <p>Which is either encouraging or alarming depending on your mood, and is most of the
+  reason I bothered.</p>
+
+  <div class="c" style="margin-top:2.5rem;">
+    <p><b>Live dashboard, updated on every satellite pass:</b><br>
+    <a href="https://bdgroves.github.io/peavine-watch/">bdgroves.github.io/peavine-watch</a></p>
+    <p><b>Code and data:</b><br>
+    <a href="https://github.com/bdgroves/peavine-watch">github.com/bdgroves/peavine-watch</a></p>
+    <p><b>The cache, still listed:</b><br>
+    <a href="https://www.geocaching.com/geocache/GC1CG0A_basque-sheepherder-the-high-camp">GC1CG0A
+    &mdash; Basque Sheepherder: The High Camp</a></p>
+    <p><b>The same mountain, thirty years earlier:</b><br>
+    <a href="https://memoir.brooksgroves.com/paragon-peavine.html">The Mountain You See Every
+    Day</a> &mdash; riding Peavine out of downtown Reno in the 1990s, and the grove before
+    any of this</p>
+  </div>
+
+  <p class="end" style="margin-top:2.5rem;">Whether the carvings survived is worth knowing,
+  and as far as I can tell nobody else was going to check.</p>
+
+  <p style="font-size:0.82rem;color:var(--muted);margin-top:2rem;">If you were displaced by
+  the Hawk Fire, Washoe County emergency information and recovery resources are the place to
+  start &mdash; not this page. Fire figures here are current to 25 August 2026 and the
+  situation was still developing.</p>
+
+</div>
+
+</article>
+</main>
+
+<footer class="end">
+  <div class="wrap">
+    <p>Sentinel-2 L2A via AWS Earth Search &middot; VIIRS detections and fire perimeters via
+    NIFC WFIGS and NASA &middot; Elevation USGS 3DEP &middot; Hydrology GRASS r.watershed.
+    All public domain.</p>
+    <p>Code, data and the live dashboard:
+    <a href="https://github.com/bdgroves/peavine-watch">github.com/bdgroves/peavine-watch</a></p>
+    <div class="article-footer-nav">
+      <a href="/blog/index.html">&larr; All Posts</a>
+      <a href="/writing/">Writing</a>
+      <a href="/tags.html">Tags</a>
+    </div>
+    <p class="footer-name">Brooks Groves &middot; Lakewood, WA</p>
+  </div>
+</footer>
+
+</article>
+</main>
+
+</body>
+</html>
