@@ -444,8 +444,18 @@ jobs:
                       if not cached_row:
                           continue
                       for key in gt_preserved_fields:
-                          if key in cached_row and cached_row[key] is not None:
-                              r[key] = cached_row[key]
+                          if key not in cached_row or cached_row[key] is None:
+                              continue
+                          # Don't let a stale cached "upcoming" clobber the
+                          # "live" we just computed from the race window above.
+                          # fetch-race-results.yml only ever writes "final", so
+                          # without this nothing can ever persist a live status
+                          # and a running Grand Tour stays "upcoming" forever.
+                          if (key == "status"
+                                  and cached_row[key] == "upcoming"
+                                  and r.get("status") == "live"):
+                              continue
+                          r[key] = cached_row[key]
                       print(f"  Preserved cached GT: {r['name']} "
                             f"(status={r.get('status')}, leader={r.get('gc_leader','—')})")
           except (FileNotFoundError, json.JSONDecodeError) as e:
