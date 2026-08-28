@@ -46,6 +46,12 @@
 
     /* MAP */
     #map { width:100%; height:560px; border:2px solid var(--ink); z-index:1; }
+    /* OSM's raw tiles are more saturated/colorful than CARTO Light was.
+       This filter mutes them toward the site's parchment palette so the
+       switch away from a third-party CDN doesn't change the map's look. */
+    .leaflet-tile-pane {
+      filter: grayscale(45%) brightness(1.06) contrast(0.92) sepia(8%);
+    }
 
     /* SIDEBAR LIST */
     .map-grid { display:grid; grid-template-columns:1fr 320px; gap:2rem; align-items:start; margin-top:2rem; }
@@ -306,10 +312,14 @@ const map = L.map('map', {
   zoomControl: true
 });
 
-// Greyscale tile layer — consistent with site aesthetic
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/">CARTO</a>',
-  subdomains: 'abcd',
+// Base tiles — OpenStreetMap's own standard tile server. No API key,
+// no third-party CDN dependency, and the most reliable free tile source
+// available. A CSS filter (see .leaflet-tile-pane above) desaturates it
+// toward the site's palette, since raw OSM tiles are more saturated than
+// CARTO Light was.
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  subdomains: 'abc',
   maxZoom: 19
 }).addTo(map);
 
