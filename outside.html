@@ -537,6 +537,20 @@
       <div id="whitman-soccer"><p class="loading">Loading schedule…</p></div>
     </div>
 
+    <!-- High School Football — Sonora -->
+    <div style="margin-top:2.5rem;">
+      <div class="section-label">
+        <span>High School Football</span>
+        <a href="https://www.cifsjs.org/" target="_blank">CIF Sac-Joaquin ↗</a>
+      </div>
+      <div class="quick-links">
+        <a href="https://www.maxpreps.com/ca/sonora/sonora-wildcats/football/" target="_blank" class="quick-link">MaxPreps ↗</a>
+        <a href="https://mymotherlode.com/sports/high-school-football" target="_blank" class="quick-link">myMotherLode ↗</a>
+        <a href="https://gofan.co/school/CA22609" target="_blank" class="quick-link">Tickets ↗</a>
+      </div>
+      <div id="sonora-football"><p class="loading">Loading schedule…</p></div>
+    </div>
+
     <!-- Pro Cycling — full width within the zone -->
     <div style="margin-top:2.5rem;">
       <div class="section-label">
@@ -1835,6 +1849,80 @@ async function loadWhitmanSoccer(){
   el.innerHTML = html;
 }
 loadWhitmanSoccer();
+
+// ── Sonora High School football (CIF Sac-Joaquin Section, Trans Valley League) ──
+// Sonora is the defending CIF Division 2-A state champion — went 15-0 in
+// 2025, closing with a 35-10 win over Rio Hondo Prep in the state final,
+// and opened 2026 ranked #1 nationally in MaxPreps' Small Town Top 25.
+//
+// The 2026 schedule below is baked in from Sonora's own MaxPreps team page
+// (fetched directly, one time, the same way Whitman's schedule was
+// originally hand-built) so this card always renders something useful with
+// no network dependency.
+//
+// Deliberately schedule-only for now. MaxPreps is a large commercial site
+// (CBS/PlayOn, with a GoFan ticketing partnership) and its robots.txt could
+// not be verified from this environment — so unlike Whitman, which pulls
+// results twice daily from its own school site, there is no automated
+// results workflow here yet. Once a source that's clearly fair to poll is
+// confirmed (myMotherLode's local coverage is the leading candidate), this
+// can grow a SONORA_DATA fetch exactly like WHITMAN_DATA above.
+const SONORA_SCHEDULE = [
+  {date:'2026-08-28', time:'7:00 PM', opp:'Oakdale',        loc:'home', where:'Sonora, CA',   conf:false},
+  {date:'2026-09-04', time:'7:00 PM', opp:'Pacheco',        loc:'home', where:'Sonora, CA',   conf:false},
+  {date:'2026-09-11', time:'7:15 PM', opp:'Woodcreek',      loc:'away', where:'Roseville, CA',conf:false},
+  {date:'2026-09-18', time:'7:00 PM', opp:"King's Academy", loc:'away', where:'Sunnyvale, CA',conf:false},
+  {date:'2026-09-25', time:'7:00 PM', opp:'Orestimba',      loc:'home', where:'Sonora, CA',   conf:true},
+  {date:'2026-10-02', time:'7:00 PM', opp:'Ripon Christian',loc:'away', where:'Ripon, CA',    conf:true},
+  {date:'2026-10-09', time:'7:00 PM', opp:'Hilmar',         loc:'home', where:'Sonora, CA',   conf:true},
+  {date:'2026-10-16', time:'7:00 PM', opp:'Hughson',        loc:'away', where:'Hughson, CA',  conf:true},
+  {date:'2026-10-23', time:'7:00 PM', opp:'Ripon',          loc:'home', where:'Sonora, CA',   conf:true},
+  {date:'2026-10-30', time:'7:00 PM', opp:'Escalon',        loc:'away', where:'Escalon, CA',  conf:true},
+];
+
+function sonoraFmtDate(iso){
+  const d = new Date(iso + 'T12:00:00');
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+function loadSonoraFootball(){
+  const el = document.getElementById('sonora-football');
+  if(!el) return;
+
+  const today = new Date().toISOString().slice(0,10);
+  const next = SONORA_SCHEDULE.find(g => g.date >= today);
+  const recent = SONORA_SCHEDULE.filter(g => g.date < today).slice(-3).reverse();
+
+  let html = `<div class="fb-card fb-champ">
+    <div class="fb-team-name">Sonora Wildcats</div>
+    <div class="fb-team-meta">CIF Sac-Joaquin Section &middot; Trans Valley League &middot; Sonora, CA</div>
+    <div class="fb-champ-badge">Defending CIF Division 2-A State Champion &middot; 15&ndash;0 in 2025</div>`;
+
+  if(next){
+    const days = Math.round((new Date(next.date+'T12:00:00') - new Date(today+'T12:00:00'))/86400000);
+    const when = days===0 ? 'Today' : days===1 ? 'Tomorrow' : `in ${days} days`;
+    html += `<div class="fb-game">
+      <span class="fb-game-label">Next</span>
+      <span class="fb-game-detail">${next.loc==='home'?'vs':'at'} ${next.opp}${next.conf?' <span style="color:var(--gold);">TVL</span>':''}
+        <div class="fb-game-time">${sonoraFmtDate(next.date)} &middot; ${when} &middot; ${next.time} &middot; ${next.where}</div>
+      </span></div>`;
+  }
+
+  for(const g of recent){
+    const tag = g.conf ? ` <span style="color:var(--stone);font-size:0.9em;">TVL</span>` : '';
+    html += `<div class="fb-game">
+      <span class="fb-game-label">${sonoraFmtDate(g.date)}</span>
+      <span class="fb-game-detail"><span style="color:var(--stone);">result pending</span> &middot; ${g.loc==='away'?'at':'vs'} ${g.opp}${tag}</span></div>`;
+  }
+
+  if(!next && !recent.length){
+    html += `<div class="fb-game"><span class="fb-game-detail" style="color:var(--stone);">Season opens 28 August vs Oakdale</span></div>`;
+  }
+
+  html += `</div>`;
+  el.innerHTML = html;
+}
+loadSonoraFootball();
 
 // ── Grand Tour cards: order by what's next, label with a countdown ──
 // Cards live in a CSS grid, so sorting the DOM sorts the display. Sort key is
