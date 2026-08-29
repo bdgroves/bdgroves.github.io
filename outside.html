@@ -251,6 +251,21 @@
     .zone-grid { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; align-items:start; }
     @media(max-width:900px) { .zone-grid { grid-template-columns:1fr; gap:0; } }
 
+    /* Zone blocks — every top-level block inside a zone gets the same rhythm,
+       replacing the hand-tuned inline style="margin-top:2.5rem" that made the
+       page feel jagged. One rule, one spacing value, consistent everywhere. */
+    .zone-block { margin-top:2.75rem; }
+    .zone-block:first-child { margin-top:0; }
+    /* The first .section-label inside a block shouldn't add its own 2.5rem on
+       top of the block margin — that double-gap was the main visual stutter. */
+    .zone-block > .section-label:first-child { margin-top:0; }
+    /* Paired blocks sit side by side on wide screens and stack cleanly below. */
+    .zone-pair { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; align-items:start; }
+    @media(max-width:900px){
+      .zone-pair { grid-template-columns:1fr; gap:0; }
+      .zone-pair > * + * { margin-top:2.75rem; }
+    }
+
     /* RACE CALENDAR — card treatment to match the rest */
     .race-card { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--gold); padding:1rem 1.25rem; margin-bottom:0.75rem; display:flex; align-items:center; gap:1rem; text-decoration:none; color:inherit; transition:background 0.12s,border-color 0.12s; }
     .race-card:hover { background:var(--white); border-left-color:var(--rust); }
@@ -263,20 +278,6 @@
 
     /* FOOTBALL — team cards + compact standings */
     .fb-card { background:var(--cream); border:1px solid var(--mist); padding:0.75rem 0.9rem; margin-bottom:0.75rem; border-radius:2px; }
-    /* ScoreStream embed — renders in its own styling inside an iframe, so we
-       can only frame it; matching the card border keeps it from looking
-       bolted on. */
-    .ss-widget-wrap { border:1px solid var(--mist); border-radius:2px; background:var(--cream);
-      padding:0.5rem; margin-top:0.75rem; overflow:hidden; }
-    .ss-widget-wrap .scorestream-widget-container { max-width:100%; }
-    .ss-widget-credit { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.06em;
-      color:var(--stone); margin-top:0.4rem; }
-    .ss-widget-credit a { color:var(--stone); text-decoration:underline; }
-    .ss-widget-credit a:hover { color:var(--rust); }
-    /* 600px dominates a phone screen — trim it on small viewports. */
-    @media (max-width:700px){
-      .ss-widget-wrap .scorestream-widget-container { height:420px !important; }
-    }
     .fb-card.fb-champ { border-left:3px solid var(--gold); }
     .fb-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:0.4rem; border-bottom:1px solid var(--mist); margin-bottom:0.5rem; }
     .fb-header-left { flex:1; }
@@ -502,7 +503,7 @@
   <div class="zone">
     <div class="zone-header">
       <div class="zone-title"><em>The Teams</em></div>
-      <div class="zone-sub">Mariners · Football · Pro Cycling — what I'm following</div>
+      <div class="zone-sub">Mariners · Football · Whitman soccer · Sonora Wildcats · Pro Cycling — what I'm following</div>
     </div>
 
     <div class="zone-grid">
@@ -537,47 +538,44 @@
 
     </div>
 
-    <!-- College Soccer — Whitman -->
-    <div style="margin-top:2.5rem;">
-      <div class="section-label">
-        <span>College Soccer</span>
+    <!-- Whitman soccer and Sonora football share a row: both are single-team
+         cards of similar height, so pairing them keeps the two-column rhythm
+         established above instead of dropping into a full-width stack. -->
+    <div class="zone-block zone-pair">
+
+      <!-- College Soccer — Whitman -->
+      <div>
+        <div class="section-label">
+          <span>College Soccer</span>
         <a href="https://www.ncaa.com/scoreboard/soccer-men/d3" target="_blank">NCAA D-III ↗</a>
+        </div>
+        <div class="quick-links">
+          <a href="https://whitmanblues.com/sports/mens-soccer/schedule/2026" target="_blank" class="quick-link">Whitman Blues ↗</a>
+          <a href="https://nwcsports.com/sports/mens-soccer" target="_blank" class="quick-link">Northwest Conf ↗</a>
+          <a href="https://go.flocollege.com/teams/whitman-college" target="_blank" class="quick-link">Watch Live ↗</a>
       </div>
-      <div class="quick-links">
-        <a href="https://whitmanblues.com/sports/mens-soccer/schedule/2026" target="_blank" class="quick-link">Whitman Blues ↗</a>
-        <a href="https://nwcsports.com/sports/mens-soccer" target="_blank" class="quick-link">Northwest Conf ↗</a>
-        <a href="https://go.flocollege.com/teams/whitman-college" target="_blank" class="quick-link">Watch Live ↗</a>
+        <div id="whitman-soccer"><p class="loading">Loading schedule…</p></div>
       </div>
-      <div id="whitman-soccer"><p class="loading">Loading schedule…</p></div>
-    </div>
 
-    <!-- High School Football — Sonora -->
-    <div style="margin-top:2.5rem;">
-      <div class="section-label">
-        <span>High School Football</span>
+      <!-- High School Football — Sonora -->
+      <div>
+        <div class="section-label">
+          <span>High School Football</span>
         <a href="https://www.cifsjs.org/" target="_blank">CIF Sac-Joaquin ↗</a>
+        </div>
+        <div class="quick-links">
+          <a href="https://www.maxpreps.com/ca/sonora/sonora-wildcats/football/" target="_blank" class="quick-link">MaxPreps ↗</a>
+          <a href="https://mymotherlode.com/sports/high-school-football" target="_blank" class="quick-link">myMotherLode ↗</a>
+          <a href="https://scorestream.com/team/sonora-high-school-wildcats-2769" target="_blank" class="quick-link">Live Scores ↗</a>
+          <a href="https://gofan.co/school/CA22609" target="_blank" class="quick-link">Tickets ↗</a>
       </div>
-      <div class="quick-links">
-        <a href="https://www.maxpreps.com/ca/sonora/sonora-wildcats/football/" target="_blank" class="quick-link">MaxPreps ↗</a>
-        <a href="https://mymotherlode.com/sports/high-school-football" target="_blank" class="quick-link">myMotherLode ↗</a>
-        <a href="https://gofan.co/school/CA22609" target="_blank" class="quick-link">Tickets ↗</a>
+        <div id="sonora-football"><p class="loading">Loading schedule…</p></div>
       </div>
-      <div id="sonora-football"><p class="loading">Loading schedule…</p></div>
 
-      <!-- Live scores via ScoreStream's free embeddable widget — a sanctioned
-           embed rather than scraping, so there's no robots.txt question, and
-           it updates live during games instead of on a cron. -->
-      <div class="ss-widget-wrap">
-        <div class="scorestream-widget-container"
-             data-ss_widget_type="vertScoreboard"
-             style="height:600px;"
-             data-user-widget-id="69844"></div>
-      </div>
-      <p class="ss-widget-credit">Live scores via <a href="https://scorestream.com/team/sonora-high-school-wildcats-2769" target="_blank" rel="noopener">ScoreStream</a> &middot; fan-sourced, updates during games</p>
     </div>
 
     <!-- Pro Cycling — full width within the zone -->
-    <div style="margin-top:2.5rem;">
+    <div class="zone-block">
       <div class="section-label">
         <span>Pro Cycling</span>
         <a href="https://www.cyclingnews.com" target="_blank">Cyclingnews ↗</a>
@@ -2046,6 +2044,5 @@ loadSonoraFootball();
         .forEach(s => container.appendChild(s.card));
 })();
 </script>
-<script async="async" type="text/javascript" src="https://scorestream.com/apiJsCdn/widgets/embed.js"></script>
 </body>
 </html>
