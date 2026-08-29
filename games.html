@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Games — Brooks Groves</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
+      --sky:#2a4a6b; --garmin:#007cc3;
+    }
+    [data-theme="dark"] {
+      --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
+      --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
+      --white:#12100d; --rust:#cf6b52; --sage:#83a077;
+      --sky:#6fa0cc; --garmin:#3aa5e0;
+    }
+    [data-theme="dark"] footer { background:#0f0d0a; }
+    [data-theme="dark"] .game-card { background:#2a251c; color:#ece6da; }
+    [data-theme="dark"] .footer-name,
+    [data-theme="dark"] .page-tag:hover,
+    [data-theme="dark"] .game-btn:hover { color:#ece6da; }
+
+    .theme-toggle {
+      background:none; border:none; cursor:pointer; padding:0;
+      font-family:'DM Mono',monospace; font-size:0.8rem;
+      color:var(--stone); line-height:1;
+    }
+    .theme-toggle:hover { color:var(--gold); }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1200px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--rust); }
+    .page-header { max-width:1200px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--rust); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:580px; line-height:1.8; margin-bottom:1.25rem; }
+    .page-tags { display:flex; gap:0.4rem; flex-wrap:wrap; }
+    .page-tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.2rem 0.55rem; border-radius:4px; text-decoration:none; transition:all 0.15s; }
+    .page-tag:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+    .page-content { max-width:1200px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    .zone-header { margin-bottom:1.75rem; padding-bottom:0.9rem; border-bottom:3px solid var(--ink); }
+    .zone-title { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3.5vw,2.2rem); font-weight:900; line-height:1.1; letter-spacing:-0.01em; color:var(--ink); }
+    .zone-title em { font-style:italic; color:var(--rust); }
+    .zone-sub { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone); margin-top:0.35rem; }
+    .zone-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
+    @media(max-width:900px) { .zone-grid { grid-template-columns:1fr; gap:1.25rem; } }
+
+    .game-card { background:var(--cream); border:1px solid var(--mist); padding:1.5rem; display:flex; flex-direction:column; height:100%; }
+    .game-card-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.5rem; }
+    .game-card-name { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; margin-bottom:0.5rem; }
+    .game-card-desc { font-size:0.85rem; color:var(--stone); line-height:1.65; margin-bottom:1rem; flex-grow:1; }
+    .game-card-meta { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); margin-bottom:0.9rem; }
+    .game-btn { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--gold); border:1px solid var(--gold); padding:0.4rem 0.85rem; display:inline-block; transition:all 0.15s; align-self:flex-start; }
+    .game-btn:hover { background:var(--gold); color:var(--white); }
+    .game-card.soon { opacity:0.55; }
+    .game-card.soon .game-btn { color:var(--stone); border-color:var(--mist); pointer-events:none; }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,4vw,3rem) clamp(1rem,4vw,3rem); margin-top:3rem; }
+    .footer-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+  </style>
+<script>
+  (function(){
+    try {
+      var saved = localStorage.getItem('games_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) {}
+  })();
+</script>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/about.html">About</a>
+      <a href="/tags.html">Tags</a>
+      <a href="/">Home</a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a></p>
+  <h1 class="page-title">🎲 <em>Games</em></h1>
+  <p class="page-sub">Small playable things, built for fun rather than a dashboard. Dice mechanics, trivia decks, whatever seemed worth building on a weekend.</p>
+  <div class="page-tags">
+    <a href="/tags.html#Games" class="page-tag">Games</a>
+    <a href="/tags.html#Tabletop" class="page-tag">Tabletop</a>
+    <a href="/tags.html#Sci-Fi" class="page-tag">Sci-Fi</a>
+  </div>
+</div>
+
+<div class="page-content">
+  <div class="zone">
+    <div class="zone-header">
+      <div class="zone-title"><em>Play</em></div>
+      <div class="zone-sub">Built to run entirely in the browser — no installs, no accounts</div>
+    </div>
+
+    <div class="zone-grid">
+      <div class="game-card">
+        <div class="game-card-kicker">Percentile Dice · Sci-Fi Adventure</div>
+        <div class="game-card-name">🚀 Kellath's Drift</div>
+        <div class="game-card-desc">A short roll-under adventure in the spirit of the classic TSR percentile RPGs. Build a scout — race, ability scores, a specialization — then crash-land on a frontier moon and dice your way to the relay tower before life support runs out.</div>
+        <div class="game-card-meta">Chargen · Skill checks · One combat encounter · Multiple endings</div>
+        <a href="/games/kellaths-drift.html" class="game-btn">Play →</a>
+      </div>
+
+      <div class="game-card soon">
+        <div class="game-card-kicker">Flashcards · Trivia</div>
+        <div class="game-card-name">🎴 Nevada Trivia</div>
+        <div class="game-card-desc">A digitized version of the old "Nevada Trivia: The Game" cards — Where We Live, Nevada History, Famous People, Hodgepodge, and Gaming, filterable by category. A Washington State deck is planned to follow on the same engine.</div>
+        <div class="game-card-meta">In progress</div>
+        <a href="#" class="game-btn">Coming soon</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">Built with a couple of afternoons and too many dice</p>
+    </div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+      <a href="/tags.html">Tags</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  const sync = () => { if (btn) btn.textContent = root.getAttribute('data-theme') === 'dark' ? '◐' : '◑'; };
+  sync();
+  if (btn) btn.addEventListener('click', () => {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    if (isDark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('games_theme', isDark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
