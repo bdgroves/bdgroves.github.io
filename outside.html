@@ -676,20 +676,6 @@
 </footer>
 
 <script>
-async function loadMLB() {
-  const el = document.getElementById('mlb-scores');
-  try {
-    const today = new Date();
-    const start = new Date(today); start.setDate(start.getDate()-3);
-    const end = new Date(today); end.setDate(end.getDate()+3);
-    const fmt = d => d.toISOString().split('T')[0];
-    const res = await fetch(`https://statsapi.mlb.com/api/v1/schedule?teamId=136&startDate=${fmt(start)}&endDate=${fmt(end)}&sportId=1&hydrate=linescore,team`);
-    if (!res.ok) throw new Error();
-    const data = await res.json();
-    const games = data.dates?.flatMap(d=>d.games)||[];
-    renderGames(el, games);
-  } catch(e) { el.innerHTML='<p class="sport-note">Scores loading…</p>'; }
-}
 
 function renderGames(el, games) {
   if (!games.length) { el.innerHTML='<p class="sport-note">No recent games.</p>'; return; }
@@ -1264,28 +1250,6 @@ async function loadFootball() {
   }
 }
 
-async function loadStandings() {
-  const el = document.getElementById('mlb-standings');
-  try {
-    const res = await fetch(`https://statsapi.mlb.com/api/v1/standings?leagueId=103&season=${MLB_SEASON_YEAR}&standingsTypes=regularSeason`);
-    if (!res.ok) throw new Error();
-    const data = await res.json();
-    const alWest = data.records?.find(r=>r.division?.id===200);
-    if (!alWest) throw new Error();
-    el.innerHTML = `<div class="standings-grid">
-      <div class="standings-header"><span>Team</span><span>W</span><span>L</span><span>GB</span></div>
-      ${alWest.teamRecords.map(t=>{
-        const isSEA=t.team.id===136;
-        const gb=t.gamesBack==='0.0'||t.gamesBack==='—'?'—':t.gamesBack;
-        const tname = t.team.teamName || t.team.name?.split(' ').slice(-1)[0] || t.team.abbreviation || '?';
-        return `<div class="standings-row ${isSEA?'highlight':''}">
-          <span>${tname}</span><span>${t.wins}</span><span>${t.losses}</span>
-          <span class="${isSEA&&gb!=='—'?'gb-neg':''}">${gb}</span>
-        </div>`;
-      }).join('')}
-    </div>`;
-  } catch(e) { el.innerHTML='<p class="sport-note">Standings loading…</p>'; }
-}
 
 async function loadCycling() {
   const el = document.getElementById('cycling-races');
@@ -1895,7 +1859,7 @@ loadWhitmanSoccer();
 // Not automated (see the note above on why), but a one-line edit per week
 // is honestly less friction than a scraper for a once-a-week schedule.
 const SONORA_SCHEDULE = [
-  {date:'2026-08-28', time:'7:00 PM', opp:'Oakdale',        loc:'home', where:'Sonora, CA',   conf:false},
+  {date:'2026-08-28', time:'7:00 PM', opp:'Oakdale',        loc:'home', where:'Sonora, CA',   conf:false, result:{us:9, them:21}},
   {date:'2026-09-04', time:'7:00 PM', opp:'Pacheco',        loc:'home', where:'Sonora, CA',   conf:false},
   {date:'2026-09-11', time:'7:15 PM', opp:'Woodcreek',      loc:'away', where:'Roseville, CA',conf:false},
   {date:'2026-09-18', time:'7:00 PM', opp:"King's Academy", loc:'away', where:'Sunnyvale, CA',conf:false},
