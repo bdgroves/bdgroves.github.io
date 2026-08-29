@@ -353,17 +353,15 @@
 
     /* .strava-badge removed — see .garmin-badge below */
 
-    /* School monogram — an original typographic mark in the site palette, not
-       a reproduction of the school's actual logo. Same approach as the Garmin
-       badge below: the pro-league cards hotlink official CDN logos (MLB/ESPN),
-       but a high school's trademark has no equivalent stable public endpoint,
-       and hotlinking one from a commercial scores site would be both fragile
-       and presumptuous. This identifies the team without borrowing its mark. */
-    .team-mark { display:inline-flex; align-items:center; justify-content:center;
-      width:2rem; height:2rem; border-radius:50%; flex:0 0 auto;
-      font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:900;
-      line-height:1; letter-spacing:-0.02em; margin-left:0.75rem;
-      background:var(--ink); color:var(--gold); border:1.5px solid var(--gold); }
+    /* School crests. Self-hosted in /images rather than hotlinked — these are
+       school trademarks with no stable public CDN (unlike the MLB/ESPN logos
+       the pro cards use), so serving them from our own repo is both more
+       reliable and less presumptuous. Sized by HEIGHT with width:auto because
+       these are tall/square crests, not the wide horizontal marks .fb-logo
+       was built for — at fb-logo's 2rem they'd shrink to ~1.4rem wide. */
+    .team-crest { height:2.9rem; width:auto; flex:0 0 auto; margin-left:0.75rem;
+      align-self:center; }
+    .team-crest.hidden { display:none; }
     .fb-card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:0.5rem; }
     .fb-card-head > div:first-child { min-width:0; }
 
@@ -1809,7 +1807,9 @@ async function loadWhitmanSoccer(){
         <div class="fb-team-name">Whitman Blues</div>
         <div class="fb-team-meta">NCAA Division III &middot; Northwest Conference &middot; Walla Walla</div>
       </div>
-      <span class="team-mark" aria-hidden="true">W</span>
+      <img class="team-crest" src="/images/whitman-blues.jpg"
+           alt="Whitman College Blues logo"
+           onerror="this.classList.add('hidden')">
     </div>`;
 
   if(record.overall){
@@ -1950,7 +1950,9 @@ function loadSonoraFootball(){
         <div class="fb-team-name">Sonora Wildcats</div>
         <div class="fb-team-meta">CIF Sac-Joaquin Section &middot; Trans Valley League &middot; Sonora, CA</div>
       </div>
-      <span class="team-mark" aria-hidden="true">S</span>
+      <img class="team-crest" src="/images/sonora-wildcats.png"
+           alt="Sonora High School Wildcats crest"
+           onerror="this.classList.add('hidden')">
     </div>
     <div class="fb-champ-badge">Defending CIF Division 2-A State Champion &middot; 15&ndash;0 in 2025</div>`;
 
