@@ -263,6 +263,20 @@
 
     /* FOOTBALL — team cards + compact standings */
     .fb-card { background:var(--cream); border:1px solid var(--mist); padding:0.75rem 0.9rem; margin-bottom:0.75rem; border-radius:2px; }
+    /* ScoreStream embed — renders in its own styling inside an iframe, so we
+       can only frame it; matching the card border keeps it from looking
+       bolted on. */
+    .ss-widget-wrap { border:1px solid var(--mist); border-radius:2px; background:var(--cream);
+      padding:0.5rem; margin-top:0.75rem; overflow:hidden; }
+    .ss-widget-wrap .scorestream-widget-container { max-width:100%; }
+    .ss-widget-credit { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.06em;
+      color:var(--stone); margin-top:0.4rem; }
+    .ss-widget-credit a { color:var(--stone); text-decoration:underline; }
+    .ss-widget-credit a:hover { color:var(--rust); }
+    /* 600px dominates a phone screen — trim it on small viewports. */
+    @media (max-width:700px){
+      .ss-widget-wrap .scorestream-widget-container { height:420px !important; }
+    }
     .fb-card.fb-champ { border-left:3px solid var(--gold); }
     .fb-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:0.4rem; border-bottom:1px solid var(--mist); margin-bottom:0.5rem; }
     .fb-header-left { flex:1; }
@@ -549,6 +563,17 @@
         <a href="https://gofan.co/school/CA22609" target="_blank" class="quick-link">Tickets ↗</a>
       </div>
       <div id="sonora-football"><p class="loading">Loading schedule…</p></div>
+
+      <!-- Live scores via ScoreStream's free embeddable widget — a sanctioned
+           embed rather than scraping, so there's no robots.txt question, and
+           it updates live during games instead of on a cron. -->
+      <div class="ss-widget-wrap">
+        <div class="scorestream-widget-container"
+             data-ss_widget_type="vertScoreboard"
+             style="height:600px;"
+             data-user-widget-id="69844"></div>
+      </div>
+      <p class="ss-widget-credit">Live scores via <a href="https://scorestream.com/team/sonora-high-school-wildcats-2769" target="_blank" rel="noopener">ScoreStream</a> &middot; fan-sourced, updates during games</p>
     </div>
 
     <!-- Pro Cycling — full width within the zone -->
@@ -2021,5 +2046,6 @@ loadSonoraFootball();
         .forEach(s => container.appendChild(s.card));
 })();
 </script>
+<script async="async" type="text/javascript" src="https://scorestream.com/apiJsCdn/widgets/embed.js"></script>
 </body>
 </html>
