@@ -1867,6 +1867,10 @@ loadWhitmanSoccer();
 // results workflow here yet. Once a source that's clearly fair to poll is
 // confirmed (myMotherLode's local coverage is the leading candidate), this
 // can grow a SONORA_DATA fetch exactly like WHITMAN_DATA above.
+// Each entry may carry `result: {us, them}` once a game is played — added
+// by hand after Friday nights, same way the schedule itself was hand-built.
+// Not automated (see the note above on why), but a one-line edit per week
+// is honestly less friction than a scraper for a once-a-week schedule.
 const SONORA_SCHEDULE = [
   {date:'2026-08-28', time:'7:00 PM', opp:'Oakdale',        loc:'home', where:'Sonora, CA',   conf:false},
   {date:'2026-09-04', time:'7:00 PM', opp:'Pacheco',        loc:'home', where:'Sonora, CA',   conf:false},
@@ -1890,13 +1894,31 @@ function loadSonoraFootball(){
   if(!el) return;
 
   const today = new Date().toISOString().slice(0,10);
+  const played = SONORA_SCHEDULE.filter(g => g.result);
   const next = SONORA_SCHEDULE.find(g => g.date >= today);
-  const recent = SONORA_SCHEDULE.filter(g => g.date < today).slice(-3).reverse();
+  const recent = SONORA_SCHEDULE.filter(g => g.date < today).slice(-4).reverse();
+
+  // Overall + league record, computed from whatever results exist so far —
+  // no separate standings source needed for Sonora's own line.
+  let w=0,l=0,lw=0,ll=0;
+  for(const g of played){
+    const won = g.result.us > g.result.them;
+    if(won) w++; else l++;
+    if(g.conf){ if(won) lw++; else ll++; }
+  }
 
   let html = `<div class="fb-card fb-champ">
     <div class="fb-team-name">Sonora Wildcats</div>
     <div class="fb-team-meta">CIF Sac-Joaquin Section &middot; Trans Valley League &middot; Sonora, CA</div>
     <div class="fb-champ-badge">Defending CIF Division 2-A State Champion &middot; 15&ndash;0 in 2025</div>`;
+
+  if(played.length){
+    html += `<div style="margin-top:0.4rem;">
+      <span class="fb-record">${w}-${l}</span>
+      <span class="fb-record-tag">overall</span>
+      <span class="fb-record" style="margin-left:0.5rem;">${lw}-${ll}</span>
+      <span class="fb-record-tag">TVL</span></div>`;
+  }
 
   if(next){
     const days = Math.round((new Date(next.date+'T12:00:00') - new Date(today+'T12:00:00'))/86400000);
@@ -1910,9 +1932,13 @@ function loadSonoraFootball(){
 
   for(const g of recent){
     const tag = g.conf ? ` <span style="color:var(--stone);font-size:0.9em;">TVL</span>` : '';
+    const score = g.result
+      ? (() => { const won = g.result.us > g.result.them;
+          return `<span style="font-weight:700;color:${won?'var(--sage,#4a5c45)':'var(--rust)'};">${won?'W':'L'} ${g.result.us}&ndash;${g.result.them}</span>`; })()
+      : `<span style="color:var(--stone);">result pending</span>`;
     html += `<div class="fb-game">
       <span class="fb-game-label">${sonoraFmtDate(g.date)}</span>
-      <span class="fb-game-detail"><span style="color:var(--stone);">result pending</span> &middot; ${g.loc==='away'?'at':'vs'} ${g.opp}${tag}</span></div>`;
+      <span class="fb-game-detail">${score} &middot; ${g.loc==='away'?'at':'vs'} ${g.opp}${tag}</span></div>`;
   }
 
   if(!next && !recent.length){
