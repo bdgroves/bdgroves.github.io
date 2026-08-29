@@ -353,6 +353,20 @@
 
     /* .strava-badge removed — see .garmin-badge below */
 
+    /* School monogram — an original typographic mark in the site palette, not
+       a reproduction of the school's actual logo. Same approach as the Garmin
+       badge below: the pro-league cards hotlink official CDN logos (MLB/ESPN),
+       but a high school's trademark has no equivalent stable public endpoint,
+       and hotlinking one from a commercial scores site would be both fragile
+       and presumptuous. This identifies the team without borrowing its mark. */
+    .team-mark { display:inline-flex; align-items:center; justify-content:center;
+      width:2rem; height:2rem; border-radius:50%; flex:0 0 auto;
+      font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:900;
+      line-height:1; letter-spacing:-0.02em; margin-left:0.75rem;
+      background:var(--ink); color:var(--gold); border:1.5px solid var(--gold); }
+    .fb-card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:0.5rem; }
+    .fb-card-head > div:first-child { min-width:0; }
+
     /* Garmin badge — simple monogram, not a logo reproduction */
     .garmin-badge { display:inline-flex; align-items:center; gap:0.35rem; font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--garmin); text-decoration:none; }
     .garmin-badge .g-mark { display:inline-flex; align-items:center; justify-content:center; width:0.95rem; height:0.95rem; border-radius:50%; background:var(--garmin); color:var(--white); font-family:'DM Mono',monospace; font-size:0.55rem; font-weight:700; line-height:1; }
@@ -566,7 +580,7 @@
         <div class="quick-links">
           <a href="https://www.maxpreps.com/ca/sonora/sonora-wildcats/football/" target="_blank" class="quick-link">MaxPreps ↗</a>
           <a href="https://mymotherlode.com/sports/high-school-football" target="_blank" class="quick-link">myMotherLode ↗</a>
-          <a href="https://scorestream.com/team/sonora-high-school-wildcats-2769" target="_blank" class="quick-link">Live Scores ↗</a>
+          <a href="https://scorestream.com/football/sonora-high-school-wildcats-2769" target="_blank" class="quick-link">Live Scores ↗</a>
           <a href="https://gofan.co/school/CA22609" target="_blank" class="quick-link">Tickets ↗</a>
       </div>
         <div id="sonora-football"><p class="loading">Loading schedule…</p></div>
@@ -1790,8 +1804,13 @@ async function loadWhitmanSoccer(){
   const recent = WHITMAN_SCHEDULE.filter(g => g.date < today).slice(-3).reverse();
 
   let html = `<div class="fb-card${record.overall ? ' fb-champ' : ''}">
-    <div class="fb-team-name">Whitman Blues</div>
-    <div class="fb-team-meta">NCAA Division III &middot; Northwest Conference &middot; Walla Walla</div>`;
+    <div class="fb-card-head">
+      <div>
+        <div class="fb-team-name">Whitman Blues</div>
+        <div class="fb-team-meta">NCAA Division III &middot; Northwest Conference &middot; Walla Walla</div>
+      </div>
+      <span class="team-mark" aria-hidden="true">W</span>
+    </div>`;
 
   if(record.overall){
     html += `<div style="margin-top:0.4rem;">
@@ -1875,6 +1894,20 @@ loadWhitmanSoccer();
 // by hand after Friday nights, same way the schedule itself was hand-built.
 // Not automated (see the note above on why), but a one-line edit per week
 // is honestly less friction than a scraper for a once-a-week schedule.
+//
+// Trans Valley League standings. League play opens 25 Sept, so this stays
+// empty until then and the block simply doesn't render — same pattern as
+// Whitman's keeper stats, which only appear once there are minutes to show.
+// Update alongside the results: {team, w, l} in league games only.
+const SONORA_TVL_STANDINGS = [
+  // { team:'Escalon',         w:0, l:0 },
+  // { team:'Hilmar',          w:0, l:0 },
+  // { team:'Hughson',         w:0, l:0 },
+  // { team:'Ripon',           w:0, l:0 },
+  // { team:'Ripon Christian', w:0, l:0 },
+  // { team:'Orestimba',       w:0, l:0 },
+  // { team:'Sonora',          w:0, l:0 },
+];
 const SONORA_SCHEDULE = [
   {date:'2026-08-28', time:'7:00 PM', opp:'Oakdale',        loc:'home', where:'Sonora, CA',   conf:false, result:{us:9, them:21}},
   {date:'2026-09-04', time:'7:00 PM', opp:'Pacheco',        loc:'home', where:'Sonora, CA',   conf:false},
@@ -1900,7 +1933,7 @@ function loadSonoraFootball(){
   const today = new Date().toISOString().slice(0,10);
   const played = SONORA_SCHEDULE.filter(g => g.result);
   const next = SONORA_SCHEDULE.find(g => g.date >= today);
-  const recent = SONORA_SCHEDULE.filter(g => g.date < today).slice(-4).reverse();
+  const recent = SONORA_SCHEDULE.filter(g => g.date < today).slice(-3).reverse();
 
   // Overall + league record, computed from whatever results exist so far —
   // no separate standings source needed for Sonora's own line.
@@ -1912,8 +1945,13 @@ function loadSonoraFootball(){
   }
 
   let html = `<div class="fb-card fb-champ">
-    <div class="fb-team-name">Sonora Wildcats</div>
-    <div class="fb-team-meta">CIF Sac-Joaquin Section &middot; Trans Valley League &middot; Sonora, CA</div>
+    <div class="fb-card-head">
+      <div>
+        <div class="fb-team-name">Sonora Wildcats</div>
+        <div class="fb-team-meta">CIF Sac-Joaquin Section &middot; Trans Valley League &middot; Sonora, CA</div>
+      </div>
+      <span class="team-mark" aria-hidden="true">S</span>
+    </div>
     <div class="fb-champ-badge">Defending CIF Division 2-A State Champion &middot; 15&ndash;0 in 2025</div>`;
 
   if(played.length){
@@ -1947,6 +1985,20 @@ function loadSonoraFootball(){
 
   if(!next && !recent.length){
     html += `<div class="fb-game"><span class="fb-game-detail" style="color:var(--stone);">Season opens 28 August vs Oakdale</span></div>`;
+  }
+
+  // League table — only renders once there's something in it, so the card
+  // stays clean through the four non-league games in August and September.
+  if(SONORA_TVL_STANDINGS.length){
+    const rows = SONORA_TVL_STANDINGS
+      .slice()
+      .sort((a,b) => (b.w-b.l) - (a.w-a.l) || b.w - a.w || a.team.localeCompare(b.team))
+      .map(t => `<tr class="${t.team === 'Sonora' ? 'fb-own' : ''}">
+        <td>${t.team}</td><td>${t.w}</td><td>${t.l}</td></tr>`).join('');
+    html += `<div class="fb-standings">
+      <div class="fb-standings-label">Trans Valley League</div>
+      <table><tr><th>Team</th><th>W</th><th>L</th></tr>${rows}</table>
+    </div>`;
   }
 
   html += `</div>`;

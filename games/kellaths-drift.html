@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNAL: KELLATH'S DRIFT</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root{
+  --bg:#080b12;
+  --panel:#0f1520;
+  --panel-2:#141c29;
+  --amber:#ffb400;
+  --amber-dim:#7a5a17;
+  --teal:#49d3c4;
+  --text:#dbe4ec;
+  --text-dim:#6f7c8c;
+  --danger:#ff5c5c;
+  --good:#6fe08a;
+  --border:#20293a;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:
+    radial-gradient(ellipse at 20% -10%, #142132 0%, transparent 55%),
+    radial-gradient(ellipse at 100% 110%, #1a1330 0%, transparent 50%),
+    var(--bg);
+  color:var(--text);
+  font-family:'JetBrains Mono', monospace;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  padding:28px 14px 60px;
+}
+
+.console{
+  width:100%;
+  max-width:720px;
+  position:relative;
+}
+
+.console::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.018) 0px,
+    rgba(255,255,255,0.018) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  z-index:5;
+}
+
+header{
+  border:1px solid var(--border);
+  border-bottom:none;
+  background:linear-gradient(180deg, var(--panel-2), var(--panel));
+  padding:18px 22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+}
+
+header h1{
+  font-family:'Orbitron', sans-serif;
+  font-weight:800;
+  font-size:1.05rem;
+  letter-spacing:0.14em;
+  margin:0;
+  color:var(--amber);
+  text-shadow:0 0 18px rgba(255,180,0,0.35);
+}
+
+header .sub{
+  font-size:0.68rem;
+  color:var(--text-dim);
+  letter-spacing:0.08em;
+  margin-top:4px;
+}
+
+.badge{
+  font-size:0.62rem;
+  letter-spacing:0.12em;
+  color:var(--teal);
+  border:1px solid var(--teal);
+  padding:3px 8px;
+  border-radius:2px;
+  white-space:nowrap;
+}
+
+.statusbar{
+  border:1px solid var(--border);
+  border-top:none;
+  background:var(--panel);
+  padding:10px 22px;
+  display:flex;
+  gap:20px;
+  flex-wrap:wrap;
+  font-size:0.68rem;
+  color:var(--text-dim);
+  letter-spacing:0.05em;
+}
+.statusbar b{color:var(--amber);}
+.statusbar .sta-val{color:var(--good);}
+.statusbar .sta-low{color:var(--danger);}
+
+main{
+  border:1px solid var(--border);
+  background:var(--panel);
+  min-height:340px;
+  padding:26px 24px;
+}
+
+.story{
+  font-size:0.92rem;
+  line-height:1.65;
+  color:var(--text);
+  margin-bottom:22px;
+  white-space:pre-line;
+}
+.story .flavor{color:var(--teal); font-style:italic;}
+
+.choices{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+button.choice{
+  font-family:'JetBrains Mono', monospace;
+  text-align:left;
+  background:var(--panel-2);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-left:3px solid var(--amber-dim);
+  padding:12px 14px;
+  font-size:0.84rem;
+  cursor:pointer;
+  transition:all .15s ease;
+  letter-spacing:0.02em;
+}
+button.choice:hover{
+  border-left-color:var(--amber);
+  background:#1b2434;
+  transform:translateX(2px);
+}
+button.choice .tag{
+  color:var(--teal);
+  font-size:0.68rem;
+  letter-spacing:0.08em;
+  display:block;
+  margin-bottom:3px;
+}
+
+/* dice readout */
+.diceRig{
+  display:none;
+  margin:18px 0 22px;
+  border:1px solid var(--border);
+  background:var(--panel-2);
+  padding:18px;
+}
+.diceRig.show{display:block;}
+.diceRig .label{
+  font-size:0.68rem;
+  letter-spacing:0.1em;
+  color:var(--text-dim);
+  margin-bottom:10px;
+}
+.diceRow{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+.d10{
+  width:56px;
+  height:64px;
+  background:#0a0f18;
+  border:1px solid var(--amber-dim);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Orbitron', sans-serif;
+  font-size:1.5rem;
+  font-weight:800;
+  color:var(--amber);
+}
+.d10.spin{animation:spin .4s steps(9) infinite;}
+@keyframes spin{
+  0%{color:var(--amber);}
+  50%{color:var(--teal);}
+  100%{color:var(--amber);}
+}
+.diceMeta{font-size:0.76rem; color:var(--text-dim); line-height:1.5;}
+.diceMeta b{color:var(--text);}
+.result-banner{
+  margin-top:12px;
+  padding:8px 12px;
+  font-size:0.8rem;
+  letter-spacing:0.08em;
+  font-weight:700;
+  border:1px solid;
+  display:none;
+}
+.result-banner.success{display:block; color:var(--good); border-color:var(--good); background:rgba(111,224,138,0.07);}
+.result-banner.fail{display:block; color:var(--danger); border-color:var(--danger); background:rgba(255,92,92,0.07);}
+
+footer.log{
+  border:1px solid var(--border);
+  border-top:none;
+  background:#0a0e16;
+  padding:12px 22px;
+  font-size:0.66rem;
+  color:var(--text-dim);
+  max-height:110px;
+  overflow-y:auto;
+}
+footer.log div{margin-bottom:4px;}
+footer.log .l-good{color:var(--good);}
+footer.log .l-bad{color:var(--danger);}
+footer.log .l-info{color:var(--teal);}
+
+/* chargen */
+.gridPairs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:16px 0 20px;
+}
+.statPair{
+  border:1px solid var(--border);
+  background:var(--panel-2);
+  padding:10px 12px;
+}
+.statPair .pname{font-size:0.66rem; color:var(--text-dim); letter-spacing:0.08em;}
+.statPair .pval{font-family:'Orbitron',sans-serif; font-size:1.15rem; color:var(--amber); margin-top:2px;}
+
+.raceGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:18px;
+}
+.raceCard{
+  border:1px solid var(--border);
+  background:var(--panel-2);
+  border-left:3px solid var(--amber-dim);
+  padding:12px;
+  cursor:pointer;
+  font-size:0.78rem;
+}
+.raceCard:hover{border-left-color:var(--amber); background:#1b2434;}
+.raceCard.selected{border-left-color:var(--teal); background:#132622;}
+.raceCard .rname{font-family:'Orbitron',sans-serif; font-size:0.78rem; color:var(--amber); letter-spacing:0.06em; margin-bottom:4px;}
+.raceCard .rdesc{color:var(--text-dim); line-height:1.4; font-size:0.7rem;}
+
+.smallbtn{
+  font-family:'JetBrains Mono';
+  background:transparent;
+  color:var(--teal);
+  border:1px solid var(--teal);
+  padding:7px 14px;
+  font-size:0.72rem;
+  letter-spacing:0.06em;
+  cursor:pointer;
+  margin-right:8px;
+}
+.smallbtn:disabled{opacity:0.3; cursor:not-allowed;}
+.primary-go{
+  background:var(--amber);
+  color:#1a1300;
+  border:1px solid var(--amber);
+  font-weight:700;
+}
+</style>
+</head>
+<body>
+<div class="console">
+  <header>
+    <div>
+      <h1>SIGNAL: KELLATH'S DRIFT</h1>
+      <div class="sub">FRONTIER SCOUT PROTOCOL // PERCENTILE RESOLUTION SYSTEM</div>
+    </div>
+    <div class="badge" id="sceneBadge">CHARGEN</div>
+  </header>
+  <div class="statusbar" id="statusbar">
+    <span>CHARACTER: <b id="stName">—</b></span>
+    <span>STAMINA: <b id="stSTA">—</b></span>
+    <span>SPEC: <b id="stSkill">—</b></span>
+  </div>
+  <main id="main"></main>
+  <footer class="log" id="log"></footer>
+</div>
+
+<script>
+/* ---------------- CORE PERCENTILE ENGINE ---------------- */
+function rollD10(){ return Math.floor(Math.random()*10); } // 0-9
+function rollPercentile(){
+  const tens = rollD10();
+  const ones = rollD10();
+  let value = tens*10 + ones;
+  if(value === 0) value = 100;
+  return {tens, ones, value};
+}
+
+let logEl = document.getElementById('log');
+function logLine(text, cls){
+  const d = document.createElement('div');
+  if(cls) d.className = cls;
+  d.textContent = text;
+  logEl.appendChild(d);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+/* ---------------- PLAYER STATE ---------------- */
+let player = {
+  race: null,
+  stats: {}, // STR, STA, DEX, RS, INT, LOG, PER, LDR
+  skill: null, // 'military' | 'technological' | 'biosocial'
+  maxSTA: 0,
+  curSTA: 0,
+  hasGear: false
+};
+
+const RACES = {
+  human: {
+    name: "HUMAN",
+    desc: "Baseline stock. No bonuses, no penalties — adaptable generalists.",
+    mods: {}
+  },
+  dralasite: {
+    name: "DRALASITE",
+    desc: "Amorphous, tough. +10 STR/STA, -5 DEX/RS.",
+    mods: {STR:10, STA:10, DEX:-5, RS:-5}
+  },
+  vrusk: {
+    name: "VRUSK",
+    desc: "Insectoid, methodical. +10 INT/LOG, -5 STR/STA.",
+    mods: {INT:10, LOG:10, STR:-5, STA:-5}
+  },
+  yazirian: {
+    name: "YAZIRIAN",
+    desc: "Gliding, aggressive. +10 DEX/RS, -5 PER/LDR.",
+    mods: {DEX:10, RS:10, PER:-5, LDR:-5}
+  }
+};
+
+/* ---------------- SCENE DEFINITIONS ---------------- */
+/* checkStat uses half the stat value as base target unless flagged full */
+function statTarget(statName, opts){
+  opts = opts || {};
+  let base = player.stats[statName];
+  base = opts.full ? base : Math.floor(base/2);
+  let bonus = opts.skillBonus && player.skill === opts.skillBonus ? 15 : 0;
+  let gearBonus = opts.gear && player.hasGear ? 10 : 0;
+  return Math.max(5, base + bonus + gearBonus);
+}
+
+function renderMain(html){
+  document.getElementById('main').innerHTML = html;
+}
+function setBadge(t){ document.getElementById('sceneBadge').textContent = t; }
+function refreshStatus(){
+  document.getElementById('stName').textContent = player.race ? RACES[player.race].name : '—';
+  document.getElementById('stSkill').textContent = player.skill ? player.skill.toUpperCase() : '—';
+  const staEl = document.getElementById('stSTA');
+  if(player.maxSTA){
+    staEl.textContent = player.curSTA + ' / ' + player.maxSTA;
+    staEl.className = player.curSTA <= player.maxSTA*0.3 ? 'sta-low' : 'sta-val';
+  } else {
+    staEl.textContent = '—';
+  }
+}
+
+/* ---------------- CHARGEN FLOW ---------------- */
+function startChargen(){
+  setBadge('CHARGEN');
+  renderMain(`
+    <div class="story">Escape pod telemetry reads static. You are the sole scout aboard a survey skiff that just went down hard on <span class="flavor">Kellath's Drift</span>, an uncharted moon on the frontier edge. Before you build a body to survive it — choose your stock.</div>
+    <div class="raceGrid" id="raceGrid"></div>
+    <button class="smallbtn primary-go" id="raceNext" disabled>CONFIRM STOCK →</button>
+  `);
+  const grid = document.getElementById('raceGrid');
+  Object.keys(RACES).forEach(key=>{
+    const r = RACES[key];
+    const card = document.createElement('div');
+    card.className = 'raceCard';
+    card.innerHTML = `<div class="rname">${r.name}</div><div class="rdesc">${r.desc}</div>`;
+    card.onclick = ()=>{
+      document.querySelectorAll('.raceCard').forEach(c=>c.classList.remove('selected'));
+      card.classList.add('selected');
+      player.race = key;
+      document.getElementById('raceNext').disabled = false;
+    };
+    grid.appendChild(card);
+  });
+  document.getElementById('raceNext').onclick = rollStats;
+}
+
+function rollStats(){
+  const mods = RACES[player.race].mods || {};
+  const pairs = [['STR','STA'],['DEX','RS'],['INT','LOG'],['PER','LDR']];
+  pairs.forEach(pair=>{
+    let base = 30 + rollD10()*4 + rollD10(); // ~30-69 spread
+    pair.forEach(stat=>{
+      player.stats[stat] = Math.min(90, Math.max(15, base + (mods[stat]||0)));
+    });
+  });
+  showStats();
+}
+
+function showStats(){
+  setBadge('CHARGEN');
+  logLine('Ability scores generated for ' + RACES[player.race].name + '.', 'l-info');
+  const pairs = [['STR','STA'],['DEX','RS'],['INT','LOG'],['PER','LDR']];
+  let gridHtml = '';
+  pairs.forEach(pair=>{
+    pair.forEach(stat=>{
+      gridHtml += `<div class="statPair"><div class="pname">${statFull(stat)}</div><div class="pval">${player.stats[stat]}</div></div>`;
+    });
+  });
+  renderMain(`
+    <div class="story">Your physiology resolves. These numbers are your baseline capability out of 100.</div>
+    <div class="gridPairs">${gridHtml}</div>
+    <button class="smallbtn" id="reroll">REROLL</button>
+    <button class="smallbtn primary-go" id="toSkill">CONFIRM →</button>
+  `);
+  document.getElementById('reroll').onclick = rollStats;
+  document.getElementById('toSkill').onclick = chooseSkill;
+}
+
+function statFull(s){
+  const map = {STR:'STRENGTH',STA:'STAMINA',DEX:'DEXTERITY',RS:'REACTION SPD',INT:'INTUITION',LOG:'LOGIC',PER:'PERSONALITY',LDR:'LEADERSHIP'};
+  return map[s];
+}
+
+function chooseSkill(){
+  setBadge('CHARGEN');
+  renderMain(`
+    <div class="story">One area of training runs deeper than the rest. Pick your Primary Skill Area — it grants +15 to checks in its wheelhouse.</div>
+    <div class="choices">
+      <button class="choice" data-s="military"><span class="tag">MILITARY</span>Weapons, combat instinct, close-quarters survival.</button>
+      <button class="choice" data-s="technological"><span class="tag">TECHNOLOGICAL</span>Repair, computers, engineering, technical reasoning.</button>
+      <button class="choice" data-s="biosocial"><span class="tag">BIOSOCIAL</span>Medicine, negotiation, reading people and creatures.</button>
+    </div>
+  `);
+  document.querySelectorAll('#main .choice').forEach(b=>{
+    b.onclick = ()=>{
+      player.skill = b.dataset.s;
+      player.maxSTA = player.stats.STA;
+      player.curSTA = player.maxSTA;
+      refreshStatus();
+      logLine('Specialization locked: ' + player.skill.toUpperCase() + '.', 'l-info');
+      renderMain(`<div class="story">Character sealed. ${RACES[player.race].name}, STA ${player.maxSTA}, trained in ${player.skill}.<br><br>The skiff's hull ticks as it cools. Somewhere on this moon, a working relay tower is your only way home.</div>
+      <button class="smallbtn primary-go" id="begin">BEGIN DESCENT →</button>`);
+      document.getElementById('begin').onclick = ()=>scene1();
+    };
+  });
+}
+
+/* ---------------- DICE UI HELPER ---------------- */
+function runCheck(target, onDone, opts){
+  opts = opts || {};
+  setBadge('CHECK');
+  const rigId = 'rig-' + Math.random().toString(36).slice(2,7);
+  const extra = `
+    <div class="diceRig show" id="${rigId}">
+      <div class="label">${opts.label || 'SKILL CHECK'} — TARGET ≤ ${target}</div>
+      <div class="diceRow">
+        <div class="d10 spin" id="${rigId}-t">?</div>
+        <div class="d10 spin" id="${rigId}-o">?</div>
+        <div class="diceMeta">Rolling percentile dice...<br><b id="${rigId}-val"></b></div>
+      </div>
+      <div class="result-banner" id="${rigId}-banner"></div>
+    </div>
+  `;
+  document.getElementById('main').insertAdjacentHTML('beforeend', extra);
+  setTimeout(()=>{
+    const r = rollPercentile();
+    const tEl = document.getElementById(rigId+'-t');
+    const oEl = document.getElementById(rigId+'-o');
+    tEl.classList.remove('spin'); oEl.classList.remove('spin');
+    tEl.textContent = r.tens;
+    oEl.textContent = r.ones;
+    const success = r.value <= target;
+    document.getElementById(rigId+'-val').textContent = 'Rolled ' + r.value + ' vs target ' + target;
+    const banner = document.getElementById(rigId+'-banner');
+    banner.textContent = success ? 'SUCCESS' : 'FAILURE';
+    banner.className = 'result-banner ' + (success ? 'success' : 'fail');
+    logLine((opts.label||'Check') + ': rolled ' + r.value + ' (need ≤' + target + ') → ' + (success?'SUCCESS':'FAILURE'), success ? 'l-good':'l-bad');
+    setTimeout(()=> onDone(success, r), 900);
+  }, 700);
+}
+
+/* ---------------- STORY SCENES ---------------- */
+function scene1(){
+  setBadge('SCENE 1');
+  renderMain(`
+    <div class="story">The skiff is a smoking wedge in red scrub. Your suit display shows a relay tower blinking eleven kilometers north across broken canyon country. Life support has maybe two days left in it.</div>
+    <div class="choices">
+      <button class="choice" id="c1a"><span class="tag">SEARCH THE WRECK</span>Dig through the crushed cargo bay for anything useful before you go. (LOGIC check)</button>
+      <button class="choice" id="c1b"><span class="tag">MOVE OUT NOW</span>Don't waste time. Head straight for the ridge line.</button>
+    </div>
+  `);
+  document.getElementById('c1a').onclick = ()=>{
+    const target = statTarget('LOG', {skillBonus:'technological'});
+    runCheck(target, (success)=>{
+      if(success){
+        player.hasGear = true;
+        renderMain(`<div class="story">Under a buckled panel you find a intact stun-charge sidearm and a coil of climbing line, both still functional. <span class="flavor">(+10 to future checks where gear helps.)</span></div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      } else {
+        renderMain(`<div class="story">The cargo bay is slag. Ten minutes lost for nothing but a scorched glove.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      }
+      document.getElementById('n').onclick = scene2;
+    }, {label:'Search wreckage (LOGIC)'});
+  };
+  document.getElementById('c1b').onclick = scene2;
+}
+
+function scene2(){
+  setBadge('SCENE 2');
+  renderMain(`
+    <div class="story">A chasm splits the trail — sixty meters down to jagged rock. A rusted service line spans it, groaning in the wind.</div>
+    <div class="choices">
+      <button class="choice" id="c2a"><span class="tag">CROSS THE LINE</span>Fast but risky. (REACTION SPEED check)</button>
+      <button class="choice" id="c2b"><span class="tag">CLIMB DOWN AND AROUND</span>Slower, safer, costs you daylight. (STRENGTH check, lower stakes)</button>
+    </div>
+  `);
+  document.getElementById('c2a').onclick = ()=>{
+    const target = statTarget('RS', {gear:true});
+    runCheck(target, (success)=>{
+      if(!success){
+        const dmg = 5 + rollD10();
+        player.curSTA -= dmg;
+        refreshStatus();
+        logLine('Fall damage: -' + dmg + ' STA', 'l-bad');
+        renderMain(`<div class="story">Your foot skids on rusted grating. You catch the line hard, wrenching your side against the cable — <span class="flavor">-${dmg} STA.</span></div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      } else {
+        renderMain(`<div class="story">You cross hand-over-hand in under a minute, boots finding every solid link.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      }
+      document.getElementById('n').onclick = scene3;
+    }, {label:'Cross the line (REACTION SPEED)'});
+  };
+  document.getElementById('c2b').onclick = ()=>{
+    const target = statTarget('STR', {full:true});
+    runCheck(target, (success)=>{
+      if(!success){
+        const dmg = 3 + rollD10();
+        player.curSTA -= dmg;
+        refreshStatus();
+        logLine('Scramble mishap: -' + dmg + ' STA', 'l-bad');
+        renderMain(`<div class="story">The descent is rougher than it looked. You slide the last few meters — <span class="flavor">-${dmg} STA.</span></div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      } else {
+        renderMain(`<div class="story">Slow going, but you make the far rim without a scratch. The sun's lower now.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      }
+      document.getElementById('n').onclick = scene3;
+    }, {label:'Climb route (STRENGTH)'});
+  };
+}
+
+function scene3(){
+  setBadge('SCENE 3');
+  renderMain(`
+    <div class="story">Something big shifts in the red scrub ahead — a low, six-limbed shape with a plated head, tasting the air with a forked tongue. A <span class="flavor">ravik</span>, territorial and fast. It hasn't spotted you yet.</div>
+    <div class="choices">
+      <button class="choice" id="c3a"><span class="tag">STAY LOW, SLIP PAST</span>Move quiet through the scrub. (REACTION SPEED check)</button>
+      <button class="choice" id="c3b"><span class="tag">STAND AND FIGHT</span>Draw whatever you have and engage.</button>
+    </div>
+  `);
+  document.getElementById('c3a').onclick = ()=>{
+    const target = statTarget('RS', {});
+    runCheck(target, (success)=>{
+      if(success){
+        renderMain(`<div class="story">You thread between the rocks. The ravik's head swings toward a lizard skittering the other way, and you're past.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+        document.getElementById('n').onclick = scene4;
+      } else {
+        logLine('Stealth failed — the ravik has your scent.', 'l-bad');
+        renderMain(`<div class="story">A branch snaps under your boot. The ravik's head snaps around and it charges.</div>
+        <button class="smallbtn primary-go" id="n">BRACE FOR IMPACT →</button>`);
+        document.getElementById('n').onclick = ()=>startCombat();
+      }
+    }, {label:'Stealth (REACTION SPEED)'});
+  };
+  document.getElementById('c3b').onclick = ()=>startCombat();
+}
+
+/* ---------------- COMBAT ---------------- */
+let creature = {name:'RAVIK', hp:28, maxHp:28};
+
+function startCombat(){
+  setBadge('COMBAT');
+  creature = {name:'RAVIK', hp:28, maxHp:28};
+  renderMain(`<div class="story">The ravik closes fast, claws scraping rock. <span class="flavor">Combat begins.</span></div>
+  <div id="combatBody"></div>`);
+  combatRound();
+}
+
+function combatRound(){
+  if(player.curSTA <= 0){ return endGame(false, 'wounded'); }
+  if(creature.hp <= 0){ return scene4(); }
+  document.getElementById('combatBody').innerHTML = `
+    <div class="gridPairs">
+      <div class="statPair"><div class="pname">RAVIK HP</div><div class="pval">${creature.hp} / ${creature.maxHp}</div></div>
+      <div class="statPair"><div class="pname">YOUR STA</div><div class="pval">${player.curSTA} / ${player.maxSTA}</div></div>
+    </div>
+    <div class="choices">
+      <button class="choice" id="atk"><span class="tag">ATTACK</span>${player.hasGear ? 'Fire the stun-charge sidearm.' : 'Swing whatever you can grab.'} (DEXTERITY check)</button>
+    </div>
+  `;
+  document.getElementById('atk').onclick = ()=>{
+    const target = statTarget('DEX', {skillBonus:'military', gear:true});
+    runCheck(target, (success)=>{
+      if(success){
+        const dmg = 6 + rollD10() + (player.hasGear?4:0);
+        creature.hp -= dmg;
+        logLine('You hit the ravik for ' + dmg + ' damage.', 'l-good');
+        afterPlayerAction();
+      } else {
+        logLine('Your attack goes wide.', 'l-bad');
+        afterPlayerAction();
+      }
+    }, {label:'Attack roll (DEXTERITY)'});
+  };
+}
+
+function afterPlayerAction(){
+  setTimeout(()=>{
+    if(creature.hp <= 0){
+      renderMain(`<div class="story">The ravik shudders, buckles, and stops moving. Its plated head cracks against the stone — dead still.</div>
+      <button class="smallbtn primary-go" id="n">MOVE ON →</button>`);
+      document.getElementById('n').onclick = scene4;
+      return;
+    }
+    // creature attacks back
+    const creatureTarget = 45;
+    const r = rollPercentile();
+    const hit = r.value <= creatureTarget;
+    if(hit){
+      const dmg = 4 + rollD10();
+      player.curSTA -= dmg;
+      refreshStatus();
+      logLine('Ravik claws you for ' + dmg + ' damage.', 'l-bad');
+    } else {
+      logLine('The ravik lunges and misses.', 'l-info');
+    }
+    if(player.curSTA <= 0){
+      renderMain(`<div class="story">Your legs give out. The last thing you see is the ravik's shadow falling over you...</div>
+      <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      document.getElementById('n').onclick = ()=>endGame(false,'wounded');
+      return;
+    }
+    combatRound();
+  }, 600);
+}
+
+/* ---------------- FINAL SCENE ---------------- */
+function scene4(){
+  setBadge('SCENE 4');
+  renderMain(`
+    <div class="story">The relay tower leans against the sky, half its housing sheared open by weather. Its console still flickers with a thread of power — enough for one clean transmission, if you can route it correctly.</div>
+    <div class="choices">
+      <button class="choice" id="c4a"><span class="tag">RE-ROUTE THE CONSOLE</span>Careful, methodical repair work. (LOGIC check)</button>
+      <button class="choice" id="c4b"><span class="tag">FORCE A RAW BROADCAST</span>Skip the repair, blast an unrouted signal and hope something hears it. (LEADERSHIP check, harder)</button>
+    </div>
+  `);
+  document.getElementById('c4a').onclick = ()=>{
+    const target = statTarget('LOG', {skillBonus:'technological', gear:true});
+    runCheck(target, (success)=>{
+      if(success) endGame(true, 'clean');
+      else {
+        renderMain(`<div class="story">The panel sparks and the thread of power gutters. One more try, if you're steady enough.</div>
+        <button class="smallbtn primary-go" id="retry">TRY AGAIN →</button>`);
+        document.getElementById('retry').onclick = ()=>{
+          const t2 = statTarget('LOG', {skillBonus:'technological', gear:true}) - 10;
+          runCheck(t2, (s2)=>{ endGame(s2, s2 ? 'clean':'wounded'); }, {label:'Re-route console (second attempt)'});
+        };
+      }
+    }, {label:'Re-route console (LOGIC)'});
+  };
+  document.getElementById('c4b').onclick = ()=>{
+    const target = statTarget('LDR', {skillBonus:'biosocial'});
+    runCheck(target, (success)=>{ endGame(success, success ? 'raw':'wounded'); }, {label:'Force broadcast (LEADERSHIP)'});
+  };
+}
+
+function endGame(won, mode){
+  setBadge(won ? 'RESCUED' : 'MISSION LOST');
+  let text;
+  if(won && mode==='clean'){
+    text = "The console locks onto a carrier band and holds. Somewhere in orbit, a relay satellite catches your signal and forwards it home. Twelve hours later, a rescue skiff's running lights cut through the dark. You made it — and in one piece.";
+  } else if(won && mode==='raw'){
+    text = "The raw broadcast is ugly, half-garbled — but it's enough. A passing salvage crew picks up the fragment three days later and backtracks your position. Rescue is slower and rougher than you'd like, but it comes.";
+  } else if(!won && mode==='clean'){
+    text = "The signal goes out thin and unrouted. Somewhere, someone might be listening. You wrap your jacket tighter, ration what's left, and wait to find out.";
+  } else {
+    text = "You're alive, but barely — STA critical, the tower's thread of power fading. You seal what you can and hunker down against the ridge, betting your beacon caught someone's attention before everything went dark.";
+  }
+  renderMain(`<div class="story">${text}</div>
+  <button class="smallbtn primary-go" id="again">RUN A NEW SCOUT →</button>`);
+  document.getElementById('again').onclick = ()=>{
+    player = {race:null, stats:{}, skill:null, maxSTA:0, curSTA:0, hasGear:false};
+    logEl.innerHTML = '';
+    refreshStatus();
+    startChargen();
+  };
+}
+
+/* ---------------- BOOT ---------------- */
+refreshStatus();
+startChargen();
+</script>
+</body>
+</html>
