@@ -852,7 +852,13 @@ function renderFbRecentGame(recentEvent, teamId) {
   const haveScores = myS !== null && oppS !== null;
   const myScore = haveScores ? myS : '\u2013';
   const oppScore = haveScores ? oppS : '\u2013';
-  const won = haveScores && myS > oppS;
+  // W/L/T — the old code was a binary (won ? 'W' : 'L'), so a tie rendered as
+  // a loss. NFL preseason ties are common enough that this showed up as an
+  // impossible "L 9-9" on the card while the record read 0-2-1.
+  const outcome = !haveScores ? null : (myS > oppS ? 'W' : myS < oppS ? 'L' : 'T');
+  const outcomeColor = outcome === 'W' ? 'var(--sage,#4a5c45)'
+                     : outcome === 'L' ? 'var(--rust)'
+                     : 'var(--stone)';
   const oppAbbr = opp.team?.abbreviation || opp.team?.shortDisplayName || 'Opp';
   const dt = new Date(recentEvent.date);
   const dateStr = dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -860,7 +866,7 @@ function renderFbRecentGame(recentEvent, teamId) {
   return `<div class="fb-game">
     <span class="fb-game-label">Recent</span>
     <span class="fb-game-detail">
-      <span style="font-weight:700;color:${!haveScores ? 'var(--stone)' : won ? 'var(--sage,#4a5c45)' : 'var(--rust)'};">${haveScores ? (won ? 'W ' : 'L ') : ''}${myScore}–${oppScore}</span>
+      <span style="font-weight:700;color:${outcomeColor};">${outcome ? outcome + ' ' : ''}${myScore}–${oppScore}</span>
       · ${homeAway} ${oppAbbr}
       <div class="fb-game-time">${dateStr}</div>
     </span>
@@ -899,7 +905,18 @@ function renderFootballCard(cfg, team, standingsRoot, recentEvent, scheduleNext,
   // computed fresh from the actual schedule + scoreboard data each load, so
   // it's authoritative; only fall back to ESPN's raw field if we genuinely
   // have nothing (e.g. a season's schedule not yet published).
-  const next = liveEvent ? null : (scheduleNext || team.nextEvent?.[0] || null);
+  // scheduleNext is computed fresh from the schedule + live scoreboard each
+  // load, so it's authoritative. team.nextEvent comes from ESPN's /teams/{id}
+  // endpoint on a slower cycle and keeps reporting a finished game as "next"
+  // for hours afterwards — that's what put the same Aug 28 game in both
+  // Recent and Next. Only fall back to it when we have no schedule data at
+  // all, and never for a game that has already kicked off.
+  const espnNext = team.nextEvent?.[0] || null;
+  const espnNextStale = espnNext && (
+    espnNext.competitions?.[0]?.status?.type?.completed === true ||
+    new Date(espnNext.date).getTime() < Date.now()
+  );
+  const next = liveEvent ? null : (scheduleNext || (espnNextStale ? null : espnNext));
   let nextHTML = '';
   if (next) {
     const dt = new Date(next.date);
