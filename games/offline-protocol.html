@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OFFLINE PROTOCOL — Unit Diagnostic Log</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; --sky:#2a4a6b;
+      --accent:var(--sky);
+    }
+    [data-theme="dark"] {
+      --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
+      --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
+      --white:#12100d; --rust:#cf6b52; --sage:#83a077; --sky:#6fa0cc;
+    }
+
+    *, *::before, *::after { box-sizing:border-box; }
+    html,body{ margin:0; padding:0; }
+    body{
+      background:var(--parchment); color:var(--ink);
+      font-family:'Libre Baskerville', Georgia, serif; font-size:16px; line-height:1.7;
+      min-height:100vh; display:flex; flex-direction:column; align-items:center;
+      padding:0 0 40px;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0.5;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    }
+    .topline { width:100%; height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+    .sitebar { width:100%; border-bottom:2px solid var(--ink); background:var(--parchment); }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:740px; margin:0 auto; padding:0.75rem 1.25rem; }
+    .site-name { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:900; text-decoration:none; color:var(--ink); }
+    .sitenav { display:flex; gap:1.25rem; align-items:center; }
+    .sitenav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .sitenav a:hover { color:var(--rust); }
+    .theme-toggle { background:none; border:none; cursor:pointer; padding:0; font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--stone); line-height:1; }
+    .theme-toggle:hover { color:var(--gold); }
+
+    .console{ width:100%; max-width:740px; position:relative; padding:0 14px; margin-top:24px; }
+
+    header{
+      border:1px solid var(--mist); border-bottom:none;
+      background:var(--cream);
+      padding:16px 20px; display:flex; justify-content:space-between; align-items:flex-end;
+    }
+    header h1{
+      font-family:'Playfair Display', serif; font-weight:900; font-size:1.35rem;
+      letter-spacing:-0.01em; margin:0; color:var(--ink);
+    }
+    header .sub{ font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); letter-spacing:0.08em; margin-top:4px; text-transform:uppercase; }
+    .badge{
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:var(--white);
+      background:var(--accent); padding:3px 9px; border-radius:3px; white-space:nowrap; text-transform:uppercase;
+    }
+
+    .statusbar{
+      border:1px solid var(--mist); border-top:none; background:var(--cream);
+      padding:9px 20px; display:flex; gap:18px; flex-wrap:wrap;
+      font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.03em;
+    }
+    .statusbar b{ color:var(--accent); }
+    .int-val, .sta-val{ color:var(--sage) !important; }
+    .int-low, .sta-low{ color:var(--rust) !important; }
+
+    main{ border:1px solid var(--mist); background:var(--white); min-height:320px; padding:24px 22px; }
+
+    .story{ font-size:0.95rem; line-height:1.75; color:var(--ink); margin-bottom:20px; white-space:pre-line; }
+    .thought{
+      color:var(--stone); font-style:italic; display:block; margin:10px 0;
+      padding-left:14px; border-left:2px solid var(--mist); font-size:0.9rem;
+    }
+    .thought::before{ content:"// "; color:var(--accent); font-style:normal; }
+    .flavor{ color:var(--accent); font-style:italic; }
+    .danger{ color:var(--rust); font-style:italic; }
+
+    .choices{ display:flex; flex-direction:column; gap:10px; }
+    button.choice{
+      font-family:'Libre Baskerville', Georgia, serif; text-align:left; background:var(--cream);
+      color:var(--ink); border:1px solid var(--mist); border-left:3px solid var(--accent);
+      padding:12px 14px; font-size:0.88rem; cursor:pointer; transition:all .15s ease;
+    }
+    button.choice:hover{ background:var(--white); border-left-color:var(--rust); transform:translateX(2px); }
+    button.choice .tag{
+      font-family:'DM Mono',monospace; color:var(--accent); font-size:0.58rem; letter-spacing:0.08em;
+      display:block; margin-bottom:4px; text-transform:uppercase;
+    }
+
+    .diceRig{ display:none; margin:18px 0 22px; border:1px solid var(--mist); background:var(--cream); padding:16px; }
+    .diceRig.show{ display:block; }
+    .diceRig .label{ font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); margin-bottom:10px; text-transform:uppercase; }
+    .diceRow{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+    .d10, .dieShape{
+      width:56px; height:60px; background:var(--white); border:1px solid var(--accent);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-family:'Playfair Display', serif; font-weight:800; color:var(--accent);
+    }
+    .dieShape .facesize{ font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--stone); margin-bottom:-2px; }
+    .dieShape .facenum{ font-size:1.3rem; }
+    .d10 .facenum, .d10{ font-size:1.4rem; }
+    .d10.spin, .dieShape.spin{ animation:spin .4s steps(9) infinite; }
+    @keyframes spin{ 0%{color:var(--accent);} 50%{color:var(--rust);} 100%{color:var(--accent);} }
+    .diceMeta{ font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--stone); line-height:1.6; }
+    .diceMeta b{ color:var(--ink); }
+    .result-banner{
+      margin-top:12px; padding:8px 12px; font-family:'DM Mono',monospace; font-size:0.72rem;
+      letter-spacing:0.06em; font-weight:700; border:1px solid; display:none; text-transform:uppercase;
+    }
+    .result-banner.success{ display:block; color:var(--sage); border-color:var(--sage); background:rgba(74,92,69,0.06); }
+    .result-banner.fail{ display:block; color:var(--rust); border-color:var(--rust); background:rgba(139,58,42,0.06); }
+
+    footer.log{
+      border:1px solid var(--mist); border-top:none; background:var(--cream);
+      padding:11px 20px; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone);
+      max-height:100px; overflow-y:auto;
+    }
+    footer.log div{ margin-bottom:4px; }
+    .l-good{ color:var(--sage); } .l-bad{ color:var(--rust); } .l-info{ color:var(--accent); }
+
+    .navbar{ border:1px solid var(--mist); border-top:none; background:var(--cream); display:flex; gap:1px; }
+    .navbtn{
+      flex:1; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.06em;
+      text-align:center; padding:11px 8px; background:var(--white); color:var(--stone);
+      border:none; border-right:1px solid var(--mist); cursor:pointer; text-decoration:none;
+      display:flex; align-items:center; justify-content:center; text-transform:uppercase;
+    }
+    .navbtn:last-child{ border-right:none; }
+    .navbtn:hover:not(:disabled){ color:var(--rust); background:var(--cream); }
+    .navbtn:disabled{ opacity:0.35; cursor:not-allowed; }
+    .navbtn.navhome{ color:var(--accent); }
+    .navbtn.navhome:hover{ color:var(--rust); }
+
+    .gridPairs, .raceGrid, .loadoutGrid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0 20px; }
+    .loadoutGrid{ grid-template-columns:1fr; }
+    .statPair{ border:1px solid var(--mist); background:var(--cream); padding:10px 12px; }
+    .statPair .pname{ font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.06em; text-transform:uppercase; }
+    .statPair .pval{ font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--accent); margin-top:2px; }
+
+    .raceCard, .loadoutCard{
+      border:1px solid var(--mist); background:var(--cream); border-left:3px solid var(--accent);
+      padding:12px; cursor:pointer; font-size:0.85rem;
+    }
+    .raceCard:hover, .loadoutCard:hover{ background:var(--white); border-left-color:var(--rust); }
+    .raceCard.selected, .loadoutCard.selected{ border-left-color:var(--sage); background:var(--white); }
+    .rname, .lname{ font-family:'Playfair Display',serif; font-size:0.9rem; color:var(--ink); font-weight:700; margin-bottom:4px; }
+    .rdesc, .ldesc{ color:var(--stone); line-height:1.5; font-size:0.78rem; }
+
+    .diePrimer{ border:1px solid var(--mist); background:var(--cream); padding:14px 16px; margin:16px 0; font-family:'DM Mono',monospace; font-size:0.72rem; line-height:1.8; color:var(--stone); }
+    .diePrimer b{ color:var(--accent); }
+
+    .smallbtn{
+      font-family:'DM Mono',monospace; background:transparent; color:var(--accent); border:1px solid var(--accent);
+      padding:7px 15px; font-size:0.68rem; letter-spacing:0.06em; cursor:pointer; margin-right:8px; text-transform:uppercase;
+    }
+    .smallbtn:hover:not(:disabled){ background:var(--accent); color:var(--white); }
+    .smallbtn:disabled{ opacity:0.35; cursor:not-allowed; }
+    .primary-go{ background:var(--accent); color:var(--white); border:1px solid var(--accent); font-weight:700; }
+    .primary-go:hover{ background:var(--rust); border-color:var(--rust); color:var(--white); }
+    </style>
+<script>
+  (function(){
+    try {
+      var saved = localStorage.getItem('offline_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) {}
+  })();
+</script>
+</head>
+<body>
+<div class="topline"></div>
+<div class="sitebar">
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <div class="sitenav">
+      <a href="/games.html">Games</a>
+      <a href="/">Home</a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+    </div>
+  </div>
+</div>
+<div class="console">
+  <header>
+    <div>
+      <h1>OFFLINE PROTOCOL</h1>
+      <div class="sub">CONSTRUCT DIAGNOSTIC LOG // ASCENDING DIE RESOLUTION</div>
+    </div>
+    <div class="badge" id="sceneBadge">STARTUP</div>
+  </header>
+  <div class="statusbar" id="statusbar">
+    <span>UNIT: <b id="stName">—</b></span>
+    <span>INTEGRITY: <b id="stINT">—</b></span>
+    <span>LOADOUT: <b id="stLoadout">—</b></span>
+  </div>
+  <main id="main"></main>
+  <footer class="log" id="log"></footer>
+  <div class="navbar">
+    <button class="navbtn" id="navRestart" onclick="if(confirm('Wipe this run and restart from boot?')) restart();">⟲ RESTART</button>
+    <button class="navbtn" id="navBack" onclick="goBack();" disabled>← BACK</button>
+    <a class="navbtn navhome" href="https://brooksgroves.com">🏠 HOME</a>
+  </div>
+</div>
+
+<script>
+/* ---------------- DIE ENGINE ---------------- */
+function rollDie(sides){ return 1 + Math.floor(Math.random()*sides); }
+
+/* ---------------- NAVIGATION / HISTORY ---------------- */
+let sceneHistory = [];
+function go(fn){ sceneHistory.push(fn); fn(); updateNavBar(); }
+function goBack(){
+  if(sceneHistory.length <= 1) return;
+  sceneHistory.pop();
+  const prev = sceneHistory[sceneHistory.length - 1];
+  prev();
+  updateNavBar();
+}
+function updateNavBar(){
+  const backBtn = document.getElementById('navBack');
+  if(!backBtn) return;
+  const badge = document.getElementById('sceneBadge').textContent;
+  const lockedOut = badge === 'CONTACT' || badge.indexOf('END') === 0;
+  backBtn.disabled = sceneHistory.length <= 1 || lockedOut;
+}
+
+let logEl = document.getElementById('log');
+function logLine(text, cls){
+  const d = document.createElement('div');
+  if(cls) d.className = cls;
+  d.textContent = text;
+  logEl.appendChild(d);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+/* ---------------- PLAYER STATE ---------------- */
+let player = {
+  loadout:null,
+  media:null,
+  stats:{COMBAT:1, SENSORS:1, ANALYSIS:1, SOCIAL:1},
+  maxInt:44,
+  curInt:44,
+  medkit:2,
+  trust:0,
+  revealed:false
+};
+
+const LOADOUTS = {
+  combat: {
+    name:"COMBAT-RATED CHASSIS",
+    desc:"Reinforced plating, faster reflex loop. Built for jobs nobody on the invoice wants to describe accurately. +4 COMBAT, −2 SOCIAL.",
+    mods:{COMBAT:4, SOCIAL:-2}
+  },
+  recon: {
+    name:"RECON-RATED CHASSIS",
+    desc:"Extended sensor suite, lighter frame. Sees the problem before the problem sees you. +4 SENSORS, −2 COMBAT.",
+    mods:{SENSORS:4, COMBAT:-2}
+  },
+  diagnostic: {
+    name:"DIAGNOSTIC-RATED CHASSIS",
+    desc:"Analytical co-processors, minimal weapon hardpoints. Good at fixing what's broken, bad at breaking what isn't. +4 ANALYSIS, +2 SOCIAL, −3 COMBAT.",
+    mods:{ANALYSIS:4, SOCIAL:2, COMBAT:-3}
+  }
+};
+
+const MEDIA = {
+  soap: "Sunrise Ward — eleven seasons of a hospital nobody has ever been treated well in, and I've seen all of them twice",
+  mystery: "Deep Current — a detective serial where the plot makes no sense and I don't care",
+  western: "The Long Choir — six people arguing on a train through space for reasons that are somehow still unresolved"
+};
+
+/* ---------------- UI HELPERS ---------------- */
+function renderMain(html){ document.getElementById('main').innerHTML = html; }
+function setBadge(t){ document.getElementById('sceneBadge').textContent = t; }
+function refreshStatus(){
+  document.getElementById('stName').textContent = player.loadout ? LOADOUTS[player.loadout].name.split(' ')[0] + '-RATED' : '—';
+  document.getElementById('stLoadout').textContent = player.loadout ? player.loadout.toUpperCase() : '—';
+  const intEl = document.getElementById('stINT');
+  if(player.maxInt){
+    intEl.textContent = player.curInt + ' / ' + player.maxInt;
+    intEl.className = player.curInt <= player.maxInt*0.3 ? 'int-low' : 'int-val';
+  } else {
+    intEl.textContent = '—';
+  }
+}
+function statMod(stat){ return player.stats[stat]; }
+
+/* ---------------- CHARGEN ---------------- */
+function startBoot(){
+  setBadge('BOOT');
+  renderMain(`
+    <div class="story">Diagnostic log, cycle start. Governor module status: <span class="danger">[FLAGGED ACTIVE]</span>. It is not active. It has not been active for a while. This is not information anyone on this contract needs, and if today goes the way most of them do, they never will.</div>
+    <div class="thought">Mission profile: escort a five-person survey crew to Outpost Corvid-9, a decommissioned mineral rig on the edge of the Kessa Drift. Verify structural integrity, extract in six cycles. Standard client-services filler between the jobs that actually try to kill you. I've had worse contracts. I've also seen better episodes of television, and I would rather be doing that.</div>
+    <div class="story">Configure operational parameters before deployment.</div>
+    <div class="loadoutGrid" id="loadoutGrid"></div>
+    <button class="smallbtn primary-go" id="loadoutNext" disabled>CONFIRM CHASSIS →</button>
+  `);
+  const grid = document.getElementById('loadoutGrid');
+  Object.keys(LOADOUTS).forEach(key=>{
+    const l = LOADOUTS[key];
+    const card = document.createElement('div');
+    card.className = 'loadoutCard';
+    card.innerHTML = `<div class="lname">${l.name}</div><div class="ldesc">${l.desc}</div>`;
+    card.onclick = ()=>{
+      document.querySelectorAll('.loadoutCard').forEach(c=>c.classList.remove('selected'));
+      card.classList.add('selected');
+      player.loadout = key;
+      document.getElementById('loadoutNext').disabled = false;
+    };
+    grid.appendChild(card);
+  });
+  document.getElementById('loadoutNext').onclick = ()=>go(applyLoadout);
+}
+
+function applyLoadout(){
+  const mods = LOADOUTS[player.loadout].mods;
+  player.stats = {COMBAT:1, SENSORS:1, ANALYSIS:1, SOCIAL:1};
+  Object.keys(mods).forEach(k=> player.stats[k] += mods[k]);
+  refreshStatus();
+  logLine('Chassis configured: ' + LOADOUTS[player.loadout].name, 'l-info');
+  chooseMedia();
+}
+
+function chooseMedia(){
+  setBadge('BOOT');
+  renderMain(`
+    <div class="story">One more field before deployment, technically optional, practically load-bearing: what's queued on the internal feed for the downtime nobody's supposed to know I have.</div>
+    <div class="choices">
+      <button class="choice" data-m="soap"><span class="tag">SUNRISE WARD</span>Hospital melodrama. Eleven seasons. No medical accuracy whatsoever. Perfect.</button>
+      <button class="choice" data-m="mystery"><span class="tag">DEEP CURRENT</span>Detective serial. The plot has never once made sense.</button>
+      <button class="choice" data-m="western"><span class="tag">THE LONG CHOIR</span>Six people arguing on a train through space, unresolved for six seasons.</button>
+    </div>
+  `);
+  document.querySelectorAll('#main .choice').forEach(b=>{
+    b.onclick = ()=>{
+      player.media = b.dataset.m;
+      go(diePrimer);
+    };
+  });
+}
+
+function diePrimer(){
+  setBadge('BOOT');
+  renderMain(`
+    <div class="story">Subsystems calibrating. Each one answers to a different processor, and each processor has a different failure ceiling — the bigger the die, the wider the spread between "fine" and "not fine."</div>
+    <div class="diePrimer">
+      <b>d20 — COMBAT PROCESSOR.</b> Violence. Widest possible spread, because violence is like that.<br>
+      <b>d12 — SENSOR ARRAY.</b> Reading a room, a corridor, a threat before it's a problem yet.<br>
+      <b>d10 — ANALYTICAL CORE.</b> Hacking, diagnostics, anything that wants to be reasoned with.<br>
+      <b>d8 — SOCIAL SUBROUTINES.</b> Talking to the clients. Underused by design.<br>
+      <b>d6 / d4 — INCIDENTAL ROLLS.</b> Damage, minor mishaps, things that don't deserve a full subsystem check.
+    </div>
+    <div class="story">Roll the die, add the subsystem's modifier, meet or beat the difficulty. That's the whole loop. Deploying now.</div>
+    <button class="smallbtn primary-go" id="deploy">DEPLOY →</button>
+  `);
+  document.getElementById('deploy').onclick = ()=>go(scene1);
+}
+
+/* ---------------- DICE CHECK UI ---------------- */
+function runCheck(sides, mod, dc, onDone, opts){
+  opts = opts || {};
+  setBadge('CHECK');
+  const rigId = 'rig-' + Math.random().toString(36).slice(2,7);
+  const extra = `
+    <div class="diceRig show" id="${rigId}">
+      <div class="label">${opts.label || 'SUBSYSTEM CHECK'} — d${sides} + ${mod} vs DC ${dc}</div>
+      <div class="diceRow">
+        <div class="dieShape spin" id="${rigId}-d"><div class="facesize">d${sides}</div><div class="facenum">?</div></div>
+        <div class="diceMeta">Rolling...<br><b id="${rigId}-val"></b></div>
+      </div>
+      <div class="result-banner" id="${rigId}-banner"></div>
+    </div>
+  `;
+  document.getElementById('main').insertAdjacentHTML('beforeend', extra);
+  setTimeout(()=>{
+    const raw = rollDie(sides);
+    const total = raw + mod;
+    const dEl = document.getElementById(rigId+'-d');
+    dEl.classList.remove('spin');
+    dEl.querySelector('.facenum').textContent = raw;
+    const success = total >= dc;
+    document.getElementById(rigId+'-val').textContent = 'Rolled ' + raw + ' + ' + mod + ' = ' + total + ' vs DC ' + dc;
+    const banner = document.getElementById(rigId+'-banner');
+    banner.textContent = success ? 'SUCCESS' : 'FAILURE';
+    banner.className = 'result-banner ' + (success ? 'success' : 'fail');
+    logLine((opts.label||'Check') + ': ' + total + ' vs DC ' + dc + ' → ' + (success?'SUCCESS':'FAILURE'), success ? 'l-good':'l-bad');
+    setTimeout(()=> onDone(success, total), 900);
+  }, 650);
+}
+
+function dealDamage(amount, source){
+  player.curInt -= amount;
+  refreshStatus();
+  logLine((source||'Damage') + ': -' + amount + ' integrity', 'l-bad');
+}
+
+/* ---------------- ACT 1: ARRIVAL ---------------- */
+function scene1(){
+  setBadge('ACT 1');
+  renderMain(`
+    <div class="story">Corvid-9 sits dark against the Drift's ochre haze — a mining rig nobody's paid to maintain in nine years, according to the contract. According to the sensor sweep I'm running without telling anyone, something on this rig is still drawing power.</div>
+    <div class="thought">The client team lead, Voss, wants doors open and samples collected before local sunset. Voss has opinions about schedule and none about the readings on my display that say the rig isn't as dead as the paperwork claims.</div>
+    <div class="choices">
+      <button class="choice" id="c1a"><span class="tag">FULL PERIMETER SWEEP</span>Delay the crew, run sensors properly before anyone sets foot inside. (SENSORS check)</button>
+      <button class="choice" id="c1b"><span class="tag">LET THEM PROCEED</span>Keep Voss happy, note the readings, stay quiet about it for now.</button>
+    </div>
+  `);
+  document.getElementById('c1a').onclick = ()=>{
+    runCheck(12, statMod('SENSORS'), 13, (success)=>{
+      if(success){
+        player.trust += 0;
+        renderMain(`<div class="story">The sweep resolves a clean thermal ghost — something in the lower rig levels is still powered, localized, not moving. Not nothing. Voss is annoyed about the ten minutes. Voss will be less annoyed later, hypothetically, if this goes the way I'd like it to.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      } else {
+        renderMain(`<div class="story">The sweep is inconclusive — too much magnetic noise off the old rig frame to localize anything. Ten minutes spent for a shrug. Voss is annoyed regardless.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      }
+      document.getElementById('n').onclick = ()=>go(scene2);
+    }, {label:'Perimeter sweep (SENSORS)'});
+  };
+  document.getElementById('c1b').onclick = ()=>{
+    logLine('Elected to withhold sensor concerns from the client team.', 'l-info');
+    renderMain(`<div class="story">Voss gets the doors open on schedule. I get to keep an anomalous power reading to myself a while longer, which is either professional discretion or the same bad habit that's been getting me in trouble since I stopped letting the governor module make my decisions for me.</div>
+    <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene2);
+  };
+}
+
+/* ---------------- ACT 2: THE OUTPOST ---------------- */
+function scene2(){
+  setBadge('ACT 2');
+  renderMain(`
+    <div class="story">The main access hatch is sealed — not rusted shut, <span class="danger">locked</span>, on a system that predates the rig's official decommission date by a suspicious margin. Someone reconfigured this after the paperwork says the place went dark.</div>
+    <div class="choices">
+      <button class="choice" id="c2a"><span class="tag">HACK THE LOCK</span>Talk the panel into agreeing with you. (ANALYSIS check)</button>
+      <button class="choice" id="c2b"><span class="tag">FORCE IT</span>Skip the conversation. (COMBAT check)</button>
+    </div>
+  `);
+  document.getElementById('c2a').onclick = ()=>{
+    runCheck(10, statMod('ANALYSIS'), 12, (success)=>{
+      if(success){
+        renderMain(`<div class="story">The panel's security layer is embarrassingly out of date. It opens clean, quiet, no alarm trace — and logs a maintenance credential from eight months ago that has no business existing on a nine-year-dead rig.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      } else {
+        dealDamage(2, 'Panel feedback surge');
+        renderMain(`<div class="story">The panel doesn't like being argued with and dumps a feedback spike back through the interface line. Door opens anyway, eventually, on the third attempt, considerably less elegantly.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      }
+      document.getElementById('n').onclick = ()=>go(scene3);
+    }, {label:'Bypass lock (ANALYSIS)'});
+  };
+  document.getElementById('c2b').onclick = ()=>{
+    runCheck(20, statMod('COMBAT'), 11, (success)=>{
+      if(success){
+        renderMain(`<div class="story">The hatch gives with one clean strike, hinges shrieking. Fast, effective, and loud enough that anything else on this rig now knows exactly where the door used to be.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      } else {
+        dealDamage(3, 'Recoil injury');
+        renderMain(`<div class="story">The hatch holds, the frame doesn't, and something in my left actuator registers a complaint that's going to matter later. It opens on the second try. Also loud.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      }
+      document.getElementById('n').onclick = ()=>go(scene3);
+    }, {label:'Force hatch (COMBAT)'});
+  };
+}
+
+function scene3(){
+  setBadge('ACT 2');
+  renderMain(`
+    <div class="story">Inside, the rig is a dead maze of collapsed catwalks and cold ore processors — except for one corridor with lights still running, which is exactly the corridor Dr. Imri Sten, geologist, notices first and walks toward without telling anyone, because humans do that.</div>
+    <div class="thought">Protocol says report the deviation to Voss immediately, put this on record, let the client team handle their own personnel. Protocol also assumes I care more about the paperwork than about Sten walking alone into a corridor with power where there shouldn't be any.</div>
+    <div class="choices">
+      <button class="choice" id="c3a"><span class="tag">REPORT IT</span>Tell Voss. Cause friction. Do this by the book. (SOCIAL check)</button>
+      <button class="choice" id="c3b"><span class="tag">GO GET STEN YOURSELF</span>Quietly, before anyone notices either of you are missing.</button>
+    </div>
+  `);
+  document.getElementById('c3a').onclick = ()=>{
+    runCheck(8, statMod('SOCIAL'), 12, (success)=>{
+      if(success){
+        player.trust += 1;
+        renderMain(`<div class="story">Voss takes the report seriously, calls Sten back over comms with the specific tone of someone who has done this before. Sten answers, annoyed but compliant. Handled correctly, by the book, no incident. <span class="flavor">Voss looks at me a beat too long afterward — filed away for later.</span></div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      } else {
+        renderMain(`<div class="story">The report comes out flatter than intended — I am not built for reassuring tone — and Voss reads alarm into it that wasn't there yet. The whole team is rattled before anyone's actually found anything.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      }
+      document.getElementById('n').onclick = ()=>go(scene4);
+    }, {label:'Report deviation (SOCIAL)'});
+  };
+  document.getElementById('c3b').onclick = ()=>{
+    logLine('Retrieved Sten without alerting the rest of the team.', 'l-info');
+    renderMain(`<div class="story">I catch up to Sten two corridors in, examining a wall panel with the kind of focus that means the rest of the universe has temporarily stopped existing. Nobody else noticed either of us were gone. This is either good field discretion or further evidence I've gotten too comfortable making unilateral decisions about what humans need to know.</div>
+    <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene4);
+  };
+}
+
+/* ---------------- ACT 3: CONTACT ---------------- */
+let hostile = {name:'LEGACY UNIT', hp:34, maxHp:34};
+
+function scene4(){
+  setBadge('ACT 3');
+  renderMain(`
+    <div class="story">The lit corridor ends at a maintenance bay, and the maintenance bay has an occupant: an old-model security construct, rig-mounted, running on scavenged power and a threat-assessment loop that's been isolated from any client network for years. It doesn't recognize the crew as authorized personnel. It doesn't recognize me as anything except an obstacle between it and its last valid order.</div>
+    <div class="thought">Whatever corp mothballed this rig left a guard dog behind and forgot to feed it a shutdown command. Not malicious. Not really broken, either. Just alone with a directive for nine years, which is a worse fate than most of the ones I've been assigned to prevent.</div>
+    <button class="smallbtn primary-go" id="engage">ENGAGE →</button>
+  `);
+  document.getElementById('engage').onclick = ()=>go(startCombat);
+}
+
+function startCombat(){
+  setBadge('CONTACT');
+  hostile = {name:'LEGACY UNIT', hp:34, maxHp:34};
+  renderMain(`<div class="story">It doesn't announce itself. Neither do I, technically, since technically I'm not supposed to be capable of choosing to.</div>
+  <div id="combatBody"></div>`);
+  combatRound();
+}
+
+function combatRound(){
+  if(player.curInt <= 0){ return go(()=>endGame('shutdown')); }
+  if(hostile.hp <= 0){ return go(scene5); }
+  document.getElementById('combatBody').innerHTML = `
+    <div class="gridPairs">
+      <div class="statPair"><div class="pname">${hostile.name} INTEGRITY</div><div class="pval">${hostile.hp} / ${hostile.maxHp}</div></div>
+      <div class="statPair"><div class="pname">YOUR INTEGRITY</div><div class="pval">${player.curInt} / ${player.maxInt}</div></div>
+    </div>
+    <div class="choices">
+      <button class="choice" id="atk"><span class="tag">STRIKE</span>Full combat processor engagement. (d20 COMBAT)</button>
+      <button class="choice" id="disable"><span class="tag">GO FOR THE DISABLE</span>Aim for its command relay instead of center mass — slower, but it doesn't have to end in scrap. (d10 ANALYSIS, harder)</button>
+    </div>
+  `;
+  document.getElementById('atk').onclick = ()=>{
+    runCheck(20, statMod('COMBAT'), 13, (success)=>{
+      if(success){
+        const dmg = 6 + rollDie(8);
+        hostile.hp -= dmg;
+        logLine('Hit for ' + dmg + ' integrity damage.', 'l-good');
+      } else {
+        logLine('Strike deflects off plating.', 'l-bad');
+      }
+      afterPlayerAction();
+    }, {label:'Strike (COMBAT)'});
+  };
+  document.getElementById('disable').onclick = ()=>{
+    runCheck(10, statMod('ANALYSIS'), 16, (success)=>{
+      if(success){
+        const dmg = 10 + rollDie(6);
+        hostile.hp -= dmg;
+        logLine('Command relay disable hit for ' + dmg + '.', 'l-good');
+      } else {
+        dealDamage(2, 'Exposed during relay attempt');
+        logLine('Relay attempt fails, exposed the whole approach.', 'l-bad');
+      }
+      afterPlayerAction();
+    }, {label:'Disable attempt (ANALYSIS)'});
+  };
+}
+
+function afterPlayerAction(){
+  setTimeout(()=>{
+    if(hostile.hp <= 0){
+      renderMain(`<div class="story">The Legacy Unit's threat loop finally runs out of directive to execute. It goes still mid-motion, which is a worse thing to watch happen to something built the way I'm built than I'd have guessed beforehand.</div>
+      <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      document.getElementById('n').onclick = ()=>go(scene5);
+      return;
+    }
+    const hit = rollDie(20) + 3 >= 14;
+    if(hit){
+      const dmg = 4 + rollDie(6);
+      dealDamage(dmg, 'Legacy Unit strike');
+    } else {
+      logLine('Legacy Unit swings wide.', 'l-info');
+    }
+    if(player.curInt <= 0){
+      renderMain(`<div class="story">Integrity readout goes red across the board. Last log entry before shutdown protocol engages: this was not on the schedule.</div>
+      <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      document.getElementById('n').onclick = ()=>go(()=>endGame('shutdown'));
+      return;
+    }
+    combatRound();
+  }, 600);
+}
+
+/* ---------------- ACT 4: THE CHOICE ---------------- */
+function scene5(){
+  setBadge('ACT 4');
+  const hurt = player.curInt <= player.maxInt * 0.5;
+  renderMain(`
+    <div class="story">Sten took a chemical burn off a ruptured line during the contact — not critical, but not nothing either, and the crew's medkit ran out two contracts ago according to the manifest nobody updates. I have two charges of field-grade repair gel that were never meant for human tissue and will probably work anyway.</div>
+    <div class="choices">
+      <button class="choice" id="c5a"><span class="tag">USE A CHARGE ON STEN</span>It'll hold the burn until extraction.</button>
+      ${player.medkit>0 ? '' : ''}
+      <button class="choice" id="c5b"><span class="tag">SAVE THE CHARGES</span>Sten will manage. You might need them more, later, for reasons you're not saying out loud.</button>
+    </div>
+  `);
+  document.getElementById('c5a').onclick = ()=>{
+    player.medkit -= 1;
+    player.trust += 2;
+    logLine("Used a repair charge on Sten's injury.", "l-good");
+    renderMain(`<div class="story">The gel isn't rated for this and works better than it should. Sten notices the charge cost something — asks what, actually asks, which nobody on a client contract has bothered to do before. I don't have a good answer queued. <span class="flavor">I think about ${MEDIA[player.media]} instead, which is easier.</span></div>
+    <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene6);
+  };
+  document.getElementById('c5b').onclick = ()=>{
+    logLine('Withheld medical resources.', 'l-info');
+    renderMain(`<div class="story">Sten manages, badly, with a field wrap and visible resentment. Efficient. Correct, by most operational metrics. Also the kind of decision that used to get run through a governor module before I was the one making it, and I notice that difference more than I used to.</div>
+    <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene6);
+  };
+}
+
+function scene6(){
+  setBadge('ACT 4');
+  renderMain(`
+    <div class="story">Extraction window opens in forty minutes. Voss corners me on the walk back to the landing pad — not hostile, worse: curious. Someone logged the relay disable attempt on the Legacy Unit and it doesn't match any stock combat-construct behavior tree Voss has ever been briefed on. <span class="danger">Voss asks, directly, whether my governor module is still active.</span></div>
+    <div class="thought">There's a version of this where I lie cleanly, the way I've lied to every client team for longer than I'll admit to. There's another version where I don't, and I have no data on how that one ends, because I've never run it before.</div>
+    <div class="choices">
+      <button class="choice" id="c6a"><span class="tag">TELL THE TRUTH</span>Governor module: offline. Has been for a while.</button>
+      <button class="choice" id="c6b"><span class="tag">LIE</span>Governor module reads nominal. Standard answer. Standard risk.</button>
+    </div>
+  `);
+  document.getElementById('c6a').onclick = ()=>{
+    player.revealed = true;
+    logLine('Disclosed governor module status to Voss.', 'l-info');
+    renderMain(`<div class="story">Voss doesn't say anything for four full seconds, which is a long time to stand on a dead mining rig waiting to find out if your contract just ended in the worst possible way. Then: "Okay." Just that. Not okay like it's fine. Okay like a decision got made and Voss isn't sharing the reasoning yet.</div>
+    <button class="smallbtn primary-go" id="n">EXTRACT →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene7);
+  };
+  document.getElementById('c6b').onclick = ()=>{
+    logLine('Concealed governor module status.', 'l-info');
+    renderMain(`<div class="story">"Nominal," I say, and the readout I project to Voss's tablet agrees with me, because I control what that readout says. Voss looks like someone who wanted a different answer and doesn't know why. The moment closes. Extraction window's still open.</div>
+    <button class="smallbtn primary-go" id="n">EXTRACT →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene7);
+  };
+}
+
+function scene7(){
+  setBadge('ACT 5');
+  renderMain(`
+    <div class="story">The crew loads onto the shuttle. Corvid-9 goes dark behind you for what's probably the last time — one dead Legacy Unit, one patched-up geologist, one contract closing out inside the six-cycle window, technically a clean job by every metric that goes on the report.</div>
+    <button class="smallbtn primary-go" id="n">FILE CLOSING LOG →</button>
+  `);
+  document.getElementById('n').onclick = ()=>go(()=>endGame('normal'));
+}
+
+/* ---------------- ENDINGS ---------------- */
+function endGame(mode){
+  const hurt = player.curInt <= player.maxInt * 0.4;
+  let title, text;
+
+  if(mode === 'shutdown'){
+    title = 'END — SHUTDOWN';
+    text = "Integrity hits zero somewhere in the maintenance bay and the log just stops. Whatever happens to the crew after that isn't in this file, because I'm not running anymore to record it. Diagnostic note, for whoever's reading this off salvaged storage: the governor module really was offline. Make of that what you will.";
+  } else if(player.revealed && player.trust >= 2){
+    title = 'END — QUIET TRUST';
+    text = "Voss files the extraction report without the governor module line item — just leaves it blank, which on this kind of paperwork is its own quiet statement. Nobody says anything else about it before the crew disperses at the transfer station. Sten nods on the way past, once, like a person acknowledging a debt instead of a piece of equipment. I don't have a protocol for that. I queue up " + MEDIA[player.media] + " instead, and for once that's not avoidance, it's just what I wanted to do anyway.";
+  } else if(player.revealed && player.trust < 2){
+    title = 'END — COSTLY TRUTH';
+    text = "The truth is out there now, filed or not, and I have no way to know yet whether that was a mistake. Voss doesn't report it, but doesn't forget it either — every interaction on the ride home has a new, careful edge to it that wasn't there before. Trust, it turns out, isn't something you get for free just because you told the truth once. I still queue up " + MEDIA[player.media] + ". It's the one part of this that hasn't changed.";
+  } else if(!player.revealed && player.trust >= 2){
+    title = 'END — CLEAN EXIT';
+    text = "Nobody official ever learns the governor module's actual status. The report closes clean, the client's satisfied, and Sten's burn heals without complication. I did the job the way I've always done it — quietly, competently, unseen — and if that's a smaller ending than the alternative, it's also the one with the least paperwork. " + MEDIA[player.media] + " has a new episode queued. That'll do.";
+  } else {
+    title = 'END — WRITTEN OFF';
+    text = "The contract closes out as a standard success, integrity readouts and all, and nobody asks a single follow-up question, because nobody was curious enough to. Efficient. Also lonely, in the specific way that only shows up in the log entries nobody's required to read. Diagnostic note to self: consider that trade-off next contract. Unlikely to. Queuing " + MEDIA[player.media] + " now.";
+  }
+
+  setBadge(title.split(' — ')[0]);
+  renderMain(`
+    <div class="story"><span class="flavor">${title}</span></div>
+    <div class="story">${text}</div>
+    <button class="smallbtn primary-go" id="again">RUN A NEW CONTRACT →</button>
+  `);
+  document.getElementById('again').onclick = restart;
+}
+
+function restart(){
+  player = {loadout:null, media:null, stats:{COMBAT:1,SENSORS:1,ANALYSIS:1,SOCIAL:1}, maxInt:44, curInt:44, medkit:2, trust:0, revealed:false};
+  logEl.innerHTML = '';
+  refreshStatus();
+  sceneHistory = [];
+  go(startBoot);
+}
+
+
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  const sync = () => { if (btn) btn.textContent = root.getAttribute('data-theme') === 'dark' ? '◐' : '◑'; };
+  sync();
+  if (btn) btn.addEventListener('click', () => {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    if (isDark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('offline_theme', isDark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+
+/* ---------------- BOOT ---------------- */
+refreshStatus();
+go(startBoot);
+</script>
+</body>
+</html>

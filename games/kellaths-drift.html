@@ -4,285 +4,190 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SIGNAL: KELLATH'S DRIFT</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; --sky:#2a4a6b;
+      --accent:var(--gold);
+    }
+    [data-theme="dark"] {
+      --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
+      --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
+      --white:#12100d; --rust:#cf6b52; --sage:#83a077; --sky:#6fa0cc;
+    }
 
-:root{
-  --bg:#080b12;
-  --panel:#0f1520;
-  --panel-2:#141c29;
-  --amber:#ffb400;
-  --amber-dim:#7a5a17;
-  --teal:#49d3c4;
-  --text:#dbe4ec;
-  --text-dim:#6f7c8c;
-  --danger:#ff5c5c;
-  --good:#6fe08a;
-  --border:#20293a;
-}
+    *, *::before, *::after { box-sizing:border-box; }
+    html,body{ margin:0; padding:0; }
+    body{
+      background:var(--parchment); color:var(--ink);
+      font-family:'Libre Baskerville', Georgia, serif; font-size:16px; line-height:1.7;
+      min-height:100vh; display:flex; flex-direction:column; align-items:center;
+      padding:0 0 40px;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0.5;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    }
+    .topline { width:100%; height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+    .sitebar { width:100%; border-bottom:2px solid var(--ink); background:var(--parchment); }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:740px; margin:0 auto; padding:0.75rem 1.25rem; }
+    .site-name { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:900; text-decoration:none; color:var(--ink); }
+    .sitenav { display:flex; gap:1.25rem; align-items:center; }
+    .sitenav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .sitenav a:hover { color:var(--rust); }
+    .theme-toggle { background:none; border:none; cursor:pointer; padding:0; font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--stone); line-height:1; }
+    .theme-toggle:hover { color:var(--gold); }
 
-*{box-sizing:border-box;}
-html,body{margin:0;padding:0;}
-body{
-  background:
-    radial-gradient(ellipse at 20% -10%, #142132 0%, transparent 55%),
-    radial-gradient(ellipse at 100% 110%, #1a1330 0%, transparent 50%),
-    var(--bg);
-  color:var(--text);
-  font-family:'JetBrains Mono', monospace;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  padding:28px 14px 60px;
-}
+    .console{ width:100%; max-width:740px; position:relative; padding:0 14px; margin-top:24px; }
 
-.console{
-  width:100%;
-  max-width:720px;
-  position:relative;
-}
+    header{
+      border:1px solid var(--mist); border-bottom:none;
+      background:var(--cream);
+      padding:16px 20px; display:flex; justify-content:space-between; align-items:flex-end;
+    }
+    header h1{
+      font-family:'Playfair Display', serif; font-weight:900; font-size:1.35rem;
+      letter-spacing:-0.01em; margin:0; color:var(--ink);
+    }
+    header .sub{ font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); letter-spacing:0.08em; margin-top:4px; text-transform:uppercase; }
+    .badge{
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:var(--white);
+      background:var(--accent); padding:3px 9px; border-radius:3px; white-space:nowrap; text-transform:uppercase;
+    }
 
-.console::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.018) 0px,
-    rgba(255,255,255,0.018) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  z-index:5;
-}
+    .statusbar{
+      border:1px solid var(--mist); border-top:none; background:var(--cream);
+      padding:9px 20px; display:flex; gap:18px; flex-wrap:wrap;
+      font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.03em;
+    }
+    .statusbar b{ color:var(--accent); }
+    .int-val, .sta-val{ color:var(--sage) !important; }
+    .int-low, .sta-low{ color:var(--rust) !important; }
 
-header{
-  border:1px solid var(--border);
-  border-bottom:none;
-  background:linear-gradient(180deg, var(--panel-2), var(--panel));
-  padding:18px 22px;
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-}
+    main{ border:1px solid var(--mist); background:var(--white); min-height:320px; padding:24px 22px; }
 
-header h1{
-  font-family:'Orbitron', sans-serif;
-  font-weight:800;
-  font-size:1.05rem;
-  letter-spacing:0.14em;
-  margin:0;
-  color:var(--amber);
-  text-shadow:0 0 18px rgba(255,180,0,0.35);
-}
+    .story{ font-size:0.95rem; line-height:1.75; color:var(--ink); margin-bottom:20px; white-space:pre-line; }
+    .thought{
+      color:var(--stone); font-style:italic; display:block; margin:10px 0;
+      padding-left:14px; border-left:2px solid var(--mist); font-size:0.9rem;
+    }
+    .thought::before{ content:"// "; color:var(--accent); font-style:normal; }
+    .flavor{ color:var(--accent); font-style:italic; }
+    .danger{ color:var(--rust); font-style:italic; }
 
-header .sub{
-  font-size:0.68rem;
-  color:var(--text-dim);
-  letter-spacing:0.08em;
-  margin-top:4px;
-}
+    .choices{ display:flex; flex-direction:column; gap:10px; }
+    button.choice{
+      font-family:'Libre Baskerville', Georgia, serif; text-align:left; background:var(--cream);
+      color:var(--ink); border:1px solid var(--mist); border-left:3px solid var(--accent);
+      padding:12px 14px; font-size:0.88rem; cursor:pointer; transition:all .15s ease;
+    }
+    button.choice:hover{ background:var(--white); border-left-color:var(--rust); transform:translateX(2px); }
+    button.choice .tag{
+      font-family:'DM Mono',monospace; color:var(--accent); font-size:0.58rem; letter-spacing:0.08em;
+      display:block; margin-bottom:4px; text-transform:uppercase;
+    }
 
-.badge{
-  font-size:0.62rem;
-  letter-spacing:0.12em;
-  color:var(--teal);
-  border:1px solid var(--teal);
-  padding:3px 8px;
-  border-radius:2px;
-  white-space:nowrap;
-}
+    .diceRig{ display:none; margin:18px 0 22px; border:1px solid var(--mist); background:var(--cream); padding:16px; }
+    .diceRig.show{ display:block; }
+    .diceRig .label{ font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); margin-bottom:10px; text-transform:uppercase; }
+    .diceRow{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+    .d10, .dieShape{
+      width:56px; height:60px; background:var(--white); border:1px solid var(--accent);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-family:'Playfair Display', serif; font-weight:800; color:var(--accent);
+    }
+    .dieShape .facesize{ font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--stone); margin-bottom:-2px; }
+    .dieShape .facenum{ font-size:1.3rem; }
+    .d10 .facenum, .d10{ font-size:1.4rem; }
+    .d10.spin, .dieShape.spin{ animation:spin .4s steps(9) infinite; }
+    @keyframes spin{ 0%{color:var(--accent);} 50%{color:var(--rust);} 100%{color:var(--accent);} }
+    .diceMeta{ font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--stone); line-height:1.6; }
+    .diceMeta b{ color:var(--ink); }
+    .result-banner{
+      margin-top:12px; padding:8px 12px; font-family:'DM Mono',monospace; font-size:0.72rem;
+      letter-spacing:0.06em; font-weight:700; border:1px solid; display:none; text-transform:uppercase;
+    }
+    .result-banner.success{ display:block; color:var(--sage); border-color:var(--sage); background:rgba(74,92,69,0.06); }
+    .result-banner.fail{ display:block; color:var(--rust); border-color:var(--rust); background:rgba(139,58,42,0.06); }
 
-.statusbar{
-  border:1px solid var(--border);
-  border-top:none;
-  background:var(--panel);
-  padding:10px 22px;
-  display:flex;
-  gap:20px;
-  flex-wrap:wrap;
-  font-size:0.68rem;
-  color:var(--text-dim);
-  letter-spacing:0.05em;
-}
-.statusbar b{color:var(--amber);}
-.statusbar .sta-val{color:var(--good);}
-.statusbar .sta-low{color:var(--danger);}
+    footer.log{
+      border:1px solid var(--mist); border-top:none; background:var(--cream);
+      padding:11px 20px; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone);
+      max-height:100px; overflow-y:auto;
+    }
+    footer.log div{ margin-bottom:4px; }
+    .l-good{ color:var(--sage); } .l-bad{ color:var(--rust); } .l-info{ color:var(--accent); }
 
-main{
-  border:1px solid var(--border);
-  background:var(--panel);
-  min-height:340px;
-  padding:26px 24px;
-}
+    .navbar{ border:1px solid var(--mist); border-top:none; background:var(--cream); display:flex; gap:1px; }
+    .navbtn{
+      flex:1; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.06em;
+      text-align:center; padding:11px 8px; background:var(--white); color:var(--stone);
+      border:none; border-right:1px solid var(--mist); cursor:pointer; text-decoration:none;
+      display:flex; align-items:center; justify-content:center; text-transform:uppercase;
+    }
+    .navbtn:last-child{ border-right:none; }
+    .navbtn:hover:not(:disabled){ color:var(--rust); background:var(--cream); }
+    .navbtn:disabled{ opacity:0.35; cursor:not-allowed; }
+    .navbtn.navhome{ color:var(--accent); }
+    .navbtn.navhome:hover{ color:var(--rust); }
 
-.story{
-  font-size:0.92rem;
-  line-height:1.65;
-  color:var(--text);
-  margin-bottom:22px;
-  white-space:pre-line;
-}
-.story .flavor{color:var(--teal); font-style:italic;}
+    .gridPairs, .raceGrid, .loadoutGrid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0 20px; }
+    .loadoutGrid{ grid-template-columns:1fr; }
+    .statPair{ border:1px solid var(--mist); background:var(--cream); padding:10px 12px; }
+    .statPair .pname{ font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.06em; text-transform:uppercase; }
+    .statPair .pval{ font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--accent); margin-top:2px; }
 
-.choices{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-}
+    .raceCard, .loadoutCard{
+      border:1px solid var(--mist); background:var(--cream); border-left:3px solid var(--accent);
+      padding:12px; cursor:pointer; font-size:0.85rem;
+    }
+    .raceCard:hover, .loadoutCard:hover{ background:var(--white); border-left-color:var(--rust); }
+    .raceCard.selected, .loadoutCard.selected{ border-left-color:var(--sage); background:var(--white); }
+    .rname, .lname{ font-family:'Playfair Display',serif; font-size:0.9rem; color:var(--ink); font-weight:700; margin-bottom:4px; }
+    .rdesc, .ldesc{ color:var(--stone); line-height:1.5; font-size:0.78rem; }
 
-button.choice{
-  font-family:'JetBrains Mono', monospace;
-  text-align:left;
-  background:var(--panel-2);
-  color:var(--text);
-  border:1px solid var(--border);
-  border-left:3px solid var(--amber-dim);
-  padding:12px 14px;
-  font-size:0.84rem;
-  cursor:pointer;
-  transition:all .15s ease;
-  letter-spacing:0.02em;
-}
-button.choice:hover{
-  border-left-color:var(--amber);
-  background:#1b2434;
-  transform:translateX(2px);
-}
-button.choice .tag{
-  color:var(--teal);
-  font-size:0.68rem;
-  letter-spacing:0.08em;
-  display:block;
-  margin-bottom:3px;
-}
+    .diePrimer{ border:1px solid var(--mist); background:var(--cream); padding:14px 16px; margin:16px 0; font-family:'DM Mono',monospace; font-size:0.72rem; line-height:1.8; color:var(--stone); }
+    .diePrimer b{ color:var(--accent); }
 
-/* dice readout */
-.diceRig{
-  display:none;
-  margin:18px 0 22px;
-  border:1px solid var(--border);
-  background:var(--panel-2);
-  padding:18px;
-}
-.diceRig.show{display:block;}
-.diceRig .label{
-  font-size:0.68rem;
-  letter-spacing:0.1em;
-  color:var(--text-dim);
-  margin-bottom:10px;
-}
-.diceRow{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  flex-wrap:wrap;
-}
-.d10{
-  width:56px;
-  height:64px;
-  background:#0a0f18;
-  border:1px solid var(--amber-dim);
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:'Orbitron', sans-serif;
-  font-size:1.5rem;
-  font-weight:800;
-  color:var(--amber);
-}
-.d10.spin{animation:spin .4s steps(9) infinite;}
-@keyframes spin{
-  0%{color:var(--amber);}
-  50%{color:var(--teal);}
-  100%{color:var(--amber);}
-}
-.diceMeta{font-size:0.76rem; color:var(--text-dim); line-height:1.5;}
-.diceMeta b{color:var(--text);}
-.result-banner{
-  margin-top:12px;
-  padding:8px 12px;
-  font-size:0.8rem;
-  letter-spacing:0.08em;
-  font-weight:700;
-  border:1px solid;
-  display:none;
-}
-.result-banner.success{display:block; color:var(--good); border-color:var(--good); background:rgba(111,224,138,0.07);}
-.result-banner.fail{display:block; color:var(--danger); border-color:var(--danger); background:rgba(255,92,92,0.07);}
-
-footer.log{
-  border:1px solid var(--border);
-  border-top:none;
-  background:#0a0e16;
-  padding:12px 22px;
-  font-size:0.66rem;
-  color:var(--text-dim);
-  max-height:110px;
-  overflow-y:auto;
-}
-footer.log div{margin-bottom:4px;}
-footer.log .l-good{color:var(--good);}
-footer.log .l-bad{color:var(--danger);}
-footer.log .l-info{color:var(--teal);}
-
-/* chargen */
-.gridPairs{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin:16px 0 20px;
-}
-.statPair{
-  border:1px solid var(--border);
-  background:var(--panel-2);
-  padding:10px 12px;
-}
-.statPair .pname{font-size:0.66rem; color:var(--text-dim); letter-spacing:0.08em;}
-.statPair .pval{font-family:'Orbitron',sans-serif; font-size:1.15rem; color:var(--amber); margin-top:2px;}
-
-.raceGrid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:18px;
-}
-.raceCard{
-  border:1px solid var(--border);
-  background:var(--panel-2);
-  border-left:3px solid var(--amber-dim);
-  padding:12px;
-  cursor:pointer;
-  font-size:0.78rem;
-}
-.raceCard:hover{border-left-color:var(--amber); background:#1b2434;}
-.raceCard.selected{border-left-color:var(--teal); background:#132622;}
-.raceCard .rname{font-family:'Orbitron',sans-serif; font-size:0.78rem; color:var(--amber); letter-spacing:0.06em; margin-bottom:4px;}
-.raceCard .rdesc{color:var(--text-dim); line-height:1.4; font-size:0.7rem;}
-
-.smallbtn{
-  font-family:'JetBrains Mono';
-  background:transparent;
-  color:var(--teal);
-  border:1px solid var(--teal);
-  padding:7px 14px;
-  font-size:0.72rem;
-  letter-spacing:0.06em;
-  cursor:pointer;
-  margin-right:8px;
-}
-.smallbtn:disabled{opacity:0.3; cursor:not-allowed;}
-.primary-go{
-  background:var(--amber);
-  color:#1a1300;
-  border:1px solid var(--amber);
-  font-weight:700;
-}
-</style>
+    .smallbtn{
+      font-family:'DM Mono',monospace; background:transparent; color:var(--accent); border:1px solid var(--accent);
+      padding:7px 15px; font-size:0.68rem; letter-spacing:0.06em; cursor:pointer; margin-right:8px; text-transform:uppercase;
+    }
+    .smallbtn:hover:not(:disabled){ background:var(--accent); color:var(--white); }
+    .smallbtn:disabled{ opacity:0.35; cursor:not-allowed; }
+    .primary-go{ background:var(--accent); color:var(--white); border:1px solid var(--accent); font-weight:700; }
+    .primary-go:hover{ background:var(--rust); border-color:var(--rust); color:var(--white); }
+    </style>
+<script>
+  (function(){
+    try {
+      var saved = localStorage.getItem('kellaths_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) {}
+  })();
+</script>
 </head>
 <body>
+<div class="topline"></div>
+<div class="sitebar">
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <div class="sitenav">
+      <a href="/games.html">Games</a>
+      <a href="/">Home</a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+    </div>
+  </div>
+</div>
 <div class="console">
   <header>
     <div>
@@ -298,6 +203,11 @@ footer.log .l-info{color:var(--teal);}
   </div>
   <main id="main"></main>
   <footer class="log" id="log"></footer>
+  <div class="navbar">
+    <button class="navbtn" id="navRestart" onclick="if(confirm('Restart from the beginning?')) restart();">⟲ RESTART</button>
+    <button class="navbtn" id="navBack" onclick="goBack();" disabled>← BACK</button>
+    <a class="navbtn navhome" href="https://brooksgroves.com">🏠 HOME</a>
+  </div>
 </div>
 
 <script>
@@ -309,6 +219,28 @@ function rollPercentile(){
   let value = tens*10 + ones;
   if(value === 0) value = 100;
   return {tens, ones, value};
+}
+
+/* ---------------- NAVIGATION / HISTORY ---------------- */
+let sceneHistory = [];
+function go(fn){
+  sceneHistory.push(fn);
+  fn();
+  updateNavBar();
+}
+function goBack(){
+  if(sceneHistory.length <= 1) return;
+  sceneHistory.pop();
+  const prev = sceneHistory[sceneHistory.length - 1];
+  prev();
+  updateNavBar();
+}
+function updateNavBar(){
+  const backBtn = document.getElementById('navBack');
+  if(!backBtn) return;
+  const badge = document.getElementById('sceneBadge').textContent;
+  const lockedOut = badge === 'COMBAT' || badge === 'RESCUED' || badge === 'MISSION LOST';
+  backBtn.disabled = sceneHistory.length <= 1 || lockedOut;
 }
 
 let logEl = document.getElementById('log');
@@ -402,7 +334,7 @@ function startChargen(){
     };
     grid.appendChild(card);
   });
-  document.getElementById('raceNext').onclick = rollStats;
+  document.getElementById('raceNext').onclick = ()=>go(rollStats);
 }
 
 function rollStats(){
@@ -434,7 +366,7 @@ function showStats(){
     <button class="smallbtn primary-go" id="toSkill">CONFIRM →</button>
   `);
   document.getElementById('reroll').onclick = rollStats;
-  document.getElementById('toSkill').onclick = chooseSkill;
+  document.getElementById('toSkill').onclick = ()=>go(chooseSkill);
 }
 
 function statFull(s){
@@ -461,7 +393,7 @@ function chooseSkill(){
       logLine('Specialization locked: ' + player.skill.toUpperCase() + '.', 'l-info');
       renderMain(`<div class="story">Character sealed. ${RACES[player.race].name}, STA ${player.maxSTA}, trained in ${player.skill}.<br><br>The skiff's hull ticks as it cools. Somewhere on this moon, a working relay tower is your only way home.</div>
       <button class="smallbtn primary-go" id="begin">BEGIN DESCENT →</button>`);
-      document.getElementById('begin').onclick = ()=>scene1();
+      document.getElementById('begin').onclick = ()=>go(scene1);
     };
   });
 }
@@ -521,10 +453,10 @@ function scene1(){
         renderMain(`<div class="story">The cargo bay is slag. Ten minutes lost for nothing but a scorched glove.</div>
         <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       }
-      document.getElementById('n').onclick = scene2;
+      document.getElementById('n').onclick = ()=>go(scene2);
     }, {label:'Search wreckage (LOGIC)'});
   };
-  document.getElementById('c1b').onclick = scene2;
+  document.getElementById('c1b').onclick = ()=>go(scene2);
 }
 
 function scene2(){
@@ -550,7 +482,7 @@ function scene2(){
         renderMain(`<div class="story">You cross hand-over-hand in under a minute, boots finding every solid link.</div>
         <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       }
-      document.getElementById('n').onclick = scene3;
+      document.getElementById('n').onclick = ()=>go(scene3);
     }, {label:'Cross the line (REACTION SPEED)'});
   };
   document.getElementById('c2b').onclick = ()=>{
@@ -567,7 +499,7 @@ function scene2(){
         renderMain(`<div class="story">Slow going, but you make the far rim without a scratch. The sun's lower now.</div>
         <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       }
-      document.getElementById('n').onclick = scene3;
+      document.getElementById('n').onclick = ()=>go(scene3);
     }, {label:'Climb route (STRENGTH)'});
   };
 }
@@ -587,16 +519,16 @@ function scene3(){
       if(success){
         renderMain(`<div class="story">You thread between the rocks. The ravik's head swings toward a lizard skittering the other way, and you're past.</div>
         <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
-        document.getElementById('n').onclick = scene4;
+        document.getElementById('n').onclick = ()=>go(scene4);
       } else {
         logLine('Stealth failed — the ravik has your scent.', 'l-bad');
         renderMain(`<div class="story">A branch snaps under your boot. The ravik's head snaps around and it charges.</div>
         <button class="smallbtn primary-go" id="n">BRACE FOR IMPACT →</button>`);
-        document.getElementById('n').onclick = ()=>startCombat();
+        document.getElementById('n').onclick = ()=>go(startCombat);
       }
     }, {label:'Stealth (REACTION SPEED)'});
   };
-  document.getElementById('c3b').onclick = ()=>startCombat();
+  document.getElementById('c3b').onclick = ()=>go(startCombat);
 }
 
 /* ---------------- COMBAT ---------------- */
@@ -611,8 +543,8 @@ function startCombat(){
 }
 
 function combatRound(){
-  if(player.curSTA <= 0){ return endGame(false, 'wounded'); }
-  if(creature.hp <= 0){ return scene4(); }
+  if(player.curSTA <= 0){ return go(()=>endGame(false, 'wounded')); }
+  if(creature.hp <= 0){ return go(scene4); }
   document.getElementById('combatBody').innerHTML = `
     <div class="gridPairs">
       <div class="statPair"><div class="pname">RAVIK HP</div><div class="pval">${creature.hp} / ${creature.maxHp}</div></div>
@@ -643,7 +575,7 @@ function afterPlayerAction(){
     if(creature.hp <= 0){
       renderMain(`<div class="story">The ravik shudders, buckles, and stops moving. Its plated head cracks against the stone — dead still.</div>
       <button class="smallbtn primary-go" id="n">MOVE ON →</button>`);
-      document.getElementById('n').onclick = scene4;
+      document.getElementById('n').onclick = ()=>go(scene4);
       return;
     }
     // creature attacks back
@@ -661,7 +593,7 @@ function afterPlayerAction(){
     if(player.curSTA <= 0){
       renderMain(`<div class="story">Your legs give out. The last thing you see is the ravik's shadow falling over you...</div>
       <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
-      document.getElementById('n').onclick = ()=>endGame(false,'wounded');
+      document.getElementById('n').onclick = ()=>go(()=>endGame(false,'wounded'));
       return;
     }
     combatRound();
@@ -681,20 +613,20 @@ function scene4(){
   document.getElementById('c4a').onclick = ()=>{
     const target = statTarget('LOG', {skillBonus:'technological', gear:true});
     runCheck(target, (success)=>{
-      if(success) endGame(true, 'clean');
+      if(success) go(()=>endGame(true, 'clean'));
       else {
         renderMain(`<div class="story">The panel sparks and the thread of power gutters. One more try, if you're steady enough.</div>
         <button class="smallbtn primary-go" id="retry">TRY AGAIN →</button>`);
         document.getElementById('retry').onclick = ()=>{
           const t2 = statTarget('LOG', {skillBonus:'technological', gear:true}) - 10;
-          runCheck(t2, (s2)=>{ endGame(s2, s2 ? 'clean':'wounded'); }, {label:'Re-route console (second attempt)'});
+          runCheck(t2, (s2)=>{ go(()=>endGame(s2, s2 ? 'clean':'wounded')); }, {label:'Re-route console (second attempt)'});
         };
       }
     }, {label:'Re-route console (LOGIC)'});
   };
   document.getElementById('c4b').onclick = ()=>{
     const target = statTarget('LDR', {skillBonus:'biosocial'});
-    runCheck(target, (success)=>{ endGame(success, success ? 'raw':'wounded'); }, {label:'Force broadcast (LEADERSHIP)'});
+    runCheck(target, (success)=>{ go(()=>endGame(success, success ? 'raw':'wounded')); }, {label:'Force broadcast (LEADERSHIP)'});
   };
 }
 
@@ -712,17 +644,34 @@ function endGame(won, mode){
   }
   renderMain(`<div class="story">${text}</div>
   <button class="smallbtn primary-go" id="again">RUN A NEW SCOUT →</button>`);
-  document.getElementById('again').onclick = ()=>{
-    player = {race:null, stats:{}, skill:null, maxSTA:0, curSTA:0, hasGear:false};
-    logEl.innerHTML = '';
-    refreshStatus();
-    startChargen();
-  };
+  document.getElementById('again').onclick = restart;
 }
+
+function restart(){
+  player = {race:null, stats:{}, skill:null, maxSTA:0, curSTA:0, hasGear:false};
+  logEl.innerHTML = '';
+  refreshStatus();
+  sceneHistory = [];
+  go(startChargen);
+}
+
+
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  const sync = () => { if (btn) btn.textContent = root.getAttribute('data-theme') === 'dark' ? '◐' : '◑'; };
+  sync();
+  if (btn) btn.addEventListener('click', () => {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    if (isDark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('kellaths_theme', isDark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
 
 /* ---------------- BOOT ---------------- */
 refreshStatus();
-startChargen();
+go(startChargen);
 </script>
 </body>
 </html>
