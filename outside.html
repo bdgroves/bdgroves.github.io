@@ -1202,10 +1202,15 @@ async function loadFootball() {
     // scoreboard substitution below.
     const rawSchedulePromises = FOOTBALL_TEAMS.map(cfg => {
       const base = `https://site.api.espn.com/apis/site/v2/sports/football/${cfg.league}/teams/${cfg.id}/schedule`;
-      // ESPN defaults to the regular season. For the NFL we also pull seasontype=1
-      // (preseason) so August exhibition results still land in "Recent" during the
-      // weeks before the regular season opens.
-      const urls = cfg.league === 'nfl' ? [base, `${base}?seasontype=1`] : [base];
+      // seasontype: 1 = preseason, 2 = regular, 3 = postseason.
+      // The bare `base` URL does NOT reliably mean "regular season" — it returns
+      // whatever ESPN considers the active phase, which in August is PRESEASON.
+      // That's what left the Seahawks with no "Next" once the exhibition games
+      // finished: both fetches were returning preseason, so the regular season
+      // was never in the pool at all. Ask for each phase explicitly instead of
+      // trusting the default. Duplicate events across responses are harmless —
+      // they're de-duped by event id in the freshById merge below.
+      const urls = [base, `${base}?seasontype=1`, `${base}?seasontype=2`, `${base}?seasontype=3`];
       return Promise.all(
         urls.map(u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null))
       )
@@ -1248,7 +1253,17 @@ async function loadFootball() {
 
     const scheduleResults = rawScheduleResults.map(({ id, events }) => {
       // Replace in place (not append) — this is what prevents the duplicate.
-      const merged = events.map(e => freshById.get(String(e.id)) || e);
+      // Also de-dupe by event id: we now fetch four seasontype variants and
+      // they overlap, so the same game arrives more than once.
+      const seen = new Set();
+      const merged = events
+        .map(e => freshById.get(String(e.id)) || e)
+        .filter(e => {
+          const k = String(e.id);
+          if (seen.has(k)) return false;
+          seen.add(k);
+          return true;
+        });
       const now = Date.now();
       const completed = merged
         .filter(e => e.competitions?.[0]?.status?.type?.completed)
