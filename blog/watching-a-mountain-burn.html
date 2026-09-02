@@ -244,6 +244,20 @@ footer.end a:hover{color:var(--rust)}
   color:var(--muted)}
 </style>
   <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
 </head>
 <body id="top">
 
@@ -253,7 +267,7 @@ footer.end a:hover{color:var(--rust)}
     <nav class="topnav">
       <a href="/blog/index.html">Blog</a>
       <a href="/geospatial.html">Geospatial</a>
-      <a href="https://github.com/bdgroves" target="_blank">GitHub &#8599;</a>
+      <a href="https://github.com/bdgroves" target="_blank">GitHub &#8599;</a><button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button>
     </nav>
   </div>
 </header>
@@ -701,5 +715,24 @@ RdNBR          +772.8   ->  in the range studies call high severity</pre>
 </article>
 </main>
 
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('theme-toggle');
+  if(!btn) return;
+  function sync(){
+    var dark=root.getAttribute('data-theme')==='dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label',label); btn.setAttribute('title',label);
+  }
+  sync();
+  btn.addEventListener('click',function(){
+    var dark=root.getAttribute('data-theme')==='dark';
+    if(dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try{ localStorage.setItem('bg_theme', dark?'light':'dark'); }catch(e){}
+    sync();
+  });
+})();
+</script>
 </body>
 </html>

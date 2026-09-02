@@ -179,3 +179,68 @@ html footer .footer-private .fp-links a {
   border-bottom: 1px solid transparent;
 }
 html footer .footer-private .fp-links a:hover { color: var(--gold, #c8922a); border-bottom-color: var(--gold, #c8922a); }
+
+/* ──────────────────────────────────────────────────────────────
+   DARK MODE — site-wide
+
+   Note on the filename: this started as footer-only and is now the
+   shared stylesheet for the whole site. Kept the name rather than
+   rename it, because five separate repos link to it and they deploy
+   at different times — a rename would need every one of them live
+   before the old file could go.
+
+   HOW IT WORKS
+   Every page defines its palette in an inline `:root { --ink: ... }`.
+   This block overrides those variables when <html data-theme="dark">
+   is set. `html[data-theme="dark"]` is specificity (0,1,1) against
+   `:root` at (0,1,0), so it wins even though the inline <style>
+   usually loads AFTER this <link>. That's what makes one shared file
+   able to re-theme 188 pages that each carry their own palette.
+
+   The nine core variables below are present on every page. Some pages
+   add their own (--fire, --sierra, --sky, --westin, --foothills);
+   those keep their light values, which is fine — they're accents used
+   on small elements, and they stay legible against the dark surfaces.
+   ────────────────────────────────────────────────────────────── */
+
+html[data-theme="dark"] {
+  --ink: #ece6da;        /* body text — and the background of inverted surfaces */
+  --parchment: #17150f;  /* page background */
+  --cream: #211e17;      /* raised cards */
+  --stone: #a2988a;      /* secondary text */
+  --gold: #d9a63f;
+  --mist: #3a352d;       /* rules and borders */
+  --white: #12100d;      /* pairs with --ink; see the override block below */
+  --rust: #cf6b52;
+  --sage: #83a077;
+}
+
+/* --ink and --white are a light/dark PAIR in these stylesheets: --ink is
+   body text but ALSO the background of the footer and any inverted card,
+   while --white is the text sitting on those dark surfaces. Flipping the
+   variables alone would invert exactly those elements backwards, so the
+   places that use them as a surface are pinned here. */
+html[data-theme="dark"] footer { background: #0f0d0a; }
+html[data-theme="dark"] footer .footer-name { color: #ece6da; }
+html[data-theme="dark"] .dropdown,
+html[data-theme="dark"] .mobile-nav,
+html[data-theme="dark"] .masthead { background: #17150f; }
+html[data-theme="dark"] img:not([src*=".svg"]) { filter: brightness(.92); }
+
+/* Code and pre blocks read as "inverted" in light mode; leave them dark. */
+html[data-theme="dark"] pre,
+html[data-theme="dark"] code { background: #211e17; color: #ece6da; }
+
+/* ── The toggle button ── */
+.theme-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 0 0 .9rem;
+  font-family: 'DM Mono', monospace;
+  font-size: .8rem;
+  line-height: 1;
+  color: var(--stone, #7a7268);
+}
+.theme-toggle:hover { color: var(--gold, #c8922a); }
+.theme-toggle:focus-visible { outline: 2px solid var(--gold, #c8922a); outline-offset: 3px; }

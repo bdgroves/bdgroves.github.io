@@ -83,7 +83,7 @@
 <script>
   (function(){
     try {
-      var saved = localStorage.getItem('games_theme');
+      var saved = localStorage.getItem('bg_theme');
       var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       if (saved === 'dark' || (!saved && prefersDark)) {
         document.documentElement.setAttribute('data-theme','dark');
@@ -210,7 +210,7 @@
   if (btn) btn.addEventListener('click', () => {
     const isDark = root.getAttribute('data-theme') === 'dark';
     if (isDark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
-    try { localStorage.setItem('games_theme', isDark ? 'light' : 'dark'); } catch(e) {}
+    try { localStorage.setItem('bg_theme', isDark ? 'light' : 'dark'); } catch(e) {}
     sync();
   });
 })();

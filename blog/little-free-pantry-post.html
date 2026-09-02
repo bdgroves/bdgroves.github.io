@@ -92,6 +92,20 @@
     }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
 </head>
 <body id="top">
 <div class="topline"></div>
@@ -102,7 +116,7 @@
       <a href="/blog/index.html">Blog</a>
       <a href="https://brooksgroves.com/little-free-pantry" target="_blank" class="live">View Map ↗</a>
       <a href="https://www.lakewoodrotary.com/" target="_blank">Lakewood Rotary ↗</a>
-    </nav>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
   </div>
 </header>
 
