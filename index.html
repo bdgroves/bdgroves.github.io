@@ -275,7 +275,59 @@
     hr.rule { border:none; border-top:1px solid var(--mist); margin:0; }
     .fade-in { opacity:0; transform:translateY(12px); animation:fadeIn 0.5s forwards; }
     @keyframes fadeIn { to{opacity:1;transform:translateY(0);} }
+  
+    /* ── Dark mode ──────────────────────────────────────────────
+       --ink and --white are a light/dark PAIR here: --ink is body
+       text but also the background of inverted surfaces, so the
+       rules that use them as backgrounds are overridden below. */
+    [data-theme="dark"] {
+      --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
+      --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
+      --white:#12100d; --rust:#cf6b52; --sage:#83a077;
+    }
+    [data-theme="dark"] footer { background:#0f0d0a; }
+    [data-theme="dark"] .dropdown,
+    [data-theme="dark"] .mobile-nav { background:#211e17; }
+    [data-theme="dark"] .footer-name { color:#ece6da; }
+    [data-theme="dark"] img { filter:brightness(.92); }
+
+    .theme-toggle {
+      background:none; border:none; cursor:pointer; padding:0;
+      font-family:'DM Mono',monospace; font-size:0.8rem;
+      color:var(--stone); line-height:1;
+    }
+    .theme-toggle:hover { color:var(--gold); }
+  
+    /* ── Footer contact block ── */
+    .footer-contact {
+      width:100%; display:grid; gap:1.75rem 2.5rem;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      padding-top:1.75rem; margin-top:0.5rem;
+      border-top:1px solid #2a2a26;
+    }
+    .fc-label {
+      font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.16em;
+      text-transform:uppercase; color:#3a3a36; margin-bottom:0.35rem;
+    }
+    .fc-value, .footer-contact a {
+      font-family:'DM Mono',monospace; font-size:0.62rem; line-height:1.6;
+      color:var(--stone); text-decoration:none;
+    }
+    .footer-contact a { border-bottom:1px solid transparent; }
+    .footer-contact a:hover { color:var(--gold); border-bottom-color:var(--gold); }
   </style>
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
 </head>
 <body>
 
@@ -484,6 +536,8 @@
         <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky ↗</a>
       </div>
     </div>
+
+    <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button>
 
   </nav>
 </div>
@@ -807,6 +861,27 @@
         <a href="https://ko-fi.com/brooksgroves" target="_blank" style="color:var(--gold);">🍺 Tip Jar</a>
       </div>
     </div>
+    <!-- Contact block — labelled fields rather than a wall of links, so the
+         practical details (where I am, when I'm likely to reply) are findable. -->
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
     <p style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--stone);width:100%;padding-top:1.5rem;border-top:1px solid #2a2a26;">&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="https://brooksgroves.com/about.html" style="color:var(--stone);text-decoration:none;">About</a> &middot; <a href="https://brooksgroves.com/tags.html" style="color:var(--stone);text-decoration:none;">Tags</a></p>
   </div>
 </footer>
@@ -1240,5 +1315,31 @@ async function loadCyclingNews() {
 
 </script>
 
+
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this only handles clicks and keeps the button's label truthful.
+(function(){
+  const root = document.documentElement;
+  const btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  const sync = () => {
+    const dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Say what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    const label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  };
+  sync();
+  btn.addEventListener('click', () => {
+    const dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
 </body>
 </html>
