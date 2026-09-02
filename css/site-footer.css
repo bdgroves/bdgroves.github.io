@@ -1,0 +1,144 @@
+/* ──────────────────────────────────────────────────────────────
+   site-footer.css — the shared footer for brooksgroves.com
+
+   Every page on the site carries its own inline <style> block, which
+   means a change to a common element used to mean editing dozens of
+   files. This file exists so the footer is edited once.
+
+   Selectors are scoped under `footer` and use `html footer` where a
+   page's inline rules would otherwise win on source order — the inline
+   <style> usually loads after this <link>, so bare `.footer-name`
+   would lose. `html footer .footer-name` is specificity (0,2,2)
+   against an inline `.footer-name` at (0,1,0), so this wins cleanly.
+   ────────────────────────────────────────────────────────────── */
+
+html footer .footer-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+html footer .footer-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--white, #fdfaf4);
+  margin: 0 0 .35rem;
+}
+
+html footer .footer-tagline {
+  font-family: 'DM Mono', monospace;
+  font-size: .58rem;
+  letter-spacing: .06em;
+  color: var(--stone, #7a7268);
+  margin: 0;
+  line-height: 1.7;
+}
+html footer .footer-tagline a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+html footer .footer-tagline a:hover { color: var(--gold, #c8922a); }
+
+/* ── Labelled fields ── */
+html footer .fc-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .5rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #3a3a36;
+  margin-bottom: .35rem;
+}
+html footer .fc-value,
+html footer .footer-contact a {
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem;
+  line-height: 1.6;
+  color: var(--stone, #7a7268);
+  text-decoration: none;
+}
+html footer .footer-contact a { border-bottom: 1px solid transparent; }
+html footer .footer-contact a:hover { color: var(--gold, #c8922a); border-bottom-color: var(--gold, #c8922a); }
+
+html footer .footer-contact {
+  width: 100%;
+  display: grid;
+  gap: 1.75rem 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  padding-top: 1.75rem;
+  margin-top: .5rem;
+  border-top: 1px solid #2a2a26;
+}
+
+/* ── Social icons ──
+   Official brand marks from Simple Icons (CC0). LinkedIn's mark was
+   withdrawn from that set at LinkedIn's request, so it gets a neutral
+   "in" wordmark instead of a trademark we can't licence cleanly.
+   Icons use currentColor so they follow any theme change for free. */
+html footer .social-row { display: flex; flex-wrap: wrap; gap: .55rem; }
+html footer .social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 4px;
+  border: 1px solid #2a2a26;
+  color: var(--stone, #7a7268);
+  text-decoration: none;
+  transition: color .15s, border-color .15s, background .15s;
+}
+html footer .social-btn svg { width: .95rem; height: .95rem; fill: currentColor; display: block; }
+html footer .social-word {
+  font-family: 'DM Mono', monospace;
+  font-size: .72rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+html footer .social-btn:hover {
+  color: var(--gold, #c8922a);
+  border-color: var(--gold, #c8922a);
+  background: rgba(200, 146, 42, .08);
+}
+html footer .social-btn:focus-visible { outline: 2px solid var(--gold, #c8922a); outline-offset: 2px; }
+
+/* ── Bottom bar ── */
+html footer .footer-bottom {
+  font-family: 'DM Mono', monospace;
+  font-size: .52rem;
+  color: var(--stone, #7a7268);
+  width: 100%;
+  padding-top: 1.5rem;
+  border-top: 1px solid #2a2a26;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0;
+}
+html footer .footer-bottom a { color: var(--stone, #7a7268); text-decoration: none; }
+html footer .footer-bottom a:hover { color: var(--gold, #c8922a); }
+
+@media (max-width: 560px) {
+  html footer .footer-inner { gap: 1.5rem; }
+  html footer .footer-contact { gap: 1.25rem 1.5rem; }
+}
+
+/* ── Page-specific links ──
+   Contextual navigation the original per-page footers carried (back to
+   Blog, the topic page, the project). Kept rather than flattened away —
+   a blog post with no route back to the blog is a regression. */
+html footer .footer-connect,
+html footer .footer-pagelinks { display: flex; flex-direction: column; gap: .4rem; }
+html footer .pagelink-row { display: flex; flex-wrap: wrap; gap: .9rem; }
+html footer .pagelink-row a {
+  font-family: 'DM Mono', monospace;
+  font-size: .62rem;
+  color: var(--stone, #7a7268);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+html footer .pagelink-row a:hover { color: var(--gold, #c8922a); border-bottom-color: var(--gold, #c8922a); }
