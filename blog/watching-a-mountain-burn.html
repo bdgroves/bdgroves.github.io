@@ -428,11 +428,11 @@ footer.end a:hover{color:var(--rust)}
   begin with.</p>
 
   <div class="c">
-<pre>NBR pre-fire   +0.481   (Aug 18, four days before ignition, 0.9% cloud)
-NBR post-fire  -0.055   (Aug 23, fire still burning, 15.1% cloud)
+<pre>NBR pre-fire   +0.526   (Aug 18, four days before ignition, 0.9% cloud)
+NBR post-fire  -0.035   (Aug 30, after containment, 0.0% cloud)
 
-dNBR           +0.536   ->  moderate-high severity
-RdNBR          +772.8   ->  in the range studies call high severity</pre>
+dNBR           +0.562   ->  moderate-high severity
+RdNBR          +774.5   ->  in the range studies call high severity</pre>
   </div>
 
   <p>The number that made it real to me, though, was NDVI &mdash; which just measures
@@ -468,8 +468,8 @@ RdNBR          +772.8   ->  in the range studies call high severity</pre>
   <p>Here is where it got interesting, and where I nearly published something wrong.</p>
 
   <p>Same fire, same afternoon, five hundred metres apart: the grove in its drainage
-  burned at dNBR +0.536. The parking area on the dry ridge burned at +0.126. Four times
-  the severity.</p>
+  burned at dNBR +0.562. The parking area on the dry ridge burned at +0.118. Nearly five
+  times the severity.</p>
 
   <p>The obvious reading is terrain. Fire runs uphill, because flames preheat the fuel
   above them; a drainage concentrates the front and channels its own wind up the gully.
@@ -496,18 +496,18 @@ RdNBR          +772.8   ->  in the range studies call high severity</pre>
   <div class="c">
 <pre>Ground with pre-fire NBR 0.40-0.55:
 
-  grove ring          n =   129    mean dNBR  +0.731
-  elsewhere in AOI    n = 6,891    mean dNBR  +0.453
-                      terrain-attributable    +0.278</pre>
+  grove ring          n =   147    mean dNBR  +0.876
+  elsewhere in AOI    n = 7,286    mean dNBR  +0.471
+                      terrain-attributable    +0.405</pre>
   </div>
 
   <div class="finding">
     <div class="n">Finding 02</div>
-    <p>Even against equally-fuelled ground, the grove burned harder than 79% of it
-    &mdash; <b>+0.731 against +0.453</b>. That residual is not fuel load, because fuel load
+    <p>Even against equally-fuelled ground, the grove burned harder than 72.3% of it
+    &mdash; <b>+0.876 against +0.471</b>. That residual is not fuel load, because fuel load
     is what was controlled for. What is left is terrain and moisture regime.</p>
     <p>Both effects are real and they compound. The raw 4&times; overstated the terrain
-    effect; the honest figure is +0.278 dNBR.</p>
+    effect; the honest figure is +0.405 dNBR.</p>
   </div>
 
   <p>Across the whole area, severity climbs steadily with pre-fire density &mdash; +0.344
@@ -524,7 +524,7 @@ RdNBR          +772.8   ->  in the range studies call high severity</pre>
   <figure class="bleed">
     <img src="img/peavine-watch/map_dnbr_aoi.png" alt="Burn severity across the full seven-kilometre area of interest, showing the grove as one of the hottest points in the burn.">
     <figcaption>The grove within the wider burn. Only 20.3% of this area reached
-    moderate-high severity or above; the grove mean of +0.548 exceeds 92.1% of the
+    moderate-high severity or above; the grove mean of +0.671 exceeds 91.3% of the
     surrounding three kilometres. It was not caught in a generally severe fire &mdash; it
     was one of the hottest spots in it.</figcaption>
   </figure>
@@ -619,7 +619,7 @@ RdNBR          +772.8   ->  in the range studies call high severity</pre>
     <p><b>Control your comparison or don't make it.</b> Two points burning differently
     tells you nothing if they started different. Holding pre-fire vegetation constant
     turned a story I liked into a number I can defend &mdash; and shrank it from 4&times;
-    to +0.278.</p>
+    to +0.405.</p>
     <p><b>Restrict both sides, or neither.</b> An early version of that analysis compared
     an unrestricted ring against a density-restricted comparison group. RdNBR divides by
     the square root of pre-fire NBR, so it explodes where that value is near zero, and the
@@ -641,16 +641,35 @@ RdNBR          +772.8   ->  in the range studies call high severity</pre>
 
   <h2><span class="num">Limits</span>What this does not establish</h2>
 
-  <p>The headline number is provisional. The only post-fire scene available when I ran this
-  was taken while the fire was still burning at 0% containment, and both active flame and
-  smoke distort NBR upward. It needs re-running against a clean post-containment scene.</p>
+  <p>The first version of this piece carried a different number, and the way it changed is
+  worth more than the number itself.</p>
 
-  <p><em>Update, 29 August:</em> the fire reached 95% containment on the 28th, but the
-  satellite hasn&rsquo;t yet delivered a clean look. Both passes since &mdash; 26 August,
-  two different tiles &mdash; came back at 27% and 29% valid pixels after cloud and smoke
-  masking, so the monitor flagged them unreliable and kept them out of the reliable set.
-  That is exactly what the check exists to do. The provisional +0.536 stands until a clear
-  scene arrives.</p>
+  <p><em>Update, 2 September.</em> The original run gave dNBR <b>+0.536</b>, computed against
+  an Aug 23 post-fire scene taken while the fire was still burning at 0% containment, through
+  15.1% cloud. I said at the time it was provisional and needed re-running against a clean
+  scene. On 30 and 31 August the satellite finally delivered: four passes, all four at 100%
+  valid pixels, the first clean look since the fire went out.</p>
+
+  <p>Re-run against the Aug 30 scene, the answer is <b>+0.562</b>. Slightly worse, not better.</p>
+
+  <p>But look at <em>which half moved.</em> The post-fire value barely shifted &mdash; from
+  &minus;0.055 to &minus;0.035, which is roughly what you would expect once smoke and fresh
+  ash clear off the signal. The pre-fire value jumped from +0.481 to <b>+0.526</b>, on what
+  should be the identical Aug 18 scene.</p>
+
+  <p>A pre-fire number has no business changing. Nothing happened to that hillside on 18
+  August. So the movement is not in the world, it is in the measurement &mdash; and the
+  likeliest culprit is a problem this project already knew it had. Peavine sits almost
+  exactly on the boundary between UTM zones 10 and 11, so scenes covering the same ground
+  arrive on two different tiles with two different reprojection paths. Difference across
+  that boundary and you get registration error precisely at sharp edges, which is to say
+  precisely at the edge of a grove. The current run reports the same tile for both scenes.
+  The earlier one may not have had that luxury.</p>
+
+  <p>Which is an uncomfortable thing to publish, and the reason to publish it. The number
+  did not get more certain because a better satellite pass arrived. It got more certain
+  because the two halves finally came from the same grid. I would rather show that than
+  quietly swap one figure for another and let the correction disappear.</p>
 
   <p>More importantly: dNBR and RdNBR are not soil burn severity. They measure surface and
   canopy change from above. Soil burn severity &mdash; the number that actually drives
@@ -691,8 +710,9 @@ RdNBR          +772.8   ->  in the range studies call high severity</pre>
 
   <p style="font-size:0.82rem;color:var(--muted);margin-top:2rem;">If you were displaced by
   the Hawk Fire, Washoe County emergency information and recovery resources are the place to
-  start &mdash; not this page. Fire figures here are current to 25 August 2026 and the
-  situation was still developing.</p>
+  start &mdash; not this page. Fire figures here are current to 2 September 2026. The fire reached 95%
+  containment on 28 August; the severity analysis was re-run against a clean post-containment
+  scene on 2 September.</p>
 
 </div>
 
