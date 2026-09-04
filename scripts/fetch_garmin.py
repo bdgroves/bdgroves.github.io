@@ -19,7 +19,7 @@ months. If only the OAuth2 half is stored, its refresh token dies in about
 a week and the secret has to be replaced constantly.
 """
 import base64, json, os, sys, tempfile
-from datetime import datetime, timezone, date
+from datetime import datetime, timezone, date, timedelta
 
 from garminconnect import (
     Garmin,
@@ -171,6 +171,10 @@ except GarminConnectConnectionError as e:
     print(f"WARN: connection error — {e}. Leaving cached data untouched.")
     # Exit clean — network blip, not something to email about.
     sys.exit(0)
+
+# How recent a badge has to be to show on the card, and how many to show.
+BADGE_WINDOW_DAYS = 45
+BADGE_MAX = 6
 
 def m_to_mi(m): return round((m or 0) * 0.000621371, 1)
 def m_to_yd(m): return round((m or 0) * 1.09361)
@@ -361,6 +365,50 @@ if not activities and cached.get('activities'):
     print("Preserving cached recent activities")
     activities = cached['activities']
 
+
+# ── Badges ─────────────────────────────────────────────────────────────
+# Garmin awards badges for milestones (first 5K, a distance total, a streak).
+# get_earned_badges() returns every badge ever earned, which for a long-time
+# user is hundreds of entries — so we keep only the ones earned recently and
+# cap the list. The card is meant to say "look what just happened", not to be
+# a trophy cabinet.
+#
+# Wrapped in its own try/except on purpose: the badge endpoint is not part of
+# the documented API and could change or disappear without warning. If it
+# breaks, training.json should still get written with everything else intact.
+badges = []
+try:
+    earned = client.get_earned_badges() or []
+    cutoff = datetime.now(timezone.utc) - timedelta(days=BADGE_WINDOW_DAYS)
+    for b in earned:
+        raw = b.get('badgeEarnedDate') or ''
+        if not raw:
+            continue
+        # Garmin returns e.g. "2026-09-04T19:12:31.0" — tolerate variants
+        try:
+            when = datetime.fromisoformat(raw.replace('Z', '+00:00').split('.')[0])
+            if when.tzinfo is None:
+                when = when.replace(tzinfo=timezone.utc)
+        except ValueError:
+            continue
+        if when < cutoff:
+            continue
+        badges.append({
+            'id':     b.get('badgeId'),
+            'name':   (b.get('badgeName') or '').strip(),
+            'date':   when.strftime('%Y-%m-%d'),
+            'pretty': when.strftime('%b %d'),
+            # how many times this badge has been earned, when Garmin tracks that
+            'count':  b.get('badgeEarnedNumber') or 1,
+        })
+    badges.sort(key=lambda x: x['date'], reverse=True)
+    badges = badges[:BADGE_MAX]
+    print(f"  Badges: {len(badges)} earned in the last {BADGE_WINDOW_DAYS} days")
+except Exception as e:
+    # Keep whatever we had rather than blanking the card on a transient failure
+    badges = cached.get('badges', [])
+    print(f"  Badges: endpoint failed ({type(e).__name__}) — kept {len(badges)} cached")
+
 output = {
     'source':                       'garmin',
     'updated':                      datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
@@ -369,6 +417,7 @@ output = {
     'all_time_counted_through_id':   counted_through_id,
     'all_time_counted_through_date': cached.get('all_time_counted_through_date', ''),
     'activities':                   activities,
+    'badges':                       badges,
 }
 
 os.makedirs('data', exist_ok=True)
