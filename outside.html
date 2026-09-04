@@ -237,6 +237,23 @@
       font-family:'DM Mono',monospace; font-size:0.5rem; font-weight:700;
       color:var(--garmin); margin-left:0.15rem;
     }
+    /* The newest one gets the emphasis — that's the actual news. */
+    .badge-chip.badge-newest { background:var(--white); border-color:var(--garmin); }
+    .badge-chip.badge-newest .badge-date { color:var(--garmin); font-weight:700; }
+    /* The overflow chip is a link, so it needs the link styling undone. */
+    .badge-chip.badge-more {
+      text-decoration:none; border-left-color:var(--stone);
+      transition:border-color .15s, color .15s;
+    }
+    .badge-chip.badge-more:hover { border-left-color:var(--garmin); }
+    .badge-chip.badge-more .badge-name { color:var(--stone); }
+    .badge-chip.badge-more:hover .badge-name { color:var(--garmin); }
+    /* Running total, sat next to the section label rather than in the list. */
+    .badge-tally {
+      font-family:'DM Mono',monospace; font-size:0.5rem; font-weight:400;
+      letter-spacing:0.08em; text-transform:none; color:var(--stone);
+      margin-left:0.5rem;
+    }
 
     .updated-note { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--mist); margin-top:1.5rem; }
 
@@ -1542,20 +1559,26 @@ async function loadTraining() {
 }
 
 
-// Garmin badges — milestone awards, only the recent ones.
-// The whole section (label included) is written here rather than sitting in
-// the markup, so that a quiet month leaves no empty heading on the page.
+// Garmin badges — milestone awards from the last 30 days.
+//
+// Display adapts to volume, because the volume varies a lot. A quiet month
+// shows one or two chips; a busy one would otherwise show a wall of them and
+// stop being read at all. So: the newest few get chips, and anything beyond
+// that collapses into a single count that links to Garmin. The card should
+// say "here's what just happened", not be a trophy cabinet.
+const BADGE_SHOW = 4;
+
 function renderBadges(badges) {
   const el = document.getElementById('badge-section');
   if (!el) return;
   if (!Array.isArray(badges) || !badges.length) { el.innerHTML = ''; return; }
 
-  // Pick a glyph from the badge name. Garmin's own artwork is behind auth and
-  // is theirs anyway, so this is a plain typographic stand-in.
+  // Garmin's own badge artwork sits behind auth and is theirs anyway, so
+  // these are plain typographic stand-ins keyed off the badge name.
   const glyph = (name) => {
     const n = (name || '').toLowerCase();
-    // Sport words FIRST — a badge called "Swim 10K" is a swim badge, and
-    // checking the distance keywords first would hand it the runner.
+    // Sport words FIRST — "Swim 10K" is a swim badge, and checking the
+    // distance keywords first would hand it the runner.
     if (n.includes('swim')) return '\uD83C\uDFCA';
     if (n.includes('ride') || n.includes('cycl') || n.includes('bike')) return '\uD83D\uDEB4';
     if (n.includes('yoga')) return '\uD83E\uDDD8';
@@ -1568,18 +1591,33 @@ function renderBadges(badges) {
   const esc = (s) => String(s == null ? '' : s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-  const chips = badges.map(b => `
-        <div class="badge-chip">
+  const shown = badges.slice(0, BADGE_SHOW);
+  const extra = badges.length - shown.length;
+
+  const chips = shown.map((b, i) => `
+        <div class="badge-chip${i === 0 ? ' badge-newest' : ''}">
           <span class="badge-medal" aria-hidden="true">${glyph(b.name)}</span>
           <span class="badge-text">
             <span class="badge-name">${esc(b.name)}${b.count > 1 ? `<span class="badge-count">&times;${b.count}</span>` : ''}</span>
-            <span class="badge-date">${esc(b.pretty || b.date)}</span>
+            <span class="badge-date">${i === 0 ? 'Newest &middot; ' : ''}${esc(b.pretty || b.date)}</span>
           </span>
         </div>`).join('');
 
+  const more = extra > 0 ? `
+        <a class="badge-chip badge-more" href="https://connect.garmin.com/modern/badges" target="_blank" rel="noopener">
+          <span class="badge-text">
+            <span class="badge-name">+${extra} more</span>
+            <span class="badge-date">View on Garmin &#8599;</span>
+          </span>
+        </a>` : '';
+
+  const label = badges.length === 1
+    ? '1 badge in the last 30 days'
+    : `${badges.length} badges in the last 30 days`;
+
   el.innerHTML =
-    '<div class="col-label">Recent Badges</div>' +
-    '<div class="badge-row">' + chips + '\n      </div>';
+    `<div class="col-label">Recent Badges <span class="badge-tally">${label}</span></div>` +
+    '<div class="badge-row">' + chips + more + '\n      </div>';
 }
 
 function renderYTD(ytd) {

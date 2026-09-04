@@ -172,9 +172,11 @@ except GarminConnectConnectionError as e:
     # Exit clean — network blip, not something to email about.
     sys.exit(0)
 
-# How recent a badge has to be to show on the card, and how many to show.
-BADGE_WINDOW_DAYS = 45
-BADGE_MAX = 6
+# How far back to collect badges, and how many to keep in the JSON.
+# The page decides how many of these to actually display — the data layer
+# just needs enough for a count and a "+N more".
+BADGE_WINDOW_DAYS = 30
+BADGE_MAX = 40
 
 def m_to_mi(m): return round((m or 0) * 0.000621371, 1)
 def m_to_yd(m): return round((m or 0) * 1.09361)
