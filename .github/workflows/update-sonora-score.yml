@@ -1,0 +1,120 @@
+name: Update Sonora Score
+
+# There is no free API for California high school football — ScoreStream's is
+# commercial and MaxPreps has none — so this stays a manual entry. What this
+# workflow does is make the entry take ten seconds from a phone instead of
+# requiring a laptop, a git client and a hunt through a 120KB HTML file.
+#
+# HOW TO USE IT
+#   GitHub app (or github.com) -> Actions -> "Update Sonora Score" -> Run workflow
+#   Pick the opponent, type the two scores, Run. It commits and Pages rebuilds.
+#
+# The opponent list is fixed to the 2026 schedule so a typo can't silently
+# create a game that doesn't exist.
+
+on:
+  workflow_dispatch:
+    inputs:
+      opponent:
+        description: 'Which game?'
+        required: true
+        type: choice
+        options:
+          - Oakdale
+          - Pacheco
+          - Woodcreek
+          - King's Academy
+          - Orestimba
+          - Ripon Christian
+          - Hilmar
+          - Hughson
+          - Ripon
+          - Escalon
+      sonora_score:
+        description: 'Sonora points'
+        required: true
+        type: string
+      opponent_score:
+        description: 'Opponent points'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update the score
+        env:
+          OPP:  ${{ inputs.opponent }}
+          US:   ${{ inputs.sonora_score }}
+          THEM: ${{ inputs.opponent_score }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+
+          path = 'data/sonora-football.json'
+          opp  = os.environ['OPP'].strip()
+          us_r, them_r = os.environ['US'].strip(), os.environ['THEM'].strip()
+
+          # Validate before touching the file. A bad score is worse than no
+          # score, because the record is computed from these numbers.
+          for label, v in (('Sonora', us_r), ('Opponent', them_r)):
+              if not v.isdigit():
+                  sys.exit(f"::error::{label} score '{v}' is not a whole number")
+          us, them = int(us_r), int(them_r)
+          if us > 200 or them > 200:
+              sys.exit("::error::Score over 200 — check the entry")
+
+          data = json.load(open(path))
+          hits = [g for g in data['games'] if g['opp'] == opp]
+          if not hits:
+              sys.exit(f"::error::No game against '{opp}' in {path}")
+          if len(hits) > 1:
+              sys.exit(f"::error::More than one game against '{opp}' — needs a date, not a name")
+
+          g = hits[0]
+          before = g.get('result')
+          g['result'] = {'us': us, 'them': them}
+          json.dump(data, open(path, 'w'), indent=2)
+
+          verb = 'Updated' if before else 'Added'
+          note = f" (was {before['us']}-{before['them']})" if before else ''
+          print(f"{verb} {g['date']} vs {opp}: {us}-{them}{note}")
+
+          # Recompute the record so the log shows what the card will say
+          w = l = lw = ll = 0
+          for x in data['games']:
+              r = x.get('result')
+              if not r: continue
+              won = r['us'] > r['them']
+              if won: w += 1
+              else:   l += 1
+              if x['conf']:
+                  if won: lw += 1
+                  else:   ll += 1
+          print(f"Record now {w}-{l} overall, {lw}-{ll} TVL")
+
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a') as f:
+              f.write(f"### Sonora {us} &ndash; {them} {opp}\n\n")
+              f.write(f"- {verb} {g['date']}{note}\n")
+              f.write(f"- Record now **{w}-{l}** overall, **{lw}-{ll}** TVL\n")
+          PY
+
+      - name: Commit
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data/sonora-football.json; then
+            echo "No change — the score was already recorded."
+            exit 0
+          fi
+          git add data/sonora-football.json
+          git commit -m "Sonora ${{ inputs.sonora_score }}-${{ inputs.opponent_score }} vs ${{ inputs.opponent }}"
+          # Another workflow may have pushed while this ran
+          git pull --rebase
+          git push
