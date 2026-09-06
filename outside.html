@@ -855,14 +855,28 @@ const FOOTBALL_TEAMS = [
 
 // Recursively search a nested standings tree for a group with the given name.
 // ESPN's standings response is a tree with `children[]` and `standings.entries[]`.
-function findStandingsGroup(node, name) {
+function findStandingsGroup(node, name, parentName = '') {
   if (!node) return null;
   const nm = (node.name || node.abbreviation || '').toLowerCase();
   const target = name.toLowerCase();
-  if (nm === target && node.standings?.entries?.length) return node;
-  if (nm.includes(target) && node.standings?.entries?.length) return node;
+  const has = node.standings?.entries?.length;
+
+  if (has && (nm === target || nm.includes(target))) return node;
+
+  // ESPN is inconsistent about whether a division is named "NFC West" or just
+  // "West" sitting under a parent called "NFC" / "National Football Conference".
+  // The plain includes() above fails on the second shape, because "west" does
+  // not contain "nfc west". So when the target is two words, also accept a node
+  // matching the LAST word whose parent matches the FIRST.
+  const parts = target.split(/\s+/);
+  if (has && parts.length === 2) {
+    const [conf, div] = parts;
+    const p = parentName.toLowerCase();
+    if (nm === div && (p.includes(conf) || p.startsWith(conf.charAt(0)))) return node;
+  }
+
   for (const child of (node.children || [])) {
-    const hit = findStandingsGroup(child, name);
+    const hit = findStandingsGroup(child, name, node.name || node.abbreviation || '');
     if (hit) return hit;
   }
   return null;
