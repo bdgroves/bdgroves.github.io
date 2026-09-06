@@ -628,7 +628,7 @@
         <div class="quick-links">
           <a href="https://www.maxpreps.com/ca/sonora/sonora-wildcats/football/" target="_blank" class="quick-link">MaxPreps ↗</a>
           <a href="https://mymotherlode.com/sports/high-school-football" target="_blank" class="quick-link">myMotherLode ↗</a>
-          <a href="https://scorestream.com/football/sonora-high-school-wildcats-2769" target="_blank" class="quick-link">Live Scores ↗</a>
+          <a href="https://scorestream.com/team/sonora-high-school-wildcats-2769" target="_blank" class="quick-link">Live Scores ↗</a>
           <a href="https://gofan.co/school/CA22609" target="_blank" class="quick-link">Tickets ↗</a>
       </div>
         <div id="sonora-football"><p class="loading">Loading schedule…</p></div>
@@ -1317,8 +1317,18 @@ async function loadFootball() {
     // real score" bug both come from. Below, any event id that also shows
     // up on today's scoreboard gets swapped for this fresher copy before
     // we classify anything — same id, one entry, correct score.
+    // ESPN's college-football scoreboard returns only a FEATURED subset by
+    // default — roughly the ranked/marquee games. A Mountain West side hosting
+    // a Conference USA side is simply not in it, so the live score never
+    // arrived and the card fell back to the schedule copy with no score in it.
+    // groups=80 is FBS (Division I-A) and limit raises the default cap.
+    // The NFL scoreboard has no such filtering and needs neither.
+    const sbUrl = (league) => {
+      const base = `https://site.api.espn.com/apis/site/v2/sports/football/${league}/scoreboard`;
+      return league === 'college-football' ? `${base}?groups=80&limit=400` : base;
+    };
     const scoreboardPromises = leagues.map(league =>
-      fetch(`https://site.api.espn.com/apis/site/v2/sports/football/${league}/scoreboard`)
+      fetch(sbUrl(league))
         .then(r => r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)))
         .then(d => ({ league, events: d.events || [] }))
         .catch(err => { console.warn('scoreboard fetch failed', league, err); return { league, events: [] }; })
