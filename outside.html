@@ -12,6 +12,7 @@
     :root {
       --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
       --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --dune:#b8722c;   /* Dakar accent — Saudi desert, distinct from --gold */
       --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45;
       --sky:#2a4a6b; --garmin:#007cc3;
     }
@@ -254,6 +255,35 @@
       letter-spacing:0.08em; text-transform:none; color:var(--stone);
       margin-left:0.5rem;
     }
+
+    /* ── Dakar Rally ──
+       Same shape as the Grand Tour cards: a headline block that counts down
+       before the event and reports progress during it, plus the category
+       rundown. Trucks are pinned first and given the accent — the T5 class is
+       the reason this card exists. Desert palette rather than the site's
+       usual gold so it reads as its own thing. */
+    .dakar { border:1px solid var(--mist); border-left:3px solid var(--dune); background:var(--cream); padding:1rem 1.1rem; }
+    .dakar-top { display:flex; flex-wrap:wrap; gap:0.5rem 1rem; align-items:baseline; justify-content:space-between; }
+    .dakar-name { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:var(--ink); }
+    .dakar-when { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
+    .dakar-count {
+      font-family:'DM Mono',monospace; font-size:0.6rem; font-weight:700;
+      letter-spacing:0.08em; color:var(--dune);
+      border:1px solid var(--dune); border-radius:2px; padding:0.2rem 0.5rem;
+    }
+    .dakar-route { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); margin:0.55rem 0 0; line-height:1.7; }
+    .dakar-stats { display:flex; flex-wrap:wrap; gap:1.4rem; margin:0.85rem 0 0; }
+    .dakar-stat-n { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; color:var(--ink); line-height:1; }
+    .dakar-stat-l { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-top:0.2rem; }
+    .dakar-note { font-family:'Libre Baskerville',serif; font-size:0.7rem; font-style:italic; color:var(--stone); line-height:1.8; margin:0.9rem 0 0; padding-top:0.8rem; border-top:1px solid var(--mist); }
+    .dakar-cats { display:flex; flex-direction:column; gap:0.35rem; margin:0.9rem 0 0; padding-top:0.8rem; border-top:1px solid var(--mist); }
+    .dakar-cat { display:flex; gap:0.6rem; align-items:baseline; font-family:'DM Mono',monospace; font-size:0.6rem; }
+    .dakar-cat-ico { font-size:0.8rem; line-height:1; }
+    .dakar-cat-l { font-weight:700; color:var(--ink); min-width:5.5rem; }
+    .dakar-cat-w { color:var(--stone); }
+    .dakar-cat.feat { background:var(--white); border-left:2px solid var(--dune); padding:0.4rem 0.5rem; margin-left:-0.5rem; }
+    .dakar-cat.feat .dakar-cat-l { color:var(--dune); }
+    .dakar-blurb { font-family:'Libre Baskerville',serif; font-size:0.66rem; font-style:italic; color:var(--stone); line-height:1.7; margin:0.15rem 0 0 1.4rem; }
 
     .updated-note { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--mist); margin-top:1.5rem; }
 
@@ -675,7 +705,10 @@
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-top:2rem;">
         <div>
-          <div class="col-label" style="margin-top:0;">Recent Races</div>
+          <div class="col-label" style="margin-top:0;">Dakar Rally</div>
+          <div id="dakar-card"><p class="loading">Loading the Dakar&hellip;</p></div>
+
+          <div class="col-label">Recent Races</div>
           <div id="cycling-races"><p class="loading">Loading races…</p></div>
         </div>
         <div>
@@ -1403,6 +1436,95 @@ async function loadFootball() {
 }
 
 
+async 
+// Dakar Rally. Counts down before the event, reports progress during it, and
+// falls back to last year's result the rest of the time. Data in /dakar.json.
+//
+// The status field is set by hand, but the dates do the real work — a rally
+// that has clearly started is treated as running even if nobody updated the
+// file, which is the same self-correcting trick the cycling card uses.
+async function loadDakar() {
+  const el = document.getElementById('dakar-card');
+  if (!el) return;
+  try {
+    const res = await fetch('/dakar.json?t=' + Date.now(), {cache:'no-store'});
+    if (!res.ok) throw new Error('http ' + res.status);
+    const d = await res.json();
+    const e = d.edition || {};
+    const esc = (s) => String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+    const today = new Date(); today.setHours(0,0,0,0);
+    const start = new Date(e.start_date + 'T12:00:00');
+    const end   = new Date(e.end_date   + 'T23:59:59');
+    let state = 'upcoming';
+    if (today > end) state = 'done';
+    else if (today >= new Date(e.start_date + 'T00:00:00')) state = 'running';
+
+    const days = Math.ceil((start - today) / 86400000);
+    let badge;
+    if (state === 'upcoming') badge = days === 1 ? 'Tomorrow' : days + ' days out';
+    else if (state === 'running') badge = e.stages_done ? `Stage ${e.stages_done} of ${e.stages}` : 'Under way';
+    else badge = 'Finished';
+
+    const fmt = (iso) => new Date(iso + 'T12:00:00')
+      .toLocaleDateString('en-US', {month:'short', day:'numeric'});
+    const sameCity = e.start_city === e.finish_city;
+    const route = sameCity
+      ? `${esc(e.start_city)} &mdash; out and back`
+      : `${esc(e.start_city)} &rarr; ${esc(e.finish_city)}`;
+
+    const stats = [
+      [e.stages, 'Stages'],
+      [e.special_km ? e.special_km.toLocaleString() + ' km' : null, 'Of specials'],
+      [e.longest_stage_km ? e.longest_stage_km + ' km' : null, `Longest (S${e.longest_stage_number})`],
+    ].filter(x => x[0]).map(([n,l]) =>
+      `<div><div class="dakar-stat-n">${esc(n)}</div><div class="dakar-stat-l">${esc(l)}</div></div>`
+    ).join('');
+
+    // Categories. Trucks are pinned to the top regardless of file order.
+    const cats = [...(d.categories || [])].sort((a,b) => (b.featured?1:0) - (a.featured?1:0));
+    const winners = d.last_edition?.winners || {};
+    const lastYear = d.last_edition?.year;
+    const catRows = cats.map(c => {
+      const w = winners[c.key];
+      const who = w
+        ? `${esc(w.name)}${w.team ? ' &middot; ' + esc(w.team) : ''}`
+        : '&mdash;';
+      return `
+        <div class="dakar-cat${c.featured ? ' feat' : ''}">
+          <span class="dakar-cat-ico" aria-hidden="true">${c.icon || ''}</span>
+          <span class="dakar-cat-l">${esc(c.label)}</span>
+          <span class="dakar-cat-w">${who}</span>
+        </div>${c.featured && c.blurb ? `<p class="dakar-blurb">${esc(c.blurb)}</p>` : ''}`;
+    }).join('');
+
+    const note = (e.notes && e.notes.length)
+      ? `<p class="dakar-note">${esc(e.notes[0])}</p>` : '';
+
+    el.innerHTML = `
+      <div class="dakar">
+        <div class="dakar-top">
+          <div>
+            <div class="dakar-name">${esc(e.name)}</div>
+            <div class="dakar-when">${fmt(e.start_date)} &ndash; ${fmt(e.end_date)} &middot; ${esc(e.country)}</div>
+          </div>
+          <span class="dakar-count">${esc(badge)}</span>
+        </div>
+        <p class="dakar-route">${route}${e.number ? ' &middot; ' + esc(e.number) + 'th edition' : ''}</p>
+        <div class="dakar-stats">${stats}</div>
+        ${note}
+        <div class="dakar-cats">
+          <div class="dakar-stat-l" style="margin-bottom:0.2rem;">${lastYear ? lastYear + ' winners' : 'Categories'}</div>
+          ${catRows}
+        </div>
+      </div>`;
+  } catch (err) {
+    console.warn('dakar load failed', err);
+    el.innerHTML = '<p class="loading">Dakar data unavailable.</p>';
+  }
+}
+
 async function loadCycling() {
   const el = document.getElementById('cycling-races');
   try {
@@ -1886,6 +2008,7 @@ document.getElementById('current-year').textContent=new Date().getFullYear();
 loadBaseball();
 loadFootball();
 loadCycling();
+    loadDakar();
 loadCyclingNews();
 loadBeers();
 loadTraining();
