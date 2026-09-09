@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Referee's Screen — Brooks Groves</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+    --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+    --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; --sky:#2a4a6b;
+  }
+  [data-theme="dark"] {
+    --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
+    --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
+    --white:#12100d; --rust:#cf6b52; --sage:#83a077; --sky:#6fa0cc;
+  }
+  [data-theme="dark"] footer { background:#0f0d0a; }
+  [data-theme="dark"] .footer-name { color:#ece6da; }
+
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background:var(--parchment); color:var(--ink);
+    font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0.5;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+  }
+  .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+  header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+  .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1200px; margin:0 auto; padding:0.75rem 0; }
+  .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+  nav { display:flex; gap:1.5rem; align-items:center; }
+  nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+  nav a:hover { color:var(--rust); }
+  .theme-toggle { background:none; border:none; cursor:pointer; padding:0; font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--stone); line-height:1; }
+  .theme-toggle:hover { color:var(--gold); }
+
+  .page-header { max-width:1200px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+  .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+  .page-eyebrow a { color:var(--stone); text-decoration:none; }
+  .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+  .page-title em { font-style:italic; color:var(--rust); }
+  .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+
+  .page-content { max-width:1200px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+  .screen-note { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--stone); line-height:1.9; border-left:3px solid var(--mist); padding-left:1rem; margin-bottom:2.5rem; }
+
+  .game-block { margin-bottom:3.5rem; }
+  .block-header { margin-bottom:1.5rem; padding-bottom:0.9rem; border-bottom:3px solid var(--ink); display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; flex-wrap:wrap; }
+  .block-title { font-family:'Playfair Display',serif; font-size:clamp(1.5rem,3vw,2rem); font-weight:900; line-height:1.1; }
+  .block-title em { font-style:italic; color:var(--rust); }
+  .block-play { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--gold); border:1px solid var(--gold); padding:0.35rem 0.8rem; white-space:nowrap; }
+  .block-play:hover { background:var(--gold); color:var(--white); }
+
+  .panels { display:grid; grid-template-columns:repeat(3,1fr); gap:1.25rem; align-items:start; }
+  @media(max-width:1000px) { .panels { grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:680px) { .panels { grid-template-columns:1fr; } }
+
+  .panel { border:1px solid var(--mist); background:var(--cream); padding:1rem 1.1rem; }
+  .panel h3 {
+    font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--stone); font-weight:400; padding-bottom:0.5rem; margin-bottom:0.7rem; border-bottom:1px solid var(--mist);
+  }
+  .panel p { font-size:0.78rem; line-height:1.65; color:var(--ink); margin-bottom:0.6rem; }
+  .panel p:last-child { margin-bottom:0; }
+  .panel .muted { color:var(--stone); font-size:0.74rem; }
+
+  table { width:100%; border-collapse:collapse; font-family:'DM Mono',monospace; font-size:0.7rem; }
+  table th {
+    text-align:left; font-weight:400; color:var(--stone); font-size:0.58rem;
+    letter-spacing:0.08em; text-transform:uppercase; padding:0.3rem 0.4rem 0.3rem 0; border-bottom:1px solid var(--mist);
+  }
+  table td { padding:0.32rem 0.4rem 0.32rem 0; border-bottom:1px solid rgba(214,208,196,0.5); color:var(--ink); vertical-align:top; }
+  table tr:last-child td { border-bottom:none; }
+  table td.num { color:var(--rust); white-space:nowrap; }
+  table td.dim { color:var(--stone); }
+
+  .formula {
+    font-family:'DM Mono',monospace; font-size:0.72rem; background:var(--white); border:1px solid var(--mist);
+    padding:0.6rem 0.7rem; margin:0.5rem 0; line-height:1.7; color:var(--ink);
+  }
+  .formula b { color:var(--rust); }
+
+  .diceline { display:flex; align-items:baseline; gap:0.5rem; font-family:'DM Mono',monospace; font-size:0.7rem; margin-bottom:0.45rem; }
+  .diceline .die { color:var(--rust); font-weight:700; min-width:2.4rem; }
+  .diceline .what { color:var(--ink); }
+
+  footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,4vw,3rem) clamp(1rem,4vw,3rem); margin-top:3rem; }
+  .footer-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+  .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+  .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+  .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+  .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+  .footer-links a:hover { color:var(--gold); }
+
+  @media print {
+    header, footer, .page-header, .screen-note, .block-play, body::before { display:none !important; }
+    body { background:#fff; }
+    .panel { break-inside:avoid; }
+    .panels { grid-template-columns:repeat(3,1fr); }
+  }
+</style>
+<script>
+  (function(){
+    try {
+      var saved = localStorage.getItem('games_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) document.documentElement.setAttribute('data-theme','dark');
+    } catch(e) {}
+  })();
+</script>
+</head>
+<body>
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/games.html">Games</a>
+      <a href="/about.html">About</a>
+      <a href="/">Home</a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/games.html">Games</a></p>
+  <h1 class="page-title">🎲 <em>Referee's Screen</em></h1>
+  <p class="page-sub">Every rule both games actually run on, laid out in panels. Written down partly so the games stay consistent as they grow, and partly because a screen was always the accessory that made these things playable at a table.</p>
+</div>
+
+<div class="page-content">
+
+  <p class="screen-note">
+    Both games use original mechanics — nothing here is reproduced from any published rulebook.<br>
+    Kellath's Drift rolls percentile and wants to roll <em>low</em>. Offline Protocol rolls an ascending die ladder and wants to roll <em>high</em>.<br>
+    This page prints cleanly if you want it on paper.
+  </p>
+
+  <!-- ============ KELLATH'S DRIFT ============ -->
+  <div class="game-block">
+    <div class="block-header">
+      <div class="block-title">🚀 Kellath's Drift — <em>percentile</em></div>
+      <a href="/games/kellaths-drift.html" class="block-play">Play →</a>
+    </div>
+
+    <div class="panels">
+
+      <div class="panel">
+        <h3>The Core Roll</h3>
+        <div class="formula">
+          Roll <b>2d10</b> — one die is tens, one is ones.<br>
+          A read of 00 counts as <b>100</b>.<br><br>
+          Success if the roll is <b>≤ your target</b>.
+        </div>
+        <p class="muted">Lower is better. The target number is built from an ability score, then adjusted by specialization and gear.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Building a Target Number</h3>
+        <div class="formula">
+          Target = <b>½ ability score</b><br>
+          &nbsp;&nbsp;+ 15 if your PSA covers it<br>
+          &nbsp;&nbsp;+ 10 if relevant gear in hand<br>
+          &nbsp;&nbsp;(minimum 5)
+        </div>
+        <p class="muted">A few checks use the <em>full</em> ability score instead of half — those are the ones the story frames as brute-force rather than finesse.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Ability Pairs</h3>
+        <table>
+          <tr><td>STR / STA</td><td class="dim">Strength / Stamina</td></tr>
+          <tr><td>DEX / RS</td><td class="dim">Dexterity / Reaction Speed</td></tr>
+          <tr><td>INT / LOG</td><td class="dim">Intuition / Logic</td></tr>
+          <tr><td>PER / LDR</td><td class="dim">Personality / Leadership</td></tr>
+        </table>
+        <p class="muted" style="margin-top:0.7rem;">Rolled as pairs, ~30–69 before racial modifiers. Clamped 15–90. STA doubles as your hit points.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Races</h3>
+        <table>
+          <tr><th>Stock</th><th>Modifiers</th></tr>
+          <tr><td>Human</td><td class="dim">None — adaptable</td></tr>
+          <tr><td>Dralasite</td><td class="num">+10 STR/STA, −5 DEX/RS</td></tr>
+          <tr><td>Vrusk</td><td class="num">+10 INT/LOG, −5 STR/STA</td></tr>
+          <tr><td>Yazirian</td><td class="num">+10 DEX/RS, −5 PER/LDR</td></tr>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h3>Primary Skill Area</h3>
+        <table>
+          <tr><td>Military</td><td class="dim">Weapons, combat instinct</td></tr>
+          <tr><td>Technological</td><td class="dim">Repair, computers, systems</td></tr>
+          <tr><td>Biosocial</td><td class="dim">Medicine, persuasion</td></tr>
+        </table>
+        <p class="muted" style="margin-top:0.7rem;">Your PSA grants <b>+15</b> to any check that falls inside it. One choice, permanent for the run.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Damage &amp; Injury</h3>
+        <table>
+          <tr><th>Source</th><th>Damage</th></tr>
+          <tr><td>Your attack</td><td class="num">6 + 1d10 (+4 armed)</td></tr>
+          <tr><td>Ravik claws</td><td class="num">4 + 1d10</td></tr>
+          <tr><td>Fall from line</td><td class="num">5 + 1d10</td></tr>
+          <tr><td>Scramble mishap</td><td class="num">3 + 1d10</td></tr>
+        </table>
+        <p class="muted" style="margin-top:0.7rem;">Damage comes off STA. At 0 the run ends.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Creature: Ravik</h3>
+        <table>
+          <tr><td>Integrity</td><td class="num">28</td></tr>
+          <tr><td>To-hit</td><td class="num">≤ 45</td></tr>
+          <tr><td>Damage</td><td class="num">4 + 1d10</td></tr>
+        </table>
+        <p class="muted" style="margin-top:0.7rem;">Territorial, six-limbed, fast. Can be avoided entirely with a successful RS check in the scrub.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Check Difficulty by Scene</h3>
+        <table>
+          <tr><th>Check</th><th>Built from</th></tr>
+          <tr><td>Search wreck</td><td class="dim">½ LOG +tech</td></tr>
+          <tr><td>Cross the line</td><td class="dim">½ RS +gear</td></tr>
+          <tr><td>Climb around</td><td class="dim">full STR</td></tr>
+          <tr><td>Slip past ravik</td><td class="dim">½ RS</td></tr>
+          <tr><td>Attack</td><td class="dim">½ DEX +mil +gear</td></tr>
+          <tr><td>Re-route console</td><td class="dim">½ LOG +tech +gear</td></tr>
+          <tr><td>Force broadcast</td><td class="dim">½ LDR +bio</td></tr>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h3>Endings</h3>
+        <table>
+          <tr><td>Clean</td><td class="dim">Console re-routed, full rescue</td></tr>
+          <tr><td>Raw</td><td class="dim">Ugly broadcast, slow rescue</td></tr>
+          <tr><td>Wounded</td><td class="dim">Beacon out, outcome unknown</td></tr>
+        </table>
+        <p class="muted" style="margin-top:0.7rem;">Gear found in scene 1 raises your odds in three later checks — the search is the highest-leverage roll in the game.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ OFFLINE PROTOCOL ============ -->
+  <div class="game-block">
+    <div class="block-header">
+      <div class="block-title">🛰️ Offline Protocol — <em>die ladder</em></div>
+      <a href="/games/offline-protocol.html" class="block-play">Play →</a>
+    </div>
+
+    <div class="panels">
+
+      <div class="panel">
+        <h3>The Core Roll</h3>
+        <div class="formula">
+          Roll the subsystem's die,<br>
+          add its <b>modifier</b>,<br>
+          meet or beat the <b>DC</b>.
+        </div>
+        <p class="muted">Higher is better. Bigger dice mean wider swings — the combat processor can roll brilliantly or catastrophically, the social subroutines mostly land in the middle.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Die Ladder</h3>
+        <div class="diceline"><span class="die">d20</span><span class="what">Combat processor</span></div>
+        <div class="diceline"><span class="die">d12</span><span class="what">Sensor array</span></div>
+        <div class="diceline"><span class="die">d10</span><span class="what">Analytical core</span></div>
+        <div class="diceline"><span class="die">d8</span><span class="what">Social subroutines</span></div>
+        <div class="diceline"><span class="die">d6</span><span class="what">Damage rolls</span></div>
+        <div class="diceline"><span class="die">d4</span><span class="what">Incidental mishaps</span></div>
+        <p class="muted" style="margin-top:0.7rem;">Each subsystem starts at <b>+1</b> before chassis modifiers.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Chassis Loadouts</h3>
+        <table>
+          <tr><th>Chassis</th><th>Modifiers</th></tr>
+          <tr><td>Combat</td><td class="num">+4 COM, −2 SOC</td></tr>
+          <tr><td>Recon</td><td class="num">+4 SEN, −2 COM</td></tr>
+          <tr><td>Diagnostic</td><td class="num">+4 ANA, +2 SOC, −3 COM</td></tr>
+        </table>
+        <p class="muted" style="margin-top:0.7rem;">Diagnostic is the hardest run — it can barely fight, but it opens the disable path in combat and the quiet path everywhere else.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Difficulty Classes</h3>
+        <table>
+          <tr><th>Check</th><th>DC</th></tr>
+          <tr><td>Perimeter sweep</td><td class="num">13 <span class="dim">(d12)</span></td></tr>
+          <tr><td>Bypass lock</td><td class="num">12 <span class="dim">(d10)</span></td></tr>
+          <tr><td>Force hatch</td><td class="num">11 <span class="dim">(d20)</span></td></tr>
+          <tr><td>Report deviation</td><td class="num">12 <span class="dim">(d8)</span></td></tr>
+          <tr><td>Strike</td><td class="num">13 <span class="dim">(d20)</span></td></tr>
+          <tr><td>Relay disable</td><td class="num">16 <span class="dim">(d10)</span></td></tr>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h3>Damage &amp; Integrity</h3>
+        <table>
+          <tr><th>Source</th><th>Damage</th></tr>
+          <tr><td>Your strike</td><td class="num">6 + 1d8</td></tr>
+          <tr><td>Relay disable</td><td class="num">10 + 1d6</td></tr>
+          <tr><td>Legacy Unit hit</td><td class="num">4 + 1d6</td></tr>
+          <tr><td>Panel feedback</td><td class="num">2</td></tr>
+          <tr><td>Recoil / exposure</td><td class="num">2–3</td></tr>
+        </table>
+        <p class="muted" style="margin-top:0.7rem;">Integrity starts at <b>44</b>. At 0, shutdown ending.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Hostile: Legacy Unit</h3>
+        <table>
+          <tr><td>Integrity</td><td class="num">34</td></tr>
+          <tr><td>Attack</td><td class="num">d20 +3 vs 14</td></tr>
+          <tr><td>Damage</td><td class="num">4 + 1d6</td></tr>
+        </table>
+        <p class="muted" style="margin-top:0.7rem;">Old-model security construct, isolated nine years, still executing its last valid order. The disable path is harder but does more damage per success.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Trust</h3>
+        <div class="formula">
+          Report the deviation well &nbsp;<b>+1</b><br>
+          Spend a charge on Sten &nbsp;<b>+2</b>
+        </div>
+        <p class="muted">Trust is invisible during play and decides which of two endings you get on each side of the disclosure choice. Threshold is <b>2</b>.</p>
+      </div>
+
+      <div class="panel">
+        <h3>The Disclosure</h3>
+        <p>At the extraction window, Voss asks directly whether your governor module is active. The answer branches the ending permanently.</p>
+        <table style="margin-top:0.5rem;">
+          <tr><th>Told</th><th>Trust</th><th>Ending</th></tr>
+          <tr><td>Truth</td><td class="num">≥2</td><td class="dim">Quiet Trust</td></tr>
+          <tr><td>Truth</td><td class="num">&lt;2</td><td class="dim">Costly Truth</td></tr>
+          <tr><td>Lie</td><td class="num">≥2</td><td class="dim">Clean Exit</td></tr>
+          <tr><td>Lie</td><td class="num">&lt;2</td><td class="dim">Written Off</td></tr>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h3>Running It Cold</h3>
+        <p class="muted">If you're reffing this at a table instead of clicking through: the die ladder is the whole system. Assign a subsystem, pick a DC from the band below, roll, narrate.</p>
+        <table style="margin-top:0.5rem;">
+          <tr><td>Routine</td><td class="num">DC 8–10</td></tr>
+          <tr><td>Contested</td><td class="num">DC 11–13</td></tr>
+          <tr><td>Hard</td><td class="num">DC 14–16</td></tr>
+          <tr><td>Desperate</td><td class="num">DC 17+</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">Every rule, on one screen, the way it should be</p>
+    </div>
+    <div class="footer-links">
+      <a href="/games.html">Games</a>
+      <a href="/">Home</a>
+      <a href="/about.html">About</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  const sync = () => { if (btn) btn.textContent = root.getAttribute('data-theme') === 'dark' ? '◐' : '◑'; };
+  sync();
+  if (btn) btn.addEventListener('click', () => {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    if (isDark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('games_theme', isDark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
