@@ -32,6 +32,19 @@
   }
   .evList li:last-child{ border-bottom:none; }
   .evList .tagno{ color:var(--rust); margin-right:6px; }
+  .clause{
+    border-left:3px solid var(--mist); background:var(--cream);
+    padding:9px 13px; margin:9px 0;
+  }
+  .cl-n{
+    display:block; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--rust); margin-bottom:5px;
+  }
+  .cl-t{ display:block; font-size:0.78rem; line-height:1.6; color:var(--ink); }
+  .cl-note{
+    display:block; margin-top:6px; font-family:'DM Mono',monospace; font-size:0.62rem;
+    line-height:1.55; color:var(--stone); font-style:italic;
+  }
   .noEv{ font-family:'DM Mono',monospace; font-size:0.64rem; color:var(--stone); font-style:italic; }
 </style>
 <script>
@@ -72,13 +85,13 @@ let player;
 const METHODS = {
   forensic: {
     name:"FORENSIC BACKGROUND",
-    desc:"Twelve years in failure analysis before the underwriters bought your contract. You read rooms the way other people read faces. +4 FORENSICS, \u22121 INTERVIEW.",
-    mods:{FORENSICS:4, INTERVIEW:-1}
+    desc:"Twelve years in failure analysis before the underwriters bought your contract. You read rooms the way other people read faces. +3 FORENSICS, \u22121 INTERVIEW.",
+    mods:{FORENSICS:3, INTERVIEW:-1}
   },
   investigator: {
     name:"FIELD INVESTIGATOR",
-    desc:"You came up doing fraud interviews in orbital habitats. People tell you things and then wonder why. +3 INTERVIEW, \u22122 FORENSICS.",
-    mods:{INTERVIEW:3, FORENSICS:-2}
+    desc:"You came up doing fraud interviews in orbital habitats. People tell you things and then wonder why. +3 INTERVIEW, \u22121 FORENSICS.",
+    mods:{INTERVIEW:3, FORENSICS:-1}
   },
   auditor: {
     name:"RECORDS AUDITOR",
@@ -173,8 +186,8 @@ let DC = {};
 function rollDCs(){
   DC = {
     scene:    Engine.jitter(9,1),   // d12 OBSERVATION
-    body:     Engine.jitter(8,1),   // d10 FORENSICS
-    logs:     Engine.jitter(8,1),   // d10 FORENSICS
+    body:     Engine.jitter(7,1),   // d10 FORENSICS
+    logs:     Engine.jitter(7,1),   // d10 FORENSICS
     queue:    Engine.jitter(9,1),   // d12 OBSERVATION
     press:    Engine.jitter(7,1),   // d8  INTERVIEW
     hold:     Engine.jitter(11,1)   // d20 COMPOSURE
@@ -268,6 +281,53 @@ function applyMethod(){
   theAnnex();
 }
 
+
+/* ---------------- THE WORDING ----------------
+   Eleven million turns on about forty words. The adjuster has
+   read them enough times to recite them and reads them again
+   anyway, because that is the job.                            */
+const POLICY = {
+  ref:"GLR\u2013NV\u201388214\u2013C",
+  insured:"Corvid-9 Relay Holdings (in administration)",
+  clauses:[
+    { n:"3.1",  h:"Insured Peril",
+      t:"The Insurer shall indemnify the Policyholder in respect of the accidental death of any Scheduled Person occurring in the course of Operations, up to the Limit stated in the Schedule." },
+    { n:"3.4",  h:"Limit of Indemnity",
+      t:"USD 11,000,000 in the aggregate, any one Scheduled Person, any one Period of Insurance." },
+    { n:"7.2",  h:"Exclusion \u2014 Act of a Covered Party",
+      t:"No indemnity is payable where the death arises, directly or indirectly, wholly or partly, from the deliberate act of any Covered Party, whether or not such act is the subject of criminal proceedings and whether or not any Covered Party is charged, tried or convicted.",
+      note:"This is the sentence. Everything else is scenery." },
+    { n:"7.2(a)", h:"Definition \u2014 Covered Party",
+      t:"Any Scheduled Person, any officer, employee, agent or contractor of the Policyholder, and any person present at the Location with the Policyholder's permission.",
+      note:"Which is everybody on this station, including the medic, including the administrator, including the man who died." },
+    { n:"11.6", h:"Adjuster's Finding",
+      t:"The finding of the appointed Adjuster shall be determinative as between the parties, subject only to a challenge on the grounds of manifest error or bad faith brought within 90 days.",
+      note:"Ninety days. That is how long what you write down has to survive somebody who does not want it to." },
+    { n:"14.3", h:"Standard of Proof",
+      t:"The Adjuster shall apply the balance of probabilities and shall record the evidential basis of any finding adverse to indemnity.",
+      note:"Adverse to indemnity means naming somebody. If you name somebody, you have to show your working. Misadventure requires nothing at all." }
+  ]
+};
+
+function policyScene(){
+  Engine.badge('THE WORDING');
+  Engine.render(
+    '<div class="story">Policy <b>' + POLICY.ref + '</b> \u2014 ' + POLICY.insured + '.</div>' +
+    '<div class="thought">Eleven million dollars turns on about forty words in the middle of this, and you have read them enough times to recite them, and you read them again anyway. That is most of the job.</div>' +
+    POLICY.clauses.map(cl =>
+      '<div class="clause">' +
+        '<span class="cl-n">' + cl.n + ' &nbsp; ' + cl.h + '</span>' +
+        '<span class="cl-t">' + cl.t + '</span>' +
+        (cl.note ? '<span class="cl-note">' + cl.note + '</span>' : '') +
+      '</div>').join('') +
+    '<div class="story" style="margin-top:14px;">Note the asymmetry in 14.3. A finding of misadventure requires you to evidence nothing. ' +
+    'A finding against a Covered Party requires you to show your working, in writing, to people whose job is to take it apart.</div>' +
+    '<div class="thought">Somebody wrote that asymmetry on purpose. Not maliciously \u2014 just by an accumulation of small reasonable drafting decisions made by people who were never going to be standing in an annex on Corvid-9.</div>' +
+    Engine.contBtn()
+  );
+  Engine.wire(theAnnex);
+}
+
 /* ---------------- ACT 2: THE SCENE ---------------- */
 function theAnnex(){
   B('ACT 1');
@@ -277,11 +337,13 @@ function theAnnex(){
     <div class="thought">The room reads as an accident because it has been arranged to read as an accident. That is not proof of anything. Plenty of honest people tidy up after a death because looking at it is unbearable.</div>
     ${done===2 ? '<div class="story"><span class="flavor">You have taken this room for everything it has.</span></div>' : ''}
     <div class="choices">
+      <button class="choice" id="s0"><span class="tag">RE-READ THE POLICY</span>Clause 7.2 is the one that matters. It always is.</button>
       ${!has('scuff') ? `<button class="choice" id="s1"><span class="tag">WORK THE HATCH</span>Floor, seals, approach path. What the cleaning missed.${odds(12,'OBSERVATION',DC.scene)}</button>` : ''}
       ${!has('suit') ? `<button class="choice" id="s2"><span class="tag">EXAMINE THE SUIT</span>It's still in the annex locker, tagged and untouched.${odds(10,'FORENSICS',DC.body)}</button>` : ''}
       <button class="choice" id="s3"><span class="tag">MOVE ON</span>Head up to records. The room's given you what it will.</button>
     </div>
   `);
+  document.getElementById('s0').onclick = ()=> Engine.go(policyScene);
   if(document.getElementById('s1')) document.getElementById('s1').onclick = ()=>{
     spend(1);
     Engine.check({die:12, mod:mod('OBSERVATION'), dc:DC.scene, label:'Work the hatch (OBSERVATION)'}, (ok)=>{
@@ -495,6 +557,9 @@ function theFiling(){
 
   if(player.accused === null){
     R(`
+      <div class="clause"><span class="cl-n">Finding \u00b7 clause 3.1</span>
+        <span class="cl-t">Accidental death of a Scheduled Person in the course of Operations. Indemnity payable in full.</span>
+        <span class="cl-note">Evidential basis required under 14.3: none. This is the box that does not ask you anything.</span></div>
       <div class="story">I write <span class="flavor">misadventure</span> and my name under it, and the file closes, and eleven million moves.</div>
       <div class="thought">There is a version of this where that is the correct professional finding. It requires that I not have seen ${proof===0?'anything at all':'what I saw'}, and I did.</div>
       ${C('FILE IT \u2192')}
@@ -502,6 +567,9 @@ function theFiling(){
   } else {
     const s = SUSPECTS[player.accused];
     R(`
+      <div class="clause"><span class="cl-n">Finding \u00b7 clause 7.2</span>
+        <span class="cl-t">Death arising from the deliberate act of a Covered Party. No indemnity payable.</span>
+        <span class="cl-note">Evidential basis required under 14.3: ${proof} established fact${proof===1?'':'s'}${broke?', plus a contradiction on the record':', and no contradiction on the record'}. Ninety days to survive challenge.</span></div>
       <div class="story">I write ${s.name}'s name in the finding box, and everything after that box is mine to justify.</div>
       ${broke ? '<div class="story"><span class="flavor">I have their account contradicted in their own words, on the record, with the document that did it attached.</span></div>'
               : '<div class="story"><span class="danger">I have a name and a theory. I do not have them saying anything they cannot walk back.</span></div>'}
@@ -529,7 +597,7 @@ function endGame(right, proof, broke){
   }
   else if(right && broke && proof >= 4){
     key='clean'; title='FILED \u2014 SOUND FINDING';
-    text = "Named, contradicted on the record, and attached to four separate established facts. The underwriter's counsel reads it twice and does not ask me a single question, which in eleven years has happened three times.";
+    text = "Named, contradicted on the record, attached to four separate established facts, and drafted to survive clause 11.6. The underwriter's counsel reads it twice and does not ask me a single question, which in eleven years has happened three times. Day ninety passes without a challenge.";
     coda = guilty.name + " is off the station inside a cycle. The policy does not pay. Nobody thanks me for that \u2014 not the family, not the underwriter, certainly not the station \u2014 and it is still the correct file.";
   }
   else if(right && broke){
@@ -539,7 +607,7 @@ function endGame(right, proof, broke){
   }
   else if(right){
     key='unproven'; title='FILED \u2014 RIGHT, UNPROVEN';
-    text = "The right name with nothing under it. No contradiction on the record, " + proof + " facts established, and a theory doing the work that evidence was supposed to do.";
+    text = "The right name with nothing under it. No contradiction on the record, " + proof + " facts established, and a theory doing the work that clause 14.3 requires evidence to do.";
     coda = "It gets kicked back inside a month. " + guilty.name + " keeps the post, and the next adjuster to look at this file will see my name on a finding that did not hold, and will read the room accordingly.";
   }
   else {
