@@ -74,7 +74,7 @@
 
 /* ---------------- TERRAIN ---------------- */
 const TERRAIN = {
-  road:   { label:"two-track / road", color:'#8b3a2a', pace:4.5,
+  road:   { label:"two-track / road", color:'#8b3a2a', pace:4.0,
             blurb:"Compacted. Easy going, and the only surface anyone drives." },
   playa:  { label:"playa",            color:'#c8922a', pace:4.0,
             blurb:"Flat, hard, and utterly exposed. Nothing between you and the sun." },
@@ -215,6 +215,102 @@ function compass(deg){
 }
 
 
+
+/* ---------------- THE DAY ----------------
+   Railroad Valley in summer. Cold at dawn, murderous by late
+   afternoon, and the difference decides everything you do.     */
+function tempAt(h){
+  const x = ((h % 24) - 4) / 24 * Math.PI * 2;
+  return Math.round(26 - 12 * Math.cos(x));      // ~14C at 04:00, ~38C at 16:00
+}
+function temp(){ return tempAt(player.clock); }
+function clockStr(h){
+  const t = ((h % 24) + 24) % 24;
+  const hh = Math.floor(t), mm = Math.floor((t - hh) * 60);
+  return String(hh).padStart(2,'0') + ':' + String(mm).padStart(2,'0');
+}
+function isNight(h){ const t=(h%24+24)%24; return t < 5.5 || t >= 20.0; }
+function lightWord(){
+  const t = (player.clock % 24 + 24) % 24;
+  if(t < 4.5)  return 'dark';
+  if(t < 6.0)  return 'first grey';
+  if(t < 8.0)  return 'early light';
+  if(t < 11.0) return 'morning';
+  if(t < 15.0) return 'high sun';
+  if(t < 18.5) return 'late heat';
+  if(t < 20.0) return 'evening';
+  return 'dark';
+}
+
+/* Litres per hour. Heat drives everything. */
+function drinkRate(activity){
+  const T = temp();
+  const over = Math.max(0, T - 20);
+  if(activity === 'walk')  return 0.40 + over * 0.055;
+  if(activity === 'shade') return 0.10 + over * 0.016;
+  return 0.14 + over * 0.034;                        // resting in the open
+}
+function heatGain(activity){
+  const T = temp();
+  if(activity === 'walk')  return Math.max(-6, (T - 30) * 1.7);
+  if(activity === 'shade') return Math.min(0, (T - 34) * 0.5) - 5;
+  return (T - 33) * 0.6 - 1;
+}
+
+function advance(h, activity){
+  player.clock += h;
+  while(player.clock >= 24){ player.clock -= 24; player.day += 1; }
+  const need = drinkRate(activity) * h;
+  const short = Math.max(0, need - player.water);
+  player.water = Math.max(0, player.water - need);
+  if(player.water <= 0){
+    // Once you are out, heat and effort decide how fast this goes.
+    const T = temp();
+    const load = (activity === 'walk' ? 1.7 : activity === 'shade' ? 0.75 : 1.0);
+    const heat = 1 + Math.max(0, T - 24) / 22;
+    player.dry += (short > 0 ? h : h) * load * heat;
+  }
+  player.core  = Math.max(0, Math.min(100, player.core + heatGain(activity) * h));
+  if(activity === 'walk'){
+    // dehydration makes everything worse, including your feet
+    const dry = player.water < 2 ? 1.5 : 1;
+    player.feet = Math.min(100, player.feet + h * 2.2 * dry);
+  } else {
+    player.feet = Math.max(0, player.feet - h * 1.4);
+  }
+  // nobody starts looking on day one
+  if(player.day >= 2) player.searchHeat += h * (player.day >= 3 ? 1.6 : 0.7);
+  Engine.refreshStatus();
+}
+
+/* How wrong things are, in one number. Drives the prose. */
+function strain(){
+  // Below ~9 L you are on a budget; at zero the clock is player.dry,
+  // which is what actually kills you.
+  const thirst = player.water <= 0
+    ? 70 + Math.min(30, player.dry / 9 * 30)
+    : Math.max(0, 70 - player.water/9*70);
+  return Math.round(Math.min(100, Math.max(thirst, player.core*0.85, player.feet*0.55)));
+}
+function condition(){
+  const s = strain();
+  if(player.water <= 0) return 'critical';
+  if(s >= 75) return 'bad';
+  if(s >= 50) return 'poor';
+  if(s >= 25) return 'worn';
+  return 'ok';
+}
+
+/* Walking gets slower as you fall apart. */
+function paceFactor(){
+  let f = 1;
+  if(player.feet > 55) f *= 0.82;
+  if(player.feet > 80) f *= 0.78;
+  if(player.core > 60) f *= 0.85;
+  if(player.water < 2) f *= 0.85;
+  return f;
+}
+
 /* ---------------- SEEING ----------------
    On a flat valley floor you can see almost nothing. From high
    ground you can see a very long way, and the only things worth
@@ -248,14 +344,35 @@ function spotLine(found){
     '</div>';
 }
 
+
+/* You know a place if you have been there, or seen it from high
+   ground. Otherwise you know a direction and the look of the
+   ground, and nothing whatsoever about how far it runs.          */
+function knows(id){ return !!player.visited[id] || !!player.spotted[id]; }
+function vagueDistance(d){
+  if(d < 5)  return 'not far';
+  if(d < 10) return 'a fair way';
+  if(d < 16) return 'a long way';
+  return 'no telling how far';
+}
+
 /* ---------------- STATE ---------------- */
 function freshState(){ return {
   at:'jeep',
   visited:{jeep:true},
-  spotted:{},     // landmarks seen from a distance but not yet reached
+  spotted:{},
   legs:0,
-  walked:0,       // km
-  elapsed:0       // hours on foot
+  walked:0,        // km on foot
+  clock:14.5,      // hours since midnight, day 1. It broke down in the afternoon.
+  day:1,
+  water:9.0,       // litres. Everything you have.
+  core:0,          // heat strain, 0-100
+  dry:0,           // effective hours since the water ran out
+  feet:0,          // wear, 0-100
+  shaded:false,
+  searchHeat:0,    // how likely anyone is looking for you yet
+  dead:null,
+  saved:null
 }; }
 let player;
 
@@ -341,11 +458,12 @@ function onMarkerClick(id){
 
 /* ---------------- STATUS + SHEET ---------------- */
 function statusFields(){
-  if(!player) return [['POSITION','\u2014'],['LEGS','\u2014'],['ON FOOT','\u2014']];
+  if(!player) return [['WATER','\u2014'],['CLOCK','\u2014'],['CONDITION','\u2014']];
+  const wcls = player.water <= 2 ? 'int-low' : 'int-val';
   return [
-    ['POSITION', N[player.at].name],
-    ['WALKED', player.walked.toFixed(1) + ' km'],
-    ['ON FOOT', player.elapsed.toFixed(1) + ' h']
+    ['WATER', player.water.toFixed(1) + ' L', wcls],
+    ['DAY ' + player.day, clockStr(player.clock) + ' \u00b7 ' + temp() + '\u00b0C'],
+    ['CONDITION', condition().toUpperCase(), condition()==='ok'?'int-val':'int-low']
   ];
 }
 function sheetHTML(){
@@ -353,12 +471,19 @@ function sheetHTML(){
   const seen = Object.keys(player.visited).length;
   const unreached = Object.keys(player.spotted).filter(id=>!player.visited[id]).map(id=>N[id].name);
   const t = TERRAIN[N[player.at].t];
-  const rows = (ADJ[player.at]||[]).map(id=>
-    '<tr><td style="padding:2px 10px 2px 0;">' + (player.visited[id]?N[id].name:'\u2014 unvisited \u2014') + '</td>' +
-    '<td style="padding:2px 10px 2px 0; color:var(--rust);">' + km(player.at,id).toFixed(1) + ' km</td>' +
+  const rows = (ADJ[player.at]||[]).map(id=>{
+    const k = knows(id);
+    return '<tr><td style="padding:2px 10px 2px 0;">' + (k ? N[id].name : 'unknown ground') + '</td>' +
+    '<td style="padding:2px 10px 2px 0; color:var(--rust);">' + (k ? km(player.at,id).toFixed(1)+' km' : vagueDistance(km(player.at,id))) + '</td>' +
     '<td style="padding:2px 10px 2px 0; color:var(--stone);">' + compass(bearing(player.at,id)) + '</td>' +
-    '<td style="padding:2px 0; color:var(--stone);">~' + hours(player.at,id).toFixed(1) + ' h</td></tr>').join('');
+    '<td style="padding:2px 0; color:var(--stone);">' + (k ? '~'+ (hours(player.at,id)/paceFactor()).toFixed(1) +' h' : '\u2014') + '</td></tr>';
+  }).join('');
+  const bar = (v)=>{ const n=Math.round(v/10); return '\u2588'.repeat(n) + '\u2591'.repeat(10-n); };
   return '<div class="sheetMeta">' +
+    'Water <b>' + player.water.toFixed(1) + ' L</b> &nbsp; Heat strain <b>' + bar(player.core) + '</b> &nbsp; Feet <b>' + bar(player.feet) + '</b><br>' +
+    'Drinking about <b>' + drinkRate('walk').toFixed(2) + ' L/h</b> walking, <b>' + drinkRate('shade').toFixed(2) + ' L/h</b> in shade, at ' + temp() + '\u00b0C<br>' +
+    'Shade here: <b>' + shadeHere() + '</b> &nbsp;\u00b7&nbsp; Chance of being found: <b>' + rescueLabel() + '</b><br>' +
+    '<span style="color:var(--stone);">\u2500\u2500\u2500</span><br>' +
     'Standing on: <b>' + t.label + '</b> at <b>' + N[player.at].el + ' m</b><br>' +
     '<span style="color:var(--stone);">' + t.blurb + '</span><br>' +
     'Ground covered: <b>' + player.walked.toFixed(1) + ' km</b> over <b>' + player.legs + '</b> legs \u00b7 ' +
@@ -372,53 +497,271 @@ function sheetHTML(){
   '</div>';
 }
 
+
+/* ---------------- BEING FOUND ----------------
+   The whole argument of the game lives in these numbers.
+   Search and rescue finds vehicles. It does not find people.  */
+function shadeHere(){
+  const t = N[player.at].t;
+  if(player.at === 'jeep') return 'good';          // the vehicle itself
+  if(t === 'mine' || t === 'ruin') return 'good';
+  if(t === 'wash' || t === 'ridge') return 'some'; // a cutbank, a boulder
+  return 'none';                                   // playa, bajada: nothing
+}
+function rescueChancePerHour(){
+  const id = player.at;
+  const n = N[id];
+  // A parked vehicle is a target an aircraft can actually see.
+  if(id === 'jeep'){
+    return Math.min(0.20, player.searchHeat * 0.0045);
+  }
+  // Roads depend on traffic, not on anyone looking for you.
+  if(n.t === 'road'){
+    if(id === 'us6')    return 0.34;
+    if(id === 'graded') return 0.055;
+    return 0.010;                                   // two-tracks
+  }
+  // Out in the country, essentially nobody.
+  return 0.0008 + Math.min(0.006, player.searchHeat * 0.00012);
+}
+function rescueLabel(){
+  const p = rescueChancePerHour();
+  if(p >= 0.25) return 'good';
+  if(p >= 0.05) return 'fair';
+  if(p >= 0.012) return 'poor';
+  if(p >= 0.004) return 'faint';
+  return 'none';
+}
+function rollRescue(hours){
+  const p = rescueChancePerHour();
+  const miss = Math.pow(1 - p, hours);
+  return Math.random() > miss;
+}
+
+/* ---------------- REST ---------------- */
+function restFor(h, mode){
+  const shade = (mode === 'shade');
+  player.shaded = shade;
+  const before = player.day;
+  advance(h, shade ? 'shade' : 'rest');
+  const found = rollRescue(h);
+  Engine.log('Waited ' + h + ' h' + (shade?' in shade':'') + ' \u2014 ' +
+             clockStr(player.clock) + ', ' + temp() + '\u00b0C, ' +
+             player.water.toFixed(1) + ' L left.', 'l-info');
+  if(checkDead()) return;
+  if(found) return Engine.go(()=>rescued(mode));
+  Engine.go(arrive);
+}
+
+function checkDead(){
+  if(player.core >= 100){ player.dead='heat';   Engine.go(()=>ending()); return true; }
+  if(player.dry  >= 9)  { player.dead='thirst'; Engine.go(()=>ending()); return true; }
+  return false;
+}
+
 /* ---------------- SCENES ---------------- */
 function arrive(){
-  Engine.badge(player.at==='jeep' ? 'THE JEEP' : 'ON FOOT');
+  Engine.badge(player.at==='jeep' ? 'THE JEEP' : 'DAY ' + player.day);
   const n = N[player.at];
   const t = TERRAIN[n.t];
   const near = ADJ[player.at] || [];
-  const firstTime = !player.seenNote || !player.seenNote[n.id];
-
   const found = spotFrom();
+  const T = temp();
+  const night = isNight(player.clock);
+  const shade = shadeHere();
+
+  // The country reads differently depending on how bad things are.
+  const cond = condition();
+  const bodyLine =
+    cond === 'critical' ? '<div class="story"><span class="danger">The water is gone.' +
+      (player.dry > 5 ? ' You have stopped sweating, which is the sign everyone misreads as improvement.'
+                      : ' Everything from here runs on a clock you cannot read.') + '</span></div>' :
+    cond === 'bad'      ? '<div class="story"><span class="danger">Head pounding, mouth thick, and the light has gone hard at the edges.</span></div>' :
+    cond === 'poor'     ? '<div class="story">Thirsty in the way that stops being a sensation and becomes a fact about you.</div>' :
+    cond === 'worn'     ? '<div class="story">Feet complaining. Otherwise holding.</div>' : '';
+
+  const heatWarn = (!night && T >= 34 && shade === 'none')
+    ? '<div class="story"><span class="danger">No shade here and it is ' + T + '\u00b0C. Standing still in this costs almost as much as walking.</span></div>' : '';
+
   const opts = near.map(id=>{
-    const known = player.visited[id];
+    const known = knows(id);
+    const h = hours(player.at,id)/paceFactor();
+    const cost = drinkRate('walk') * h;
+    const dir = compass(bearing(player.at,id));
+    const risk = (night && !known && N[id].t!=='road' && N[player.at].t!=='ridge')
+      ? ' \u00b7 easy to miss in the dark' : '';
+
+    if(known){
+      return '<button class="choice" data-go="' + id + '">' +
+        '<span class="tag">' + dir + ' \u00b7 ' + km(player.at,id).toFixed(1) + ' km \u00b7 ~' +
+          h.toFixed(1) + ' h \u00b7 ~' + cost.toFixed(1) + ' L' + risk + '</span>' +
+        N[id].name + (player.visited[id] ? '' : ' \u2014 spotted from a distance') +
+        '</button>';
+    }
+    // Unknown ground: a heading, a surface, and a guess.
+    const surface = N[id].t === 'road'
+      ? (N[player.at].t === 'road' ? 'The track runs on this way' : 'A vehicle track')
+      : 'Open ' + TERRAIN[N[id].t].label;
     return '<button class="choice" data-go="' + id + '">' +
-      '<span class="tag">' + compass(bearing(player.at,id)) + ' \u00b7 ' +
-        km(player.at,id).toFixed(1) + ' km \u00b7 ~' + hours(player.at,id).toFixed(1) + ' h</span>' +
-      (known ? N[id].name : 'Unvisited ground \u2014 ' + TERRAIN[N[id].t].label) +
+      '<span class="tag">' + dir + ' \u00b7 ' + vagueDistance(km(player.at,id)) + risk + '</span>' +
+      surface + ' \u2014 you have not been that way' +
       '</button>';
   }).join('');
+
+  const restOpts =
+    (shade !== 'none'
+      ? '<button class="choice" data-rest="shade4"><span class="tag">SHADE UP \u00b7 4 h \u00b7 ~' +
+          (drinkRate('shade')*4).toFixed(1) + ' L</span>Get out of the sun and do nothing. It is not doing nothing.</button>'
+      : '<button class="choice" data-rest="rest2"><span class="tag">SIT \u00b7 2 h \u00b7 ~' +
+          (drinkRate('rest')*2).toFixed(1) + ' L</span>No shade here worth the name. Rest anyway.</button>') +
+    '<button class="choice" data-rest="night"><span class="tag">WAIT FOR DARK / FOR LIGHT \u00b7 ~' +
+      (night ? 'until 05:30' : 'until 20:00') + '</span>Sit out the part of the day that kills people.</button>';
 
   Engine.render(
     (n.note ? '<div class="hereNote">' + n.note + '</div>' : '') +
     spotLine(found) +
-    '<div class="story"><b>' + n.name + '</b> \u2014 ' + t.label + ', ' + n.el + ' m.</div>' +
+    '<div class="story"><b>' + n.name + '</b> \u2014 ' + t.label + ', ' + n.el + ' m. ' +
+      lightWord() + ', ' + T + '\u00b0C.</div>' +
+    bodyLine + heatWarn +
     '<div class="thought">' + t.blurb + '</div>' +
-    (player.legs ? '<div class="legline">Ground covered: <b>' + player.walked.toFixed(1) +
-      ' km</b> over <b>' + player.legs + '</b> legs, roughly <b>' + player.elapsed.toFixed(1) +
-      ' hours</b> walking.</div>' : '') +
-    '<div class="story" style="font-size:0.82rem; color:var(--stone);">Pick a heading below, or click a highlighted point on the map twice.</div>' +
-    '<div class="choices">' + opts + '</div>'
+    (player.at==='jeep' && player.day>=2
+      ? '<div class="legline">Day ' + player.day + '. Somebody has noticed by now that you did not come back. ' +
+        'Chance of being spotted here: <b>' + rescueLabel() + '</b>.</div>' : '') +
+    '<div class="story" style="font-size:0.82rem; color:var(--stone);">Move, or wait.</div>' +
+    '<div class="choices">' + restOpts + opts + '</div>'
   );
   document.querySelectorAll('#main .choice').forEach(b=>{
-    b.onclick = ()=> travelTo(b.dataset.go);
+    if(b.dataset.go)   b.onclick = ()=> travelTo(b.dataset.go);
+    if(b.dataset.rest) b.onclick = ()=> doRest(b.dataset.rest);
   });
   refreshMap();
 }
 
+function doRest(kind){
+  if(kind === 'shade4') return restFor(4, 'shade');
+  if(kind === 'rest2')  return restFor(2, 'rest');
+  // wait out the heat, or wait out the dark
+  const t = (player.clock % 24 + 24) % 24;
+  let h;
+  if(isNight(player.clock)) h = (t >= 20 ? (24 - t) + 5.5 : 5.5 - t);
+  else                      h = 20 - t;
+  h = Math.max(0.5, Math.round(h*10)/10);
+  return restFor(h, shadeHere() !== 'none' ? 'shade' : 'rest');
+}
+
 function travelTo(id){
   const from = player.at;
-  const d = km(from,id), h = hours(from,id);
-  player.at = id;
-  player.visited[id] = true;
+  const d = km(from,id);
+  const h = hours(from,id) / paceFactor();
+  const night = isNight(player.clock);
+  const known = !!player.visited[id];
+
+  // Walking at night is correct — far less water — but finding an
+  // unvisited point in the dark on open ground is a different job.
+  let lost = false;
+  if(night && !known && N[id].t !== 'road'){
+    const anchor = N[from].t === 'ridge' || player.spotted[id];
+    if(!anchor && Math.random() < 0.35) lost = true;
+  }
+
+  advance(h, 'walk');
   player.legs += 1;
   player.walked += d;
-  player.elapsed += h;
+
+  if(lost){
+    // You did not arrive. You spent the hours anyway.
+    const back = Engine.pick(ADJ[from].filter(x=>x!==id).concat([from]));
+    player.at = back;
+    player.visited[back] = true;
+    Engine.log('Lost the line in the dark. ' + d.toFixed(1) + ' km walked, nowhere useful.', 'l-bad');
+    Engine.sfxFail();
+    if(checkDead()) return;
+    return Engine.go(()=>strayed(id, back, h));
+  }
+
+  player.at = id;
+  player.visited[id] = true;
   Engine.log('Walked ' + d.toFixed(1) + ' km ' + compass(bearing(from,id)) + ' to ' + N[id].name +
-             ' (~' + h.toFixed(1) + ' h).', 'l-info');
-  Engine.refreshStatus();
+             ' \u2014 ' + h.toFixed(1) + ' h, ' + player.water.toFixed(1) + ' L left.', 'l-info');
+  if(checkDead()) return;
+  if(rollRescue(h)) return Engine.go(()=>rescued('walk'));
   Engine.go(arrive);
+}
+
+function strayed(intended, actual, h){
+  Engine.badge('LOST');
+  Engine.render(
+    '<div class="hereNote">You walked ' + h.toFixed(1) + ' hours on a bearing you were sure of, and the ground did not match. ' +
+    'No landmark, no lights, and the range you were using to steer by went black an hour ago.</div>' +
+    '<div class="story">When the sky greys enough to read the country, you are at <b>' + N[actual].name + '</b>. ' +
+    'Not ' + N[intended].name + '. The water is gone regardless.</div>' +
+    '<div class="thought">This is the part nobody tells you about walking at night. The cool is real and the savings are real, and none of it helps if you arrive somewhere else.</div>' +
+    Engine.contBtn()
+  );
+  Engine.wire(arrive);
+}
+
+/* ---------------- ENDINGS ---------------- */
+function rescued(how){
+  player.saved = how;
+  const id = player.at;
+  let text;
+  if(id === 'jeep'){
+    text = "A Civil Air Patrol Cessna comes up the valley at maybe six hundred feet, following the two-track because that is what you follow when you are looking for a vehicle. It banks once, comes back lower, and waggles its wings. " +
+           "It found the Jeep. It was never going to find you.";
+  } else if(N[id].t === 'road'){
+    text = "A truck. Actual dust on the horizon resolving into an actual truck, and it slows, and the window comes down, and a rancher who is not remotely surprised to see you asks if you are the one with the Jeep.";
+  } else {
+    text = "A white pickup with no markings comes over the rise and stops thirty metres off. Two men get out. They give you water before they ask you anything, which you appreciate, and then they ask you a number of things, and then they drive you to a gate and have you sign a form about what you did and did not see.";
+  }
+  Engine.recordEnding('rescued-' + (id === 'jeep' ? 'vehicle' : N[id].t === 'road' ? 'road' : 'other'),
+    {day:player.day, water:+player.water.toFixed(1), walked:+player.walked.toFixed(1), at:id});
+  Engine.sfxSuccess();
+  Engine.badge('FOUND');
+  Engine.render(
+    '<div class="story"><span class="flavor">FOUND \u2014 DAY ' + player.day + ', ' + clockStr(player.clock) + '</span></div>' +
+    '<div class="story">' + text + '</div>' + manifest() +
+    '<button class="smallbtn primary-go" id="again">ANOTHER TRIP \u2192</button>'
+  );
+  document.getElementById('again').onclick = ()=>Engine.restart();
+}
+
+function ending(){
+  const how = player.dead;
+  const far = km('jeep', player.at);
+  let text;
+  if(how === 'thirst'){
+    text = "The water ran out " + (far < 1 ? "at the Jeep" : far.toFixed(1) + " kilometres from the Jeep") +
+           " and there was nothing between here and anywhere. It is not dramatic. You get slower, and then you get confused, and the confusion is the part that finishes it.";
+  } else {
+    text = "Core temperature is the one that gets people who think thirst is the danger. You stopped sweating an hour ago and took that as good news.";
+  }
+  const lesson = (player.at === 'jeep')
+    ? "You stayed. That was right. The margin was simply not there \u2014 nine litres and a valley this size is a hard arithmetic problem no matter how well you play it."
+    : "The Jeep is " + far.toFixed(1) + " km back that way, with shade, and a mirror, and a shape an aircraft can see from six hundred feet.";
+  Engine.recordEnding('lost-' + how, {day:player.day, walked:+player.walked.toFixed(1), at:player.at});
+  Engine.sfxFail();
+  Engine.badge('END');
+  Engine.render(
+    '<div class="story"><span class="danger">DAY ' + player.day + ', ' + clockStr(player.clock) + '</span></div>' +
+    '<div class="story">' + text + '</div>' +
+    '<div class="thought">' + lesson + '</div>' + manifest() +
+    '<button class="smallbtn primary-go" id="again">ANOTHER TRIP \u2192</button>'
+  );
+  document.getElementById('again').onclick = ()=>Engine.restart();
+}
+
+function manifest(){
+  return '<div style="border:1px solid var(--mist); background:var(--cream); padding:12px 14px; margin:18px 0; font-family:\'DM Mono\',monospace; font-size:0.64rem; line-height:1.8;">' +
+    '<div style="font-size:0.56rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:8px;">Trip log</div>' +
+    'Days out: <b style="color:var(--ink);">' + player.day + '</b><br>' +
+    'On foot: <b style="color:var(--ink);">' + player.walked.toFixed(1) + ' km</b> over ' + player.legs + ' legs<br>' +
+    'Water remaining: <b style="color:var(--ink);">' + player.water.toFixed(1) + ' L</b><br>' +
+    'Furthest from the Jeep: <b style="color:var(--ink);">' + km('jeep', player.at).toFixed(1) + ' km</b><br>' +
+    'Places reached: <b style="color:var(--ink);">' + Object.keys(player.visited).length + ' / ' + NODES.length + '</b>' +
+    '<div style="margin-top:8px; padding-top:8px; border-top:1px solid var(--mist); color:var(--stone);">' +
+      'Trips taken: <b style="color:var(--ink);">' + Engine.runCount() + '</b>' +
+    '</div></div>';
 }
 
 /* ---------------- LAUNCH ---------------- */
