@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stay With the Vehicle — Brooks Groves</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="/games/engine.css">
+<link rel="stylesheet" href="/css/site-footer.css">
+<style>
+  #map { height:380px; width:100%; background:#e8e2d6; }
+  [data-theme="dark"] #map { background:#1a1712; }
+  .leaflet-container { font-family:'DM Mono',monospace; font-size:0.7rem; }
+  .leaflet-popup-content { margin:10px 12px; font-family:'DM Mono',monospace; font-size:0.68rem; line-height:1.5; }
+  .leaflet-popup-content b { font-family:'Playfair Display',serif; font-size:0.85rem; }
+
+  .maplegend {
+    display:flex; gap:14px; flex-wrap:wrap; padding:8px 14px;
+    border-top:1px solid var(--mist); background:var(--cream);
+    font-family:'DM Mono',monospace; font-size:0.56rem; letter-spacing:0.06em;
+    text-transform:uppercase; color:var(--stone);
+  }
+  .maplegend i { width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:4px; vertical-align:baseline; }
+
+  .legline {
+    font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--stone);
+    border-left:3px solid var(--mist); padding:6px 0 6px 12px; margin:10px 0;
+  }
+  .legline b { color:var(--ink); }
+  .hereNote {
+    border-left:3px solid var(--gold); background:var(--cream);
+    padding:10px 14px; margin:12px 0; font-size:0.88rem; line-height:1.6;
+  }
+  .nomap {
+    padding:22px; font-family:'DM Mono',monospace; font-size:0.7rem;
+    color:var(--stone); line-height:1.7; text-align:center;
+  }
+</style>
+<script>
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && dark)) document.documentElement.setAttribute('data-theme','dark');
+    } catch(e) {}
+  })();
+</script>
+</head>
+<body id="top">
+<div id="game"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/games/engine.js"></script>
+<script>
+/* ============================================================
+   STAY WITH THE VEHICLE
+   Railroad Valley, Nye County, Nevada.
+   Phase 1: terrain, movement, and the map. No survival systems
+   wired in yet — this is the board before the rules.
+
+   Coordinates are real. The two-track and the breakdown point
+   are fiction. This is a game, not a route guide.
+   ============================================================ */
+
+/* ---------------- TERRAIN ---------------- */
+const TERRAIN = {
+  road:   { label:"two-track / road", color:'#8b3a2a', pace:4.5,
+            blurb:"Compacted. Easy going, and the only surface anyone drives." },
+  playa:  { label:"playa",            color:'#c8922a', pace:4.0,
+            blurb:"Flat, hard, and utterly exposed. Nothing between you and the sun." },
+  bajada: { label:"bajada",           color:'#7a7268', pace:3.2,
+            blurb:"Alluvial apron off the range front. Loose rock, low brush, endless." },
+  wash:   { label:"wash",             color:'#4a5c45', pace:3.0,
+            blurb:"Sand and gravel. Slower than it looks, and it channels water when there is any." },
+  ridge:  { label:"ridge / high ground", color:'#2a4a6b', pace:2.2,
+            blurb:"Climbing. Costly in every way except the one that matters — you can see, and be seen." },
+  mine:   { label:"workings",         color:'#5c3a5c', pace:2.5,
+            blurb:"Tailings and cut benches. Old ground, badly kept." },
+  ruin:   { label:"ruin",             color:'#a06840', pace:3.5,
+            blurb:"Somebody tried to live here. The evidence is mostly foundations." }
+};
+
+/* ---------------- THE VALLEY ---------------- */
+const NODES = [
+  { id:'jeep',      name:"The Jeep",             lat:38.3180, lon:-115.7450, t:'road',   el:1460,
+    note:"Where it stopped. Hood up, nose pointed at nothing in particular. Everything you have is here." },
+  { id:'playa_n',   name:"Playa, north lobe",    lat:38.4020, lon:-115.7710, t:'playa',  el:1440 },
+  { id:'playa_c',   name:"Playa, center",        lat:38.3520, lon:-115.7960, t:'playa',  el:1435 },
+  { id:'calib',     name:"Calibration site",     lat:38.4970, lon:-115.6900, t:'playa',  el:1437,
+    note:"Instrument masts on the mud. Fenced, solar-powered, immaculately maintained, and nobody is here." },
+  { id:'playa_s',   name:"Playa, south edge",    lat:38.2810, lon:-115.8080, t:'playa',  el:1438 },
+  { id:'mudflat',   name:"Wet mudflat",          lat:38.3300, lon:-115.8380, t:'playa',  el:1433,
+    note:"Crust gives underfoot. Every step costs double and one of them will take a boot." },
+
+  { id:'baj_w',     name:"West bajada",          lat:38.3400, lon:-115.8900, t:'bajada', el:1580 },
+  { id:'wash_w',    name:"West wash",            lat:38.3010, lon:-115.9120, t:'wash',   el:1620 },
+  { id:'pancake',   name:"Pancake Range foot",   lat:38.3600, lon:-115.9600, t:'ridge',  el:1890 },
+  { id:'spring_w',  name:"Seep below the rocks", lat:38.3760, lon:-115.9480, t:'wash',   el:1810,
+    note:"Green where nothing else is green. That means water, or it means water used to be here." },
+
+  { id:'baj_e',     name:"East bajada",          lat:38.3260, lon:-115.6300, t:'bajada', el:1610 },
+  { id:'wash_e',    name:"East wash",            lat:38.2960, lon:-115.5980, t:'wash',   el:1690 },
+  { id:'grant',     name:"Grant Range front",    lat:38.3450, lon:-115.5400, t:'ridge',  el:2130 },
+  { id:'mine',      name:"The adit",             lat:38.3610, lon:-115.5620, t:'mine',   el:2020,
+    note:"A hole in the hillside with a rail stub coming out of it. Cold air on your face, which is the good news and the bad news." },
+  { id:'headframe', name:"Collapsed headframe",  lat:38.3680, lon:-115.5750, t:'mine',   el:1960 },
+
+  { id:'homestead', name:"The homestead",        lat:38.2650, lon:-115.6720, t:'ruin',   el:1520,
+    note:"Four walls, no roof, and a cottonwood that has no business being alive out here and is." },
+  { id:'well',      name:"The well",             lat:38.2620, lon:-115.6760, t:'ruin',   el:1518,
+    note:"Casing pipe, hand pump, no handle. Drop a rock and count." },
+  { id:'corral',    name:"Corral posts",         lat:38.2710, lon:-115.6640, t:'ruin',   el:1525 },
+
+  { id:'cow',       name:"Cattle",               lat:38.2440, lon:-115.7050, t:'bajada', el:1490,
+    note:"Six head, standing in the open. Cattle do not range far from water \u2014 three miles, give or take. That is not folklore. That is a fact you can walk on." },
+  { id:'trough',    name:"Stock tank",           lat:38.2280, lon:-115.7240, t:'ruin',   el:1478,
+    note:"Float valve, algae, and a pipe running somewhere uphill to something." },
+  { id:'pipeline',  name:"Pipeline scar",        lat:38.2360, lon:-115.7520, t:'bajada', el:1495 },
+
+  { id:'balloon',   name:"Downed balloon",       lat:38.3860, lon:-115.8320, t:'playa',  el:1442,
+    note:"Mylar and a shattered radiosonde. The mylar is the useful half." },
+  { id:'cache',     name:"Cairn on the point",   lat:38.3960, lon:-115.6480, t:'ridge',  el:1720,
+    note:"Ammo can under the rocks. Damp logbook, pencil stub. Somebody has been coming out here for years." },
+  { id:'sensor',    name:"Something buried",     lat:38.2900, lon:-115.7860, t:'playa',  el:1436 },
+  { id:'boundary',  name:"Range boundary",       lat:38.1900, lon:-115.8600, t:'bajada', el:1530,
+    note:"USE OF DEADLY FORCE AUTHORIZED. The fence behind the sign is three strands and forty years old." },
+
+  { id:'knob_n',    name:"North knob",           lat:38.4380, lon:-115.6900, t:'ridge',  el:1840 },
+  { id:'knob_s',    name:"South knob",           lat:38.2120, lon:-115.6420, t:'ridge',  el:1910 },
+  { id:'saddle',    name:"Grant Range saddle",   lat:38.3550, lon:-115.4980, t:'ridge',  el:2480,
+    note:"High enough that a phone might find something. Two thousand feet of climb to find out." },
+
+  { id:'twotrack_n',name:"Two-track, north",     lat:38.4600, lon:-115.7300, t:'road',   el:1455 },
+  { id:'twotrack_s',name:"Two-track, south",     lat:38.2200, lon:-115.7800, t:'road',   el:1470 },
+  { id:'graded',    name:"Graded county road",   lat:38.5400, lon:-115.6600, t:'road',   el:1490,
+    note:"Actual gravel, actual grading. Someone maintains this, which means someone drives it." },
+  { id:'us6',       name:"US-6",                 lat:38.6900, lon:-115.5900, t:'road',   el:1720,
+    note:"Pavement. Ely to Tonopah. A vehicle every twenty minutes, or every three hours, depending on the day and your luck." },
+  { id:'nyala',     name:"Nyala junction",       lat:38.0700, lon:-115.5300, t:'road',   el:1580,
+    note:"A road sign and a cattle guard. It is not a town. It has never been a town." }
+];
+
+const EDGES = [
+  ['jeep','playa_c'],['jeep','playa_n'],['jeep','baj_w'],['jeep','baj_e'],
+  ['jeep','twotrack_n'],['jeep','twotrack_s'],['jeep','sensor'],
+  ['playa_n','playa_c'],['playa_n','calib'],['playa_n','balloon'],['playa_n','twotrack_n'],
+  ['playa_c','playa_s'],['playa_c','mudflat'],['playa_c','balloon'],['playa_c','sensor'],
+  ['playa_s','mudflat'],['playa_s','twotrack_s'],['playa_s','baj_w'],
+  ['mudflat','baj_w'],['balloon','baj_w'],
+  ['calib','knob_n'],['calib','graded'],
+  ['baj_w','wash_w'],['baj_w','pancake'],['wash_w','pancake'],['pancake','spring_w'],['wash_w','spring_w'],
+  ['baj_w','boundary'],['boundary','twotrack_s'],
+  ['baj_e','wash_e'],['baj_e','grant'],['baj_e','homestead'],['baj_e','cache'],
+  ['wash_e','grant'],['grant','mine'],['mine','headframe'],['headframe','grant'],
+  ['grant','saddle'],['saddle','mine'],
+  ['homestead','well'],['homestead','corral'],['corral','baj_e'],
+  ['homestead','cow'],['cow','trough'],['trough','pipeline'],['pipeline','twotrack_s'],
+  ['cow','twotrack_s'],['homestead','knob_s'],['knob_s','wash_e'],
+  ['cache','knob_n'],['knob_n','graded'],['knob_n','twotrack_n'],
+  ['twotrack_n','graded'],['graded','us6'],
+  ['twotrack_s','nyala'],['knob_s','nyala']
+];
+
+const N = Object.fromEntries(NODES.map(n=>[n.id,n]));
+const ADJ = {};
+NODES.forEach(n=> ADJ[n.id]=[]);
+EDGES.forEach(([a,b])=>{ ADJ[a].push(b); ADJ[b].push(a); });
+
+/* ---------------- GEO ---------------- */
+function metres(a,b){
+  const R=6371000, rad=d=>d*Math.PI/180;
+  const dp=rad(b.lat-a.lat), dl=rad(b.lon-a.lon);
+  const x=Math.sin(dp/2)**2 + Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dl/2)**2;
+  return 2*R*Math.asin(Math.sqrt(x));
+}
+function km(a,b){ return metres(N[a],N[b])/1000; }
+// Hours on foot, terrain-weighted, with a climb penalty (Naismith-ish).
+function hours(a,b){
+  const d = km(a,b);
+  const pace = (TERRAIN[N[a].t].pace + TERRAIN[N[b].t].pace)/2;
+  const climb = Math.max(0, N[b].el - N[a].el);
+  return d/pace + climb/600;
+}
+function bearing(a,b){
+  const rad=d=>d*Math.PI/180, deg=r=>r*180/Math.PI;
+  const φ1=rad(N[a].lat), φ2=rad(N[b].lat), Δλ=rad(N[b].lon-N[a].lon);
+  const y=Math.sin(Δλ)*Math.cos(φ2);
+  const x=Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δλ);
+  return (deg(Math.atan2(y,x))+360)%360;
+}
+function compass(deg){
+  const pts=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+  return pts[Math.round(deg/22.5)%16];
+}
+
+/* ---------------- STATE ---------------- */
+function freshState(){ return {
+  at:'jeep',
+  visited:{jeep:true},
+  legs:0,
+  walked:0,       // km
+  elapsed:0       // hours on foot
+}; }
+let player;
+
+/* ---------------- MAP ---------------- */
+let map=null, markers={}, lines=[], hereRing=null, mapOK=false;
+
+function buildMap(el){
+  el.innerHTML = '<div id="map"></div>' +
+    '<div class="maplegend">' +
+      Object.keys(TERRAIN).map(k=>
+        '<span><i style="background:'+TERRAIN[k].color+'"></i>'+TERRAIN[k].label+'</span>').join('') +
+    '</div>';
+
+  if(typeof L === 'undefined'){
+    document.getElementById('map').outerHTML =
+      '<div class="nomap">The map could not load.<br>Everything still works \u2014 you can travel from the list below.</div>';
+    return;
+  }
+  mapOK = true;
+
+  map = L.map('map', { zoomControl:true, attributionControl:true })
+         .setView([38.34,-115.72], 10);
+
+  L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom:16, minZoom:8,
+    attribution:'USGS The National Map'
+  }).addTo(map);
+
+  // edges as faint lines
+  EDGES.forEach(([a,b])=>{
+    lines.push(L.polyline([[N[a].lat,N[a].lon],[N[b].lat,N[b].lon]],
+      { color:'#7a7268', weight:1, opacity:0.35, dashArray:'3,5' }).addTo(map));
+  });
+
+  NODES.forEach(n=>{
+    const m = L.circleMarker([n.lat,n.lon], {
+      radius:6, color:'#1c1a16', weight:1,
+      fillColor:TERRAIN[n.t].color, fillOpacity:0.9
+    }).addTo(map);
+    m.on('click', ()=> onMarkerClick(n.id));
+    markers[n.id] = m;
+  });
+
+  hereRing = L.circleMarker([N.jeep.lat,N.jeep.lon],
+    { radius:13, color:'#8b3a2a', weight:2, fill:false }).addTo(map);
+}
+
+function refreshMap(){
+  if(!mapOK || !player) return;
+  const here = player.at;
+  const near = ADJ[here] || [];
+  NODES.forEach(n=>{
+    const m = markers[n.id];
+    if(!m) return;
+    const isHere = n.id===here;
+    const isNear = near.indexOf(n.id)!==-1;
+    const seen   = !!player.visited[n.id];
+    m.setStyle({
+      radius: isHere?8 : isNear?7 : 5,
+      fillOpacity: isHere?1 : isNear?0.9 : (seen?0.6:0.22),
+      color: isNear ? '#8b3a2a' : '#1c1a16',
+      weight: isNear ? 2 : 1
+    });
+    const label = seen||isNear ? n.name : 'Unvisited ground';
+    const dist  = isNear ? '<br>' + km(here,n.id).toFixed(1) + ' km ' + compass(bearing(here,n.id)) +
+                           ' \u00b7 ~' + hours(here,n.id).toFixed(1) + ' h on foot' : '';
+    m.bindPopup('<b>' + label + '</b><br>' + TERRAIN[n.t].label + ' \u00b7 ' + n.el + ' m' + dist +
+                (isNear ? '<br><i>Click again to walk here.</i>' : ''));
+  });
+  hereRing.setLatLng([N[here].lat, N[here].lon]);
+  map.panTo([N[here].lat, N[here].lon], {animate:true});
+}
+
+let armed = null;
+function onMarkerClick(id){
+  if(!player) return;
+  if(id === player.at) return;
+  if((ADJ[player.at]||[]).indexOf(id) === -1) return;
+  if(armed === id){ armed=null; travelTo(id); }
+  else { armed = id; }
+}
+
+/* ---------------- STATUS + SHEET ---------------- */
+function statusFields(){
+  if(!player) return [['POSITION','\u2014'],['LEGS','\u2014'],['ON FOOT','\u2014']];
+  return [
+    ['POSITION', N[player.at].name],
+    ['WALKED', player.walked.toFixed(1) + ' km'],
+    ['ON FOOT', player.elapsed.toFixed(1) + ' h']
+  ];
+}
+function sheetHTML(){
+  if(!player) return '';
+  const seen = Object.keys(player.visited).length;
+  const t = TERRAIN[N[player.at].t];
+  const rows = (ADJ[player.at]||[]).map(id=>
+    '<tr><td style="padding:2px 10px 2px 0;">' + (player.visited[id]?N[id].name:'\u2014 unvisited \u2014') + '</td>' +
+    '<td style="padding:2px 10px 2px 0; color:var(--rust);">' + km(player.at,id).toFixed(1) + ' km</td>' +
+    '<td style="padding:2px 10px 2px 0; color:var(--stone);">' + compass(bearing(player.at,id)) + '</td>' +
+    '<td style="padding:2px 0; color:var(--stone);">~' + hours(player.at,id).toFixed(1) + ' h</td></tr>').join('');
+  return '<div class="sheetMeta">' +
+    'Standing on: <b>' + t.label + '</b> at <b>' + N[player.at].el + ' m</b><br>' +
+    '<span style="color:var(--stone);">' + t.blurb + '</span><br>' +
+    'Ground covered: <b>' + player.walked.toFixed(1) + ' km</b> over <b>' + player.legs + '</b> legs \u00b7 ' +
+    'places seen: <b>' + seen + ' / ' + NODES.length + '</b>' +
+    '<div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--mist);">' +
+      '<div style="font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:5px;">From here</div>' +
+      '<table style="font-family:\'DM Mono\',monospace; font-size:0.62rem;">' + rows + '</table>' +
+    '</div>' +
+  '</div>';
+}
+
+/* ---------------- SCENES ---------------- */
+function arrive(){
+  Engine.badge(player.at==='jeep' ? 'THE JEEP' : 'ON FOOT');
+  const n = N[player.at];
+  const t = TERRAIN[n.t];
+  const near = ADJ[player.at] || [];
+  const firstTime = !player.seenNote || !player.seenNote[n.id];
+
+  const opts = near.map(id=>{
+    const known = player.visited[id];
+    return '<button class="choice" data-go="' + id + '">' +
+      '<span class="tag">' + compass(bearing(player.at,id)) + ' \u00b7 ' +
+        km(player.at,id).toFixed(1) + ' km \u00b7 ~' + hours(player.at,id).toFixed(1) + ' h</span>' +
+      (known ? N[id].name : 'Unvisited ground \u2014 ' + TERRAIN[N[id].t].label) +
+      '</button>';
+  }).join('');
+
+  Engine.render(
+    (n.note ? '<div class="hereNote">' + n.note + '</div>' : '') +
+    '<div class="story"><b>' + n.name + '</b> \u2014 ' + t.label + ', ' + n.el + ' m.</div>' +
+    '<div class="thought">' + t.blurb + '</div>' +
+    (player.legs ? '<div class="legline">Ground covered: <b>' + player.walked.toFixed(1) +
+      ' km</b> over <b>' + player.legs + '</b> legs, roughly <b>' + player.elapsed.toFixed(1) +
+      ' hours</b> walking.</div>' : '') +
+    '<div class="story" style="font-size:0.82rem; color:var(--stone);">Pick a heading below, or click a highlighted point on the map twice.</div>' +
+    '<div class="choices">' + opts + '</div>'
+  );
+  document.querySelectorAll('#main .choice').forEach(b=>{
+    b.onclick = ()=> travelTo(b.dataset.go);
+  });
+  refreshMap();
+}
+
+function travelTo(id){
+  const from = player.at;
+  const d = km(from,id), h = hours(from,id);
+  player.at = id;
+  player.visited[id] = true;
+  player.legs += 1;
+  player.walked += d;
+  player.elapsed += h;
+  Engine.log('Walked ' + d.toFixed(1) + ' km ' + compass(bearing(from,id)) + ' to ' + N[id].name +
+             ' (~' + h.toFixed(1) + ' h).', 'l-info');
+  Engine.refreshStatus();
+  Engine.go(arrive);
+}
+
+/* ---------------- LAUNCH ---------------- */
+Engine.init({
+  id: 'stay-with-the-vehicle',
+  title: 'STAY WITH THE VEHICLE',
+  subtitle: 'Railroad Valley, Nye County, Nevada \u00b7 terrain build',
+  accent: 'var(--rust)',
+  mode: 'over',
+  sheetLabel: 'TERRAIN',
+  lockBackOn: [],
+  state: ()=>{ player = freshState(); return player; },
+  status: statusFields,
+  sheet: sheetHTML,
+  panel: buildMap,
+  panelUpdate: refreshMap,
+  start: arrive
+});
+</script>
+</body>
+</html>

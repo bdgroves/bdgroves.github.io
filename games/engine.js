@@ -227,6 +227,8 @@ const Engine = (function(){
     clearRolls();
     history.push(fn);
     fn();
+    buildPanelOnce();
+    updatePanel();
     updateNav();
   }
   function goBack(){
@@ -245,6 +247,7 @@ const Engine = (function(){
   }
   function restart(){
     clearRolls();
+    if(cfg.panelReset) cfg.panelReset(panelEl());
     S = cfg.state();
     Engine.S = S;
     if(cfg.onRestart) cfg.onRestart();
@@ -393,6 +396,30 @@ const Engine = (function(){
     return ' <span class="tgtBadge">d'+o.die+' vs DC '+o.dc+' \u00b7 '+p+'%</span>';
   }
 
+
+  /* ================= PERSISTENT PANEL =================
+     A module-owned region above #main that survives scene
+     changes. Built once; render() never touches it. Needed
+     for anything stateful and expensive — a Leaflet map, a
+     canvas, a chart you don't want torn down every turn.   */
+  let panelBuilt = false;
+  function panelEl(){ return document.getElementById('panel'); }
+  function showPanel(on){
+    const el = panelEl();
+    if(el) el.style.display = (on === false) ? 'none' : 'block';
+  }
+  function buildPanelOnce(){
+    if(panelBuilt || !cfg.panel) return;
+    const el = panelEl();
+    if(!el) return;
+    panelBuilt = true;
+    showPanel(true);
+    cfg.panel(el);              // module fills it and keeps its own handle
+  }
+  function updatePanel(){
+    if(cfg.panelUpdate) cfg.panelUpdate(panelEl());
+  }
+
   /* ================= CHROME ================= */
   function buildChrome(){
     document.title = cfg.pageTitle || cfg.title;
@@ -414,6 +441,7 @@ const Engine = (function(){
           '<div class="badge" id="sceneBadge">START</div></header>'+
         '<div class="statusbar" id="statusbar"></div>'+
         '<div class="charsheet" id="charsheet"></div>'+
+        '<div id="panel" class="gamePanel" style="display:none;"></div>'+
         '<main id="main"></main>'+
         '<footer class="log" id="log"></footer>'+
         '<div class="navbar">'+
@@ -462,6 +490,7 @@ const Engine = (function(){
     init, go, goBack, restart, check, odds,
     render, badge, log, contBtn, wire, refreshStatus, renderSheet,
     clearRolls, later, repeat,
+    panelEl, showPanel, updatePanel,
     die, d10, percentile, jitter, pick,
     sfxTick, sfxLand, sfxSuccess, sfxFail, sfxHurt,
     recordEnding, setFlag, getFlag, lastRun, runCount, endingsFound, hasEnding, wipeSave,
@@ -469,3 +498,7 @@ const Engine = (function(){
     S: {}
   };
 })();
+
+// Expose for debugging from the browser console and for test harnesses.
+// (A top-level `const` does not attach to window on its own.)
+if (typeof window !== 'undefined') window.Engine = Engine;
