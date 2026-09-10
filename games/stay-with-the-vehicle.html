@@ -342,8 +342,22 @@ function spotLine(found){
   if(!found.length) return '';
   return '<div class="spotted"><b>From here you can see:</b><br>' +
     found.map(n=> n.name + ' \u2014 ' + km(player.at,n.id).toFixed(1) + ' km ' +
-      compass(bearing(player.at,n.id))).join('<br>') +
+      compass(bearing(player.at,n.id)) + tell(n.id)).join('<br>') +
     '</div>';
+}
+
+/* What a landmark tells you about itself at distance. A windmill
+   that is turning has wind and a connected pump. One that is
+   standing dead still on a breezy afternoon does not. */
+function tell(id){
+  const src = RUN.water[id];
+  if(id === 'mill_s' || id === 'mill_n'){
+    if(src) return ' \u2014 <b>the head is turning</b>';
+    return ' \u2014 <b>standing dead still</b>';
+  }
+  if(id === 'calib')     return ' \u2014 masts and a solar array';
+  if(id === 'headframe') return ' \u2014 collapsed, nothing standing';
+  return '';
 }
 
 
@@ -446,6 +460,7 @@ function freshState(){ return {
   mirror:false,
   mylar:false,
   drank:{},        // sources already emptied
+  read:{},         // sources you have assessed from a distance
   sick:0,          // from bad water
   bitten:false,
   dead:null,
@@ -934,20 +949,26 @@ function arrive(){
       '</button>';
   }).join('');
 
-  const ctx =
+  const ctx = [
     (player.at === 'jeep'
       ? '<button class="choice" data-act="jeep"><span class="tag">THE JEEP</span>Hood, tools, radio. ' +
-        (player.fixed ? 'It runs.' : player.diagnosed ? FAULTS[RUN.fault].name + ', diagnosed.' : 'You have not worked out what is wrong yet.') + '</button>'
-      : '') +
+        (player.fixed ? 'It runs.' : player.diagnosed ? FAULTS[RUN.fault].name + ', diagnosed.'
+                                                      : 'You have not worked out what is wrong yet.') + '</button>'
+      : ''),
+    readOption(),
     (sourceHere() && !player.drank[player.at]
-      ? '<button class="choice" data-act="water"><span class="tag">CHECK FOR WATER</span>See whether there is anything in it.</button>'
-      : '') +
+      ? '<button class="choice" data-act="water"><span class="tag">CHECK FOR WATER</span>' +
+        (player.read[player.at]
+          ? (RUN.water[player.at] ? 'You read it as wet from up there. Confirm it.' : 'You read it as dry. Look anyway.')
+          : 'See whether there is anything in it.') + '</button>'
+      : ''),
     (player.at === 'balloon' && !player.mylar
       ? '<button class="choice" data-act="mylar"><span class="tag">TAKE THE MYLAR</span>A square metre of it. Signal mirrors are just bright flat things.</button>'
-      : '') +
+      : ''),
     ((player.mirror || player.mylar) && N[player.at].t === 'ridge'
       ? '<button class="choice" data-act="flash"><span class="tag">WORK THE MIRROR \u00b7 2 h</span>High ground, clear sky, and something reflective. This is how people actually get found.' + odds(8,'IMPROVISE',7) + '</button>'
-      : '');
+      : '')
+  ].join('');
 
   const restOpts =
     (shade !== 'none'
@@ -980,9 +1001,49 @@ function arrive(){
 }
 
 
+
+/* Glassing the valley from high ground for green and stock trails.
+   Only worth doing where you can actually see down into it. */
+function readOption(){
+  if(N[player.at].t !== 'ridge') return '';
+  const cands = (ADJ[player.at]||[]).filter(id =>
+    RUN.water[id] !== undefined && !player.drank[id] && !player.read[id]);
+  if(!cands.length) return '';
+  return '<button class="choice" data-act="read"><span class="tag">READ THE COUNTRY \u00b7 1 h</span>' +
+    'Glass the ground below for green, for stock trails, for anything turning.' +
+    odds(12,'FIELDCRAFT',8) + '</button>';
+}
+
 function doAct(kind){
   if(kind === 'jeep')  return Engine.go(jeepScene);
   if(kind === 'water') return Engine.go(drinkScene);
+  if(kind === 'read'){
+    advance(1, shadeHere()!=='none' ? 'shade' : 'rest');
+    if(checkDead()) return;
+    const cands = (ADJ[player.at]||[]).filter(id=> RUN.water[id] !== undefined && !player.drank[id] && !player.read[id]);
+    Engine.check({die:12, mod:mod('FIELDCRAFT'), dc:8, label:'Read the country (FIELDCRAFT)'}, (ok)=>{
+      let out;
+      if(ok){
+        cands.forEach(id=> player.read[id] = true);
+        out = cands.map(id=>{
+          const has = !!RUN.water[id];
+          return '<b>' + N[id].name + '</b> \u2014 ' + (has
+            ? 'green showing at the base, and stock trails converging on it. <span style="color:var(--sage);">There is water there.</span>'
+            : 'no green, no trails, and the ground around it is as pale as everything else. <span style="color:var(--rust);">Dry.</span>');
+        }).join('<br><br>');
+        Engine.sfxSuccess();
+      } else {
+        out = 'An hour of glassing the valley and you cannot tell one patch of grey-green brush from another. Everything down there looks the same, which is the problem with this country.';
+      }
+      Engine.log('Read the country: ' + (ok?'informative':'inconclusive'), ok?'l-good':'l-bad');
+      Engine.render('<div class="hereNote">' + out + '</div>' +
+        '<div class="thought">Cattle wear paths to water and nothing else out here is worth walking to. If the trails converge, so should you.</div>' +
+        Engine.contBtn());
+      Engine.refreshStatus();
+      Engine.wire(arrive);
+    });
+    return;
+  }
   if(kind === 'mylar'){
     player.mylar = true;
     Engine.sfxSuccess();

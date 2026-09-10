@@ -201,3 +201,19 @@ footer.site-footer { background:var(--ink); color:var(--stone); padding:clamp(2r
   border-top:none;
   background:var(--white);
 }
+
+/* ---- polyhedral dice silhouettes ----
+   One shape per die type, so a d20 reads as a d20. */
+.dieShape.die-4  { clip-path: polygon(50% 2%, 98% 96%, 2% 96%); }
+.dieShape.die-6  { clip-path: polygon(8% 8%, 92% 8%, 92% 92%, 8% 92%); }
+.dieShape.die-8  { clip-path: polygon(50% 0%, 96% 50%, 50% 100%, 4% 50%); }
+.dieShape.die-10 { clip-path: polygon(50% 0%, 96% 36%, 78% 100%, 22% 100%, 4% 36%); }
+.dieShape.die-12 { clip-path: polygon(50% 0%, 98% 35%, 80% 92%, 20% 92%, 2% 35%); }
+.dieShape.die-20 { clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%); }
+
+/* the d20 gets the extra facet lines that make it read as icosahedral */
+.dieWrap { position:relative; display:inline-block; }
+.dieWrap .facets {
+  position:absolute; inset:0; pointer-events:none; opacity:0.30;
+}
+.dieWrap .facets line { stroke:var(--accent); stroke-width:1; }

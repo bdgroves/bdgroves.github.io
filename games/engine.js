@@ -273,6 +273,20 @@ const Engine = (function(){
     });
   }
 
+
+  /* Faint interior lines so each die reads as a solid, not a badge. */
+  function facetsFor(sides){
+    const L = (x1,y1,x2,y2)=> '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'"/>';
+    let inner = '';
+    if(sides === 20) inner = L(7,25,93,25) + L(7,75,93,75) + L(50,0,7,75) + L(50,0,93,75);
+    else if(sides === 12) inner = L(50,0,50,55) + L(50,55,2,35) + L(50,55,98,35) + L(50,55,20,92) + L(50,55,80,92);
+    else if(sides === 10) inner = L(50,0,50,100) + L(4,36,50,58) + L(96,36,50,58);
+    else if(sides === 8)  inner = L(4,50,96,50) + L(50,0,50,100);
+    else if(sides === 6)  inner = L(8,8,92,92);
+    else if(sides === 4)  inner = L(50,2,50,96);
+    return '<svg class="facets" viewBox="0 0 100 100" preserveAspectRatio="none">' + inner + '</svg>';
+  }
+
   /* check({die, mod, dc, label}) for roll-over games,
      check({target, label})      for percentile roll-under games. */
   function check(opts, done){
@@ -291,8 +305,12 @@ const Engine = (function(){
     } else {
       const ms = (opts.mod>=0?'+':'') + opts.mod;
       head = (opts.label||'CHECK') + ' \u2014 d' + opts.die + ' ' + ms + ' vs DC ' + opts.dc;
-      faces = '<div class="dieShape spin" id="'+id+'-a"><div class="facesize">d'+opts.die+
-              '</div><div class="facenum">0</div></div>';
+      faces = '<div class="dieWrap">' +
+                '<div class="dieShape die-'+opts.die+' spin" id="'+id+'-a">' +
+                  '<div class="facesize">d'+opts.die+'</div>' +
+                  '<div class="facenum">0</div>' +
+                '</div>' + facetsFor(opts.die) +
+              '</div>';
     }
 
     document.getElementById('main').insertAdjacentHTML('beforeend',
