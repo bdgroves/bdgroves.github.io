@@ -271,10 +271,12 @@ function advance(h, activity){
     player.dry += (short > 0 ? h : h) * load * heat;
   }
   player.core  = Math.max(0, Math.min(100, player.core + heatGain(activity) * h));
+  if(player.bitten) player.core = Math.min(100, player.core + h * 1.1);
+  if(player.sick)   player.water = Math.max(0, player.water - h * 0.06 * player.sick);
   if(activity === 'walk'){
     // dehydration makes everything worse, including your feet
     const dry = player.water < 2 ? 1.5 : 1;
-    player.feet = Math.min(100, player.feet + h * 2.2 * dry);
+    player.feet = Math.min(100, player.feet + h * 2.2 * (player.bitten?1.3:1) * dry);
   } else {
     player.feet = Math.max(0, player.feet - h * 1.4);
   }
@@ -356,8 +358,75 @@ function vagueDistance(d){
   return 'no telling how far';
 }
 
+
+/* ---------------- WHO YOU ARE ---------------- */
+const KITS = {
+  wrench: {
+    name:"YOU WORK ON YOUR OWN VEHICLES",
+    desc:"Tools in the back, a spare belt, and the specific confidence of someone who has fixed this rig before. +4 MECHANICAL, \u22122 FIELDCRAFT.",
+    mods:{MECHANICAL:4, FIELDCRAFT:-2}, water:8.0
+  },
+  country: {
+    name:"YOU KNOW THIS COUNTRY",
+    desc:"Out here for the rocks, or the birds, or the quiet. You read ground well and you brought a hat that works. +4 FIELDCRAFT, \u22122 MECHANICAL.",
+    mods:{FIELDCRAFT:4, MECHANICAL:-2}, water:9.0
+  },
+  careful: {
+    name:"YOU OVER-PREPARE",
+    desc:"Fifteen litres because the internet said ten. A mirror, a whistle, and a paper map you cannot quite place yourself on. +2 IMPROVISE, +1 ENDURANCE.",
+    mods:{IMPROVISE:2, ENDURANCE:1}, water:15.0, mirror:true
+  }
+};
+const SUB_DICE = {MECHANICAL:10, FIELDCRAFT:12, ENDURANCE:20, IMPROVISE:8};
+
+/* What actually stopped the Jeep. Drawn fresh each trip, and
+   two of the five cannot be fixed with what you have.          */
+const FAULTS = {
+  belt:   { name:"serpentine belt",  fixable:true,  dc:8,
+            clue:"Shredded rubber on the skid plate and a squeal you ignored for twenty miles.",
+            fix:"The spare belt is the right one. Twenty knuckle-splitting minutes and it turns over." },
+  fuel:   { name:"fuel pump",        fixable:false, dc:99,
+            clue:"Cranks strong, catches for half a second, dies. No pressure at the rail.",
+            fix:"" },
+  hose:   { name:"upper radiator hose", fixable:true, dc:9,
+            clue:"Green all down the block and a puddle already dried to a stain.",
+            fix:"Duct tape, a hose clamp, and the last of the drinking water going into the radiator instead of you." },
+  spark:  { name:"crank sensor",     fixable:false, dc:99,
+            clue:"Cranks and cranks and never once tries to fire. No codes you can read without a scanner.",
+            fix:"" },
+  tyre:   { name:"two flats",        fixable:true,  dc:11,
+            clue:"One sidewall opened on a rock and the spare went soft an hour later.",
+            fix:"Plug kit, a lot of pumping, and a tyre that will hold if you drive it like it is made of glass." }
+};
+
+/* ---------------- WATER IN THE GROUND ----------------
+   Every source is a question, and the answer changes per trip. */
+function rollWater(){
+  const r = ()=> Math.random();
+  return {
+    mill_s:  r() < 0.75 ? {L: 4 + Math.random()*6,  foul:true }  : null,
+    mill_n:  r() < 0.15 ? {L: 1 + Math.random()*2,  foul:true }  : null,
+    trough:  r() < 0.60 ? {L: 3 + Math.random()*5,  foul:true }  : null,
+    tank_e:  r() < 0.45 ? {L: 5 + Math.random()*8,  foul:false } : null,
+    well:    r() < 0.50 ? {L: 6 + Math.random()*10, foul:false } : null,
+    spring_w:r() < 0.55 ? {L: 2 + Math.random()*3,  foul:false } : null
+  };
+}
+function sourceHere(){ return RUN.water[player.at] !== undefined; }
+
 /* ---------------- STATE ---------------- */
+let RUN = {};
+function rollRun(){
+  RUN = {
+    fault: Engine.pick(Object.keys(FAULTS)),
+    water: rollWater(),
+    band:  Engine.pick([640, 1160, 720])
+  };
+}
+
 function freshState(){ return {
+  kit:null,
+  stats:{MECHANICAL:1, FIELDCRAFT:1, ENDURANCE:1, IMPROVISE:1},
   at:'jeep',
   visited:{jeep:true},
   spotted:{},
@@ -371,6 +440,14 @@ function freshState(){ return {
   feet:0,          // wear, 0-100
   shaded:false,
   searchHeat:0,    // how likely anyone is looking for you yet
+  battery:100,     // shared between the radio and the starter motor
+  diagnosed:false,
+  fixed:false,
+  mirror:false,
+  mylar:false,
+  drank:{},        // sources already emptied
+  sick:0,          // from bad water
+  bitten:false,
   dead:null,
   saved:null
 }; }
@@ -483,6 +560,13 @@ function sheetHTML(){
     'Water <b>' + player.water.toFixed(1) + ' L</b> &nbsp; Heat strain <b>' + bar(player.core) + '</b> &nbsp; Feet <b>' + bar(player.feet) + '</b><br>' +
     'Drinking about <b>' + drinkRate('walk').toFixed(2) + ' L/h</b> walking, <b>' + drinkRate('shade').toFixed(2) + ' L/h</b> in shade, at ' + temp() + '\u00b0C<br>' +
     'Shade here: <b>' + shadeHere() + '</b> &nbsp;\u00b7&nbsp; Chance of being found: <b>' + rescueLabel() + '</b><br>' +
+    (player.kit ? 'MECH <b>+' + player.stats.MECHANICAL + '</b> d10 &nbsp; FIELD <b>+' + player.stats.FIELDCRAFT +
+      '</b> d12 &nbsp; END <b>+' + player.stats.ENDURANCE + '</b> d20 &nbsp; IMPROV <b>+' + player.stats.IMPROVISE + '</b> d8<br>' : '') +
+    'Battery <b>' + Math.round(player.battery) + '%</b>' +
+      (player.diagnosed ? ' \u00b7 fault: <b>' + FAULTS[RUN.fault].name + (player.fixed?' (fixed)':(FAULTS[RUN.fault].fixable?'':' \u2014 not fixable here')) + '</b>' : ' \u00b7 fault unknown') +
+      (player.mylar||player.mirror ? ' \u00b7 <b>mirror</b>' : '') +
+      (player.bitten ? ' \u00b7 <b style="color:var(--rust);">snakebite</b>' : '') +
+      (player.sick ? ' \u00b7 <b style="color:var(--gold);">bad water</b>' : '') + '<br>' +
     '<span style="color:var(--stone);">\u2500\u2500\u2500</span><br>' +
     'Standing on: <b>' + t.label + '</b> at <b>' + N[player.at].el + ' m</b><br>' +
     '<span style="color:var(--stone);">' + t.blurb + '</span><br>' +
@@ -560,6 +644,248 @@ function checkDead(){
 }
 
 /* ---------------- SCENES ---------------- */
+
+/* ---------------- CHARGEN ---------------- */
+function startTrip(){
+  Engine.badge('DAY 1');
+  Engine.showPanel(false);
+  Engine.render(
+    '<div class="story">The Jeep stopped at 14:30 on a two-track in Railroad Valley, Nye County, and did not start again. ' +
+    'The nearest pavement is somewhere north. You are not certain how far, because you turned off the graded road ' +
+    'a long time ago and the odometer is not a map.</div>' +
+    '<div class="thought">Nobody knows exactly where you are. That is the whole situation, stated plainly.</div>' +
+    '<div class="story">Who came out here today?</div>' +
+    '<div class="loadoutGrid" id="kitGrid"></div>' +
+    '<button class="smallbtn primary-go" id="kitNext" disabled>GET OUT AND LOOK \u2192</button>'
+  );
+  const g = document.getElementById('kitGrid');
+  Object.keys(KITS).forEach(k=>{
+    const K = KITS[k];
+    const card = document.createElement('div');
+    card.className = 'loadoutCard';
+    card.innerHTML = '<div class="lname">' + K.name + '</div><div class="ldesc">' + K.desc + '</div>';
+    card.onclick = ()=>{
+      document.querySelectorAll('.loadoutCard').forEach(x=>x.classList.remove('selected'));
+      card.classList.add('selected');
+      player.kit = k;
+      document.getElementById('kitNext').disabled = false;
+    };
+    g.appendChild(card);
+  });
+  document.getElementById('kitNext').onclick = ()=>{
+    const K = KITS[player.kit];
+    player.stats = {MECHANICAL:1, FIELDCRAFT:1, ENDURANCE:1, IMPROVISE:1};
+    Object.keys(K.mods).forEach(s=> player.stats[s] += K.mods[s]);
+    player.water = K.water;
+    if(K.mirror) player.mirror = true;
+    Engine.showPanel(true);
+    Engine.log('Set out as: ' + K.name, 'l-info');
+    Engine.refreshStatus();
+    Engine.go(arrive);
+  };
+}
+function mod(s){ return player.stats[s]; }
+function odds(die, stat, dc){ return Engine.odds({die:die, mod:mod(stat), dc:dc}); }
+
+/* ---------------- WATER ---------------- */
+function drinkScene(){
+  const id = player.at;
+  const src = RUN.water[id];
+  Engine.badge('WATER');
+  if(player.drank[id]){
+    Engine.render('<div class="story">You have already taken what this one had.</div>' + Engine.contBtn());
+    return Engine.wire(arrive);
+  }
+  if(!src){
+    Engine.render(
+      '<div class="story">Dry. Not recently dry \u2014 dry the way a thing is dry when nothing has come out of it in years.</div>' +
+      '<div class="thought">This is the part the maps do not tell you. A symbol for a well is not a promise.</div>' +
+      Engine.contBtn());
+    player.drank[id] = true;
+    Engine.sfxFail();
+    return Engine.wire(arrive);
+  }
+  const L = src.L.toFixed(1);
+  const foul = src.foul;
+  Engine.render(
+    '<div class="hereNote">There is water in it. Roughly ' + L + ' litres you could actually carry off, ' +
+    (foul ? 'and it is green, warm, and has things living in it.' : 'and it is clear, cold, and almost certainly fine.') + '</div>' +
+    (foul ? '<div class="thought">Stock water. Cattle drink it and cattle are fine. You are not a cow, and giardia takes about a week to matter \u2014 which is longer than this situation is going to last either way.</div>' : '') +
+    '<div class="choices">' +
+      '<button class="choice" id="w1"><span class="tag">FILL EVERYTHING</span>Take all of it.' + (foul ? ' Deal with the consequences later, if there is a later.' : '') + '</button>' +
+      (foul ? '<button class="choice" id="w2"><span class="tag">STRAIN AND SETTLE IT \u00b7 2 h</span>Cloth, patience, and letting the worst of it drop out.' + odds(8,'IMPROVISE',7) + '</button>' : '') +
+      '<button class="choice" id="w3"><span class="tag">LEAVE IT</span>Walk away from water. People have.</button>' +
+    '</div>'
+  );
+  document.getElementById('w1').onclick = ()=>{
+    player.water += src.L; player.drank[id] = true;
+    if(foul) player.sick += 1;
+    Engine.sfxSuccess();
+    Engine.log('Took ' + L + ' L' + (foul?' of bad water':''), 'l-good');
+    Engine.refreshStatus();
+    Engine.render('<div class="story">You drink until it hurts and fill everything that holds liquid. ' +
+      (foul ? 'It tastes like a tank. That is exactly what it is.' : 'It is the best thing that has happened in two days.') + '</div>' + Engine.contBtn());
+    Engine.wire(arrive);
+  };
+  if(document.getElementById('w2')) document.getElementById('w2').onclick = ()=>{
+    advance(2, 'shade');
+    Engine.check({die:8, mod:mod('IMPROVISE'), dc:7, label:'Strain the water (IMPROVISE)'}, (ok)=>{
+      player.water += src.L; player.drank[id] = true;
+      if(!ok) player.sick += 1;
+      Engine.refreshStatus();
+      Engine.render('<div class="story">' + (ok
+        ? 'Two hours of straining through a shirt and letting it stand. It is not clean. It is a great deal less filthy.'
+        : 'Two hours of effort and it is still, unmistakably, tank water.') + '</div>' + Engine.contBtn());
+      Engine.wire(arrive);
+    });
+  };
+  document.getElementById('w3').onclick = ()=> Engine.go(arrive);
+}
+
+
+/* ---------------- THE RADIO ----------------
+   After dark the ionosphere lifts and the AM band fills up with
+   places you are not. It costs battery. So does the starter.    */
+const BANDS = [
+  { khz:640, call:"KFI", city:"Los Angeles",
+    night:["A traffic report. Southbound 405 is stacked to the airport and a caller is furious about it. It is 2 a.m. and somebody in Los Angeles is furious about the 405.",
+           "Ads for a mattress warehouse in Torrance, delivered with tremendous urgency, to you, here."],
+    day:null },
+  { khz:1160, call:"KSL", city:"Salt Lake City",
+    night:["Regional forecast. Moisture pushing up out of Arizona, thunderstorms possible over the eastern Nevada ranges tomorrow afternoon.",
+           "Forecast: high pressure, clear, no precipitation anywhere in the Great Basin for five days."],
+    day:null },
+  { khz:720, call:"KDWN", city:"Las Vegas",
+    night:["Cattle prices, then a county road advisory for Nye and Lincoln. Nothing about a Jeep. Nobody has reported you yet, or nobody has told the radio.",
+           "A swap-meet show. A man is trying to sell a horse trailer to nobody at all."],
+    day:null },
+  { khz:1070, call:"KNX", city:"Los Angeles",
+    night:["News on the hour, fading up and down like someone is turning a dial that is not your dial.",
+           "It comes in for eleven seconds at a time and goes out for thirty. You listen to eleven-second pieces of the world."],
+    day:null },
+  { khz:1200, call:"\u2014", city:"nowhere in particular",
+    night:["A man is taking calls about lights over Nye County. The caller describes a ridge. You are looking at that ridge.",
+           "Somebody is explaining, patiently and at length, what the government has out here. He is wrong about most of it and right about the fence."],
+    day:null },
+  { khz:1530, call:"", city:"",
+    night:["A carrier. No modulation, no station identification, no programme. Just something transmitting on 1530 and saying nothing at all.",
+           "Still there. Same frequency, same nothing. It was there last night too, if you were listening last night."],
+    day:null }
+];
+
+function radioScene(){
+  Engine.badge('THE RADIO');
+  const night = isNight(player.clock);
+  const skip = night ? 'The band is wide open.' : 'Daylight. The band is dead \u2014 nothing but local static until the sun goes down.';
+  Engine.render(
+    '<div class="hereNote">Key on, engine off. Battery at <b>' + Math.round(player.battery) + '%</b>. ' +
+    'Every minute of this is a minute of starter motor you do not get back.</div>' +
+    '<div class="story">' + skip + '</div>' +
+    (night ? '<div class="thought">Skywave. After dark the D layer thins out and the medium wave band stops being local and starts being continental. Six hundred miles is nothing at 2 a.m.</div>' : '') +
+    '<div class="choices">' +
+      (night ? BANDS.map((b,i)=>
+        '<button class="choice" data-b="' + i + '"><span class="tag">' + b.khz + ' kHz' +
+        (b.call ? ' \u00b7 ' + b.call + ', ' + b.city : '') + '</span>Tune it. \u22124% battery, 30 minutes.</button>').join('')
+        : '<button class="choice" id="rx"><span class="tag">SCAN ANYWAY \u00b7 \u22124%</span>Hiss, and the sound of your own alternator not charging.</button>') +
+      '<button class="choice" id="rq"><span class="tag">KEY OFF</span>Save what is left.</button>' +
+    '</div>'
+  );
+  document.querySelectorAll('#main .choice[data-b]').forEach(btn=>{
+    btn.onclick = ()=>{
+      const b = BANDS[+btn.dataset.b];
+      player.battery = Math.max(0, player.battery - 4);
+      advance(0.5, 'shade');
+      Engine.sfxTick();
+      const line = Engine.pick(b.night);
+      Engine.log('Tuned ' + b.khz + ' kHz.', 'l-info');
+      Engine.refreshStatus();
+      if(checkDead()) return;
+      Engine.render(
+        '<div class="story"><b>' + b.khz + ' kHz</b>' + (b.call ? ' \u2014 ' + b.call + ', ' + b.city : '') + '</div>' +
+        '<div class="hereNote">' + line + '</div>' +
+        '<div class="thought">Half an hour gone. Four percent gone. It was worth it, and you will have to decide later whether that is true.</div>' +
+        Engine.contBtn()
+      );
+      Engine.wire(radioScene);
+    };
+  });
+  if(document.getElementById('rx')) document.getElementById('rx').onclick = ()=>{
+    player.battery = Math.max(0, player.battery - 4);
+    advance(0.5,'shade');
+    Engine.refreshStatus();
+    if(checkDead()) return;
+    Engine.render('<div class="story">Static, and one station in Ely so faint it is more an idea than a signal.</div>' + Engine.contBtn());
+    Engine.wire(radioScene);
+  };
+  document.getElementById('rq').onclick = ()=> Engine.go(jeepScene);
+}
+
+/* ---------------- THE JEEP ---------------- */
+function jeepScene(){
+  Engine.badge('THE JEEP');
+  const F = FAULTS[RUN.fault];
+  const diag = player.diagnosed;
+  Engine.render(
+    '<div class="hereNote">Hood up. Everything you own is in the back and none of it starts an engine.</div>' +
+    (diag ? '<div class="story">It is the <b>' + F.name + '</b>. ' + F.clue + '</div>' : '') +
+    '<div class="choices">' +
+      (!diag ? '<button class="choice" id="j1"><span class="tag">WORK OUT WHAT IS WRONG \u00b7 1 h</span>Systematically, in the heat, with the tools you have.' + odds(10,'MECHANICAL',8) + '</button>' : '') +
+      (diag && F.fixable && !player.fixed ? '<button class="choice" id="j2"><span class="tag">FIX IT \u00b7 2 h</span>' + F.name + '. You have a shot at this.' + odds(10,'MECHANICAL',F.dc) + '</button>' : '') +
+      (diag && !F.fixable ? '<button class="choice" id="j3"><span class="tag">TRY ANYWAY \u00b7 2 h</span>You already know how this ends. Two hours and some water to prove it.</button>' : '') +
+      (player.fixed ? '<button class="choice" id="j4"><span class="tag">DRIVE OUT</span>Turn the key and go.</button>' : '') +
+      '<button class="choice" id="j5"><span class="tag">THE RADIO \u00b7 1 h</span>Battery at ' + Math.round(player.battery) + '%. It is also what turns the starter.</button>' +
+      '<button class="choice" id="j6"><span class="tag">BACK</span>Leave it for now.</button>' +
+    '</div>'
+  );
+  const B = id => document.getElementById(id);
+  if(B('j1')) B('j1').onclick = ()=>{
+    advance(1,'rest');
+    Engine.check({die:10, mod:mod('MECHANICAL'), dc:8, label:'Diagnose (MECHANICAL)'}, (ok)=>{
+      if(ok){
+        player.diagnosed = true;
+        Engine.log('Diagnosed: ' + F.name, 'l-good');
+        Engine.render('<div class="story">' + F.clue + ' It is the <b>' + F.name + '</b>.</div>' +
+          (F.fixable ? '<div class="thought">Which you might be able to do something about.</div>'
+                     : '<div class="thought">Which you cannot do anything about out here, with these tools, at all. Knowing that is worth something. It is worth not spending tomorrow finding out.</div>') +
+          Engine.contBtn());
+      } else {
+        Engine.render('<div class="story">An hour bent over a hot engine and you are no wiser. Something electrical, or something fuel, or something you cannot see.</div>' + Engine.contBtn());
+      }
+      Engine.wire(jeepScene);
+    });
+  };
+  if(B('j2')) B('j2').onclick = ()=>{
+    advance(2,'rest');
+    Engine.check({die:10, mod:mod('MECHANICAL'), dc:F.dc, label:'Repair (MECHANICAL)'}, (ok)=>{
+      if(ok){
+        player.fixed = true;
+        Engine.sfxSuccess();
+        Engine.log('Repair successful: ' + F.name, 'l-good');
+        Engine.render('<div class="story">' + F.fix + '</div>' + Engine.contBtn());
+      } else {
+        Engine.render('<div class="story">Two hours, a lot of sweat, and it still will not catch. You can try again. The water you spent is not coming back.</div>' + Engine.contBtn());
+      }
+      Engine.wire(jeepScene);
+    });
+  };
+  if(B('j3')) B('j3').onclick = ()=>{
+    advance(2,'rest');
+    player.battery -= 12;
+    Engine.render('<div class="story">Two hours confirming what you already knew, and twelve percent of a battery you are going to want later.</div>' + Engine.contBtn());
+    Engine.wire(jeepScene);
+  };
+  if(B('j4')) B('j4').onclick = ()=>{
+    if(player.battery < 20){
+      Engine.render('<div class="story">It is fixed and the battery is flat. You spent it on the radio. That is a specific kind of joke to be the punchline of.</div>' + Engine.contBtn());
+      return Engine.wire(jeepScene);
+    }
+    Engine.go(()=>rescued('drove'));
+  };
+  B('j5').onclick = ()=> Engine.go(radioScene);
+  B('j6').onclick = ()=> Engine.go(arrive);
+}
+
+
 function arrive(){
   Engine.badge(player.at==='jeep' ? 'THE JEEP' : 'DAY ' + player.day);
   const n = N[player.at];
@@ -608,6 +934,21 @@ function arrive(){
       '</button>';
   }).join('');
 
+  const ctx =
+    (player.at === 'jeep'
+      ? '<button class="choice" data-act="jeep"><span class="tag">THE JEEP</span>Hood, tools, radio. ' +
+        (player.fixed ? 'It runs.' : player.diagnosed ? FAULTS[RUN.fault].name + ', diagnosed.' : 'You have not worked out what is wrong yet.') + '</button>'
+      : '') +
+    (sourceHere() && !player.drank[player.at]
+      ? '<button class="choice" data-act="water"><span class="tag">CHECK FOR WATER</span>See whether there is anything in it.</button>'
+      : '') +
+    (player.at === 'balloon' && !player.mylar
+      ? '<button class="choice" data-act="mylar"><span class="tag">TAKE THE MYLAR</span>A square metre of it. Signal mirrors are just bright flat things.</button>'
+      : '') +
+    ((player.mirror || player.mylar) && N[player.at].t === 'ridge'
+      ? '<button class="choice" data-act="flash"><span class="tag">WORK THE MIRROR \u00b7 2 h</span>High ground, clear sky, and something reflective. This is how people actually get found.' + odds(8,'IMPROVISE',7) + '</button>'
+      : '');
+
   const restOpts =
     (shade !== 'none'
       ? '<button class="choice" data-rest="shade4"><span class="tag">SHADE UP \u00b7 4 h \u00b7 ~' +
@@ -628,13 +969,92 @@ function arrive(){
       ? '<div class="legline">Day ' + player.day + '. Somebody has noticed by now that you did not come back. ' +
         'Chance of being spotted here: <b>' + rescueLabel() + '</b>.</div>' : '') +
     '<div class="story" style="font-size:0.82rem; color:var(--stone);">Move, or wait.</div>' +
-    '<div class="choices">' + restOpts + opts + '</div>'
+    '<div class="choices">' + ctx + restOpts + opts + '</div>'
   );
   document.querySelectorAll('#main .choice').forEach(b=>{
     if(b.dataset.go)   b.onclick = ()=> travelTo(b.dataset.go);
     if(b.dataset.rest) b.onclick = ()=> doRest(b.dataset.rest);
+    if(b.dataset.act)  b.onclick = ()=> doAct(b.dataset.act);
   });
   refreshMap();
+}
+
+
+function doAct(kind){
+  if(kind === 'jeep')  return Engine.go(jeepScene);
+  if(kind === 'water') return Engine.go(drinkScene);
+  if(kind === 'mylar'){
+    player.mylar = true;
+    Engine.sfxSuccess();
+    Engine.log('Recovered mylar from the radiosonde.', 'l-good');
+    Engine.render('<div class="story">The balloon envelope tears easily and folds smaller than you expect. ' +
+      'The radiosonde itself is a cheap plastic box with a dead battery and a serial number, and it has been out here a while.</div>' +
+      '<div class="thought">Every few years somebody finds one of these and it makes the local paper. Roswell was one of these.</div>' +
+      Engine.contBtn());
+    return Engine.wire(arrive);
+  }
+  if(kind === 'flash'){
+    advance(2, shadeHere()!=='none' ? 'shade' : 'rest');
+    if(checkDead()) return;
+    Engine.check({die:8, mod:mod('IMPROVISE'), dc:7, label:'Work the mirror (IMPROVISE)'}, (ok)=>{
+      if(ok){
+        player.searchHeat += 26;
+        Engine.sfxSuccess();
+        Engine.log('Sustained mirror flashes from high ground.', 'l-good');
+        Engine.render('<div class="story">Two hours of aiming at every aircraft contrail and every dust plume on every horizon. ' +
+          'Twice you are certain something changed course. Once you are almost certain.</div>' +
+          '<div class="thought">A mirror flash carries further than a fire, further than a shout, further than anything else you have. On a clear day it is visible for tens of miles.</div>' +
+          Engine.contBtn());
+      } else {
+        Engine.render('<div class="story">Two hours of throwing light at empty sky. Nothing came, or nothing saw.</div>' + Engine.contBtn());
+      }
+      Engine.refreshStatus();
+      Engine.wire(arrive);
+    });
+    return;
+  }
+}
+
+/* ---------------- SNAKES ----------------
+   Not a fight. A thing you nearly stepped on.                  */
+function snakeRisk(){
+  const t = (player.clock % 24 + 24) % 24;
+  const warm = temp() >= 22 && temp() <= 34;
+  const dusk = (t >= 18.5 && t <= 23) || (t >= 4.5 && t <= 7.5);
+  const ground = ['wash','ruin','mine','bajada'].indexOf(N[player.at].t) !== -1;
+  if(!ground || !warm) return 0;
+  return dusk ? 0.13 : 0.05;
+}
+function maybeSnake(next){
+  if(player.bitten || Math.random() > snakeRisk()) return next();
+  Engine.badge('CAREFUL');
+  Engine.render(
+    '<div class="hereNote">The buzz does not sound like a rattle. It sounds like a sprinkler, or a cicada, or nothing at all until your body understands it before you do and you are already stopping.</div>' +
+    '<div class="story">A Great Basin rattlesnake, coiled in the shade of the rock you were about to put a hand on.</div>' +
+    '<div class="choices">' +
+      '<button class="choice" id="s1"><span class="tag">BACK OFF SLOWLY</span>Give it the whole rock. Go around.' + odds(12,'FIELDCRAFT',7) + '</button>' +
+      '<button class="choice" id="s2"><span class="tag">FREEZE</span>Do nothing at all and let it decide.' + odds(20,'ENDURANCE',9) + '</button>' +
+    '</div>'
+  );
+  const resolve = (ok)=>{
+    if(ok){
+      Engine.render('<div class="story">It holds its ground, and you give it a wide berth, and that is the entire event. ' +
+        'Your hands do not stop shaking for a while.</div>' + Engine.contBtn());
+    } else {
+      player.bitten = true;
+      player.core += 18;
+      Engine.sfxHurt();
+      Engine.log('Bitten. Left hand.', 'l-bad');
+      Engine.render('<div class="story"><span class="danger">It gets you on the back of the left hand.</span> Two punctures, not much blood, and a burning that arrives about thirty seconds later and does not stop arriving.</div>' +
+        '<div class="thought">No cutting, no sucking, no tourniquet \u2014 all of that is worse than nothing. Keep it below the heart, stay calm, and understand that calm is now a physical task.</div>' + Engine.contBtn());
+    }
+    Engine.refreshStatus();
+    Engine.wire(next);
+  };
+  document.getElementById('s1').onclick = ()=>
+    Engine.check({die:12, mod:mod('FIELDCRAFT'), dc:7, label:'Back off (FIELDCRAFT)'}, resolve);
+  document.getElementById('s2').onclick = ()=>
+    Engine.check({die:20, mod:mod('ENDURANCE'), dc:9, label:'Freeze (ENDURANCE)'}, resolve);
 }
 
 function doRest(kind){
@@ -685,7 +1105,7 @@ function travelTo(id){
              ' \u2014 ' + h.toFixed(1) + ' h, ' + player.water.toFixed(1) + ' L left.', 'l-info');
   if(checkDead()) return;
   if(rollRescue(h)) return Engine.go(()=>rescued('walk'));
-  Engine.go(arrive);
+  Engine.go(()=>maybeSnake(arrive));
 }
 
 function strayed(intended, actual, h){
@@ -706,7 +1126,10 @@ function rescued(how){
   player.saved = how;
   const id = player.at;
   let text;
-  if(id === 'jeep'){
+  if(how === 'drove'){
+    text = "It catches on the third crank and idles like nothing happened. You drive out at fifteen miles an hour, watching the temperature gauge the whole way, and you hit the graded road as the light goes orange. " +
+           "Nobody ever knows this happened except you.";
+  } else if(id === 'jeep'){
     text = "A Civil Air Patrol Cessna comes up the valley at maybe six hundred feet, following the two-track because that is what you follow when you are looking for a vehicle. It banks once, comes back lower, and waggles its wings. " +
            "It found the Jeep. It was never going to find you.";
   } else if(N[id].t === 'road'){
@@ -714,12 +1137,13 @@ function rescued(how){
   } else {
     text = "A white pickup with no markings comes over the rise and stops thirty metres off. Two men get out. They give you water before they ask you anything, which you appreciate, and then they ask you a number of things, and then they drive you to a gate and have you sign a form about what you did and did not see.";
   }
-  Engine.recordEnding('rescued-' + (id === 'jeep' ? 'vehicle' : N[id].t === 'road' ? 'road' : 'other'),
+  Engine.recordEnding(how === 'drove' ? 'drove-out'
+      : 'rescued-' + (id === 'jeep' ? 'vehicle' : N[id].t === 'road' ? 'road' : 'other'),
     {day:player.day, water:+player.water.toFixed(1), walked:+player.walked.toFixed(1), at:id});
   Engine.sfxSuccess();
   Engine.badge('FOUND');
   Engine.render(
-    '<div class="story"><span class="flavor">FOUND \u2014 DAY ' + player.day + ', ' + clockStr(player.clock) + '</span></div>' +
+    '<div class="story"><span class="flavor">' + (how==='drove'?'DROVE OUT':'FOUND') + ' \u2014 DAY ' + player.day + ', ' + clockStr(player.clock) + '</span></div>' +
     '<div class="story">' + text + '</div>' + manifest() +
     '<button class="smallbtn primary-go" id="again">ANOTHER TRIP \u2192</button>'
   );
@@ -773,12 +1197,12 @@ Engine.init({
   mode: 'over',
   sheetLabel: 'TERRAIN',
   lockBackOn: [],
-  state: ()=>{ player = freshState(); return player; },
+  state: ()=>{ rollRun(); player = freshState(); return player; },
   status: statusFields,
   sheet: sheetHTML,
   panel: buildMap,
   panelUpdate: refreshMap,
-  start: arrive
+  start: startTrip
 });
 </script>
 </body>
