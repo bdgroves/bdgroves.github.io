@@ -12,6 +12,23 @@
    against an inline `.footer-name` at (0,1,0), so this wins cleanly.
    ────────────────────────────────────────────────────────────── */
 
+/* The footer bar itself.
+   This lives here rather than in each page's inline CSS because pages that
+   never had a site footer — the games pages, for instance — have no
+   `footer { background: ... }` rule of their own. Without it the footer
+   renders on the page background while its text colours assume a dark bar,
+   which is light-on-light and unreadable.
+
+   `html footer` is (0,1,1) so it also wins over any inline `footer` rule at
+   (0,0,1), regardless of which loads first. Pages that already style their
+   footer end up with the same result they had. */
+html footer {
+  background: var(--ink);
+  color: var(--stone);
+  padding: 2rem clamp(1.5rem, 5vw, 4rem);
+  margin-top: 4rem;
+}
+
 html footer .footer-inner {
   max-width: 860px;
   margin: 0 auto;
