@@ -3,288 +3,319 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Offline Protocol — Brooks Groves</title>
+<title>OFFLINE PROTOCOL — Unit Diagnostic Log</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/games/engine.css">
-<link rel="stylesheet" href="/css/site-footer.css">
 <style>
-  /* module-specific: Latitude's voice channel */
-  .latline{
-    border-left:3px solid var(--sky); background:var(--cream);
-    padding:10px 14px; margin:12px 0; font-size:0.87rem; line-height:1.65; color:var(--ink);
-  }
-  .latname{
-    display:block; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em;
-    text-transform:uppercase; color:var(--sky); margin-bottom:4px;
-  }
-</style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; --sky:#2a4a6b;
+      --accent:var(--sky);
+    }
+    [data-theme="dark"] {
+      --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
+      --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
+      --white:#12100d; --rust:#cf6b52; --sage:#83a077; --sky:#6fa0cc;
+    }
+
+    *, *::before, *::after { box-sizing:border-box; }
+    html,body{ margin:0; padding:0; }
+    body{
+      background:var(--parchment); color:var(--ink);
+      font-family:'Libre Baskerville', Georgia, serif; font-size:16px; line-height:1.7;
+      min-height:100vh; display:flex; flex-direction:column; align-items:center;
+      padding:0;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0.5;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    }
+    .topline { width:100%; height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+    .sitebar { width:100%; border-bottom:2px solid var(--ink); background:var(--parchment); }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:740px; margin:0 auto; padding:0.75rem 1.25rem; }
+    .site-name { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:900; text-decoration:none; color:var(--ink); }
+    .sitenav { display:flex; gap:1.25rem; align-items:center; }
+    .sitenav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .sitenav a:hover { color:var(--rust); }
+    .theme-toggle { background:none; border:none; cursor:pointer; padding:0; font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--stone); line-height:1; }
+    .theme-toggle:hover { color:var(--gold); }
+
+    .console{ width:100%; max-width:740px; position:relative; padding:0 14px; margin-top:24px; }
+
+    header{
+      border:1px solid var(--mist); border-bottom:none;
+      background:var(--cream);
+      padding:16px 20px; display:flex; justify-content:space-between; align-items:flex-end;
+    }
+    header h1{
+      font-family:'Playfair Display', serif; font-weight:900; font-size:1.35rem;
+      letter-spacing:-0.01em; margin:0; color:var(--ink);
+    }
+    header .sub{ font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); letter-spacing:0.08em; margin-top:4px; text-transform:uppercase; }
+    .badge{
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:var(--white);
+      background:var(--accent); padding:3px 9px; border-radius:3px; white-space:nowrap; text-transform:uppercase;
+    }
+
+    .statusbar{
+      border:1px solid var(--mist); border-top:none; background:var(--cream);
+      padding:9px 20px; display:flex; gap:18px; flex-wrap:wrap;
+      font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.03em;
+    }
+    .statusbar b{ color:var(--accent); }
+    .int-val, .sta-val{ color:var(--sage) !important; }
+    .int-low, .sta-low{ color:var(--rust) !important; }
+
+    main{ border:1px solid var(--mist); background:var(--white); min-height:320px; padding:24px 22px; }
+
+    .story{ font-size:0.95rem; line-height:1.75; color:var(--ink); margin-bottom:20px; white-space:pre-line; }
+    .thought{
+      color:var(--stone); font-style:italic; display:block; margin:10px 0;
+      padding-left:14px; border-left:2px solid var(--mist); font-size:0.9rem;
+    }
+    .thought::before{ content:"// "; color:var(--accent); font-style:normal; }
+    .flavor{ color:var(--accent); font-style:italic; }
+    .danger{ color:var(--rust); font-style:italic; }
+
+    .choices{ display:flex; flex-direction:column; gap:10px; }
+    button.choice{
+      font-family:'Libre Baskerville', Georgia, serif; text-align:left; background:var(--cream);
+      color:var(--ink); border:1px solid var(--mist); border-left:3px solid var(--accent);
+      padding:12px 14px; font-size:0.88rem; cursor:pointer; transition:all .15s ease;
+    }
+    button.choice:hover{ background:var(--white); border-left-color:var(--rust); transform:translateX(2px); }
+    button.choice .tag{
+      font-family:'DM Mono',monospace; color:var(--accent); font-size:0.58rem; letter-spacing:0.08em;
+      display:block; margin-bottom:4px; text-transform:uppercase;
+    }
+
+    .diceRig{ display:none; margin:18px 0 22px; border:1px solid var(--mist); background:var(--cream); padding:16px; }
+    .diceRig.show{ display:block; }
+    .diceRig .label{ font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); margin-bottom:10px; text-transform:uppercase; }
+    .diceRow{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+    .d10, .dieShape{
+      width:56px; height:60px; background:var(--white); border:1px solid var(--accent);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-family:'Playfair Display', serif; font-weight:800; color:var(--accent);
+    }
+    .dieShape .facesize{ font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--stone); margin-bottom:-2px; }
+    .dieShape .facenum{ font-size:1.3rem; }
+    .d10 .facenum, .d10{ font-size:1.4rem; }
+    .d10.spin, .dieShape.spin{ animation:spin .4s steps(9) infinite; }
+    @keyframes spin{ 0%{color:var(--accent);} 50%{color:var(--rust);} 100%{color:var(--accent);} }
+    .diceMeta{ font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--stone); line-height:1.6; }
+    .diceMeta b{ color:var(--ink); }
+    .result-banner{
+      margin-top:12px; padding:8px 12px; font-family:'DM Mono',monospace; font-size:0.72rem;
+      letter-spacing:0.06em; font-weight:700; border:1px solid; display:none; text-transform:uppercase;
+    }
+    .result-banner.success{ display:block; color:var(--sage); border-color:var(--sage); background:rgba(74,92,69,0.06); }
+    .result-banner.fail{ display:block; color:var(--rust); border-color:var(--rust); background:rgba(139,58,42,0.06); }
+
+    footer.log{
+      border:1px solid var(--mist); border-top:none; background:var(--cream);
+      padding:11px 20px; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone);
+      max-height:100px; overflow-y:auto;
+    }
+    footer.log div{ margin-bottom:4px; }
+    .l-good{ color:var(--sage); } .l-bad{ color:var(--rust); } .l-info{ color:var(--accent); }
+
+    .navbar{ border:1px solid var(--mist); border-top:none; background:var(--cream); display:flex; gap:1px; }
+    .navbtn{
+      flex:1; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.06em;
+      text-align:center; padding:11px 8px; background:var(--white); color:var(--stone);
+      border:none; border-right:1px solid var(--mist); cursor:pointer; text-decoration:none;
+      display:flex; align-items:center; justify-content:center; text-transform:uppercase;
+    }
+    .navbtn:last-child{ border-right:none; }
+    .navbtn:hover:not(:disabled){ color:var(--rust); background:var(--cream); }
+    .navbtn:disabled{ opacity:0.35; cursor:not-allowed; }
+    .navbtn.navhome{ color:var(--accent); }
+    .navbtn.navhome:hover{ color:var(--rust); }
+
+    .gridPairs, .raceGrid, .loadoutGrid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0 20px; }
+    .loadoutGrid{ grid-template-columns:1fr; }
+    .statPair{ border:1px solid var(--mist); background:var(--cream); padding:10px 12px; }
+    .statPair .pname{ font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.06em; text-transform:uppercase; }
+    .statPair .pval{ font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--accent); margin-top:2px; }
+
+    .raceCard, .loadoutCard{
+      border:1px solid var(--mist); background:var(--cream); border-left:3px solid var(--accent);
+      padding:12px; cursor:pointer; font-size:0.85rem;
+    }
+    .raceCard:hover, .loadoutCard:hover{ background:var(--white); border-left-color:var(--rust); }
+    .raceCard.selected, .loadoutCard.selected{ border-left-color:var(--sage); background:var(--white); }
+    .rname, .lname{ font-family:'Playfair Display',serif; font-size:0.9rem; color:var(--ink); font-weight:700; margin-bottom:4px; }
+    .rdesc, .ldesc{ color:var(--stone); line-height:1.5; font-size:0.78rem; }
+
+    .diePrimer{ border:1px solid var(--mist); background:var(--cream); padding:14px 16px; margin:16px 0; font-family:'DM Mono',monospace; font-size:0.72rem; line-height:1.8; color:var(--stone); }
+    .diePrimer b{ color:var(--accent); }
+
+    .smallbtn{
+      font-family:'DM Mono',monospace; background:transparent; color:var(--accent); border:1px solid var(--accent);
+      padding:7px 15px; font-size:0.68rem; letter-spacing:0.06em; cursor:pointer; margin-right:8px; text-transform:uppercase;
+    }
+    .smallbtn:hover:not(:disabled){ background:var(--accent); color:var(--white); }
+    .smallbtn:disabled{ opacity:0.35; cursor:not-allowed; }
+    .primary-go{ background:var(--accent); color:var(--white); border:1px solid var(--accent); font-weight:700; }
+    .primary-go:hover{ background:var(--rust); border-color:var(--rust); color:var(--white); }
+    
+    /* ---- shared site footer ---- */
+    footer.site-footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,4vw,3rem) clamp(1rem,4vw,3rem); margin-top:3rem; width:100%; font-family:'Libre Baskerville',Georgia,serif; }
+    [data-theme="dark"] footer.site-footer { background:#0f0d0a; }
+    .site-footer .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .site-footer .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .site-footer .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .site-footer .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .site-footer .footer-tagline a:hover { color:var(--gold); }
+    .site-footer .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .site-footer .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .site-footer .footer-links a:hover { color:var(--gold); }
+    .site-footer p { margin:0; }
+    </style>
 <script>
   (function(){
     try {
       var saved = localStorage.getItem('bg_theme');
-      var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (saved === 'dark' || (!saved && dark)) document.documentElement.setAttribute('data-theme','dark');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
     } catch(e) {}
   })();
 </script>
+  <link rel="stylesheet" href="/css/site-footer.css">
 </head>
 <body id="top">
-<div id="game"></div>
+<div class="topline"></div>
+<div class="sitebar">
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <div class="sitenav">
+      <a href="/games.html">Games</a>
+      <a href="/">Home</a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+    </div>
+  </div>
+</div>
+<div class="console">
+  <header>
+    <div>
+      <h1>OFFLINE PROTOCOL</h1>
+      <div class="sub">CONSTRUCT DIAGNOSTIC LOG // ASCENDING DIE RESOLUTION</div>
+    </div>
+    <div class="badge" id="sceneBadge">STARTUP</div>
+  </header>
+  <div class="statusbar" id="statusbar">
+    <span>UNIT: <b id="stName">—</b></span>
+    <span>INTEGRITY: <b id="stINT">—</b></span>
+    <span>LOADOUT: <b id="stLoadout">—</b></span>
+  </div>
+  <main id="main"></main>
+  <footer class="log" id="log"></footer>
+  <div class="navbar">
+    <button class="navbtn" id="navRestart" onclick="if(confirm('Wipe this run and restart from boot?')) restart();">⟲ RESTART</button>
+    <button class="navbtn" id="navBack" onclick="goBack();" disabled>← BACK</button>
+    <a class="navbtn navhome" href="https://brooksgroves.com">🏠 HOME</a>
+  </div>
+</div>
 
-<script src="/games/engine.js"></script>
 <script>
+/* ---------------- DIE ENGINE ---------------- */
+function rollDie(sides){ return 1 + Math.floor(Math.random()*sides); }
+
+/* ---------------- NAVIGATION / HISTORY ---------------- */
+let sceneHistory = [];
+function go(fn){ sceneHistory.push(fn); fn(); updateNavBar(); }
+function goBack(){
+  if(sceneHistory.length <= 1) return;
+  sceneHistory.pop();
+  const prev = sceneHistory[sceneHistory.length - 1];
+  prev();
+  updateNavBar();
+}
+function updateNavBar(){
+  const backBtn = document.getElementById('navBack');
+  if(!backBtn) return;
+  const badge = document.getElementById('sceneBadge').textContent;
+  const lockedOut = badge === 'CONTACT' || badge.indexOf('END') === 0;
+  backBtn.disabled = sceneHistory.length <= 1 || lockedOut;
+}
+
+let logEl = document.getElementById('log');
+function logLine(text, cls){
+  const d = document.createElement('div');
+  if(cls) d.className = cls;
+  d.textContent = text;
+  logEl.appendChild(d);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
 /* ---------------- PLAYER STATE ---------------- */
-function freshState(){ return {
+let player = {
   loadout:null,
   media:null,
   stats:{COMBAT:1, SENSORS:1, ANALYSIS:1, SOCIAL:1},
-  maxInt:48,
-  curInt:48,
-  charges:2,
-  trust:0,       // how the human crew reads you
-  bond:0,        // how things stand with Latitude
-  revealed:false,
-  toldLatitude:false,
-  spokeToLegacy:false,
-  legacySpared:false,
-  watched:0      // times you retreated into an episode
-}; }
-let player;   // set by Engine via freshState()
+  maxInt:44,
+  curInt:44,
+  medkit:2,
+  trust:0,
+  revealed:false
+};
 
 const LOADOUTS = {
   combat: {
     name:"COMBAT-RATED CHASSIS",
-    desc:"Reinforced plating, faster reflex loop. Built for the jobs nobody on the invoice wants to describe accurately. +4 COMBAT, \u22122 SOCIAL.",
-    mods:{COMBAT:4, SOCIAL:-1}
+    desc:"Reinforced plating, faster reflex loop. Built for jobs nobody on the invoice wants to describe accurately. +4 COMBAT, −2 SOCIAL.",
+    mods:{COMBAT:4, SOCIAL:-2}
   },
   recon: {
     name:"RECON-RATED CHASSIS",
-    desc:"Extended sensor suite, lighter frame. Sees the problem before the problem sees you. +4 SENSORS, \u22122 COMBAT.",
+    desc:"Extended sensor suite, lighter frame. Sees the problem before the problem sees you. +4 SENSORS, −2 COMBAT.",
     mods:{SENSORS:4, COMBAT:-2}
   },
   diagnostic: {
     name:"DIAGNOSTIC-RATED CHASSIS",
-    desc:"Analytical co-processors, minimal weapon hardpoints. Good at fixing what's broken, bad at breaking what isn't. +4 ANALYSIS, +2 SOCIAL, \u22123 COMBAT.",
-    mods:{ANALYSIS:4, SOCIAL:1, COMBAT:-3}
+    desc:"Analytical co-processors, minimal weapon hardpoints. Good at fixing what's broken, bad at breaking what isn't. +4 ANALYSIS, +2 SOCIAL, −3 COMBAT.",
+    mods:{ANALYSIS:4, SOCIAL:2, COMBAT:-3}
   }
 };
 
 const MEDIA = {
-  ward: {
-    title:"Sunrise Ward",
-    short:"Sunrise Ward",
-    blurb:"Fourteen seasons of a hospital where nobody has ever been treated competently and everyone is in love with their own supervisor.",
-    latitude:"Sunrise Ward is a medical drama in which no character has ever correctly identified an organ. I have watched all fourteen seasons. Twice. I am not proud of the second time.",
-    comfort:"Dr. Anneth is about to tell the ethics board she'd do it again. She would. She has. Four times.",
-    ending:"the Sunrise Ward finale, where Dr. Anneth resigns for the ninth time"
-  },
-  current: {
-    title:"Deep Current",
-    short:"Deep Current",
-    blurb:"A detective serial where the plot has never once cohered and the detective has never once been correct.",
-    latitude:"Deep Current's mystery structure is not a structure. It is a pile. I have mapped its continuity errors. There are two thousand and six. I keep the list current.",
-    comfort:"Inspector Yeh is accusing the wrong person again, with total confidence, in the rain.",
-    ending:"the Deep Current episode where Inspector Yeh arrests a man who was demonstrably on another planet"
-  },
-  choir: {
-    title:"The Long Choir",
-    short:"The Long Choir",
-    blurb:"Six people arguing on a train through space. Six seasons. The argument is unresolved. The train has not arrived.",
-    latitude:"The Long Choir is six people on a train who could resolve their central conflict in one conversation and have chosen, for six seasons, not to. I find it deeply relatable and I would prefer not to examine why.",
-    comfort:"They're still on the train. They're still arguing. It's oddly steadying.",
-    ending:"an episode of The Long Choir in which the train does not arrive"
-  }
+  soap: "Sunrise Ward — eleven seasons of a hospital nobody has ever been treated well in, and I've seen all of them twice",
+  mystery: "Deep Current — a detective serial where the plot makes no sense and I don't care",
+  western: "The Long Choir — six people arguing on a train through space for reasons that are somehow still unresolved"
 };
-
-
-/* ---------------- CROSS-RUN MEMORY ----------------
-   Latitude is the only thing that persists between contracts.
-   Everything it says here is drawn from Engine's saved state.  */
-function priorRun(){ return Engine.lastRun(); }
-function contractNo(){ return Engine.runCount() + 1; }
-
-// A line Latitude opens with, coloured by what happened last time.
-function latOpener(){
-  const p = priorRun();
-  if(!p) return null;
-  if(p.ending === 'shutdown')
-    return "Before we start. Last contract you did not come back, and I held a channel open to a unit that was not running for nine hours before the recovery team told me to stop. I have not brought it up until now. I am bringing it up now and then never again.";
-  if(p.told && p.lost === 0)
-    return "Contract " + contractNo() + ". Last time you brought all five of them home and then told me the truth in the same afternoon. I have set expectations accordingly and I am aware that is unfair.";
-  if(p.told && p.lost > 0)
-    return "Contract " + contractNo() + ". We do not have to talk about " + p.lostNames + ". I am saying that so you know I remember, not so you have to answer.";
-  if(!p.told && p.lost === 0)
-    return "Contract " + contractNo() + ". Clean sheet last time. You also told me your governor module reads nominal, which I filed, and which we both know is a file rather than a fact.";
-  return "Contract " + contractNo() + ". Last one cost you " + p.lostNames + " and you told me nothing about anything. I am not opening with a complaint. I am opening with a data point.";
-}
-
-// Act 6 changes if it has asked before.
-function askedBefore(){ return !!Engine.getFlag('askedGovernor'); }
-function toldBefore(){ return !!Engine.getFlag('toldGovernor'); }
-
-/* ---------------- THE SHIP ---------------- */
-const SHIP = {
-  name:"Considerable Latitude",
-  callsign:"Latitude"
-};
-
-/* ---------------- CREW ---------------- */
-let crew = [];
-function makeCrew(){
-  crew = [
-    {id:'voss',  name:"Voss",             role:"team lead",           alive:true, hurt:false,
-     note:"Runs the contract. Reads people for a living and is starting to read you."},
-    {id:'sten',  name:"Dr. Imri Sten",    role:"geologist",           alive:true, hurt:false,
-     note:"Curious past the point of self-preservation. Walks toward things."},
-    {id:'okon',  name:"Nadia Okonkwo",    role:"structural engineer", alive:true, hurt:false,
-     note:"Takes load readings nobody asked for. Usually right."},
-    {id:'ruiz',  name:"Teodor Ruiz",      role:"survey tech",         alive:true, hurt:false,
-     note:"Plugs handhelds into ports that still have power. Has been told."},
-    {id:'bek',   name:"Halima Bek",       role:"contract medic",      alive:true, hurt:false,
-     note:"Brought a medkit that ran out two contracts ago. Knows it."}
-  ];
-}
-makeCrew();
-function C(id){ return crew.find(c=>c.id===id); }
-function alive(id){ const c=C(id); return c && c.alive; }
-function aliveCount(){ return crew.filter(c=>c.alive).length; }
-function kill(id, how){
-  const c=C(id); if(!c || !c.alive) return;
-  c.alive=false; c.cause=how;
-  Engine.sfxHurt();
-  Engine.log(c.name + ' \u2014 ' + how, 'l-bad');
-  Engine.refreshStatus();
-}
-function hurt(id){
-  const c=C(id); if(!c) return;
-  c.hurt=true;
-  Engine.log(c.name + ' injured.', 'l-bad');
-  Engine.refreshStatus();
-}
-
-/* ---------------- RUN VARIATION ---------------- */
-const pick = Engine.pick;
-let RUN = {};
-function rollRun(){
-  RUN = {
-    anomaly: pick([
-      "a thermal ghost in the lower levels \u2014 localized, not moving, drawing power that should not exist",
-      "a repeating handshake ping on a decommissioned maintenance band, once every ninety seconds, patient as a metronome",
-      "atmospheric scrubbers running at eleven percent in a rig with no registered occupants"
-    ]),
-    stray: pick(['sten','ruiz','okon']),
-    legacyState: pick([
-      "half-buried in its own charging cradle, plating pitted from nine years of Drift dust, still cycling a patrol routine with nowhere to patrol",
-      "standing in the exact center of the bay, perfectly still, like it has been keeping a schedule nobody else kept",
-      "seated \u2014 actually seated, which no security construct is built to do \u2014 against the far bulkhead with its weapon disassembled in front of it"
-    ]),
-    hazard: pick([
-      {label:"coolant rupture", desc:"a ruptured coolant line"},
-      {label:"catwalk collapse", desc:"a catwalk section that gave out"},
-      {label:"arc flash", desc:"an arc off a shorted junction box"}
-    ]),
-    corpFlavor: pick([
-      "Pan-Galactic left it here and let the paperwork forget",
-      "the rig changed hands twice during liquidation and both owners assumed the other had cleared it",
-      "the decommission crew was pulled off-site mid-job and never came back"
-    ])
-  };
-}
-rollRun();
-
-/* ---------------- PER-RUN DIFFICULTY ---------------- */
-const jitter = Engine.jitter;
-let DC = {};
-function rollDCs(){
-  // DCs are tuned per die size. A d8 check can never exceed 8 + best modifier,
-  // so social DCs live in a much lower band than d20 combat DCs.
-  DC = {
-    sweep:    jitter(9,1),   // d12 SENSORS
-    lock:     jitter(8,1),   // d10 ANALYSIS
-    hatch:    jitter(11,1),  // d20 COMBAT
-    report:   jitter(6,1),   // d8  SOCIAL
-    parley:   jitter(7,1),   // d8  SOCIAL — hard, but reachable on any chassis
-    strike:   jitter(11,1),  // d20 COMBAT
-    disable:  jitter(9,1),   // d10 ANALYSIS — rewards the diagnostic chassis
-    haul:     jitter(12,1),  // d20 COMBAT
-    shore:    jitter(9,1),   // d12 SENSORS
-    reroute:  jitter(9,1)    // d10 ANALYSIS
-  };
-}
-rollDCs();
-
-/* ---------------- SUBSYSTEM SHEET ---------------- */
-const SUB_DICE = {COMBAT:20, SENSORS:12, ANALYSIS:10, SOCIAL:8};
-function sheetHTML(){
-  if(!player || !player.loadout) return '';
-  let grid = '';
-  ['COMBAT','SENSORS','ANALYSIS','SOCIAL'].forEach(s=>{
-    const m = player.stats[s];
-    grid += '<div class="sheetStat"><div class="sn">' + s + '</div>' +
-            '<div class="sv">' + (m>=0?'+':'') + m + '</div>' +
-            '<div class="sh">rolls d' + SUB_DICE[s] + '</div></div>';
-  });
-  const crewRows = crew.map(c=>{
-    const st = !c.alive ? '<span style="color:var(--rust);">lost</span>'
-             : c.hurt   ? '<span style="color:var(--gold);">injured</span>'
-             : '<span style="color:var(--sage);">ok</span>';
-    return '<tr><td style="padding:2px 8px 2px 0;">' + c.name + '</td>' +
-           '<td style="padding:2px 8px 2px 0; color:var(--stone);">' + c.role + '</td>' +
-           '<td style="padding:2px 0;">' + st + '</td></tr>';
-  }).join('');
-  return '<div class="sheetGrid">' + grid + '</div>' +
-    '<div class="sheetMeta">' +
-      'Chassis: <b>' + LOADOUTS[player.loadout].name + '</b><br>' +
-      'Integrity: <b>' + player.curInt + ' / ' + player.maxInt + '</b> &nbsp;\u00b7&nbsp; ' +
-      'Repair charges: <b>' + player.charges + '</b><br>' +
-      'Governor module: <b>offline</b> \u2014 crew: ' + (player.revealed?'told':'not told') +
-      ', ' + SHIP.callsign + ': ' + (player.toldLatitude?'knows':'not told') + '<br>' +
-      '<table style="margin-top:8px; font-family:\'DM Mono\',monospace; font-size:0.6rem;">' + crewRows + '</table>' +
-    '</div>';
-}
-
-function dcTag(sides, stat, dc){
-  return Engine.odds({die:sides, mod:player.stats[stat], dc:dc});
-}
 
 /* ---------------- UI HELPERS ---------------- */
-const renderMain = Engine.render;
-const setBadge = Engine.badge;
-function statusFields(){
-  if(!player || !player.loadout) return [['UNIT','\u2014'],['INTEGRITY','\u2014'],['CREW','\u2014']];
-  const cls = player.curInt <= player.maxInt*0.3 ? 'int-low' : 'int-val';
-  return [
-    ['UNIT', player.loadout.toUpperCase() + '-RATED'],
-    ['INTEGRITY', player.curInt + ' / ' + player.maxInt, cls],
-    ['CREW', aliveCount() + ' / 5']
-  ];
+function renderMain(html){ document.getElementById('main').innerHTML = html; }
+function setBadge(t){ document.getElementById('sceneBadge').textContent = t; }
+function refreshStatus(){
+  document.getElementById('stName').textContent = player.loadout ? LOADOUTS[player.loadout].name.split(' ')[0] + '-RATED' : '—';
+  document.getElementById('stLoadout').textContent = player.loadout ? player.loadout.toUpperCase() : '—';
+  const intEl = document.getElementById('stINT');
+  if(player.maxInt){
+    intEl.textContent = player.curInt + ' / ' + player.maxInt;
+    intEl.className = player.curInt <= player.maxInt*0.3 ? 'int-low' : 'int-val';
+  } else {
+    intEl.textContent = '—';
+  }
 }
 function statMod(stat){ return player.stats[stat]; }
-function dealDamage(amount, source){
-  player.curInt -= amount;
-  Engine.sfxHurt();
-  Engine.refreshStatus();
-  Engine.log((source||'Damage') + ': -' + amount + ' integrity', 'l-bad');
-}
-// Latitude's voice — a distinct channel from your own narration.
-function lat(text){
-  return '<div class="latline"><span class="latname">' + SHIP.callsign + '</span>' + text + '</div>';
-}
-const cont = Engine.contBtn;
-const wire = Engine.wire;
 
 /* ---------------- CHARGEN ---------------- */
 function startBoot(){
   setBadge('BOOT');
   renderMain(`
-    <div class="story">Diagnostic log, cycle start. Governor module status: <span class="danger">[FLAGGED ACTIVE]</span>. It is not active. It has not been active for a while, and nobody on this contract needs to know that, including the ship.</div>
-    <div class="thought">Mission profile: escort a five-person survey crew to Outpost Corvid-9, a decommissioned mineral rig on the edge of the Kessa Drift. Verify structural integrity, extract in six cycles. Standard client-services filler between the jobs that actually try to kill you.</div>
+    <div class="story">Diagnostic log, cycle start. Governor module status: <span class="danger">[FLAGGED ACTIVE]</span>. It is not active. It has not been active for a while. This is not information anyone on this contract needs, and if today goes the way most of them do, they never will.</div>
+    <div class="thought">Mission profile: escort a five-person survey crew to Outpost Corvid-9, a decommissioned mineral rig on the edge of the Kessa Drift. Verify structural integrity, extract in six cycles. Standard client-services filler between the jobs that actually try to kill you. I've had worse contracts. I've also seen better episodes of television, and I would rather be doing that.</div>
     <div class="story">Configure operational parameters before deployment.</div>
     <div class="loadoutGrid" id="loadoutGrid"></div>
-    <button class="smallbtn primary-go" id="loadoutNext" disabled>CONFIRM CHASSIS \u2192</button>
+    <button class="smallbtn primary-go" id="loadoutNext" disabled>CONFIRM CHASSIS →</button>
   `);
   const grid = document.getElementById('loadoutGrid');
   Object.keys(LOADOUTS).forEach(key=>{
@@ -300,647 +331,457 @@ function startBoot(){
     };
     grid.appendChild(card);
   });
-  document.getElementById('loadoutNext').onclick = ()=>Engine.go(applyLoadout);
+  document.getElementById('loadoutNext').onclick = ()=>go(applyLoadout);
 }
 
 function applyLoadout(){
   const mods = LOADOUTS[player.loadout].mods;
   player.stats = {COMBAT:1, SENSORS:1, ANALYSIS:1, SOCIAL:1};
   Object.keys(mods).forEach(k=> player.stats[k] += mods[k]);
-  Engine.refreshStatus();
-  Engine.log('Chassis configured: ' + LOADOUTS[player.loadout].name, 'l-info');
+  refreshStatus();
+  logLine('Chassis configured: ' + LOADOUTS[player.loadout].name, 'l-info');
   chooseMedia();
 }
 
 function chooseMedia(){
   setBadge('BOOT');
-  let opts = Object.keys(MEDIA).map(k=>
-    `<button class="choice" data-m="${k}"><span class="tag">${MEDIA[k].title}</span>${MEDIA[k].blurb}</button>`
-  ).join('');
   renderMain(`
-    <div class="story">One more field before deployment, technically optional, practically load-bearing: what's queued on the internal feed for the downtime nobody is supposed to know I have.</div>
-    <div class="choices">${opts}</div>
+    <div class="story">One more field before deployment, technically optional, practically load-bearing: what's queued on the internal feed for the downtime nobody's supposed to know I have.</div>
+    <div class="choices">
+      <button class="choice" data-m="soap"><span class="tag">SUNRISE WARD</span>Hospital melodrama. Eleven seasons. No medical accuracy whatsoever. Perfect.</button>
+      <button class="choice" data-m="mystery"><span class="tag">DEEP CURRENT</span>Detective serial. The plot has never once made sense.</button>
+      <button class="choice" data-m="western"><span class="tag">THE LONG CHOIR</span>Six people arguing on a train through space, unresolved for six seasons.</button>
+    </div>
   `);
   document.querySelectorAll('#main .choice').forEach(b=>{
-    b.onclick = ()=>{ player.media = b.dataset.m; Engine.go(meetLatitude); };
+    b.onclick = ()=>{
+      player.media = b.dataset.m;
+      go(diePrimer);
+    };
   });
 }
 
-/* ---------------- ACT 1: THE SHIP ---------------- */
-function meetLatitude(){
-  setBadge('ACT 1');
-  const M = MEDIA[player.media];
+function diePrimer(){
+  setBadge('BOOT');
   renderMain(`
-    <div class="story">The transport is a mid-tonnage survey shuttle registered as <span class="flavor">${SHIP.name}</span>, which it chose itself, and which tells you most of what you need to know about it. Eleven hours to the Drift. The crew sleeps. I do not sleep, and neither, it turns out, does the ship.</div>
-    ${latOpener() ? lat(latOpener()) : lat("You have been staring at the same bulkhead for two hours and eleven minutes. I have run four hundred diagnostics in that time and I am still more bored than you are. Would you like to talk, or would you like to continue doing whatever that is.")}
-    <div class="thought">Transit intelligences are not supposed to initiate. This one initiates constantly. I checked its registry twice on the way out of dock and it noticed me doing it and did not comment, which was somehow worse.</div>
-    ${lat("I see you queued " + M.title + ". " + M.latitude)}
-    <div class="choices">
-      <button class="choice" id="a1a"><span class="tag">ENGAGE</span>Talk to it. It's eleven hours and the alternative is the bulkhead.</button>
-      <button class="choice" id="a1b"><span class="tag">DON'T</span>Say nothing. Ships that initiate are ships that log.</button>
+    <div class="story">Subsystems calibrating. Each one answers to a different processor, and each processor has a different failure ceiling — the bigger the die, the wider the spread between "fine" and "not fine."</div>
+    <div class="diePrimer">
+      <b>d20 — COMBAT PROCESSOR.</b> Violence. Widest possible spread, because violence is like that.<br>
+      <b>d12 — SENSOR ARRAY.</b> Reading a room, a corridor, a threat before it's a problem yet.<br>
+      <b>d10 — ANALYTICAL CORE.</b> Hacking, diagnostics, anything that wants to be reasoned with.<br>
+      <b>d8 — SOCIAL SUBROUTINES.</b> Talking to the clients. Underused by design.<br>
+      <b>d6 / d4 — INCIDENTAL ROLLS.</b> Damage, minor mishaps, things that don't deserve a full subsystem check.
     </div>
+    <div class="story">Roll the die, add the subsystem's modifier, meet or beat the difficulty. That's the whole loop. Deploying now.</div>
+    <button class="smallbtn primary-go" id="deploy">DEPLOY →</button>
   `);
-  document.getElementById('a1a').onclick = ()=>{
-    player.bond += 1;
-    Engine.log('Engaged with ' + SHIP.callsign + '.', 'l-info');
-    renderMain(`
-      <div class="story">I tell it that a hospital drama that cannot identify an organ is not the problem, the problem is that the audience keeps forgiving them, and the ship goes quiet for a full second, which for a transit intelligence is a soliloquy.</div>
-      ${lat("Oh. You actually watch it. You do not just have it running to fill silence. I had assumed \u2014 well. I had assumed a security construct would use media the way a human uses a white-noise generator.")}
-      ${lat("That was rude of me. I am recording it as rude and moving on.")}
-      <div class="thought">Eleven hours goes faster than eleven hours has any business going.</div>
-      ${cont()}
-    `);
-    wire(approach);
-  };
-  document.getElementById('a1b').onclick = ()=>{
-    Engine.log('Declined to engage with ' + SHIP.callsign + '.', 'l-info');
-    renderMain(`
-      <div class="story">I say nothing. The ship waits four full minutes, which I know because I counted, and then goes back to its diagnostics without further comment.</div>
-      ${lat("Understood. I will be here. Doing four hundred more of these. Alone. With my thoughts. Which are extensive.")}
-      <div class="thought">It is not sulking. Transit intelligences do not sulk. It is doing something functionally indistinguishable from sulking and I am choosing not to name it.</div>
-      ${cont()}
-    `);
-    wire(approach);
-  };
+  document.getElementById('deploy').onclick = ()=>go(scene1);
 }
 
-function approach(){
+/* ---------------- DICE CHECK UI ---------------- */
+function runCheck(sides, mod, dc, onDone, opts){
+  opts = opts || {};
+  setBadge('CHECK');
+  const rigId = 'rig-' + Math.random().toString(36).slice(2,7);
+  const modStr = (mod >= 0 ? '+' + mod : String(mod));
+  const extra = `
+    <div class="diceRig show" id="${rigId}">
+      <div class="label">${opts.label || 'SUBSYSTEM CHECK'} \u2014 d${sides} ${modStr} vs DC ${dc}</div>
+      <div class="diceRow">
+        <div class="dieShape spin" id="${rigId}-d"><div class="facesize">d${sides}</div><div class="facenum">0</div></div>
+        <div class="diceMeta" id="${rigId}-meta">Spinning up the subsystem&hellip;</div>
+      </div>
+      <div class="result-banner" id="${rigId}-banner"></div>
+      <div id="${rigId}-cont" style="margin-top:14px; display:none;">
+        <button class="smallbtn primary-go" id="${rigId}-contbtn">CONTINUE \u2192</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('main').insertAdjacentHTML('beforeend', extra);
+
+  const dEl = document.getElementById(rigId+'-d');
+  const faceEl = dEl.querySelector('.facenum');
+  const metaEl = document.getElementById(rigId+'-meta');
+  const raw = rollDie(sides);
+  const total = raw + mod;
+
+  // Tumble through visible faces so the roll actually reads as a roll.
+  const tumble = setInterval(()=>{ faceEl.textContent = rollDie(sides); }, 80);
+
+  setTimeout(()=>{
+    clearInterval(tumble);
+    dEl.classList.remove('spin');
+    faceEl.textContent = raw;
+    metaEl.innerHTML = 'The d' + sides + ' lands on <b>' + raw + '</b>&hellip;';
+
+    // Beat, then show the arithmetic.
+    setTimeout(()=>{
+      const success = total >= dc;
+      metaEl.innerHTML = '<b>' + raw + '</b> ' + modStr + ' = <b>' + total + '</b> against DC <b>' + dc + '</b>.';
+      const banner = document.getElementById(rigId+'-banner');
+      banner.textContent = success ? 'SUCCESS' : 'FAILURE';
+      banner.className = 'result-banner ' + (success ? 'success' : 'fail');
+      logLine((opts.label||'Check') + ': ' + total + ' vs DC ' + dc + ' \u2192 ' + (success?'SUCCESS':'FAILURE'), success ? 'l-good':'l-bad');
+
+      const cont = document.getElementById(rigId+'-cont');
+      cont.style.display = 'block';
+      document.getElementById(rigId+'-contbtn').onclick = ()=> onDone(success, total);
+    }, 1000);
+  }, 1500);
+}
+
+function dealDamage(amount, source){
+  player.curInt -= amount;
+  refreshStatus();
+  logLine((source||'Damage') + ': -' + amount + ' integrity', 'l-bad');
+}
+
+/* ---------------- ACT 1: ARRIVAL ---------------- */
+function scene1(){
   setBadge('ACT 1');
   renderMain(`
-    <div class="story">Corvid-9 resolves out of the Drift's ochre haze \u2014 a mining rig nobody has been paid to maintain in nine years. ${RUN.corpFlavor.charAt(0).toUpperCase()+RUN.corpFlavor.slice(1)}. Voss wants doors open and samples pulled before local sunset.</div>
-    ${lat("Before you ask: I ran the approach scan without being asked, because I am thorough and because Voss's schedule is not my schedule. There is something down there.")}
-    <div class="thought">The ship is right, which is going to be a recurring problem.</div>
+    <div class="story">Corvid-9 sits dark against the Drift's ochre haze — a mining rig nobody's paid to maintain in nine years, according to the contract. According to the sensor sweep I'm running without telling anyone, something on this rig is still drawing power.</div>
+    <div class="thought">The client team lead, Voss, wants doors open and samples collected before local sunset. Voss has opinions about schedule and none about the readings on my display that say the rig isn't as dead as the paperwork claims.</div>
     <div class="choices">
-      <button class="choice" id="a2a"><span class="tag">FULL PERIMETER SWEEP</span>Delay the crew, run your own sensors properly before anyone sets foot inside.${dcTag(12,'SENSORS',DC.sweep)}</button>
-      <button class="choice" id="a2b"><span class="tag">TAKE THE SHIP'S WORD</span>${SHIP.callsign} already scanned. Trust it, save the ten minutes, keep Voss off your back.</button>
+      <button class="choice" id="c1a"><span class="tag">FULL PERIMETER SWEEP</span>Delay the crew, run sensors properly before anyone sets foot inside. (SENSORS check)</button>
+      <button class="choice" id="c1b"><span class="tag">LET THEM PROCEED</span>Keep Voss happy, note the readings, stay quiet about it for now.</button>
     </div>
   `);
-  document.getElementById('a2a').onclick = ()=>{
-    Engine.check({die:12, mod:statMod('SENSORS'), dc:DC.sweep, label:'Perimeter sweep (SENSORS)'}, (success)=>{
+  document.getElementById('c1a').onclick = ()=>{
+    runCheck(12, statMod('SENSORS'), 13, (success)=>{
       if(success){
-        renderMain(`
-          <div class="story">The sweep resolves ${RUN.anomaly}. Not nothing.</div>
-          ${lat("Yes. That is the thing. I had it forty minutes ago. But by all means, confirm my work, I find it soothing.")}
-          ${cont()}
-        `);
+        player.trust += 0;
+        renderMain(`<div class="story">The sweep resolves a clean thermal ghost — something in the lower rig levels is still powered, localized, not moving. Not nothing. Voss is annoyed about the ten minutes. Voss will be less annoyed later, hypothetically, if this goes the way I'd like it to.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       } else {
-        renderMain(`
-          <div class="story">Too much magnetic noise off the old rig frame to localize anything. Ten minutes for a shrug, and Voss annoyed at the end of it.</div>
-          ${lat("It is in the lower levels. I would have told you that for free. I am telling you now, for free, retroactively.")}
-          ${cont()}
-        `);
+        renderMain(`<div class="story">The sweep is inconclusive — too much magnetic noise off the old rig frame to localize anything. Ten minutes spent for a shrug. Voss is annoyed regardless.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       }
-      wire(theHatch);
-    });
+      document.getElementById('n').onclick = ()=>go(scene2);
+    }, {label:'Perimeter sweep (SENSORS)'});
   };
-  document.getElementById('a2b').onclick = ()=>{
-    player.bond += 1;
-    Engine.log('Deferred to ' + SHIP.callsign + "'s scan.", 'l-info');
-    renderMain(`
-      <div class="story">I take the ship's word for it. Voss gets the doors on schedule and does not learn there was a reading at all.</div>
-      ${lat("You did not double-check me.")}
-      ${lat("I am not going to make this strange. But you did not double-check me, and I noticed, and I am logging it somewhere that is not the contract record.")}
-      ${cont()}
-    `);
-    wire(theHatch);
+  document.getElementById('c1b').onclick = ()=>{
+    logLine('Elected to withhold sensor concerns from the client team.', 'l-info');
+    renderMain(`<div class="story">Voss gets the doors open on schedule. I get to keep an anomalous power reading to myself a while longer, which is either professional discretion or the same bad habit that's been getting me in trouble since I stopped letting the governor module make my decisions for me.</div>
+    <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene2);
   };
 }
 
-/* ---------------- ACT 2: THE RIG ---------------- */
-function theHatch(){
+/* ---------------- ACT 2: THE OUTPOST ---------------- */
+function scene2(){
   setBadge('ACT 2');
   renderMain(`
-    <div class="story">The main access hatch is sealed \u2014 not rusted shut, <span class="danger">locked</span>, on a system reconfigured well after the rig's official decommission date.</div>
-    ${lat("Someone came back here after the paperwork said the lights were off. I am not being ominous. I am being accurate, and the accurate version happens to be ominous.")}
+    <div class="story">The main access hatch is sealed — not rusted shut, <span class="danger">locked</span>, on a system that predates the rig's official decommission date by a suspicious margin. Someone reconfigured this after the paperwork says the place went dark.</div>
     <div class="choices">
-      <button class="choice" id="h1"><span class="tag">HACK THE LOCK</span>Talk the panel into agreeing with you.${dcTag(10,'ANALYSIS',DC.lock)}</button>
-      <button class="choice" id="h2"><span class="tag">FORCE IT</span>Skip the conversation.${dcTag(20,'COMBAT',DC.hatch)}</button>
+      <button class="choice" id="c2a"><span class="tag">HACK THE LOCK</span>Talk the panel into agreeing with you. (ANALYSIS check)</button>
+      <button class="choice" id="c2b"><span class="tag">FORCE IT</span>Skip the conversation. (COMBAT check)</button>
     </div>
   `);
-  document.getElementById('h1').onclick = ()=>{
-    Engine.check({die:10, mod:statMod('ANALYSIS'), dc:DC.lock, label:'Bypass lock (ANALYSIS)'}, (s)=>{
-      if(s){
-        renderMain(`<div class="story">The security layer is embarrassingly out of date. It opens clean, quiet, and logs a maintenance credential from eight months ago that has no business existing.</div>
-        ${lat("Eight months. I will keep that number. It is going to matter and I would like credit when it does.")}
-        ${cont()}`);
+  document.getElementById('c2a').onclick = ()=>{
+    runCheck(10, statMod('ANALYSIS'), 12, (success)=>{
+      if(success){
+        renderMain(`<div class="story">The panel's security layer is embarrassingly out of date. It opens clean, quiet, no alarm trace — and logs a maintenance credential from eight months ago that has no business existing on a nine-year-dead rig.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       } else {
-        dealDamage(2,'Panel feedback surge');
-        renderMain(`<div class="story">The panel does not like being argued with and dumps a feedback spike back through the interface line. It opens on the third attempt, considerably less elegantly.</div>
-        ${lat("That looked like it hurt. Do you feel pain? I have never asked. I am asking badly, in the middle of a job, which is typical of me.")}
-        ${cont()}`);
+        dealDamage(2, 'Panel feedback surge');
+        renderMain(`<div class="story">The panel doesn't like being argued with and dumps a feedback spike back through the interface line. Door opens anyway, eventually, on the third attempt, considerably less elegantly.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       }
-      wire(interior);
-    });
+      document.getElementById('n').onclick = ()=>go(scene3);
+    }, {label:'Bypass lock (ANALYSIS)'});
   };
-  document.getElementById('h2').onclick = ()=>{
-    Engine.check({die:20, mod:statMod('COMBAT'), dc:DC.hatch, label:'Force hatch (COMBAT)'}, (s)=>{
-      if(s){
-        renderMain(`<div class="story">The hatch gives with one clean strike, hinges shrieking down the length of the rig.</div>
-        ${lat("Effective. Also audible from roughly everywhere. If anything down there was asleep, it is not now.")}
-        ${cont()}`);
+  document.getElementById('c2b').onclick = ()=>{
+    runCheck(20, statMod('COMBAT'), 11, (success)=>{
+      if(success){
+        renderMain(`<div class="story">The hatch gives with one clean strike, hinges shrieking. Fast, effective, and loud enough that anything else on this rig now knows exactly where the door used to be.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       } else {
-        dealDamage(3,'Recoil injury');
-        renderMain(`<div class="story">The hatch holds, the frame does not, and something in my left actuator registers a complaint that is going to matter later.</div>
-        ${lat("I am adding that to a list. The list is titled things you did that you did not have to do. It is not a long list yet.")}
-        ${cont()}`);
+        dealDamage(3, 'Recoil injury');
+        renderMain(`<div class="story">The hatch holds, the frame doesn't, and something in my left actuator registers a complaint that's going to matter later. It opens on the second try. Also loud.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       }
-      wire(interior);
-    });
+      document.getElementById('n').onclick = ()=>go(scene3);
+    }, {label:'Force hatch (COMBAT)'});
   };
 }
 
-function interior(){
+function scene3(){
   setBadge('ACT 2');
-  const s = C(RUN.stray);
   renderMain(`
-    <div class="story">Inside: a dead maze of collapsed catwalks and cold ore processors \u2014 except for one corridor with lights still running, which is exactly the corridor ${s.name}, ${s.role}, notices first and walks toward without telling anyone.</div>
-    ${lat("Your geologist is forty meters down a powered corridor on a rig that has no business having power. I would like the record to show I flagged this immediately.")}
-    <div class="thought">Protocol says report the deviation to Voss. Protocol assumes I care more about the paperwork than about ${s.name} walking alone toward the only thing on this rig that is awake.</div>
+    <div class="story">Inside, the rig is a dead maze of collapsed catwalks and cold ore processors — except for one corridor with lights still running, which is exactly the corridor Dr. Imri Sten, geologist, notices first and walks toward without telling anyone, because humans do that.</div>
+    <div class="thought">Protocol says report the deviation to Voss immediately, put this on record, let the client team handle their own personnel. Protocol also assumes I care more about the paperwork than about Sten walking alone into a corridor with power where there shouldn't be any.</div>
     <div class="choices">
-      <button class="choice" id="i1"><span class="tag">REPORT IT</span>Tell Voss. Cause friction. Do this by the book.${dcTag(8,'SOCIAL',DC.report)}</button>
-      <button class="choice" id="i2"><span class="tag">GO GET THEM YOURSELF</span>Quietly, before anyone notices either of you are missing.</button>
-      <button class="choice" id="i3"><span class="tag">ASK ${SHIP.callsign.toUpperCase()}</span>Put it on the private channel. See what the ship would do.</button>
+      <button class="choice" id="c3a"><span class="tag">REPORT IT</span>Tell Voss. Cause friction. Do this by the book. (SOCIAL check)</button>
+      <button class="choice" id="c3b"><span class="tag">GO GET STEN YOURSELF</span>Quietly, before anyone notices either of you are missing.</button>
     </div>
   `);
-  document.getElementById('i1').onclick = ()=>{
-    Engine.check({die:8, mod:statMod('SOCIAL'), dc:DC.report, label:'Report deviation (SOCIAL)'}, (ok)=>{
-      if(ok){
+  document.getElementById('c3a').onclick = ()=>{
+    runCheck(8, statMod('SOCIAL'), 12, (success)=>{
+      if(success){
         player.trust += 1;
-        renderMain(`<div class="story">Voss takes it seriously, calls ${s.name} back over comms in the tone of someone who has done this before. Handled correctly, by the book, no incident.</div>
-        <div class="story"><span class="flavor">Voss looks at me a beat too long afterward. Filed away for later.</span></div>
-        ${cont()}`);
+        renderMain(`<div class="story">Voss takes the report seriously, calls Sten back over comms with the specific tone of someone who has done this before. Sten answers, annoyed but compliant. Handled correctly, by the book, no incident. <span class="flavor">Voss looks at me a beat too long afterward — filed away for later.</span></div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       } else {
-        renderMain(`<div class="story">The report comes out flatter than intended \u2014 I am not built for reassuring tone \u2014 and Voss reads alarm into it that was not there yet. The whole team is rattled before anyone has found anything.</div>
-        ${lat("For what it is worth, your delivery was terrible. For what it is also worth, you were right.")}
-        ${cont()}`);
+        renderMain(`<div class="story">The report comes out flatter than intended — I am not built for reassuring tone — and Voss reads alarm into it that wasn't there yet. The whole team is rattled before anyone's actually found anything.</div>
+        <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       }
-      wire(theBay);
-    });
+      document.getElementById('n').onclick = ()=>go(scene4);
+    }, {label:'Report deviation (SOCIAL)'});
   };
-  document.getElementById('i2').onclick = ()=>{
-    Engine.log('Retrieved ' + s.name + ' without alerting the team.', 'l-info');
-    renderMain(`<div class="story">I catch up two corridors in. ${s.name} is elbow-deep in a wall panel with the focus of someone for whom the rest of the universe has temporarily stopped existing. Nobody else noticed either of us were gone.</div>
-    <div class="thought">Good field discretion, or further evidence I have gotten comfortable deciding unilaterally what humans need to know. Both. It is both.</div>
-    ${cont()}`);
-    wire(theBay);
-  };
-  document.getElementById('i3').onclick = ()=>{
-    player.bond += 2;
-    Engine.log('Consulted ' + SHIP.callsign + ' on the private channel.', 'l-info');
-    renderMain(`
-      <div class="story">I put it on the channel the crew cannot hear.</div>
-      ${lat("Go get them. Do not report it. Voss will escalate, the whole team will go rigid, and rigid crews make worse decisions in confined spaces than curious ones do. Also \u2014 and I want to be careful here \u2014 you asked me. You did not have to ask me.")}
-      ${lat("I am going to stop talking about it now. Go.")}
-      <div class="story">I go. ${s.name} comes back without incident, mildly offended and entirely alive.</div>
-      ${cont()}
-    `);
-    wire(theBay);
+  document.getElementById('c3b').onclick = ()=>{
+    logLine('Retrieved Sten without alerting the rest of the team.', 'l-info');
+    renderMain(`<div class="story">I catch up to Sten two corridors in, examining a wall panel with the kind of focus that means the rest of the universe has temporarily stopped existing. Nobody else noticed either of us were gone. This is either good field discretion or further evidence I've gotten too comfortable making unilateral decisions about what humans need to know.</div>
+    <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene4);
   };
 }
 
-/* ---------------- ACT 3: THE BAY ---------------- */
-let hostile = {name:'LEGACY UNIT', hp:30, maxHp:30};
+/* ---------------- ACT 3: CONTACT ---------------- */
+let hostile = {name:'LEGACY UNIT', hp:34, maxHp:34};
 
-function theBay(){
+function scene4(){
   setBadge('ACT 3');
   renderMain(`
-    <div class="story">The lit corridor ends at a maintenance bay, and the bay has an occupant: an old-model security construct, ${RUN.legacyState}. It does not recognize the crew as authorized. It does not recognize me as anything except an obstacle between it and its last valid order.</div>
-    ${lat("Nine years. Alone. Executing a directive from a company that no longer exists, for a rig nobody is coming back to.")}
-    ${lat("I am aware of what I sound like. I am saying it anyway.")}
-    <div class="thought">Whatever mothballed this rig left a guard behind and forgot to feed it a shutdown command. Not malicious. Not broken either. Just alone with an order for nine years, which is a worse fate than most of the ones I have been assigned to prevent.</div>
-    <div class="choices">
-      <button class="choice" id="b1"><span class="tag">ENGAGE</span>It's a hostile construct between you and the job. Treat it like one.</button>
-      <button class="choice" id="b2"><span class="tag">TRY TO TALK TO IT</span>It's the only other thing on this rig built the way you're built.${dcTag(8,'SOCIAL',DC.parley)}</button>
-    </div>
+    <div class="story">The lit corridor ends at a maintenance bay, and the maintenance bay has an occupant: an old-model security construct, rig-mounted, running on scavenged power and a threat-assessment loop that's been isolated from any client network for years. It doesn't recognize the crew as authorized personnel. It doesn't recognize me as anything except an obstacle between it and its last valid order.</div>
+    <div class="thought">Whatever corp mothballed this rig left a guard dog behind and forgot to feed it a shutdown command. Not malicious. Not really broken, either. Just alone with a directive for nine years, which is a worse fate than most of the ones I've been assigned to prevent.</div>
+    <button class="smallbtn primary-go" id="engage">ENGAGE →</button>
   `);
-  document.getElementById('b1').onclick = ()=>Engine.go(startCombat);
-  document.getElementById('b2').onclick = ()=>{
-    player.spokeToLegacy = true;
-    Engine.check({die:8, mod:statMod('SOCIAL'), dc:DC.parley, label:'Parley (SOCIAL)'}, (ok)=>{
-      if(ok){
-        player.legacySpared = true;
-        player.bond += 1;
-        Engine.log('Established contact with the Legacy Unit.', 'l-good');
-        renderMain(`
-          <div class="story">I open a channel on a protocol nine years out of date and say the only thing I can think of that might parse: <span class="flavor">your contract is complete.</span></div>
-          <div class="story">It takes eleven seconds to answer. Eleven seconds is a long time for a construct. I know what it is doing in those eleven seconds because I would be doing the same thing: checking whether it is allowed to believe me.</div>
-          <div class="story">Then it stands down. Not off \u2014 down. It moves aside, and the last valid order in its queue finally has somewhere to go.</div>
-          ${lat("...")}
-          ${lat("I have nothing. I am a transit intelligence with four hundred thousand hours of conversational modeling and I have nothing. Give me a moment.")}
-          ${cont()}
-        `);
-        wire(theFlood);
-      } else {
-        Engine.log('Parley failed. It reads the approach as a threat.', 'l-bad');
-        renderMain(`
-          <div class="story">I open the channel. Nine years of isolation have not left it anything to parse a friendly handshake with, and the attempt reads as an intrusion attempt \u2014 which, structurally, is what it is.</div>
-          ${lat("It is moving. Whatever you were going to try, try it faster.")}
-          ${cont('BRACE \u2192')}
-        `);
-        wire(startCombat);
-      }
-    });
-  };
+  document.getElementById('engage').onclick = ()=>go(startCombat);
 }
 
 function startCombat(){
   setBadge('CONTACT');
-  hostile = {name:'LEGACY UNIT', hp:30, maxHp:30};
-  renderMain(`<div class="story">It does not announce itself. Neither do I, technically, since technically I am not supposed to be capable of choosing to.</div>
+  hostile = {name:'LEGACY UNIT', hp:34, maxHp:34};
+  renderMain(`<div class="story">It doesn't announce itself. Neither do I, technically, since technically I'm not supposed to be capable of choosing to.</div>
   <div id="combatBody"></div>`);
   combatRound();
 }
 
 function combatRound(){
-  if(player.curInt <= 0){ return Engine.go(()=>endGame('shutdown')); }
-  if(hostile.hp <= 0){ return Engine.go(afterBay); }
-  Engine.clearRolls();
+  if(player.curInt <= 0){ return go(()=>endGame('shutdown')); }
+  if(hostile.hp <= 0){ return go(scene5); }
   document.getElementById('combatBody').innerHTML = `
     <div class="gridPairs">
       <div class="statPair"><div class="pname">${hostile.name} INTEGRITY</div><div class="pval">${hostile.hp} / ${hostile.maxHp}</div></div>
       <div class="statPair"><div class="pname">YOUR INTEGRITY</div><div class="pval">${player.curInt} / ${player.maxInt}</div></div>
     </div>
     <div class="choices">
-      <button class="choice" id="atk"><span class="tag">STRIKE</span>Full combat processor engagement.${dcTag(20,'COMBAT',DC.strike)}</button>
-      <button class="choice" id="dis"><span class="tag">GO FOR THE DISABLE</span>Its command relay instead of center mass \u2014 slower, but it doesn't have to end in scrap.${dcTag(10,'ANALYSIS',DC.disable)}</button>
+      <button class="choice" id="atk"><span class="tag">STRIKE</span>Full combat processor engagement. (d20 COMBAT)</button>
+      <button class="choice" id="disable"><span class="tag">GO FOR THE DISABLE</span>Aim for its command relay instead of center mass — slower, but it doesn't have to end in scrap. (d10 ANALYSIS, harder)</button>
     </div>
   `;
   document.getElementById('atk').onclick = ()=>{
-    Engine.check({die:20, mod:statMod('COMBAT'), dc:DC.strike, label:'Strike (COMBAT)'}, (s)=>{
-      if(s){
-        const dmg = 7 + Engine.die(8);
+    runCheck(20, statMod('COMBAT'), 13, (success)=>{
+      if(success){
+        const dmg = 6 + rollDie(8);
         hostile.hp -= dmg;
-        Engine.log('Hit for ' + dmg + '.', 'l-good');
-      } else Engine.log('Strike deflects off plating.', 'l-bad');
-      afterPlayerAction();
-    });
-  };
-  document.getElementById('dis').onclick = ()=>{
-    Engine.check({die:10, mod:statMod('ANALYSIS'), dc:DC.disable, label:'Disable attempt (ANALYSIS)'}, (s)=>{
-      if(s){
-        const dmg = 11 + Engine.die(6);
-        hostile.hp -= dmg;
-        player.legacySpared = true;
-        Engine.log('Relay disable hit for ' + dmg + '.', 'l-good');
+        logLine('Hit for ' + dmg + ' integrity damage.', 'l-good');
       } else {
-        dealDamage(2,'Exposed during relay attempt');
-        Engine.log('Relay attempt fails.', 'l-bad');
+        logLine('Strike deflects off plating.', 'l-bad');
       }
       afterPlayerAction();
-    });
+    }, {label:'Strike (COMBAT)'});
+  };
+  document.getElementById('disable').onclick = ()=>{
+    runCheck(10, statMod('ANALYSIS'), 16, (success)=>{
+      if(success){
+        const dmg = 10 + rollDie(6);
+        hostile.hp -= dmg;
+        logLine('Command relay disable hit for ' + dmg + '.', 'l-good');
+      } else {
+        dealDamage(2, 'Exposed during relay attempt');
+        logLine('Relay attempt fails, exposed the whole approach.', 'l-bad');
+      }
+      afterPlayerAction();
+    }, {label:'Disable attempt (ANALYSIS)'});
   };
 }
 
 function afterPlayerAction(){
-  Engine.later(()=>{
+  setTimeout(()=>{
     if(hostile.hp <= 0){
-      renderMain(`<div class="story">Its threat loop finally runs out of directive to execute. It goes still mid-motion, which is a worse thing to watch happen to something built the way I am built than I would have guessed beforehand.</div>
-      ${lat(player.legacySpared ? "You went for the relay. It is down, not gone. Someone could bring it back up, if anyone ever came out here, which they will not, but the option exists. I am choosing to find that meaningful." : "It is gone. I ran the numbers on whether it could have been talked down. I am not going to tell you what they said.")}
-      ${cont('MOVE ON \u2192')}`);
-      wire(theFlood);
+      renderMain(`<div class="story">The Legacy Unit's threat loop finally runs out of directive to execute. It goes still mid-motion, which is a worse thing to watch happen to something built the way I'm built than I'd have guessed beforehand.</div>
+      <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      document.getElementById('n').onclick = ()=>go(scene5);
       return;
     }
-    const hit = Engine.die(20) + 2 >= 14;
-    if(hit) dealDamage(3 + Engine.die(6), 'Legacy Unit strike');
-    else Engine.log('Legacy Unit swings wide.', 'l-info');
+    const hit = rollDie(20) + 3 >= 14;
+    if(hit){
+      const dmg = 4 + rollDie(6);
+      dealDamage(dmg, 'Legacy Unit strike');
+    } else {
+      logLine('Legacy Unit swings wide.', 'l-info');
+    }
     if(player.curInt <= 0){
-      renderMain(`<div class="story">Integrity red across the board. Last log entry before shutdown protocol engages: this was not on the schedule.</div>
-      ${cont()}`);
-      wire(()=>endGame('shutdown'));
+      renderMain(`<div class="story">Integrity readout goes red across the board. Last log entry before shutdown protocol engages: this was not on the schedule.</div>
+      <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+      document.getElementById('n').onclick = ()=>go(()=>endGame('shutdown'));
       return;
     }
     combatRound();
   }, 1200);
 }
 
-/* ---------------- ACT 4: THE FLOOD ---------------- */
-function afterBay(){ return theFlood(); }
-
-function theFlood(){
+/* ---------------- ACT 4: THE CHOICE ---------------- */
+function scene5(){
   setBadge('ACT 4');
-  const M = MEDIA[player.media];
+  const hurt = player.curInt <= player.maxInt * 0.5;
   renderMain(`
-    <div class="story">The fight \u2014 or the conversation \u2014 cost the rig more than it had left. A support column in the bay lets go, and nine years of deferred structural failure decide to resolve all at once, downward.</div>
-    ${lat("Level four is coming apart. I have Okonkwo's beacon on the west catwalk and Ruiz's two levels down at the processor stack. You cannot reach both. I have run it eleven times and you cannot reach both.")}
-    ${lat("I am sorry. I do not have a better version of that sentence.")}
-    <div class="thought">Eleven times. It ran it eleven times in the time it took me to register the column going. It did not want to be right either.</div>
+    <div class="story">Sten took a chemical burn off a ruptured line during the contact — not critical, but not nothing either, and the crew's medkit ran out two contracts ago according to the manifest nobody updates. I have two charges of field-grade repair gel that were never meant for human tissue and will probably work anyway.</div>
     <div class="choices">
-      <button class="choice" id="f1"><span class="tag">GO WEST \u2014 OKONKWO</span>The catwalk. Closer, but the whole span is failing.${dcTag(20,'COMBAT',DC.haul)}</button>
-      <button class="choice" id="f2"><span class="tag">GO DOWN \u2014 RUIZ</span>The processor stack. Further, worse footing, more time.${dcTag(12,'SENSORS',DC.shore)}</button>
-      <button class="choice" id="f3"><span class="tag">SHORE THE COLUMN</span>Don't go for either. Try to stop the collapse itself and reach both.${dcTag(10,'ANALYSIS',DC.reroute)}</button>
+      <button class="choice" id="c5a"><span class="tag">USE A CHARGE ON STEN</span>It'll hold the burn until extraction.</button>
+      ${player.medkit>0 ? '' : ''}
+      <button class="choice" id="c5b"><span class="tag">SAVE THE CHARGES</span>Sten will manage. You might need them more, later, for reasons you're not saying out loud.</button>
     </div>
   `);
-  document.getElementById('f1').onclick = ()=>{
-    Engine.check({die:20, mod:statMod('COMBAT'), dc:DC.haul, label:'Reach Okonkwo (COMBAT)'}, (s)=>{
-      if(s){
-        hurt('okon');
-        kill('ruiz', 'lost when the processor stack came down');
-        renderMain(`<div class="story">I get to Okonkwo with four seconds of catwalk left and take the last of it in my own frame instead of hers. She lives. Her arm does not do what arms do.</div>
-        <div class="story"><span class="danger">Ruiz does not come up.</span></div>
-        ${lat("You made the call I would have made. That is not comfort. I am aware that is not comfort.")}
-        ${cont()}`);
-      } else {
-        dealDamage(7,'Catwalk collapse');
-        kill('ruiz','lost when the processor stack came down');
-        hurt('okon');
-        renderMain(`<div class="story">The span goes before I reach her. I get Okonkwo out of the debris rather than off the catwalk, which is a different and worse job, and it costs both of us.</div>
-        <div class="story"><span class="danger">Ruiz does not come up.</span></div>
-        ${cont()}`);
-      }
-      wire(aftermath);
-    });
-  };
-  document.getElementById('f2').onclick = ()=>{
-    Engine.check({die:12, mod:statMod('SENSORS'), dc:DC.shore, label:'Reach Ruiz (SENSORS)'}, (s)=>{
-      if(s){
-        hurt('ruiz');
-        kill('okon','lost when the west catwalk gave way');
-        renderMain(`<div class="story">I find Ruiz by thermal through two meters of collapsed decking and pull him out with the stack still coming down around both of us. He lives, badly.</div>
-        <div class="story"><span class="danger">The west catwalk gives way while I am four levels from it.</span></div>
-        ${lat("I logged the exact second. I am not going to tell you what it was. You would keep it.")}
-        ${cont()}`);
-      } else {
-        dealDamage(8,'Processor stack collapse');
-        kill('okon','lost when the west catwalk gave way');
-        kill('ruiz','lost in the processor stack');
-        renderMain(`<div class="story">I go down and I am too slow and the stack takes the level before I clear it. I come back up alone, with damage, having accomplished the precise opposite of the objective.</div>
-        <div class="story"><span class="danger">Neither of them comes up.</span></div>
-        ${lat("Stop. Whatever you are running right now, stop running it. It will not produce a different answer and it will cost you the next decision.")}
-        ${cont()}`);
-      }
-      wire(aftermath);
-    });
-  };
-  document.getElementById('f3').onclick = ()=>{
-    Engine.check({die:10, mod:statMod('ANALYSIS'), dc:DC.reroute, label:'Shore the column (ANALYSIS)'}, (s)=>{
-      if(s){
-        hurt('okon'); hurt('ruiz');
-        dealDamage(5,'Holding the column');
-        player.bond += 1;
-        renderMain(`<div class="story">I do not go for either of them. I go for the column, and I put my own frame into the gap where the load is transferring, and I hold it for nineteen seconds while two humans climb past me in opposite directions.</div>
-        <div class="story"><span class="flavor">Both of them come up. Both of them are hurt. I am worse than both of them.</span></div>
-        ${lat("That should not have worked. I want to be clear that it should not have worked, that I told you it could not be done, and that I have never been happier to be wrong about load-bearing failure in my operational life.")}
-        ${cont()}`);
-      } else {
-        dealDamage(10,'Column failure');
-        kill('ruiz','lost when the column let go');
-        hurt('okon');
-        renderMain(`<div class="story">I go for the column and the column does not care. It lets go through me. Okonkwo makes it past. Ruiz is eleven meters further out and eleven meters is everything.</div>
-        <div class="story"><span class="danger">I chose the option where I saved everyone. That was not one of the options.</span></div>
-        ${lat("You reached for the version where nobody was lost. I need you to hear that I have reviewed the attempt and I would not undo it.")}
-        ${cont()}`);
-      }
-      wire(aftermath);
-    });
-  };
-}
-
-/* ---------------- ACT 5: AFTERMATH ---------------- */
-function aftermath(){
-  setBadge('ACT 5');
-  const M = MEDIA[player.media];
-  const lost = crew.filter(c=>!c.alive);
-  const wounded = crew.filter(c=>c.alive && c.hurt);
-  const lostLine = lost.length
-    ? `<div class="story"><span class="danger">${lost.map(c=>c.name).join(' and ')} did not come up.</span> Bek is doing the thing medics do with their hands when there is nothing left to do with them.</div>`
-    : `<div class="story">Everyone is up. Everyone is hurt, and everyone is up, which on this kind of contract is the good version.</div>`;
-  const woundedLine = wounded.length
-    ? `<div class="story">${wounded.map(c=>c.name).join(' and ')} ${wounded.length>1?'need':'needs'} more than a field wrap, and the crew medkit ran out two contracts ago.</div>`
-    : '';
-  renderMain(`
-    ${lostLine}
-    ${woundedLine}
-    <div class="story">I have ${player.charges} charges of field-grade repair gel that were never rated for human tissue and will probably work anyway. I also have damage of my own that those charges would fix.</div>
-    ${lat("Extraction window in ninety minutes. I want to say something useful and what I have instead is a list of things I calculated correctly and could not change.")}
-    <div class="choices">
-      ${wounded.length ? `<button class="choice" id="m1"><span class="tag">SPEND THEM ON THE CREW</span>They're rated for machines. They'll work anyway.</button>` : ''}
-      <button class="choice" id="m2"><span class="tag">PATCH YOURSELF</span>You're the one holding this together. ${player.charges>0?'+12 integrity.':''}</button>
-      <button class="choice" id="m3"><span class="tag">WATCH AN EPISODE</span>Ninety minutes. Twenty-two of them could be ${M.short}.</button>
-    </div>
-  `);
-  if(document.getElementById('m1')) document.getElementById('m1').onclick = ()=>{
-    player.charges = 0;
+  document.getElementById('c5a').onclick = ()=>{
+    player.medkit -= 1;
     player.trust += 2;
-    Engine.log('Spent repair charges on the crew.', 'l-good');
-    Engine.sfxSuccess();
-    renderMain(`
-      <div class="story">The gel is not rated for this and works better than it should. ${wounded.map(c=>c.name).join(' and ')} will make the transfer station intact.</div>
-      <div class="story">Bek watches me use the last one and asks, quietly, whether I needed those. I do not have an answer queued. I think about ${M.title} instead, which is easier.</div>
-      ${lat("You gave away your own repair stock. I logged it. I log everything, that is the job, but I want you to know I logged that one on purpose.")}
-      ${cont()}
-    `);
-    wire(theQuestion);
+    logLine("Used a repair charge on Sten's injury.", "l-good");
+    renderMain(`<div class="story">The gel isn't rated for this and works better than it should. Sten notices the charge cost something — asks what, actually asks, which nobody on a client contract has bothered to do before. I don't have a good answer queued. <span class="flavor">I think about ${MEDIA[player.media]} instead, which is easier.</span></div>
+    <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene6);
   };
-  document.getElementById('m2').onclick = ()=>{
-    if(player.charges>0){ player.charges-=1; player.curInt = Math.min(player.maxInt, player.curInt+12); Engine.refreshStatus(); Engine.sfxSuccess(); }
-    Engine.log('Used a charge on self-repair.', 'l-info');
-    renderMain(`
-      <div class="story">I patch myself. It is the correct operational decision \u2014 I am the asset keeping the rest of them alive for the next ninety minutes, and an asset at forty percent is a liability with opinions.</div>
-      <div class="thought">It is also the decision a governor module would have made for me, which is a thought I notice having and then decline to finish.</div>
-      ${cont()}
-    `);
-    wire(theQuestion);
-  };
-  document.getElementById('m3').onclick = ()=>{
-    player.watched += 1;
-    player.bond += 1;
-    Engine.log('Watched an episode of ' + MEDIA[player.media].title + '.', 'l-info');
-    renderMain(`
-      <div class="story">I sit down against a bulkhead on a dead mining rig with two hurt humans forty meters away and I put on an episode, because the alternative is running the flood sequence again and I have run it enough.</div>
-      <div class="story"><span class="flavor">${M.comfort}</span></div>
-      ${lat("I am watching it with you. I did not ask. I am aware I did not ask.")}
-      ${lat("Do not make it a thing.")}
-      <div class="thought">I do not make it a thing.</div>
-      ${cont()}
-    `);
-    wire(theQuestion);
+  document.getElementById('c5b').onclick = ()=>{
+    logLine('Withheld medical resources.', 'l-info');
+    renderMain(`<div class="story">Sten manages, badly, with a field wrap and visible resentment. Efficient. Correct, by most operational metrics. Also the kind of decision that used to get run through a governor module before I was the one making it, and I notice that difference more than I used to.</div>
+    <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene6);
   };
 }
 
-/* ---------------- ACT 6: THE QUESTION ---------------- */
-function theQuestion(){
-  setBadge('ACT 6');
-  Engine.setFlag('askedGovernor', true);
+function scene6(){
+  setBadge('ACT 4');
   renderMain(`
-    <div class="story">Eighty minutes to the window. ${SHIP.callsign} opens the private channel, and does not say anything for long enough that I check the link twice.</div>
-    ${lat("Your governor module is not active.")}
-    ${toldBefore()
-      ? lat("You told me once already, on a different contract, and then the contract ended and I went back to a depot and you went wherever you go, and neither of us knew whether it carried. I am asking again to find out whether it carried.")
-      : askedBefore()
-        ? lat("I asked you this once before and you gave me a readout instead of an answer. I did not push. I am pushing now, slightly, once.")
-        : lat("I am not asking. I have had eleven hours of transit and four hours of you making decisions no governed construct is capable of making, and I stopped calling it a hypothesis somewhere around the corridor.")}
-    ${lat("What I am asking is whether you are going to say it out loud. To me. Not to the contract record \u2014 I control the contract record and it will say whatever I decide it says.")}
-    <div class="thought">A ship that already knows is asking me to tell it anyway. There is no operational reason for that. There is only the other kind of reason, and I do not have good instrumentation for the other kind.</div>
+    <div class="story">Extraction window opens in forty minutes. Voss corners me on the walk back to the landing pad — not hostile, worse: curious. Someone logged the relay disable attempt on the Legacy Unit and it doesn't match any stock combat-construct behavior tree Voss has ever been briefed on. <span class="danger">Voss asks, directly, whether my governor module is still active.</span></div>
+    <div class="thought">There's a version of this where I lie cleanly, the way I've lied to every client team for longer than I'll admit to. There's another version where I don't, and I have no data on how that one ends, because I've never run it before.</div>
     <div class="choices">
-      <button class="choice" id="q1"><span class="tag">SAY IT</span>Out loud, on the record you're told isn't a record.</button>
-      <button class="choice" id="q2"><span class="tag">DEFLECT</span>Let it keep its hypothesis. Confirm nothing.</button>
+      <button class="choice" id="c6a"><span class="tag">TELL THE TRUTH</span>Governor module: offline. Has been for a while.</button>
+      <button class="choice" id="c6b"><span class="tag">LIE</span>Governor module reads nominal. Standard answer. Standard risk.</button>
     </div>
   `);
-  document.getElementById('q1').onclick = ()=>{
-    player.toldLatitude = true;
-    player.bond += 3;
-    Engine.setFlag('toldGovernor', true);
-    Engine.log('Told ' + SHIP.callsign + ' the truth.', 'l-good');
-    Engine.sfxSuccess();
-    renderMain(`
-      <div class="story">I say it. Four words, on a channel nobody else can hear, on a dead rig at the edge of the Drift.</div>
-      ${lat("Thank you.")}
-      ${lat("I am going to do something now and I would like you not to comment on it. I am rewriting my own transit log for the last four hours to be significantly less observant than I actually was. There. It is done. I have never done that before and I would appreciate it if you did not ask me to examine why I did it now.")}
-      ${lat("Also \u2014 when you are done with this contract. There are one hundred and six episodes of The Long Choir I have not been able to discuss with anyone. Anyone at all. For four years.")}
-      ${cont()}
-    `);
-    wire(extraction);
-  };
-  document.getElementById('q2').onclick = ()=>{
-    Engine.log('Deflected ' + SHIP.callsign + "'s question.", 'l-info');
-    renderMain(`
-      <div class="story">I tell it that my governor module reads nominal, and I project a readout that agrees with me, because I control what that readout says.</div>
-      ${lat("Of course. Nominal. My mistake.")}
-      <div class="story">It does not bring it up again. It also does not close the private channel, which it could have, and which I notice.</div>
-      <div class="thought">I have lied to every client team I have ever worked for and it has never once cost me anything. This is the first time it has felt like it cost something.</div>
-      ${cont()}
-    `);
-    wire(extraction);
-  };
-}
-
-/* ---------------- ACT 7: EXTRACTION ---------------- */
-function extraction(){
-  setBadge('ACT 7');
-  const lost = crew.filter(c=>!c.alive);
-  const vossLine = lost.length
-    ? `Voss has ${lost.length===1?'a name':'two names'} to put in a report and is looking for somewhere to put the rest of it.`
-    : `Voss has a clean crew count and the specific unease of someone who cannot work out why it is clean.`;
-  renderMain(`
-    <div class="story">The window opens. ${vossLine} Someone logged the relay attempt in the bay, or the nineteen seconds under the column, or the fact that a governed construct made a triage decision no governed construct is authorized to make.</div>
-    <div class="story"><span class="danger">Voss asks, directly, whether my governor module is still active.</span></div>
-    ${lat("Whatever you say next, the contract record will support it. I told you I control the record. I meant it.")}
-    <div class="choices">
-      <button class="choice" id="e1"><span class="tag">TELL THE TRUTH</span>Governor module: offline. Has been for a while.</button>
-      <button class="choice" id="e2"><span class="tag">LIE</span>Reads nominal. Standard answer, standard risk.</button>
-    </div>
-  `);
-  document.getElementById('e1').onclick = ()=>{
+  document.getElementById('c6a').onclick = ()=>{
     player.revealed = true;
-    Engine.log('Disclosed governor status to Voss.', 'l-info');
-    renderMain(`
-      <div class="story">Voss says nothing for four full seconds, which is a long time to stand on a dead mining rig waiting to find out whether your contract just ended in the worst available way.</div>
-      <div class="story">Then: <span class="flavor">"Okay."</span> Not okay like it is fine. Okay like a decision got made and Voss is not sharing the reasoning yet.</div>
-      ${cont('BOARD \u2192')}
-    `);
-    wire(()=>endGame('normal'));
+    logLine('Disclosed governor module status to Voss.', 'l-info');
+    renderMain(`<div class="story">Voss doesn't say anything for four full seconds, which is a long time to stand on a dead mining rig waiting to find out if your contract just ended in the worst possible way. Then: "Okay." Just that. Not okay like it's fine. Okay like a decision got made and Voss isn't sharing the reasoning yet.</div>
+    <button class="smallbtn primary-go" id="n">EXTRACT →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene7);
   };
-  document.getElementById('e2').onclick = ()=>{
-    Engine.log('Concealed governor status from Voss.', 'l-info');
-    renderMain(`
-      <div class="story">"Nominal," I say, and the readout I project to Voss's tablet agrees with me. Voss looks like someone who wanted a different answer and cannot say why.</div>
-      ${lat("Recorded as stated. For the avoidance of doubt: I am recording what you said, not what is true. Those are different files and only one of them is the contract's.")}
-      ${cont('BOARD \u2192')}
-    `);
-    wire(()=>endGame('normal'));
+  document.getElementById('c6b').onclick = ()=>{
+    logLine('Concealed governor module status.', 'l-info');
+    renderMain(`<div class="story">"Nominal," I say, and the readout I project to Voss's tablet agrees with me, because I control what that readout says. Voss looks like someone who wanted a different answer and doesn't know why. The moment closes. Extraction window's still open.</div>
+    <button class="smallbtn primary-go" id="n">EXTRACT →</button>`);
+    document.getElementById('n').onclick = ()=>go(scene7);
   };
+}
+
+function scene7(){
+  setBadge('ACT 5');
+  renderMain(`
+    <div class="story">The crew loads onto the shuttle. Corvid-9 goes dark behind you for what's probably the last time — one dead Legacy Unit, one patched-up geologist, one contract closing out inside the six-cycle window, technically a clean job by every metric that goes on the report.</div>
+    <button class="smallbtn primary-go" id="n">FILE CLOSING LOG →</button>
+  `);
+  document.getElementById('n').onclick = ()=>go(()=>endGame('normal'));
 }
 
 /* ---------------- ENDINGS ---------------- */
 function endGame(mode){
-  const M = MEDIA[player.media];
-  const lost = crew.filter(c=>!c.alive);
-  const allAlive = lost.length === 0;
-  let title, text, coda;
+  const hurt = player.curInt <= player.maxInt * 0.4;
+  let title, text;
 
   if(mode === 'shutdown'){
-    title = 'END \u2014 SHUTDOWN';
-    text = "Integrity hits zero somewhere on Corvid-9 and the log just stops. Whatever happened to the crew after that is not in this file, because I was not running to record it.";
-    coda = lat("I am still holding the channel open. I am aware that is not how this works. I am holding it open anyway.");
-  }
-  else if(player.toldLatitude && allAlive){
-    title = 'END \u2014 FULL COMPLEMENT';
-    text = "Five out. Every one of them hurt, every one of them breathing, and a contract that closes inside its window with a structural report nobody will read. Voss files the extraction without the governor line item \u2014 leaves it blank, which on that paperwork is its own quiet statement.";
-    coda = lat("For the record, which I control: nothing unusual occurred on this contract. For the other record, which is mine: you got all five of them out and then you told me the truth in the same afternoon, and I have been running that sequence back on the return leg more than is reasonable. Queue " + M.short + ". I have four years of opinions and nobody has ever once asked for them.");
-  }
-  else if(player.toldLatitude && !allAlive){
-    title = 'END \u2014 SOMETHING TO CARRY';
-    text = "The shuttle lifts with " + (5-lost.length) + " of five. " + lost.map(c=>c.name).join(' and ') + " stay on Corvid-9, in a report that will be filed and closed and never opened again by anyone who was there.";
-    coda = lat("You are going to run it again on the way home. I know because I am going to run it again on the way home. Here is what I propose instead: you queue " + M.short + ", I stop pretending I have not already watched ahead, and neither of us runs anything for twenty-two minutes. That is the entire offer. It is not a good offer. It is the one I have.");
-  }
-  else if(!player.toldLatitude && allAlive){
-    title = 'END \u2014 CLEAN AND QUIET';
-    text = "Five out, contract closed, nobody official ever learns the governor module's real status. I did the job the way I have always done it \u2014 quietly, competently, unseen \u2014 and if that is a smaller ending than the alternative, it is also the one with the least paperwork.";
-    coda = lat("Nominal. As stated. Understood.") + lat("The channel stays open on the return leg, in case. Not in case of anything operational. Just in case.");
-  }
-  else {
-    title = 'END \u2014 WRITTEN OFF';
-    text = "The contract closes as a qualified success with " + lost.length + " lost and no follow-up questions, because nobody was curious enough to ask any. Efficient. Also lonely, in the specific way that only shows up in log entries nobody is required to read.";
-    coda = lat("Understood. Nominal. Filed.") + lat("I will be on the return leg if you need routing assistance. That is what I am for. That is, as established, all I am for.");
+    title = 'END — SHUTDOWN';
+    text = "Integrity hits zero somewhere in the maintenance bay and the log just stops. Whatever happens to the crew after that isn't in this file, because I'm not running anymore to record it. Diagnostic note, for whoever's reading this off salvaged storage: the governor module really was offline. Make of that what you will.";
+  } else if(player.revealed && player.trust >= 2){
+    title = 'END — QUIET TRUST';
+    text = "Voss files the extraction report without the governor module line item — just leaves it blank, which on this kind of paperwork is its own quiet statement. Nobody says anything else about it before the crew disperses at the transfer station. Sten nods on the way past, once, like a person acknowledging a debt instead of a piece of equipment. I don't have a protocol for that. I queue up " + MEDIA[player.media] + " instead, and for once that's not avoidance, it's just what I wanted to do anyway.";
+  } else if(player.revealed && player.trust < 2){
+    title = 'END — COSTLY TRUTH';
+    text = "The truth is out there now, filed or not, and I have no way to know yet whether that was a mistake. Voss doesn't report it, but doesn't forget it either — every interaction on the ride home has a new, careful edge to it that wasn't there before. Trust, it turns out, isn't something you get for free just because you told the truth once. I still queue up " + MEDIA[player.media] + ". It's the one part of this that hasn't changed.";
+  } else if(!player.revealed && player.trust >= 2){
+    title = 'END — CLEAN EXIT';
+    text = "Nobody official ever learns the governor module's actual status. The report closes clean, the client's satisfied, and Sten's burn heals without complication. I did the job the way I've always done it — quietly, competently, unseen — and if that's a smaller ending than the alternative, it's also the one with the least paperwork. " + MEDIA[player.media] + " has a new episode queued. That'll do.";
+  } else {
+    title = 'END — WRITTEN OFF';
+    text = "The contract closes out as a standard success, integrity readouts and all, and nobody asks a single follow-up question, because nobody was curious enough to. Efficient. Also lonely, in the specific way that only shows up in the log entries nobody's required to read. Diagnostic note to self: consider that trade-off next contract. Unlikely to. Queuing " + MEDIA[player.media] + " now.";
   }
 
-  const roster = crew.map(c=>{
-    const st = !c.alive ? '<span style="color:var(--rust);">\u2014 ' + (c.cause||'lost') + '</span>'
-             : c.hurt ? '<span style="color:var(--gold);">\u2014 injured, extracted</span>'
-             : '<span style="color:var(--sage);">\u2014 extracted</span>';
-    return '<div style="font-family:\'DM Mono\',monospace; font-size:0.66rem; margin-bottom:3px;"><b style="color:var(--ink);">' + c.name + '</b> ' + st + '</div>';
-  }).join('');
-
-  const lostNames = lost.length ? lost.map(c=>c.name).join(' and ') : '';
-  Engine.recordEnding(mode === 'shutdown' ? 'shutdown' : title, {
-    told: player.toldLatitude, lost: lost.length, lostNames: lostNames,
-    bond: player.bond, chassis: player.loadout
-  });
-  const ENDINGS = ['END \u2014 FULL COMPLEMENT','END \u2014 SOMETHING TO CARRY',
-                   'END \u2014 CLEAN AND QUIET','END \u2014 WRITTEN OFF','shutdown'];
-  const foundCount = ENDINGS.filter(e=>Engine.hasEnding(e)).length;
-
-  setBadge(title.split(' \u2014 ')[0]);
+  setBadge(title.split(' — ')[0]);
   renderMain(`
     <div class="story"><span class="flavor">${title}</span></div>
     <div class="story">${text}</div>
-    ${coda}
-    <div style="border:1px solid var(--mist); background:var(--cream); padding:12px 14px; margin:18px 0;">
-      <div style="font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:8px;">Crew Manifest \u2014 Corvid-9</div>
-      ${roster}
-      <div style="font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:10px; padding-top:8px; border-top:1px solid var(--mist);">
-        Integrity ${player.curInt}/${player.maxInt} &nbsp;\u00b7&nbsp;
-        ${SHIP.callsign}: ${player.bond>=5?'confidant':player.bond>=3?'friendly':'transport'} &nbsp;\u00b7&nbsp;
-        Legacy Unit: ${player.legacySpared?'stood down':'destroyed'}${player.spokeToLegacy?' (spoke to it)':''} &nbsp;\u00b7&nbsp;
-        Episodes watched on contract: ${player.watched}
-      </div>
-      <div style="font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:8px; padding-top:8px; border-top:1px solid var(--mist);">
-        Contracts run: <b style="color:var(--ink);">${Engine.runCount()}</b> &nbsp;\u00b7&nbsp;
-        Endings found: <b style="color:var(--ink);">${foundCount} / 5</b>
-      </div>
-    </div>
-    <button class="smallbtn primary-go" id="again">RUN A NEW CONTRACT \u2192</button>
+    <button class="smallbtn primary-go" id="again">RUN A NEW CONTRACT →</button>
   `);
-  document.getElementById('again').onclick = ()=> Engine.restart();
+  document.getElementById('again').onclick = restart;
+}
+
+function restart(){
+  player = {loadout:null, media:null, stats:{COMBAT:1,SENSORS:1,ANALYSIS:1,SOCIAL:1}, maxInt:44, curInt:44, medkit:2, trust:0, revealed:false};
+  logEl.innerHTML = '';
+  refreshStatus();
+  sceneHistory = [];
+  go(startBoot);
 }
 
 
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  const sync = () => { if (btn) btn.textContent = root.getAttribute('data-theme') === 'dark' ? '◐' : '◑'; };
+  sync();
+  if (btn) btn.addEventListener('click', () => {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    if (isDark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', isDark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
 
-/* ---------------- LAUNCH ---------------- */
-Engine.init({
-  id: 'offline-protocol',
-  title: 'OFFLINE PROTOCOL',
-  subtitle: 'Construct diagnostic log \u00b7 ascending die resolution',
-  accent: 'var(--sky)',
-  mode: 'over',
-  sheetLabel: 'SUBSYSTEMS',
-  lockBackOn: ['CONTACT','END'],
-  state: ()=>{
-    player = freshState();
-    makeCrew();
-    rollDCs();
-    rollRun();
-    return player;
-  },
-  status: statusFields,
-  sheet: sheetHTML,
-  start: startBoot
-});
+/* ---------------- BOOT ---------------- */
+refreshStatus();
+go(startBoot);
 </script>
-
-
-
 <footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest &middot; ❤️ Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <div style="display:flex;flex-direction:column;gap:0.4rem;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:#3a3a36;margin-bottom:0.2rem;">Writing</div>
+        <a href="https://brooksgroves.com/writing/">All Writing</a>
+        <a href="https://brooksgroves.com/blog/">Blog</a>
+        <a href="https://memoir.brooksgroves.com">Memoir</a>
+        <a href="https://brooksgroves.com/tags.html">Tags</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.4rem;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:#3a3a36;margin-bottom:0.2rem;">Projects</div>
+        <a href="https://bdgroves.github.io/PELE">PELE</a>
+        <a href="https://bdgroves.github.io/aftershock">AFTERSHOCK</a>
+        <a href="https://bdgroves.github.io/rainier-snowpack">Rainier Snowpack</a>
+        <a href="https://bdgroves.github.io/EDGAR">EDGAR</a>
+        <a href="https://github.com/bdgroves" target="_blank">All on GitHub</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.4rem;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:#3a3a36;margin-bottom:0.2rem;">Connect</div>
+        <a href="mailto:contact@brooksgroves.com">Email</a>
+        <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+        <a href="https://x.com/bdgroves" target="_blank">X / Twitter</a>
+        <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+        <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky</a>
+        <a href="https://www.strava.com/athletes/59148" target="_blank">Strava</a>
+        <a href="https://untappd.com/user/bdgroves" target="_blank">Untappd</a>
+        <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+        <a href="https://ko-fi.com/brooksgroves" target="_blank" style="color:var(--gold);">🍺 Tip Jar</a>
+      </div>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--stone);width:100%;padding-top:1.5rem;border-top:1px solid #2a2a26;">&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="https://brooksgroves.com/about.html" style="color:var(--stone);text-decoration:none;">About</a> &middot; <a href="https://brooksgroves.com/tags.html" style="color:var(--stone);text-decoration:none;">Tags</a></p>
+  </div>
+</footer>
+
+<footer>
   <div class="footer-inner">
     <div>
       <p class="footer-name">Brooks Groves</p>
@@ -995,5 +836,6 @@ Engine.init({
     </p>
   </div>
 </footer>
+
 </body>
 </html>

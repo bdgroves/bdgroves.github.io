@@ -3,38 +3,278 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kellath's Drift — Brooks Groves</title>
+<title>SIGNAL: KELLATH'S DRIFT</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/games/engine.css">
-<link rel="stylesheet" href="/css/site-footer.css">
+<style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; --sky:#2a4a6b;
+      --accent:var(--gold);
+    }
+    [data-theme="dark"] {
+      --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
+      --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
+      --white:#12100d; --rust:#cf6b52; --sage:#83a077; --sky:#6fa0cc;
+    }
+
+    *, *::before, *::after { box-sizing:border-box; }
+    html,body{ margin:0; padding:0; }
+    body{
+      background:var(--parchment); color:var(--ink);
+      font-family:'Libre Baskerville', Georgia, serif; font-size:16px; line-height:1.7;
+      min-height:100vh; display:flex; flex-direction:column; align-items:center;
+      padding:0;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0.5;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    }
+    .topline { width:100%; height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+    .sitebar { width:100%; border-bottom:2px solid var(--ink); background:var(--parchment); }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:740px; margin:0 auto; padding:0.75rem 1.25rem; }
+    .site-name { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:900; text-decoration:none; color:var(--ink); }
+    .sitenav { display:flex; gap:1.25rem; align-items:center; }
+    .sitenav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .sitenav a:hover { color:var(--rust); }
+    .theme-toggle { background:none; border:none; cursor:pointer; padding:0; font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--stone); line-height:1; }
+    .theme-toggle:hover { color:var(--gold); }
+
+    .console{ width:100%; max-width:740px; position:relative; padding:0 14px; margin-top:24px; }
+
+    header{
+      border:1px solid var(--mist); border-bottom:none;
+      background:var(--cream);
+      padding:16px 20px; display:flex; justify-content:space-between; align-items:flex-end;
+    }
+    header h1{
+      font-family:'Playfair Display', serif; font-weight:900; font-size:1.35rem;
+      letter-spacing:-0.01em; margin:0; color:var(--ink);
+    }
+    header .sub{ font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); letter-spacing:0.08em; margin-top:4px; text-transform:uppercase; }
+    .badge{
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:var(--white);
+      background:var(--accent); padding:3px 9px; border-radius:3px; white-space:nowrap; text-transform:uppercase;
+    }
+
+    .statusbar{
+      border:1px solid var(--mist); border-top:none; background:var(--cream);
+      padding:9px 20px; display:flex; gap:18px; flex-wrap:wrap;
+      font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.03em;
+    }
+    .statusbar b{ color:var(--accent); }
+    .int-val, .sta-val{ color:var(--sage) !important; }
+    .int-low, .sta-low{ color:var(--rust) !important; }
+
+    main{ border:1px solid var(--mist); background:var(--white); min-height:320px; padding:24px 22px; }
+
+    .story{ font-size:0.95rem; line-height:1.75; color:var(--ink); margin-bottom:20px; white-space:pre-line; }
+    .thought{
+      color:var(--stone); font-style:italic; display:block; margin:10px 0;
+      padding-left:14px; border-left:2px solid var(--mist); font-size:0.9rem;
+    }
+    .thought::before{ content:"// "; color:var(--accent); font-style:normal; }
+    .flavor{ color:var(--accent); font-style:italic; }
+    .danger{ color:var(--rust); font-style:italic; }
+
+    .choices{ display:flex; flex-direction:column; gap:10px; }
+    button.choice{
+      font-family:'Libre Baskerville', Georgia, serif; text-align:left; background:var(--cream);
+      color:var(--ink); border:1px solid var(--mist); border-left:3px solid var(--accent);
+      padding:12px 14px; font-size:0.88rem; cursor:pointer; transition:all .15s ease;
+    }
+    button.choice:hover{ background:var(--white); border-left-color:var(--rust); transform:translateX(2px); }
+    button.choice .tag{
+      font-family:'DM Mono',monospace; color:var(--accent); font-size:0.58rem; letter-spacing:0.08em;
+      display:block; margin-bottom:4px; text-transform:uppercase;
+    }
+
+    .diceRig{ display:none; margin:18px 0 22px; border:1px solid var(--mist); background:var(--cream); padding:16px; }
+    .diceRig.show{ display:block; }
+    .diceRig .label{ font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); margin-bottom:10px; text-transform:uppercase; }
+    .diceRow{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+    .d10, .dieShape{
+      width:56px; height:60px; background:var(--white); border:1px solid var(--accent);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      font-family:'Playfair Display', serif; font-weight:800; color:var(--accent);
+    }
+    .dieShape .facesize{ font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--stone); margin-bottom:-2px; }
+    .dieShape .facenum{ font-size:1.3rem; }
+    .d10 .facenum, .d10{ font-size:1.4rem; }
+    .d10.spin, .dieShape.spin{ animation:spin .4s steps(9) infinite; }
+    @keyframes spin{ 0%{color:var(--accent);} 50%{color:var(--rust);} 100%{color:var(--accent);} }
+    .diceMeta{ font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--stone); line-height:1.6; }
+    .diceMeta b{ color:var(--ink); }
+    .result-banner{
+      margin-top:12px; padding:8px 12px; font-family:'DM Mono',monospace; font-size:0.72rem;
+      letter-spacing:0.06em; font-weight:700; border:1px solid; display:none; text-transform:uppercase;
+    }
+    .result-banner.success{ display:block; color:var(--sage); border-color:var(--sage); background:rgba(74,92,69,0.06); }
+    .result-banner.fail{ display:block; color:var(--rust); border-color:var(--rust); background:rgba(139,58,42,0.06); }
+
+    footer.log{
+      border:1px solid var(--mist); border-top:none; background:var(--cream);
+      padding:11px 20px; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone);
+      max-height:100px; overflow-y:auto;
+    }
+    footer.log div{ margin-bottom:4px; }
+    .l-good{ color:var(--sage); } .l-bad{ color:var(--rust); } .l-info{ color:var(--accent); }
+
+    .navbar{ border:1px solid var(--mist); border-top:none; background:var(--cream); display:flex; gap:1px; }
+    .navbtn{
+      flex:1; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.06em;
+      text-align:center; padding:11px 8px; background:var(--white); color:var(--stone);
+      border:none; border-right:1px solid var(--mist); cursor:pointer; text-decoration:none;
+      display:flex; align-items:center; justify-content:center; text-transform:uppercase;
+    }
+    .navbtn:last-child{ border-right:none; }
+    .navbtn:hover:not(:disabled){ color:var(--rust); background:var(--cream); }
+    .navbtn:disabled{ opacity:0.35; cursor:not-allowed; }
+    .navbtn.navhome{ color:var(--accent); }
+    .navbtn.navhome:hover{ color:var(--rust); }
+
+    .gridPairs, .raceGrid, .loadoutGrid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0 20px; }
+    .loadoutGrid{ grid-template-columns:1fr; }
+    .statPair{ border:1px solid var(--mist); background:var(--cream); padding:10px 12px; }
+    .statPair .pname{ font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.06em; text-transform:uppercase; }
+    .statPair .pval{ font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--accent); margin-top:2px; }
+
+    .raceCard, .loadoutCard{
+      border:1px solid var(--mist); background:var(--cream); border-left:3px solid var(--accent);
+      padding:12px; cursor:pointer; font-size:0.85rem;
+    }
+    .raceCard:hover, .loadoutCard:hover{ background:var(--white); border-left-color:var(--rust); }
+    .raceCard.selected, .loadoutCard.selected{ border-left-color:var(--sage); background:var(--white); }
+    .rname, .lname{ font-family:'Playfair Display',serif; font-size:0.9rem; color:var(--ink); font-weight:700; margin-bottom:4px; }
+    .rdesc, .ldesc{ color:var(--stone); line-height:1.5; font-size:0.78rem; }
+
+    .diePrimer{ border:1px solid var(--mist); background:var(--cream); padding:14px 16px; margin:16px 0; font-family:'DM Mono',monospace; font-size:0.72rem; line-height:1.8; color:var(--stone); }
+    .diePrimer b{ color:var(--accent); }
+
+    .smallbtn{
+      font-family:'DM Mono',monospace; background:transparent; color:var(--accent); border:1px solid var(--accent);
+      padding:7px 15px; font-size:0.68rem; letter-spacing:0.06em; cursor:pointer; margin-right:8px; text-transform:uppercase;
+    }
+    .smallbtn:hover:not(:disabled){ background:var(--accent); color:var(--white); }
+    .smallbtn:disabled{ opacity:0.35; cursor:not-allowed; }
+    .primary-go{ background:var(--accent); color:var(--white); border:1px solid var(--accent); font-weight:700; }
+    .primary-go:hover{ background:var(--rust); border-color:var(--rust); color:var(--white); }
+    
+    /* ---- shared site footer ---- */
+    footer.site-footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,4vw,3rem) clamp(1rem,4vw,3rem); margin-top:3rem; width:100%; font-family:'Libre Baskerville',Georgia,serif; }
+    [data-theme="dark"] footer.site-footer { background:#0f0d0a; }
+    .site-footer .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .site-footer .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .site-footer .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .site-footer .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .site-footer .footer-tagline a:hover { color:var(--gold); }
+    .site-footer .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .site-footer .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .site-footer .footer-links a:hover { color:var(--gold); }
+    .site-footer p { margin:0; }
+    </style>
 <script>
   (function(){
     try {
       var saved = localStorage.getItem('bg_theme');
-      var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (saved === 'dark' || (!saved && dark)) document.documentElement.setAttribute('data-theme','dark');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
     } catch(e) {}
   })();
 </script>
+  <link rel="stylesheet" href="/css/site-footer.css">
 </head>
 <body id="top">
-<div id="game"></div>
+<div class="topline"></div>
+<div class="sitebar">
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <div class="sitenav">
+      <a href="/games.html">Games</a>
+      <a href="/">Home</a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+    </div>
+  </div>
+</div>
+<div class="console">
+  <header>
+    <div>
+      <h1>SIGNAL: KELLATH'S DRIFT</h1>
+      <div class="sub">FRONTIER SCOUT PROTOCOL // PERCENTILE RESOLUTION SYSTEM</div>
+    </div>
+    <div class="badge" id="sceneBadge">CHARGEN</div>
+  </header>
+  <div class="statusbar" id="statusbar">
+    <span>CHARACTER: <b id="stName">—</b></span>
+    <span>STAMINA: <b id="stSTA">—</b></span>
+    <span>SPEC: <b id="stSkill">—</b></span>
+  </div>
+  <main id="main"></main>
+  <footer class="log" id="log"></footer>
+  <div class="navbar">
+    <button class="navbtn" id="navRestart" onclick="if(confirm('Restart from the beginning?')) restart();">⟲ RESTART</button>
+    <button class="navbtn" id="navBack" onclick="goBack();" disabled>← BACK</button>
+    <a class="navbtn navhome" href="https://brooksgroves.com">🏠 HOME</a>
+  </div>
+</div>
 
-<script src="/games/engine.js"></script>
 <script>
+/* ---------------- CORE PERCENTILE ENGINE ---------------- */
+function rollD10(){ return Math.floor(Math.random()*10); } // 0-9
+function rollPercentile(){
+  const tens = rollD10();
+  const ones = rollD10();
+  let value = tens*10 + ones;
+  if(value === 0) value = 100;
+  return {tens, ones, value};
+}
+
+/* ---------------- NAVIGATION / HISTORY ---------------- */
+let sceneHistory = [];
+function go(fn){
+  sceneHistory.push(fn);
+  fn();
+  updateNavBar();
+}
+function goBack(){
+  if(sceneHistory.length <= 1) return;
+  sceneHistory.pop();
+  const prev = sceneHistory[sceneHistory.length - 1];
+  prev();
+  updateNavBar();
+}
+function updateNavBar(){
+  const backBtn = document.getElementById('navBack');
+  if(!backBtn) return;
+  const badge = document.getElementById('sceneBadge').textContent;
+  const lockedOut = badge === 'COMBAT' || badge === 'RESCUED' || badge === 'MISSION LOST';
+  backBtn.disabled = sceneHistory.length <= 1 || lockedOut;
+}
+
+let logEl = document.getElementById('log');
+function logLine(text, cls){
+  const d = document.createElement('div');
+  if(cls) d.className = cls;
+  d.textContent = text;
+  logEl.appendChild(d);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
 /* ---------------- PLAYER STATE ---------------- */
-function freshState(){ return {
+let player = {
   race: null,
   stats: {}, // STR, STA, DEX, RS, INT, LOG, PER, LDR
   skill: null, // 'military' | 'technological' | 'biosocial'
   maxSTA: 0,
   curSTA: 0,
   hasGear: false
-}; }
-let player;
+};
 
 const RACES = {
   human: {
@@ -67,25 +307,29 @@ function statTarget(statName, opts){
   base = opts.full ? base : Math.floor(base/2);
   let bonus = opts.skillBonus && player.skill === opts.skillBonus ? 15 : 0;
   let gearBonus = opts.gear && player.hasGear ? 10 : 0;
-  const drift = (typeof RUN !== 'undefined' && RUN.drift) ? RUN.drift : 0;
-  return Math.max(5, base + bonus + gearBonus + drift);
+  return Math.max(5, base + bonus + gearBonus);
 }
 
-function statusFields(){
-  if(!player || !player.race) return [['CHARACTER','\u2014'],['STAMINA','\u2014'],['SPEC','\u2014']];
-  const cls = player.curSTA <= player.maxSTA*0.3 ? 'sta-low' : 'sta-val';
-  return [
-    ['CHARACTER', RACES[player.race].name],
-    ['STAMINA', player.curSTA + ' / ' + player.maxSTA, cls],
-    ['SPEC', player.skill ? player.skill.toUpperCase() : '\u2014']
-  ];
+function renderMain(html){
+  document.getElementById('main').innerHTML = html;
 }
-
+function setBadge(t){ document.getElementById('sceneBadge').textContent = t; }
+function refreshStatus(){
+  document.getElementById('stName').textContent = player.race ? RACES[player.race].name : '—';
+  document.getElementById('stSkill').textContent = player.skill ? player.skill.toUpperCase() : '—';
+  const staEl = document.getElementById('stSTA');
+  if(player.maxSTA){
+    staEl.textContent = player.curSTA + ' / ' + player.maxSTA;
+    staEl.className = player.curSTA <= player.maxSTA*0.3 ? 'sta-low' : 'sta-val';
+  } else {
+    staEl.textContent = '—';
+  }
+}
 
 /* ---------------- CHARGEN FLOW ---------------- */
 function startChargen(){
-  Engine.badge('CHARGEN');
-  Engine.render(`
+  setBadge('CHARGEN');
+  renderMain(`
     <div class="story">Escape pod telemetry reads static. You are the sole scout aboard a survey skiff that just went down hard on <span class="flavor">Kellath's Drift</span>, an uncharted moon on the frontier edge. Before you build a body to survive it — choose your stock.</div>
     <div class="raceGrid" id="raceGrid"></div>
     <button class="smallbtn primary-go" id="raceNext" disabled>CONFIRM STOCK →</button>
@@ -104,14 +348,14 @@ function startChargen(){
     };
     grid.appendChild(card);
   });
-  document.getElementById('raceNext').onclick = ()=>Engine.go(rollStats);
+  document.getElementById('raceNext').onclick = ()=>go(rollStats);
 }
 
 function rollStats(){
   const mods = RACES[player.race].mods || {};
   const pairs = [['STR','STA'],['DEX','RS'],['INT','LOG'],['PER','LDR']];
   pairs.forEach(pair=>{
-    let base = 30 + Engine.d10()*4 + Engine.d10(); // ~30-69 spread
+    let base = 30 + rollD10()*4 + rollD10(); // ~30-69 spread
     pair.forEach(stat=>{
       player.stats[stat] = Math.min(90, Math.max(15, base + (mods[stat]||0)));
     });
@@ -120,8 +364,8 @@ function rollStats(){
 }
 
 function showStats(){
-  Engine.badge('CHARGEN');
-  Engine.log('Ability scores generated for ' + RACES[player.race].name + '.', 'l-info');
+  setBadge('CHARGEN');
+  logLine('Ability scores generated for ' + RACES[player.race].name + '.', 'l-info');
   const pairs = [['STR','STA'],['DEX','RS'],['INT','LOG'],['PER','LDR']];
   let gridHtml = '';
   pairs.forEach(pair=>{
@@ -129,14 +373,14 @@ function showStats(){
       gridHtml += `<div class="statPair"><div class="pname">${statFull(stat)}</div><div class="pval">${player.stats[stat]}</div></div>`;
     });
   });
-  Engine.render(`
+  renderMain(`
     <div class="story">Your physiology resolves. These numbers are your baseline capability out of 100.</div>
     <div class="gridPairs">${gridHtml}</div>
     <button class="smallbtn" id="reroll">REROLL</button>
     <button class="smallbtn primary-go" id="toSkill">CONFIRM →</button>
   `);
   document.getElementById('reroll').onclick = rollStats;
-  document.getElementById('toSkill').onclick = ()=>Engine.go(chooseSkill);
+  document.getElementById('toSkill').onclick = ()=>go(chooseSkill);
 }
 
 function statFull(s){
@@ -145,8 +389,8 @@ function statFull(s){
 }
 
 function chooseSkill(){
-  Engine.badge('CHARGEN');
-  Engine.render(`
+  setBadge('CHARGEN');
+  renderMain(`
     <div class="story">One area of training runs deeper than the rest. Pick your Primary Skill Area — it grants +15 to checks in its wheelhouse.</div>
     <div class="choices">
       <button class="choice" data-s="military"><span class="tag">MILITARY</span>Weapons, combat instinct, close-quarters survival.</button>
@@ -159,237 +403,238 @@ function chooseSkill(){
       player.skill = b.dataset.s;
       player.maxSTA = player.stats.STA;
       player.curSTA = player.maxSTA;
-      Engine.refreshStatus();
-      Engine.log('Specialization locked: ' + player.skill.toUpperCase() + '.', 'l-info');
-      Engine.render(`<div class="story">Character sealed. ${RACES[player.race].name}, STA ${player.maxSTA}, trained in ${player.skill}.<br><br>The skiff's hull ticks as it cools. Somewhere on this moon, a working relay tower is your only way home.</div>
+      refreshStatus();
+      logLine('Specialization locked: ' + player.skill.toUpperCase() + '.', 'l-info');
+      renderMain(`<div class="story">Character sealed. ${RACES[player.race].name}, STA ${player.maxSTA}, trained in ${player.skill}.<br><br>The skiff's hull ticks as it cools. Somewhere on this moon, a working relay tower is your only way home.</div>
       <button class="smallbtn primary-go" id="begin">BEGIN DESCENT →</button>`);
-      document.getElementById('begin').onclick = ()=>Engine.go(scene1);
+      document.getElementById('begin').onclick = ()=>go(scene1);
     };
   });
 }
 
-/* ---------------- RUN VARIATION ---------------- */
-function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-let RUN = {};
-function rollRun(){
-  RUN = {
-    // per-run difficulty drift, applied inside statTarget
-    drift: Math.floor(Math.random()*7) - 3,
-    salvage: pick([
-      {name:"a stun-charge sidearm and a coil of climbing line", short:"stun-charge sidearm"},
-      {name:"a cutting torch with three-quarters of a cell left and a length of cargo strap", short:"cutting torch"},
-      {name:"a shock-baton and a spool of monofilament cable", short:"shock-baton"}
-    ]),
-    chasm: pick([
-      {span:"a rusted service line", cross:"hand-over-hand", detail:"groaning in the wind"},
-      {span:"a collapsed conveyor gantry", cross:"along the spine", detail:"canted twenty degrees and shedding flakes of rust"},
-      {span:"a half-buried pipeline run", cross:"straddling the pipe", detail:"venting something cold from a seam near the middle"}
-    ]),
-    beast: pick([
-      {name:"ravik", desc:"a low, six-limbed shape with a plated head, tasting the air with a forked tongue", hp:28},
-      {name:"kessin", desc:"something long and segmented, half-coiled in the shade of a rock shelf, sensing by vibration", hp:31},
-      {name:"drell", desc:"a hunched quadruped with mineral growth crusting its back, grazing on lichen and territorial about it", hp:25}
-    ]),
-    tower: pick([
-      "half its housing sheared open by weather",
-      "guy-wires snapped on the windward side, leaning into its own shadow",
-      "its dish collapsed inward like a dropped bowl"
-    ])
-  };
-}
-rollRun();
+/* ---------------- DICE UI HELPER ---------------- */
+function runCheck(target, onDone, opts){
+  opts = opts || {};
+  setBadge('CHECK');
+  const rigId = 'rig-' + Math.random().toString(36).slice(2,7);
+  const extra = `
+    <div class="diceRig show" id="${rigId}">
+      <div class="label">${opts.label || 'SKILL CHECK'} — TARGET \u2264 ${target}</div>
+      <div class="diceRow">
+        <div class="d10 spin" id="${rigId}-t">0</div>
+        <div class="d10 spin" id="${rigId}-o">0</div>
+        <div class="diceMeta" id="${rigId}-meta">Rolling percentile dice&hellip;</div>
+      </div>
+      <div class="result-banner" id="${rigId}-banner"></div>
+      <div id="${rigId}-cont" style="margin-top:14px; display:none;">
+        <button class="smallbtn primary-go" id="${rigId}-contbtn">CONTINUE \u2192</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('main').insertAdjacentHTML('beforeend', extra);
 
-function tgt(statName, opts){
-  return Engine.odds({target: statTarget(statName, opts)});
-}
+  const tEl = document.getElementById(rigId+'-t');
+  const oEl = document.getElementById(rigId+'-o');
+  const metaEl = document.getElementById(rigId+'-meta');
+  const r = rollPercentile();
 
-/* ---------------- CHARACTER SHEET ---------------- */
-function sheetHTML(){
-  if(!player || !player.race) return '';
-  const order = ['STR','STA','DEX','RS','INT','LOG','PER','LDR'];
-  let grid = '';
-  order.forEach(s=>{
-    const v = player.stats[s];
-    grid += '<div class="sheetStat"><div class="sn">' + statFull(s) + '</div>' +
-            '<div class="sv">' + v + '</div>' +
-            '<div class="sh">half: ' + Math.floor(v/2) + '</div></div>';
-  });
-  return '<div class="sheetGrid">' + grid + '</div>' +
-    '<div class="sheetMeta">' +
-      'Stock: <b>' + RACES[player.race].name + '</b> &nbsp;\u00b7&nbsp; ' +
-      'Specialization: <b>' + (player.skill ? player.skill.toUpperCase() : '\u2014') + '</b> (+15 in area)<br>' +
-      'Gear: <b>' + (player.hasGear ? RUN.salvage.name + ' (+10 where useful)' : 'none recovered') + '</b><br>' +
-      'Run drift: <b>' + (RUN.drift>=0?'+':'') + RUN.drift + '</b> applied to every target<br>' +
-      'Stamina: <b>' + player.curSTA + ' / ' + player.maxSTA + '</b>' +
-    '</div>';
+  // Tumble both dice through visible random faces.
+  let ticks = 0;
+  const tumble = setInterval(()=>{
+    tEl.textContent = rollD10();
+    oEl.textContent = rollD10();
+    ticks++;
+  }, 80);
+
+  // Tens die lands first.
+  setTimeout(()=>{
+    clearInterval(tumble);
+    tEl.classList.remove('spin');
+    tEl.textContent = r.tens;
+    metaEl.innerHTML = 'Tens die: <b>' + r.tens + '</b> &nbsp;\u00b7&nbsp; ones die still rolling&hellip;';
+    // Ones die keeps tumbling on its own.
+    const tumble2 = setInterval(()=>{ oEl.textContent = rollD10(); }, 80);
+
+    setTimeout(()=>{
+      clearInterval(tumble2);
+      oEl.classList.remove('spin');
+      oEl.textContent = r.ones;
+      const success = r.value <= target;
+      metaEl.innerHTML = 'Read as <b>' + r.value + '</b> against a target of <b>' + target + '</b>.';
+      const banner = document.getElementById(rigId+'-banner');
+      banner.textContent = success ? 'SUCCESS' : 'FAILURE';
+      banner.className = 'result-banner ' + (success ? 'success' : 'fail');
+      logLine((opts.label||'Check') + ': rolled ' + r.value + ' (need \u2264' + target + ') \u2192 ' + (success?'SUCCESS':'FAILURE'), success ? 'l-good':'l-bad');
+
+      const cont = document.getElementById(rigId+'-cont');
+      cont.style.display = 'block';
+      document.getElementById(rigId+'-contbtn').onclick = ()=> onDone(success, r);
+    }, 1100);
+  }, 1300);
 }
 
 /* ---------------- STORY SCENES ---------------- */
 function scene1(){
-  Engine.badge('SCENE 1');
-  Engine.render(`
+  setBadge('SCENE 1');
+  renderMain(`
     <div class="story">The skiff is a smoking wedge in red scrub. Your suit display shows a relay tower blinking eleven kilometers north across broken canyon country. Life support has maybe two days left in it.</div>
     <div class="choices">
-      <button class="choice" id="c1a"><span class="tag">SEARCH THE WRECK</span>Dig through the crushed cargo bay for anything useful before you go. (LOGIC check)${tgt('LOG',{skillBonus:'technological'})}</button>
+      <button class="choice" id="c1a"><span class="tag">SEARCH THE WRECK</span>Dig through the crushed cargo bay for anything useful before you go. (LOGIC check)</button>
       <button class="choice" id="c1b"><span class="tag">MOVE OUT NOW</span>Don't waste time. Head straight for the ridge line.</button>
     </div>
   `);
   document.getElementById('c1a').onclick = ()=>{
     const target = statTarget('LOG', {skillBonus:'technological'});
-    Engine.check({target:target, label:'Search wreckage (LOGIC)'}, (success)=>{
+    runCheck(target, (success)=>{
       if(success){
         player.hasGear = true;
-        Engine.render(`<div class="story">Under a buckled panel you find ${RUN.salvage.name}, still functional. <span class="flavor">(+10 to future checks where gear helps.)</span></div>
+        renderMain(`<div class="story">Under a buckled panel you find a intact stun-charge sidearm and a coil of climbing line, both still functional. <span class="flavor">(+10 to future checks where gear helps.)</span></div>
         <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       } else {
-        Engine.render(`<div class="story">The cargo bay is slag. Ten minutes lost for nothing but a scorched glove.</div>
+        renderMain(`<div class="story">The cargo bay is slag. Ten minutes lost for nothing but a scorched glove.</div>
         <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       }
-      document.getElementById('n').onclick = ()=>Engine.go(scene2);
-    });
+      document.getElementById('n').onclick = ()=>go(scene2);
+    }, {label:'Search wreckage (LOGIC)'});
   };
-  document.getElementById('c1b').onclick = ()=>Engine.go(scene2);
+  document.getElementById('c1b').onclick = ()=>go(scene2);
 }
 
 function scene2(){
-  Engine.badge('SCENE 2');
-  Engine.render(`
-    <div class="story">A chasm splits the trail — sixty meters down to jagged rock. ${RUN.chasm.span.charAt(0).toUpperCase() + RUN.chasm.span.slice(1)} spans it, ${RUN.chasm.detail}.</div>
+  setBadge('SCENE 2');
+  renderMain(`
+    <div class="story">A chasm splits the trail — sixty meters down to jagged rock. A rusted service line spans it, groaning in the wind.</div>
     <div class="choices">
-      <button class="choice" id="c2a"><span class="tag">CROSS IT</span>Fast but risky. (REACTION SPEED check)${tgt('RS',{gear:true})}</button>
-      <button class="choice" id="c2b"><span class="tag">CLIMB DOWN AND AROUND</span>Slower, safer, costs you daylight. (STRENGTH check, lower stakes)${tgt('STR',{full:true})}</button>
+      <button class="choice" id="c2a"><span class="tag">CROSS THE LINE</span>Fast but risky. (REACTION SPEED check)</button>
+      <button class="choice" id="c2b"><span class="tag">CLIMB DOWN AND AROUND</span>Slower, safer, costs you daylight. (STRENGTH check, lower stakes)</button>
     </div>
   `);
   document.getElementById('c2a').onclick = ()=>{
     const target = statTarget('RS', {gear:true});
-    Engine.check({target:target, label:'Cross the line (REACTION SPEED)'}, (success)=>{
+    runCheck(target, (success)=>{
       if(!success){
-        const dmg = 5 + Engine.d10();
+        const dmg = 5 + rollD10();
         player.curSTA -= dmg;
-        Engine.sfxHurt();
-        Engine.refreshStatus();
-        Engine.log('Fall damage: -' + dmg + ' STA', 'l-bad');
-        Engine.render(`<div class="story">Your foot skids. You catch ${RUN.chasm.span} hard, wrenching your side against it — <span class="flavor">-${dmg} STA.</span></div>
+        refreshStatus();
+        logLine('Fall damage: -' + dmg + ' STA', 'l-bad');
+        renderMain(`<div class="story">Your foot skids on rusted grating. You catch the line hard, wrenching your side against the cable — <span class="flavor">-${dmg} STA.</span></div>
         <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       } else {
-        Engine.render(`<div class="story">You cross ${RUN.chasm.cross} in under a minute, boots finding every solid purchase.</div>
+        renderMain(`<div class="story">You cross hand-over-hand in under a minute, boots finding every solid link.</div>
         <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       }
-      document.getElementById('n').onclick = ()=>Engine.go(scene3);
-    });
+      document.getElementById('n').onclick = ()=>go(scene3);
+    }, {label:'Cross the line (REACTION SPEED)'});
   };
   document.getElementById('c2b').onclick = ()=>{
     const target = statTarget('STR', {full:true});
-    Engine.check({target:target, label:'Climb route (STRENGTH)'}, (success)=>{
+    runCheck(target, (success)=>{
       if(!success){
-        const dmg = 3 + Engine.d10();
+        const dmg = 3 + rollD10();
         player.curSTA -= dmg;
-        Engine.sfxHurt();
-        Engine.refreshStatus();
-        Engine.log('Scramble mishap: -' + dmg + ' STA', 'l-bad');
-        Engine.render(`<div class="story">The descent is rougher than it looked. You slide the last few meters — <span class="flavor">-${dmg} STA.</span></div>
+        refreshStatus();
+        logLine('Scramble mishap: -' + dmg + ' STA', 'l-bad');
+        renderMain(`<div class="story">The descent is rougher than it looked. You slide the last few meters — <span class="flavor">-${dmg} STA.</span></div>
         <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       } else {
-        Engine.render(`<div class="story">Slow going, but you make the far rim without a scratch. The sun's lower now.</div>
+        renderMain(`<div class="story">Slow going, but you make the far rim without a scratch. The sun's lower now.</div>
         <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
       }
-      document.getElementById('n').onclick = ()=>Engine.go(scene3);
-    });
+      document.getElementById('n').onclick = ()=>go(scene3);
+    }, {label:'Climb route (STRENGTH)'});
   };
 }
 
 function scene3(){
-  Engine.badge('SCENE 3');
-  Engine.render(`
-    <div class="story">Something big shifts in the red scrub ahead — ${RUN.beast.desc}. A <span class="flavor">${RUN.beast.name}</span>, territorial and fast. It hasn't spotted you yet.</div>
+  setBadge('SCENE 3');
+  renderMain(`
+    <div class="story">Something big shifts in the red scrub ahead — a low, six-limbed shape with a plated head, tasting the air with a forked tongue. A <span class="flavor">ravik</span>, territorial and fast. It hasn't spotted you yet.</div>
     <div class="choices">
-      <button class="choice" id="c3a"><span class="tag">STAY LOW, SLIP PAST</span>Move quiet through the scrub. (REACTION SPEED check)${tgt('RS',{})}</button>
+      <button class="choice" id="c3a"><span class="tag">STAY LOW, SLIP PAST</span>Move quiet through the scrub. (REACTION SPEED check)</button>
       <button class="choice" id="c3b"><span class="tag">STAND AND FIGHT</span>Draw whatever you have and engage.</button>
     </div>
   `);
   document.getElementById('c3a').onclick = ()=>{
     const target = statTarget('RS', {});
-    Engine.check({target:target, label:'Stealth (REACTION SPEED)'}, (success)=>{
+    runCheck(target, (success)=>{
       if(success){
-        Engine.render(`<div class="story">You thread between the rocks. The ${RUN.beast.name}'s head swings toward a lizard skittering the other way, and you're past.</div>
+        renderMain(`<div class="story">You thread between the rocks. The ravik's head swings toward a lizard skittering the other way, and you're past.</div>
         <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
-        document.getElementById('n').onclick = ()=>Engine.go(scene4);
+        document.getElementById('n').onclick = ()=>go(scene4);
       } else {
-        Engine.log('Stealth failed — the ' + RUN.beast.name + ' has your scent.', 'l-bad');
-        Engine.render(`<div class="story">A branch snaps under your boot. The ${RUN.beast.name}'s head snaps around and it charges.</div>
+        logLine('Stealth failed — the ravik has your scent.', 'l-bad');
+        renderMain(`<div class="story">A branch snaps under your boot. The ravik's head snaps around and it charges.</div>
         <button class="smallbtn primary-go" id="n">BRACE FOR IMPACT →</button>`);
-        document.getElementById('n').onclick = ()=>Engine.go(startCombat);
+        document.getElementById('n').onclick = ()=>go(startCombat);
       }
-    });
+    }, {label:'Stealth (REACTION SPEED)'});
   };
-  document.getElementById('c3b').onclick = ()=>Engine.go(startCombat);
+  document.getElementById('c3b').onclick = ()=>go(startCombat);
 }
 
 /* ---------------- COMBAT ---------------- */
 let creature = {name:'RAVIK', hp:28, maxHp:28};
 
 function startCombat(){
-  Engine.badge('COMBAT');
-  creature = {name:RUN.beast.name.toUpperCase(), hp:RUN.beast.hp, maxHp:RUN.beast.hp};
-  Engine.render(`<div class="story">The ${RUN.beast.name} closes fast, claws scraping rock. <span class="flavor">Combat begins.</span></div>
+  setBadge('COMBAT');
+  creature = {name:'RAVIK', hp:28, maxHp:28};
+  renderMain(`<div class="story">The ravik closes fast, claws scraping rock. <span class="flavor">Combat begins.</span></div>
   <div id="combatBody"></div>`);
   combatRound();
 }
 
 function combatRound(){
-  if(player.curSTA <= 0){ return Engine.go(()=>endGame(false, 'wounded')); }
-  if(creature.hp <= 0){ return Engine.go(scene4); }
-  Engine.clearRolls();
+  if(player.curSTA <= 0){ return go(()=>endGame(false, 'wounded')); }
+  if(creature.hp <= 0){ return go(scene4); }
   document.getElementById('combatBody').innerHTML = `
     <div class="gridPairs">
-      <div class="statPair"><div class="pname">${creature.name} HP</div><div class="pval">${creature.hp} / ${creature.maxHp}</div></div>
+      <div class="statPair"><div class="pname">RAVIK HP</div><div class="pval">${creature.hp} / ${creature.maxHp}</div></div>
       <div class="statPair"><div class="pname">YOUR STA</div><div class="pval">${player.curSTA} / ${player.maxSTA}</div></div>
     </div>
     <div class="choices">
-      <button class="choice" id="atk"><span class="tag">ATTACK</span>${player.hasGear ? 'Bring up the ' + RUN.salvage.short + '.' : 'Swing whatever you can grab.'} (DEXTERITY check)${tgt('DEX',{skillBonus:'military',gear:true})}</button>
+      <button class="choice" id="atk"><span class="tag">ATTACK</span>${player.hasGear ? 'Fire the stun-charge sidearm.' : 'Swing whatever you can grab.'} (DEXTERITY check)</button>
     </div>
   `;
   document.getElementById('atk').onclick = ()=>{
     const target = statTarget('DEX', {skillBonus:'military', gear:true});
-    Engine.check({target:target, label:'Attack roll (DEXTERITY)'}, (success)=>{
+    runCheck(target, (success)=>{
       if(success){
-        const dmg = 6 + Engine.d10() + (player.hasGear?4:0);
+        const dmg = 6 + rollD10() + (player.hasGear?4:0);
         creature.hp -= dmg;
-        Engine.log('You hit the ' + RUN.beast.name + ' for ' + dmg + ' damage.', 'l-good');
+        logLine('You hit the ravik for ' + dmg + ' damage.', 'l-good');
         afterPlayerAction();
       } else {
-        Engine.log('Your attack goes wide.', 'l-bad');
+        logLine('Your attack goes wide.', 'l-bad');
         afterPlayerAction();
       }
-    });
+    }, {label:'Attack roll (DEXTERITY)'});
   };
 }
 
 function afterPlayerAction(){
-  Engine.later(()=>{
+  setTimeout(()=>{
     if(creature.hp <= 0){
-      Engine.render(`<div class="story">The ${RUN.beast.name} shudders, buckles, and stops moving, cracking against the stone — dead still.</div>
+      renderMain(`<div class="story">The ravik shudders, buckles, and stops moving. Its plated head cracks against the stone — dead still.</div>
       <button class="smallbtn primary-go" id="n">MOVE ON →</button>`);
-      document.getElementById('n').onclick = ()=>Engine.go(scene4);
+      document.getElementById('n').onclick = ()=>go(scene4);
       return;
     }
     // creature attacks back
     const creatureTarget = 45;
-    const r = Engine.percentile();
+    const r = rollPercentile();
     const hit = r.value <= creatureTarget;
     if(hit){
-      const dmg = 4 + Engine.d10();
+      const dmg = 4 + rollD10();
       player.curSTA -= dmg;
-      Engine.sfxHurt();
-      Engine.refreshStatus();
-      Engine.log('The ' + RUN.beast.name + ' claws you for ' + dmg + ' damage.', 'l-bad');
+      refreshStatus();
+      logLine('Ravik claws you for ' + dmg + ' damage.', 'l-bad');
     } else {
-      Engine.log('The ' + RUN.beast.name + ' lunges and misses.', 'l-info');
+      logLine('The ravik lunges and misses.', 'l-info');
     }
     if(player.curSTA <= 0){
-      Engine.render(`<div class="story">Your legs give out. The last thing you see is the ${RUN.beast.name}'s shadow falling over you...</div>
+      renderMain(`<div class="story">Your legs give out. The last thing you see is the ravik's shadow falling over you...</div>
       <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
-      document.getElementById('n').onclick = ()=>Engine.go(()=>endGame(false,'wounded'));
+      document.getElementById('n').onclick = ()=>go(()=>endGame(false,'wounded'));
       return;
     }
     combatRound();
@@ -398,37 +643,36 @@ function afterPlayerAction(){
 
 /* ---------------- FINAL SCENE ---------------- */
 function scene4(){
-  Engine.badge('SCENE 4');
-  Engine.render(`
-    <div class="story">The relay tower leans against the sky, ${RUN.tower}. Its console still flickers with a thread of power — enough for one clean transmission, if you can route it correctly.</div>
+  setBadge('SCENE 4');
+  renderMain(`
+    <div class="story">The relay tower leans against the sky, half its housing sheared open by weather. Its console still flickers with a thread of power — enough for one clean transmission, if you can route it correctly.</div>
     <div class="choices">
-      <button class="choice" id="c4a"><span class="tag">RE-ROUTE THE CONSOLE</span>Careful, methodical repair work. (LOGIC check)${tgt('LOG',{skillBonus:'technological',gear:true})}</button>
-      <button class="choice" id="c4b"><span class="tag">FORCE A RAW BROADCAST</span>Skip the repair, blast an unrouted signal and hope something hears it. (LEADERSHIP check, harder)${tgt('LDR',{skillBonus:'biosocial'})}</button>
+      <button class="choice" id="c4a"><span class="tag">RE-ROUTE THE CONSOLE</span>Careful, methodical repair work. (LOGIC check)</button>
+      <button class="choice" id="c4b"><span class="tag">FORCE A RAW BROADCAST</span>Skip the repair, blast an unrouted signal and hope something hears it. (LEADERSHIP check, harder)</button>
     </div>
   `);
   document.getElementById('c4a').onclick = ()=>{
     const target = statTarget('LOG', {skillBonus:'technological', gear:true});
-    Engine.check({target:target, label:'Re-route console (second attempt)'}, (success)=>{
-      if(success) Engine.go(()=>endGame(true, 'clean'));
+    runCheck(target, (success)=>{
+      if(success) go(()=>endGame(true, 'clean'));
       else {
-        Engine.render(`<div class="story">The panel sparks and the thread of power gutters. One more try, if you're steady enough.</div>
+        renderMain(`<div class="story">The panel sparks and the thread of power gutters. One more try, if you're steady enough.</div>
         <button class="smallbtn primary-go" id="retry">TRY AGAIN →</button>`);
         document.getElementById('retry').onclick = ()=>{
           const t2 = statTarget('LOG', {skillBonus:'technological', gear:true}) - 10;
-          Engine.check({target:t2, label:'Re-route console (LOGIC)'}, (s2)=>{ Engine.go(()=>endGame(s2, s2 ? 'clean':'wounded')); });
+          runCheck(t2, (s2)=>{ go(()=>endGame(s2, s2 ? 'clean':'wounded')); }, {label:'Re-route console (second attempt)'});
         };
       }
-    });
+    }, {label:'Re-route console (LOGIC)'});
   };
   document.getElementById('c4b').onclick = ()=>{
     const target = statTarget('LDR', {skillBonus:'biosocial'});
-    Engine.check({target:target, label:'Force broadcast (LEADERSHIP)'}, (success)=>{ Engine.go(()=>endGame(success, success ? 'raw':'wounded')); });
+    runCheck(target, (success)=>{ go(()=>endGame(success, success ? 'raw':'wounded')); }, {label:'Force broadcast (LEADERSHIP)'});
   };
 }
 
 function endGame(won, mode){
-  Engine.recordEnding(won ? ('rescued-'+mode) : ('lost-'+mode), {won:won, mode:mode, sta:player.curSTA});
-  Engine.badge(won ? 'RESCUED' : 'MISSION LOST');
+  setBadge(won ? 'RESCUED' : 'MISSION LOST');
   let text;
   if(won && mode==='clean'){
     text = "The console locks onto a carrier band and holds. Somewhere in orbit, a relay satellite catches your signal and forwards it home. Twelve hours later, a rescue skiff's running lights cut through the dark. You made it — and in one piece.";
@@ -439,35 +683,77 @@ function endGame(won, mode){
   } else {
     text = "You're alive, but barely — STA critical, the tower's thread of power fading. You seal what you can and hunker down against the ridge, betting your beacon caught someone's attention before everything went dark.";
   }
-  Engine.render(`<div class="story">${text}</div>
+  renderMain(`<div class="story">${text}</div>
   <button class="smallbtn primary-go" id="again">RUN A NEW SCOUT →</button>`);
-  document.getElementById('again').onclick = ()=> Engine.restart();
+  document.getElementById('again').onclick = restart;
+}
+
+function restart(){
+  player = {race:null, stats:{}, skill:null, maxSTA:0, curSTA:0, hasGear:false};
+  logEl.innerHTML = '';
+  refreshStatus();
+  sceneHistory = [];
+  go(startChargen);
 }
 
 
-/* ---------------- LAUNCH ---------------- */
-Engine.init({
-  id: 'kellaths-drift',
-  title: "SIGNAL: KELLATH'S DRIFT",
-  subtitle: 'Frontier scout protocol \u00b7 percentile resolution',
-  accent: 'var(--gold)',
-  mode: 'under',
-  sheetLabel: 'CHARACTER SHEET',
-  lockBackOn: ['COMBAT','RESCUED','MISSION'],
-  state: ()=>{
-    player = freshState();
-    rollRun();
-    return player;
-  },
-  status: statusFields,
-  sheet: sheetHTML,
-  start: startChargen
-});
+(function(){
+  const root = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  const sync = () => { if (btn) btn.textContent = root.getAttribute('data-theme') === 'dark' ? '◐' : '◑'; };
+  sync();
+  if (btn) btn.addEventListener('click', () => {
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    if (isDark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', isDark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+
+/* ---------------- BOOT ---------------- */
+refreshStatus();
+go(startChargen);
 </script>
-
-
-
 <footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">🌲 Made in the Pacific Northwest &middot; ❤️ Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank">Tuolumne County, CA</a></p>
+    </div>
+    <div class="footer-links">
+      <div style="display:flex;flex-direction:column;gap:0.4rem;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:#3a3a36;margin-bottom:0.2rem;">Writing</div>
+        <a href="https://brooksgroves.com/writing/">All Writing</a>
+        <a href="https://brooksgroves.com/blog/">Blog</a>
+        <a href="https://memoir.brooksgroves.com">Memoir</a>
+        <a href="https://brooksgroves.com/tags.html">Tags</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.4rem;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:#3a3a36;margin-bottom:0.2rem;">Projects</div>
+        <a href="https://bdgroves.github.io/PELE">PELE</a>
+        <a href="https://bdgroves.github.io/aftershock">AFTERSHOCK</a>
+        <a href="https://bdgroves.github.io/rainier-snowpack">Rainier Snowpack</a>
+        <a href="https://bdgroves.github.io/EDGAR">EDGAR</a>
+        <a href="https://github.com/bdgroves" target="_blank">All on GitHub</a>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.4rem;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.16em;text-transform:uppercase;color:#3a3a36;margin-bottom:0.2rem;">Connect</div>
+        <a href="mailto:contact@brooksgroves.com">Email</a>
+        <a href="https://github.com/bdgroves" target="_blank">GitHub</a>
+        <a href="https://x.com/bdgroves" target="_blank">X / Twitter</a>
+        <a href="https://www.linkedin.com/in/brooks-groves-137219139/" target="_blank">LinkedIn</a>
+        <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank">Bluesky</a>
+        <a href="https://www.strava.com/athletes/59148" target="_blank">Strava</a>
+        <a href="https://untappd.com/user/bdgroves" target="_blank">Untappd</a>
+        <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads</a>
+        <a href="https://ko-fi.com/brooksgroves" target="_blank" style="color:var(--gold);">🍺 Tip Jar</a>
+      </div>
+    </div>
+    <p style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--stone);width:100%;padding-top:1.5rem;border-top:1px solid #2a2a26;">&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="https://brooksgroves.com/about.html" style="color:var(--stone);text-decoration:none;">About</a> &middot; <a href="https://brooksgroves.com/tags.html" style="color:var(--stone);text-decoration:none;">Tags</a></p>
+  </div>
+</footer>
+
+<footer>
   <div class="footer-inner">
     <div>
       <p class="footer-name">Brooks Groves</p>
@@ -522,5 +808,6 @@ Engine.init({
     </p>
   </div>
 </footer>
+
 </body>
 </html>
