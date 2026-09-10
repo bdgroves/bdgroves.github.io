@@ -523,6 +523,7 @@ function freshState(){ return {
   readPages:[],    // which sections of the logbook you have read
   trucks:0,        // times you have been watched
   carrierHits:0,   // nights spent on 1530
+  repairTries:0,   // how many times you have gone at it
   sick:0,          // from bad water
   bitten:false,
   dead:null,
@@ -611,9 +612,23 @@ function onMarkerClick(id){
 }
 
 /* ---------------- STATUS + SHEET ---------------- */
+function dryHoursLeft(){
+  // 9 effective hours, spent faster by heat and effort.
+  const T = temp();
+  const rate = 1 * (1 + Math.max(0, T - 24) / 22);
+  return Math.max(0, (9 - player.dry) / rate);
+}
 function statusFields(){
   if(!player) return [['WATER','\u2014'],['CLOCK','\u2014'],['CONDITION','\u2014']];
   const wcls = player.water <= 2 ? 'int-low' : 'int-val';
+  if(player.water <= 0){
+    const h = dryHoursLeft();
+    return [
+      ['NO WATER', h < 1 ? 'under an hour' : 'about ' + h.toFixed(0) + ' h left', 'int-low'],
+      ['DAY ' + player.day, clockStr(player.clock) + ' \u00b7 ' + temp() + '\u00b0C'],
+      ['CONDITION', condition().toUpperCase(), 'int-low']
+    ];
+  }
   return [
     ['WATER', player.water.toFixed(1) + ' L', wcls],
     ['DAY ' + player.day, clockStr(player.clock) + ' \u00b7 ' + temp() + '\u00b0C'],
@@ -1541,16 +1556,46 @@ function radioScene(){
 }
 
 /* ---------------- THE JEEP ---------------- */
+
+/* Tell the player what the arithmetic actually is, because a
+   10% chance costing two hours and a litre is a bad bet and the
+   game should not hide that behind an inviting button. */
+function repairMood(){
+  const F = FAULTS[RUN.fault];
+  const p = Math.max(0, Math.min(1, (10 - (F.dc - mod('MECHANICAL')) + 1) / 10));
+  const tries = player.repairTries;
+  if(tries === 0){
+    if(p >= 0.6) return 'You have the parts and you know the job. ';
+    if(p >= 0.3) return 'You could do this. It would help to have better tools. ';
+    return 'You are not really equipped for this, and you know it. ';
+  }
+  if(p < 0.3 && tries >= 2)
+    return 'Attempt ' + (tries+1) + '. At roughly ' + Math.round(p*100) + '% a go, this has already cost you ' +
+           (tries*2) + ' hours and about ' + (tries*1.2).toFixed(1) + ' litres. ';
+  if(tries >= 3)
+    return 'Attempt ' + (tries+1) + '. Nothing is different this time except how much less you have. ';
+  return 'Again. ';
+}
+
 function jeepScene(){
   Engine.badge('THE JEEP');
   const F = FAULTS[RUN.fault];
   const diag = player.diagnosed;
+  const dryWarn = player.water <= 0
+    ? '<div class="story"><span class="danger">You have no water and roughly ' +
+      (dryHoursLeft() < 1 ? 'under an hour' : dryHoursLeft().toFixed(0) + ' hours') +
+      ' of useful life. Two of those hours on this engine is a real fraction of what is left.</span></div>'
+    : (player.water < 2
+      ? '<div class="story"><span class="danger">Under two litres. Bench work in this heat costs about a litre an hour whether it succeeds or not.</span></div>'
+      : '');
   Engine.render(
     '<div class="hereNote">Hood up. Everything you own is in the back and none of it starts an engine.</div>' +
+    dryWarn +
     (diag ? '<div class="story">It is the <b>' + F.name + '</b>. ' + F.clue + '</div>' : '') +
     '<div class="choices">' +
       (!diag ? '<button class="choice" id="j1"><span class="tag">WORK OUT WHAT IS WRONG \u00b7 1 h</span>Systematically, in the heat, with the tools you have.' + odds(10,'MECHANICAL',8) + '</button>' : '') +
-      (diag && F.fixable && !player.fixed ? '<button class="choice" id="j2"><span class="tag">FIX IT \u00b7 2 h</span>' + F.name + '. You have a shot at this.' + odds(10,'MECHANICAL',F.dc) + '</button>' : '') +
+      (diag && F.fixable && !player.fixed ? '<button class="choice" id="j2"><span class="tag">FIX IT \u00b7 2 h \u00b7 attempt ' + (player.repairTries+1) + '</span>' +
+        F.name + '. ' + repairMood() + odds(10,'MECHANICAL',F.dc) + '</button>' : '') +
       (diag && !F.fixable ? '<button class="choice" id="j3"><span class="tag">TRY ANYWAY \u00b7 2 h</span>You already know how this ends. Two hours and some water to prove it.</button>' : '') +
       (player.fixed ? '<button class="choice" id="j4"><span class="tag">DRIVE OUT</span>Turn the key and go.</button>' : '') +
       '<button class="choice" id="j5"><span class="tag">THE RADIO \u00b7 1 h</span>Battery at ' + Math.round(player.battery) + '%. It is also what turns the starter.</button>' +
@@ -1577,6 +1622,7 @@ function jeepScene(){
   };
   if(B('j2')) B('j2').onclick = ()=>{
     advance(2,'rest');
+    player.repairTries += 1;
     if(checkDead()) return;
     Engine.check({die:10, mod:mod('MECHANICAL'), dc:F.dc, label:'Repair (MECHANICAL)'}, (ok)=>{
       if(ok){
@@ -1585,7 +1631,14 @@ function jeepScene(){
         Engine.log('Repair successful: ' + F.name, 'l-good');
         Engine.render('<div class="story">' + F.fix + '</div>' + Engine.contBtn());
       } else {
-        Engine.render('<div class="story">Two hours, a lot of sweat, and it still will not catch. You can try again. The water you spent is not coming back.</div>' + Engine.contBtn());
+        const p = Math.max(0, Math.min(1, (10 - (F.dc - mod('MECHANICAL')) + 1) / 10));
+        Engine.render('<div class="story">Two hours, a lot of sweat, and it still will not catch.</div>' +
+          (player.repairTries >= 3 && p < 0.35
+            ? '<div class="thought">You have now spent ' + (player.repairTries*2) + ' hours on this. At the rate you are managing it, ' +
+              'the expected cost of getting it running is more time and more water than you have. ' +
+              'Knowing when a job is beyond your tools is a skill and you are running out of room to practise it.</div>'
+            : '<div class="thought">You can try again. The water you spent is not coming back.</div>') +
+          Engine.contBtn());
       }
       Engine.wire(jeepScene);
     });
@@ -1623,8 +1676,10 @@ function arrive(){
   const cond = condition();
   const bodyLine =
     cond === 'critical' ? '<div class="story"><span class="danger">The water is gone.' +
-      (player.dry > 5 ? ' You have stopped sweating, which is the sign everyone misreads as improvement.'
-                      : ' Everything from here runs on a clock you cannot read.') + '</span></div>' :
+      (player.dry > 5 ? ' You have stopped sweating, which is the sign everyone misreads as improvement.' : '') +
+      ' At this temperature you have <b>' +
+      (dryHoursLeft() < 1 ? 'under an hour' : 'roughly ' + dryHoursLeft().toFixed(0) + ' hours') +
+      '</b> of useful life left, and every one of them spent working is worth less than one spent lying still in shade.</span></div>' :
     cond === 'bad'      ? '<div class="story"><span class="danger">Head pounding, mouth thick, and the light has gone hard at the edges.</span></div>' :
     cond === 'poor'     ? '<div class="story">Thirsty in the way that stops being a sensation and becomes a fact about you.</div>' :
     cond === 'worn'     ? '<div class="story">Feet complaining. Otherwise holding.</div>' : '';
