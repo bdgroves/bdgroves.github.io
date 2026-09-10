@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stay With the Vehicle — Brooks Groves</title>
+<title>Railroad Valley: Nine Litres — Brooks Groves</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -63,7 +63,7 @@
 <script src="/games/engine.js"></script>
 <script>
 /* ============================================================
-   STAY WITH THE VEHICLE
+   RAILROAD VALLEY: NINE LITRES
    Railroad Valley, Nye County, Nevada.
    Phase 1: terrain, movement, and the map. No survival systems
    wired in yet — this is the board before the rules.
@@ -280,8 +280,11 @@ function advance(h, activity){
   } else {
     player.feet = Math.max(0, player.feet - h * 1.4);
   }
-  // nobody starts looking on day one
-  if(player.day >= 2) player.searchHeat += h * (player.day >= 3 ? 1.6 : 0.7);
+  // Nobody starts looking on day one, and if nobody is expecting
+  // you, nobody starts looking at all.
+  if(player.day >= 2){
+    player.searchHeat += h * (player.day >= 3 ? 1.6 : 0.7) * RUN.expected.rate;
+  }
   Engine.refreshStatus();
 }
 
@@ -373,6 +376,32 @@ function vagueDistance(d){
 }
 
 
+
+/* ---------------- IS ANYBODY COMING? ----------------
+   The advice is "stay with the vehicle." The advice assumes a
+   search. A search assumes somebody noticed. That is the part
+   nobody puts on the poster, and it changes per trip.          */
+const EXPECTED = {
+  soon: {
+    key:'soon',
+    line:"You told your sister you would call Tuesday night. It is Sunday. She is the kind of person who calls the county when you do not.",
+    hint:"Somebody will miss you, and soon.",
+    rate:1.0
+  },
+  eventually: {
+    key:'eventually',
+    line:"You mentioned to the guy at the motel in Ely that you were headed down the valley. He nodded. He may or may not have been listening, and you are not on his register past tonight.",
+    hint:"Somebody might miss you. Eventually. Maybe.",
+    rate:0.35
+  },
+  nobody: {
+    key:'nobody',
+    line:"You did not tell anyone. Not because you are careless \u2014 because there was nobody to tell, and because it was going to be a day trip, and because it always has been before.",
+    hint:"Nobody knows you are out here.",
+    rate:0.0
+  }
+};
+
 /* ---------------- WHO YOU ARE ---------------- */
 const KITS = {
   wrench: {
@@ -433,6 +462,7 @@ let RUN = {};
 function rollRun(){
   RUN = {
     fault: Engine.pick(Object.keys(FAULTS)),
+    expected: EXPECTED[Engine.pick(['soon','soon','eventually','eventually','nobody','nobody'])],
     water: rollWater(),
     band:  Engine.pick([640, 1160, 720])
   };
@@ -461,6 +491,7 @@ function freshState(){ return {
   mylar:false,
   drank:{},        // sources already emptied
   read:{},         // sources you have assessed from a distance
+  note:false,      // did you say where you were going
   sick:0,          // from bad water
   bitten:false,
   dead:null,
@@ -575,6 +606,7 @@ function sheetHTML(){
     'Water <b>' + player.water.toFixed(1) + ' L</b> &nbsp; Heat strain <b>' + bar(player.core) + '</b> &nbsp; Feet <b>' + bar(player.feet) + '</b><br>' +
     'Drinking about <b>' + drinkRate('walk').toFixed(2) + ' L/h</b> walking, <b>' + drinkRate('shade').toFixed(2) + ' L/h</b> in shade, at ' + temp() + '\u00b0C<br>' +
     'Shade here: <b>' + shadeHere() + '</b> &nbsp;\u00b7&nbsp; Chance of being found: <b>' + rescueLabel() + '</b><br>' +
+    'Expecting you: <b>' + RUN.expected.hint + '</b>' + (player.note ? ' \u00b7 <b>note left</b>' : '') + '<br>' +
     (player.kit ? 'MECH <b>+' + player.stats.MECHANICAL + '</b> d10 &nbsp; FIELD <b>+' + player.stats.FIELDCRAFT +
       '</b> d12 &nbsp; END <b>+' + player.stats.ENDURANCE + '</b> d20 &nbsp; IMPROV <b>+' + player.stats.IMPROVISE + '</b> d8<br>' : '') +
     'Battery <b>' + Math.round(player.battery) + '%</b>' +
@@ -620,8 +652,10 @@ function rescueChancePerHour(){
     if(id === 'graded') return 0.055;
     return 0.010;                                   // two-tracks
   }
-  // Out in the country, essentially nobody.
-  return 0.0008 + Math.min(0.006, player.searchHeat * 0.00012);
+  // Out in the country, essentially nobody \u2014 unless a search is
+  // running and you told them which way you went.
+  const base = 0.0008 + Math.min(0.006, player.searchHeat * 0.00012);
+  return player.note ? base * 3.2 : base;
 }
 function rescueLabel(){
   const p = rescueChancePerHour();
@@ -669,6 +703,7 @@ function startTrip(){
     'The nearest pavement is somewhere north. You are not certain how far, because you turned off the graded road ' +
     'a long time ago and the odometer is not a map.</div>' +
     '<div class="thought">Nobody knows exactly where you are. That is the whole situation, stated plainly.</div>' +
+    '<div class="hereNote">' + RUN.expected.line + '</div>' +
     '<div class="story">Who came out here today?</div>' +
     '<div class="loadoutGrid" id="kitGrid"></div>' +
     '<button class="smallbtn primary-go" id="kitNext" disabled>GET OUT AND LOOK \u2192</button>'
@@ -955,6 +990,9 @@ function arrive(){
         (player.fixed ? 'It runs.' : player.diagnosed ? FAULTS[RUN.fault].name + ', diagnosed.'
                                                       : 'You have not worked out what is wrong yet.') + '</button>'
       : ''),
+    (player.at === 'jeep' && !player.note
+      ? '<button class="choice" data-act="note"><span class="tag">LEAVE A NOTE</span>Date, time, water carried, direction of travel. Under the wiper.</button>'
+      : ''),
     readOption(),
     (sourceHere() && !player.drank[player.at]
       ? '<button class="choice" data-act="water"><span class="tag">CHECK FOR WATER</span>' +
@@ -987,8 +1025,13 @@ function arrive(){
     bodyLine + heatWarn +
     '<div class="thought">' + t.blurb + '</div>' +
     (player.at==='jeep' && player.day>=2
-      ? '<div class="legline">Day ' + player.day + '. Somebody has noticed by now that you did not come back. ' +
-        'Chance of being spotted here: <b>' + rescueLabel() + '</b>.</div>' : '') +
+      ? '<div class="legline">Day ' + player.day + '. ' +
+        (RUN.expected.key === 'nobody'
+          ? 'Nobody has noticed, because there is nobody to notice. No aircraft, no dust on the horizon, and no reason for either.'
+          : RUN.expected.key === 'eventually'
+            ? 'Somebody may have started wondering. Nothing has come up the valley yet.'
+            : 'Somebody has noticed by now that you did not come back.') +
+        ' Chance of being spotted here: <b>' + rescueLabel() + '</b>.</div>' : '') +
     '<div class="story" style="font-size:0.82rem; color:var(--stone);">Move, or wait.</div>' +
     '<div class="choices">' + ctx + restOpts + opts + '</div>'
   );
@@ -1017,6 +1060,15 @@ function readOption(){
 function doAct(kind){
   if(kind === 'jeep')  return Engine.go(jeepScene);
   if(kind === 'water') return Engine.go(drinkScene);
+  if(kind === 'note'){
+    player.note = true;
+    Engine.log('Left a note on the windscreen.', 'l-good');
+    Engine.render('<div class="story">You write it on the back of the registration, in block capitals, and wedge it under the wiper: ' +
+      'the date, the time, how much water you took, and the direction you are walking.</div>' +
+      '<div class="thought">If anyone ever reaches the Jeep, this is the difference between a search and a recovery. It costs nothing but the two minutes and the admission that you might not come back to it.</div>' +
+      Engine.contBtn());
+    return Engine.wire(arrive);
+  }
   if(kind === 'read'){
     advance(1, shadeHere()!=='none' ? 'shade' : 'rest');
     if(checkDead()) return;
@@ -1222,8 +1274,11 @@ function ending(){
     text = "Core temperature is the one that gets people who think thirst is the danger. You stopped sweating an hour ago and took that as good news.";
   }
   const lesson = (player.at === 'jeep')
-    ? "You stayed. That was right. The margin was simply not there \u2014 nine litres and a valley this size is a hard arithmetic problem no matter how well you play it."
-    : "The Jeep is " + far.toFixed(1) + " km back that way, with shade, and a mirror, and a shape an aircraft can see from six hundred feet.";
+    ? (RUN.expected.key === 'nobody'
+        ? "You stayed with the vehicle. That is the advice, and the advice assumes a search, and a search assumes somebody noticed you were gone. Nobody did. Staying was the right move in a situation you were not actually in."
+        : "You stayed. That was right. The margin was simply not there \u2014 the water and a valley this size is a hard arithmetic problem no matter how well you play it.")
+    : "The Jeep is " + far.toFixed(1) + " km back that way, with shade, and a shape an aircraft can see from six hundred feet"
+      + (RUN.expected.key === 'nobody' ? " \u2014 though nobody was ever going to be flying it." : ".");
   Engine.recordEnding('lost-' + how, {day:player.day, walked:+player.walked.toFixed(1), at:player.at});
   Engine.sfxFail();
   Engine.badge('END');
@@ -1252,8 +1307,8 @@ function manifest(){
 /* ---------------- LAUNCH ---------------- */
 Engine.init({
   id: 'stay-with-the-vehicle',
-  title: 'STAY WITH THE VEHICLE',
-  subtitle: 'Railroad Valley, Nye County, Nevada \u00b7 terrain build',
+  title: 'RAILROAD VALLEY',
+  subtitle: 'Nine litres \u00b7 Nye County, Nevada \u00b7 nobody within forty miles',
   accent: 'var(--rust)',
   mode: 'over',
   sheetLabel: 'TERRAIN',
