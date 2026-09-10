@@ -35,6 +35,12 @@
     border-left:3px solid var(--gold); background:var(--cream);
     padding:10px 14px; margin:12px 0; font-size:0.88rem; line-height:1.6;
   }
+  .spotted {
+    border-left:3px solid var(--sky); background:var(--cream);
+    padding:10px 14px; margin:12px 0;
+    font-family:'DM Mono',monospace; font-size:0.7rem; line-height:1.7; color:var(--ink);
+  }
+  .spotted b { color:var(--sky); letter-spacing:0.06em; }
   .nomap {
     padding:22px; font-family:'DM Mono',monospace; font-size:0.7rem;
     color:var(--stone); line-height:1.7; text-align:center;
@@ -81,7 +87,9 @@ const TERRAIN = {
   mine:   { label:"workings",         color:'#5c3a5c', pace:2.5,
             blurb:"Tailings and cut benches. Old ground, badly kept." },
   ruin:   { label:"ruin",             color:'#a06840', pace:3.5,
-            blurb:"Somebody tried to live here. The evidence is mostly foundations." }
+            blurb:"Somebody tried to live here. The evidence is mostly foundations." },
+  water:  { label:"tank / windmill",  color:'#2f7d8c', pace:3.4,
+            blurb:"Stock water. Somebody drilled here because somebody had to." }
 };
 
 /* ---------------- THE VALLEY ---------------- */
@@ -90,7 +98,7 @@ const NODES = [
     note:"Where it stopped. Hood up, nose pointed at nothing in particular. Everything you have is here." },
   { id:'playa_n',   name:"Playa, north lobe",    lat:38.4020, lon:-115.7710, t:'playa',  el:1440 },
   { id:'playa_c',   name:"Playa, center",        lat:38.3520, lon:-115.7960, t:'playa',  el:1435 },
-  { id:'calib',     name:"Calibration site",     lat:38.4970, lon:-115.6900, t:'playa',  el:1437,
+  { id:'calib',     name:"Calibration site",     lat:38.4970, lon:-115.6900, t:'playa',  el:1437, tall:true,
     note:"Instrument masts on the mud. Fenced, solar-powered, immaculately maintained, and nobody is here." },
   { id:'playa_s',   name:"Playa, south edge",    lat:38.2810, lon:-115.8080, t:'playa',  el:1438 },
   { id:'mudflat',   name:"Wet mudflat",          lat:38.3300, lon:-115.8380, t:'playa',  el:1433,
@@ -107,7 +115,7 @@ const NODES = [
   { id:'grant',     name:"Grant Range front",    lat:38.3450, lon:-115.5400, t:'ridge',  el:2130 },
   { id:'mine',      name:"The adit",             lat:38.3610, lon:-115.5620, t:'mine',   el:2020,
     note:"A hole in the hillside with a rail stub coming out of it. Cold air on your face, which is the good news and the bad news." },
-  { id:'headframe', name:"Collapsed headframe",  lat:38.3680, lon:-115.5750, t:'mine',   el:1960 },
+  { id:'headframe', name:"Collapsed headframe",  lat:38.3680, lon:-115.5750, t:'mine',   el:1960, tall:true },
 
   { id:'homestead', name:"The homestead",        lat:38.2650, lon:-115.6720, t:'ruin',   el:1520,
     note:"Four walls, no roof, and a cottonwood that has no business being alive out here and is." },
@@ -117,8 +125,14 @@ const NODES = [
 
   { id:'cow',       name:"Cattle",               lat:38.2440, lon:-115.7050, t:'bajada', el:1490,
     note:"Six head, standing in the open. Cattle do not range far from water \u2014 three miles, give or take. That is not folklore. That is a fact you can walk on." },
-  { id:'trough',    name:"Stock tank",           lat:38.2280, lon:-115.7240, t:'ruin',   el:1478,
+  { id:'trough',    name:"Stock tank",           lat:38.2280, lon:-115.7240, t:'water',  el:1478,
     note:"Float valve, algae, and a pipe running somewhere uphill to something." },
+  { id:'mill_s',    name:"Windmill, south",      lat:38.2050, lon:-115.7000, t:'water',  el:1482, tall:true,
+    note:"Aermotor head, most of a tail vane, turning when it feels like it. The tank below is half full and the water is not clean and that is not the same as undrinkable." },
+  { id:'mill_n',    name:"Windmill, north",      lat:38.4260, lon:-115.7960, t:'water',  el:1447, tall:true,
+    note:"Standing but not turning — the sucker rod is disconnected and hanging. The tank is dry and has been for a long time." },
+  { id:'tank_e',    name:"Buried tank",          lat:38.3020, lon:-115.6620, t:'water',  el:1545,
+    note:"A steel tank set into the bajada with a lid you can lift. Whether anything is in it is a separate question." },
   { id:'pipeline',  name:"Pipeline scar",        lat:38.2360, lon:-115.7520, t:'bajada', el:1495 },
 
   { id:'balloon',   name:"Downed balloon",       lat:38.3860, lon:-115.8320, t:'playa',  el:1442,
@@ -160,6 +174,9 @@ const EDGES = [
   ['homestead','well'],['homestead','corral'],['corral','baj_e'],
   ['homestead','cow'],['cow','trough'],['trough','pipeline'],['pipeline','twotrack_s'],
   ['cow','twotrack_s'],['homestead','knob_s'],['knob_s','wash_e'],
+  ['trough','mill_s'],['mill_s','knob_s'],['mill_s','twotrack_s'],
+  ['playa_n','mill_n'],['mill_n','balloon'],['mill_n','twotrack_n'],
+  ['baj_e','tank_e'],['tank_e','corral'],['tank_e','homestead'],
   ['cache','knob_n'],['knob_n','graded'],['knob_n','twotrack_n'],
   ['twotrack_n','graded'],['graded','us6'],
   ['twotrack_s','nyala'],['knob_s','nyala']
@@ -197,10 +214,45 @@ function compass(deg){
   return pts[Math.round(deg/22.5)%16];
 }
 
+
+/* ---------------- SEEING ----------------
+   On a flat valley floor you can see almost nothing. From high
+   ground you can see a very long way, and the only things worth
+   seeing at that range are tall: a windmill, a headframe, masts.
+   This is how you actually navigate that country.               */
+function seeingRange(){
+  const here = N[player.at];
+  if(here.t === 'ridge') return 22;      // km, from a knob or saddle
+  if(here.el >= 1900)    return 18;
+  if(here.t === 'playa') return 6;       // dead flat, heat shimmer
+  return 9;
+}
+function spotFrom(){
+  const range = seeingRange();
+  const found = [];
+  NODES.forEach(n=>{
+    if(n.id === player.at) return;
+    if(player.visited[n.id] || player.spotted[n.id]) return;
+    if(!n.tall) return;                                   // only tall things carry
+    if(km(player.at, n.id) > range) return;
+    player.spotted[n.id] = true;
+    found.push(n);
+  });
+  return found;
+}
+function spotLine(found){
+  if(!found.length) return '';
+  return '<div class="spotted"><b>From here you can see:</b><br>' +
+    found.map(n=> n.name + ' \u2014 ' + km(player.at,n.id).toFixed(1) + ' km ' +
+      compass(bearing(player.at,n.id))).join('<br>') +
+    '</div>';
+}
+
 /* ---------------- STATE ---------------- */
 function freshState(){ return {
   at:'jeep',
   visited:{jeep:true},
+  spotted:{},     // landmarks seen from a distance but not yet reached
   legs:0,
   walked:0,       // km
   elapsed:0       // hours on foot
@@ -261,13 +313,14 @@ function refreshMap(){
     const isHere = n.id===here;
     const isNear = near.indexOf(n.id)!==-1;
     const seen   = !!player.visited[n.id];
+    const spot   = !!player.spotted[n.id];
     m.setStyle({
       radius: isHere?8 : isNear?7 : 5,
-      fillOpacity: isHere?1 : isNear?0.9 : (seen?0.6:0.22),
+      fillOpacity: isHere?1 : isNear?0.9 : (seen?0.6 : spot?0.5 : 0.18),
       color: isNear ? '#8b3a2a' : '#1c1a16',
       weight: isNear ? 2 : 1
     });
-    const label = seen||isNear ? n.name : 'Unvisited ground';
+    const label = (seen||isNear||spot) ? n.name : 'Unvisited ground';
     const dist  = isNear ? '<br>' + km(here,n.id).toFixed(1) + ' km ' + compass(bearing(here,n.id)) +
                            ' \u00b7 ~' + hours(here,n.id).toFixed(1) + ' h on foot' : '';
     m.bindPopup('<b>' + label + '</b><br>' + TERRAIN[n.t].label + ' \u00b7 ' + n.el + ' m' + dist +
@@ -298,6 +351,7 @@ function statusFields(){
 function sheetHTML(){
   if(!player) return '';
   const seen = Object.keys(player.visited).length;
+  const unreached = Object.keys(player.spotted).filter(id=>!player.visited[id]).map(id=>N[id].name);
   const t = TERRAIN[N[player.at].t];
   const rows = (ADJ[player.at]||[]).map(id=>
     '<tr><td style="padding:2px 10px 2px 0;">' + (player.visited[id]?N[id].name:'\u2014 unvisited \u2014') + '</td>' +
@@ -308,7 +362,9 @@ function sheetHTML(){
     'Standing on: <b>' + t.label + '</b> at <b>' + N[player.at].el + ' m</b><br>' +
     '<span style="color:var(--stone);">' + t.blurb + '</span><br>' +
     'Ground covered: <b>' + player.walked.toFixed(1) + ' km</b> over <b>' + player.legs + '</b> legs \u00b7 ' +
-    'places seen: <b>' + seen + ' / ' + NODES.length + '</b>' +
+    'places reached: <b>' + seen + ' / ' + NODES.length + '</b><br>' +
+    'Visibility from here: <b>' + seeingRange() + ' km</b> for anything tall' +
+    (unreached.length ? '<br>Spotted, not reached: <b>' + unreached.join(', ') + '</b>' : '') +
     '<div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--mist);">' +
       '<div style="font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:5px;">From here</div>' +
       '<table style="font-family:\'DM Mono\',monospace; font-size:0.62rem;">' + rows + '</table>' +
@@ -324,6 +380,7 @@ function arrive(){
   const near = ADJ[player.at] || [];
   const firstTime = !player.seenNote || !player.seenNote[n.id];
 
+  const found = spotFrom();
   const opts = near.map(id=>{
     const known = player.visited[id];
     return '<button class="choice" data-go="' + id + '">' +
@@ -335,6 +392,7 @@ function arrive(){
 
   Engine.render(
     (n.note ? '<div class="hereNote">' + n.note + '</div>' : '') +
+    spotLine(found) +
     '<div class="story"><b>' + n.name + '</b> \u2014 ' + t.label + ', ' + n.el + ' m.</div>' +
     '<div class="thought">' + t.blurb + '</div>' +
     (player.legs ? '<div class="legline">Ground covered: <b>' + player.walked.toFixed(1) +
