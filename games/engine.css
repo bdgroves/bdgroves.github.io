@@ -1,0 +1,196 @@
+/* ============================================================
+   brooksgroves.com — shared adventure-game engine styles
+   Used by every module under /games/. Page-specific overrides
+   (accent colour, extra voice channels) go in the module itself.
+   ============================================================ */
+
+:root {
+  --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+  --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+  --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; --sky:#2a4a6b;
+  --accent:var(--sky);
+}
+[data-theme="dark"] {
+  --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
+  --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
+  --white:#12100d; --rust:#cf6b52; --sage:#83a077; --sky:#6fa0cc;
+}
+
+*, *::before, *::after { box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
+body{
+  background:var(--parchment); color:var(--ink);
+  font-family:'Libre Baskerville', Georgia, serif; font-size:16px; line-height:1.7;
+  min-height:100vh; display:flex; flex-direction:column; align-items:center;
+  padding:0;
+}
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0.5;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+.topline { width:100%; height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+.sitebar { width:100%; border-bottom:2px solid var(--ink); background:var(--parchment); }
+.masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:740px; margin:0 auto; padding:0.75rem 1.25rem; }
+.site-name { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:900; text-decoration:none; color:var(--ink); }
+.sitenav { display:flex; gap:1.25rem; align-items:center; }
+.sitenav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+.sitenav a:hover { color:var(--rust); }
+.theme-toggle { background:none; border:none; cursor:pointer; padding:0; font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--stone); line-height:1; }
+.theme-toggle:hover { color:var(--gold); }
+
+.console{ width:100%; max-width:740px; position:relative; padding:0 14px; margin-top:24px; }
+
+header{
+  border:1px solid var(--mist); border-bottom:none;
+  background:var(--cream);
+  padding:16px 20px; display:flex; justify-content:space-between; align-items:flex-end;
+}
+header h1{
+  font-family:'Playfair Display', serif; font-weight:900; font-size:1.35rem;
+  letter-spacing:-0.01em; margin:0; color:var(--ink);
+}
+header .sub{ font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); letter-spacing:0.08em; margin-top:4px; text-transform:uppercase; }
+.badge{
+  font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:var(--white);
+  background:var(--accent); padding:3px 9px; border-radius:3px; white-space:nowrap; text-transform:uppercase;
+}
+
+.statusbar{
+  border:1px solid var(--mist); border-top:none; background:var(--cream);
+  padding:9px 20px; display:flex; gap:18px; flex-wrap:wrap;
+  font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.03em;
+}
+.statusbar b{ color:var(--accent); }
+.int-val, .sta-val{ color:var(--sage) !important; }
+.int-low, .sta-low{ color:var(--rust) !important; }
+
+main{ border:1px solid var(--mist); background:var(--white); min-height:320px; padding:24px 22px; }
+
+.story{ font-size:0.95rem; line-height:1.75; color:var(--ink); margin-bottom:20px; white-space:pre-line; }
+.thought{
+  color:var(--stone); font-style:italic; display:block; margin:10px 0;
+  padding-left:14px; border-left:2px solid var(--mist); font-size:0.9rem;
+}
+.thought::before{ content:"// "; color:var(--accent); font-style:normal; }
+.flavor{ color:var(--accent); font-style:italic; }
+.danger{ color:var(--rust); font-style:italic; }
+
+.choices{ display:flex; flex-direction:column; gap:10px; }
+button.choice{
+  font-family:'Libre Baskerville', Georgia, serif; text-align:left; background:var(--cream);
+  color:var(--ink); border:1px solid var(--mist); border-left:3px solid var(--accent);
+  padding:12px 14px; font-size:0.88rem; cursor:pointer; transition:all .15s ease;
+}
+button.choice:hover{ background:var(--white); border-left-color:var(--rust); transform:translateX(2px); }
+button.choice .tag{
+  font-family:'DM Mono',monospace; color:var(--accent); font-size:0.58rem; letter-spacing:0.08em;
+  display:block; margin-bottom:4px; text-transform:uppercase;
+}
+
+.diceRig{ display:none; margin:18px 0 22px; border:1px solid var(--mist); background:var(--cream); padding:16px; }
+.diceRig.show{ display:block; }
+.diceRig .label{ font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); margin-bottom:10px; text-transform:uppercase; }
+.diceRow{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.d10, .dieShape{
+  width:56px; height:60px; background:var(--white); border:1px solid var(--accent);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-family:'Playfair Display', serif; font-weight:800; color:var(--accent);
+}
+.dieShape .facesize{ font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--stone); margin-bottom:-2px; }
+.dieShape .facenum{ font-size:1.3rem; }
+.d10 .facenum, .d10{ font-size:1.4rem; }
+.d10.spin, .dieShape.spin{ animation:spin .4s steps(9) infinite; }
+@keyframes spin{ 0%{color:var(--accent);} 50%{color:var(--rust);} 100%{color:var(--accent);} }
+.diceMeta{ font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--stone); line-height:1.6; }
+.diceMeta b{ color:var(--ink); }
+.result-banner{
+  margin-top:12px; padding:8px 12px; font-family:'DM Mono',monospace; font-size:0.72rem;
+  letter-spacing:0.06em; font-weight:700; border:1px solid; display:none; text-transform:uppercase;
+}
+.result-banner.success{ display:block; color:var(--sage); border-color:var(--sage); background:rgba(74,92,69,0.06); }
+.result-banner.fail{ display:block; color:var(--rust); border-color:var(--rust); background:rgba(139,58,42,0.06); }
+
+footer.log{
+  border:1px solid var(--mist); border-top:none; background:var(--cream);
+  padding:11px 20px; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone);
+  max-height:100px; overflow-y:auto;
+}
+footer.log div{ margin-bottom:4px; }
+.l-good{ color:var(--sage); } .l-bad{ color:var(--rust); } .l-info{ color:var(--accent); }
+
+.navbar{ border:1px solid var(--mist); border-top:none; background:var(--cream); display:flex; gap:1px; }
+.navbtn{
+  flex:1; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.06em;
+  text-align:center; padding:11px 8px; background:var(--white); color:var(--stone);
+  border:none; border-right:1px solid var(--mist); cursor:pointer; text-decoration:none;
+  display:flex; align-items:center; justify-content:center; text-transform:uppercase;
+}
+.navbtn:last-child{ border-right:none; }
+.navbtn:hover:not(:disabled){ color:var(--rust); background:var(--cream); }
+.navbtn:disabled{ opacity:0.35; cursor:not-allowed; }
+.navbtn.navhome{ color:var(--accent); }
+.navbtn.navhome:hover{ color:var(--rust); }
+
+.gridPairs, .raceGrid, .loadoutGrid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0 20px; }
+.loadoutGrid{ grid-template-columns:1fr; }
+.statPair{ border:1px solid var(--mist); background:var(--cream); padding:10px 12px; }
+.statPair .pname{ font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.06em; text-transform:uppercase; }
+.statPair .pval{ font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--accent); margin-top:2px; }
+
+.raceCard, .loadoutCard{
+  border:1px solid var(--mist); background:var(--cream); border-left:3px solid var(--accent);
+  padding:12px; cursor:pointer; font-size:0.85rem;
+}
+.raceCard:hover, .loadoutCard:hover{ background:var(--white); border-left-color:var(--rust); }
+.raceCard.selected, .loadoutCard.selected{ border-left-color:var(--sage); background:var(--white); }
+.rname, .lname{ font-family:'Playfair Display',serif; font-size:0.9rem; color:var(--ink); font-weight:700; margin-bottom:4px; }
+.rdesc, .ldesc{ color:var(--stone); line-height:1.5; font-size:0.78rem; }
+
+.diePrimer{ border:1px solid var(--mist); background:var(--cream); padding:14px 16px; margin:16px 0; font-family:'DM Mono',monospace; font-size:0.72rem; line-height:1.8; color:var(--stone); }
+.diePrimer b{ color:var(--accent); }
+
+.smallbtn{
+  font-family:'DM Mono',monospace; background:transparent; color:var(--accent); border:1px solid var(--accent);
+  padding:7px 15px; font-size:0.68rem; letter-spacing:0.06em; cursor:pointer; margin-right:8px; text-transform:uppercase;
+}
+.smallbtn:hover:not(:disabled){ background:var(--accent); color:var(--white); }
+.smallbtn:disabled{ opacity:0.35; cursor:not-allowed; }
+.primary-go{ background:var(--accent); color:var(--white); border:1px solid var(--accent); font-weight:700; }
+.primary-go:hover{ background:var(--rust); border-color:var(--rust); color:var(--white); }
+
+/* ---- shared site footer ---- */
+footer.site-footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,4vw,3rem) clamp(1rem,4vw,3rem); margin-top:3rem; width:100%; font-family:'Libre Baskerville',Georgia,serif; }
+[data-theme="dark"] footer.site-footer { background:#0f0d0a; }
+.site-footer .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+.site-footer .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+.site-footer .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+.site-footer .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+.site-footer .footer-tagline a:hover { color:var(--gold); }
+.site-footer .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+.site-footer .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+.site-footer .footer-links a:hover { color:var(--gold); }
+.site-footer p { margin:0; }
+
+.sheetToggle{ font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.06em; text-transform:uppercase; background:none; border:none; color:var(--accent); cursor:pointer; padding:0; }
+.sheetToggle:hover{ color:var(--rust); }
+.charsheet{ display:none; border:1px solid var(--mist); border-top:none; background:var(--white); padding:14px 20px; }
+.charsheet.open{ display:block; }
+.sheetGrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px; }
+@media(max-width:640px){ .sheetGrid{ grid-template-columns:repeat(2,1fr); } }
+.sheetStat{ border:1px solid var(--mist); background:var(--cream); padding:7px 9px; }
+.sheetStat .sn{ font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone); }
+.sheetStat .sv{ font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--accent); }
+.sheetStat .sh{ font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); }
+.sheetMeta{ font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); line-height:1.8; border-top:1px solid var(--mist); padding-top:10px; }
+.sheetMeta b{ color:var(--ink); }
+.tgtBadge{ font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.04em; color:var(--white); background:var(--sage); padding:1px 6px; border-radius:3px; white-space:nowrap; margin-left:4px; }
+
+.latline{
+  border-left:3px solid var(--sky); background:var(--cream);
+  padding:10px 14px; margin:12px 0; font-size:0.87rem; line-height:1.65; color:var(--ink);
+}
+.latname{
+  display:block; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--sky); margin-bottom:4px;
+}

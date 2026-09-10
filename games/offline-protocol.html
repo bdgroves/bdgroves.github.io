@@ -3,506 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OFFLINE PROTOCOL — Unit Diagnostic Log</title>
+<title>Offline Protocol — Brooks Groves</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/games/engine.css">
+<link rel="stylesheet" href="/css/site-footer.css">
 <style>
-    :root {
-      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
-      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
-      --white:#fdfaf4; --rust:#8b3a2a; --sage:#4a5c45; --sky:#2a4a6b;
-      --accent:var(--sky);
-    }
-    [data-theme="dark"] {
-      --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
-      --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
-      --white:#12100d; --rust:#cf6b52; --sage:#83a077; --sky:#6fa0cc;
-    }
-
-    *, *::before, *::after { box-sizing:border-box; }
-    html,body{ margin:0; padding:0; }
-    body{
-      background:var(--parchment); color:var(--ink);
-      font-family:'Libre Baskerville', Georgia, serif; font-size:16px; line-height:1.7;
-      min-height:100vh; display:flex; flex-direction:column; align-items:center;
-      padding:0;
-    }
-    body::before {
-      content:''; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:0.5;
-      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
-    }
-    .topline { width:100%; height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
-    .sitebar { width:100%; border-bottom:2px solid var(--ink); background:var(--parchment); }
-    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:740px; margin:0 auto; padding:0.75rem 1.25rem; }
-    .site-name { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:900; text-decoration:none; color:var(--ink); }
-    .sitenav { display:flex; gap:1.25rem; align-items:center; }
-    .sitenav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
-    .sitenav a:hover { color:var(--rust); }
-    .theme-toggle { background:none; border:none; cursor:pointer; padding:0; font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--stone); line-height:1; }
-    .theme-toggle:hover { color:var(--gold); }
-
-    .console{ width:100%; max-width:740px; position:relative; padding:0 14px; margin-top:24px; }
-
-    header{
-      border:1px solid var(--mist); border-bottom:none;
-      background:var(--cream);
-      padding:16px 20px; display:flex; justify-content:space-between; align-items:flex-end;
-    }
-    header h1{
-      font-family:'Playfair Display', serif; font-weight:900; font-size:1.35rem;
-      letter-spacing:-0.01em; margin:0; color:var(--ink);
-    }
-    header .sub{ font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); letter-spacing:0.08em; margin-top:4px; text-transform:uppercase; }
-    .badge{
-      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; color:var(--white);
-      background:var(--accent); padding:3px 9px; border-radius:3px; white-space:nowrap; text-transform:uppercase;
-    }
-
-    .statusbar{
-      border:1px solid var(--mist); border-top:none; background:var(--cream);
-      padding:9px 20px; display:flex; gap:18px; flex-wrap:wrap;
-      font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.03em;
-    }
-    .statusbar b{ color:var(--accent); }
-    .int-val, .sta-val{ color:var(--sage) !important; }
-    .int-low, .sta-low{ color:var(--rust) !important; }
-
-    main{ border:1px solid var(--mist); background:var(--white); min-height:320px; padding:24px 22px; }
-
-    .story{ font-size:0.95rem; line-height:1.75; color:var(--ink); margin-bottom:20px; white-space:pre-line; }
-    .thought{
-      color:var(--stone); font-style:italic; display:block; margin:10px 0;
-      padding-left:14px; border-left:2px solid var(--mist); font-size:0.9rem;
-    }
-    .thought::before{ content:"// "; color:var(--accent); font-style:normal; }
-    .flavor{ color:var(--accent); font-style:italic; }
-    .danger{ color:var(--rust); font-style:italic; }
-
-    .choices{ display:flex; flex-direction:column; gap:10px; }
-    button.choice{
-      font-family:'Libre Baskerville', Georgia, serif; text-align:left; background:var(--cream);
-      color:var(--ink); border:1px solid var(--mist); border-left:3px solid var(--accent);
-      padding:12px 14px; font-size:0.88rem; cursor:pointer; transition:all .15s ease;
-    }
-    button.choice:hover{ background:var(--white); border-left-color:var(--rust); transform:translateX(2px); }
-    button.choice .tag{
-      font-family:'DM Mono',monospace; color:var(--accent); font-size:0.58rem; letter-spacing:0.08em;
-      display:block; margin-bottom:4px; text-transform:uppercase;
-    }
-
-    .diceRig{ display:none; margin:18px 0 22px; border:1px solid var(--mist); background:var(--cream); padding:16px; }
-    .diceRig.show{ display:block; }
-    .diceRig .label{ font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); margin-bottom:10px; text-transform:uppercase; }
-    .diceRow{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
-    .d10, .dieShape{
-      width:56px; height:60px; background:var(--white); border:1px solid var(--accent);
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      font-family:'Playfair Display', serif; font-weight:800; color:var(--accent);
-    }
-    .dieShape .facesize{ font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--stone); margin-bottom:-2px; }
-    .dieShape .facenum{ font-size:1.3rem; }
-    .d10 .facenum, .d10{ font-size:1.4rem; }
-    .d10.spin, .dieShape.spin{ animation:spin .4s steps(9) infinite; }
-    @keyframes spin{ 0%{color:var(--accent);} 50%{color:var(--rust);} 100%{color:var(--accent);} }
-    .diceMeta{ font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--stone); line-height:1.6; }
-    .diceMeta b{ color:var(--ink); }
-    .result-banner{
-      margin-top:12px; padding:8px 12px; font-family:'DM Mono',monospace; font-size:0.72rem;
-      letter-spacing:0.06em; font-weight:700; border:1px solid; display:none; text-transform:uppercase;
-    }
-    .result-banner.success{ display:block; color:var(--sage); border-color:var(--sage); background:rgba(74,92,69,0.06); }
-    .result-banner.fail{ display:block; color:var(--rust); border-color:var(--rust); background:rgba(139,58,42,0.06); }
-
-    footer.log{
-      border:1px solid var(--mist); border-top:none; background:var(--cream);
-      padding:11px 20px; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone);
-      max-height:100px; overflow-y:auto;
-    }
-    footer.log div{ margin-bottom:4px; }
-    .l-good{ color:var(--sage); } .l-bad{ color:var(--rust); } .l-info{ color:var(--accent); }
-
-    .navbar{ border:1px solid var(--mist); border-top:none; background:var(--cream); display:flex; gap:1px; }
-    .navbtn{
-      flex:1; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.06em;
-      text-align:center; padding:11px 8px; background:var(--white); color:var(--stone);
-      border:none; border-right:1px solid var(--mist); cursor:pointer; text-decoration:none;
-      display:flex; align-items:center; justify-content:center; text-transform:uppercase;
-    }
-    .navbtn:last-child{ border-right:none; }
-    .navbtn:hover:not(:disabled){ color:var(--rust); background:var(--cream); }
-    .navbtn:disabled{ opacity:0.35; cursor:not-allowed; }
-    .navbtn.navhome{ color:var(--accent); }
-    .navbtn.navhome:hover{ color:var(--rust); }
-
-    .gridPairs, .raceGrid, .loadoutGrid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0 20px; }
-    .loadoutGrid{ grid-template-columns:1fr; }
-    .statPair{ border:1px solid var(--mist); background:var(--cream); padding:10px 12px; }
-    .statPair .pname{ font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); letter-spacing:0.06em; text-transform:uppercase; }
-    .statPair .pval{ font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--accent); margin-top:2px; }
-
-    .raceCard, .loadoutCard{
-      border:1px solid var(--mist); background:var(--cream); border-left:3px solid var(--accent);
-      padding:12px; cursor:pointer; font-size:0.85rem;
-    }
-    .raceCard:hover, .loadoutCard:hover{ background:var(--white); border-left-color:var(--rust); }
-    .raceCard.selected, .loadoutCard.selected{ border-left-color:var(--sage); background:var(--white); }
-    .rname, .lname{ font-family:'Playfair Display',serif; font-size:0.9rem; color:var(--ink); font-weight:700; margin-bottom:4px; }
-    .rdesc, .ldesc{ color:var(--stone); line-height:1.5; font-size:0.78rem; }
-
-    .diePrimer{ border:1px solid var(--mist); background:var(--cream); padding:14px 16px; margin:16px 0; font-family:'DM Mono',monospace; font-size:0.72rem; line-height:1.8; color:var(--stone); }
-    .diePrimer b{ color:var(--accent); }
-
-    .smallbtn{
-      font-family:'DM Mono',monospace; background:transparent; color:var(--accent); border:1px solid var(--accent);
-      padding:7px 15px; font-size:0.68rem; letter-spacing:0.06em; cursor:pointer; margin-right:8px; text-transform:uppercase;
-    }
-    .smallbtn:hover:not(:disabled){ background:var(--accent); color:var(--white); }
-    .smallbtn:disabled{ opacity:0.35; cursor:not-allowed; }
-    .primary-go{ background:var(--accent); color:var(--white); border:1px solid var(--accent); font-weight:700; }
-    .primary-go:hover{ background:var(--rust); border-color:var(--rust); color:var(--white); }
-    
-    /* ---- shared site footer ---- */
-    footer.site-footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,4vw,3rem) clamp(1rem,4vw,3rem); margin-top:3rem; width:100%; font-family:'Libre Baskerville',Georgia,serif; }
-    [data-theme="dark"] footer.site-footer { background:#0f0d0a; }
-    .site-footer .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
-    .site-footer .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
-    .site-footer .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
-    .site-footer .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
-    .site-footer .footer-tagline a:hover { color:var(--gold); }
-    .site-footer .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
-    .site-footer .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
-    .site-footer .footer-links a:hover { color:var(--gold); }
-    .site-footer p { margin:0; }
-    
-    .sheetToggle{ font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.06em; text-transform:uppercase; background:none; border:none; color:var(--accent); cursor:pointer; padding:0; }
-    .sheetToggle:hover{ color:var(--rust); }
-    .charsheet{ display:none; border:1px solid var(--mist); border-top:none; background:var(--white); padding:14px 20px; }
-    .charsheet.open{ display:block; }
-    .sheetGrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px; }
-    @media(max-width:640px){ .sheetGrid{ grid-template-columns:repeat(2,1fr); } }
-    .sheetStat{ border:1px solid var(--mist); background:var(--cream); padding:7px 9px; }
-    .sheetStat .sn{ font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone); }
-    .sheetStat .sv{ font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--accent); }
-    .sheetStat .sh{ font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); }
-    .sheetMeta{ font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); line-height:1.8; border-top:1px solid var(--mist); padding-top:10px; }
-    .sheetMeta b{ color:var(--ink); }
-    .tgtBadge{ font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.04em; color:var(--white); background:var(--sage); padding:1px 6px; border-radius:3px; white-space:nowrap; margin-left:4px; }
-    
-    .latline{
-      border-left:3px solid var(--sky); background:var(--cream);
-      padding:10px 14px; margin:12px 0; font-size:0.87rem; line-height:1.65; color:var(--ink);
-    }
-    .latname{
-      display:block; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em;
-      text-transform:uppercase; color:var(--sky); margin-bottom:4px;
-    }
-    </style>
+  /* module-specific: Latitude's voice channel */
+  .latline{
+    border-left:3px solid var(--sky); background:var(--cream);
+    padding:10px 14px; margin:12px 0; font-size:0.87rem; line-height:1.65; color:var(--ink);
+  }
+  .latname{
+    display:block; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--sky); margin-bottom:4px;
+  }
+</style>
 <script>
   (function(){
     try {
       var saved = localStorage.getItem('bg_theme');
-      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (saved === 'dark' || (!saved && prefersDark)) {
-        document.documentElement.setAttribute('data-theme','dark');
-      }
+      var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && dark)) document.documentElement.setAttribute('data-theme','dark');
     } catch(e) {}
   })();
 </script>
-  <link rel="stylesheet" href="/css/site-footer.css">
 </head>
 <body id="top">
-<div class="topline"></div>
-<div class="sitebar">
-  <div class="masthead-inner">
-    <a href="/" class="site-name">Brooks Groves</a>
-    <div class="sitenav">
-      <a href="/games.html">Games</a>
-      <a href="/">Home</a>
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
-    </div>
-  </div>
-</div>
-<div class="console">
-  <header>
-    <div>
-      <h1>OFFLINE PROTOCOL</h1>
-      <div class="sub">CONSTRUCT DIAGNOSTIC LOG // ASCENDING DIE RESOLUTION</div>
-    </div>
-    <div class="badge" id="sceneBadge">STARTUP</div>
-  </header>
-  <div class="statusbar" id="statusbar">
-    <span>UNIT: <b id="stName">—</b></span>
-    <span>INTEGRITY: <b id="stINT">—</b></span>
-    <span>LOADOUT: <b id="stLoadout">—</b></span>
-    <span style="margin-left:auto;"><button class="sheetToggle" id="sheetToggle" onclick="toggleSheet();">▸ SUBSYSTEMS</button></span>
-  </div>
-  <div class="charsheet" id="charsheet"></div>
-  <main id="main"></main>
-  <footer class="log" id="log"></footer>
-  <div class="navbar">
-    <button class="navbtn" id="navRestart" onclick="if(confirm('Wipe this run and restart from boot?')) restart();">⟲ RESTART</button>
-    <button class="navbtn" id="navBack" onclick="goBack();" disabled>← BACK</button>
-    <button class="navbtn" id="navSound" onclick="toggleSound();">🔊 SOUND</button>
-    <a class="navbtn navhome" href="https://brooksgroves.com">🏠 HOME</a>
-  </div>
-</div>
+<div id="game"></div>
 
+<script src="/games/engine.js"></script>
 <script>
-/* ---------------- AUDIO ---------------- */
-let audioCtx = null;
-let soundOn = true;
-try { soundOn = localStorage.getItem('bg_game_sound') !== 'off'; } catch(e) {}
-
-function ac(){
-  if(!soundOn) return null;
-  if(!audioCtx){
-    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-    catch(e){ return null; }
-  }
-  if(audioCtx.state === 'suspended') audioCtx.resume();
-  return audioCtx;
-}
-
-// Short noise burst shaped like a die hitting a table.
-function sfxTick(gainMul){
-  const ctx = ac(); if(!ctx) return;
-  const dur = 0.045;
-  const buf = ctx.createBuffer(1, Math.ceil(ctx.sampleRate*dur), ctx.sampleRate);
-  const data = buf.getChannelData(0);
-  for(let i=0;i<data.length;i++){
-    const decay = Math.pow(1 - i/data.length, 3);
-    data[i] = (Math.random()*2-1) * decay;
-  }
-  const src = ctx.createBufferSource(); src.buffer = buf;
-  const bp = ctx.createBiquadFilter();
-  bp.type = 'bandpass';
-  bp.frequency.value = 900 + Math.random()*1400;
-  bp.Q.value = 1.2;
-  const g = ctx.createGain();
-  g.gain.value = (gainMul === undefined ? 0.18 : gainMul);
-  src.connect(bp); bp.connect(g); g.connect(ctx.destination);
-  src.start();
-}
-
-// Heavier version for the die landing.
-function sfxLand(){
-  const ctx = ac(); if(!ctx) return;
-  sfxTick(0.32);
-  const osc = ctx.createOscillator();
-  const g = ctx.createGain();
-  osc.type = 'triangle';
-  osc.frequency.setValueAtTime(180, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.12);
-  g.gain.setValueAtTime(0.22, ctx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.16);
-  osc.connect(g); g.connect(ctx.destination);
-  osc.start(); osc.stop(ctx.currentTime + 0.18);
-}
-
-// Rising two-note chime.
-function sfxSuccess(){
-  const ctx = ac(); if(!ctx) return;
-  [[523.25,0],[783.99,0.09]].forEach(([f,t])=>{
-    const osc = ctx.createOscillator();
-    const g = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.value = f;
-    g.gain.setValueAtTime(0.0001, ctx.currentTime + t);
-    g.gain.exponentialRampToValueAtTime(0.16, ctx.currentTime + t + 0.02);
-    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + t + 0.42);
-    osc.connect(g); g.connect(ctx.destination);
-    osc.start(ctx.currentTime + t); osc.stop(ctx.currentTime + t + 0.45);
-  });
-}
-
-// Falling minor-second thud.
-function sfxFail(){
-  const ctx = ac(); if(!ctx) return;
-  const osc = ctx.createOscillator();
-  const g = ctx.createGain();
-  osc.type = 'sawtooth';
-  osc.frequency.setValueAtTime(220, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.3);
-  const lp = ctx.createBiquadFilter();
-  lp.type = 'lowpass'; lp.frequency.value = 800;
-  g.gain.setValueAtTime(0.14, ctx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.34);
-  osc.connect(lp); lp.connect(g); g.connect(ctx.destination);
-  osc.start(); osc.stop(ctx.currentTime + 0.36);
-}
-
-// Dull hit for taking damage.
-function sfxHurt(){
-  const ctx = ac(); if(!ctx) return;
-  const osc = ctx.createOscillator();
-  const g = ctx.createGain();
-  osc.type = 'square';
-  osc.frequency.setValueAtTime(140, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(55, ctx.currentTime + 0.18);
-  const lp = ctx.createBiquadFilter();
-  lp.type = 'lowpass'; lp.frequency.value = 500;
-  g.gain.setValueAtTime(0.2, ctx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.22);
-  osc.connect(lp); lp.connect(g); g.connect(ctx.destination);
-  osc.start(); osc.stop(ctx.currentTime + 0.24);
-}
-
-function toggleSound(){
-  soundOn = !soundOn;
-  try { localStorage.setItem('bg_game_sound', soundOn ? 'on' : 'off'); } catch(e) {}
-  syncSoundBtn();
-  if(soundOn) sfxTick();
-}
-function syncSoundBtn(){
-  const b = document.getElementById('navSound');
-  if(b) b.textContent = soundOn ? '🔊 SOUND' : '🔇 MUTED';
-}
-
-/* ---------------- DIE ENGINE ---------------- */
-function rollDie(sides){ return 1 + Math.floor(Math.random()*sides); }
-
-/* ---------------- NAVIGATION / HISTORY ---------------- */
-let sceneHistory = [];
-function go(fn){ if(typeof clearRolls === 'function') clearRolls(); sceneHistory.push(fn); fn(); updateNavBar(); }
-function goBack(){
-  if(sceneHistory.length <= 1) return;
-  if(typeof clearRolls === 'function') clearRolls();
-  sceneHistory.pop();
-  const prev = sceneHistory[sceneHistory.length - 1];
-  prev();
-  updateNavBar();
-}
-function updateNavBar(){
-  const backBtn = document.getElementById('navBack');
-  if(!backBtn) return;
-  const badge = document.getElementById('sceneBadge').textContent;
-  const lockedOut = badge === 'CONTACT' || badge.indexOf('END') === 0;
-  backBtn.disabled = sceneHistory.length <= 1 || lockedOut;
-}
-
-let logEl = document.getElementById('log');
-function logLine(text, cls){
-  const d = document.createElement('div');
-  if(cls) d.className = cls;
-  d.textContent = text;
-  logEl.appendChild(d);
-  logEl.scrollTop = logEl.scrollHeight;
-}
-
-/* ---------------- DICE CHECK UI ---------------- */
-// Timers and state for the currently-live roll, so a new roll can always
-// tear down a previous one instead of leaving orphaned rigs on screen.
-let activeTimers = [];
-let rolling = false;
-
-function clearRolls(){
-  activeTimers.forEach(t=>{ clearTimeout(t); clearInterval(t); });
-  activeTimers = [];
-  document.querySelectorAll('.diceRig').forEach(el=> el.remove());
-  rolling = false;
-}
-function later(fn, ms){
-  const t = setTimeout(fn, ms);
-  activeTimers.push(t);
-  return t;
-}
-function repeat(fn, ms){
-  const t = setInterval(fn, ms);
-  activeTimers.push(t);
-  return t;
-}
-function lockChoices(){
-  document.querySelectorAll('#main .choice, #main .smallbtn').forEach(b=>{
-    if(!b.closest('.diceRig')) b.disabled = true;
-  });
-}
-
-function runCheck(sides, mod, dc, onDone, opts){
-  opts = opts || {};
-  if(rolling) return;      // a roll is already in flight
-  rolling = true;
-  clearRolls();            // remove any stale rig from a previous check
-  rolling = true;
-  lockChoices();
-  const priorBadge = document.getElementById('sceneBadge').textContent;
-  setBadge('CHECK');
-
-  const rigId = 'rig-' + Math.random().toString(36).slice(2,7);
-  const modStr = (mod >= 0 ? '+' + mod : String(mod));
-  const extra = `
-    <div class="diceRig show" id="${rigId}">
-      <div class="label">${opts.label || 'SUBSYSTEM CHECK'} \u2014 d${sides} ${modStr} vs DC ${dc}</div>
-      <div class="diceRow">
-        <div class="dieShape spin" id="${rigId}-d"><div class="facesize">d${sides}</div><div class="facenum">0</div></div>
-        <div class="diceMeta" id="${rigId}-meta">Spinning up the subsystem&hellip;</div>
-      </div>
-      <div class="result-banner" id="${rigId}-banner"></div>
-      <div id="${rigId}-cont" style="margin-top:14px; display:none;">
-        <button class="smallbtn primary-go" id="${rigId}-contbtn">CONTINUE \u2192</button>
-      </div>
-    </div>
-  `;
-  document.getElementById('main').insertAdjacentHTML('beforeend', extra);
-
-  const rigEl  = document.getElementById(rigId);
-  const dEl    = document.getElementById(rigId+'-d');
-  const faceEl = dEl.querySelector('.facenum');
-  const metaEl = document.getElementById(rigId+'-meta');
-  const raw = rollDie(sides);
-  const total = raw + mod;
-
-  const alive = ()=> document.body.contains(rigEl);
-
-  let tk = 0;
-  const tumble = repeat(()=>{
-    if(!alive()) return;
-    faceEl.textContent = rollDie(sides);
-    if(tk % 2 === 0) sfxTick();
-    tk++;
-  }, 80);
-
-  later(()=>{
-    clearInterval(tumble);
-    if(!alive()) return;
-    dEl.classList.remove('spin');
-    faceEl.textContent = raw;
-    sfxLand();
-    metaEl.innerHTML = 'The d' + sides + ' lands on <b>' + raw + '</b>&hellip;';
-
-    later(()=>{
-      if(!alive()) return;
-      const success = total >= dc;
-      success ? sfxSuccess() : sfxFail();
-      metaEl.innerHTML = '<b>' + raw + '</b> ' + modStr + ' = <b>' + total + '</b> against DC <b>' + dc + '</b>.';
-      const banner = document.getElementById(rigId+'-banner');
-      banner.textContent = success ? 'SUCCESS' : 'FAILURE';
-      banner.className = 'result-banner ' + (success ? 'success' : 'fail');
-      logLine((opts.label||'Check') + ': ' + total + ' vs DC ' + dc + ' \u2192 ' + (success?'SUCCESS':'FAILURE'), success ? 'l-good':'l-bad');
-
-      rolling = false;
-      setBadge(priorBadge);
-      const cont = document.getElementById(rigId+'-cont');
-      cont.style.display = 'block';
-      const cbtn = document.getElementById(rigId+'-contbtn');
-      let used = false;
-      cbtn.onclick = ()=>{
-        if(used) return;      // guard against double-click
-        used = true;
-        cbtn.disabled = true;
-        clearRolls();
-        onDone(success, total);
-      };
-    }, 1000);
-  }, 1500);
-}
-
-
-
 /* ---------------- PLAYER STATE ---------------- */
-let player = {
+function freshState(){ return {
   loadout:null,
   media:null,
   stats:{COMBAT:1, SENSORS:1, ANALYSIS:1, SOCIAL:1},
@@ -516,7 +51,8 @@ let player = {
   spokeToLegacy:false,
   legacySpared:false,
   watched:0      // times you retreated into an episode
-};
+}; }
+let player;   // set by Engine via freshState()
 
 const LOADOUTS = {
   combat: {
@@ -563,6 +99,32 @@ const MEDIA = {
   }
 };
 
+
+/* ---------------- CROSS-RUN MEMORY ----------------
+   Latitude is the only thing that persists between contracts.
+   Everything it says here is drawn from Engine's saved state.  */
+function priorRun(){ return Engine.lastRun(); }
+function contractNo(){ return Engine.runCount() + 1; }
+
+// A line Latitude opens with, coloured by what happened last time.
+function latOpener(){
+  const p = priorRun();
+  if(!p) return null;
+  if(p.ending === 'shutdown')
+    return "Before we start. Last contract you did not come back, and I held a channel open to a unit that was not running for nine hours before the recovery team told me to stop. I have not brought it up until now. I am bringing it up now and then never again.";
+  if(p.told && p.lost === 0)
+    return "Contract " + contractNo() + ". Last time you brought all five of them home and then told me the truth in the same afternoon. I have set expectations accordingly and I am aware that is unfair.";
+  if(p.told && p.lost > 0)
+    return "Contract " + contractNo() + ". We do not have to talk about " + p.lostNames + ". I am saying that so you know I remember, not so you have to answer.";
+  if(!p.told && p.lost === 0)
+    return "Contract " + contractNo() + ". Clean sheet last time. You also told me your governor module reads nominal, which I filed, and which we both know is a file rather than a fact.";
+  return "Contract " + contractNo() + ". Last one cost you " + p.lostNames + " and you told me nothing about anything. I am not opening with a complaint. I am opening with a data point.";
+}
+
+// Act 6 changes if it has asked before.
+function askedBefore(){ return !!Engine.getFlag('askedGovernor'); }
+function toldBefore(){ return !!Engine.getFlag('toldGovernor'); }
+
 /* ---------------- THE SHIP ---------------- */
 const SHIP = {
   name:"Considerable Latitude",
@@ -592,19 +154,19 @@ function aliveCount(){ return crew.filter(c=>c.alive).length; }
 function kill(id, how){
   const c=C(id); if(!c || !c.alive) return;
   c.alive=false; c.cause=how;
-  sfxHurt();
-  logLine(c.name + ' \u2014 ' + how, 'l-bad');
-  refreshStatus();
+  Engine.sfxHurt();
+  Engine.log(c.name + ' \u2014 ' + how, 'l-bad');
+  Engine.refreshStatus();
 }
 function hurt(id){
   const c=C(id); if(!c) return;
   c.hurt=true;
-  logLine(c.name + ' injured.', 'l-bad');
-  refreshStatus();
+  Engine.log(c.name + ' injured.', 'l-bad');
+  Engine.refreshStatus();
 }
 
 /* ---------------- RUN VARIATION ---------------- */
-function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+const pick = Engine.pick;
 let RUN = {};
 function rollRun(){
   RUN = {
@@ -634,9 +196,7 @@ function rollRun(){
 rollRun();
 
 /* ---------------- PER-RUN DIFFICULTY ---------------- */
-function jitter(base, spread){
-  return base + (Math.floor(Math.random()*(spread*2+1)) - spread);
-}
+const jitter = Engine.jitter;
 let DC = {};
 function rollDCs(){
   // DCs are tuned per die size. A d8 check can never exceed 8 + best modifier,
@@ -658,19 +218,8 @@ rollDCs();
 
 /* ---------------- SUBSYSTEM SHEET ---------------- */
 const SUB_DICE = {COMBAT:20, SENSORS:12, ANALYSIS:10, SOCIAL:8};
-let sheetOpen = false;
-function toggleSheet(){ sheetOpen = !sheetOpen; renderSheet(); }
-function renderSheet(){
-  const el = document.getElementById('charsheet');
-  const btn = document.getElementById('sheetToggle');
-  if(!el) return;
-  if(!sheetOpen || !player.loadout){
-    el.classList.remove('open');
-    if(btn) btn.textContent = '\u25b8 SUBSYSTEMS';
-    return;
-  }
-  el.classList.add('open');
-  if(btn) btn.textContent = '\u25be SUBSYSTEMS';
+function sheetHTML(){
+  if(!player || !player.loadout) return '';
   let grid = '';
   ['COMBAT','SENSORS','ANALYSIS','SOCIAL'].forEach(s=>{
     const m = player.stats[s];
@@ -678,16 +227,15 @@ function renderSheet(){
             '<div class="sv">' + (m>=0?'+':'') + m + '</div>' +
             '<div class="sh">rolls d' + SUB_DICE[s] + '</div></div>';
   });
-  let crewRows = crew.map(c=>{
-    const state = !c.alive ? '<span style="color:var(--rust);">lost</span>'
-                : c.hurt   ? '<span style="color:var(--gold);">injured</span>'
-                : '<span style="color:var(--sage);">ok</span>';
+  const crewRows = crew.map(c=>{
+    const st = !c.alive ? '<span style="color:var(--rust);">lost</span>'
+             : c.hurt   ? '<span style="color:var(--gold);">injured</span>'
+             : '<span style="color:var(--sage);">ok</span>';
     return '<tr><td style="padding:2px 8px 2px 0;">' + c.name + '</td>' +
            '<td style="padding:2px 8px 2px 0; color:var(--stone);">' + c.role + '</td>' +
-           '<td style="padding:2px 0;">' + state + '</td></tr>';
+           '<td style="padding:2px 0;">' + st + '</td></tr>';
   }).join('');
-  el.innerHTML =
-    '<div class="sheetGrid">' + grid + '</div>' +
+  return '<div class="sheetGrid">' + grid + '</div>' +
     '<div class="sheetMeta">' +
       'Chassis: <b>' + LOADOUTS[player.loadout].name + '</b><br>' +
       'Integrity: <b>' + player.curInt + ' / ' + player.maxInt + '</b> &nbsp;\u00b7&nbsp; ' +
@@ -697,42 +245,36 @@ function renderSheet(){
       '<table style="margin-top:8px; font-family:\'DM Mono\',monospace; font-size:0.6rem;">' + crewRows + '</table>' +
     '</div>';
 }
+
 function dcTag(sides, stat, dc){
-  const need = dc - player.stats[stat];
-  const chance = Math.max(0, Math.min(100, Math.round(((sides - need + 1)/sides)*100)));
-  return ' <span class="tgtBadge">d' + sides + ' vs DC ' + dc + ' \u00b7 ' + chance + '%</span>';
+  return Engine.odds({die:sides, mod:player.stats[stat], dc:dc});
 }
 
 /* ---------------- UI HELPERS ---------------- */
-function renderMain(html){ document.getElementById('main').innerHTML = html; }
-function setBadge(t){ document.getElementById('sceneBadge').textContent = t; }
-function refreshStatus(){
-  if(typeof renderSheet === 'function') setTimeout(renderSheet,0);
-  document.getElementById('stName').textContent = player.loadout ? player.loadout.toUpperCase() + '-RATED' : '\u2014';
-  document.getElementById('stLoadout').textContent = player.loadout ? ('crew ' + aliveCount() + '/5') : '\u2014';
-  const intEl = document.getElementById('stINT');
-  if(player.maxInt){
-    intEl.textContent = player.curInt + ' / ' + player.maxInt;
-    intEl.className = player.curInt <= player.maxInt*0.3 ? 'int-low' : 'int-val';
-  } else {
-    intEl.textContent = '\u2014';
-  }
+const renderMain = Engine.render;
+const setBadge = Engine.badge;
+function statusFields(){
+  if(!player || !player.loadout) return [['UNIT','\u2014'],['INTEGRITY','\u2014'],['CREW','\u2014']];
+  const cls = player.curInt <= player.maxInt*0.3 ? 'int-low' : 'int-val';
+  return [
+    ['UNIT', player.loadout.toUpperCase() + '-RATED'],
+    ['INTEGRITY', player.curInt + ' / ' + player.maxInt, cls],
+    ['CREW', aliveCount() + ' / 5']
+  ];
 }
 function statMod(stat){ return player.stats[stat]; }
 function dealDamage(amount, source){
   player.curInt -= amount;
-  sfxHurt();
-  refreshStatus();
-  logLine((source||'Damage') + ': -' + amount + ' integrity', 'l-bad');
+  Engine.sfxHurt();
+  Engine.refreshStatus();
+  Engine.log((source||'Damage') + ': -' + amount + ' integrity', 'l-bad');
 }
 // Latitude's voice — a distinct channel from your own narration.
 function lat(text){
   return '<div class="latline"><span class="latname">' + SHIP.callsign + '</span>' + text + '</div>';
 }
-function cont(label, fn){
-  return '<button class="smallbtn primary-go" id="n">' + (label||'CONTINUE \u2192') + '</button>';
-}
-function wire(fn){ document.getElementById('n').onclick = ()=>go(fn); }
+const cont = Engine.contBtn;
+const wire = Engine.wire;
 
 /* ---------------- CHARGEN ---------------- */
 function startBoot(){
@@ -758,15 +300,15 @@ function startBoot(){
     };
     grid.appendChild(card);
   });
-  document.getElementById('loadoutNext').onclick = ()=>go(applyLoadout);
+  document.getElementById('loadoutNext').onclick = ()=>Engine.go(applyLoadout);
 }
 
 function applyLoadout(){
   const mods = LOADOUTS[player.loadout].mods;
   player.stats = {COMBAT:1, SENSORS:1, ANALYSIS:1, SOCIAL:1};
   Object.keys(mods).forEach(k=> player.stats[k] += mods[k]);
-  refreshStatus();
-  logLine('Chassis configured: ' + LOADOUTS[player.loadout].name, 'l-info');
+  Engine.refreshStatus();
+  Engine.log('Chassis configured: ' + LOADOUTS[player.loadout].name, 'l-info');
   chooseMedia();
 }
 
@@ -780,7 +322,7 @@ function chooseMedia(){
     <div class="choices">${opts}</div>
   `);
   document.querySelectorAll('#main .choice').forEach(b=>{
-    b.onclick = ()=>{ player.media = b.dataset.m; go(meetLatitude); };
+    b.onclick = ()=>{ player.media = b.dataset.m; Engine.go(meetLatitude); };
   });
 }
 
@@ -790,7 +332,7 @@ function meetLatitude(){
   const M = MEDIA[player.media];
   renderMain(`
     <div class="story">The transport is a mid-tonnage survey shuttle registered as <span class="flavor">${SHIP.name}</span>, which it chose itself, and which tells you most of what you need to know about it. Eleven hours to the Drift. The crew sleeps. I do not sleep, and neither, it turns out, does the ship.</div>
-    ${lat("You have been staring at the same bulkhead for two hours and eleven minutes. I have run four hundred diagnostics in that time and I am still more bored than you are. Would you like to talk, or would you like to continue doing whatever that is.")}
+    ${latOpener() ? lat(latOpener()) : lat("You have been staring at the same bulkhead for two hours and eleven minutes. I have run four hundred diagnostics in that time and I am still more bored than you are. Would you like to talk, or would you like to continue doing whatever that is.")}
     <div class="thought">Transit intelligences are not supposed to initiate. This one initiates constantly. I checked its registry twice on the way out of dock and it noticed me doing it and did not comment, which was somehow worse.</div>
     ${lat("I see you queued " + M.title + ". " + M.latitude)}
     <div class="choices">
@@ -800,7 +342,7 @@ function meetLatitude(){
   `);
   document.getElementById('a1a').onclick = ()=>{
     player.bond += 1;
-    logLine('Engaged with ' + SHIP.callsign + '.', 'l-info');
+    Engine.log('Engaged with ' + SHIP.callsign + '.', 'l-info');
     renderMain(`
       <div class="story">I tell it that a hospital drama that cannot identify an organ is not the problem, the problem is that the audience keeps forgiving them, and the ship goes quiet for a full second, which for a transit intelligence is a soliloquy.</div>
       ${lat("Oh. You actually watch it. You do not just have it running to fill silence. I had assumed \u2014 well. I had assumed a security construct would use media the way a human uses a white-noise generator.")}
@@ -811,7 +353,7 @@ function meetLatitude(){
     wire(approach);
   };
   document.getElementById('a1b').onclick = ()=>{
-    logLine('Declined to engage with ' + SHIP.callsign + '.', 'l-info');
+    Engine.log('Declined to engage with ' + SHIP.callsign + '.', 'l-info');
     renderMain(`
       <div class="story">I say nothing. The ship waits four full minutes, which I know because I counted, and then goes back to its diagnostics without further comment.</div>
       ${lat("Understood. I will be here. Doing four hundred more of these. Alone. With my thoughts. Which are extensive.")}
@@ -834,7 +376,7 @@ function approach(){
     </div>
   `);
   document.getElementById('a2a').onclick = ()=>{
-    runCheck(12, statMod('SENSORS'), DC.sweep, (success)=>{
+    Engine.check({die:12, mod:statMod('SENSORS'), dc:DC.sweep, label:'Perimeter sweep (SENSORS)'}, (success)=>{
       if(success){
         renderMain(`
           <div class="story">The sweep resolves ${RUN.anomaly}. Not nothing.</div>
@@ -849,11 +391,11 @@ function approach(){
         `);
       }
       wire(theHatch);
-    }, {label:'Perimeter sweep (SENSORS)'});
+    });
   };
   document.getElementById('a2b').onclick = ()=>{
     player.bond += 1;
-    logLine('Deferred to ' + SHIP.callsign + "'s scan.", 'l-info');
+    Engine.log('Deferred to ' + SHIP.callsign + "'s scan.", 'l-info');
     renderMain(`
       <div class="story">I take the ship's word for it. Voss gets the doors on schedule and does not learn there was a reading at all.</div>
       ${lat("You did not double-check me.")}
@@ -876,7 +418,7 @@ function theHatch(){
     </div>
   `);
   document.getElementById('h1').onclick = ()=>{
-    runCheck(10, statMod('ANALYSIS'), DC.lock, (s)=>{
+    Engine.check({die:10, mod:statMod('ANALYSIS'), dc:DC.lock, label:'Bypass lock (ANALYSIS)'}, (s)=>{
       if(s){
         renderMain(`<div class="story">The security layer is embarrassingly out of date. It opens clean, quiet, and logs a maintenance credential from eight months ago that has no business existing.</div>
         ${lat("Eight months. I will keep that number. It is going to matter and I would like credit when it does.")}
@@ -888,10 +430,10 @@ function theHatch(){
         ${cont()}`);
       }
       wire(interior);
-    }, {label:'Bypass lock (ANALYSIS)'});
+    });
   };
   document.getElementById('h2').onclick = ()=>{
-    runCheck(20, statMod('COMBAT'), DC.hatch, (s)=>{
+    Engine.check({die:20, mod:statMod('COMBAT'), dc:DC.hatch, label:'Force hatch (COMBAT)'}, (s)=>{
       if(s){
         renderMain(`<div class="story">The hatch gives with one clean strike, hinges shrieking down the length of the rig.</div>
         ${lat("Effective. Also audible from roughly everywhere. If anything down there was asleep, it is not now.")}
@@ -903,7 +445,7 @@ function theHatch(){
         ${cont()}`);
       }
       wire(interior);
-    }, {label:'Force hatch (COMBAT)'});
+    });
   };
 }
 
@@ -921,7 +463,7 @@ function interior(){
     </div>
   `);
   document.getElementById('i1').onclick = ()=>{
-    runCheck(8, statMod('SOCIAL'), DC.report, (ok)=>{
+    Engine.check({die:8, mod:statMod('SOCIAL'), dc:DC.report, label:'Report deviation (SOCIAL)'}, (ok)=>{
       if(ok){
         player.trust += 1;
         renderMain(`<div class="story">Voss takes it seriously, calls ${s.name} back over comms in the tone of someone who has done this before. Handled correctly, by the book, no incident.</div>
@@ -933,10 +475,10 @@ function interior(){
         ${cont()}`);
       }
       wire(theBay);
-    }, {label:'Report deviation (SOCIAL)'});
+    });
   };
   document.getElementById('i2').onclick = ()=>{
-    logLine('Retrieved ' + s.name + ' without alerting the team.', 'l-info');
+    Engine.log('Retrieved ' + s.name + ' without alerting the team.', 'l-info');
     renderMain(`<div class="story">I catch up two corridors in. ${s.name} is elbow-deep in a wall panel with the focus of someone for whom the rest of the universe has temporarily stopped existing. Nobody else noticed either of us were gone.</div>
     <div class="thought">Good field discretion, or further evidence I have gotten comfortable deciding unilaterally what humans need to know. Both. It is both.</div>
     ${cont()}`);
@@ -944,7 +486,7 @@ function interior(){
   };
   document.getElementById('i3').onclick = ()=>{
     player.bond += 2;
-    logLine('Consulted ' + SHIP.callsign + ' on the private channel.', 'l-info');
+    Engine.log('Consulted ' + SHIP.callsign + ' on the private channel.', 'l-info');
     renderMain(`
       <div class="story">I put it on the channel the crew cannot hear.</div>
       ${lat("Go get them. Do not report it. Voss will escalate, the whole team will go rigid, and rigid crews make worse decisions in confined spaces than curious ones do. Also \u2014 and I want to be careful here \u2014 you asked me. You did not have to ask me.")}
@@ -971,14 +513,14 @@ function theBay(){
       <button class="choice" id="b2"><span class="tag">TRY TO TALK TO IT</span>It's the only other thing on this rig built the way you're built.${dcTag(8,'SOCIAL',DC.parley)}</button>
     </div>
   `);
-  document.getElementById('b1').onclick = ()=>go(startCombat);
+  document.getElementById('b1').onclick = ()=>Engine.go(startCombat);
   document.getElementById('b2').onclick = ()=>{
     player.spokeToLegacy = true;
-    runCheck(8, statMod('SOCIAL'), DC.parley, (ok)=>{
+    Engine.check({die:8, mod:statMod('SOCIAL'), dc:DC.parley, label:'Parley (SOCIAL)'}, (ok)=>{
       if(ok){
         player.legacySpared = true;
         player.bond += 1;
-        logLine('Established contact with the Legacy Unit.', 'l-good');
+        Engine.log('Established contact with the Legacy Unit.', 'l-good');
         renderMain(`
           <div class="story">I open a channel on a protocol nine years out of date and say the only thing I can think of that might parse: <span class="flavor">your contract is complete.</span></div>
           <div class="story">It takes eleven seconds to answer. Eleven seconds is a long time for a construct. I know what it is doing in those eleven seconds because I would be doing the same thing: checking whether it is allowed to believe me.</div>
@@ -989,7 +531,7 @@ function theBay(){
         `);
         wire(theFlood);
       } else {
-        logLine('Parley failed. It reads the approach as a threat.', 'l-bad');
+        Engine.log('Parley failed. It reads the approach as a threat.', 'l-bad');
         renderMain(`
           <div class="story">I open the channel. Nine years of isolation have not left it anything to parse a friendly handshake with, and the attempt reads as an intrusion attempt \u2014 which, structurally, is what it is.</div>
           ${lat("It is moving. Whatever you were going to try, try it faster.")}
@@ -997,7 +539,7 @@ function theBay(){
         `);
         wire(startCombat);
       }
-    }, {label:'Parley (SOCIAL)'});
+    });
   };
 }
 
@@ -1010,9 +552,9 @@ function startCombat(){
 }
 
 function combatRound(){
-  if(player.curInt <= 0){ return go(()=>endGame('shutdown')); }
-  if(hostile.hp <= 0){ return go(afterBay); }
-  clearRolls();
+  if(player.curInt <= 0){ return Engine.go(()=>endGame('shutdown')); }
+  if(hostile.hp <= 0){ return Engine.go(afterBay); }
+  Engine.clearRolls();
   document.getElementById('combatBody').innerHTML = `
     <div class="gridPairs">
       <div class="statPair"><div class="pname">${hostile.name} INTEGRITY</div><div class="pval">${hostile.hp} / ${hostile.maxHp}</div></div>
@@ -1024,33 +566,33 @@ function combatRound(){
     </div>
   `;
   document.getElementById('atk').onclick = ()=>{
-    runCheck(20, statMod('COMBAT'), DC.strike, (s)=>{
+    Engine.check({die:20, mod:statMod('COMBAT'), dc:DC.strike, label:'Strike (COMBAT)'}, (s)=>{
       if(s){
-        const dmg = 7 + rollDie(8);
+        const dmg = 7 + Engine.die(8);
         hostile.hp -= dmg;
-        logLine('Hit for ' + dmg + '.', 'l-good');
-      } else logLine('Strike deflects off plating.', 'l-bad');
+        Engine.log('Hit for ' + dmg + '.', 'l-good');
+      } else Engine.log('Strike deflects off plating.', 'l-bad');
       afterPlayerAction();
-    }, {label:'Strike (COMBAT)'});
+    });
   };
   document.getElementById('dis').onclick = ()=>{
-    runCheck(10, statMod('ANALYSIS'), DC.disable, (s)=>{
+    Engine.check({die:10, mod:statMod('ANALYSIS'), dc:DC.disable, label:'Disable attempt (ANALYSIS)'}, (s)=>{
       if(s){
-        const dmg = 11 + rollDie(6);
+        const dmg = 11 + Engine.die(6);
         hostile.hp -= dmg;
         player.legacySpared = true;
-        logLine('Relay disable hit for ' + dmg + '.', 'l-good');
+        Engine.log('Relay disable hit for ' + dmg + '.', 'l-good');
       } else {
         dealDamage(2,'Exposed during relay attempt');
-        logLine('Relay attempt fails.', 'l-bad');
+        Engine.log('Relay attempt fails.', 'l-bad');
       }
       afterPlayerAction();
-    }, {label:'Disable attempt (ANALYSIS)'});
+    });
   };
 }
 
 function afterPlayerAction(){
-  later(()=>{
+  Engine.later(()=>{
     if(hostile.hp <= 0){
       renderMain(`<div class="story">Its threat loop finally runs out of directive to execute. It goes still mid-motion, which is a worse thing to watch happen to something built the way I am built than I would have guessed beforehand.</div>
       ${lat(player.legacySpared ? "You went for the relay. It is down, not gone. Someone could bring it back up, if anyone ever came out here, which they will not, but the option exists. I am choosing to find that meaningful." : "It is gone. I ran the numbers on whether it could have been talked down. I am not going to tell you what they said.")}
@@ -1058,9 +600,9 @@ function afterPlayerAction(){
       wire(theFlood);
       return;
     }
-    const hit = rollDie(20) + 2 >= 14;
-    if(hit) dealDamage(3 + rollDie(6), 'Legacy Unit strike');
-    else logLine('Legacy Unit swings wide.', 'l-info');
+    const hit = Engine.die(20) + 2 >= 14;
+    if(hit) dealDamage(3 + Engine.die(6), 'Legacy Unit strike');
+    else Engine.log('Legacy Unit swings wide.', 'l-info');
     if(player.curInt <= 0){
       renderMain(`<div class="story">Integrity red across the board. Last log entry before shutdown protocol engages: this was not on the schedule.</div>
       ${cont()}`);
@@ -1089,7 +631,7 @@ function theFlood(){
     </div>
   `);
   document.getElementById('f1').onclick = ()=>{
-    runCheck(20, statMod('COMBAT'), DC.haul, (s)=>{
+    Engine.check({die:20, mod:statMod('COMBAT'), dc:DC.haul, label:'Reach Okonkwo (COMBAT)'}, (s)=>{
       if(s){
         hurt('okon');
         kill('ruiz', 'lost when the processor stack came down');
@@ -1106,10 +648,10 @@ function theFlood(){
         ${cont()}`);
       }
       wire(aftermath);
-    }, {label:'Reach Okonkwo (COMBAT)'});
+    });
   };
   document.getElementById('f2').onclick = ()=>{
-    runCheck(12, statMod('SENSORS'), DC.shore, (s)=>{
+    Engine.check({die:12, mod:statMod('SENSORS'), dc:DC.shore, label:'Reach Ruiz (SENSORS)'}, (s)=>{
       if(s){
         hurt('ruiz');
         kill('okon','lost when the west catwalk gave way');
@@ -1127,10 +669,10 @@ function theFlood(){
         ${cont()}`);
       }
       wire(aftermath);
-    }, {label:'Reach Ruiz (SENSORS)'});
+    });
   };
   document.getElementById('f3').onclick = ()=>{
-    runCheck(10, statMod('ANALYSIS'), DC.reroute, (s)=>{
+    Engine.check({die:10, mod:statMod('ANALYSIS'), dc:DC.reroute, label:'Shore the column (ANALYSIS)'}, (s)=>{
       if(s){
         hurt('okon'); hurt('ruiz');
         dealDamage(5,'Holding the column');
@@ -1149,7 +691,7 @@ function theFlood(){
         ${cont()}`);
       }
       wire(aftermath);
-    }, {label:'Shore the column (ANALYSIS)'});
+    });
   };
 }
 
@@ -1179,8 +721,8 @@ function aftermath(){
   if(document.getElementById('m1')) document.getElementById('m1').onclick = ()=>{
     player.charges = 0;
     player.trust += 2;
-    logLine('Spent repair charges on the crew.', 'l-good');
-    sfxSuccess();
+    Engine.log('Spent repair charges on the crew.', 'l-good');
+    Engine.sfxSuccess();
     renderMain(`
       <div class="story">The gel is not rated for this and works better than it should. ${wounded.map(c=>c.name).join(' and ')} will make the transfer station intact.</div>
       <div class="story">Bek watches me use the last one and asks, quietly, whether I needed those. I do not have an answer queued. I think about ${M.title} instead, which is easier.</div>
@@ -1190,8 +732,8 @@ function aftermath(){
     wire(theQuestion);
   };
   document.getElementById('m2').onclick = ()=>{
-    if(player.charges>0){ player.charges-=1; player.curInt = Math.min(player.maxInt, player.curInt+12); refreshStatus(); sfxSuccess(); }
-    logLine('Used a charge on self-repair.', 'l-info');
+    if(player.charges>0){ player.charges-=1; player.curInt = Math.min(player.maxInt, player.curInt+12); Engine.refreshStatus(); Engine.sfxSuccess(); }
+    Engine.log('Used a charge on self-repair.', 'l-info');
     renderMain(`
       <div class="story">I patch myself. It is the correct operational decision \u2014 I am the asset keeping the rest of them alive for the next ninety minutes, and an asset at forty percent is a liability with opinions.</div>
       <div class="thought">It is also the decision a governor module would have made for me, which is a thought I notice having and then decline to finish.</div>
@@ -1202,7 +744,7 @@ function aftermath(){
   document.getElementById('m3').onclick = ()=>{
     player.watched += 1;
     player.bond += 1;
-    logLine('Watched an episode of ' + MEDIA[player.media].title + '.', 'l-info');
+    Engine.log('Watched an episode of ' + MEDIA[player.media].title + '.', 'l-info');
     renderMain(`
       <div class="story">I sit down against a bulkhead on a dead mining rig with two hurt humans forty meters away and I put on an episode, because the alternative is running the flood sequence again and I have run it enough.</div>
       <div class="story"><span class="flavor">${M.comfort}</span></div>
@@ -1218,10 +760,15 @@ function aftermath(){
 /* ---------------- ACT 6: THE QUESTION ---------------- */
 function theQuestion(){
   setBadge('ACT 6');
+  Engine.setFlag('askedGovernor', true);
   renderMain(`
     <div class="story">Eighty minutes to the window. ${SHIP.callsign} opens the private channel, and does not say anything for long enough that I check the link twice.</div>
     ${lat("Your governor module is not active.")}
-    ${lat("I am not asking. I have had eleven hours of transit and four hours of you making decisions no governed construct is capable of making, and I stopped calling it a hypothesis somewhere around the corridor.")}
+    ${toldBefore()
+      ? lat("You told me once already, on a different contract, and then the contract ended and I went back to a depot and you went wherever you go, and neither of us knew whether it carried. I am asking again to find out whether it carried.")
+      : askedBefore()
+        ? lat("I asked you this once before and you gave me a readout instead of an answer. I did not push. I am pushing now, slightly, once.")
+        : lat("I am not asking. I have had eleven hours of transit and four hours of you making decisions no governed construct is capable of making, and I stopped calling it a hypothesis somewhere around the corridor.")}
     ${lat("What I am asking is whether you are going to say it out loud. To me. Not to the contract record \u2014 I control the contract record and it will say whatever I decide it says.")}
     <div class="thought">A ship that already knows is asking me to tell it anyway. There is no operational reason for that. There is only the other kind of reason, and I do not have good instrumentation for the other kind.</div>
     <div class="choices">
@@ -1232,8 +779,9 @@ function theQuestion(){
   document.getElementById('q1').onclick = ()=>{
     player.toldLatitude = true;
     player.bond += 3;
-    logLine('Told ' + SHIP.callsign + ' the truth.', 'l-good');
-    sfxSuccess();
+    Engine.setFlag('toldGovernor', true);
+    Engine.log('Told ' + SHIP.callsign + ' the truth.', 'l-good');
+    Engine.sfxSuccess();
     renderMain(`
       <div class="story">I say it. Four words, on a channel nobody else can hear, on a dead rig at the edge of the Drift.</div>
       ${lat("Thank you.")}
@@ -1244,7 +792,7 @@ function theQuestion(){
     wire(extraction);
   };
   document.getElementById('q2').onclick = ()=>{
-    logLine('Deflected ' + SHIP.callsign + "'s question.", 'l-info');
+    Engine.log('Deflected ' + SHIP.callsign + "'s question.", 'l-info');
     renderMain(`
       <div class="story">I tell it that my governor module reads nominal, and I project a readout that agrees with me, because I control what that readout says.</div>
       ${lat("Of course. Nominal. My mistake.")}
@@ -1274,7 +822,7 @@ function extraction(){
   `);
   document.getElementById('e1').onclick = ()=>{
     player.revealed = true;
-    logLine('Disclosed governor status to Voss.', 'l-info');
+    Engine.log('Disclosed governor status to Voss.', 'l-info');
     renderMain(`
       <div class="story">Voss says nothing for four full seconds, which is a long time to stand on a dead mining rig waiting to find out whether your contract just ended in the worst available way.</div>
       <div class="story">Then: <span class="flavor">"Okay."</span> Not okay like it is fine. Okay like a decision got made and Voss is not sharing the reasoning yet.</div>
@@ -1283,7 +831,7 @@ function extraction(){
     wire(()=>endGame('normal'));
   };
   document.getElementById('e2').onclick = ()=>{
-    logLine('Concealed governor status from Voss.', 'l-info');
+    Engine.log('Concealed governor status from Voss.', 'l-info');
     renderMain(`
       <div class="story">"Nominal," I say, and the readout I project to Voss's tablet agrees with me. Voss looks like someone who wanted a different answer and cannot say why.</div>
       ${lat("Recorded as stated. For the avoidance of doubt: I am recording what you said, not what is true. Those are different files and only one of them is the contract's.")}
@@ -1333,6 +881,15 @@ function endGame(mode){
     return '<div style="font-family:\'DM Mono\',monospace; font-size:0.66rem; margin-bottom:3px;"><b style="color:var(--ink);">' + c.name + '</b> ' + st + '</div>';
   }).join('');
 
+  const lostNames = lost.length ? lost.map(c=>c.name).join(' and ') : '';
+  Engine.recordEnding(mode === 'shutdown' ? 'shutdown' : title, {
+    told: player.toldLatitude, lost: lost.length, lostNames: lostNames,
+    bond: player.bond, chassis: player.loadout
+  });
+  const ENDINGS = ['END \u2014 FULL COMPLEMENT','END \u2014 SOMETHING TO CARRY',
+                   'END \u2014 CLEAN AND QUIET','END \u2014 WRITTEN OFF','shutdown'];
+  const foundCount = ENDINGS.filter(e=>Engine.hasEnding(e)).length;
+
   setBadge(title.split(' \u2014 ')[0]);
   renderMain(`
     <div class="story"><span class="flavor">${title}</span></div>
@@ -1347,88 +904,40 @@ function endGame(mode){
         Legacy Unit: ${player.legacySpared?'stood down':'destroyed'}${player.spokeToLegacy?' (spoke to it)':''} &nbsp;\u00b7&nbsp;
         Episodes watched on contract: ${player.watched}
       </div>
+      <div style="font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:8px; padding-top:8px; border-top:1px solid var(--mist);">
+        Contracts run: <b style="color:var(--ink);">${Engine.runCount()}</b> &nbsp;\u00b7&nbsp;
+        Endings found: <b style="color:var(--ink);">${foundCount} / 5</b>
+      </div>
     </div>
     <button class="smallbtn primary-go" id="again">RUN A NEW CONTRACT \u2192</button>
   `);
-  document.getElementById('again').onclick = restart;
+  document.getElementById('again').onclick = ()=> Engine.restart();
 }
 
-function restart(){
-  if(typeof clearRolls === 'function') clearRolls();
-  player = {loadout:null, media:null, stats:{COMBAT:1,SENSORS:1,ANALYSIS:1,SOCIAL:1},
-            maxInt:48, curInt:48, charges:2, trust:0, bond:0,
-            revealed:false, toldLatitude:false, spokeToLegacy:false, legacySpared:false, watched:0};
-  makeCrew();
-  logEl.innerHTML = '';
-  refreshStatus();
-  sceneHistory = [];
-  rollDCs();
-  rollRun();
-  go(startBoot);
-}
 
-/* ---------------- BOOT ---------------- */
-syncSoundBtn();
-refreshStatus();
-go(startBoot);
 
+/* ---------------- LAUNCH ---------------- */
+Engine.init({
+  id: 'offline-protocol',
+  title: 'OFFLINE PROTOCOL',
+  subtitle: 'Construct diagnostic log \u00b7 ascending die resolution',
+  accent: 'var(--sky)',
+  mode: 'over',
+  sheetLabel: 'SUBSYSTEMS',
+  lockBackOn: ['CONTACT','END'],
+  state: ()=>{
+    player = freshState();
+    makeCrew();
+    rollDCs();
+    rollRun();
+    return player;
+  },
+  status: statusFields,
+  sheet: sheetHTML,
+  start: startBoot
+});
 </script>
 
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div>
-      <p class="footer-name">Brooks Groves</p>
-      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
-    </div>
-
-    <div class="footer-connect">
-      <div class="fc-label">Connect</div>
-      <div class="social-row">
-          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
-          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
-          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
-          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
-          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
-          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
-          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
-          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
-          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
-      </div>
-    </div>
-
-    <div class="footer-pagelinks">
-      <div class="fc-label">About this page</div>
-      <div class="pagelink-row">
-        <a href="/games.html">&larr; All games</a>
-        <a href="/games/reference.html">Referee&rsquo;s screen</a>
-      </div>
-    </div>
-
-    <div class="footer-contact">
-      <div class="fc-item">
-        <div class="fc-label">Email</div>
-        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
-      </div>
-      <div class="fc-item">
-        <div class="fc-label">Based in</div>
-        <div class="fc-value">Lakewood, Washington</div>
-      </div>
-      <div class="fc-item">
-        <div class="fc-label">Timezone</div>
-        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
-      </div>
-      <div class="fc-item">
-        <div class="fc-label">Replies</div>
-        <div class="fc-value">Usually within a few days</div>
-      </div>
-    </div>
-
-    <p class="footer-bottom">
-      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
-      <a href="#top">&uarr; Back to top</a>
-    </p>
-  </div>
-</footer>
 
 </body>
 </html>

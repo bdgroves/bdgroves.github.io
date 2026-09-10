@@ -214,5 +214,36 @@
   });
 })();
 </script>
+
+<script>
+(function(){
+  function read(id){
+    try {
+      var raw = localStorage.getItem('bg_save_' + id);
+      if(!raw) return null;
+      var s = JSON.parse(raw);
+      return { runs: s.runs || 0, found: Object.keys(s.endings || {}).length };
+    } catch(e){ return null; }
+  }
+  var games = [
+    {id:'kellaths-drift',   sel:0, total:3},
+    {id:'offline-protocol', sel:1, total:5}
+  ];
+  var cards = document.querySelectorAll('.game-card');
+  games.forEach(function(g){
+    var s = read(g.id);
+    if(!s || !s.runs || !cards[g.sel]) return;
+    var meta = cards[g.sel].querySelector('.game-card-meta');
+    if(!meta) return;
+    var line = document.createElement('div');
+    line.className = 'game-card-meta';
+    line.style.color = 'var(--gold)';
+    line.style.marginTop = '-0.5rem';
+    line.textContent = s.runs + (s.runs===1?' run':' runs') + ' \u00b7 ' +
+                       s.found + '/' + g.total + ' endings found';
+    meta.parentNode.insertBefore(line, meta.nextSibling);
+  });
+})();
+</script>
 </body>
 </html>
