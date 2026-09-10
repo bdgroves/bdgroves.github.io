@@ -1092,8 +1092,29 @@ function renderFootballCard(cfg, team, standingsRoot, recentEvent, scheduleNext,
   }
 
   // Standings for this team's division/conference
-  const standingsHTML = cfg.standingsGroup && standingsRoot
-    ? renderStandingsTable(findStandingsGroup(standingsRoot, cfg.standingsGroup), team.id)
+  let standingsGroupNode = null;
+  if (cfg.standingsGroup && standingsRoot) {
+    standingsGroupNode = findStandingsGroup(standingsRoot, cfg.standingsGroup);
+    if (!standingsGroupNode) {
+      // Say what IS in the tree rather than failing silently — the group
+      // naming varies between leagues and seasons, and this is the only
+      // way to see it without the API in front of you.
+      const names = [];
+      (function walk(n, depth) {
+        if (!n || depth > 4) return;
+        if (n.name || n.abbreviation) {
+          names.push('  '.repeat(depth) + (n.name || n.abbreviation) +
+            (n.standings?.entries?.length ? ` [${n.standings.entries.length} entries]` : ''));
+        }
+        (n.children || []).forEach(c => walk(c, depth + 1));
+      })(standingsRoot, 0);
+      console.warn(
+        `standings: no group matching "${cfg.standingsGroup}" for ${cfg.shortName}.\nAvailable:\n` +
+        names.join('\n'));
+    }
+  }
+  const standingsHTML = standingsGroupNode
+    ? renderStandingsTable(standingsGroupNode, team.id)
     : '';
 
   return `<div class="fb-card${cfg.isChamp ? ' fb-champ' : ''}">
@@ -1364,8 +1385,12 @@ async function loadFootball() {
     });
     // Standings fetches — one per unique league (dedupes NFL/CFB across configs)
     const leagues = [...new Set(FOOTBALL_TEAMS.map(t => t.league))];
+    // level=3 asks for DIVISION-level groups. Without it ESPN returns only
+    // conference-level standings — one NFC node holding all 16 teams — and
+    // there is no "NFC West" node for findStandingsGroup to match, so the
+    // table silently renders nothing.
     const standingsPromises = leagues.map(league =>
-      fetch(`https://site.api.espn.com/apis/v2/sports/football/${league}/standings`)
+      fetch(`https://site.api.espn.com/apis/v2/sports/football/${league}/standings?level=3`)
         .then(r => r.ok ? r.json() : Promise.reject(new Error('http ' + r.status)))
         .then(d => ({ league, root: d }))
         .catch(err => { console.warn('standings fetch failed', league, err); return { league, root: null }; })
