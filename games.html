@@ -58,8 +58,9 @@
     .zone-title { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3.5vw,2.2rem); font-weight:900; line-height:1.1; letter-spacing:-0.01em; color:var(--ink); }
     .zone-title em { font-style:italic; color:var(--rust); }
     .zone-sub { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone); margin-top:0.35rem; }
-    .zone-grid { display:grid; grid-template-columns:1fr 1fr; gap:2rem; align-items:start; }
-    @media(max-width:800px) { .zone-grid { grid-template-columns:1fr; gap:1.25rem; } }
+    .zone-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.75rem; align-items:start; }
+    @media(max-width:1100px) { .zone-grid { grid-template-columns:1fr 1fr; } }
+    @media(max-width:700px) { .zone-grid { grid-template-columns:1fr; gap:1.25rem; } }
 
     .game-card { background:var(--cream); border:1px solid var(--mist); padding:1.5rem; display:flex; flex-direction:column; height:100%; }
     .game-card-kicker { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.5rem; }
@@ -139,6 +140,14 @@
         <div class="game-card-desc">You're a security construct escorting a survey crew to a rig that isn't as dead as the paperwork says — and you quietly disabled your own governor module a while back. Seven acts, a crew of five who can die, an old guard construct you can fight or talk down, and a sarcastic transport intelligence on a private channel who works out your secret in the first hour and won't let it go.</div>
         <div class="game-card-meta">Loadout select · d8–d20 checks · Combat · Killable crew · 5 endings</div>
         <a href="/games/offline-protocol.html" class="game-btn">Play →</a>
+      </div>
+
+      <div class="game-card">
+        <div class="game-card-kicker">Deduction · No Combat</div>
+        <div class="game-card-name">🗂️ Adjuster's Report</div>
+        <div class="game-card-desc">An insurance loss adjuster on a station where the death has already been ruled accidental — and the policy pays eleven million if it stays that way. Five pieces of evidence to establish, three suspects with motives, and one of them lying. The culprit is drawn fresh every contract, so the answer is never the same twice.</div>
+        <div class="game-card-meta">Evidence system · Contradiction mechanic · Randomized culprit · 6 outcomes</div>
+        <a href="/games/adjusters-report.html" class="game-btn">Play →</a>
       </div>
     </div>
   </div>
@@ -227,7 +236,8 @@
   }
   var games = [
     {id:'kellaths-drift',   sel:0, total:3},
-    {id:'offline-protocol', sel:1, total:5}
+    {id:'offline-protocol', sel:1, total:5},
+    {id:'adjusters-report',  sel:2, total:6}
   ];
   var cards = document.querySelectorAll('.game-card');
   games.forEach(function(g){
