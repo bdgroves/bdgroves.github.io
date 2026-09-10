@@ -35,6 +35,15 @@
     border-left:3px solid var(--gold); background:var(--cream);
     padding:10px 14px; margin:12px 0; font-size:0.88rem; line-height:1.6;
   }
+  .lead {
+    border-left:3px solid var(--sky); background:var(--cream);
+    padding:9px 13px; margin:10px 0;
+    font-family:'DM Mono',monospace; font-size:0.68rem; line-height:1.6; color:var(--ink);
+  }
+  .lead-label {
+    display:block; font-size:0.52rem; letter-spacing:0.14em; text-transform:uppercase;
+    color:var(--sky); margin-bottom:3px;
+  }
   .whoknows {
     border:1px solid var(--rust); background:var(--cream);
     padding:12px 15px; margin:14px 0;
@@ -628,10 +637,8 @@ function sheetHTML(){
     'Water <b>' + player.water.toFixed(1) + ' L</b> &nbsp; Heat strain <b>' + bar(player.core) + '</b> &nbsp; Feet <b>' + bar(player.feet) + '</b><br>' +
     'Drinking about <b>' + drinkRate('walk').toFixed(2) + ' L/h</b> walking, <b>' + drinkRate('shade').toFixed(2) + ' L/h</b> in shade, at ' + temp() + '\u00b0C<br>' +
     'Shade here: <b>' + shadeHere() + '</b> &nbsp;\u00b7&nbsp; Chance of being found: <b>' + rescueLabel() + '</b><br>' +
-    (player.threads.length
-      ? 'Loose ends: <b>' + player.threads.filter(t=>THREADS[t]).length + '</b> \u00b7 clarity <b>' + lucidity() + '%</b>' +
-        (player.trucks ? ' \u00b7 watched <b>' + player.trucks + '\u00d7</b>' : '') + '<br>'
-      : '') +
+    'Clarity: <b>' + lucidity() + '%</b>' +
+      (player.trucks ? ' \u00b7 watched <b>' + player.trucks + '\u00d7</b>' : '') + '<br>' +
     'Expecting you: <b>' + RUN.expected.hint + '</b>' + (player.note ? ' \u00b7 <b>note left</b>' : '') + '<br>' +
     (player.kit ? 'MECH <b>+' + player.stats.MECHANICAL + '</b> d10 &nbsp; FIELD <b>+' + player.stats.FIELDCRAFT +
       '</b> d12 &nbsp; END <b>+' + player.stats.ENDURANCE + '</b> d20 &nbsp; IMPROV <b>+' + player.stats.IMPROVISE + '</b> d8<br>' : '') +
@@ -647,6 +654,7 @@ function sheetHTML(){
     'places reached: <b>' + seen + ' / ' + NODES.length + '</b><br>' +
     'Visibility from here: <b>' + seeingRange() + ' km</b> for anything tall' +
     (unreached.length ? '<br>Spotted, not reached: <b>' + unreached.join(', ') + '</b>' : '') +
+    notesHTML() +
     '<div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--mist);">' +
       '<div style="font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:5px;">From here</div>' +
       '<table style="font-family:\'DM Mono\',monospace; font-size:0.62rem;">' + rows + '</table>' +
@@ -773,6 +781,52 @@ function whoKnowsBlock(){
     '</span></div>';
 }
 
+
+/* Your own notes, in your own words, because a person keeping
+   track of this would write it down and would not use jargon
+   at themselves. */
+
+/* One line, always visible, saying what the open lead is.
+   Without this the threads are atmosphere and nothing else. */
+function leadBanner(){
+  const open = player.threads.filter(t => THREADS[t] && THREADS[t].next && !nextDone(t));
+  if(!open.length) return '';
+  const t = open[open.length - 1];
+  return '<div class="lead"><span class="lead-label">Following up</span>' +
+    THREADS[t].short + ' \u2014 ' + THREADS[t].next + '</div>';
+}
+
+function notesHTML(){
+  const ts = player.threads.filter(t=>THREADS[t]);
+  if(!ts.length) return '';
+  const rows = ts.map(t=>{
+    const T = THREADS[t];
+    const done = T.next ? nextDone(t) : true;
+    return '<div style="margin-bottom:7px;">' +
+      '<b style="color:var(--ink);">' + T.short + '</b><br>' +
+      '<span style="color:var(--stone);">' + T.note + '</span>' +
+      (T.next && !done
+        ? '<br><span style="color:var(--rust);">\u2192 ' + T.next + '</span>'
+        : '') +
+    '</div>';
+  }).join('');
+  return '<div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--mist);">' +
+    '<div style="font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:6px;">' +
+      'What you have written down</div>' +
+    '<div style="font-family:\'Libre Baskerville\',Georgia,serif; font-size:0.75rem; line-height:1.55;">' + rows + '</div>' +
+  '</div>';
+}
+/* Has the lead already been followed? Keeps the arrow from
+   nagging about something you have done. */
+function nextDone(t){
+  if(t === 'freq')   return found('carrier') || found('digits');
+  if(t === 'carrier')return found('digits');
+  if(t === 'coords') return found('sensor');
+  if(t === 'digits') return found('truck');
+  if(t === 'camera') return player.threads.indexOf('lidopen') !== -1;
+  return false;
+}
+
 function mod(s){ return player.stats[s]; }
 function odds(die, stat, dc){ return Engine.odds({die:die, mod:mod(stat), dc:dc}); }
 
@@ -849,23 +903,40 @@ function pickUp(t){
   if(found(t)) return false;
   player.threads.push(t);
   player.anomaly += 1;
-  Engine.log('\u25c8 ' + THREADS[t], 'l-info');
+  Engine.log('\u25c8 ' + THREADS[t].short + ' \u2014 ' + THREADS[t].note, 'l-info');
   Engine.refreshStatus();
   return true;
 }
 const THREADS = {
-  log:      "Read the logbook in the cairn",
-  freq:     "A frequency written in the back of a logbook",
-  coords:   "Coordinates written beside it",
-  sensor:   "Dug up whatever is buried on the playa",
-  serial:   "A serial number, and the format it is in",
-  plaque:   "Read the plaque at the calibration site",
-  assembly: "Found what somebody built in the adit",
-  carrier:  "Heard 1530 do something other than nothing",
-  digits:   "Copied a position off the gap in the carrier",
-  truck:    "Found the vehicle that position belongs to",
-  camera:   "R.H.'s camera, and what was still in it",
-  below:    "Went down the shaft, and saw who else works down there"
+  log:      { short:"R.H.'s logbook",
+              note:"A man called R.H. found this cache in 1999 and kept coming back for four years. His entries stop in August 2003." },
+  freq:     { short:"1530 kHz",
+              note:"There is a transmitter on 1530 that broadcasts a signal with nothing on it \u2014 no music, no voice, no station name. R.H. logged the same thing in 2001.",
+              next:"Keep listening to it. It does something." },
+  coords:   { short:"A trench line",
+              note:"R.H. followed a buried trench and found it runs past the calibration site, not to it. He wrote down where he dug.",
+              next:"There is a straight line in the playa crust west of the Jeep." },
+  sensor:   { short:"The buried box",
+              note:"Grey conduit sixty centimetres down, with a sealed box spliced into it. Antenna, stencilled serial." },
+  serial:   { short:"The serial format",
+              note:"A letter, a dash, seven digits, a two-digit year. Worth remembering if you see it again." },
+  plaque:   { short:"The calibration site",
+              note:"Legitimate and openly labelled: satellites are aimed at this ground to check their instruments. The equipment hut uses the same serial format as the buried box." },
+  assembly: { short:"The bottle chamber",
+              note:"Somebody spent years setting bottles into the walls of the old mine in colour bands. Nobody was ever meant to see it." },
+  carrier:  { short:"The gap",
+              note:"The 1530 signal cuts out for eleven seconds every four minutes, exactly. Machines keep time like that. Nothing else does.",
+              next:"Something might come through in the gap." },
+  digits:   { short:"A position",
+              note:"A voice read twelve digits in the gap. Twelve digits in that format is a latitude and a longitude \u2014 a place, about eleven kilometres west, under the Pancake Range.",
+              next:"Go there. It is marked on your map now." },
+  truck:    { short:"R.H.'s truck",
+              note:"His Ford, out there since 2003, with the keys in it and four jerry cans in the bed. He never came back to it." },
+  camera:   { short:"His last notebook",
+              note:"His final entry, September 2003: he walked the trench line two kilometres north of where he dug, and found a lid.",
+              next:"Two kilometres north of the buried box." },
+  below:    { short:"The gallery",
+              note:"A lit, swept corridor under the playa, with his bottle-work on the wall of it, and a jacket folded at the end where the work stops." }
 };
 
 /* How unreliable the narrator currently is. Heat and thirst do
@@ -968,8 +1039,12 @@ function cacheScene(){
       Engine.render(
         '<div class="story"><b>' + p.label + '</b></div>' +
         '<div class="hereNote">' + seen(p.plain, p.thin, p.gone) + '</div>' +
+        (p.id === 'log2' && player.carrierHits > 0
+          ? '<div class="thought">You have been listening to 1530. He was listening to 1530. Twenty-five years apart, in the same valley, to the same nothing.</div>'
+          : '') +
         (p.id === 'log3'
-          ? '<div class="thought">He was going back out in September. The book stops in August.</div>'
+          ? '<div class="thought">He was going back out in September. The book stops in August.</div>' +
+            (found('sensor') ? '<div class="thought">Those coordinates are the hole you already dug.</div>' : '')
           : '') +
         Engine.contBtn()
       );
@@ -1352,7 +1427,8 @@ function carrierLine(){
     // with it, which is the one thing staying at the Jeep gives you.
     player.carrierHits = (player.carrierHits || 0) + 1;
     if(player.carrierHits === 1)
-      return "A carrier. No modulation, no station identification, no programme. Something is transmitting on 1530 and saying nothing at all.";
+      return "1530 is not silent and it is not a station either. There is a steady tone sitting on the frequency \u2014 the sound a transmitter makes when it is switched on and nobody is talking into it. " +
+             "No music, no voice, no station name, ever. Just a transmitter, on, saying nothing.";
     if(player.carrierHits === 2)
       return "Still there. Same frequency, same nothing. You leave it running while you do other things and it does not go away.";
     if(player.carrierHits === 3)
@@ -1369,7 +1445,8 @@ function carrierLine(){
     );
   }
   if(n <= 2) return seen(
-    "The frequency from the logbook. It is exactly what he said it was \u2014 on all night, and not a station. A carrier with nothing on it. Somebody wrote that down in 2003 and somebody is still transmitting it.",
+    "This is the frequency out of R.H.'s logbook, and it is doing exactly what he wrote down in 2001: on all night, not a station, a transmitter with nothing on it. " +
+    "He noted it twenty-five years ago. It is still here, still on, still saying nothing.",
     "1530. On all night, not a station, exactly as written. Twenty-three years later. You sit with the key on longer than you meant to.",
     "1530 all night now. Not a station. You are reading a dead man's handwriting off the inside of your own eyelids and the carrier is still there."
   );
@@ -1407,7 +1484,8 @@ function carrierLine(){
 function unlockTruck(){
   if(player.spotted['truck']) return;
   player.spotted['truck'] = true;
-  Engine.log('A position, west under the Pancakes.', 'l-info');
+  Engine.log('Position plotted \u2014 a vehicle, west under the Pancakes. It is on your map.', 'l-good');
+  Engine.sfxSuccess();
 }
 
 function radioScene(){
@@ -1418,11 +1496,14 @@ function radioScene(){
     '<div class="hereNote">Key on, engine off. Battery at <b>' + Math.round(player.battery) + '%</b>. ' +
     'Every minute of this is a minute of starter motor you do not get back.</div>' +
     '<div class="story">' + skip + '</div>' +
-    (night ? '<div class="thought">Skywave. After dark the D layer thins out and the medium wave band stops being local and starts being continental. Six hundred miles is nothing at 2 a.m.</div>' : '') +
+    (night ? '<div class="thought">At night the AM band carries much further than it does in daylight \u2014 signals bounce off the upper atmosphere instead of dying at the horizon. ' +
+             'Six hundred miles is nothing at 2 a.m., which is why you are about to hear Los Angeles.</div>' : '') +
     '<div class="choices">' +
       (night ? BANDS.map((b,i)=>
         '<button class="choice" data-b="' + i + '"><span class="tag">' + b.khz + ' kHz' +
-        (b.call ? ' \u00b7 ' + b.call + ', ' + b.city : '') + '</span>Tune it. \u22124% battery, 30 minutes.</button>').join('')
+        (b.call ? ' \u00b7 ' + b.call + ', ' + b.city : ' \u00b7 no station listed') + '</span>' +
+        (b.odd && player.carrierHits > 0 ? 'The one that is not a station.' : 'Tune it.') +
+        ' \u22124% battery, 30 minutes.</button>').join('')
         : '<button class="choice" id="rx"><span class="tag">SCAN ANYWAY \u00b7 \u22124%</span>Hiss, and the sound of your own alternator not charging.</button>') +
       '<button class="choice" id="rq"><span class="tag">KEY OFF</span>Save what is left.</button>' +
     '</div>'
@@ -1619,6 +1700,7 @@ function arrive(){
       (night ? 'until 05:30' : 'until 20:00') + '</span>Sit out the part of the day that kills people.</button>';
 
   Engine.render(
+    leadBanner() +
     (n.note ? '<div class="hereNote">' + n.note + '</div>' : '') +
     spotLine(spottedNow) +
     '<div class="story"><b>' + n.name + '</b> \u2014 ' + t.label + ', ' + n.el + ' m. ' +
@@ -2008,7 +2090,7 @@ function manifest(){
     (player.threads.filter(t=>THREADS[t]).length
       ? '<div style="margin-top:8px; padding-top:8px; border-top:1px solid var(--mist);">' +
         '<div style="font-size:0.56rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:5px;">Loose ends</div>' +
-        player.threads.filter(t=>THREADS[t]).map(t=>'\u25c8 ' + THREADS[t]).join('<br>') + '</div>'
+        player.threads.filter(t=>THREADS[t]).map(t=>'\u25c8 ' + THREADS[t].short).join('<br>') + '</div>'
       : '') +
     '<div style="margin-top:8px; padding-top:8px; border-top:1px solid var(--mist); color:var(--stone);">' +
       'Trips taken: <b style="color:var(--ink);">' + Engine.runCount() + '</b>' +
