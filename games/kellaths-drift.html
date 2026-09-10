@@ -371,12 +371,14 @@ function rollPercentile(){
 /* ---------------- NAVIGATION / HISTORY ---------------- */
 let sceneHistory = [];
 function go(fn){
+  if(typeof clearRolls === 'function') clearRolls();
   sceneHistory.push(fn);
   fn();
   updateNavBar();
 }
 function goBack(){
   if(sceneHistory.length <= 1) return;
+  if(typeof clearRolls === 'function') clearRolls();
   sceneHistory.pop();
   const prev = sceneHistory[sceneHistory.length - 1];
   prev();
@@ -548,9 +550,45 @@ function chooseSkill(){
 }
 
 /* ---------------- DICE UI HELPER ---------------- */
+// Timers and state for the currently-live roll, so a new roll can always
+// tear down a previous one instead of leaving orphaned rigs on screen.
+let activeTimers = [];
+let rolling = false;
+
+function clearRolls(){
+  activeTimers.forEach(t=>{ clearTimeout(t); clearInterval(t); });
+  activeTimers = [];
+  document.querySelectorAll('.diceRig').forEach(el=> el.remove());
+  rolling = false;
+}
+function later(fn, ms){
+  const t = setTimeout(fn, ms);
+  activeTimers.push(t);
+  return t;
+}
+function repeat(fn, ms){
+  const t = setInterval(fn, ms);
+  activeTimers.push(t);
+  return t;
+}
+// Lock every choice/continue button in the scene so a double-click
+// can never start two rolls against the same decision.
+function lockChoices(){
+  document.querySelectorAll('#main .choice, #main .smallbtn').forEach(b=>{
+    if(!b.closest('.diceRig')) b.disabled = true;
+  });
+}
+
 function runCheck(target, onDone, opts){
   opts = opts || {};
+  if(rolling) return;      // a roll is already in flight
+  rolling = true;
+  clearRolls();            // remove any stale rig from a previous check
+  rolling = true;
+  lockChoices();
+  const priorBadge = document.getElementById('sceneBadge').textContent;
   setBadge('CHECK');
+
   const rigId = 'rig-' + Math.random().toString(36).slice(2,7);
   const extra = `
     <div class="diceRig show" id="${rigId}">
@@ -568,53 +606,70 @@ function runCheck(target, onDone, opts){
   `;
   document.getElementById('main').insertAdjacentHTML('beforeend', extra);
 
-  const tEl = document.getElementById(rigId+'-t');
-  const oEl = document.getElementById(rigId+'-o');
+  const rigEl  = document.getElementById(rigId);
+  const tEl    = document.getElementById(rigId+'-t');
+  const oEl    = document.getElementById(rigId+'-o');
   const metaEl = document.getElementById(rigId+'-meta');
   const r = rollPercentile();
 
-  // Tumble both dice through visible random faces.
+  // Bail out safely if the rig vanished (restart / back pressed mid-roll).
+  const alive = ()=> document.body.contains(rigEl);
+
   let ticks = 0;
-  const tumble = setInterval(()=>{
+  const tumble = repeat(()=>{
+    if(!alive()) return;
     tEl.textContent = rollD10();
     oEl.textContent = rollD10();
     if(ticks % 2 === 0) sfxTick();
     ticks++;
   }, 80);
 
-  // Tens die lands first.
-  setTimeout(()=>{
+  later(()=>{
     clearInterval(tumble);
+    if(!alive()) return;
     tEl.classList.remove('spin');
     tEl.textContent = r.tens;
     sfxLand();
     metaEl.innerHTML = 'Tens die: <b>' + r.tens + '</b> &nbsp;\u00b7&nbsp; ones die still rolling&hellip;';
-    // Ones die keeps tumbling on its own.
-    let t2 = 0;
-    const tumble2 = setInterval(()=>{ oEl.textContent = rollD10(); if(t2 % 2 === 0) sfxTick(); t2++; }, 80);
 
-    setTimeout(()=>{
+    let t2 = 0;
+    const tumble2 = repeat(()=>{
+      if(!alive()) return;
+      oEl.textContent = rollD10();
+      if(t2 % 2 === 0) sfxTick();
+      t2++;
+    }, 80);
+
+    later(()=>{
       clearInterval(tumble2);
+      if(!alive()) return;
       oEl.classList.remove('spin');
       oEl.textContent = r.ones;
       sfxLand();
       const success = r.value <= target;
-      setTimeout(()=>{ success ? sfxSuccess() : sfxFail(); }, 260);
+      later(()=>{ success ? sfxSuccess() : sfxFail(); }, 260);
       metaEl.innerHTML = 'Read as <b>' + r.value + '</b> against a target of <b>' + target + '</b>.';
       const banner = document.getElementById(rigId+'-banner');
       banner.textContent = success ? 'SUCCESS' : 'FAILURE';
       banner.className = 'result-banner ' + (success ? 'success' : 'fail');
       logLine((opts.label||'Check') + ': rolled ' + r.value + ' (need \u2264' + target + ') \u2192 ' + (success?'SUCCESS':'FAILURE'), success ? 'l-good':'l-bad');
 
+      rolling = false;
+      setBadge(priorBadge);
       const cont = document.getElementById(rigId+'-cont');
       cont.style.display = 'block';
-      document.getElementById(rigId+'-contbtn').onclick = ()=> onDone(success, r);
+      const cbtn = document.getElementById(rigId+'-contbtn');
+      let used = false;
+      cbtn.onclick = ()=>{
+        if(used) return;      // guard against double-click
+        used = true;
+        cbtn.disabled = true;
+        clearRolls();
+        onDone(success, r);
+      };
     }, 1100);
   }, 1300);
 }
-
-
-
 
 /* ---------------- RUN VARIATION ---------------- */
 function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
@@ -801,6 +856,7 @@ function startCombat(){
 function combatRound(){
   if(player.curSTA <= 0){ return go(()=>endGame(false, 'wounded')); }
   if(creature.hp <= 0){ return go(scene4); }
+  clearRolls();
   document.getElementById('combatBody').innerHTML = `
     <div class="gridPairs">
       <div class="statPair"><div class="pname">${creature.name} HP</div><div class="pval">${creature.hp} / ${creature.maxHp}</div></div>
@@ -827,7 +883,7 @@ function combatRound(){
 }
 
 function afterPlayerAction(){
-  setTimeout(()=>{
+  later(()=>{
     if(creature.hp <= 0){
       renderMain(`<div class="story">The ${RUN.beast.name} shudders, buckles, and stops moving, cracking against the stone — dead still.</div>
       <button class="smallbtn primary-go" id="n">MOVE ON →</button>`);
@@ -841,6 +897,7 @@ function afterPlayerAction(){
     if(hit){
       const dmg = 4 + rollD10();
       player.curSTA -= dmg;
+      sfxHurt();
       refreshStatus();
       logLine('The ' + RUN.beast.name + ' claws you for ' + dmg + ' damage.', 'l-bad');
     } else {
@@ -904,6 +961,7 @@ function endGame(won, mode){
 }
 
 function restart(){
+  if(typeof clearRolls === 'function') clearRolls();
   player = {race:null, stats:{}, skill:null, maxSTA:0, curSTA:0, hasGear:false};
   logEl.innerHTML = '';
   refreshStatus();

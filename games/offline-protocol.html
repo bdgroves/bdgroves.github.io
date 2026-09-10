@@ -357,9 +357,10 @@ function rollDie(sides){ return 1 + Math.floor(Math.random()*sides); }
 
 /* ---------------- NAVIGATION / HISTORY ---------------- */
 let sceneHistory = [];
-function go(fn){ sceneHistory.push(fn); fn(); updateNavBar(); }
+function go(fn){ if(typeof clearRolls === 'function') clearRolls(); sceneHistory.push(fn); fn(); updateNavBar(); }
 function goBack(){
   if(sceneHistory.length <= 1) return;
+  if(typeof clearRolls === 'function') clearRolls();
   sceneHistory.pop();
   const prev = sceneHistory[sceneHistory.length - 1];
   prev();
@@ -593,9 +594,43 @@ function diePrimer(){
 }
 
 /* ---------------- DICE CHECK UI ---------------- */
+// Timers and state for the currently-live roll, so a new roll can always
+// tear down a previous one instead of leaving orphaned rigs on screen.
+let activeTimers = [];
+let rolling = false;
+
+function clearRolls(){
+  activeTimers.forEach(t=>{ clearTimeout(t); clearInterval(t); });
+  activeTimers = [];
+  document.querySelectorAll('.diceRig').forEach(el=> el.remove());
+  rolling = false;
+}
+function later(fn, ms){
+  const t = setTimeout(fn, ms);
+  activeTimers.push(t);
+  return t;
+}
+function repeat(fn, ms){
+  const t = setInterval(fn, ms);
+  activeTimers.push(t);
+  return t;
+}
+function lockChoices(){
+  document.querySelectorAll('#main .choice, #main .smallbtn').forEach(b=>{
+    if(!b.closest('.diceRig')) b.disabled = true;
+  });
+}
+
 function runCheck(sides, mod, dc, onDone, opts){
   opts = opts || {};
+  if(rolling) return;      // a roll is already in flight
+  rolling = true;
+  clearRolls();            // remove any stale rig from a previous check
+  rolling = true;
+  lockChoices();
+  const priorBadge = document.getElementById('sceneBadge').textContent;
   setBadge('CHECK');
+
   const rigId = 'rig-' + Math.random().toString(36).slice(2,7);
   const modStr = (mod >= 0 ? '+' + mod : String(mod));
   const extra = `
@@ -613,25 +648,33 @@ function runCheck(sides, mod, dc, onDone, opts){
   `;
   document.getElementById('main').insertAdjacentHTML('beforeend', extra);
 
-  const dEl = document.getElementById(rigId+'-d');
+  const rigEl  = document.getElementById(rigId);
+  const dEl    = document.getElementById(rigId+'-d');
   const faceEl = dEl.querySelector('.facenum');
   const metaEl = document.getElementById(rigId+'-meta');
   const raw = rollDie(sides);
   const total = raw + mod;
 
-  // Tumble through visible faces so the roll actually reads as a roll.
-  let tk = 0;
-  const tumble = setInterval(()=>{ faceEl.textContent = rollDie(sides); if(tk % 2 === 0) sfxTick(); tk++; }, 80);
+  const alive = ()=> document.body.contains(rigEl);
 
-  setTimeout(()=>{
+  let tk = 0;
+  const tumble = repeat(()=>{
+    if(!alive()) return;
+    faceEl.textContent = rollDie(sides);
+    if(tk % 2 === 0) sfxTick();
+    tk++;
+  }, 80);
+
+  later(()=>{
     clearInterval(tumble);
+    if(!alive()) return;
     dEl.classList.remove('spin');
     faceEl.textContent = raw;
     sfxLand();
     metaEl.innerHTML = 'The d' + sides + ' lands on <b>' + raw + '</b>&hellip;';
 
-    // Beat, then show the arithmetic.
-    setTimeout(()=>{
+    later(()=>{
+      if(!alive()) return;
       const success = total >= dc;
       success ? sfxSuccess() : sfxFail();
       metaEl.innerHTML = '<b>' + raw + '</b> ' + modStr + ' = <b>' + total + '</b> against DC <b>' + dc + '</b>.';
@@ -640,9 +683,19 @@ function runCheck(sides, mod, dc, onDone, opts){
       banner.className = 'result-banner ' + (success ? 'success' : 'fail');
       logLine((opts.label||'Check') + ': ' + total + ' vs DC ' + dc + ' \u2192 ' + (success?'SUCCESS':'FAILURE'), success ? 'l-good':'l-bad');
 
+      rolling = false;
+      setBadge(priorBadge);
       const cont = document.getElementById(rigId+'-cont');
       cont.style.display = 'block';
-      document.getElementById(rigId+'-contbtn').onclick = ()=> onDone(success, total);
+      const cbtn = document.getElementById(rigId+'-contbtn');
+      let used = false;
+      cbtn.onclick = ()=>{
+        if(used) return;      // guard against double-click
+        used = true;
+        cbtn.disabled = true;
+        clearRolls();
+        onDone(success, total);
+      };
     }, 1000);
   }, 1500);
 }
@@ -779,6 +832,7 @@ function startCombat(){
 function combatRound(){
   if(player.curInt <= 0){ return go(()=>endGame('shutdown')); }
   if(hostile.hp <= 0){ return go(scene5); }
+  clearRolls();
   document.getElementById('combatBody').innerHTML = `
     <div class="gridPairs">
       <div class="statPair"><div class="pname">${hostile.name} INTEGRITY</div><div class="pval">${hostile.hp} / ${hostile.maxHp}</div></div>
@@ -817,7 +871,7 @@ function combatRound(){
 }
 
 function afterPlayerAction(){
-  setTimeout(()=>{
+  later(()=>{
     if(hostile.hp <= 0){
       renderMain(`<div class="story">The Legacy Unit's threat loop finally runs out of directive to execute. It goes still mid-motion, which is a worse thing to watch happen to something built the way I'm built than I'd have guessed beforehand.</div>
       <button class="smallbtn primary-go" id="n">CONTINUE →</button>`);
@@ -935,6 +989,7 @@ function endGame(mode){
 }
 
 function restart(){
+  if(typeof clearRolls === 'function') clearRolls();
   player = {loadout:null, media:null, stats:{COMBAT:1,SENSORS:1,ANALYSIS:1,SOCIAL:1}, maxInt:44, curInt:44, medkit:2, trust:0, revealed:false};
   logEl.innerHTML = '';
   refreshStatus();
