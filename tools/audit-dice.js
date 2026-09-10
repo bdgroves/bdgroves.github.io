@@ -131,12 +131,17 @@ function resolveDC(W, expr, src) {
   // a DC read off a per-run record, e.g. F.dc from the FAULTS table
   if (/^[A-Z]\.\w+$/.test(expr)) {
     const field = expr.split('.')[1];
+    // Only look inside record literals that also declare `fixable`,
+    // so we don't scoop up a `dc:` from an unrelated Engine.check call.
     const vals = [];
-    const tre = new RegExp(field + ':\\s*(\\d+)', 'g');
-    let tm;
-    while ((tm = tre.exec(src))) vals.push(+tm[1]);
+    const recRe = /\{[^{}]*fixable\s*:[^{}]*\}/g;
+    let rm;
+    while ((rm = recRe.exec(src))) {
+      const fm = new RegExp('\\b' + field + '\\s*:\\s*(\\d+)').exec(rm[0]);
+      if (fm) vals.push(+fm[1]);
+    }
     const real = vals.filter(v => v < 90);          // 99 means "not fixable here"
-    if (real.length) return { base: Math.max(...real), spread: 0, spread_note: 'hardest of ' + real.join('/') };
+    if (real.length) return { base: Math.max(...real), spread: 0 };
     return null;
   }
 

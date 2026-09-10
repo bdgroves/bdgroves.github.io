@@ -505,6 +505,9 @@ function freshState(){ return {
   drank:{},        // sources already emptied
   read:{},         // sources you have assessed from a distance
   note:false,      // did you say where you were going
+  threads:[],      // the other situation
+  anomaly:0,
+  batteries:false,
   sick:0,          // from bad water
   bitten:false,
   dead:null,
@@ -619,6 +622,9 @@ function sheetHTML(){
     'Water <b>' + player.water.toFixed(1) + ' L</b> &nbsp; Heat strain <b>' + bar(player.core) + '</b> &nbsp; Feet <b>' + bar(player.feet) + '</b><br>' +
     'Drinking about <b>' + drinkRate('walk').toFixed(2) + ' L/h</b> walking, <b>' + drinkRate('shade').toFixed(2) + ' L/h</b> in shade, at ' + temp() + '\u00b0C<br>' +
     'Shade here: <b>' + shadeHere() + '</b> &nbsp;\u00b7&nbsp; Chance of being found: <b>' + rescueLabel() + '</b><br>' +
+    (player.threads.length
+      ? 'Loose ends: <b>' + player.threads.filter(t=>THREADS[t]).length + '</b> \u00b7 clarity <b>' + lucidity() + '%</b><br>'
+      : '') +
     'Expecting you: <b>' + RUN.expected.hint + '</b>' + (player.note ? ' \u00b7 <b>note left</b>' : '') + '<br>' +
     (player.kit ? 'MECH <b>+' + player.stats.MECHANICAL + '</b> d10 &nbsp; FIELD <b>+' + player.stats.FIELDCRAFT +
       '</b> d12 &nbsp; END <b>+' + player.stats.ENDURANCE + '</b> d20 &nbsp; IMPROV <b>+' + player.stats.IMPROVISE + '</b> d8<br>' : '') +
@@ -820,6 +826,274 @@ function drinkScene(){
 }
 
 
+
+/* ============================================================
+   THE OTHER SITUATION
+   Water and the Jeep are one problem. This is a different one,
+   running underneath it, and the pieces connect if you find
+   enough of them. Nothing here is ever confirmed. Everything
+   has a reading that is completely ordinary, and the person
+   doing the reading has not had water since yesterday.
+   ============================================================ */
+
+/* Threads you have picked up. Some unlock others. */
+function found(t){ return player.threads.indexOf(t) !== -1; }
+function pickUp(t){
+  if(found(t)) return false;
+  player.threads.push(t);
+  player.anomaly += 1;
+  Engine.log('\u25c8 ' + THREADS[t], 'l-info');
+  Engine.refreshStatus();
+  return true;
+}
+const THREADS = {
+  log:      "Read the logbook in the cairn",
+  freq:     "A frequency written in the back of a logbook",
+  coords:   "Coordinates written beside it",
+  sensor:   "Dug up whatever is buried on the playa",
+  serial:   "A serial number, and the format it is in",
+  plaque:   "Read the plaque at the calibration site",
+  assembly: "Found what somebody built in the adit",
+  carrier:  "Heard 1530 do something other than nothing"
+};
+
+/* How unreliable the narrator currently is. Heat and thirst do
+   this. It is not a metaphor and it is not the supernatural. */
+function lucidity(){
+  let l = 100;
+  if(player.water < 4) l -= (4 - player.water) * 9;
+  if(player.water <= 0) l -= 25;
+  l -= player.core * 0.35;
+  l -= Math.min(20, player.dry * 2.5);
+  if(player.bitten) l -= 10;
+  return Math.max(0, Math.round(l));
+}
+/* Pick a description appropriate to how much you can trust yourself.
+   plain = you are fine. thin = something is a little off.
+   gone = you are in no condition to be a witness to anything. */
+function seen(plain, thin, gone){
+  const L = lucidity();
+  if(L > 70) return plain;
+  if(L > 40) return thin;
+  return gone;
+}
+
+/* ---------------- THE CAIRN ---------------- */
+function cacheScene(){
+  Engine.badge('THE CAIRN');
+  const first = !found('log');
+  if(!first){
+    Engine.render('<div class="story">The can is where you left it, sealed, under the same rocks.</div>' + Engine.contBtn());
+    return Engine.wire(arrive);
+  }
+  Engine.render(
+    '<div class="hereNote">A .30 cal ammo can, painted flat brown, wedged under the cairn with the lid gasket still good. ' +
+    'Inside: a logbook in a freezer bag, a golf pencil worn to a stub, four AA batteries, a plastic army man, ' +
+    'a Nevada quarter, and a laminated card explaining the game to anyone who found it by accident.</div>' +
+    '<div class="story">The logbook has forty-one entries. The first is dated 1999. ' +
+    '<b>The last is dated 2003.</b> Nobody has signed it in twenty-three years.</div>' +
+    '<div class="thought">You are, technically, the first to find it in a very long time. There is a word for that in the hobby and it does not seem like the moment.</div>' +
+    '<div class="choices">' +
+      '<button class="choice" id="k1"><span class="tag">READ IT \u00b7 1 h</span>Forty-one entries. You have the time and you do not have anything better.</button>' +
+      '<button class="choice" id="k2"><span class="tag">TAKE THE BATTERIES</span>Four AAs. Probably dead. Probably.</button>' +
+      '<button class="choice" id="k3"><span class="tag">CLOSE IT UP</span>Put the rocks back the way they were.</button>' +
+    '</div>'
+  );
+  document.getElementById('k1').onclick = ()=>{
+    advance(1, shadeHere()!=='none' ? 'shade' : 'rest');
+    if(checkDead()) return;
+    pickUp('log'); pickUp('freq'); pickUp('coords');
+    Engine.render(
+      '<div class="story">Most of it is what logbooks are. <i>Nice hide. TFTC.</i> <i>Cold out here. Saw antelope.</i> ' +
+      '<i>Third time, finally found it, my own fault.</i> Names, dates, weather, the small courtesies of people who will never meet.</div>' +
+      '<div class="story">One name recurs. Twenty-six of the forty-one entries are the same handwriting, getting smaller over four years.</div>' +
+      '<div class="hereNote">' + seen(
+        'The later entries stop being about the cache. <i>Back again. Ran the whole south fence line, nothing new.</i> ' +
+        '<i>They moved it about 400m NE, same box, same paint.</i> <i>Two trucks today, sat on the rise until I left.</i>',
+        'The later entries stop being about the cache and you have to read some of them twice because the handwriting is small and you are having trouble with small. ' +
+        '<i>They moved it again.</i> <i>Two trucks today. Sat on the rise until I left.</i>',
+        'The handwriting swims. You get pieces. <i>They moved it.</i> <i>Sat on the rise until I left.</i> ' +
+        'You are not confident you are reading this correctly and you are not confident you are not.'
+      ) + '</div>' +
+      '<div class="story">The last entry, 2003, is one line and a number: <b>1530 all night now. Not a station.</b> ' +
+      'Beneath it, a set of coordinates in the old format, out on the playa.</div>' +
+      Engine.contBtn()
+    );
+    Engine.wire(arrive);
+  };
+  document.getElementById('k2').onclick = ()=>{
+    player.batteries = true;
+    Engine.sfxSuccess();
+    Engine.log('Took four AA batteries from the cache.', 'l-good');
+    Engine.render('<div class="story">Four AAs, corroded at one end, twenty-odd years old. ' +
+      'Two of them still read something on your tongue, which is a terrible test that everyone uses.</div>' +
+      '<div class="thought">A headlamp with two working cells is a different tool than a headlamp with none. It is not much. It is more than nothing, which is the standing theme out here.</div>' +
+      Engine.contBtn());
+    Engine.wire(arrive);
+  };
+  document.getElementById('k3').onclick = ()=> Engine.go(arrive);
+}
+
+/* ---------------- THE ADIT ---------------- */
+function mineScene(){
+  Engine.badge('THE ADIT');
+  const lit = player.batteries;
+  Engine.render(
+    '<div class="hereNote">Cold air comes out of it steadily, which means it goes somewhere. That is the good news and it is also the bad news.</div>' +
+    '<div class="story">Shade, immediately and completely, ten metres in. Beyond that the light stops.</div>' +
+    '<div class="thought">Old workings kill people every year and almost never by collapse. It is the air. Oxygen goes low, carbon dioxide pools in the bottoms, and it is odourless and you feel fine right up until you do not.</div>' +
+    '<div class="choices">' +
+      '<button class="choice" id="m1"><span class="tag">SHELTER AT THE MOUTH \u00b7 4 h</span>Real shade without going in. The correct answer.</button>' +
+      (lit
+        ? '<button class="choice" id="m2"><span class="tag">GO IN \u00b7 1 h</span>You have light. Test the air as you go and turn around when it changes.' + odds(12,'FIELDCRAFT',9) + '</button>'
+        : '<button class="choice" id="m2b"><span class="tag">GO IN BLIND \u00b7 1 h</span>No light. Hands on the wall, counting steps.' + odds(12,'FIELDCRAFT',11) + '</button>') +
+      '<button class="choice" id="m3"><span class="tag">LEAVE IT</span></button>' +
+    '</div>'
+  );
+  document.getElementById('m1').onclick = ()=> restFor(4,'shade');
+  const go = (dc)=>{
+    advance(1,'shade');
+    if(checkDead()) return;
+    Engine.check({die:12, mod:mod('FIELDCRAFT'), dc:dc, label:'Read the air (FIELDCRAFT)'}, (ok)=>{
+      if(!ok){
+        player.core = Math.min(100, player.core + 22);
+        Engine.sfxHurt();
+        Engine.log('Bad air. Got out.', 'l-bad');
+        Engine.render('<div class="story">Forty metres in the flame of your lighter goes orange and lazy and then goes out, and you are already turning around when your head starts to go light.</div>' +
+          '<div class="thought">You come out on your hands. It takes a while to stop shaking and the shaking is not the problem \u2014 the problem is how good you felt thirty seconds before it happened.</div>' +
+          Engine.contBtn());
+        Engine.refreshStatus();
+        return Engine.wire(arrive);
+      }
+      pickUp('assembly');
+      Engine.render(
+        '<div class="story">The air holds. Eighty metres in, the adit opens into a stope, and somebody has been working in here \u2014 not mining.</div>' +
+        '<div class="hereNote">' + seen(
+          'Bottles. Thousands of them, set into the walls in mortar, arranged by colour into bands that run the whole length of the chamber. ' +
+          'Mirror shards worked in at intervals. Rebar armatures. Painted rock. Somebody hauled all of this in here, over years, and told nobody, and it is beautiful in a way that has nothing to do with anyone seeing it.',
+          'Bottles set into the walls in their thousands, in colour bands, with mirror worked in. Your light moves and the mirrors move it back at you from places you did not point it. ' +
+          'Somebody did this over years. You keep checking behind you, which is not a thing the bottles are doing.',
+          'The walls are glass and the glass is holding your light and giving it back wrong, from angles that do not work, and you understand that this is mirrors and colour and a man with a great deal of time. ' +
+          'Understanding it does not help. You want very much to be outside.'
+        ) + '</div>' +
+        '<div class="thought">Nevada has a history of this. A man spends thirty years building something enormous out of bottles and concrete in a place nobody will come, and then he dies, and it stays.</div>' +
+        Engine.contBtn()
+      );
+      Engine.wire(arrive);
+    });
+  };
+  if(document.getElementById('m2'))  document.getElementById('m2').onclick  = ()=> go(9);
+  if(document.getElementById('m2b')) document.getElementById('m2b').onclick = ()=> go(11);
+  document.getElementById('m3').onclick = ()=> Engine.go(arrive);
+}
+
+/* ---------------- THE THING ON THE PLAYA ---------------- */
+function sensorScene(){
+  Engine.badge('THE PLAYA');
+  if(found('sensor')){
+    Engine.render('<div class="story">The hole you dug is still open. The conduit is still going both directions.</div>' + Engine.contBtn());
+    return Engine.wire(arrive);
+  }
+  const guided = found('coords');
+  Engine.render(
+    '<div class="hereNote">' + (guided
+      ? 'The coordinates from the logbook put you within thirty metres, and thirty metres on a playa is nothing \u2014 you can see the disturbance in the crust from here.'
+      : 'A line in the playa crust, straight, running about forty metres before the surface closes over it. Nothing else out here is straight.') + '</div>' +
+    '<div class="choices">' +
+      '<button class="choice" id="p1"><span class="tag">DIG IT UP \u00b7 2 h</span>Playa crust over silt. Hard work, no tools worth the name.' + odds(20,'ENDURANCE',10) + '</button>' +
+      '<button class="choice" id="p2"><span class="tag">LEAVE IT</span>You have a water problem, not a curiosity problem.</button>' +
+    '</div>'
+  );
+  document.getElementById('p1').onclick = ()=>{
+    advance(2, 'rest');
+    if(checkDead()) return;
+    Engine.check({die:20, mod:mod('ENDURANCE'), dc:10, label:'Dig (ENDURANCE)'}, (ok)=>{
+      if(!ok){
+        Engine.render('<div class="story">Two hours, forty centimetres, and a great deal of water you did not have. Whatever it is, it is deeper than that.</div>' + Engine.contBtn());
+        return Engine.wire(arrive);
+      }
+      pickUp('sensor'); pickUp('serial');
+      Engine.render(
+        '<div class="story">Sixty centimetres down: grey conduit, thumb-thick, running both directions further than you are going to dig. ' +
+        'Spliced into it at this point is a sealed grey box the size of a paperback, with a stub antenna and a stencilled serial.</div>' +
+        '<div class="hereNote">' + seen(
+          'The serial is a letter, a dash, seven digits, and a two-digit year. The year is not old. Nothing about the installation is old.',
+          'A letter, a dash, seven digits, a year. You read it three times to be sure of the digits and you are sure of them and you write them on your hand.',
+          'You write the number on your hand because you do not trust yourself to carry it any other way, and later you will look at your hand and the number will be there in your own writing.'
+        ) + '</div>' +
+        '<div class="thought">Seismic monitoring uses buried arrays. So does groundwater work. So do a number of things that are none of your business, and every one of them is a boring explanation that fits perfectly.</div>' +
+        Engine.contBtn()
+      );
+      Engine.wire(arrive);
+    });
+  };
+  document.getElementById('p2').onclick = ()=> Engine.go(arrive);
+}
+
+/* ---------------- THE CALIBRATION SITE ---------------- */
+function calibScene(){
+  Engine.badge('THE MASTS');
+  if(found('plaque')){
+    Engine.render('<div class="story">Same fence, same masts, same nobody.</div>' + Engine.contBtn());
+    return Engine.wire(arrive);
+  }
+  pickUp('plaque');
+  const match = found('serial');
+  Engine.render(
+    '<div class="hereNote">Chain-link, eight foot, in good repair. Inside: four instrument masts, a solar array, a small equipment hut, ' +
+    'and a patch of playa that has been groomed flat and left alone.</div>' +
+    '<div class="story">A weatherproof placard is wired to the gate. It explains, in plain language and small type, that this is a ' +
+    '<b>radiometric calibration site</b>, that satellites are pointed at this specific piece of ground to check whether their instruments still tell the truth, ' +
+    'and that the surface must not be disturbed. There is a phone number with an area code eight hundred miles from here.</div>' +
+    '<div class="thought">This is the most reassuring thing you have found all week. It is a government installation in the middle of nowhere doing exactly what it says it is doing, which is measuring dirt so that satellites can be honest.</div>' +
+    (match ? '<div class="hereNote">' + seen(
+        'The equipment hut has an inventory sticker by the door. Letter, dash, seven digits, two-digit year. The same format as the box on the playa. Which proves nothing whatsoever \u2014 half the federal government numbers its property this way.',
+        'The sticker on the hut is the same format as the box you dug up. That is either an entirely ordinary procurement standard or it is not, and you have gone back and forth on it twice already.',
+        'Same format. Same format as the box. You know that means nothing. You know it. You are standing in the sun holding a fence and you cannot make it mean nothing.'
+      ) + '</div>' : '') +
+    Engine.contBtn()
+  );
+  Engine.wire(arrive);
+}
+
+/* ---------------- THE HOMESTEAD ---------------- */
+function homesteadScene(){
+  Engine.badge('THE HOMESTEAD');
+  const first = !found('cottonwood');
+  if(first){ player.threads.push('cottonwood'); }
+  Engine.render(
+    '<div class="hereNote">Four walls of dry-laid rock, no roof, a stove flue lying in the corner where it fell. ' +
+    'And out front, forty feet of living cottonwood, which is the only tree for thirty kilometres in any direction.</div>' +
+    '<div class="story">' + (first
+      ? 'A cottonwood cannot get water from the sky here. There is not enough sky. It is drinking from something within about six metres of the surface, and it has been for a hundred years.'
+      : 'The cottonwood is still standing, which is still the most useful fact on this property.') + '</div>' +
+    (first ? '<div class="thought">Which is presumably why somebody built here, and why there is a well, and why the well is worth trying even though the handle is gone.</div>' : '') +
+    Engine.contBtn()
+  );
+  Engine.wire(arrive);
+}
+
+/* ---------------- THE FENCE ---------------- */
+function boundaryScene(){
+  Engine.badge('THE BOUNDARY');
+  const rep = found('boundary');
+  if(!rep) player.threads.push('boundary');
+  Engine.render(
+    '<div class="hereNote">Orange and white sign, bolted to a steel post, weathered but perfectly legible:<br>' +
+    '<b>WARNING \u2014 RESTRICTED AREA. PHOTOGRAPHY PROHIBITED. USE OF DEADLY FORCE AUTHORIZED.</b></div>' +
+    '<div class="story">Behind it, three strands of barbed wire on cedar posts, forty years old, sagging. ' +
+    'You could step over it in a second and a half without touching it.</div>' +
+    '<div class="thought">The fence is not the security. The fence is a courtesy so that nobody can say they did not know. The security is something else and it is not visible from here.</div>' +
+    (found('sensor') ? '<div class="hereNote">' + seen(
+        'The conduit you dug up runs this direction. Not toward the fence exactly. Parallel to it, a few hundred metres out, on your side.',
+        'The buried line runs parallel to this fence. On your side of it. You have thought about that for longer than is useful.',
+        'It runs along the fence. On this side. On your side. You keep saying that phrase to yourself and it keeps sounding like it means something.'
+      ) + '</div>' : '') +
+    Engine.contBtn()
+  );
+  Engine.wire(arrive);
+}
+
 /* ---------------- THE RADIO ----------------
    After dark the ionosphere lifts and the AM band fills up with
    places you are not. It costs battery. So does the starter.    */
@@ -844,11 +1118,41 @@ const BANDS = [
     night:["A man is taking calls about lights over Nye County. The caller describes a ridge. You are looking at that ridge.",
            "Somebody is explaining, patiently and at length, what the government has out here. He is wrong about most of it and right about the fence."],
     day:null },
-  { khz:1530, call:"", city:"",
+  { khz:1530, call:"", city:"", odd:true,
     night:["A carrier. No modulation, no station identification, no programme. Just something transmitting on 1530 and saying nothing at all.",
            "Still there. Same frequency, same nothing. It was there last night too, if you were listening last night."],
     day:null }
 ];
+
+
+/* 1530 is a carrier and nothing else, until you have found enough
+   for your own head to start doing the work. */
+function carrierLine(){
+  const n = player.anomaly;
+  if(!found('freq')){
+    return "A carrier. No modulation, no station identification, no programme. Something is transmitting on 1530 and saying nothing at all.";
+  }
+  if(n <= 2) return seen(
+    "The frequency from the logbook. It is exactly what he said it was \u2014 on all night, and not a station. A carrier with nothing on it. Somebody wrote that down in 2003 and somebody is still transmitting it.",
+    "1530. On all night, not a station, exactly as written. Twenty-three years later. You sit with the key on longer than you meant to.",
+    "1530 all night now. Not a station. You are reading a dead man's handwriting off the inside of your own eyelids and the carrier is still there."
+  );
+  if(n <= 4) return seen(
+    "The carrier holds steady for four minutes, then drops out for eleven seconds, then comes back. You wait. Four minutes. Eleven seconds. Four minutes.",
+    "It goes away for eleven seconds every four minutes. You have timed it twice and got eleven both times, and you are aware that you wanted it to be eleven both times.",
+    "Four minutes and then a gap. You have been counting the gaps instead of sleeping and you could not say for how long."
+  );
+  if(n <= 6) return seen(
+    "Under the carrier, very low, there is structure \u2014 a fast repeating tone pattern, the sound a modem makes. It is not talking to you. It is not talking to anybody who listens on this band.",
+    "There is something under the carrier. Fast, regular, machine. You know what data sounds like and this sounds like data, and you also know what your own head sounds like at this point.",
+    "There is something under it and you cannot tell any more whether the something is in the radio."
+  );
+  return seen(
+    "Four minutes, eleven seconds of nothing, and in the gap tonight \u2014 once, clearly, in the clear \u2014 a woman's voice reading a string of digits. Then the carrier again. You do not get it a second time.",
+    "In the gap, digits. A voice reading numbers. You do not get it twice and you would not swear to it in front of anybody who mattered.",
+    "In the gap there were numbers, or there was a gap and you supplied the numbers. You have been awake a long time and the difference has stopped being available to you."
+  );
+}
 
 function radioScene(){
   Engine.badge('THE RADIO');
@@ -873,8 +1177,10 @@ function radioScene(){
       player.battery = Math.max(0, player.battery - 4);
       advance(0.5, 'shade');
       Engine.sfxTick();
-      const line = Engine.pick(b.night);
+      let line = Engine.pick(b.night);
+      if(b.odd) line = carrierLine();
       Engine.log('Tuned ' + b.khz + ' kHz.', 'l-info');
+      if(b.odd && found('freq') && player.anomaly >= 3) pickUp('carrier');
       Engine.refreshStatus();
       if(checkDead()) return;
       Engine.render(
@@ -1023,6 +1329,12 @@ function arrive(){
     (player.at === 'jeep' && !player.note
       ? '<button class="choice" data-act="note"><span class="tag">LEAVE A NOTE</span>Date, time, water carried, direction of travel. Under the wiper.</button>'
       : ''),
+    (player.at==='cache'     ? '<button class="choice" data-act="cache"><span class="tag">THE AMMO CAN</span>Under the rocks. Somebody put it here on purpose.</button>' : ''),
+    (player.at==='mine'      ? '<button class="choice" data-act="mine"><span class="tag">THE ADIT</span>Shade, and cold air coming out of it.</button>' : ''),
+    (player.at==='sensor'    ? '<button class="choice" data-act="sensor"><span class="tag">THE STRAIGHT LINE</span>Nothing else out here is straight.</button>' : ''),
+    (player.at==='calib'     ? '<button class="choice" data-act="calib"><span class="tag">THE FENCE AND THE PLACARD</span>Read what it actually says.</button>' : ''),
+    (player.at==='homestead' ? '<button class="choice" data-act="home"><span class="tag">LOOK AROUND</span>The walls, the stove flue, the tree.</button>' : ''),
+    (player.at==='boundary'  ? '<button class="choice" data-act="bound"><span class="tag">READ THE SIGN</span>All of it, including the small print.</button>' : ''),
     readOption(),
     (sourceHere() && !player.drank[player.at]
       ? '<button class="choice" data-act="water"><span class="tag">CHECK FOR WATER</span>' +
@@ -1089,7 +1401,13 @@ function readOption(){
 }
 
 function doAct(kind){
-  if(kind === 'jeep')  return Engine.go(jeepScene);
+  if(kind === 'jeep')   return Engine.go(jeepScene);
+  if(kind === 'cache')  return Engine.go(cacheScene);
+  if(kind === 'mine')   return Engine.go(mineScene);
+  if(kind === 'sensor') return Engine.go(sensorScene);
+  if(kind === 'calib')  return Engine.go(calibScene);
+  if(kind === 'home')   return Engine.go(homesteadScene);
+  if(kind === 'bound')  return Engine.go(boundaryScene);
   if(kind === 'water') return Engine.go(drinkScene);
   if(kind === 'note'){
     player.note = true;
@@ -1281,14 +1599,22 @@ function rescued(how){
   } else {
     text = "A white pickup with no markings comes over the rise and stops thirty metres off. Two men get out. They give you water before they ask you anything, which you appreciate, and then they ask you a number of things, and then they drive you to a gate and have you sign a form about what you did and did not see.";
   }
+  const tangled = player.threads.filter(t=>THREADS[t]).length;
+  const coda = tangled >= 5
+    ? "<div class=\"thought\">Nobody asks what you found out there, because the question people ask is whether you are all right. " +
+      "You have a serial number written on your hand in your own writing, half a frequency you cannot stop hearing, and a photograph you did not take of a chamber full of bottles. " +
+      "Every single piece of it has an explanation. You have all of the explanations and you are going to be thinking about it for years.</div>"
+    : tangled >= 3
+      ? "<div class=\"thought\">You will tell the water story. It is a good story and it is the one people want. The other thing you will mention once, to one person, and watch their face, and then not mention again.</div>"
+      : "";
   Engine.recordEnding(how === 'drove' ? 'drove-out'
       : 'rescued-' + (id === 'jeep' ? 'vehicle' : N[id].t === 'road' ? 'road' : 'other'),
-    {day:player.day, water:+player.water.toFixed(1), walked:+player.walked.toFixed(1), at:id});
+    {day:player.day, water:+player.water.toFixed(1), walked:+player.walked.toFixed(1), at:id, tangled:tangled});
   Engine.sfxSuccess();
   Engine.badge('FOUND');
   Engine.render(
     '<div class="story"><span class="flavor">' + (how==='drove'?'DROVE OUT':'FOUND') + ' \u2014 DAY ' + player.day + ', ' + clockStr(player.clock) + '</span></div>' +
-    '<div class="story">' + text + '</div>' + manifest() +
+    '<div class="story">' + text + '</div>' + coda + manifest() +
     '<button class="smallbtn primary-go" id="again">ANOTHER TRIP \u2192</button>'
   );
   document.getElementById('again').onclick = ()=>Engine.restart();
@@ -1316,7 +1642,10 @@ function ending(){
   Engine.render(
     '<div class="story"><span class="danger">DAY ' + player.day + ', ' + clockStr(player.clock) + '</span></div>' +
     '<div class="story">' + text + '</div>' +
-    '<div class="thought">' + lesson + '</div>' + manifest() +
+    '<div class="thought">' + lesson + '</div>' +
+    (player.threads.filter(t=>THREADS[t]).length >= 4
+      ? '<div class="thought">Whatever else you worked out in the last three days goes with you. The logbook is still in the can. The can is still under the rocks.</div>' : '') +
+    manifest() +
     '<button class="smallbtn primary-go" id="again">ANOTHER TRIP \u2192</button>'
   );
   document.getElementById('again').onclick = ()=>Engine.restart();
@@ -1330,6 +1659,11 @@ function manifest(){
     'Water remaining: <b style="color:var(--ink);">' + player.water.toFixed(1) + ' L</b><br>' +
     'Furthest from the Jeep: <b style="color:var(--ink);">' + km('jeep', player.at).toFixed(1) + ' km</b><br>' +
     'Places reached: <b style="color:var(--ink);">' + Object.keys(player.visited).length + ' / ' + NODES.length + '</b>' +
+    (player.threads.filter(t=>THREADS[t]).length
+      ? '<div style="margin-top:8px; padding-top:8px; border-top:1px solid var(--mist);">' +
+        '<div style="font-size:0.56rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-bottom:5px;">Loose ends</div>' +
+        player.threads.filter(t=>THREADS[t]).map(t=>'\u25c8 ' + THREADS[t]).join('<br>') + '</div>'
+      : '') +
     '<div style="margin-top:8px; padding-top:8px; border-top:1px solid var(--mist); color:var(--stone);">' +
       'Trips taken: <b style="color:var(--ink);">' + Engine.runCount() + '</b>' +
     '</div></div>';
