@@ -35,6 +35,19 @@
     border-left:3px solid var(--gold); background:var(--cream);
     padding:10px 14px; margin:12px 0; font-size:0.88rem; line-height:1.6;
   }
+  .whoknows {
+    border:1px solid var(--rust); background:var(--cream);
+    padding:12px 15px; margin:14px 0;
+  }
+  .whoknows .wk-label {
+    display:block; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--rust); margin-bottom:6px;
+  }
+  .whoknows .wk-body { font-size:0.88rem; line-height:1.6; }
+  .whoknows .wk-verdict {
+    display:block; margin-top:8px; font-family:'DM Mono',monospace; font-size:0.66rem;
+    letter-spacing:0.04em; color:var(--ink);
+  }
   .spotted {
     border-left:3px solid var(--sky); background:var(--cream);
     padding:10px 14px; margin:12px 0;
@@ -437,7 +450,7 @@ const FAULTS = {
   spark:  { name:"crank sensor",     fixable:false, dc:99,
             clue:"Cranks and cranks and never once tries to fire. No codes you can read without a scanner.",
             fix:"" },
-  tyre:   { name:"two flats",        fixable:true,  dc:11,
+  tyre:   { name:"two flats",        fixable:true,  dc:9,
             clue:"One sidewall opened on a rock and the spare went soft an hour later.",
             fix:"Plug kit, a lot of pumping, and a tyre that will hold if you drive it like it is made of glass." }
 };
@@ -702,8 +715,8 @@ function startTrip(){
     '<div class="story">The Jeep stopped at 14:30 on a two-track in Railroad Valley, Nye County, and did not start again. ' +
     'The nearest pavement is somewhere north. You are not certain how far, because you turned off the graded road ' +
     'a long time ago and the odometer is not a map.</div>' +
-    '<div class="thought">Nobody knows exactly where you are. That is the whole situation, stated plainly.</div>' +
-    '<div class="hereNote">' + RUN.expected.line + '</div>' +
+    '<div class="thought">You are somewhere in the middle of a valley eighty kilometres long, off the graded road, on a two-track that is not on most maps. That part is simply true.</div>' +
+    whoKnowsBlock() +
     '<div class="story">Who came out here today?</div>' +
     '<div class="loadoutGrid" id="kitGrid"></div>' +
     '<button class="smallbtn primary-go" id="kitNext" disabled>GET OUT AND LOOK \u2192</button>'
@@ -734,6 +747,19 @@ function startTrip(){
     Engine.go(arrive);
   };
 }
+function whoKnowsBlock(){
+  return '<div class="whoknows">' +
+    '<span class="wk-label">Who knows you came out here</span>' +
+    '<span class="wk-body">' + RUN.expected.line + '</span>' +
+    '<span class="wk-verdict">\u2192 ' + RUN.expected.hint +
+      (RUN.expected.key === 'nobody'
+        ? ' No search will start. Waiting is not a plan.'
+        : RUN.expected.key === 'soon'
+          ? ' A search will start. Waiting is a plan.'
+          : ' A search might start. It might not.') +
+    '</span></div>';
+}
+
 function mod(s){ return player.stats[s]; }
 function odds(die, stat, dc){ return Engine.odds({die:die, mod:mod(stat), dc:dc}); }
 
@@ -779,6 +805,7 @@ function drinkScene(){
   };
   if(document.getElementById('w2')) document.getElementById('w2').onclick = ()=>{
     advance(2, 'shade');
+    if(checkDead()) return;
     Engine.check({die:8, mod:mod('IMPROVISE'), dc:7, label:'Strain the water (IMPROVISE)'}, (ok)=>{
       player.water += src.L; player.drank[id] = true;
       if(!ok) player.sick += 1;
@@ -890,6 +917,7 @@ function jeepScene(){
   const B = id => document.getElementById(id);
   if(B('j1')) B('j1').onclick = ()=>{
     advance(1,'rest');
+    if(checkDead()) return;
     Engine.check({die:10, mod:mod('MECHANICAL'), dc:8, label:'Diagnose (MECHANICAL)'}, (ok)=>{
       if(ok){
         player.diagnosed = true;
@@ -906,6 +934,7 @@ function jeepScene(){
   };
   if(B('j2')) B('j2').onclick = ()=>{
     advance(2,'rest');
+    if(checkDead()) return;
     Engine.check({die:10, mod:mod('MECHANICAL'), dc:F.dc, label:'Repair (MECHANICAL)'}, (ok)=>{
       if(ok){
         player.fixed = true;
@@ -920,6 +949,7 @@ function jeepScene(){
   };
   if(B('j3')) B('j3').onclick = ()=>{
     advance(2,'rest');
+    if(checkDead()) return;
     player.battery -= 12;
     Engine.render('<div class="story">Two hours confirming what you already knew, and twelve percent of a battery you are going to want later.</div>' + Engine.contBtn());
     Engine.wire(jeepScene);
@@ -1024,6 +1054,7 @@ function arrive(){
       lightWord() + ', ' + T + '\u00b0C.</div>' +
     bodyLine + heatWarn +
     '<div class="thought">' + t.blurb + '</div>' +
+    (player.at==='jeep' && player.day===1 ? whoKnowsBlock() : '') +
     (player.at==='jeep' && player.day>=2
       ? '<div class="legline">Day ' + player.day + '. ' +
         (RUN.expected.key === 'nobody'
