@@ -526,6 +526,8 @@ function freshState(){ return {
   seenRooms:[],    // rooms entered
   looked:[],       // things examined, as 'room:thing'
   trucks:0,        // times you have been watched
+  ravens:0,        // it has been following you
+  signed:false,    // did you put your name in the book
   carrierHits:0,   // nights spent on 1530
   repairTries:0,   // how many times you have gone at it
   sick:0,          // from bad water
@@ -954,6 +956,15 @@ const THREADS = {
   camera:   { short:"His last notebook",
               note:"His final entry, September 2004: he walked the trench line two kilometres north of where he dug, and found a lid.",
               next:"Two kilometres north of the buried box." },
+  tended:   { short:"Somebody still comes here",
+              note:"The batteries in the cache are dated 2019 \u2014 about ten years old, not twenty-two. Nobody has signed the logbook since 2004, but somebody has been maintaining the can.",
+              next:"Look properly at the lid of the can." },
+  signed:   { short:"You signed it",
+              note:"Forty-two entries now. You wrote the date, where the Jeep is, and everything you worked out. She comes out twice a year." },
+  daughter: { short:"His daughter",
+              note:"R.H. was 51. He did not come home in September 2004 and neither he nor his truck was ever found. His daughter has maintained the cache twice a year ever since, and has never signed the log, because she would rather the last name in it stayed his." },
+  lights:   { short:"Lights over the south end",
+              note:"Two lights, low, holding station for four minutes with no strobes and no closing. There is a working explanation. There is always a working explanation." },
   habits:   { short:"How he resupplied",
               note:"R.H. cached water at the places he used \u2014 under slabs, in contractor bags, weighted with rock. Ruins, workings and high points are where he put them.",
               next:"Search likely ground. You know what you are looking for now." },
@@ -1348,7 +1359,11 @@ function cacheScene(){
         ' \u00b7 30 min</span>' + (p.id==='log1' ? 'Start at the beginning.' :
                                     p.id==='log2' ? 'Keep going. It changes.' :
                                     'The last year he came out here.') + '</button>').join('') +
-      (!player.batteries ? '<button class="choice" id="k2"><span class="tag">TAKE THE BATTERIES</span>Four AAs, corroded at one end. Probably dead. Probably.</button>' : '') +
+      (player.readPages.indexOf('log3') !== -1 && !found('daughter')
+        ? '<button class="choice" id="k5"><span class="tag">THE CARD IN THE LID \u00b7 5 min</span>There is a laminated card taped inside the lid. It is not the one that explains the game.</button>' : '') +
+      (!player.batteries ? '<button class="choice" id="k2"><span class="tag">TAKE THE BATTERIES</span>Four AAs in the bottom of the can. Probably dead. Probably.</button>' : '') +
+      (found('daughter') && !player.signed
+        ? '<button class="choice" id="k6"><span class="tag">SIGN THE LOG \u00b7 5 min</span>Twenty-two years after the last entry. The pencil still works.</button>' : '') +
       '<button class="choice" id="k3"><span class="tag">PUT THE ROCKS BACK</span></button>' +
     '</div>'
   );
@@ -1374,13 +1389,69 @@ function cacheScene(){
       Engine.wire(cacheScene);
     };
   });
+  if(document.getElementById('k5')) document.getElementById('k5').onclick = ()=>{
+    pickUp('daughter');
+    Engine.render(
+      '<div class="story">Taped inside the lid, under the card that explains the game to people who find these by accident, there is a second card. Different lamination. Newer. Printed rather than handwritten, which somebody did deliberately so it would last.</div>' +
+      '<div class="hereNote">' + seen(
+        "<i>This cache belonged to my father. He placed it in 2001 and maintained it until September 2004, when he did not come home. " +
+        "He was 51. His truck was never found and neither was he.</i><br><br>" +
+        (found('truck')
+          ? "<span style=\"color:var(--rust);\">You know where his truck is. You were standing beside it two days ago. You drank his water.</span><br><br>"
+          : "") +
+        "<i>I keep it going. I come out twice a year. I have never signed the log because he signed the log and I would rather the last name in it stayed his.</i><br><br>" +
+        "<i>If you are reading this and you knew him, or you found something of his, there is a number on the back of this card.</i><br><br>" +
+        "You turn it over. There is a number. The lamination has lifted along that edge and the last four digits have gone to a grey smear.",
+        "<i>This cache belonged to my father. He placed it in 2001 and maintained it until September 2004, when he did not come home.</i> " +
+        "<i>I keep it going. I have never signed the log because he signed the log and I would rather the last name in it stayed his.</i><br><br>" +
+        (found('truck') ? "<span style=\"color:var(--rust);\">You know where his truck is.</span><br><br>" : "") +
+        "There is a number on the back and the last four digits are gone.",
+        "It is from his daughter. He did not come home. She keeps it going and will not sign it. There is a number and you cannot read all of it."
+      ) + '</div>' +
+      '<div class="thought">Twice a year for twenty-two years. That is forty-four drives out to a point above an empty valley to change the batteries in a box, on the chance that somebody comes through who knew him.</div>' +
+      '<div class="story"><span class="flavor">You are somebody who came through.</span></div>' +
+      Engine.contBtn()
+    );
+    Engine.wire(cacheScene);
+  };
   if(document.getElementById('k2')) document.getElementById('k2').onclick = ()=>{
     player.batteries = true;
     Engine.sfxSuccess();
     Engine.log('Took four AA batteries from the cache.', 'l-good');
+    pickUp('tended');
     Engine.render('<div class="story">Two of the four still read something on your tongue, which is a terrible test that everyone uses.</div>' +
-      '<div class="thought">A headlamp with two working cells is a different tool than a headlamp with none. It is not much. It is more than nothing, which is the standing theme out here.</div>' +
+      '<div class="hereNote">' + seen(
+        "You turn one over to check the terminal and there is a date printed on the wrapper. <b>Best before 2019.</b><br><br>" +
+        "These batteries are not twenty-two years old. They are about ten. Somebody put them in this can long after the last entry in the logbook, and did not sign it.",
+        "There is a date on the wrapper. 2019. These are not twenty-two-year-old batteries and somebody put them here without signing the book.",
+        "The wrapper says 2019 and you look at it for a while trying to make that mean something other than what it means."
+      ) + '</div>' +
+      '<div class="thought">A headlamp with two working cells is a different tool than a headlamp with none. That is the smaller of the two things you just learned.</div>' +
       Engine.contBtn());
+    Engine.wire(cacheScene);
+  };
+  if(document.getElementById('k6')) document.getElementById('k6').onclick = ()=>{
+    player.signed = true;
+    pickUp('signed');
+    Engine.sfxSuccess();
+    Engine.log('Signed the logbook.', 'l-good');
+    Engine.render(
+      '<div class="story">The golf pencil is worn to about forty millimetres and it still writes, because a pencil does not care how long it has been in a box.</div>' +
+      '<div class="hereNote">' + seen(
+        "You do not write much. The date. That the Jeep is down about twelve kilometres south-west on the two-track. That you took water and you are sorry and you will replace it if you can.<br><br>" +
+        "And then, because it is the only thing you have that she asked for, you write down what you found. The trench. The frequency. The lid. Where the lid is.<br><br>" +
+        (found('truck')
+          ? "And at the top of the page, in capitals, because it is the only part of this that will matter to one person: " +
+            "<b>HIS TRUCK IS AT 38\u00b022.4' N 115\u00b052.6' W. THE KEYS ARE IN IT.</b><br><br>"
+          : "") +
+        "Then you put the book in the bag and the bag in the can and the can under the rocks, the way he did, the way she does.",
+        "You write the date, and where the Jeep is, and that you took water. Then the trench, the frequency, the lid." +
+        (found('truck') ? " And at the top, in capitals, where his truck is and that the keys are still in it." : ""),
+        "You write it all down. You are not sure afterwards how much of it you wrote or how much of it you only meant to."
+      ) + '</div>' +
+      '<div class="thought">Forty-two entries now. She comes out twice a year. Whatever else happens to you in the next three days, that is going to be sitting under a cairn in April.</div>' +
+      Engine.contBtn()
+    );
     Engine.wire(cacheScene);
   };
   document.getElementById('k3').onclick = ()=> Engine.go(arrive);
@@ -2164,6 +2235,262 @@ function doAct(kind){
 }
 
 
+
+/* ============================================================
+   ENCOUNTERS
+   The valley is mostly nothing happening, which is accurate and
+   also boring if nothing happens at all. These fire on arrival,
+   weighted by ground, hour, heat and how deep you are into the
+   other situation. Some cost you. Some are the best news you
+   will get all week. Most are just the desert being the desert.
+   ============================================================ */
+function encounterPool(){
+  const t = N[player.at].t;
+  const hour = (player.clock % 24 + 24) % 24;
+  const T = temp();
+  const night = isNight(player.clock);
+  const dusk = (hour >= 18.5 && hour <= 23) || (hour >= 4.5 && hour <= 7.5);
+  const west = ['boundary','baj_w','wash_w','playa_s','twotrack_s','mudflat','truck','pancake'].indexOf(player.at) !== -1;
+  const open = t === 'playa' || t === 'bajada';
+  const A = player.anomaly;
+  const pool = [];
+  const add = (id, w)=>{ if(w > 0) pool.push({id:id, w:w}); };
+
+  add('snake',  (['wash','ruin','mine','bajada'].indexOf(t)!==-1 && T>=20 && T<=36) ? (dusk?16:7) : 0);
+  add('truck',  (west || A>=3) ? ((west?13:4) + A*2) * (night?0.4:1) : 0);
+  add('horses', (open || t==='water') ? 8 : 3);
+  add('raven',  6 + (player.water < 3 ? 6 : 0));
+  add('devil',  (open && !night && T>=30) ? 10 : 0);
+  add('boom',   (!night && (west || A>=2)) ? 7 : 2);
+  add('aircraft', night ? 4 : 9);
+  add('bees',   (t==='water' || player.at==='spring_w') ? 14 : 0);
+  add('storm',  (!night && T>=32) ? 6 : 0);
+  add('lights', (night && A>=2) ? 9 + A : 0);
+  add('bones',  (t==='bajada' || t==='wash') ? 5 : 0);
+  return pool;
+}
+
+function rollEncounter(){
+  const pool = encounterPool();
+  const total = pool.reduce((s,p)=>s+p.w, 0);
+  // Roughly a one-in-three chance that anything at all happens.
+  if(Math.random() > Math.min(0.42, total/100)) return null;
+  let r = Math.random() * total;
+  for(const p of pool){ r -= p.w; if(r <= 0) return p.id; }
+  return null;
+}
+
+function maybeEncounter(next){
+  const e = rollEncounter();
+  if(!e) return next();
+  if(e === 'snake') return maybeSnake(next, true);
+  if(e === 'truck') return maybeTruck(next, true);
+  return ENCOUNTERS[e](next);
+}
+
+/* Small events. Most cost a little time and give you something to
+   look at. A few genuinely matter. */
+const ENCOUNTERS = {
+
+  horses: function(next){
+    Engine.badge('HORSES');
+    const near = (ADJ[player.at]||[]).filter(id => RUN.water[id] && !player.drank[id]);
+    if(near.length) player.spotted[near[0]] = true;
+    Engine.render(
+      '<div class="hereNote">' + seen(
+        "Eleven mustangs on the flat, maybe four hundred metres off, heads up and watching you with the total attention of animals who have never been hunted and have also never been fed. A bay stallion walks four steps toward you and stops.",
+        "Horses. Eleven of them, watching. One walks toward you and stops, and you have no idea what that means and neither does he.",
+        "There are horses. They are looking at you. You sit down for a minute."
+      ) + '</div>' +
+      '<div class="thought">Wild horses in the Great Basin water every day or two in summer, and they do not wander far from it. ' +
+      (near.length ? 'They came from somewhere and they are going back. <span class="flavor">That direction is worth your attention.</span>' : 'Which tells you there is water within a few miles, if you could work out which few.') +
+      '</div>' + Engine.contBtn());
+    Engine.wire(next);
+  },
+
+  raven: function(next){
+    Engine.badge('A RAVEN');
+    player.ravens = (player.ravens||0) + 1;
+    const n = player.ravens;
+    Engine.render('<div class="hereNote">' + (
+      n === 1 ? seen("A raven on a yucca stalk, side-on, working one eye and then the other. It makes the noise they make when they are not calling to anything \u2014 a low wooden knock, three times.",
+                     "A raven watching you with one eye and then the other. Three low knocks.",
+                     "There is a raven. It is looking at you sideways.")
+      : n === 2 ? seen("The raven again, or its colleague. Two hundred metres ahead, on the ground this time, walking. Ravens walk when they are in no hurry.",
+                       "The raven again. On the ground, walking, in no hurry at all.",
+                       "It is here again. It walks. You do not like that it walks.")
+      : seen("It has been with you for a while now. This is what ravens do \u2014 they follow large animals because large animals eventually stop moving. It is not an omen. It is a business decision.",
+             "It has been with you a while. Ravens follow large animals because large animals eventually stop moving. That is all this is.",
+             "It is waiting. You know exactly what it is waiting for and so does it.")
+    ) + '</div>' + Engine.contBtn());
+    Engine.wire(next);
+  },
+
+  devil: function(next){
+    Engine.badge('DUST');
+    advance(0.25, 'rest');
+    if(checkDead()) return;
+    Engine.render('<div class="hereNote">' + seen(
+      "A dust devil comes up off the playa a hundred metres out and walks across your line, sixty feet tall, sounding like a held breath. It carries a sheet of something \u2014 paper, plastic, the top of a mylar balloon \u2014 up and out of sight.",
+      "A dust devil crosses in front of you carrying something bright up and out of sight. You do not get a look at it.",
+      "Dust goes up in a column and something shiny goes up with it and you watch it until it is gone."
+    ) + '</div>' +
+    '<div class="thought">Fifteen minutes of grit in everything, and one more thing you cannot quite account for.</div>' +
+    Engine.contBtn());
+    Engine.wire(next);
+  },
+
+  boom: function(next){
+    Engine.badge('OVERHEAD');
+    Engine.render('<div class="hereNote">' + seen(
+      "A double crack, flat and enormous, from somewhere south and high. No aircraft. You scan the whole sky twice and there is nothing in it, and the sound rolls off the Grants and comes back at you eight seconds later.",
+      "Two cracks from high and south. Nothing in the sky. The echo comes back off the range.",
+      "Something went over and it was not there when you looked."
+    ) + '</div>' +
+    '<div class="thought">Sonic boom. Supersonic aircraft over the ranges, which is a completely ordinary thing to happen in this part of Nevada and never once feels ordinary.</div>' +
+    Engine.contBtn());
+    Engine.wire(next);
+  },
+
+  aircraft: function(next){
+    Engine.badge('AIRCRAFT');
+    const canSignal = player.mirror || player.mylar;
+    Engine.render(
+      '<div class="hereNote">' + seen(
+        "A light aircraft, high, tracking north-east on a line that will take it over the far side of the valley in about ninety seconds. Single engine. Probably somebody going to Ely.",
+        "An aircraft, high, going north-east. Ninety seconds of it and then it is past.",
+        "There is a plane. It is very high and it is not going to be there long."
+      ) + '</div>' +
+      '<div class="choices">' +
+        (canSignal ? '<button class="choice" id="e1"><span class="tag">MIRROR IT</span>Ninety seconds and one chance at the angle.' + odds(8,'IMPROVISE',8) + '</button>' : '') +
+        '<button class="choice" id="e2"><span class="tag">WAVE</span>Both arms. It will not work. You do it anyway.</button>' +
+      '</div>'
+    );
+    if(document.getElementById('e1')) document.getElementById('e1').onclick = ()=>{
+      Engine.check({die:8, mod:mod('IMPROVISE'), dc:8, label:'Flash the aircraft (IMPROVISE)'}, (ok)=>{
+        if(ok){
+          player.searchHeat += 22;
+          Engine.sfxSuccess();
+          Engine.log('You put light on an aircraft.', 'l-good');
+          Engine.render('<div class="story">You catch it twice. The second time the wing dips \u2014 not a waggle, not unmistakable, but a dip that was not there before.</div>' +
+            '<div class="thought">Somebody in that cockpit either saw a flash in an empty valley and thought about it, or did not. You will find out or you will not.</div>' + Engine.contBtn());
+        } else {
+          Engine.render('<div class="story">You cannot hold the angle. Ninety seconds of throwing light at a moving thing and it goes over the ridge without changing course.</div>' + Engine.contBtn());
+        }
+        Engine.refreshStatus();
+        Engine.wire(next);
+      });
+    };
+    document.getElementById('e2').onclick = ()=>{
+      Engine.render('<div class="story">You wave both arms at an aircraft two thousand metres up, which is exactly as effective as you knew it would be, and you feel better for about four minutes afterward.</div>' + Engine.contBtn());
+      Engine.wire(next);
+    };
+  },
+
+  bees: function(next){
+    Engine.badge('BEES');
+    Engine.render(
+      '<div class="hereNote">' + seen(
+        "The sound reaches you before you see it. Bees on the tank rim, hundreds of them, working the wet edge \u2014 and a hum coming off the pipe housing that is not hundreds, it is thousands. There is a colony in there.",
+        "Bees. Hundreds on the tank rim and a sound out of the pipe housing that says a great many more.",
+        "The tank is making a noise. You work out what the noise is."
+      ) + '</div>' +
+      '<div class="thought">Desert bees defend water harder than they defend anything else, and in this part of the country a fair number of them are not the placid kind. People die of this out here more often than of snakes.</div>' +
+      '<div class="choices">' +
+        '<button class="choice" id="b1"><span class="tag">WORK AROUND THEM \u00b7 1 h</span>Slow, low, downwind, and take what you can from the far side.' + odds(12,'FIELDCRAFT',8) + '</button>' +
+        '<button class="choice" id="b2"><span class="tag">LEAVE IT</span>Water you cannot reach is not water.</button>' +
+      '</div>'
+    );
+    document.getElementById('b1').onclick = ()=>{
+      advance(1,'rest');
+      if(checkDead()) return;
+      Engine.check({die:12, mod:mod('FIELDCRAFT'), dc:8, label:'Work around the bees (FIELDCRAFT)'}, (ok)=>{
+        if(ok){
+          Engine.render('<div class="story">An hour of moving like the slowest thing alive. You get to the far side, you fill what you came to fill, and nothing in the colony decides you are a problem.</div>' + Engine.contBtn());
+        } else {
+          player.core = Math.min(100, player.core + 12);
+          Engine.sfxHurt();
+          Engine.log('Stung. Several times.', 'l-bad');
+          Engine.render('<div class="story">You get about four minutes before the note changes. Then you are running, badly, in heat, having taken somewhere between nine and fifteen of them across the neck and one hand.</div>' +
+            '<div class="thought">Not enough to kill you unless you are the unlucky sort. Enough that your heart is going to be doing extra work for hours you needed it not to.</div>' + Engine.contBtn());
+        }
+        Engine.refreshStatus();
+        Engine.wire(next);
+      });
+    };
+    document.getElementById('b2').onclick = ()=>{ Engine.go(next); };
+  },
+
+  storm: function(next){
+    Engine.badge('WEATHER');
+    const inWash = N[player.at].t === 'wash';
+    Engine.render(
+      '<div class="hereNote">' + seen(
+        "Cell building over the Quinn Canyons, black underneath and dragging a grey skirt of virga that is not reaching the ground. Thunder about forty seconds out. It is not raining here and it may be raining very hard somewhere you cannot see.",
+        "Storm over the Quinns, dragging virga. Thunder forty seconds out. Not raining here.",
+        "There is weather. It is not here yet."
+      ) + '</div>' +
+      (inWash
+        ? '<div class="story"><span class="danger">You are standing in a wash. A dry wash in the Great Basin is a river that is not currently running, and the water that fills it falls somewhere you cannot see.</span></div>'
+        : '<div class="thought">If it does rain, there will be water standing in the low ground for a few hours and then there will not be. Pools on a playa go fast.</div>') +
+      '<div class="choices">' +
+        (inWash ? '<button class="choice" id="w1"><span class="tag">GET OUT OF THE WASH \u00b7 30 min</span>Uphill, now, before you find out.</button>' : '') +
+        '<button class="choice" id="w2"><span class="tag">SIT IT OUT \u00b7 2 h</span>Wait and see what it does.</button>' +
+      '</div>'
+    );
+    if(document.getElementById('w1')) document.getElementById('w1').onclick = ()=>{
+      advance(0.5,'rest');
+      if(checkDead()) return;
+      Engine.render('<div class="story">You get up onto the bank and forty minutes later a brown head of water comes down the channel at about the speed of a jogging man, carrying half a juniper.</div>' +
+        '<div class="thought">It is nine inches deep. It would have taken your feet out and then it would have been a different afternoon.</div>' + Engine.contBtn());
+      Engine.wire(next);
+    };
+    document.getElementById('w2').onclick = ()=>{
+      advance(2, shadeHere()!=='none' ? 'shade' : 'rest');
+      if(checkDead()) return;
+      const rained = Math.random() < 0.45;
+      if(rained){
+        const got = 2 + Math.random()*3;
+        player.water += got;
+        Engine.sfxSuccess();
+        Engine.log('Collected ' + got.toFixed(1) + ' L of rainwater.', 'l-good');
+        Engine.render('<div class="story">Twenty minutes of hard rain, the kind that comes sideways and stops like a tap. You get everything you own upturned and catch <b>' + got.toFixed(1) + ' litres</b> off a groundsheet and a bumper.</div>' +
+          '<div class="thought">It is the best water you will ever taste and it is gone off the surface within the hour.</div>' + Engine.contBtn());
+      } else {
+        Engine.render('<div class="story">It tracks north and rains on somewhere else. You watch it happen, from here, in the dry.</div>' +
+          '<div class="thought">Virga. The rain evaporates before it lands. There is a specific cruelty to watching weather work perfectly well four kilometres away.</div>' + Engine.contBtn());
+      }
+      Engine.refreshStatus();
+      Engine.wire(next);
+    };
+  },
+
+  lights: function(next){
+    Engine.badge('NIGHT');
+    pickUp('lights');
+    Engine.render('<div class="hereNote">' + seen(
+      "Two lights over the south end of the valley, low, holding station. They are not moving the way aircraft move \u2014 no crossing, no closing, no navigation strobes. They sit for about four minutes and then one of them goes out, and the other one is gone the next time you find it.",
+      "Two lights, low, south, holding. No strobes. Four minutes, then one goes out and you cannot find the other.",
+      "Lights. They stay. Then they do not. You are not going to be a good witness to this."
+    ) + '</div>' +
+    '<div class="thought">Everybody who spends time in this part of Nevada sees this eventually. There is a working explanation \u2014 there is always a working explanation, and it is usually aircraft doing something ordinary at a strange angle, or flares, or a satellite. You have the explanation. You are lying on your back on a playa at two in the morning and the explanation is not helping much.</div>' +
+    Engine.contBtn());
+    Engine.wire(next);
+  },
+
+  bones: function(next){
+    Engine.badge('BONES');
+    Engine.render('<div class="hereNote">' + seen(
+      "A cow, or what the sun and the ravens left of one. Hide gone to parchment over the ribs, hooves still on, the skull picked completely clean and bleached to the colour of the ground. It has been here a season or two.",
+      "A dead cow, dried to parchment and bone. A season or two of sun on it.",
+      "Bones. Cow bones. You look at them longer than there is any reason to."
+    ) + '</div>' +
+    '<div class="thought">Cattle die out here of the same thing that kills people, in the same order, for the same reason, and a rancher loses a few every summer and factors it in. Nobody is factoring you in.</div>' +
+    Engine.contBtn());
+    Engine.wire(next);
+  }
+};
+
 /* ---------------- THE TRUCKS ----------------
    No dialogue, no confrontation, no explanation. They arrive,
    they sit, they leave. The whole effect is that nothing
@@ -2178,8 +2505,8 @@ function truckChance(){
   if(isNight(player.clock)) p *= 0.4;
   return Math.min(0.35, p);
 }
-function maybeTruck(next){
-  if(Math.random() > truckChance()) return next();
+function maybeTruck(next, forced){
+  if(!forced && Math.random() > truckChance()) return next();
   player.trucks += 1;
   const n = player.trucks;
   Engine.badge('ON THE RISE');
@@ -2248,8 +2575,9 @@ function snakeRisk(){
   if(!ground || !warm) return 0;
   return dusk ? 0.13 : 0.05;
 }
-function maybeSnake(next){
-  if(player.bitten || Math.random() > snakeRisk()) return next();
+function maybeSnake(next, forced){
+  if(player.bitten) return next();
+  if(!forced && Math.random() > snakeRisk()) return next();
   Engine.badge('CAREFUL');
   Engine.render(
     '<div class="hereNote">The buzz does not sound like a rattle. It sounds like a sprinkler, or a cicada, or nothing at all until your body understands it before you do and you are already stopping.</div>' +
@@ -2328,7 +2656,7 @@ function travelTo(id){
              ' \u2014 ' + h.toFixed(1) + ' h, ' + player.water.toFixed(1) + ' L left.', 'l-info');
   if(checkDead()) return;
   if(rollRescue(h)) return Engine.go(()=>rescued('walk'));
-  Engine.go(()=>maybeSnake(()=>maybeTruck(arrive)));
+  Engine.go(()=>maybeEncounter(arrive));
 }
 
 function strayed(intended, actual, h){
@@ -2381,7 +2709,7 @@ function rescued(how){
   Engine.badge('FOUND');
   Engine.render(
     '<div class="story"><span class="flavor">' + (how==='drove'?'DROVE OUT':'FOUND') + ' \u2014 DAY ' + player.day + ', ' + clockStr(player.clock) + '</span></div>' +
-    '<div class="story">' + text + '</div>' + coda + manifest() +
+    '<div class="story">' + text + '</div>' + coda + signedCoda + manifest() +
     '<button class="smallbtn primary-go" id="again">ANOTHER TRIP \u2192</button>'
   );
   document.getElementById('again').onclick = ()=>Engine.restart();
@@ -2410,8 +2738,13 @@ function ending(){
     '<div class="story"><span class="danger">DAY ' + player.day + ', ' + clockStr(player.clock) + '</span></div>' +
     '<div class="story">' + text + '</div>' +
     '<div class="thought">' + lesson + '</div>' +
-    (player.threads.filter(t=>THREADS[t]).length >= 4
-      ? '<div class="thought">Whatever else you worked out in the last three days goes with you. The logbook is still in the can. The can is still under the rocks.</div>' : '') +
+    (player.signed
+      ? '<div class="thought">The book is in the can and the can is under the rocks, and in the spring she will drive out and lift them off and find a forty-second entry in handwriting that is not hers and is not his. ' +
+        'It says where the Jeep is. It says where the lid is.' +
+        (found('truck') ? ' It says, in capitals, where her father parked twenty-two years ago.' : '') +
+        ' It is the only part of you that gets out of this valley, and it is enough.</div>'
+      : player.threads.filter(t=>THREADS[t]).length >= 4
+        ? '<div class="thought">Whatever else you worked out in the last three days goes with you. The logbook is still in the can. The can is still under the rocks. You did not write any of it down.</div>' : '') +
     manifest() +
     '<button class="smallbtn primary-go" id="again">ANOTHER TRIP \u2192</button>'
   );
