@@ -528,6 +528,8 @@ function freshState(){ return {
   trucks:0,        // times you have been watched
   ravens:0,        // it has been following you
   signed:false,    // did you put your name in the book
+  tapped:false,    // found the standpipe
+  maxWater:22,     // everything you own, full
   carrierHits:0,   // nights spent on 1530
   repairTries:0,   // how many times you have gone at it
   sick:0,          // from bad water
@@ -960,9 +962,19 @@ const THREADS = {
               note:"The batteries in the cache are dated 2019 \u2014 about ten years old, not twenty-two. Nobody has signed the logbook since 2004, but somebody has been maintaining the can.",
               next:"Look properly at the lid of the can." },
   signed:   { short:"You signed it",
-              note:"Forty-two entries now. You wrote the date, where the Jeep is, and everything you worked out. She comes out twice a year." },
+              note:"Forty-two entries. You wrote the date, where the Jeep is, and everything you worked out. She comes in the spring." },
   daughter: { short:"His daughter",
-              note:"R.H. was 51. He did not come home in September 2004 and neither he nor his truck was ever found. His daughter has maintained the cache twice a year ever since, and has never signed the log, because she would rather the last name in it stayed his." },
+              note:"R.H. was 51. He did not come home in September 2004 and neither he nor his truck was ever found. His daughter Dana has kept the cache going ever since \u2014 she comes when she can, in the spring \u2014 and has never signed the log, because she would rather the last name in it stayed his." },
+  tap:      { short:"A working tap",
+              note:"There is plumbed, pressurised water in the maintenance bay sixty rungs under the playa. It works. It has been working the whole time." },
+  schedule: { short:"The maintenance schedule",
+              note:"A clipboard on a steel desk, ruled columns, initials and dates. The most recent line was signed off four weeks ago." },
+  propped:  { short:"The propped door",
+              note:"AUTHORIZED PERSONNEL ONLY, propped open with a fire extinguisher. Behind it a stair down one flight, and lit corridor in both directions from the landing." },
+  firsttry: { short:"FIRST TRY \u2014 2002",
+              note:"The worst band in the mine is the oldest, pencilled FIRST TRY \u2014 2002 with BETTER NEXT TIME under it. He was learning. The work in the corridor is his best, and it is in the place nobody could ever see." },
+  photo:    { short:"The photograph in the visor",
+              note:"A girl of about thirteen, squinting, holding up an ammo can with both hands like a fish she caught." },
   lights:   { short:"Lights over the south end",
               note:"Two lights, low, holding station for four minutes with no strobes and no closing. There is a working explanation. There is always a working explanation." },
   habits:   { short:"How he resupplied",
@@ -971,7 +983,7 @@ const THREADS = {
   bench:    { short:"His workbench",
               note:"Snips, mortar gone to stone, and a coffee tin of bottle bases sorted by shade and waiting to go in. He left mid-job." },
   bothplaces:{ short:"The same work, twice",
-              note:"The bottle-work in the mine and the bottle-work in the gallery are the same hand, same sequence, same cobalt course at head height. One of those places belongs to somebody else." },
+              note:"Same hand in the mine and in the gallery \u2014 but the gallery work is visibly better. Even spacing, clean colour steps, not one cracked base. He did his best work sixty rungs underground in a corridor belonging to somebody else, where nobody he knew would ever see it." },
   theirpaint:{ short:"Their paint",
               note:"He used the corridor's own industrial enamel as his base coat. He did not carry materials down a ladder. He worked with what was there." },
   recent:   { short:"Recent stickers",
@@ -1042,10 +1054,17 @@ const ROOMS = {
         thin:"Six rebar forms about your height, spaced down the chamber. Not figures. Nearly figures.",
         gone:"There are six of them and they are standing and they are not people and you know they are not people."} },
       bench:{ label:"THE WORKBENCH", t:{
-        plain:"A plank on two buckets. Snips, a mortar bucket gone to stone, a wire brush, a box of nitrile gloves, and a coffee tin of bottle bases sorted by shade and waiting to go in. He left mid-job. People always do.",
+        plain:"A plank on two buckets. Tile nips, a mortar bucket gone to stone, a wire brush, a box of nitrile gloves, a short-handled probe rod, and a coffee tin of bottle bases sorted by shade and waiting to go in.<br><br>" +
+              "It is a bottle digger's kit and a tradesman's kit in the same crate, which is to say it is one man's, and he left mid-job. People always do.",
         thin:"A plank on buckets. Tools. A tin of bottle bases sorted and waiting. He left mid-job.",
         gone:"His tools are here. Sorted glass waiting to go in the wall."},
         thread:'bench' },
+      firsttry:{ label:"THE LOW COURSE BY THE ENTRANCE", t:{
+        plain:"Before the good work starts, down at ankle height near the mouth, there is a band about three feet long and plainly worse. Spacing all over the place. Two bases cracked and left in. Brown and green mixed together like he had not yet decided that sorting was the point.<br><br>" +
+              "Pencilled on the mortar beside it, in block capitals:<br><b>FIRST TRY \u2014 2002</b><br>And under that, smaller:<br><b>BETTER NEXT TIME</b>",
+        thin:"A short bad band near the entrance, colours mixed, two cracked. On the mortar: <b>FIRST TRY \u2014 2002</b>, and under it, <b>BETTER NEXT TIME</b>.",
+        gone:"There is a worse bit near the door with writing on it. It says first try and it says better next time."},
+        thread:'firsttry' },
       far:{ label:"THE FAR WALL", t:{
         plain:"The bands run to within two metres of the end wall and stop. Not finished and not tidied \u2014 stopped. The mortar in the last course is still proud where he would have struck it off.",
         thin:"The work stops two metres short of the end. Mortar unstruck in the last course.",
@@ -1079,8 +1098,48 @@ const ROOMS = {
         gone:"It smells like indoors. You cannot stop noticing that."} }
     },
     exits:{
+      alcove:{ label:"THE ALCOVE OFF THE CORRIDOR \u00b7 5 min", go:'alcove' },
       north:{ label:"NORTH, ALONG THE CORRIDOR \u00b7 20 min", go:'bottlerun' },
       up:{ label:"BACK UP THE LADDER", go:'leave' }
+    }
+  },
+
+
+  alcove: {
+    name:"Maintenance bay",
+    where:"lid",
+    intro:{
+      plain:"An alcove off the corridor, six metres square, with a roller door at the back that is shut and a personnel door beside it that is not.",
+      thin:"An alcove off the corridor. A roller door, shut. A personnel door beside it, open.",
+      gone:"A room off the corridor. One door shut, one open."
+    },
+    look:{
+      standpipe:{ label:"THE STANDPIPE", t:{
+        plain:"Galvanised pipe up the wall to a gate valve and a bib tap over a floor gully, the way there is a tap in every plant room in the world. There is a hose coiled on a hook beside it.<br><br>" +
+              "You turn it. It knocks twice in the wall and then it runs, and it runs cold, and it keeps running.",
+        thin:"A bib tap over a floor gully. You turn it. It knocks in the wall and then it runs cold.",
+        gone:"There is a tap. It works. It has been working this whole time."},
+        thread:'tap', water:true },
+      desk:{ label:"THE DESK", t:{
+        plain:"A grey steel desk against the wall with a swivel chair pushed in square. On it: a telephone with no dial tone, a mug with a dried ring in the bottom, a box of pencils, and a clipboard.<br><br>" +
+              "The clipboard is a maintenance schedule. Ruled columns, a task list down the left, and initials and dates in the boxes. The most recent line is signed off <b>four weeks ago</b>.",
+        thin:"A steel desk, a chair pushed in square, a dead telephone, and a clipboard. It is a maintenance schedule and the last line was signed off four weeks ago.",
+        gone:"There is a desk and a clipboard and somebody signed it four weeks ago."},
+        thread:'schedule' },
+      calendar:{ label:"THE CALENDAR", t:{
+        plain:"A wall calendar from a valve manufacturer in Sparks, Nevada. <b>1987.</b> Turned to August and never turned again. Nobody has taken it down in thirty-nine years and somebody wipes the desk under it.",
+        thin:"A 1987 calendar from a valve company in Sparks. August. Nobody has taken it down and somebody dusts under it.",
+        gone:"There is a calendar from 1987 on the wall and the desk beneath it is clean."} },
+      door:{ label:"THE OPEN DOOR", t:{
+        plain:"A steel personnel door, propped with a fire extinguisher, and a sign on it at eye height:<br><br><b>AUTHORIZED PERSONNEL ONLY</b><br><br>" +
+              "Behind it, a stair going down one flight to a landing, and from the landing the same strip lighting going on in both directions.",
+        thin:"A propped door. AUTHORIZED PERSONNEL ONLY. Behind it a stair down to a landing, and lit corridor both ways.",
+        gone:"The door says authorized personnel only and somebody has propped it open with a fire extinguisher."},
+        thread:'propped' }
+    },
+    exits:{
+      back:{ label:"BACK TO THE SHAFT", go:'shaftfoot' },
+      north:{ label:"ON UP THE CORRIDOR \u00b7 20 min", go:'bottlerun' }
     }
   },
 
@@ -1094,9 +1153,11 @@ const ROOMS = {
     },
     look:{
       same:{ label:"COMPARE IT TO THE MINE", t:{
-        plain:"Same sequence, same spacing, same narrow cobalt course at head height. He was not making one thing in a hidden place. He was making the same thing in two places, and one of them has a light bill.",
-        thin:"Same sequence, same blue course at head height. Two places, same work. One of them is somebody's.",
-        gone:"The same. It is the same as the mine."},
+        plain:"Same sequence, same cobalt course at head height, same hand.<br><br>" +
+              "It is also <b>better</b>. Not a little \u2014 obviously. The spacing is even. The colour steps are clean where the mine steps are muddled. Not one cracked base in sixty metres, which means he was carrying them down a ladder one at a time.<br><br>" +
+              "Whatever he learned in twenty years of doing this, he put it here.",
+        thin:"Same hand. And better \u2014 even spacing, clean steps, not one cracked base in sixty metres. He carried them down a ladder one at a time.",
+        gone:"The same, and better. It is much better than the mine."},
         thread:'bothplaces' },
       paint:{ label:"THE PAINT", t:{
         plain:"Industrial floor enamel, grey base, the sort that comes in five-gallon pails and belongs to whoever owns the corridor. He did not carry this down a ladder. He used what was here.",
@@ -1193,11 +1254,24 @@ function enterRoom(id){
       const key = id + ':' + k;
       if(player.looked.indexOf(key) === -1) player.looked.push(key);
       if(L.thread) pickUp(L.thread);
+      let gained = 0;
+      if(L.water && !player.tapped){
+        player.tapped = true;
+        gained = Math.max(0, player.maxWater - player.water);
+        player.water = player.maxWater;
+        Engine.sfxSuccess();
+        Engine.log('Filled everything from a working tap, sixty rungs underground.', 'l-good');
+      }
       advance(0.15, 'shade');
       if(checkDead()) return;
       Engine.render(
         '<div class="story"><b>' + L.label + '</b></div>' +
         '<div class="hereNote">' + seen(L.t.plain, L.t.thin, L.t.gone) + '</div>' +
+        (gained > 0
+          ? '<div class="story"><span class="flavor">You drink until it hurts and then you fill everything you own. ' +
+            '<b>+' + gained.toFixed(1) + ' litres.</b></span></div>' +
+            '<div class="thought">There is plumbed, pressurised, potable water sixty rungs under a valley where people die of not having any. It has been down here the whole time you have been up there doing arithmetic.</div>'
+          : '') +
         Engine.contBtn()
       );
       Engine.wire(()=>enterRoom(id));
@@ -1301,40 +1375,44 @@ function stashOption(){
 const LOGBOOK = [
   { id:'log1', label:'THE EARLY ENTRIES \u00b7 2001\u20132002', thread:'log',
     plain:
-      "<i>04/2001 \u2014 FTF! Long drive for a small can. Beautiful spot. Left a compass, took nothing. \u2014 R.H.</i><br><br>" +
-      "<i>09/2001 \u2014 Second visit. Brought my daughter. She found it before I did and will not let this go. \u2014 R.H.</i><br><br>" +
-      "<i>12/2001 \u2014 Cold. Ran the fence line on the way in for something to do. Somebody has been out here with a trencher.</i><br><br>" +
-      "<i>03/2002 \u2014 Antelope on the playa at first light, maybe forty head. Worth the trip on its own. Still thinking about that trench.</i>",
+      "<i>04/2001 \u2014 FTF. Drove down from Ely for the Dutchman dump, got skunked, found this instead. Good spot. Left a compass. \u2014 R.H.</i><br><br>" +
+      "<i>09/2001 \u2014 Dana with me. She had it in four minutes and I had it in twenty-five and I am not going to hear the end of this. Two amber, one aqua out of the dump below. \u2014 R.H.</i><br><br>" +
+      "<i>12/2001 \u2014 Cold, no wind. Walked the fence line out of habit. Spoil along it for about a mile, backfilled rough, no settling yet. Somebody trenched this in the last year or two. Nothing on it above ground.</i><br><br>" +
+      "<i>03/2002 \u2014 Antelope on the playa first light, forty head. Dug the east dump, mostly clear glass, one good cobalt base. Trench still bothering me.</i>",
     thin:
-      "<i>FTF! Long drive for a small can.</i> \u2026 <i>Brought my daughter. She found it before I did.</i> \u2026 " +
-      "<i>Somebody has been out here with a trencher.</i><br><br>You have to hold the book at arm's length to focus on it, which is new.",
+      "<i>Drove down from Ely for the Dutchman dump, got skunked, found this instead.</i> \u2026 " +
+      "<i>Dana with me. She had it in four minutes and I had it in twenty-five.</i> \u2026 " +
+      "<i>Spoil along it for about a mile, backfilled rough, no settling yet.</i><br><br>" +
+      "You have to hold the book at arm's length to focus, which is new.",
     gone:
-      "Ordinary entries. A man, a daughter, antelope, weather. The last one on this page says something about a trencher and you read it four times." },
+      "Ordinary entries. A man, a girl called Dana, antelope, glass, weather. One of them is about spoil along a fence line and you read that one four times." },
 
   { id:'log2', label:'THE MIDDLE ENTRIES \u00b7 2002\u20132003', thread:'freq',
     plain:
-      "<i>06/2002 \u2014 Followed the trench line 2.6km. It does not go to the site. It goes past it, parallel, on this side.</i><br><br>" +
-      "<i>09/2002 \u2014 Asked at the BLM office in Ely. Nobody knows about a trench. The girl was helpful and had no idea what I meant.</i><br><br>" +
-      "<i>11/2002 \u2014 Scanned the AM band all night from the truck because I could not sleep. There is a carrier on 1530. No station, no ID. It does not go off.</i><br><br>" +
-      "<i>04/2003 \u2014 1530 again. Four minutes on, short gap, four minutes on. I timed it for two hours. Same every time.</i>",
+      "<i>06/2002 \u2014 Walked the trench line 2.6km with the probe. It does not go to the site. It runs past it, parallel, sixty yards this side of the fence. No riser, no pedestal, no marker tape in the spoil. You do not lay cable and not flag it. Nobody lays cable and not flags it.</i><br><br>" +
+      "<i>09/2002 \u2014 BLM office in Ely. No permit on file, no work order, girl at the counter could not have been nicer and had no idea what I was describing. Called the co-op too. Not ours.</i><br><br>" +
+      "<i>11/2002 \u2014 Bad night, slept in the truck. Ran the AM band for something to do. Carrier on 1530. No modulation, no ID, no fade. It is still there at four in the morning.</i><br><br>" +
+      "<i>04/2003 \u2014 1530 again. On four minutes, off eleven seconds, on four minutes. Timed it two hours, never varied by more than a second. That is not a fault. Faults drift.</i>",
     thin:
-      "<i>It goes past the site, parallel, on this side.</i> \u2026 <i>Nobody at BLM knows about a trench.</i> \u2026 " +
-      "<i>There is a carrier on 1530. It does not go off.</i> \u2026 <i>Four minutes on, short gap. I timed it for two hours.</i>",
+      "<i>It runs past it, parallel, sixty yards this side of the fence. No marker tape in the spoil.</i> \u2026 " +
+      "<i>No permit on file. Not ours.</i> \u2026 <i>Carrier on 1530. No modulation, no ID, no fade.</i> \u2026 " +
+      "<i>Never varied by more than a second. That is not a fault. Faults drift.</i>",
     gone:
-      "Trench. Parallel. Nobody knows. 1530. Four minutes. You are getting the words without much of what holds them together." },
+      "Trench. Parallel. No permit. 1530. Four minutes, eleven seconds. <i>Faults drift.</i> You are getting the words without much of what holds them together." },
 
   { id:'log3', label:'THE LAST ENTRIES \u00b7 2004', thread:'coords',
     plain:
-      "<i>01/2004 \u2014 White pickup on the rise when I came out. No plates I could read. Sat there the whole time I was at the cairn, and left when I left.</i><br><br>" +
-      "<i>03/2004 \u2014 Two of them today. I waved. One of them waved back, which I did not expect and have thought about since.</i><br><br>" +
-      "<i>05/2004 \u2014 Dug down on the trench line at the coordinates below. Grey box, antenna, serial. Photographed it. Filled it back in.</i><br><br>" +
-      "<i>08/2004 \u2014 Roll of film came back from the developer with 24 blanks. Could be the developer. Going back out in September to do it properly.</i><br><br>" +
+      "<i>01/2004 \u2014 White pickup on the rise when I came out. Sat the whole time I was at the cairn. Left when I left. No plate I could read at that range.</i><br><br>" +
+      "<i>03/2004 \u2014 Two today. I waved. One of them waved back, which I did not expect and have thought about since.</i><br><br>" +
+      "<i>05/2004 \u2014 Dug the line at the coordinates below. Grey conduit, thumb gauge, and a sealed enclosure spliced in at a pull point. Stub antenna. Inventory tag, letter-dash-seven-and-year, same format we use. Not our numbers. Photographed it and put the spoil back the way I found it.</i><br><br>" +
+      "<i>08/2004 \u2014 Film came back 24 blanks. Could be the lab. Taking the good camera in September and doing it properly.</i><br><br>" +
       "<b>1530 all night now. Not a station.</b><br>" +
       "<span style=\"font-family:monospace;\">38\u00b017.4' N &nbsp; 115\u00b047.2' W</span>",
     thin:
-      "<i>White pickup on the rise. Sat there the whole time I was at the cairn, and left when I left.</i> \u2026 " +
-      "<i>One of them waved back, which I did not expect.</i> \u2026 <i>24 blanks. Could be the developer.</i> \u2026 " +
-      "<i>Going back out in September to do it properly.</i><br><br><b>1530 all night now. Not a station.</b> And coordinates.",
+      "<i>Sat the whole time I was at the cairn. Left when I left.</i> \u2026 " +
+      "<i>One of them waved back, which I did not expect.</i> \u2026 " +
+      "<i>Same format we use. Not our numbers.</i> \u2026 <i>Film came back 24 blanks. Could be the lab.</i> \u2026 " +
+      "<i>Taking the good camera in September.</i><br><br><b>1530 all night now. Not a station.</b> And coordinates.",
     gone:
       "White pickup. Waved back. Twenty-four blanks. Going back in September. 1530 all night now, not a station, and a set of numbers you copy onto your hand because you do not trust yourself to keep them any other way." }
 ];
@@ -1394,21 +1472,24 @@ function cacheScene(){
     Engine.render(
       '<div class="story">Taped inside the lid, under the card that explains the game to people who find these by accident, there is a second card. Different lamination. Newer. Printed rather than handwritten, which somebody did deliberately so it would last.</div>' +
       '<div class="hereNote">' + seen(
-        "<i>This cache belonged to my father. He placed it in 2001 and maintained it until September 2004, when he did not come home. " +
-        "He was 51. His truck was never found and neither was he.</i><br><br>" +
+        "<i>This cache belonged to my father. He put it here in 2001. He came out here a lot. I came with him sometimes.</i><br><br>" +
+        "<i>He stopped coming home in September 2004. He was 51. His truck was never found. Neither was he.</i><br><br>" +
         (found('truck')
-          ? "<span style=\"color:var(--rust);\">You know where his truck is. You were standing beside it two days ago. You drank his water.</span><br><br>"
+          ? "<span style=\"color:var(--rust);\">You know where his truck is. You were standing beside it. You drank his water.</span><br><br>"
           : "") +
-        "<i>I keep it going. I come out twice a year. I have never signed the log because he signed the log and I would rather the last name in it stayed his.</i><br><br>" +
-        "<i>If you are reading this and you knew him, or you found something of his, there is a number on the back of this card.</i><br><br>" +
+        "<i>I come out when I can and change the batteries. I have never signed the log. He signed it. I would rather the last name in it stayed his.</i><br><br>" +
+        "<i>If you knew him, or you found something of his, there is a number on the back.</i><br><br>" +
         "You turn it over. There is a number. The lamination has lifted along that edge and the last four digits have gone to a grey smear.",
-        "<i>This cache belonged to my father. He placed it in 2001 and maintained it until September 2004, when he did not come home.</i> " +
-        "<i>I keep it going. I have never signed the log because he signed the log and I would rather the last name in it stayed his.</i><br><br>" +
+
+        "<i>He put it here in 2001. He came out here a lot. I came with him sometimes.</i> " +
+        "<i>He stopped coming home in September 2004. He was 51.</i><br><br>" +
         (found('truck') ? "<span style=\"color:var(--rust);\">You know where his truck is.</span><br><br>" : "") +
+        "<i>I have never signed the log. He signed it.</i><br><br>" +
         "There is a number on the back and the last four digits are gone.",
-        "It is from his daughter. He did not come home. She keeps it going and will not sign it. There is a number and you cannot read all of it."
+
+        "It is from his daughter. He stopped coming home. She changes the batteries and will not sign it. There is a number and you cannot read all of it."
       ) + '</div>' +
-      '<div class="thought">Twice a year for twenty-two years. That is forty-four drives out to a point above an empty valley to change the batteries in a box, on the chance that somebody comes through who knew him.</div>' +
+      '<div class="thought">The card has been in here a while. The batteries have not. Somebody drives out to a point above an empty valley to change them, on the chance that one day somebody comes through who knew him.</div>' +
       '<div class="story"><span class="flavor">You are somebody who came through.</span></div>' +
       Engine.contBtn()
     );
@@ -1449,7 +1530,7 @@ function cacheScene(){
         (found('truck') ? " And at the top, in capitals, where his truck is and that the keys are still in it." : ""),
         "You write it all down. You are not sure afterwards how much of it you wrote or how much of it you only meant to."
       ) + '</div>' +
-      '<div class="thought">Forty-two entries now. She comes out twice a year. Whatever else happens to you in the next three days, that is going to be sitting under a cairn in April.</div>' +
+      '<div class="thought">Forty-two entries. The book goes back in the bag, the bag in the can, the can under the rocks.</div>' +
       Engine.contBtn()
     );
     Engine.wire(cacheScene);
@@ -1477,7 +1558,9 @@ function lidScene(){
         "There is a lid. He said there was a lid and there is a lid and you are sitting next to it in the sun."
       ) + '</div>' +
       '<div class="story">It is not heavy. It comes up on a hinge and stays up. Beneath it, a shaft with rungs, going down further than the light reaches, and cool air coming out steadily.</div>' +
-      '<div class="thought">Cool air. In this. Whatever is down there is either open to a very large volume of rock or it is conditioned, and only one of those is free.</div>' +
+      '<div class="thought">Cool air. In this. Whatever is down there is either open to a very large volume of rock or it is conditioned, and only one of those is free. ' +
+    'Conditioned air means plant. Plant means services. Services, in every building you have ever been in, means there is a tap somewhere.</div>' +
+    '<div class="thought">That is either the best thought you have had all week or it is the kind of thought a man has at eleven percent body water, and you are aware you cannot currently tell which.</div>' +
       '<div class="choices">' +
         (lit ? '<button class="choice" id="l1"><span class="tag">GO DOWN \u00b7 2 h</span>You have light. Rungs, and a shaft, and no way of knowing how deep.' + odds(20,'ENDURANCE',9) + '</button>'
              : '<button class="choice" id="l1b"><span class="tag">GO DOWN BLIND \u00b7 2 h</span>No light. Counting rungs. You would be doing this by feel.' + odds(20,'ENDURANCE',14) + '</button>') +
@@ -1544,6 +1627,7 @@ function truckScene(){
     '<div class="choices">' +
       (!took ? '<button class="choice" id="v1"><span class="tag">THE JERRY CANS</span>Four of them. Sealed. Twenty-three years old.' + odds(12,'FIELDCRAFT',7) + '</button>' : '') +
       (!found('camera') ? '<button class="choice" id="v2"><span class="tag">THE GLOVEBOX \u00b7 30 min</span>His camera was in the log. It might still be here.</button>' : '') +
+      (!found('photo') ? '<button class="choice" id="v4"><span class="tag">THE CAB</span>Seat, visor, console. The ordinary places.</button>' : '') +
       '<button class="choice" id="v3"><span class="tag">STEP BACK</span>It is a grave with the keys in it and you would rather not.</button>' +
     '</div>'
   );
@@ -1582,6 +1666,20 @@ function truckScene(){
         "There is a notebook and the last line of it says there is a lid, and you read that four or five times sitting in the dirt."
       ) + '</div>' +
       '<div class="thought">You could go and look. It is two kilometres north of a hole you have already dug, and you know exactly where that is, and it is the middle of the afternoon.</div>' +
+      Engine.contBtn()
+    );
+    Engine.wire(truckScene);
+  };
+  if(B('v4')) B('v4').onclick = ()=>{
+    pickUp('photo');
+    Engine.render(
+      '<div class="story">The cab has been closed and opened by the weather for twenty-two years and smells of hot vinyl and nothing else. Registration in the door pocket. A tyre gauge. Half a roll of mints fused into one object.</div>' +
+      '<div class="story">The driver seat is pushed all the way back.</div>' +
+      '<div class="hereNote">' + seen(
+        "Tucked into the visor, a photograph gone almost white \u2014 a girl of about thirteen, squinting into the sun, holding up an ammo can with both hands like a fish she caught.",
+        "A photograph in the visor, nearly white. A girl of about thirteen holding up an ammo can with both hands.",
+        "There is a photograph of a girl holding a box. You put it back where it was."
+      ) + '</div>' +
       Engine.contBtn()
     );
     Engine.wire(truckScene);
@@ -2695,6 +2793,11 @@ function rescued(how){
       + " Then they drive you to a gate and have you sign a form about what you did and did not see.";
   }
   const tangled = player.threads.filter(t=>THREADS[t]).length;
+  const signedCoda = player.signed
+    ? "<div class=\"thought\">She comes in the spring now. She stopped coming in September at some point and never made a decision about it.<br><br>" +
+      "So: April, probably. She parks, and walks up to the point, and lifts the rocks off a box she has lifted the rocks off a great many times, " +
+      "and there is a forty-second entry in it in handwriting that is not hers and is not his.</div>"
+    : "";
   const coda = tangled >= 5
     ? "<div class=\"thought\">Nobody asks what you found out there, because the question people ask is whether you are all right. " +
       "You have a serial number written on your hand in your own writing, half a frequency you cannot stop hearing, and a photograph you did not take of a chamber full of bottles. " +
@@ -2739,10 +2842,10 @@ function ending(){
     '<div class="story">' + text + '</div>' +
     '<div class="thought">' + lesson + '</div>' +
     (player.signed
-      ? '<div class="thought">The book is in the can and the can is under the rocks, and in the spring she will drive out and lift them off and find a forty-second entry in handwriting that is not hers and is not his. ' +
+      ? '<div class="thought">The book is in the can and the can is under the rocks. She comes in the spring. She will lift them off and find a forty-second entry in handwriting that is not hers and is not his. ' +
         'It says where the Jeep is. It says where the lid is.' +
         (found('truck') ? ' It says, in capitals, where her father parked twenty-two years ago.' : '') +
-        ' It is the only part of you that gets out of this valley, and it is enough.</div>'
+        '</div>'
       : player.threads.filter(t=>THREADS[t]).length >= 4
         ? '<div class="thought">Whatever else you worked out in the last three days goes with you. The logbook is still in the can. The can is still under the rocks. You did not write any of it down.</div>' : '') +
     manifest() +
