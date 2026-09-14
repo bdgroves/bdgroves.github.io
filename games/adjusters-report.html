@@ -72,34 +72,40 @@
 /* ---------------- STATE ---------------- */
 function freshState(){ return {
   method:null,          // your background
-  stats:{FORENSICS:1, OBSERVATION:1, INTERVIEW:1, COMPOSURE:1},
+  stats:{FORENSICS:1, OBSERVATION:1, INTERVIEW:1, COMPOSURE:1, PROCEDURE:1},
   evidence:[],          // ids of what you've actually established
   pressure:0,           // how hard you've leaned on people
   hours:9,              // shuttle leaves when this hits zero
   accused:null,
   filed:null,
-  confronted:{}
+  confronted:{},
+  cited:{},        // which clauses you have put to which person
+  clauses:['3.1','3.4','7.2','7.2a','11.6','14.3'],
+  schedule:false,  // pulled the policy schedule
+  obstructed:null, // who moved against you
+  compelled:false,
+  reviewed:null
 }; }
 let player;
 
 const METHODS = {
   forensic: {
     name:"FORENSIC BACKGROUND",
-    desc:"Twelve years in failure analysis before the underwriters bought your contract. You read rooms the way other people read faces. +3 FORENSICS, \u22121 INTERVIEW.",
-    mods:{FORENSICS:3, INTERVIEW:-1}
+    desc:"Twelve years in failure analysis before the underwriters bought your contract. You read rooms the way other people read faces. +3 FORENSICS, \u22121 INTERVIEW, \u22121 PROCEDURE.",
+    mods:{FORENSICS:3, INTERVIEW:-1, PROCEDURE:-1}
   },
   investigator: {
     name:"FIELD INVESTIGATOR",
-    desc:"You came up doing fraud interviews in orbital habitats. People tell you things and then wonder why. +3 INTERVIEW, \u22121 FORENSICS.",
-    mods:{INTERVIEW:3, FORENSICS:-1}
+    desc:"You came up doing fraud interviews in orbital habitats. People tell you things and then wonder why. +3 INTERVIEW, \u22121 FORENSICS, \u22121 PROCEDURE.",
+    mods:{INTERVIEW:3, FORENSICS:-1, PROCEDURE:-1}
   },
   auditor: {
     name:"RECORDS AUDITOR",
-    desc:"You have never once been the smartest person in a room and have never once needed to be. The logs are always there. +3 OBSERVATION, +2 COMPOSURE, \u22121 INTERVIEW.",
-    mods:{OBSERVATION:3, COMPOSURE:2, INTERVIEW:-1}
+    desc:"You have never once been the smartest person in a room and have never once needed to be. You have read the policy. All of it, including the endorsements. +3 PROCEDURE, +2 OBSERVATION, +1 COMPOSURE, \u22121 INTERVIEW.",
+    mods:{OBSERVATION:2, COMPOSURE:1, PROCEDURE:3, INTERVIEW:-1}
   }
 };
-const SUB_DICE = {FORENSICS:10, OBSERVATION:12, INTERVIEW:8, COMPOSURE:20};
+const SUB_DICE = {FORENSICS:10, OBSERVATION:12, INTERVIEW:8, COMPOSURE:20, PROCEDURE:10};
 
 /* ---------------- THE CASE ---------------- */
 const VICTIM = { name:"Aurel Ganz", role:"chief engineer" };
@@ -146,6 +152,8 @@ const EVIDENCE = {
               base:"The certificate puts time of death at 04:12. The annex pressure alarm did not fire until 04:31, and nobody can be certified dead nineteen minutes before the room fails." },
   message:  { id:'message',  label:"Ganz's unsent message",
               base:"A drafted filing sat unsent in Ganz's queue. Addressed off-station, to the regulator, subject line reading only: ANNEX \u2014 THIRD REQUEST." },
+  endorse:  { id:'endorse',  label:"Endorsement 4",
+              base:"Filed six weeks before the death. It adds key-person cover on Ganz to the Schedule \u2014 eleven million on a man who, until that date, was worth nothing to this policy at all. Countersigned, with the designation recorded as clause 15.2 requires." },
   scuff:    { id:'scuff',    label:"Floor marks at the hatch",
               base:"Two sets of boot scuffs at the inner hatch, heading the wrong direction for a man walking in alone. One set is not Ganz's size." }
 };
@@ -160,8 +168,13 @@ function gain(id){
   return true;
 }
 function evidenceCard(id){
+  let extra = '';
+  if(id === 'endorse'){
+    extra = '<br><br><b>DESIGNATION OF COUNTERSIGNATORY:</b> ' + DESIGNATIONS[RUN.guilty] +
+            '<br><span style="font-style:italic;">The signature itself is a mark. The designation is typed.</span>';
+  }
   return '<div class="evidenceGot"><b>' + EVIDENCE[id].label.toUpperCase() + '</b><br>' +
-         EVIDENCE[id].base + '</div>';
+         EVIDENCE[id].base + extra + '</div>';
 }
 
 /* ---------------- RUN VARIATION ---------------- */
@@ -173,6 +186,7 @@ function rollRun(){
     guilty: guilty,
     // small per-run drift so no two contracts are identically hard
     order: Engine.pick([['holt','marek','vann'],['vann','holt','marek'],['marek','vann','holt']]),
+    obstructor: Engine.pick(['holt','marek','vann']),
     weather: Engine.pick([
       "The station is on minimum rotation and everything is nine degrees too cold.",
       "Half the lighting ring is out on this deck and nobody has filed to fix it.",
@@ -190,6 +204,10 @@ function rollDCs(){
     logs:     Engine.jitter(7,1),   // d10 FORENSICS
     queue:    Engine.jitter(9,1),   // d12 OBSERVATION
     press:    Engine.jitter(7,1),   // d8  INTERVIEW
+    sched:    Engine.jitter(8,1),   // d10 PROCEDURE
+    cite:     Engine.jitter(8,1),   // d10 PROCEDURE
+    compel:   Engine.jitter(9,1),   // d10 PROCEDURE
+    defend:   Engine.jitter(9,1),   // d10 PROCEDURE
     hold:     Engine.jitter(11,1)   // d20 COMPOSURE
   };
 }
@@ -201,14 +219,14 @@ function statusFields(){
   const hcls = player.hours <= 3 ? 'int-low' : 'int-val';
   return [
     ['ADJUSTER', player.method.toUpperCase()],
-    ['EVIDENCE', player.evidence.length + ' / 5'],
+    ['EVIDENCE', player.evidence.length + ' / 6'],
     ['HOURS', player.hours, hcls]
   ];
 }
 function sheetHTML(){
   if(!player || !player.method) return '';
   let grid = '';
-  ['FORENSICS','OBSERVATION','INTERVIEW','COMPOSURE'].forEach(s=>{
+  ['FORENSICS','OBSERVATION','INTERVIEW','COMPOSURE','PROCEDURE'].forEach(s=>{
     const m = player.stats[s];
     grid += '<div class="sheetStat"><div class="sn">' + s + '</div>' +
             '<div class="sv">' + (m>=0?'+':'') + m + '</div>' +
@@ -274,7 +292,7 @@ function startCase(){
 
 function applyMethod(){
   const mods = METHODS[player.method].mods;
-  player.stats = {FORENSICS:1, OBSERVATION:1, INTERVIEW:1, COMPOSURE:1};
+  player.stats = {FORENSICS:1, OBSERVATION:1, INTERVIEW:1, COMPOSURE:1, PROCEDURE:1};
   Object.keys(mods).forEach(k=> player.stats[k] += mods[k]);
   Engine.refreshStatus();
   Engine.log('Method: ' + METHODS[player.method].name, 'l-info');
@@ -289,43 +307,81 @@ function applyMethod(){
 const POLICY = {
   ref:"GLR\u2013NV\u201388214\u2013C",
   insured:"Corvid-9 Relay Holdings (in administration)",
-  clauses:[
-    { n:"3.1",  h:"Insured Peril",
-      t:"The Insurer shall indemnify the Policyholder in respect of the accidental death of any Scheduled Person occurring in the course of Operations, up to the Limit stated in the Schedule." },
-    { n:"3.4",  h:"Limit of Indemnity",
-      t:"USD 11,000,000 in the aggregate, any one Scheduled Person, any one Period of Insurance." },
-    { n:"7.2",  h:"Exclusion \u2014 Act of a Covered Party",
+  clauses:{
+    '3.1':  { h:"Insured Peril", found:true,
+      t:"The Insurer shall indemnify the Policyholder in respect of the accidental death of any Scheduled Person occurring in the course of Operations, up to the Limit stated in the Schedule.",
+      note:"The box that does not ask you anything." },
+    '3.4':  { h:"Limit of Indemnity", found:true,
+      t:"USD 11,000,000 in the aggregate, any one Scheduled Person, any one Period of Insurance.",
+      note:"Eleven million. Say it out loud once and then stop saying it." },
+    '7.2':  { h:"Exclusion \u2014 Act of a Covered Party", found:true,
       t:"No indemnity is payable where the death arises, directly or indirectly, wholly or partly, from the deliberate act of any Covered Party, whether or not such act is the subject of criminal proceedings and whether or not any Covered Party is charged, tried or convicted.",
       note:"This is the sentence. Everything else is scenery." },
-    { n:"7.2(a)", h:"Definition \u2014 Covered Party",
+    '7.2a': { h:"Definition \u2014 Covered Party", found:true,
       t:"Any Scheduled Person, any officer, employee, agent or contractor of the Policyholder, and any person present at the Location with the Policyholder's permission.",
       note:"Which is everybody on this station, including the medic, including the administrator, including the man who died." },
-    { n:"11.6", h:"Adjuster's Finding",
+    '11.6': { h:"Adjuster's Finding", found:true,
       t:"The finding of the appointed Adjuster shall be determinative as between the parties, subject only to a challenge on the grounds of manifest error or bad faith brought within 90 days.",
-      note:"Ninety days. That is how long what you write down has to survive somebody who does not want it to." },
-    { n:"14.3", h:"Standard of Proof",
+      note:"Ninety days. That is how long what you write has to survive somebody who does not want it to." },
+    '14.3': { h:"Standard of Proof", found:true,
       t:"The Adjuster shall apply the balance of probabilities and shall record the evidential basis of any finding adverse to indemnity.",
-      note:"Adverse to indemnity means naming somebody. If you name somebody, you have to show your working. Misadventure requires nothing at all." }
-  ]
+      note:"Misadventure requires you to evidence nothing. A name requires you to show your working." },
+
+    /* ---- the ones you have to go and find ---- */
+    '9.1':  { h:"Right of Access", found:false, weapon:true,
+      t:"The Policyholder shall afford the Adjuster unrestricted access to the Location, to all persons present, and to all records howsoever held, and shall not withhold, seal or delete any record following notification of a claim.",
+      note:"Unrestricted. Howsoever held. Somebody drafted that after being refused once." },
+    '12.4': { h:"Duty of Disclosure", found:false, weapon:true,
+      t:"Every Covered Party shall disclose to the Adjuster every material fact within their knowledge. A Covered Party who withholds a material fact shall forfeit the benefit of this policy in respect of themselves, whether or not the withheld fact would have altered the finding.",
+      note:"Lie to me and you lose your own cover. Not the company's. Yours." },
+    '15.2': { h:"Material Alteration", found:false, weapon:true,
+      t:"No endorsement altering the Schedule shall take effect unless countersigned by an officer of the Policyholder holding relevant authority, whose designation shall be recorded on the endorsement.",
+      note:"Whose designation shall be recorded. Somebody has to sign their job title next to it." }
+  }
+};
+function hasClause(n){ return player.clauses.indexOf(n) !== -1; }
+function findClause(n){
+  if(hasClause(n)) return false;
+  player.clauses.push(n);
+  Engine.sfxSuccess();
+  Engine.log('Clause ' + n + ' \u2014 ' + POLICY.clauses[n].h, 'l-good');
+  Engine.refreshStatus();
+  return true;
+}
+
+/* ---------------- THE ENDORSEMENT ----------------
+   The document that solves the case is an insurance
+   endorsement, which is the most satisfying sentence in this
+   entire project.                                            */
+const DESIGNATIONS = {
+  holt:  "STATION ADMINISTRATOR",
+  marek: "ENGINEERING (ACTING)",
+  vann:  "MEDICAL OFFICER"
 };
 
 function policyScene(){
   Engine.badge('THE WORDING');
-  Engine.render(
+  const have = player.clauses.slice().sort();
+  const missing = Object.keys(POLICY.clauses).filter(n=>!hasClause(n));
+  R(
     '<div class="story">Policy <b>' + POLICY.ref + '</b> \u2014 ' + POLICY.insured + '.</div>' +
     '<div class="thought">Eleven million dollars turns on about forty words in the middle of this, and you have read them enough times to recite them, and you read them again anyway. That is most of the job.</div>' +
-    POLICY.clauses.map(cl =>
-      '<div class="clause">' +
-        '<span class="cl-n">' + cl.n + ' &nbsp; ' + cl.h + '</span>' +
+    have.map(n => {
+      const cl = POLICY.clauses[n];
+      return '<div class="clause">' +
+        '<span class="cl-n">' + n + ' &nbsp; ' + cl.h + (cl.weapon ? ' &nbsp;\u00b7&nbsp; USABLE' : '') + '</span>' +
         '<span class="cl-t">' + cl.t + '</span>' +
         (cl.note ? '<span class="cl-note">' + cl.note + '</span>' : '') +
-      '</div>').join('') +
-    '<div class="story" style="margin-top:14px;">Note the asymmetry in 14.3. A finding of misadventure requires you to evidence nothing. ' +
-    'A finding against a Covered Party requires you to show your working, in writing, to people whose job is to take it apart.</div>' +
-    '<div class="thought">Somebody wrote that asymmetry on purpose. Not maliciously \u2014 just by an accumulation of small reasonable drafting decisions made by people who were never going to be standing in an annex on Corvid-9.</div>' +
-    Engine.contBtn()
+      '</div>';
+    }).join('') +
+    (missing.length
+      ? '<div class="story" style="margin-top:14px;">The copy you were issued runs to six clauses and a schedule reference. ' +
+        'A policy of this size does not run to six clauses.</div>' +
+        '<div class="thought">Somewhere on this station there is a full schedule with the endorsements attached, and whoever printed your brief did not include it. That may be laziness. It is usually laziness.</div>'
+      : '<div class="story" style="margin-top:14px;">You have the whole thing now. Schedule, endorsements, the lot.</div>') +
+    C()
   );
-  Engine.wire(theAnnex);
+  W(theAnnex);
 }
 
 /* ---------------- ACT 2: THE SCENE ---------------- */
@@ -382,6 +438,7 @@ function theRecords(){
       ${!has('badge') ? `<button class="choice" id="r1"><span class="tag">DOOR LOGS</span>Who cycled the annex hatch, and when.${odds(10,'FORENSICS',DC.logs)}</button>` : ''}
       ${!has('timeline') ? `<button class="choice" id="r2"><span class="tag">MEDICAL FILING</span>The certificate, against the station's own alarm record.${odds(12,'OBSERVATION',DC.scene)}</button>` : ''}
       ${!has('message') ? `<button class="choice" id="r3"><span class="tag">GANZ'S QUEUE</span>What the dead man was working on the week he stopped.${odds(12,'OBSERVATION',DC.queue)}</button>` : ''}
+      ${!player.schedule ? `<button class="choice" id="r5"><span class="tag">THE FULL POLICY SCHEDULE \u00b7 1 h</span>Your brief has six clauses. The real document has a schedule and endorsements attached, and it is filed here because it has to be.${odds(10,'PROCEDURE',DC.sched)}</button>` : ''}
       <button class="choice" id="r4"><span class="tag">GO TALK TO PEOPLE</span>You've got what the machines will give you.</button>
     </div>
   `);
@@ -422,13 +479,91 @@ function theRecords(){
       W(theRecords);
     });
   };
+  if(document.getElementById('r5')) document.getElementById('r5').onclick = ()=>{
+    spend(1);
+    Engine.check({die:10, mod:mod('PROCEDURE'), dc:DC.sched, label:'Pull the schedule (PROCEDURE)'}, (ok)=>{
+      if(!ok){
+        R('<div class="story">The terminal holds the policy the way stations hold policies \u2014 as a scan of a fax of a printout, forty pages, no index. You lose an hour and find the cover sheet.</div>' + C());
+        return W(theRecords);
+      }
+      player.schedule = true;
+      findClause('9.1'); findClause('12.4'); findClause('15.2');
+      gain('endorse');
+      R(
+        '<div class="story">Forty-one pages, and pages thirty-four to thirty-nine are the part nobody sends the adjuster.</div>' +
+        '<div class="clause"><span class="cl-n">Endorsement 4 \u00b7 effective six weeks before the death</span>' +
+        '<span class="cl-t">The Schedule is amended to add AUREL GANZ as a Scheduled Person under clause 3.1, with a Limit of Indemnity of USD 11,000,000.</span>' +
+        '<span class="cl-note">Until six weeks ago, Ganz was worth nothing to this policy. Somebody made him worth eleven million, and then he died.</span></div>' +
+        '<div class="story">And three clauses your brief did not include, which is a decision somebody made.</div>' +
+        '<div class="thought">Clause 9.1 says they cannot seal a record from you. Clause 12.4 says a covered party who lies to you forfeits their own cover. Clause 15.2 says an endorsement is void unless an officer countersigned it <i>and recorded their designation</i>.</div>' +
+        '<div class="story"><span class="flavor">There is a designation on Endorsement 4.</span></div>' +
+        C()
+      );
+      W(theRecords);
+    });
+  };
   document.getElementById('r4').onclick = ()=>Engine.go(interviewHub);
+}
+
+
+/* ---------------- CLAUSES AS LEVERAGE ----------------
+   The point of finding 9.1, 12.4 and 15.2 is that you can put
+   them to somebody's face and watch what a sentence does.     */
+const CITATIONS = {
+  '12.4': {
+    label:"DUTY OF DISCLOSURE",
+    pitch:"Tell them what withholding costs them personally.",
+    guilty:
+      "You read it to them off the page, slowly, and you put your thumb on the words <i>shall forfeit the benefit of this policy in respect of themselves</i>.<br><br>" +
+      "\"That is not the company's cover,\" you say. \"That is yours. Your medical, your repatriation, your family's line if this station falls on you tomorrow. You lose it for withholding, and you lose it whether or not the thing you withheld mattered.\"<br><br>" +
+      "They go somewhere behind their own face for about four seconds.",
+    innocent:
+      "They listen to the whole clause without interrupting, which almost nobody does, and then say: \"Fine. Ask me something I have not already answered.\"<br><br>" +
+      "It is not the reaction of a person calculating what they can afford to keep back."
+  },
+  '15.2': {
+    label:"MATERIAL ALTERATION",
+    pitch:"The endorsement is void unless an officer countersigned it and recorded their designation.",
+    needs:'endorse',
+    guilty:
+      "You put Endorsement 4 on the table face up, with your finger under the designation line.<br><br>" +
+      "\"Clause 15.2. An endorsement altering the Schedule is void unless an officer with relevant authority countersigns it and records their designation. Somebody did. It is typed. It is your job title.\"<br><br>" +
+      "<b>\"That is not \u2014 that is an administrative signature. That is not what you are turning it into.\"</b><br><br>" +
+      "They did not say it was wrong.",
+    innocent:
+      "They look at the designation line, then at you, then back.<br><br>" +
+      "\"That is not my job title. It has never been my job title. I could not have countersigned that if I wanted to and I did not want to.\"<br><br>" +
+      "They are correct, and you knew they were correct before you asked, and you asked anyway, which is the job."
+  },
+  '9.1': {
+    label:"RIGHT OF ACCESS",
+    pitch:"They cannot seal a record from you. Say so.",
+    guilty:
+      "\"Unrestricted access. All records howsoever held. And a specific prohibition on sealing or deleting anything after notification.\" You let that sit. \"Notification was eleven hours before I landed.\"<br><br>" +
+      "\"I have not sealed anything.\"<br><br>" +
+      "\"I did not say you had.\"",
+    innocent:
+      "\"Read it to whoever you like,\" they say. \"I have not got anything to seal. I have got a job and a station that is closing and a dead colleague, in that order, most days.\""
+  }
+};
+
+function citeOptions(id){
+  const out = [];
+  Object.keys(CITATIONS).forEach(n=>{
+    if(!hasClause(n)) return;
+    const C2 = CITATIONS[n];
+    if(C2.needs && !has(C2.needs)) return;
+    if(player.cited[id + ':' + n]) return;
+    out.push('<button class="choice" data-cite="' + n + '"><span class="tag">CITE ' + n + ' \u00b7 ' + C2.label + '</span>' + C2.pitch + odds(10,'PROCEDURE',DC.cite) + '</button>');
+  });
+  return out.join('');
 }
 
 /* ---------------- ACT 4: INTERVIEWS ---------------- */
 function interviewHub(){
   B('ACT 3');
   const talked = RUN.order.filter(id=>player.confronted[id] !== undefined).length;
+  if(talked >= 2 && !player.obstructed) return Engine.go(obstruction);
   R(`
     <div class="story">Three people on this station had a reason to want ${VICTIM.name} to stop what he was doing. All three of them have had eleven hours to decide what kind of person they are going to be about it.</div>
     ${player.hours<=3 ? '<div class="story"><span class="danger">The shuttle goes in ' + player.hours + ' hours. Whatever is not established by then goes in the report as unestablished.</span></div>' : ''}
@@ -468,6 +603,7 @@ function interview(id){
       <button class="choice" id="p1"><span class="tag">PRESS</span>Push on the story. See what moves.${odds(8,'INTERVIEW',DC.press)}</button>
       ${canBreak ? `<button class="choice" id="p2"><span class="tag">PRODUCE THE ${EVIDENCE[s.breaks].label.toUpperCase()}</span>Put it on the table and let them look at it.</button>` : ''}
       ${(!guilty && has(s.breaks)) ? `<button class="choice" id="p3"><span class="tag">PRODUCE THE ${EVIDENCE[s.breaks].label.toUpperCase()}</span>Put it on the table and let them look at it.</button>` : ''}
+      ${citeOptions(id)}
       <button class="choice" id="p4"><span class="tag">LEAVE IT</span>Thank them. Go.</button>
     </div>
   `);
@@ -520,7 +656,121 @@ function interview(id){
     W(interviewHub);
   };
 
+  document.querySelectorAll('#main .choice[data-cite]').forEach(btn=>{
+    btn.onclick = ()=>{
+      const n = btn.dataset.cite, CT = CITATIONS[n];
+      player.cited[id + ':' + n] = true;
+      spend(1);
+      Engine.check({die:10, mod:mod('PROCEDURE'), dc:DC.cite, label:'Cite ' + n + ' (PROCEDURE)'}, (ok)=>{
+        if(!ok){
+          R('<div class="clause"><span class="cl-n">' + n + ' \u00b7 ' + POLICY.clauses[n].h + '</span>' +
+            '<span class="cl-t">' + POLICY.clauses[n].t + '</span></div>' +
+            say(s.short, "I do not know what any of that means and I do not think you do either.") +
+            '<div class="thought">You read it badly. A clause read badly is a paragraph. A clause read well is a door closing.</div>' + C());
+          return W(()=>interview(id));
+        }
+        const hit = guilty ? CT.guilty : CT.innocent;
+        if(guilty && n === '15.2'){ player.confronted[id] = 3; Engine.sfxSuccess(); Engine.log(s.short + ' countersigned Endorsement 4.', 'l-good'); }
+        if(guilty && n === '12.4'){ player.confronted[id] = Math.max(player.confronted[id]||0, 2); }
+        R('<div class="clause"><span class="cl-n">' + n + ' \u00b7 ' + POLICY.clauses[n].h + '</span>' +
+          '<span class="cl-t">' + POLICY.clauses[n].t + '</span></div>' +
+          '<div class="story">' + hit + '</div>' + C());
+        W(()=>interview(id));
+      });
+    };
+  });
   document.getElementById('p4').onclick = ()=>Engine.go(interviewHub);
+}
+
+
+/* ---------------- ACT 5: THE OBSTRUCTION ----------------
+   Somebody notices you are good at this.                      */
+function obstruction(){
+  B('ACT 4');
+  const who = SUSPECTS[RUN.obstructor];
+  player.obstructed = RUN.obstructor;
+  R(
+    '<div class="story">The shared terminal in the corridor alcove asks you for a credential you did not need this morning.</div>' +
+    '<div class="hereNote">ACCESS TO THIS RECORD SET HAS BEEN RESTRICTED AT THE REQUEST OF THE POLICYHOLDER. ' +
+    'CONTACT THE STATION ADMINISTRATOR.</div>' +
+    '<div class="story">It is not everything. It is the personnel files, the dispensing log, and the maintenance sign-offs \u2014 which is to say the three record sets you were going to pull next.</div>' +
+    '<div class="thought">Somebody has been watching which drawers you open. That is not the same as guilt. Plenty of people seal records for reasons that have nothing to do with a dead man and everything to do with not wanting a stranger in their business.</div>' +
+    '<div class="choices">' +
+      (hasClause('9.1')
+        ? '<button class="choice" id="o1"><span class="tag">COMPEL IT \u00b7 CLAUSE 9.1 \u00b7 1 h</span>Unrestricted access, all records howsoever held, and a specific prohibition on sealing after notification.' + odds(10,'PROCEDURE',DC.compel) + '</button>'
+        : '<button class="choice" id="o2"><span class="tag">ARGUE IT \u00b7 1 h</span>You have not read the access clause. You will have to do this on the strength of being annoyed.' + odds(8,'INTERVIEW',DC.press+2) + '</button>') +
+      '<button class="choice" id="o3"><span class="tag">WORK AROUND IT</span>You have what you have. The shuttle goes either way.</button>' +
+    '</div>'
+  );
+  const done = (ok)=>{
+    if(ok){
+      player.compelled = true;
+      Engine.sfxSuccess();
+      Engine.log('Access compelled under clause 9.1.', 'l-good');
+      R('<div class="story">The restriction comes off inside twenty minutes, which tells you it was placed by somebody who knew it would not hold and did it anyway to buy an afternoon.</div>' +
+        '<div class="hereNote">And the audit trail on the restriction request carries a name, because audit trails do.<br><br>' +
+        '<b>Requested by: ' + who.name + '</b></div>' +
+        '<div class="thought">' + (RUN.obstructor === RUN.guilty
+          ? 'Which is interesting, and is also exactly what a frightened innocent person does, and you have been doing this long enough to know the difference is not visible from here.'
+          : 'Which is interesting, and is also almost certainly nothing. People seal their own files when a stranger arrives with a clipboard. It is the most human thing on this station.') + '</div>' +
+        C());
+    } else {
+      R('<div class="story">The restriction holds. You get a polite line about policyholder discretion and a suggestion that you take it up with the underwriter, which is a suggestion you have heard before and will hear again.</div>' +
+        '<div class="thought">Two hours to the shuttle and three record sets you cannot open.</div>' + C());
+    }
+    W(interviewHub);
+  };
+  if(document.getElementById('o1')) document.getElementById('o1').onclick = ()=>{
+    spend(1);
+    Engine.check({die:10, mod:mod('PROCEDURE'), dc:DC.compel, label:'Compel access (PROCEDURE)'}, done);
+  };
+  if(document.getElementById('o2')) document.getElementById('o2').onclick = ()=>{
+    spend(1);
+    Engine.check({die:8, mod:mod('INTERVIEW'), dc:DC.press+2, label:'Argue for access (INTERVIEW)'}, done);
+  };
+  document.getElementById('o3').onclick = ()=>Engine.go(interviewHub);
+}
+
+/* ---------------- ACT 6: THE REVIEW ----------------
+   Ninety days. Clause 11.6. This is the payoff and it is
+   entirely made of paperwork.                                */
+function theReview(){
+  B('DAY 90');
+  const right = player.accused === RUN.guilty;
+  const proof = player.evidence.length;
+  const broke = player.accused && player.confronted[player.accused] === 3;
+
+  if(player.accused === null){
+    // nobody challenges a payout
+    return Engine.go(()=>endGame(right, proof, broke));
+  }
+
+  R(
+    '<div class="story">Day eighty-one of ninety. The challenge arrives as a forty-page bundle from a firm in Reno acting for the Policyholder, and it does not argue that you are wrong.</div>' +
+    '<div class="hereNote">The Policyholder respectfully submits that the Adjuster\'s finding discloses <b>manifest error</b> within the meaning of clause 11.6, in that the evidential basis recorded under clause 14.3 is insufficient to support a finding adverse to indemnity on the balance of probabilities.</div>' +
+    '<div class="thought">They are not saying you named the wrong person. They are saying you did not do the paperwork. Those are different accusations and only one of them is survivable.</div>' +
+    '<div class="story">You have one filing to answer it. What do you rest it on?</div>' +
+    '<div class="choices">' +
+      (has('endorse') && broke
+        ? '<button class="choice" id="d1"><span class="tag">THE ENDORSEMENT \u00b7 CLAUSE 15.2</span>A countersigned material alteration, the designation typed, and the countersignatory\'s own reaction on the record.' + odds(10,'PROCEDURE',DC.defend-2) + '</button>' : '') +
+      '<button class="choice" id="d2"><span class="tag">THE ESTABLISHED FACTS \u00b7 CLAUSE 14.3</span>All ' + proof + ' of them, set out in order, with the inferences shown.' + odds(10,'PROCEDURE',DC.defend + (proof>=5?-2:proof>=4?0:2)) + '</button>' +
+      (broke ? '<button class="choice" id="d3"><span class="tag">THE CONTRADICTION</span>What they said, and the document that says otherwise.' + odds(10,'PROCEDURE',DC.defend) + '</button>' : '') +
+      '<button class="choice" id="d4"><span class="tag">WITHDRAW THE FINDING</span>Amend to misadventure. The payout clears. Nobody asks you anything again.</button>' +
+    '</div>'
+  );
+  const resolve = (dc, label)=>{
+    Engine.check({die:10, mod:mod('PROCEDURE'), dc:dc, label:label}, (ok)=>{
+      player.reviewed = ok ? 'held' : 'fell';
+      Engine.go(()=>endGame(right, proof, broke));
+    });
+  };
+  if(document.getElementById('d1')) document.getElementById('d1').onclick = ()=> resolve(DC.defend-2, 'Defend on 15.2 (PROCEDURE)');
+  document.getElementById('d2').onclick = ()=> resolve(DC.defend + (proof>=5?-2:proof>=4?0:2), 'Defend on 14.3 (PROCEDURE)');
+  if(document.getElementById('d3')) document.getElementById('d3').onclick = ()=> resolve(DC.defend, 'Defend on the contradiction (PROCEDURE)');
+  document.getElementById('d4').onclick = ()=>{
+    player.reviewed = 'withdrawn';
+    Engine.go(()=>endGame(right, proof, broke));
+  };
 }
 
 /* ---------------- ACT 5: THE CALL ---------------- */
@@ -576,51 +826,66 @@ function theFiling(){
       ${C('FILE IT \u2192')}
     `);
   }
-  W(()=>endGame(right, proof, broke));
+  W(theReview);
 }
 
 /* ---------------- ENDINGS ---------------- */
 function endGame(right, proof, broke){
   const guilty = SUSPECTS[RUN.guilty];
+  const rev = player.reviewed;
   let key, title, text, coda;
 
   if(player.accused === null){
-    if(proof >= 4){
+    if(proof >= 5){
       key='complicit'; title='FILED \u2014 COMPLICIT';
-      text = "The finding stands. The payout clears in six weeks and the underwriter sends a note about efficient case handling, which I do not open.";
-      coda = "I had four of five. I had enough to make somebody explain themselves and I filed the word that meant nobody had to. " + guilty.name + " is still on that station, still administering, still fine.";
+      text = "The finding stands. The payout clears in six weeks and the underwriter sends a note about efficient case handling, which you do not open.";
+      coda = "You had five of six. You had a countersigned endorsement adding eleven million to a man's life six weeks before he lost it, and you filed the word that meant nobody had to explain it. " + guilty.name + " is still on that station.";
     } else {
       key='closed'; title='FILED \u2014 CLOSED';
-      text = "The finding stands. On the evidence I actually established, it is even defensible \u2014 a room that reads as an accident, a certificate signed by a licensed medic, and a man who worked alone.";
-      coda = "It was " + guilty.name + ". I do not know that. I will not ever know that. That is not the same as it not being true, and the distinction is going to sit with me on the ride back.";
+      text = "The finding stands. On the evidence you actually established it is even defensible \u2014 a room that reads as an accident, a certificate signed by a licensed medic, and a man who worked alone.";
+      coda = "It was " + guilty.name + ". You do not know that. You will not ever know that. That is not the same as it not being true.";
     }
   }
-  else if(right && broke && proof >= 4){
-    key='clean'; title='FILED \u2014 SOUND FINDING';
-    text = "Named, contradicted on the record, attached to four separate established facts, and drafted to survive clause 11.6. The underwriter's counsel reads it twice and does not ask me a single question, which in eleven years has happened three times. Day ninety passes without a challenge.";
-    coda = guilty.name + " is off the station inside a cycle. The policy does not pay. Nobody thanks me for that \u2014 not the family, not the underwriter, certainly not the station \u2014 and it is still the correct file.";
+  else if(rev === 'withdrawn'){
+    key='withdrawn'; title='AMENDED \u2014 MISADVENTURE';
+    text = "Day eighty-four. You amend the finding, the challenge falls away, and eleven million moves inside a fortnight.";
+    coda = (right
+      ? "You were right. You wrote the right name in the right box and then you took it out again, because the bundle was forty pages and the firm was in Reno and you were tired. " + guilty.name + " will never know how close it came, which is the part that will bother you."
+      : "You were wrong anyway, so the amendment cost nobody anything except the person whose name was in that box for eighty-four days.");
   }
-  else if(right && broke){
-    key='thin'; title='FILED \u2014 RIGHT, THIN';
-    text = "The right name, contradicted in their own words, resting on " + proof + " established facts instead of the five that were down there to find.";
-    coda = "It will hold or it will not, depending on who reads it and how much they want it to. I was correct and I was in a hurry, and only one of those makes it into the file.";
+  else if(right && broke && proof >= 5 && rev === 'held'){
+    key='clean'; title='UPHELD \u2014 SOUND FINDING';
+    text = "Named, contradicted on the record, resting on five established facts and a countersigned material alteration. The challenge is withdrawn on day eighty-eight without a hearing.";
+    coda = guilty.name + " is off the station inside a cycle. The policy does not pay. Nobody thanks you \u2014 not the family, not the underwriter, certainly not the station \u2014 and it is still the correct file. " +
+           "Counsel in Reno reads your clause 15.2 argument twice and does not ask you a single question, which in eleven years has happened three times.";
   }
-  else if(right){
-    key='unproven'; title='FILED \u2014 RIGHT, UNPROVEN';
-    text = "The right name with nothing under it. No contradiction on the record, " + proof + " facts established, and a theory doing the work that clause 14.3 requires evidence to do.";
-    coda = "It gets kicked back inside a month. " + guilty.name + " keeps the post, and the next adjuster to look at this file will see my name on a finding that did not hold, and will read the room accordingly.";
+  else if(right && rev === 'held'){
+    key='held'; title='UPHELD \u2014 THIN BUT SOUND';
+    text = "It holds. Not comfortably \u2014 there is a paragraph in the determination about the adjuster having \"adequately, if narrowly, discharged the obligation under clause 14.3\" \u2014 but it holds.";
+    coda = "Adequately if narrowly. You are going to be reading that phrase back to yourself for a while. It is also the difference between a finding and a mistake, and you are on the right side of it.";
+  }
+  else if(right && rev === 'fell'){
+    key='overturned'; title='OVERTURNED \u2014 RIGHT, UNPROVEN';
+    text = "Manifest error under clause 11.6. The finding is set aside on day ninety and indemnity is payable in full.";
+    coda = "You named the right person and could not carry it. " + guilty.name + " keeps the post and the payout clears, and the next adjuster to open this file will see your name on a finding that did not hold and will read the room accordingly.";
+  }
+  else if(!right && rev === 'held'){
+    key='wrongheld'; title='UPHELD \u2014 WRONG NAME';
+    text = "You named " + SUSPECTS[player.accused].name + ". The paperwork was immaculate and the challenge failed on the paperwork.";
+    coda = "It was " + guilty.name + ". A finding can be procedurally perfect and still be the wrong answer, and yours is, and it is now determinative as between the parties. " +
+           "That is what clause 11.6 means when nobody is watching.";
   }
   else {
-    key='wrong'; title='FILED \u2014 WRONG NAME';
-    text = "I named " + SUSPECTS[player.accused].name + ". It was " + guilty.name + ".";
-    coda = "The finding collapses on review and takes a career that was not mine with it. Somewhere on Corvid-9 the person who actually walked into that annex reads the notice, and understands exactly how close it came, and adjusts.";
+    key='wrong'; title='OVERTURNED \u2014 WRONG NAME';
+    text = "You named " + SUSPECTS[player.accused].name + ". It was " + guilty.name + ". The finding collapses on review and takes a career that was not yours with it.";
+    coda = "Somewhere on Corvid-9 the person who actually walked into that annex reads the notice, and understands exactly how close it came, and adjusts.";
   }
 
   Engine.recordEnding(key, {
     right: right, proof: proof, broke: !!broke,
     accused: player.accused, guilty: RUN.guilty, hours: player.hours
   });
-  const ALL = ['clean','thin','unproven','wrong','complicit','closed'];
+  const ALL = ['clean','held','overturned','wrongheld','wrong','complicit','closed','withdrawn'];
   const found = ALL.filter(k=>Engine.hasEnding(k)).length;
 
   const evRows = Object.keys(EVIDENCE).map(id=>{
@@ -642,11 +907,13 @@ function endGame(right, proof, broke){
       <div style="font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); margin-top:10px; padding-top:8px; border-top:1px solid var(--mist);">
         Responsible: <b style="color:var(--ink);">${guilty.name}</b><br>
         Your finding: <b style="color:var(--ink);">${player.accused ? SUSPECTS[player.accused].name : 'Misadventure'}</b><br>
+        Clauses held: <b style="color:var(--ink);">${player.clauses.length} / 9</b>${player.schedule?' \u00b7 pulled the schedule':''}${player.compelled?' \u00b7 compelled access under 9.1':''}<br>
+        Review: <b style="color:var(--ink);">${player.reviewed === 'held' ? 'challenge failed' : player.reviewed === 'fell' ? 'finding set aside' : player.reviewed === 'withdrawn' ? 'you amended it' : 'unchallenged'}</b><br>
         Hours remaining: ${player.hours} &nbsp;\u00b7&nbsp; Pressure applied: ${player.pressure>=4?'heavy':player.pressure>=2?'moderate':'light'}
       </div>
       <div style="font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); margin-top:8px; padding-top:8px; border-top:1px solid var(--mist);">
         Contracts worked: <b style="color:var(--ink);">${Engine.runCount()}</b> &nbsp;\u00b7&nbsp;
-        Outcomes seen: <b style="color:var(--ink);">${found} / 6</b>
+        Outcomes seen: <b style="color:var(--ink);">${found} / 8</b>
       </div>
     </div>
     <div class="thought">The culprit is drawn fresh every contract. The station does not repeat itself.</div>
