@@ -84,7 +84,10 @@ function freshState(){ return {
   schedule:false,  // pulled the policy schedule
   obstructed:null, // who moved against you
   compelled:false,
-  reviewed:null
+  reviewed:null,
+  partition:false,
+  thinAccess:false,
+  opened:[]
 }; }
 let player;
 
@@ -154,6 +157,8 @@ const EVIDENCE = {
               base:"A drafted filing sat unsent in Ganz's queue. Addressed off-station, to the regulator, subject line reading only: ANNEX \u2014 THIRD REQUEST." },
   endorse:  { id:'endorse',  label:"Endorsement 4",
               base:"Filed six weeks before the death. It adds key-person cover on Ganz to the Schedule \u2014 eleven million on a man who, until that date, was worth nothing to this policy at all. Countersigned, with the designation recorded as clause 15.2 requires." },
+  annot:    { id:'annot',    label:"Ganz's annotation",
+              base:"In his own copy of the policy, beside Endorsement 4, four days before he died: \"When was this added? Nobody told me I was scheduled. Ask.\" He noticed. He did not recognise it." },
   scuff:    { id:'scuff',    label:"Floor marks at the hatch",
               base:"Two sets of boot scuffs at the inner hatch, heading the wrong direction for a man walking in alone. One set is not Ganz's size." }
 };
@@ -219,7 +224,7 @@ function statusFields(){
   const hcls = player.hours <= 3 ? 'int-low' : 'int-val';
   return [
     ['ADJUSTER', player.method.toUpperCase()],
-    ['EVIDENCE', player.evidence.length + ' / 6'],
+    ['EVIDENCE', player.evidence.length + ' / 7'],
     ['HOURS', player.hours, hcls]
   ];
 }
@@ -268,6 +273,7 @@ function startCase(){
   R(`
     <div class="story">The underwriter's brief is four lines long, which is how you know what it wants. <span class="flavor">Chief engineer ${VICTIM.name}, decompression event in the reactor annex, Station Corvid-9 Relay. Death ruled accidental by on-site medic. Confirm and close.</span></div>
     <div class="thought">Confirm and close. Not investigate. The policy pays out eleven million on misadventure and nothing at all on an act by a covered party, and everybody who wrote that brief knows which answer they are hoping I bring home.</div>
+    <div class="thought">One thing worth holding on to before I land. Corvid-9 Relay Holdings is in administration. Whatever this policy pays does not go into anybody's pocket \u2014 it goes to creditors, in order, and the people on that station see none of it.<br><br>Which rules out the simplest motive and leaves the ones that are harder to look at. A licence. A career. A station that closes tidily instead of collapsing. Nobody out here is killing anybody to get rich, and that is never what it is anyway.</div>
     <div class="story">Nine hours until the return shuttle. ${RUN.weather}</div>
     <div class="story">How you work:</div>
     <div class="loadoutGrid" id="methodGrid"></div>
@@ -438,6 +444,7 @@ function theRecords(){
       ${!has('badge') ? `<button class="choice" id="r1"><span class="tag">DOOR LOGS</span>Who cycled the annex hatch, and when.${odds(10,'FORENSICS',DC.logs)}</button>` : ''}
       ${!has('timeline') ? `<button class="choice" id="r2"><span class="tag">MEDICAL FILING</span>The certificate, against the station's own alarm record.${odds(12,'OBSERVATION',DC.scene)}</button>` : ''}
       ${!has('message') ? `<button class="choice" id="r3"><span class="tag">GANZ'S QUEUE</span>What the dead man was working on the week he stopped.${odds(12,'OBSERVATION',DC.queue)}</button>` : ''}
+      <button class="choice" id="r6"><span class="tag">GANZ'S TERMINAL</span>${player.partition ? 'The personal partition is open.' : 'His account is closed. His personal partition is not.'}</button>
       ${!player.schedule ? `<button class="choice" id="r5"><span class="tag">THE FULL POLICY SCHEDULE \u00b7 1 h</span>Your brief has six clauses. The real document has a schedule and endorsements attached, and it is filed here because it has to be.${odds(10,'PROCEDURE',DC.sched)}</button>` : ''}
       <button class="choice" id="r4"><span class="tag">GO TALK TO PEOPLE</span>You've got what the machines will give you.</button>
     </div>
@@ -502,6 +509,7 @@ function theRecords(){
       W(theRecords);
     });
   };
+  document.getElementById('r6').onclick = ()=>Engine.go(terminalScene);
   document.getElementById('r4').onclick = ()=>Engine.go(interviewHub);
 }
 
@@ -683,6 +691,178 @@ function interview(id){
 }
 
 
+
+/* ============================================================
+   GANZ'S PARTITION
+   A locked terminal is not a puzzle with a code. It is a room
+   you have argued your way into, full of a person's ordinary
+   life, and the things in it mean different things depending
+   on what you already know.
+   ============================================================ */
+
+/* What you know changes what you see. Same object, three readings. */
+function lens(plain, withEndorse, withAll){
+  if(has('endorse') && player.evidence.length >= 4 && withAll) return withAll;
+  if(has('endorse') && withEndorse) return withEndorse;
+  return plain;
+}
+
+const PARTITION = {
+  filing:{ label:"ANNEX \u2014 THIRD REQUEST", t:()=>lens(
+    "Seven drafts of the same document, dated across five weeks. Draft one is four paragraphs and extremely polite. Draft four is eleven paragraphs and is not. Draft seven is back to four paragraphs and polite again, and it is the one he queued and never sent.<br><br>" +
+    "He took the anger out before he sent it. People do that and then they die and the polite version is the one that survives them.",
+
+    "Seven drafts. He took the anger out of the last one.<br><br>" +
+    "And in draft four \u2014 the eleven-paragraph one, the one he deleted \u2014 there is a line that is not in any other version:<br><br>" +
+    "<i>\"I am aware that closing the annex closes the station. I am aware what that costs and who it costs. I am asking anyway because the alternative is that I sign something saying it is safe.\"</i>",
+
+    "Seven drafts, and the one he cut is the one that tells you what he understood.<br><br>" +
+    "<i>\"I am aware that closing the annex closes the station. I am aware what that costs and who it costs. I am asking anyway because the alternative is that I sign something saying it is safe.\"</i><br><br>" +
+    "He knew exactly what his filing would do to every person on this station. He filed it anyway, politely, and took out the part where he said so."
+  )},
+
+  policy:{ label:"HIS OWN COPY OF THE POLICY", thread:true, t:()=>lens(
+    "A PDF of GLR\u2013NV\u201388214\u2013C with annotations in the margin. Chief engineers read the station's liability policy, because chief engineers are the ones who get named in it.<br><br>" +
+    "Most of the notes are the ordinary kind. <i>check limit</i>. <i>does this cover contractors</i>. <i>ask Holt re: annex exclusion</i>.",
+
+    "His annotated copy of the policy \u2014 and he had the full schedule, endorsements and all, which is more than they gave you.<br><br>" +
+    "On page thirty-six, beside Endorsement 4, in the margin:<br><br>" +
+    "<b>\"When was this added? Nobody told me I was scheduled. Ask.\"</b><br><br>" +
+    "The annotation is timestamped. It is dated four days before he died.",
+
+    "On page thirty-six, beside Endorsement 4:<br><br>" +
+    "<b>\"When was this added? Nobody told me I was scheduled. Ask.\"</b><br><br>" +
+    "Four days before he died. He noticed. He made a note to ask somebody about it and he did not get round to it, because it was a small strange thing on page thirty-six of a document nobody reads, and he had a filing to finish.<br><br>" +
+    "<span style=\"color:var(--rust);\">You are holding the only evidence that the victim saw it coming and did not recognise it.</span>"
+  )},
+
+  letter:{ label:"AN UNSENT MESSAGE", t:()=>lens(
+    "Addressed to a sister in Tempe, drafted, never sent. Four lines about the rotation being extended again, one line about the food, and then:<br><br>" +
+    "<i>\"Tell Mum I'll call Sunday. I keep saying that. I will though.\"</i>",
+
+    "To a sister in Tempe. Never sent. <i>\"Tell Mum I'll call Sunday. I keep saying that. I will though.\"</i><br><br>" +
+    "It is dated the day before the annex.",
+
+    "<i>\"Tell Mum I'll call Sunday. I keep saying that. I will though.\"</i><br><br>" +
+    "Dated the day before. You have been in this file for twenty minutes and you have read a man's last unsent sentence and it was about phoning his mother."
+  )},
+
+  boat:{ label:"A FOLDER CALLED 'ORCHID'", t:()=>lens(
+    "Photographs of a twenty-eight foot sailboat on a trailer in a yard in San Diego. Eleven of them, from different angles, the way you photograph a thing you have not bought yet.<br><br>" +
+    "A spreadsheet in the same folder works out that with two more rotations he can pay for it outright.",
+
+    "Eleven photographs of a sailboat he had not bought yet, and a spreadsheet saying two more rotations would cover it.<br><br>" +
+    "Two more rotations. He was planning forward. Nobody planning two rotations ahead is expecting anything.",
+
+    "Two more rotations and the boat is paid for.<br><br>" +
+    "That is the thing that settles it for you, and it is not evidence of anything and you could not put it in a finding. A man who is afraid does not spend his evenings looking at boats."
+  )},
+
+  calendar:{ label:"HIS CALENDAR", t:()=>lens(
+    "Sparse. Shift rotations, a standing call with the regulator he kept moving, and a dentist in Reno in three weeks that he had confirmed twice.",
+
+    "Shift rotations and a dentist in Reno in three weeks, confirmed twice.<br><br>" +
+    "Also: a meeting entry four days before the annex, forty minutes, no attendees listed, titled only <i>ask re: sched</i>.",
+
+    "A meeting four days before he died. Forty minutes, no attendees, titled <i>ask re: sched</i>.<br><br>" +
+    "It is marked as completed.<br><br>" +
+    "<span style=\"color:var(--rust);\">He asked somebody about the endorsement. Four days before the annex. And whoever he asked is on this station and has spoken to you today.</span>"
+  )},
+
+  inquiry:{ label:"THE DISPENSING INQUIRY", t:()=>lens(
+    "A working folder. Ganz had opened an inquiry into station medical dispensing records and had got about a third of the way through it.<br><br>" +
+    "His notes are careful and unexcited. He does not appear to think anybody is a criminal. He appears to think somebody is sloppy.",
+
+    "The dispensing inquiry, a third finished, notes careful and unexcited. He does not think anybody is a criminal. He thinks somebody is sloppy.<br><br>" +
+    "Which is a distinction that would not have survived contact with a licensing board.",
+
+    "He thought somebody was sloppy. A licensing board would not have made that distinction, and everybody on this station knows it, including the person it was about."
+  )}
+};
+
+/* ---- the argument you have to win to get in at all ---- */
+function terminalScene(){
+  B('THE TERMINAL');
+  if(player.partition) return Engine.go(partitionRoom);
+  R(
+    '<div class="story">Ganz\'s station account is closed and his queue was purged on the standard decedent cycle, which is routine and which you have now been told three times by three people.</div>' +
+    '<div class="hereNote">But a personal partition is not purged on the decedent cycle. A personal partition is not purged at all, because nobody has ever written a procedure for it and nobody wants to be the one who does.<br><br>' +
+    'It is sitting there. It is locked.</div>' +
+    '<div class="thought">There is no code to guess and you would not guess it if there were. There is a clause, and an argument, and a man who is going to make the opposite argument well.</div>' +
+    '<div class="choices">' +
+      (hasClause('9.1')
+        ? '<button class="choice" id="t1"><span class="tag">DEMAND IT \u00b7 CLAUSE 9.1 \u00b7 1 h</span>All records howsoever held. Make Holt open it.' + odds(10,'PROCEDURE',DC.compel+1) + '</button>'
+        : '') +
+      '<button class="choice" id="t2"><span class="tag">ASK FOR IT</span>No clause, no leverage. Just ask, and see what a person does.' + odds(8,'INTERVIEW',DC.press+1) + '</button>' +
+      '<button class="choice" id="t3"><span class="tag">LEAVE IT SHUT</span>It is a dead man\'s private correspondence and you have a job that does not require it.</button>' +
+    '</div>'
+  );
+  const open = (thin)=>{
+    player.partition = true;
+    player.thinAccess = thin;
+    Engine.sfxSuccess();
+    Engine.log('Opened the personal partition' + (thin ? ' \u2014 on a thin argument' : ' under clause 9.1'), thin?'l-bad':'l-good');
+    R(
+      '<div class="story">' + (thin
+        ? "Holt opens it because you asked in a tone that made it easier to open than to argue about, which is not a legal basis and both of you know it."
+        : "Holt argues, and he argues <i>well</i> \u2014 that a decedent's personal partition is the property of the estate, not a record of the Policyholder, and that clause 9.1 does not reach it.<br><br>He is probably right. He opens it anyway, under protest, and records the protest."
+      ) + '</div>' +
+      (thin ? '<div class="thought">If this finding is challenged, that is a bad-faith ground under clause 11.6 and it is one you handed them.</div>'
+            : '<div class="thought">You have made a contractual argument you are about sixty percent sure of. That is a normal Tuesday and it will still be sixty percent on day ninety.</div>') +
+      '<div class="story">The partition opens. It is thirty gigabytes of a person.</div>' + C()
+    );
+    W(partitionRoom);
+  };
+  if(document.getElementById('t1')) document.getElementById('t1').onclick = ()=>{
+    spend(1);
+    Engine.check({die:10, mod:mod('PROCEDURE'), dc:DC.compel+1, label:'Compel the partition (PROCEDURE)'}, (ok)=>{
+      if(ok) return open(false);
+      R('<div class="story">Holt takes clause 9.1, reads it twice, and hands it back. "Howsoever held by the Policyholder. That partition is not held by the Policyholder. It is held by a dead man."</div>' +
+        '<div class="thought">He is right, and you knew he might be, and you tried it anyway because that is the job.</div>' + C());
+      W(theRecords);
+    });
+  };
+  document.getElementById('t2').onclick = ()=>{
+    spend(1);
+    Engine.check({die:8, mod:mod('INTERVIEW'), dc:DC.press+1, label:'Ask for the partition (INTERVIEW)'}, (ok)=>{
+      if(ok) return open(true);
+      R('<div class="story">"No," Holt says, not unkindly. "Bring me something that says I have to."</div>' + C());
+      W(theRecords);
+    });
+  };
+  document.getElementById('t3').onclick = ()=>Engine.go(theRecords);
+}
+
+/* ---- the partition itself, as a place ---- */
+function partitionRoom(){
+  B('THE PARTITION');
+  const seen = player.opened || (player.opened = []);
+  const items = Object.keys(PARTITION).map(k=>{
+    const done = seen.indexOf(k) !== -1;
+    return '<button class="choice" data-open="' + k + '"><span class="tag">' + PARTITION[k].label + (done?' \u00b7 read':'') + '</span>' +
+      (done ? 'Read it again.' : 'Open it.') + '</button>';
+  }).join('');
+  R(
+    '<div class="story">Thirty gigabytes, organised the way a competent person organises things, which is to say adequately and not well.</div>' +
+    (player.thinAccess ? '<div class="thought">You are in here on an argument that would not survive a hearing. Every minute you spend is a minute somebody could describe accurately at a review.</div>' : '') +
+    '<div class="choices">' + items +
+      '<button class="choice" id="pq"><span class="tag">CLOSE IT</span></button>' +
+    '</div>'
+  );
+  document.querySelectorAll('#main .choice[data-open]').forEach(b=>{
+    b.onclick = ()=>{
+      const k = b.dataset.open, it = PARTITION[k];
+      if(seen.indexOf(k) === -1) seen.push(k);
+      if(it.thread && !has('annot')) gain('annot');
+      spend(0);
+      R('<div class="story"><b>' + it.label + '</b></div>' +
+        '<div class="evidenceGot">' + it.t() + '</div>' + C());
+      W(partitionRoom);
+    };
+  });
+  document.getElementById('pq').onclick = ()=>Engine.go(theRecords);
+}
+
 /* ---------------- ACT 5: THE OBSTRUCTION ----------------
    Somebody notices you are good at this.                      */
 function obstruction(){
@@ -749,16 +929,24 @@ function theReview(){
     '<div class="story">Day eighty-one of ninety. The challenge arrives as a forty-page bundle from a firm in Reno acting for the Policyholder, and it does not argue that you are wrong.</div>' +
     '<div class="hereNote">The Policyholder respectfully submits that the Adjuster\'s finding discloses <b>manifest error</b> within the meaning of clause 11.6, in that the evidential basis recorded under clause 14.3 is insufficient to support a finding adverse to indemnity on the balance of probabilities.</div>' +
     '<div class="thought">They are not saying you named the wrong person. They are saying you did not do the paperwork. Those are different accusations and only one of them is survivable.</div>' +
+    (player.thinAccess
+      ? '<div class="hereNote" style="border-color:var(--rust);">Further, and in the alternative, the Policyholder submits that the Adjuster obtained access to the personal partition of the deceased ' +
+        'without contractual basis and in the absence of any instrument reaching the property of the estate, and that any finding resting upon material so obtained is tainted by <b>bad faith</b> within clause 11.6.</div>' +
+        '<div class="thought">There it is. You knew when you did it. You did it anyway and it was worth it and it is going to cost you a point on every argument you make from here.</div>'
+      : '') +
     '<div class="story">You have one filing to answer it. What do you rest it on?</div>' +
     '<div class="choices">' +
       (has('endorse') && broke
         ? '<button class="choice" id="d1"><span class="tag">THE ENDORSEMENT \u00b7 CLAUSE 15.2</span>A countersigned material alteration, the designation typed, and the countersignatory\'s own reaction on the record.' + odds(10,'PROCEDURE',DC.defend-2) + '</button>' : '') +
       '<button class="choice" id="d2"><span class="tag">THE ESTABLISHED FACTS \u00b7 CLAUSE 14.3</span>All ' + proof + ' of them, set out in order, with the inferences shown.' + odds(10,'PROCEDURE',DC.defend + (proof>=5?-2:proof>=4?0:2)) + '</button>' +
+      (has('annot')
+        ? '<button class="choice" id="d5"><span class="tag">THE VICTIM\'S OWN ANNOTATION</span>He read the policy four days before he died and wrote in the margin that nobody had told him he was scheduled.' + odds(10,'PROCEDURE',DC.defend-1) + '</button>' : '') +
       (broke ? '<button class="choice" id="d3"><span class="tag">THE CONTRADICTION</span>What they said, and the document that says otherwise.' + odds(10,'PROCEDURE',DC.defend) + '</button>' : '') +
       '<button class="choice" id="d4"><span class="tag">WITHDRAW THE FINDING</span>Amend to misadventure. The payout clears. Nobody asks you anything again.</button>' +
     '</div>'
   );
   const resolve = (dc, label)=>{
+    if(player.thinAccess) dc += 2;
     Engine.check({die:10, mod:mod('PROCEDURE'), dc:dc, label:label}, (ok)=>{
       player.reviewed = ok ? 'held' : 'fell';
       Engine.go(()=>endGame(right, proof, broke));
@@ -767,6 +955,7 @@ function theReview(){
   if(document.getElementById('d1')) document.getElementById('d1').onclick = ()=> resolve(DC.defend-2, 'Defend on 15.2 (PROCEDURE)');
   document.getElementById('d2').onclick = ()=> resolve(DC.defend + (proof>=5?-2:proof>=4?0:2), 'Defend on 14.3 (PROCEDURE)');
   if(document.getElementById('d3')) document.getElementById('d3').onclick = ()=> resolve(DC.defend, 'Defend on the contradiction (PROCEDURE)');
+  if(document.getElementById('d5')) document.getElementById('d5').onclick = ()=> resolve(DC.defend-1, "Defend on the annotation (PROCEDURE)");
   document.getElementById('d4').onclick = ()=>{
     player.reviewed = 'withdrawn';
     Engine.go(()=>endGame(right, proof, broke));
@@ -908,6 +1097,7 @@ function endGame(right, proof, broke){
         Responsible: <b style="color:var(--ink);">${guilty.name}</b><br>
         Your finding: <b style="color:var(--ink);">${player.accused ? SUSPECTS[player.accused].name : 'Misadventure'}</b><br>
         Clauses held: <b style="color:var(--ink);">${player.clauses.length} / 9</b>${player.schedule?' \u00b7 pulled the schedule':''}${player.compelled?' \u00b7 compelled access under 9.1':''}<br>
+        Partition: <b style="color:var(--ink);">${player.partition ? (player.thinAccess ? 'opened on a thin argument' : 'opened under 9.1') : 'left shut'}</b><br>
         Review: <b style="color:var(--ink);">${player.reviewed === 'held' ? 'challenge failed' : player.reviewed === 'fell' ? 'finding set aside' : player.reviewed === 'withdrawn' ? 'you amended it' : 'unchallenged'}</b><br>
         Hours remaining: ${player.hours} &nbsp;\u00b7&nbsp; Pressure applied: ${player.pressure>=4?'heavy':player.pressure>=2?'moderate':'light'}
       </div>
