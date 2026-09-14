@@ -10,21 +10,28 @@ Live at [brooksgroves.com/games](https://brooksgroves.com/games.html).
 
 ## The games
 
-### 🚀 [Kellath's Drift](games/kellaths-drift.html)
+### 🚀 [Kellath's Drift](https://brooksgroves.com/games/kellaths-drift.html)
 Percentile roll-under, in the spirit of the old TSR boxes. Your survey skiff is a smoking wedge in red scrub and there's a relay tower eleven kilometres north. Roll 2d10, try to roll *under* your target. That's the whole system and it's beautiful.
 
-### 🛰️ [Offline Protocol](games/offline-protocol.html)
+### 🛰️ [Offline Protocol](https://brooksgroves.com/games/offline-protocol.html)
 You're a security construct escorting a survey crew to a rig that isn't as dead as the paperwork says, and you quietly disabled your own governor module a while back. Seven acts, five crew who can die, an old guard construct you can fight *or talk down*, and a transport intelligence called Latitude who works out your secret in the first hour and remembers it between contracts.
 
-### 🗂️ [Adjuster's Report](games/adjusters-report.html)
+### 🗂️ [Adjuster's Report](https://brooksgroves.com/games/adjusters-report.html)
 No combat at all. You're an insurance loss adjuster on a station where a death is already ruled accidental, and clause 3.1 pays eleven million if it stays that way. Five facts, three suspects, one liar, and a culprit redrawn every run. The policy wording is readable in-game and it is the entire moral engine.
 
-### 🏜️ [Railroad Valley: Nine Litres](games/stay-with-the-vehicle.html)
+### 🏜️ [Railroad Valley: Nine Litres](https://brooksgroves.com/games/stay-with-the-vehicle.html)
 Real USGS terrain in Nye County, Nevada. Your Jeep stops on a two-track with nine litres of water. Search and rescue finds *vehicles*, not people — but the advice assumes a search, and a search assumes somebody noticed you were gone. Each trip rolls whether anyone is expecting you and tells you at the start.
 
 Somewhere out there is a geocache nobody has signed since 2004.
 
-### 📋 [The Referee's Screen](games/reference.html)
+### 📖 The stories
+
+Two of the four have stories worth telling outside the game. Both are complete spoilers — play first.
+
+- **[Forty-One Entries](forty-one-entries.md)** — the man who kept the logbook in Railroad Valley, in the order it actually happened.
+- **[Clause 15.2](clause-15-2.md)** — what really happened on Corvid-9, and the piece of administrative housekeeping that catches it.
+
+### 📋 [The Referee's Screen](https://brooksgroves.com/games/reference.html)
 Every mechanic in all four games, in panels, in the layout the old GM screens used. Prints cleanly if you want it on paper.
 
 ---
