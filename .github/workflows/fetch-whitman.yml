@@ -87,12 +87,29 @@ jobs:
               except Exception:
                   return None
 
-          # ── overall record, e.g. heading "Team (14-1-6, 13-0-3)" ──
+          # ── overall record, from the "Team (4-1-1, 2-0)" heading ──
+          # Two things this has to get right, both learned the hard way:
+          #
+          # 1. The conference half may be W-L or W-L-T. Sidearm drops the
+          #    tie column until the team actually ties a conference game.
+          #    A regex demanding three parts fails on "2-0".
+          # 2. When it fails it must not fall through to the rest of the
+          #    page. re.search keeps scanning, and the game-by-game table
+          #    is full of running records like "(1-1-0, 0-0-0)" — so an
+          #    unanchored pattern silently returns the record as it stood
+          #    after game two. Anchoring on the literal "Team (" heading is
+          #    what stops that.
+          #
+          # Whatever this produces is cross-checked against the results
+          # table further down, which is the real safety net.
           record = {"overall": None, "conference": None}
-          m = re.search(r"\((\d+-\d+-\d+)(?:,\s*(\d+-\d+-\d+))?\)", soup.get_text())
+          PART = r"\d+-\d+(?:-\d+)?"
+          m = re.search(rf"Team\s*\(({PART})(?:,\s*({PART}))?\)", soup.get_text())
           if m:
               record["overall"] = m.group(1)
               record["conference"] = m.group(2)
+          else:
+              print("WARN: no 'Team (record)' heading found — will derive from results")
 
           # ── goalkeeping table ──
           # Header: # Player GP GS MIN GA GAA SV SV% W L T SHO/CBO SF
@@ -108,8 +125,12 @@ jobs:
                   name = c[1]
                   if not name or name.lower() in ("total", "totals", "opponent", "opponents"):
                       continue
-                  # Sidearm renders the cell as "Last, First {jersey}Last, First"
-                  name = re.sub(r"^(.*?)\s*\d+\1$", r"\1", name.strip())
+                  # Sidearm renders the cell as "Last, First {jersey}Last, First".
+                  # The \s* after \d+ matters: get_text(" ") can insert a space
+                  # between the jersey number and the repeated name, and without
+                  # it the backreference fails and the doubled name ships as-is
+                  # ("Isensee, Niclas 0 Isensee, Niclas").
+                  name = re.sub(r"^(.*?)\s*\d+\s*\1$", r"\1", name.strip())
                   name = re.sub(r"\s+", " ", name).strip()
                   keepers.append({
                       "name": name,
@@ -144,6 +165,29 @@ jobs:
                       "score": c[3].strip(),
                   })
               break
+
+          # ── cross-check the record against the results ────────────────
+          # The heading and the results table are two independent readings
+          # of the same fact, so they can be used to check each other. When
+          # they disagree the results win: they are itemised, and a wrong
+          # total is far easier to produce than six wrong rows.
+          #
+          # This exists because a regex once matched the wrong part of the
+          # page and shipped "1-1-0" while the results plainly showed 4-1-1.
+          # Nothing failed; the number was just quietly wrong for days. A
+          # scraper that cannot check its own output against a second
+          # source on the same page is one page redesign from lying.
+          if results:
+              wins   = sum(1 for g in results if g["wl"] == "W")
+              losses = sum(1 for g in results if g["wl"] == "L")
+              ties   = sum(1 for g in results if g["wl"] == "T")
+              derived = f"{wins}-{losses}-{ties}"
+              if record["overall"] != derived:
+                  print(f"WARN: record mismatch — heading said {record['overall']!r}, "
+                        f"{len(results)} results give {derived!r}. Using {derived!r}.")
+                  record["overall"] = derived
+              else:
+                  print(f"record cross-check OK: {derived} from {len(results)} results")
 
           if not keepers and not results:
               heads = []

@@ -477,6 +477,20 @@
     .beer-burn-sub { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone);
       margin-top:0.25rem; line-height:1.45; }
     .beer-burn-net { color:#c8922a; font-weight:700; }
+
+    /* Monthly strip. Bars are scaled to the biggest month rather than to
+       a fixed ceiling, so the shape of the year stays readable in January
+       when every bar would otherwise be a stub. */
+    .beer-months { display:flex; align-items:flex-end; gap:3px; margin-top:0.5rem; height:30px; }
+    .beer-month { flex:1; display:flex; flex-direction:column; justify-content:flex-end;
+      align-items:center; height:100%; min-width:0; }
+    .beer-month-bar { width:100%; background:#c8922a; opacity:0.55; border-radius:1px 1px 0 0;
+      min-height:1px; transition:opacity 0.15s; }
+    .beer-month:hover .beer-month-bar { opacity:1; }
+    .beer-month-lab { font-family:'DM Mono',monospace; font-size:0.42rem; color:var(--stone);
+      margin-top:2px; letter-spacing:0.04em; }
+    .beer-month-cur .beer-month-bar { opacity:0.9; }
+    .beer-month-cur .beer-month-lab { color:#c8922a; font-weight:700; }
     @media(max-width:500px) { .ts-grid { grid-template-columns:repeat(3,1fr); } .xt-grid { grid-template-columns:repeat(2,1fr); } }
   </style>
 <script>
@@ -1793,16 +1807,38 @@ function renderBeersBurned(beers, checkins) {
       + `drank ${capped ? 'at least ' : ''}${drunk} · ${verdict}`;
   }
 
-  el.style.display = 'flex';
+  // Monthly strip. Bars scale to the busiest month, not to an absolute
+  // ceiling, so the relative shape reads correctly all year. The current
+  // month is highlighted and flagged as partial — it is always mid-flight
+  // and would otherwise look like a slump.
+  let monthsHTML = '';
+  if (Array.isArray(beers.by_month) && beers.by_month.length > 1) {
+    const peak = Math.max(...beers.by_month.map(m => m.calories || 0), 1);
+    const lastIdx = beers.by_month.length - 1;
+    monthsHTML = '<div class="beer-months">' + beers.by_month.map((m, i) => {
+      const pct = Math.round(((m.calories || 0) / peak) * 100);
+      const cur = i === lastIdx ? ' beer-month-cur' : '';
+      const note = i === lastIdx ? ' (so far)' : '';
+      return `<div class="beer-month${cur}" title="${m.month}: ${m.pints} pints${note}">
+          <div class="beer-month-bar" style="height:${pct}%"></div>
+          <div class="beer-month-lab">${m.month.slice(0,1)}</div>
+        </div>`;
+    }).join('') + '</div>';
+  }
+
+  el.style.display = 'block';
   el.innerHTML = `
-    <div class="beer-burn-icon" aria-hidden="true">🍺</div>
-    <div class="beer-burn-body">
-      <div class="beer-burn-label">Beers Burned · Year to Date</div>
-      <div class="beer-burn-val-row">
-        <span class="beer-burn-val">${pints.toLocaleString()}</span><span class="beer-burn-unit">pints of IPA</span>
+    <div style="display:flex;align-items:center;gap:0.75rem;">
+      <div class="beer-burn-icon" aria-hidden="true">🍺</div>
+      <div class="beer-burn-body">
+        <div class="beer-burn-label">Beers Burned · Year to Date</div>
+        <div class="beer-burn-val-row">
+          <span class="beer-burn-val">${pints.toLocaleString()}</span><span class="beer-burn-unit">pints of IPA</span>
+        </div>
+        <div class="beer-burn-sub">${(beers.calories_ytd || 0).toLocaleString()} cal at ${perPint}/pint${crossRef}</div>
       </div>
-      <div class="beer-burn-sub">${(beers.calories_ytd || 0).toLocaleString()} cal at ${perPint}/pint${crossRef}</div>
-    </div>`;
+    </div>
+    ${monthsHTML}`;
 }
 
 async function loadTraining() {

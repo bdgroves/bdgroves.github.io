@@ -253,6 +253,13 @@ BEER_CAL = 300
 cal_30d = 0
 cutoff_30d = date.today() - timedelta(days=30)
 
+# Per-month totals, so the card can show the shape of the year rather
+# than one lump sum. Keyed "YYYY-MM" and emitted in calendar order with
+# no gaps — a month with no training still gets a zero row, because a
+# missing bar and a zero bar mean different things and only one of them
+# is true.
+cal_by_month = {}
+
 # Every activity with calories, not just the five categorised sports —
 # a walk or a hike burns real calories and should count toward the pint.
 cal_ytd_all = 0
@@ -265,8 +272,11 @@ for a in ytd_raw:
     started = (a.get('startTimeLocal') or '')[:10]
     if started:
         try:
-            if datetime.strptime(started, '%Y-%m-%d').date() >= cutoff_30d:
+            d_ = datetime.strptime(started, '%Y-%m-%d').date()
+            if d_ >= cutoff_30d:
                 cal_30d += cal
+            cal_by_month[f"{d_.year:04d}-{d_.month:02d}"] = \
+                cal_by_month.get(f"{d_.year:04d}-{d_.month:02d}", 0) + cal
         except ValueError:
             pass
 
@@ -286,6 +296,17 @@ ytd_block = {
     'strength': {'count': buckets['strength']['count'], 'time': sec_to_hm(buckets['strength']['secs']), 'calories': round(buckets['strength']['cal'])},
 }
 
+MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+today_ = date.today()
+months = []
+for mo in range(1, today_.month + 1):
+    c = round(cal_by_month.get(f"{today_.year:04d}-{mo:02d}", 0))
+    months.append({
+        'month':    MONTH_NAMES[mo - 1],
+        'calories': c,
+        'pints':    round(c / BEER_CAL, 1),
+    })
+
 beer_block = {
     'cal_per_pint':  BEER_CAL,
     'calories_ytd':  round(cal_ytd_all),
@@ -293,10 +314,12 @@ beer_block = {
     'calories_30d':  round(cal_30d),
     'pints_30d':     round(cal_30d / BEER_CAL, 1),
     'window_days':   30,
+    'by_month':      months,
 }
 print(f"Beers burned: {beer_block['pints_ytd']} pints YTD "
       f"({beer_block['calories_ytd']:,} cal @ {BEER_CAL}/pint), "
       f"{beer_block['pints_30d']} in last 30d")
+print("  by month: " + " · ".join(f"{m['month']} {m['pints']}" for m in months))
 
 # ─── All-time totals: incremental, not recomputed from scratch ───
 # A one-time backfill (garmin_backfill_alltime.py) establishes the true
