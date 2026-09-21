@@ -307,6 +307,33 @@ for mo in range(1, today_.month + 1):
         'pints':    round(c / BEER_CAL, 1),
     })
 
+# ─── What a pint costs, in your own units ───────────────────────────────
+# Derived from this athlete's actual YTD calories-per-mile, not a generic
+# table: run and ride rates differ by more than 2x, and both drift with
+# fitness over a season. Guarded against divide-by-zero in January.
+run_mi   = m_to_mi(buckets['run']['dist'])
+ride_mi  = m_to_mi(buckets['ride']['dist'])
+cal_mile_run  = round(buckets['run']['cal']  / run_mi, 1)  if run_mi  >= 1 else None
+cal_mile_ride = round(buckets['ride']['cal'] / ride_mi, 1) if ride_mi >= 1 else None
+
+def _pints(miles, rate):
+    return round(miles * rate / BEER_CAL, 1) if rate else None
+
+exchange = {
+    'cal_per_mile_run':  cal_mile_run,
+    'cal_per_mile_ride': cal_mile_ride,
+    # Miles of each sport that buy exactly one pint.
+    'run_miles_per_pint':  round(BEER_CAL / cal_mile_run, 1)  if cal_mile_run  else None,
+    'ride_miles_per_pint': round(BEER_CAL / cal_mile_ride, 1) if cal_mile_ride else None,
+    'races': [
+        {'name': '5K',        'pints': _pints(3.1,  cal_mile_run)},
+        {'name': '10K',       'pints': _pints(6.2,  cal_mile_run)},
+        {'name': 'Half',      'pints': _pints(13.1, cal_mile_run)},
+        {'name': 'Marathon',  'pints': _pints(26.2, cal_mile_run)},
+        {'name': 'Century',   'pints': _pints(100,  cal_mile_ride)},
+    ],
+}
+
 beer_block = {
     'cal_per_pint':  BEER_CAL,
     'calories_ytd':  round(cal_ytd_all),
@@ -315,6 +342,10 @@ beer_block = {
     'pints_30d':     round(cal_30d / BEER_CAL, 1),
     'window_days':   30,
     'by_month':      months,
+    'exchange':      exchange,
+    # Pints burned per day over the rolling window — the figure the page
+    # compares against actual drinking rate.
+    'pints_per_day': round(cal_30d / 30 / BEER_CAL, 2),
 }
 print(f"Beers burned: {beer_block['pints_ytd']} pints YTD "
       f"({beer_block['calories_ytd']:,} cal @ {BEER_CAL}/pint), "

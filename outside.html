@@ -491,6 +491,37 @@
       margin-top:2px; letter-spacing:0.04em; }
     .beer-month-cur .beer-month-bar { opacity:0.9; }
     .beer-month-cur .beer-month-lab { color:#c8922a; font-weight:700; }
+
+    /* Balance bar — burned vs drunk over the same 30 days. Two stacked
+       rules rather than a single diverging bar, because the two numbers
+       are measured very differently and shouldn't look like one metric
+       split in half. */
+    .beer-bal { margin-top:0.6rem; padding-top:0.55rem; border-top:1px solid var(--mist); }
+    .beer-bal-row { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.25rem; }
+    .beer-bal-key { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.1em;
+      text-transform:uppercase; color:var(--stone); width:3.6rem; flex:none; }
+    .beer-bal-track { flex:1; height:7px; background:var(--mist); border-radius:2px; overflow:hidden; }
+    .beer-bal-fill { height:100%; border-radius:2px; }
+    .beer-bal-burn { background:#4a5c45; }
+    .beer-bal-drink { background:#c8922a; }
+    .beer-bal-num { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--ink);
+      width:2.2rem; flex:none; text-align:right; }
+    .beer-bal-note { font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--stone);
+      margin-top:0.3rem; line-height:1.5; }
+
+    /* Exchange rates — collapsed by default; this is a sidebar card, not
+       a dashboard, and the headline number should stay the loudest thing. */
+    .beer-x { margin-top:0.5rem; }
+    .beer-x summary { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.1em;
+      text-transform:uppercase; color:var(--stone); cursor:pointer; list-style:none; }
+    .beer-x summary::-webkit-details-marker { display:none; }
+    .beer-x summary::before { content:'▸ '; color:#c8922a; }
+    .beer-x[open] summary::before { content:'▾ '; }
+    .beer-x summary:hover { color:#c8922a; }
+    .beer-x-grid { display:grid; grid-template-columns:1fr auto; gap:0.1rem 0.5rem; margin-top:0.4rem; }
+    .beer-x-k { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); }
+    .beer-x-v { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--ink); text-align:right; }
+    .beer-x-rule { grid-column:1/-1; border-top:1px dotted var(--mist); margin:0.25rem 0; }
     @media(max-width:500px) { .ts-grid { grid-template-columns:repeat(3,1fr); } .xt-grid { grid-template-columns:repeat(2,1fr); } }
   </style>
 <script>
@@ -1794,19 +1825,6 @@ function renderBeersBurned(beers, checkins) {
     capped = checkins.length >= UNTAPPD_RSS_CAP && drunk === checkins.length;
   }
 
-  let crossRef = '';
-  if (drunk !== null && typeof beers.pints_30d === 'number') {
-    const burned30 = beers.pints_30d;
-    const net = Math.round((burned30 - drunk) * 10) / 10;
-    const verdict = net > 0
-      ? `<span class="beer-burn-net">${net} pints ahead</span>`
-      : net < 0
-        ? `<span class="beer-burn-net">${Math.abs(net)} pints behind</span>`
-        : `<span class="beer-burn-net">dead even</span>`;
-    crossRef = `<br>Last ${windowDays} days · burned ${burned30} · `
-      + `drank ${capped ? 'at least ' : ''}${drunk} · ${verdict}`;
-  }
-
   // Monthly strip. Bars scale to the busiest month, not to an absolute
   // ceiling, so the relative shape reads correctly all year. The current
   // month is highlighted and flagged as partial — it is always mid-flight
@@ -1826,6 +1844,58 @@ function renderBeersBurned(beers, checkins) {
     }).join('') + '</div>';
   }
 
+  // Balance over the matched 30-day window. Both bars are scaled to the
+  // larger of the two, so the gap is visible at a glance rather than
+  // needing arithmetic.
+  let balHTML = '';
+  if (drunk !== null && typeof beers.pints_30d === 'number') {
+    const burned30 = beers.pints_30d;
+    const peak = Math.max(burned30, drunk, 1);
+    const net = Math.round((burned30 - drunk) * 10) / 10;
+    const verdict = net > 0 ? `${net} pints ahead`
+                  : net < 0 ? `${Math.abs(net)} pints behind`
+                  : 'dead even';
+    // Days of drinking at the current rate that the burn would cover.
+    const perDay = drunk / windowDays;
+    const coverage = perDay > 0 ? Math.round(burned30 / perDay) : null;
+    balHTML = `
+      <div class="beer-bal">
+        <div class="beer-bal-row">
+          <span class="beer-bal-key">Burned</span>
+          <span class="beer-bal-track"><span class="beer-bal-fill beer-bal-burn" style="width:${Math.round(burned30/peak*100)}%"></span></span>
+          <span class="beer-bal-num">${burned30}</span>
+        </div>
+        <div class="beer-bal-row">
+          <span class="beer-bal-key">Drank</span>
+          <span class="beer-bal-track"><span class="beer-bal-fill beer-bal-drink" style="width:${Math.round(drunk/peak*100)}%"></span></span>
+          <span class="beer-bal-num">${capped ? '≥' : ''}${drunk}</span>
+        </div>
+        <div class="beer-bal-note">
+          Last ${windowDays} days · <span class="beer-burn-net">${verdict}</span>${coverage ? ` · that burn covers ${coverage} days of drinking at your current rate` : ''}
+        </div>
+      </div>`;
+  }
+
+  // Exchange rates, from this athlete's own cal/mile — not a generic table.
+  let xHTML = '';
+  const x = beers.exchange;
+  if (x && (x.run_miles_per_pint || x.ride_miles_per_pint)) {
+    const rows = [];
+    if (x.run_miles_per_pint)  rows.push([`Run`,  `${x.run_miles_per_pint} mi = 1 pint`]);
+    if (x.ride_miles_per_pint) rows.push([`Ride`, `${x.ride_miles_per_pint} mi = 1 pint`]);
+    const races = (x.races || []).filter(r => r.pints);
+    const raceRows = races.map(r => [r.name, `${r.pints.toFixed(1)} pints`]);
+    xHTML = `
+      <details class="beer-x">
+        <summary>What a pint costs</summary>
+        <div class="beer-x-grid">
+          ${rows.map(([k,v]) => `<span class="beer-x-k">${k}</span><span class="beer-x-v">${v}</span>`).join('')}
+          ${raceRows.length ? '<span class="beer-x-rule"></span>' : ''}
+          ${raceRows.map(([k,v]) => `<span class="beer-x-k">${k}</span><span class="beer-x-v">${v}</span>`).join('')}
+        </div>
+      </details>`;
+  }
+
   el.style.display = 'block';
   el.innerHTML = `
     <div style="display:flex;align-items:center;gap:0.75rem;">
@@ -1835,10 +1905,12 @@ function renderBeersBurned(beers, checkins) {
         <div class="beer-burn-val-row">
           <span class="beer-burn-val">${pints.toLocaleString()}</span><span class="beer-burn-unit">pints of IPA</span>
         </div>
-        <div class="beer-burn-sub">${(beers.calories_ytd || 0).toLocaleString()} cal at ${perPint}/pint${crossRef}</div>
+        <div class="beer-burn-sub">${(beers.calories_ytd || 0).toLocaleString()} cal at ${perPint}/pint${beers.pints_per_day ? ` · ${beers.pints_per_day}/day` : ''}</div>
       </div>
     </div>
-    ${monthsHTML}`;
+    ${monthsHTML}
+    ${balHTML}
+    ${xHTML}`;
 }
 
 async function loadTraining() {
