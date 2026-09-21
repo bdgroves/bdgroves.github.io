@@ -551,7 +551,21 @@
     html += '</div>';
 
     if (plan.training_load) {
-      html += `<div class="section-label"><span>Training Load</span><span>From TrainingPeaks</span></div>`;
+      // Read the source from the data rather than asserting one. These
+      // numbers came from TrainingPeaks' iCal for a long time, then from
+      // Garmin's measured TSS — and the two disagreed by a factor of 13
+      // while this label kept confidently saying "From TrainingPeaks".
+      // A provenance label that can't be wrong is worth more than a
+      // tidy hardcoded string.
+      const SRC_LABEL = {
+        garmin: 'From Garmin',
+        trainingpeaks_ical: 'From TrainingPeaks',
+      };
+      const src = plan.training_load.source;
+      const days = plan.training_load.days_modelled;
+      let srcText = SRC_LABEL[src] || (src ? `From ${src}` : 'Source unknown');
+      if (days) srcText += ` · ${days}d`;
+      html += `<div class="section-label"><span>Training Load</span><span>${srcText}</span></div>`;
       html += renderTrainingLoad(plan.training_load);
     }
 
