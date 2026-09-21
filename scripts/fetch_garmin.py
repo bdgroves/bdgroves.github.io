@@ -307,6 +307,98 @@ for mo in range(1, today_.month + 1):
         'pints':    round(c / BEER_CAL, 1),
     })
 
+# ─── Daily TSS series, for FuelCast's training-load model ───────────────
+# FuelCast computes CTL/ATL/TSB from daily TSS. Its own source is the
+# TrainingPeaks iCal feed, which only exposes a short window — so every
+# day outside that window was being counted as TSS 0 and decaying a
+# legitimate CTL toward nothing. Garmin has the real history; this emits
+# it in the shape FuelCast's load model already expects.
+#
+# Two ways to get TSS, in order of trust:
+#
+#  1. Garmin's own activityTrainingLoad. EPOC-derived, computed on-watch
+#     from HR against the athlete's own profile. Scale is comparable to
+#     TSS and it is the closest thing to ground truth available here.
+#  2. Duration x a per-sport rate. Used only when Garmin gives no load
+#     value. Deliberately conservative — under-stating fitness is the
+#     safer error, because over-stating it suppresses the recovery
+#     warnings the whole tool exists to raise.
+#
+# HR-derived TSS is deliberately NOT attempted: athlete.yaml records
+# hr_data_source as chest_strap_only with max_hr unset, so wrist HR here
+# cannot be trusted and there is no threshold to compute against.
+TSS_PER_HOUR = {
+    'run':      55,
+    'ride':     50,
+    'swim':     45,
+    'strength': 20,   # matches FuelCast's existing strength convention
+    'yoga':     10,
+    None:       15,   # uncategorised (walks, hikes) — FuelCast's own floor
+}
+TSS_WINDOW_DAYS = 180
+
+tss_by_day = {}
+tss_src = {'garmin': 0, 'estimated': 0, 'skipped': 0}
+tss_cutoff = date.today() - timedelta(days=TSS_WINDOW_DAYS)
+
+for a in ytd_raw:
+    started = (a.get('startTimeLocal') or '')[:10]
+    if not started:
+        tss_src['skipped'] += 1
+        continue
+    try:
+        d_ = datetime.strptime(started, '%Y-%m-%d').date()
+    except ValueError:
+        tss_src['skipped'] += 1
+        continue
+    if d_ < tss_cutoff:
+        continue
+
+    load = a.get('activityTrainingLoad')
+    if load:
+        tss = float(load)
+        tss_src['garmin'] += 1
+    else:
+        secs = a.get('duration', 0) or 0
+        if secs <= 0:
+            tss_src['skipped'] += 1
+            continue
+        cat = categorize((a.get('activityType') or {}).get('typeKey'))
+        tss = TSS_PER_HOUR.get(cat, TSS_PER_HOUR[None]) * (secs / 3600.0)
+        tss_src['estimated'] += 1
+
+    tss_by_day[d_.isoformat()] = tss_by_day.get(d_.isoformat(), 0.0) + tss
+
+# Emit every day in the window, including zeros. A rest day and a missing
+# day are different facts and the load model must not confuse them — that
+# confusion is exactly what produced the bad CTL in the first place.
+daily_tss = []
+_d = tss_cutoff
+while _d <= date.today():
+    daily_tss.append({'date': _d.isoformat(), 'tss': round(tss_by_day.get(_d.isoformat(), 0.0), 1)})
+    _d += timedelta(days=1)
+
+_active = [x for x in daily_tss if x['tss'] > 0]
+_mean = round(sum(x['tss'] for x in daily_tss) / max(len(daily_tss), 1), 1)
+tss_block = {
+    'window_days':   TSS_WINDOW_DAYS,
+    'start':         daily_tss[0]['date'],
+    'end':           daily_tss[-1]['date'],
+    'method':        'garmin_activityTrainingLoad_with_duration_fallback',
+    'from_garmin':   tss_src['garmin'],
+    'estimated':     tss_src['estimated'],
+    'skipped':       tss_src['skipped'],
+    'active_days':   len(_active),
+    'mean_daily':    _mean,
+    'daily':         daily_tss,
+}
+print(f"Daily TSS: {len(daily_tss)} days, {len(_active)} active, mean {_mean}/day "
+      f"({tss_src['garmin']} from Garmin load, {tss_src['estimated']} estimated, "
+      f"{tss_src['skipped']} skipped)")
+if tss_src['garmin'] == 0 and tss_src['estimated'] > 0:
+    print("  NOTE: activityTrainingLoad absent on every activity — all TSS is "
+          "duration-estimated. Check the DEBUG field list below.")
+
 # ─── What a pint costs, in your own units ───────────────────────────────
 # Derived from this athlete's actual YTD calories-per-mile, not a generic
 # table: run and ride rates differ by more than 2x, and both drift with
@@ -526,6 +618,20 @@ output = {
 os.makedirs('data', exist_ok=True)
 with open('data/training.json', 'w') as f:
     json.dump(output, f, indent=2)
+
+# Separate file, deliberately. FuelCast lives in another repo and fetches
+# this over raw.githubusercontent; keeping it out of training.json means
+# that consumer isn't downloading the whole dashboard payload, and the
+# contract between the two repos stays small and obvious.
+with open('data/training-load.json', 'w') as f:
+    json.dump({
+        'source':     'garmin',
+        'updated':    datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'athlete':    'bdgroves',
+        **tss_block,
+    }, f, indent=2)
+print(f"data/training-load.json written — {len(daily_tss)} days of TSS "
+      f"({tss_block['start']} to {tss_block['end']})")
 
 print(f"data/training.json written — {len(activities)} recent activities")
 print(f"  YTD Run: {ytd_block['run']['miles']} mi · {ytd_block['run']['count']} runs")
