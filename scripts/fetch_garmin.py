@@ -230,27 +230,73 @@ if not recent_raw and not ytd_raw:
 
 # ─── Aggregate YTD totals per sport bucket ───
 buckets = {
-    'run':      {'dist': 0, 'secs': 0, 'count': 0},
-    'ride':     {'dist': 0, 'secs': 0, 'count': 0},
-    'swim':     {'dist': 0, 'secs': 0, 'count': 0},
-    'yoga':     {'dist': 0, 'secs': 0, 'count': 0},
-    'strength': {'dist': 0, 'secs': 0, 'count': 0},
+    'run':      {'dist': 0, 'secs': 0, 'count': 0, 'cal': 0},
+    'ride':     {'dist': 0, 'secs': 0, 'count': 0, 'cal': 0},
+    'swim':     {'dist': 0, 'secs': 0, 'count': 0, 'cal': 0},
+    'yoga':     {'dist': 0, 'secs': 0, 'count': 0, 'cal': 0},
+    'strength': {'dist': 0, 'secs': 0, 'count': 0, 'cal': 0},
 }
+
+# ─── Beers burned ───────────────────────────────────────────────────────
+# A pint of IPA, in calories. 300 is deliberately on the high side: the
+# formula (oz x ABV% x 2.5) puts a 16oz 6.5% West Coast IPA nearer 260,
+# and 300 matches a 7.5-8% fresh-hop or hazy. Erring high means the pint
+# count is conservative — better to under-claim than over-claim.
+# Change this one number to re-scale every beer figure on the site.
+BEER_CAL = 300
+
+# Calories are summed from two windows: the full year, and a rolling 30
+# days. The 30-day figure exists so the page can compare burned against
+# Untappd check-ins over the SAME period — Untappd's RSS feed only carries
+# the last 20 check-ins, so a year-long drinking total doesn't exist and
+# comparing it against a year of exercise would be meaningless.
+cal_30d = 0
+cutoff_30d = date.today() - timedelta(days=30)
+
+# Every activity with calories, not just the five categorised sports —
+# a walk or a hike burns real calories and should count toward the pint.
+cal_ytd_all = 0
+
 for a in ytd_raw:
+    cal = a.get('calories', 0) or 0
+    cal_ytd_all += cal
+
+    # startTimeLocal looks like "2026-09-21 13:53:29"
+    started = (a.get('startTimeLocal') or '')[:10]
+    if started:
+        try:
+            if datetime.strptime(started, '%Y-%m-%d').date() >= cutoff_30d:
+                cal_30d += cal
+        except ValueError:
+            pass
+
     cat = categorize((a.get('activityType') or {}).get('typeKey'))
     if not cat:
         continue
     buckets[cat]['dist']  += a.get('distance', 0) or 0
     buckets[cat]['secs']  += a.get('duration', 0) or 0
     buckets[cat]['count'] += 1
+    buckets[cat]['cal']   += cal
 
 ytd_block = {
-    'run':  {'miles': m_to_mi(buckets['run']['dist']),  'time': sec_to_hm(buckets['run']['secs']),  'count': buckets['run']['count']},
-    'ride': {'miles': m_to_mi(buckets['ride']['dist']), 'time': sec_to_hm(buckets['ride']['secs']), 'count': buckets['ride']['count']},
-    'swim': {'yards': m_to_yd(buckets['swim']['dist']), 'time': sec_to_hm(buckets['swim']['secs']), 'count': buckets['swim']['count']},
-    'yoga': {'count': buckets['yoga']['count'], 'time': sec_to_hm(buckets['yoga']['secs'])},
-    'strength': {'count': buckets['strength']['count'], 'time': sec_to_hm(buckets['strength']['secs'])},
+    'run':  {'miles': m_to_mi(buckets['run']['dist']),  'time': sec_to_hm(buckets['run']['secs']),  'count': buckets['run']['count'],  'calories': round(buckets['run']['cal'])},
+    'ride': {'miles': m_to_mi(buckets['ride']['dist']), 'time': sec_to_hm(buckets['ride']['secs']), 'count': buckets['ride']['count'], 'calories': round(buckets['ride']['cal'])},
+    'swim': {'yards': m_to_yd(buckets['swim']['dist']), 'time': sec_to_hm(buckets['swim']['secs']), 'count': buckets['swim']['count'], 'calories': round(buckets['swim']['cal'])},
+    'yoga': {'count': buckets['yoga']['count'], 'time': sec_to_hm(buckets['yoga']['secs']), 'calories': round(buckets['yoga']['cal'])},
+    'strength': {'count': buckets['strength']['count'], 'time': sec_to_hm(buckets['strength']['secs']), 'calories': round(buckets['strength']['cal'])},
 }
+
+beer_block = {
+    'cal_per_pint':  BEER_CAL,
+    'calories_ytd':  round(cal_ytd_all),
+    'pints_ytd':     round(cal_ytd_all / BEER_CAL, 1),
+    'calories_30d':  round(cal_30d),
+    'pints_30d':     round(cal_30d / BEER_CAL, 1),
+    'window_days':   30,
+}
+print(f"Beers burned: {beer_block['pints_ytd']} pints YTD "
+      f"({beer_block['calories_ytd']:,} cal @ {BEER_CAL}/pint), "
+      f"{beer_block['pints_30d']} in last 30d")
 
 # ─── All-time totals: incremental, not recomputed from scratch ───
 # A one-time backfill (garmin_backfill_alltime.py) establishes the true
@@ -415,6 +461,7 @@ output = {
     'source':                       'garmin',
     'updated':                      datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
     'ytd':                          ytd_block,
+    'beers':                        beer_block,
     'all_time':                     alltime_block,
     'all_time_counted_through_id':   counted_through_id,
     'all_time_counted_through_date': cached.get('all_time_counted_through_date', ''),

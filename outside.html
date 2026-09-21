@@ -459,6 +459,24 @@
     .xt-name { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
     .xt-value { font-family:'Playfair Display',serif; font-size:0.9rem; font-weight:700; color:var(--ink); }
     .xt-sub { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); margin-left:0.5rem; }
+
+    /* Beers burned — the one card on this page that is a joke with real
+       arithmetic behind it. Amber left rule so it reads as its own thing
+       rather than a fourth sport, and the pint count gets the big type
+       because that is the whole point of the card. */
+    .beer-burn { margin-top:0.5rem; background:var(--cream); border:1px solid var(--mist);
+      border-left:3px solid #c8922a; padding:0.7rem 0.85rem;
+      display:flex; align-items:center; gap:0.75rem; }
+    .beer-burn-icon { font-size:1.5rem; line-height:1; }
+    .beer-burn-body { flex:1; min-width:0; }
+    .beer-burn-label { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.15em;
+      text-transform:uppercase; color:var(--stone); }
+    .beer-burn-val-row { margin-top:0.1rem; }
+    .beer-burn-val { font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:900; color:var(--ink); }
+    .beer-burn-unit { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); margin-left:0.25rem; }
+    .beer-burn-sub { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone);
+      margin-top:0.25rem; line-height:1.45; }
+    .beer-burn-net { color:#c8922a; font-weight:700; }
     @media(max-width:500px) { .ts-grid { grid-template-columns:repeat(3,1fr); } .xt-grid { grid-template-columns:repeat(2,1fr); } }
   </style>
 <script>
@@ -578,6 +596,10 @@
           <div class="ts-card"></div>
           <div class="ts-card"></div>
         </div>
+        <!-- Beers burned. Sits below the sport cards and the cross-training
+             pair; renderYTD inserts .xt-grid between them at runtime, so this
+             stays last in source order and the JS never has to reposition it. -->
+        <div id="beer-burn" class="beer-burn" style="display:none"></div>
 
         <div class="col-label">Recent Activities</div>
         <div class="activity-list" id="activity-list"><p class="loading">Loading activities…</p></div>
@@ -1721,6 +1743,68 @@ async function loadBeers() {
   } catch(e) { el.innerHTML='<p class="sport-note">Check back soon.</p>'; }
 }
 
+// Beers burned — calories converted into the only unit that matters.
+//
+// The pint count is YTD and comes straight from Garmin's own per-activity
+// calorie numbers, summed in fetch_garmin.py. Those are estimates from HR
+// and effort, not calorimetry, so this is a fun number rather than a
+// precise one — which is fine, because so is "a pint is 300 calories".
+//
+// The cross-reference is the interesting half: burned vs actually drunk.
+// Both sides are restricted to the SAME rolling 30-day window, because
+// Untappd's RSS feed only carries the last 20 check-ins — there is no
+// year-long drinking total to compare a year of exercise against. If the
+// feed is sitting at its 20-item cap the real count may be higher, so the
+// card says "at least" rather than claiming a hard number.
+const UNTAPPD_RSS_CAP = 20;
+
+function renderBeersBurned(beers, checkins) {
+  const el = document.getElementById('beer-burn');
+  if (!el) return;
+  if (!beers || typeof beers.pints_ytd !== 'number') { el.innerHTML = ''; el.style.display = 'none'; return; }
+
+  const pints = beers.pints_ytd;
+  const perPint = beers.cal_per_pint || 300;
+  const windowDays = beers.window_days || 30;
+
+  // Count check-ins inside the same window the 30-day burn covers.
+  let drunk = null, capped = false;
+  if (Array.isArray(checkins) && checkins.length) {
+    const cutoff = Date.now() - windowDays * 86400000;
+    drunk = checkins.filter(c => {
+      const t = new Date(c.date).getTime();
+      return !isNaN(t) && t >= cutoff;
+    }).length;
+    // Feed at its cap AND every item inside the window means we are only
+    // seeing a floor, not the true count.
+    capped = checkins.length >= UNTAPPD_RSS_CAP && drunk === checkins.length;
+  }
+
+  let crossRef = '';
+  if (drunk !== null && typeof beers.pints_30d === 'number') {
+    const burned30 = beers.pints_30d;
+    const net = Math.round((burned30 - drunk) * 10) / 10;
+    const verdict = net > 0
+      ? `<span class="beer-burn-net">${net} pints ahead</span>`
+      : net < 0
+        ? `<span class="beer-burn-net">${Math.abs(net)} pints behind</span>`
+        : `<span class="beer-burn-net">dead even</span>`;
+    crossRef = `<br>Last ${windowDays} days · burned ${burned30} · `
+      + `drank ${capped ? 'at least ' : ''}${drunk} · ${verdict}`;
+  }
+
+  el.style.display = 'flex';
+  el.innerHTML = `
+    <div class="beer-burn-icon" aria-hidden="true">🍺</div>
+    <div class="beer-burn-body">
+      <div class="beer-burn-label">Beers Burned · Year to Date</div>
+      <div class="beer-burn-val-row">
+        <span class="beer-burn-val">${pints.toLocaleString()}</span><span class="beer-burn-unit">pints of IPA</span>
+      </div>
+      <div class="beer-burn-sub">${(beers.calories_ytd || 0).toLocaleString()} cal at ${perPint}/pint${crossRef}</div>
+    </div>`;
+}
+
 async function loadTraining() {
   try {
     const res=await fetch('/data/training.json?t='+Date.now());
@@ -1728,6 +1812,14 @@ async function loadTraining() {
     const d=await res.json();
     renderBadges(d.badges);
     renderYTD(d.ytd);
+    // The cross-reference needs the Untappd feed too. It is a separate,
+    // independently-updated file, so a failure there must not take the
+    // pint count down with it — hence the catch returning null.
+    const checkins = await fetch('/beers.json?t=' + Date.now())
+      .then(r => r.ok ? r.json() : null)
+      .then(j => (j && Array.isArray(j.checkins)) ? j.checkins : null)
+      .catch(() => null);
+    renderBeersBurned(d.beers, checkins);
     renderActivities(d.activities);
     renderAllTime(d.all_time);
     if(d.updated){
@@ -1737,6 +1829,7 @@ async function loadTraining() {
   } catch(e) {
     document.getElementById('ytd-grid').innerHTML='<div class="ytd-card" style="grid-column:1/-1"><p class="loading">Training data loading — <a href="https://connect.garmin.com/modern/" target="_blank" style="color:var(--garmin)">view on Garmin ↗</a></p></div>';
     document.getElementById('activity-list').innerHTML='';
+    const bb=document.getElementById('beer-burn'); if(bb) bb.innerHTML='';
     document.getElementById('alltime-grid').innerHTML='';
   }
 }
