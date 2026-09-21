@@ -26,7 +26,22 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add data/training.json
+          # Both outputs. fetch_garmin.py writes training.json (the site
+          # dashboard) and training-load.json (the daily TSS series the
+          # FuelCast repo reads). Staging only the first meant the second
+          # was generated in the runner and discarded at job end — the
+          # script logged that it had written the file, the workflow
+          # succeeded, and the file never reached main.
+          git add data/training.json data/training-load.json
+          # Fail loudly if the script stopped producing one of them. A
+          # missing file here would otherwise show up downstream as
+          # FuelCast quietly falling back to a four-month-stale seed.
+          for f in data/training.json data/training-load.json; do
+            if [ ! -f "$f" ]; then
+              echo "ERROR: $f was not written by fetch_garmin.py"
+              exit 1
+            fi
+          done
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
