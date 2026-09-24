@@ -141,6 +141,23 @@
                  text-transform: uppercase; letter-spacing: 0.1em; }
   .gut-note { font-size: 0.82rem; color: var(--stone); line-height: 1.55; }
 
+
+  /* HRV — HRV4Training morning readings against the athlete's normal band. */
+  .hrv { background: var(--cream); border: 1px solid var(--mist); padding: 1.1rem 1.5rem; margin-bottom: 1.5rem; }
+  .hrv-top { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .hrv-top .v { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 900; line-height: 1; }
+  .hrv-top .u { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--stone); }
+  .hrv-top .advice { font-size: 0.9rem; }
+  .hrv-top .advice.warn { color: var(--rust); }
+  .hrv svg { width: 100%; height: 70px; display: block; margin: 0.7rem 0 0.3rem; }
+  .hrv .band { fill: var(--sage); opacity: .13; }
+  .hrv .line { fill: none; stroke: var(--stone); stroke-width: 1.2; opacity: .6; }
+  .hrv .dot-within, .hrv .dot-slightly_above, .hrv .dot-above { fill: var(--sage); }
+  .hrv .dot-below { fill: var(--rust); }
+  .hrv .dot-unusually_high { fill: var(--gold); }
+  .hrv .dot-none { fill: var(--mist); }
+  .hrv-meta { font-family: 'DM Mono', monospace; font-size: 0.58rem; color: var(--stone); line-height: 1.6; }
+
   /* Training Load */
   .training-load { display: grid; grid-template-columns: 1fr 1fr 1fr 1.6fr;
                     gap: 1rem; padding: 1.2rem 1.5rem;
@@ -618,6 +635,11 @@
       html += renderTrainingLoad(plan.training_load);
     }
 
+    if (plan.hrv) {
+      html += `<div class="section-label"><span>HRV</span><span>HRV4Training · morning reading</span></div>`;
+      html += renderHRV(plan.hrv);
+    }
+
     if (plan.gut_training) {
       const g = plan.gut_training;
       html += `<div class="section-label"><span>Gut Training</span><span>${g.current_g_hr} → ${g.race_target_g_hr} g/hr · ${g.weeks_to_race} wk</span></div>`;
@@ -841,6 +863,42 @@
     const today = g.today_is_rehearsal ? `<b>Rehearsal today:</b> practise ${g.today_target_g_hr} g/hr. ` : '';
     return `<div class="gut"><div class="gut-ladder">${ladder}</div>
       <div class="gut-note">${today}${g.note || ''}</div></div>`;
+  }
+
+  // HRV4Training. The verdict is the app's own — shown as given, not
+  // recomputed. The band is the athlete's ~60-day normal range in ln(rMSSD),
+  // mean ± 1 SD, drawn back in rMSSD so the axis reads in milliseconds.
+  function renderHRV(h) {
+    if (!h || !h.history || !h.history.length) return '';
+    const pts = h.history, W = 600, H = 70, pad = 6;
+    const vals = pts.map(p => p.rmssd);
+    let lo = Math.min(...vals), hi = Math.max(...vals);
+    let bandLo = null, bandHi = null;
+    if (h.baseline_ln != null && h.baseline_sd != null) {
+      bandLo = Math.exp(h.baseline_ln - h.baseline_sd);
+      bandHi = Math.exp(h.baseline_ln + h.baseline_sd);
+      lo = Math.min(lo, bandLo); hi = Math.max(hi, bandHi);
+    }
+    const t0 = new Date(pts[0].date).getTime(), t1 = new Date(pts[pts.length - 1].date).getTime();
+    const x = d => pad + (t1 > t0 ? (new Date(d).getTime() - t0) / (t1 - t0) : 0.5) * (W - 2 * pad);
+    const y = v => H - pad - (v - lo) / Math.max(hi - lo, 1) * (H - 2 * pad);
+    const band = bandLo != null
+      ? `<rect class="band" x="0" y="${y(bandHi)}" width="${W}" height="${y(bandLo) - y(bandHi)}"/>` : '';
+    const line = `<polyline class="line" points="${pts.map(p => `${x(p.date).toFixed(1)},${y(p.rmssd).toFixed(1)}`).join(' ')}"/>`;
+    const dots = pts.map(p => `<circle class="dot-${p.verdict || 'none'}" cx="${x(p.date).toFixed(1)}" cy="${y(p.rmssd).toFixed(1)}" r="3"><title>${p.date}: ${p.rmssd} ms${p.verdict ? ' · ' + p.verdict.replace('_', ' ') : ''}</title></circle>`).join('');
+    const warn = h.usable_today && (h.verdict === 'below' || h.verdict === 'unusually_high');
+    const when = h.age_days === 0 ? 'this morning' : h.age_days === 1 ? 'yesterday' : `${h.age_days} days ago`;
+    const advice = h.usable_today ? (h.advice || 'no verdict') : 'Take a reading tomorrow morning';
+    return `
+      <div class="hrv">
+        <div class="hrv-top">
+          <span class="v">${Math.round(h.rmssd)}</span><span class="u">ms rMSSD · ${when}</span>
+          <span class="advice ${warn ? 'warn' : ''}">${advice}</span>
+        </div>
+        <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${band}${line}${dots}</svg>
+        <div class="hrv-meta">Green: within range · Red: below · Gold: unusually high (the app advises easing off)
+          · ${h.readings_30d} readings in the last 30 days${h.readings_30d < 20 ? ' — daily morning readings make the band far more reliable' : ''}</div>
+      </div>`;
   }
 
   function renderTrainingLoad(tl) {
