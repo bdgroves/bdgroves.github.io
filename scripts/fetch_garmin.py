@@ -469,6 +469,15 @@ try:
         latest_d, latest_kg = daily_kg[-1]
         recent7 = [kg for d, kg in daily_kg if (date.today() - d).days < 7]
         smoothed = _mean(recent7) or latest_kg
+        # Say what the number actually is. With no weigh-in in the last week
+        # the "7-day mean" is really one reading, possibly weeks old — and
+        # the page was labelling it a mean regardless.
+        if len(recent7) >= 2:
+            basis = f"{len(recent7)}-reading mean, last 7 days"
+        elif len(recent7) == 1:
+            basis = "single reading this week"
+        else:
+            basis = f"last weigh-in {latest_d.strftime('%b %-d')}"
         trend = _slope_per_week([(d, kg) for d, kg in daily_kg
                                  if (date.today() - d).days <= 30])
         bf_recent = [bf for d, bf in daily_bf if (date.today() - d).days < 14]
@@ -485,12 +494,20 @@ try:
             'body_fat_pct':      round(bf_pct, 1) if bf_pct else None,
             'ffm_kg':            round(ffm, 1) if ffm else None,
             'readings':          len(daily_kg),
+            'readings_7d':       len(recent7),
+            'basis':             basis,
             'stale_days':        (date.today() - latest_d).days,
         }
         w_ = athlete_state['weight']
-        print(f"Weight: {w_['smoothed_lb']} lb (7d mean), trend "
+        print(f"Weight: {w_['smoothed_lb']} lb ({w_['basis']}), trend "
               f"{w_['trend_lb_per_week']} lb/wk, body fat {w_['body_fat_pct']}%, "
-              f"FFM {w_['ffm_kg']} kg, {w_['readings']} readings")
+              f"FFM {w_['ffm_kg']} kg, {w_['readings']} readings in 90 days")
+        if w_['readings'] < 20:
+            print(f"  NOTE: only {w_['readings']} weigh-ins in 90 days — the trend needs "
+                  "roughly daily readings to mean anything")
+        if w_['body_fat_pct'] is None:
+            print("  NOTE: no body-fat readings — step on the Index scale barefoot "
+                  "for body composition; lean mass is being estimated")
     else:
         print("WARN: no weigh-ins in 90 days — is the Index scale syncing?")
 except Exception as e:
