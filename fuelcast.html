@@ -51,6 +51,8 @@
   .page-sub { font-size: 0.975rem; color: var(--stone); max-width: 620px;
               line-height: 1.8; margin-bottom: 1.25rem; }
   .page-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+  a.page-tag { text-decoration: none; transition: background .15s, color .15s, border-color .15s; }
+  a.page-tag:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
   .page-tag { font-family: 'DM Mono', monospace; font-size: 0.52rem; letter-spacing: 0.08em;
               text-transform: uppercase; color: var(--stone); background: var(--cream);
               border: 1px solid var(--mist); padding: 0.2rem 0.55rem; border-radius: 4px; }
@@ -417,11 +419,16 @@
       vegetarian, masters, calibrated against published sport-nutrition science
       and reverse-engineered from the field. Personal athlete data, behind a gate.
     </p>
+    <!-- Linked to the tag index, like every blog post. These used to be
+         plain spans, and FuelCast wasn't in tags.html at all, so nothing on
+         the site could reach it by tag. -->
     <div class="page-tags">
-      <span class="page-tag">Triathlon</span>
-      <span class="page-tag">Vegetarian</span>
-      <span class="page-tag">Masters</span>
-      <span class="page-tag">70.3</span>
+      <a class="page-tag" href="/tags.html#Triathlon">Triathlon</a>
+      <a class="page-tag" href="/tags.html#Nutrition">Nutrition</a>
+      <a class="page-tag" href="/tags.html#Sports%20Science">Sports Science</a>
+      <a class="page-tag" href="/tags.html#Vegetarian">Vegetarian</a>
+      <a class="page-tag" href="/tags.html#Garmin">Garmin</a>
+      <a class="page-tag" href="/tags.html#Python">Python</a>
     </div>
   </div>
 
@@ -737,7 +744,7 @@
         </div>
         <div class="meta-line">
           Engine: <a href="https://github.com/bdgroves/fuelcast" target="_blank">fuelcast</a>
-          · Data: TrainingPeaks · Garmin · Lose It! · Function Health
+          · Data: TrainingPeaks · Garmin · Function Health
           · Last updated: ${plan.generated_at || 'unknown'}
         </div>
       </div>
