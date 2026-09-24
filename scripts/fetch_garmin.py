@@ -399,6 +399,222 @@ if tss_src['garmin'] == 0 and tss_src['estimated'] > 0:
     print("  NOTE: activityTrainingLoad absent on every activity — all TSS is "
           "duration-estimated. Check the DEBUG field list below.")
 
+# ─── Athlete state: body composition, energy, recovery ──────────────────
+# FuelCast sizes every macro per kg and — once it has an energy model —
+# needs to know what the athlete actually burns. Both used to be guesses:
+# weight was a hand-edited number in athlete.yaml ("update monthly"), and
+# expenditure wasn't modelled at all. Garmin measures both. This publishes
+# them for the FuelCast repo to consume.
+#
+# Everything here is best-effort. Each section fails independently and a
+# missing section makes FuelCast fall back to its configured values, which
+# is exactly what it did before this existed. Nothing here can break the
+# dashboard.
+
+def _mean(xs):
+    xs = [x for x in xs if x is not None]
+    return sum(xs) / len(xs) if xs else None
+
+def _slope_per_week(points):
+    """Least-squares slope of (date, value) pairs, in units per week.
+    Requires >=4 points over >=10 days — fewer produces a confident trend
+    out of two noisy readings, which is worse than no trend."""
+    if len(points) < 4 or (points[-1][0] - points[0][0]).days < 10:
+        return None
+    x0 = points[0][0]
+    xs = [(d - x0).days for d, _ in points]
+    ys = [v for _, v in points]
+    n = len(xs); mx = sum(xs) / n; my = sum(ys) / n
+    den = sum((x - mx) ** 2 for x in xs)
+    if den <= 0:
+        return None
+    return sum((x - mx) * (y - my) for x, y in zip(xs, ys)) / den * 7
+
+athlete_state = {}
+
+# ── 1. Body composition (Index scale) ─────────────────────────────────
+# Three weight numbers, because one day's reading is close to useless —
+# scale weight swings a kilo on hydration and glycogen alone:
+#   latest   — reference only
+#   smoothed — 7-day mean; what should drive per-kg macros
+#   trend    — 30-day least-squares slope; the only honest answer to
+#              "is the plan working"
+# Body fat gives fat-free mass, which is the correct denominator for
+# energy availability (the RED-S safety floor), not total weight.
+try:
+    w_start = (date.today() - timedelta(days=90)).isoformat()
+    body = client.get_body_composition(w_start, date.today().isoformat()) or {}
+    rows = body.get('dateWeightList') or []
+    per_day = {}
+    for r in rows:
+        g = r.get('weight')
+        cal = r.get('calendarDate') or (str(r.get('date'))[:10] if r.get('date') else None)
+        if not g or not cal:
+            continue
+        try:
+            d_ = datetime.strptime(str(cal)[:10], '%Y-%m-%d').date()
+        except ValueError:
+            continue
+        bf = r.get('bodyFat')
+        mm = r.get('muscleMass')
+        per_day.setdefault(d_, {'kg': [], 'bf': [], 'mm': []})
+        per_day[d_]['kg'].append(float(g) / 1000.0)
+        if bf: per_day[d_]['bf'].append(float(bf))
+        if mm: per_day[d_]['mm'].append(float(mm) / 1000.0)
+
+    days_sorted = sorted(per_day)
+    if days_sorted:
+        daily_kg = [(d, _mean(per_day[d]['kg'])) for d in days_sorted]
+        daily_bf = [(d, _mean(per_day[d]['bf'])) for d in days_sorted if per_day[d]['bf']]
+        latest_d, latest_kg = daily_kg[-1]
+        recent7 = [kg for d, kg in daily_kg if (date.today() - d).days < 7]
+        smoothed = _mean(recent7) or latest_kg
+        trend = _slope_per_week([(d, kg) for d, kg in daily_kg
+                                 if (date.today() - d).days <= 30])
+        bf_recent = [bf for d, bf in daily_bf if (date.today() - d).days < 14]
+        bf_pct = _mean(bf_recent)
+        ffm = smoothed * (1 - bf_pct / 100) if bf_pct else None
+
+        athlete_state['weight'] = {
+            'latest_kg':         round(latest_kg, 1),
+            'latest_date':       latest_d.isoformat(),
+            'smoothed_kg':       round(smoothed, 1),
+            'smoothed_lb':       round(smoothed * 2.20462, 1),
+            'trend_kg_per_week': round(trend, 2) if trend is not None else None,
+            'trend_lb_per_week': round(trend * 2.20462, 2) if trend is not None else None,
+            'body_fat_pct':      round(bf_pct, 1) if bf_pct else None,
+            'ffm_kg':            round(ffm, 1) if ffm else None,
+            'readings':          len(daily_kg),
+            'stale_days':        (date.today() - latest_d).days,
+        }
+        w_ = athlete_state['weight']
+        print(f"Weight: {w_['smoothed_lb']} lb (7d mean), trend "
+              f"{w_['trend_lb_per_week']} lb/wk, body fat {w_['body_fat_pct']}%, "
+              f"FFM {w_['ffm_kg']} kg, {w_['readings']} readings")
+    else:
+        print("WARN: no weigh-ins in 90 days — is the Index scale syncing?")
+except Exception as e:
+    print(f"WARN: body composition fetch failed ({type(e).__name__}: {e})")
+
+# ── 2. Measured daily energy expenditure ──────────────────────────────
+# Garmin reports total, active and BMR kilocalories per day from the
+# watch. That is a measured TDEE, and a far better input than any
+# predictive equation.
+#
+# Completed days only. This job runs at 08:00 UTC, which is ~01:00
+# Pacific — "today" has barely started, and averaging it in would drag
+# expenditure down by a third. Days with near-zero steps are dropped too:
+# that's the watch on the charger, not a rest day, and Garmin fills those
+# with BMR alone.
+ENERGY_DAYS = 14
+try:
+    energy_rows = []
+    for i in range(1, ENERGY_DAYS + 1):
+        d_ = date.today() - timedelta(days=i)
+        try:
+            st = client.get_stats(d_.isoformat()) or {}
+        except Exception:
+            continue
+        total = st.get('totalKilocalories')
+        steps = st.get('totalSteps') or 0
+        if not total or steps < 200:
+            continue
+        energy_rows.append({
+            'date':   d_.isoformat(),
+            'total':  round(total),
+            'active': round(st.get('activeKilocalories') or 0),
+            'bmr':    round(st.get('bmrKilocalories') or 0),
+            'steps':  steps,
+            'rhr':    st.get('restingHeartRate'),
+        })
+    energy_rows.sort(key=lambda r: r['date'])
+
+    if energy_rows:
+        last7 = energy_rows[-7:]
+        # Training calories over the same 7 complete days, net of the BMR
+        # the athlete would have burned anyway during the session. The model
+        # needs this to split the measured TDEE into "baseline" and
+        # "training" — otherwise today's session gets counted twice, once
+        # inside the average and once on top of it.
+        bmr_day = _mean([r['bmr'] for r in last7 if r['bmr']]) or 1750
+        bmr_per_min = bmr_day / 1440.0
+        window = {r['date'] for r in last7}
+        train_by_day = {}
+        for a in ytd_raw:
+            dstr = (a.get('startTimeLocal') or '')[:10]
+            if dstr not in window:
+                continue
+            gross = a.get('calories') or 0
+            mins = (a.get('duration') or 0) / 60.0
+            bmr_share = a.get('bmrCalories') or bmr_per_min * mins
+            train_by_day[dstr] = train_by_day.get(dstr, 0) + max(0, gross - bmr_share)
+        training_7d = sum(train_by_day.values()) / len(last7)
+
+        # Net kcal per hour by sport, from this athlete's own YTD history.
+        # Brooks's "runs" include a lot of walking, so a textbook running
+        # rate would overstate them badly; his own numbers don't.
+        rates = {}
+        for cat in ('run', 'ride', 'swim', 'strength', 'yoga'):
+            hrs = buckets[cat]['secs'] / 3600.0
+            if hrs >= 2:
+                gross_hr = buckets[cat]['cal'] / hrs
+                rates[cat] = round(max(0, gross_hr - bmr_day / 24.0))
+
+        athlete_state['energy'] = {
+            'tdee_7d':          round(_mean([r['total'] for r in last7])),
+            'active_7d':        round(_mean([r['active'] for r in last7])),
+            'bmr':              round(bmr_day),
+            'training_kcal_7d': round(training_7d),
+            'kcal_per_hour':    rates,
+            'tdee_14d':         round(_mean([r['total'] for r in energy_rows])),
+            'days':             len(energy_rows),
+            'daily':            energy_rows,
+        }
+        e_ = athlete_state['energy']
+        print(f"Energy: TDEE {e_['tdee_7d']} kcal/day (7d), training {e_['training_kcal_7d']}, "
+              f"BMR {e_['bmr']}, from {e_['days']} complete days")
+        print(f"  net kcal/hr: " + ", ".join(f"{k} {v}" for k, v in rates.items()))
+    else:
+        print("WARN: no complete days of energy data")
+except Exception as e:
+    print(f"WARN: daily stats fetch failed ({type(e).__name__}: {e})")
+
+# ── 3. Recovery signals ───────────────────────────────────────────────
+# Resting HR and overnight HRV, as context only. FuelCast shows them; it
+# does not prescribe from them. athlete.yaml records wrist optical HR as
+# unreliable during exercise — overnight resting values are a different
+# and much easier measurement, but they're labelled as wrist-derived so
+# nothing downstream mistakes them for chest-strap data.
+try:
+    rec = {'source': 'wrist_optical_overnight'}
+    rhrs = [r['rhr'] for r in athlete_state.get('energy', {}).get('daily', []) if r.get('rhr')]
+    if rhrs:
+        rec['rhr_last'] = rhrs[-1]
+        rec['rhr_7d'] = round(_mean(rhrs[-7:]), 1)
+        rec['rhr_14d'] = round(_mean(rhrs), 1)
+    # HRV is its own call and its own failure. Wrapping it together with
+    # RHR meant an HRV outage silently discarded RHR too, even though RHR
+    # came from a different endpoint that had already succeeded.
+    try:
+        hrv = client.get_hrv_data((date.today() - timedelta(days=1)).isoformat()) or {}
+        hs = hrv.get('hrvSummary') or {}
+        if hs:
+            base = hs.get('baseline') or {}
+            rec['hrv_last_night'] = hs.get('lastNightAvg')
+            rec['hrv_7d'] = hs.get('weeklyAvg')
+            rec['hrv_status'] = hs.get('status')          # BALANCED / UNBALANCED / LOW
+            rec['hrv_baseline_low'] = base.get('balancedLow')
+            rec['hrv_baseline_high'] = base.get('balancedUpper')
+    except Exception as e:
+        print(f"WARN: HRV fetch failed ({type(e).__name__}: {e}) — keeping RHR")
+    if len(rec) > 1:
+        athlete_state['recovery'] = rec
+        print(f"Recovery: RHR {rec.get('rhr_7d')} (7d), HRV {rec.get('hrv_last_night')} "
+              f"last night, status {rec.get('hrv_status')}")
+except Exception as e:
+    print(f"WARN: recovery fetch failed ({type(e).__name__}: {e})")
+
+
 # ─── What a pint costs, in your own units ───────────────────────────────
 # Derived from this athlete's actual YTD calories-per-mile, not a generic
 # table: run and ride rates differ by more than 2x, and both drift with
@@ -628,6 +844,10 @@ with open('data/training-load.json', 'w') as f:
         'source':     'garmin',
         'updated':    datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'athlete':    'bdgroves',
+        # Body composition, measured energy and recovery. Keys are only
+        # present when their fetch succeeded, so consumers must treat each
+        # as optional.
+        **athlete_state,
         **tss_block,
     }, f, indent=2)
 print(f"data/training-load.json written — {len(daily_tss)} days of TSS "

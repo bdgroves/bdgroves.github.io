@@ -104,6 +104,41 @@
                       text-transform: uppercase; letter-spacing: 0.15em; color: var(--stone); }
   .day-cell.today .label { color: var(--ink); font-weight: 500; }
 
+
+  /* Energy & body — the panel that now drives the macros below it. */
+  .energy { background: var(--cream); border: 1px solid var(--mist);
+            padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; }
+  .energy-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .energy-bar { position: relative; height: 10px; background: var(--mist);
+                margin: 1.1rem 0 0.4rem; border-radius: 2px; overflow: hidden; }
+  .energy-bar .rest { position: absolute; left: 0; top: 0; bottom: 0; background: var(--stone); opacity: .55; }
+  .energy-bar .sess { position: absolute; top: 0; bottom: 0; background: var(--gold); opacity: .8; }
+  .energy-bar .eat  { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+  .energy-legend { display: flex; flex-wrap: wrap; gap: 1rem; font-family: 'DM Mono', monospace;
+                   font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); }
+  .energy-legend i { display: inline-block; width: 8px; height: 8px; margin-right: 0.35rem; vertical-align: middle; }
+  .energy-meta { font-family: 'DM Mono', monospace; font-size: 0.6rem; color: var(--stone);
+                 margin-top: 0.8rem; line-height: 1.7; }
+  .energy-meta b { color: var(--ink); font-weight: 500; }
+  .body-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem;
+                margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--mist); }
+  .body-strip .k { font-family: 'DM Mono', monospace; font-size: 0.52rem; text-transform: uppercase;
+                   letter-spacing: 0.18em; color: var(--stone); }
+  .body-strip .v { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700;
+                   color: var(--ink); margin-top: 0.15rem; }
+  .body-strip .v small { font-family: 'DM Mono', monospace; font-size: 0.55rem; font-weight: 400;
+                         color: var(--stone); margin-left: 0.2rem; }
+  .gut { background: var(--cream); border: 1px solid var(--mist); padding: 1.1rem 1.5rem; margin-bottom: 1.5rem; }
+  .gut-ladder { display: flex; gap: 0.5rem; align-items: flex-end; margin: 0.6rem 0 0.7rem; }
+  .gut-rung { flex: 1; text-align: center; }
+  .gut-rung .bar { background: var(--mist); border-radius: 2px 2px 0 0; }
+  .gut-rung.now .bar { background: var(--gold); }
+  .gut-rung.done .bar { background: var(--sage); opacity: .7; }
+  .gut-rung .g { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.95rem; margin-top: 0.3rem; }
+  .gut-rung .d { font-family: 'DM Mono', monospace; font-size: 0.5rem; color: var(--stone);
+                 text-transform: uppercase; letter-spacing: 0.1em; }
+  .gut-note { font-size: 0.82rem; color: var(--stone); line-height: 1.55; }
+
   /* Training Load */
   .training-load { display: grid; grid-template-columns: 1fr 1fr 1fr 1.6fr;
                     gap: 1rem; padding: 1.2rem 1.5rem;
@@ -318,6 +353,7 @@
     .countdown-mode { text-align: center; }
     .training-load { grid-template-columns: 1fr 1fr 1fr; gap: 0.7rem; }
     .training-load .stat-spark { display: none; }
+    .energy-stats, .body-strip { grid-template-columns: repeat(2, 1fr); }
     .macros { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
     .macro:nth-child(2n) { border-right: none; }
     .meal { grid-template-columns: 4px 1fr; }
@@ -550,6 +586,12 @@
     });
     html += '</div>';
 
+    if (plan.energy) {
+      const w = plan.body && plan.body.weight_source ? plan.body.weight_source : '';
+      html += `<div class="section-label"><span>Energy &amp; Body</span><span>${w ? 'weight: ' + w : ''}</span></div>`;
+      html += renderEnergy(plan.energy, plan.body);
+    }
+
     if (plan.training_load) {
       // Read the source from the data rather than asserting one. These
       // numbers came from TrainingPeaks' iCal for a long time, then from
@@ -567,6 +609,12 @@
       if (days) srcText += ` · ${days}d`;
       html += `<div class="section-label"><span>Training Load</span><span>${srcText}</span></div>`;
       html += renderTrainingLoad(plan.training_load);
+    }
+
+    if (plan.gut_training) {
+      const g = plan.gut_training;
+      html += `<div class="section-label"><span>Gut Training</span><span>${g.current_g_hr} → ${g.race_target_g_hr} g/hr · ${g.weeks_to_race} wk</span></div>`;
+      html += renderGut(g);
     }
 
     html += `<div class="section-label"><span>Today's Plan</span><span>${plan.day_color} Day</span></div>`;
@@ -696,6 +744,96 @@
     `;
 
     document.getElementById('content').innerHTML = html;
+  }
+
+  // Energy & body. Every field is optional — an older today.json, or a
+  // Garmin feed missing a section, must render what it has and skip the rest.
+  function renderEnergy(e, b) {
+    if (!e) return '';
+    const fmt = n => (n == null ? '—' : Math.round(n).toLocaleString());
+    const bal = e.balance_kcal || 0;
+    const balTxt = (bal > 0 ? '+' : bal < 0 ? '−' : '') + Math.abs(bal).toLocaleString();
+    const balCls = bal < -50 ? 'positive' : bal > 50 ? 'negative' : '';
+    const goalLbl = e.goal === 'weight_loss' ? 'Deficit' : 'Balance';
+    const scale = Math.max(e.expenditure_kcal || 0, e.target_kcal || 0) * 1.05 || 1;
+    const restPct = (e.rest_baseline_kcal || 0) / scale * 100;
+    const sessPct = (e.session_kcal || 0) / scale * 100;
+    const eatPct  = Math.min(99.5, (e.target_kcal || 0) / scale * 100);
+
+    let weightStat = '';
+    if (b && b.weight_lb) {
+      const t = b.trend_lb_per_week;
+      const tTxt = t == null ? 'trend pending' : `${t > 0 ? '+' : ''}${t} lb/wk`;
+      weightStat = `<div class="tl-stat"><div class="v">${b.weight_lb}</div>
+        <div class="l">Weight · lb</div><div class="l-detail">${tTxt}</div></div>`;
+    }
+
+    const meta = [
+      e.method ? `Burn from <b>${e.method}</b>` : '',
+      e.energy_availability != null
+        ? `Energy availability <b>${e.energy_availability}</b> kcal/kg lean mass (floor ${e.ea_floor})` : '',
+      e.protein_basis ? `Protein sized on <b>${e.protein_basis}</b>` : '',
+      e.carbs_periodized_g ? `Carbs periodized ${e.carbs_periodized_g} g, fitted to target` : '',
+      (e.floors_binding || []).length ? `Held up by: <b>${e.floors_binding.join(', ')}</b>` : '',
+    ].filter(Boolean).join(' · ');
+
+    let bodyStrip = '';
+    if (b) {
+      const cells = [
+        ['Body fat',   b.body_fat_pct   != null ? `${b.body_fat_pct}<small>%</small>` : null],
+        ['Lean mass',  b.ffm_kg         != null ? `${b.ffm_kg}<small>kg</small>` : null],
+        ['Resting HR', b.rhr_7d         != null ? `${Math.round(b.rhr_7d)}<small>bpm · 7d</small>` : null],
+        ['HRV',        b.hrv_last_night != null ? `${b.hrv_last_night}<small>${(b.hrv_status || '').toLowerCase()}</small>` : null],
+      ].filter(c => c[1] != null);
+      if (cells.length) {
+        bodyStrip = '<div class="body-strip">' + cells.map(([k, v]) =>
+          `<div><div class="k">${k}</div><div class="v">${v}</div></div>`).join('') + '</div>';
+      }
+    }
+
+    return `
+      <div class="energy">
+        <div class="energy-stats">
+          <div class="tl-stat"><div class="v">${fmt(e.expenditure_kcal)}</div>
+            <div class="l">Burn · kcal</div><div class="l-detail">expected today</div></div>
+          <div class="tl-stat"><div class="v">${fmt(e.target_kcal)}</div>
+            <div class="l">Eat · kcal</div><div class="l-detail">${(e.goal || '').replace('_', ' ')}</div></div>
+          <div class="tl-stat"><div class="v ${balCls}">${balTxt}</div>
+            <div class="l">${goalLbl}</div><div class="l-detail">kcal today</div></div>
+          ${weightStat}
+        </div>
+        <div class="energy-bar">
+          <span class="rest" style="width:${restPct}%"></span>
+          <span class="sess" style="left:${restPct}%;width:${sessPct}%"></span>
+          <span class="eat" style="left:${eatPct}%"></span>
+        </div>
+        <div class="energy-legend">
+          <span><i style="background:var(--stone);opacity:.55"></i>Baseline ${fmt(e.rest_baseline_kcal)}</span>
+          <span><i style="background:var(--gold)"></i>Training ${fmt(e.session_kcal)}</span>
+          <span><i style="background:var(--ink)"></i>Intake ${fmt(e.target_kcal)}</span>
+        </div>
+        <div class="energy-meta">${meta}</div>
+        ${bodyStrip}
+      </div>`;
+  }
+
+  function renderGut(g) {
+    if (!g) return '';
+    const rungs = [{ t: g.current_g_hr, label: 'now', cls: 'done' }].concat(
+      (g.ladder || []).map(r => ({
+        t: r.target_g_hr,
+        label: new Date(r.start_date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        cls: r.is_current ? 'now' : '',
+      })));
+    const peak = Math.max(...rungs.map(r => r.t), g.race_target_g_hr || 0, 1);
+    const ladder = rungs.map(r => `
+      <div class="gut-rung ${r.cls}">
+        <div class="bar" style="height:${Math.round(r.t / peak * 44)}px"></div>
+        <div class="g">${r.t}</div><div class="d">${r.label}</div>
+      </div>`).join('');
+    const today = g.today_is_rehearsal ? `<b>Rehearsal today:</b> practise ${g.today_target_g_hr} g/hr. ` : '';
+    return `<div class="gut"><div class="gut-ladder">${ladder}</div>
+      <div class="gut-note">${today}${g.note || ''}</div></div>`;
   }
 
   function renderTrainingLoad(tl) {
