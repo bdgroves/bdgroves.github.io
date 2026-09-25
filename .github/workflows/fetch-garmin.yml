@@ -3,6 +3,11 @@ name: Fetch Garmin Data
 on:
   schedule:
     - cron: '0 8 * * *'   # 8am UTC daily — catches overnight activities
+    # Two intraday refreshes (about 1pm and 7pm Pacific) so a same-day
+    # workout reaches FuelCast before the evening, and the plan can refuel
+    # for what was actually done rather than what was planned.
+    - cron: '0 20 * * *'
+    - cron: '0 2 * * *'
   workflow_dispatch:
 
 jobs:

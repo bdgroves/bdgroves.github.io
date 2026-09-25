@@ -48,8 +48,20 @@ jobs:
                           precip = 0
                           if p.get("probabilityOfPrecipitation"):
                               precip = p["probabilityOfPrecipitation"].get("value") or 0
+                          # Label from the period's own start time, not its name.
+                          # NWS calls today "Today" or "This Afternoon", so the
+                          # old name[:3] rendered today as "TOD" or "THI". The
+                          # date lets consumers match a day exactly.
+                          start = p.get("startTime", "")
+                          try:
+                              dt = datetime.fromisoformat(start)
+                              name = dt.strftime("%a").upper()
+                              day_iso = dt.date().isoformat()
+                          except ValueError:
+                              name, day_iso = p["name"][:3].upper(), None
                           days.append({
-                              "name": p["name"][:3].upper(),
+                              "name": name,
+                              "date": day_iso,
                               "high": p["temperature"],
                               "precip": int(precip)
                           })

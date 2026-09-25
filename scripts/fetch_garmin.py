@@ -596,6 +596,34 @@ try:
 except Exception as e:
     print(f"WARN: daily stats fetch failed ({type(e).__name__}: {e})")
 
+# ── 2b. Recently completed activities ─────────────────────────────────
+# So FuelCast can fuel the day you actually had rather than the one you
+# planned: a planned 60-minute run that became a 30-minute ride burns
+# half as much and deserves a different evening. Keyed by the activity's
+# *local* date — this job runs on UTC, and an evening ride in Lakewood is
+# already "tomorrow" in UTC.
+try:
+    bmr_min = ((athlete_state.get('energy') or {}).get('bmr') or 1750) / 1440.0
+    acts = []
+    for a in recent_raw:
+        local = (a.get('startTimeLocal') or '')[:10]
+        if not local:
+            continue
+        mins = (a.get('duration') or 0) / 60.0
+        gross = a.get('calories') or 0
+        acts.append({
+            'local_date':   local,
+            'name':         a.get('activityName') or '',
+            'sport':        categorize((a.get('activityType') or {}).get('typeKey')) or 'other',
+            'duration_min': round(mins, 1),
+            'kcal_net':     round(max(0, gross - (a.get('bmrCalories') or bmr_min * mins))),
+            'tss':          round(a['activityTrainingLoad'], 1) if a.get('activityTrainingLoad') else None,
+        })
+    athlete_state['activities'] = acts
+    print(f"Activities: {len(acts)} recent, latest {acts[0]['local_date'] if acts else '-'}")
+except Exception as e:
+    print(f"WARN: recent activities failed ({type(e).__name__}: {e})")
+
 # ── 3. Recovery signals ───────────────────────────────────────────────
 # Resting HR and overnight HRV, as context only. FuelCast shows them; it
 # does not prescribe from them. athlete.yaml records wrist optical HR as
