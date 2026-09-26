@@ -227,7 +227,7 @@ jobs:
               "Giro d'Italia": "giro-d-italia",
               "Tour de Suisse": "tour-de-suisse",
               "Tour de France": "tour-de-france",
-              "ADAC Cyclassics": "hamburg-cyclassics",
+              "ADAC Cyclassics": "cyclassics-hamburg",
               "Vuelta a Espa\u00f1a": "vuelta-a-espana",
               "GP Qu\u00e9bec": "gp-quebec",
               "GP Montr\u00e9al": "gp-montreal",
@@ -265,8 +265,11 @@ jobs:
                   tree = HTMLParser(r.text)
                   # Try all table selectors PCS might use
                   table = None
+                  # No bare "table" fallback: on a page without a results table it
+                  # grabbed the first table it saw and returned a label ("Climber")
+                  # as the winner for GP Québec and GP Montréal.
                   for selector in ["table.results", "table.rdrResults", "div.result-cont table",
-                                  "div.resultCont table", "table[class*='result']", "table"]:
+                                  "div.resultCont table", "table[class*='result']"]:
                       table = tree.css_first(selector)
                       if table:
                           print(f"    Found table with selector: {selector}")
@@ -281,7 +284,7 @@ jobs:
                               txt = parent.text(strip=True)
                               if txt.startswith("1") or "1 " in txt:
                                   rider_name = link.text(strip=True)
-                                  if rider_name and len(rider_name) > 3:
+                                  if rider_name and len(rider_name.split()) >= 2:
                                       for key, (canonical, team) in KNOWN_WINNERS.items():
                                           if key.lower() in rider_name.lower():
                                               return canonical, team
@@ -309,13 +312,12 @@ jobs:
                           if a:
                               team_name = a.text(strip=True)
                               break
-                      if not rider_name:
-                          # Some PCS pages put name directly in td
-                          for col in cols[2:5]:
-                              txt = col.text(strip=True)
-                              if txt and len(txt) > 4 and not txt.replace(":", "").replace(".", "").isdigit():
-                                  rider_name = txt
-                                  break
+                      # Only a /rider/ link counts as a winner. The old fallback read
+                      # plain cell text, which is how a column label ended up recorded
+                      # as the winner. A real name has at least two words.
+                      if rider_name and len(rider_name.split()) < 2:
+                          print(f"    Rejected implausible winner '{rider_name}' for {race_name}")
+                          rider_name = ""
                       if rider_name:
                           for key, (canonical, team) in KNOWN_WINNERS.items():
                               if key.lower() in rider_name.lower():
@@ -353,10 +355,10 @@ jobs:
             {"name":"Giro d'Italia","emoji":"🇮🇹","category":"Grand Tour","date":"2026-05-09","end_date":"2026-06-01","stages":21,"status":"upcoming","winner":None,"team":None,"notes":"May 9–Jun 1 · Bulgaria → Rome"},
             {"name":"Tour de Suisse","emoji":"🇨🇭","category":"2.UWT","date":"2026-06-17","end_date":"2026-06-25","stages":8,"status":"final","winner":"Tadej Pogačar 🌈","team":"UAE Team Emirates XRG","notes":"3 stage wins · Carapaz 2nd, Vacek 3rd"},
             {"name":"Tour de France","emoji":"🇫🇷","category":"Grand Tour","date":"2026-07-04","end_date":"2026-07-26","stages":21,"status":"upcoming","winner":None,"team":None,"notes":"Jul 4–26"},
-            {"name":"ADAC Cyclassics","emoji":"🇩🇪","category":"1.UWT","date":"2026-08-16","status":"upcoming","winner":None,"team":None,"notes":"Hamburg"},
+            {"name":"ADAC Cyclassics","emoji":"🇩🇪","category":"1.UWT","date":"2026-08-16","status":"final","winner":"Paul Magnier","team":"Soudal Quick-Step","notes":"Hamburg · Sprint on Mönckebergstraße · Teunissen 2nd, Pithie 3rd"},
             {"name":"Vuelta a España","emoji":"🇪🇸","category":"Grand Tour","date":"2026-08-22","end_date":"2026-09-13","stages":21,"status":"upcoming","winner":None,"team":None,"notes":"Aug 22–Sep 13"},
-            {"name":"GP Québec","emoji":"🇨🇦","category":"1.UWT","date":"2026-09-11","status":"upcoming","winner":None,"team":None,"notes":""},
-            {"name":"GP Montréal","emoji":"🇨🇦","category":"1.UWT","date":"2026-09-13","status":"upcoming","winner":None,"team":None,"notes":""},
+            {"name":"GP Québec","emoji":"🇨🇦","category":"1.UWT","date":"2026-09-11","status":"final","winner":"Remco Evenepoel","team":"Red Bull - BORA - hansgrohe","notes":"Uphill sprint over Ciccone · Charmig 3rd"},
+            {"name":"GP Montréal","emoji":"🇨🇦","category":"1.UWT","date":"2026-09-13","status":"final","winner":"Isaac Del Toro","team":"UAE Team Emirates XRG","notes":"Beat Seixas in the sprint · McNulty 3rd"},
             {"name":"Il Lombardia","emoji":"🇮🇹","category":"Monument","date":"2026-10-10","status":"upcoming","winner":None,"team":None,"notes":"Race of the Falling Leaves"},
           ]
 
