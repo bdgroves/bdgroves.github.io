@@ -24,9 +24,9 @@ A hand-built static site serving as home base for projects, writing, reading, an
 
 |Project                                                             |Description                                               |
 |--------------------------------------------------------------------|----------------------------------------------------------|
-|[EDGAR](https://bdgroves.github.io/EDGAR)                           |Mariners & Rainiers automated stats dashboard             |
-|[RIDGELINE](https://bdgroves.github.io/ridgeline)                   |WUI search & rescue call volume analysis                  |
-|[Sierra Streamflow](https://bdgroves.github.io/sierra-streamflow)   |Live USGS stream gage monitor for Sierra Nevada watersheds|
+|[EDGAR](https://brooksgroves.com/EDGAR)                           |Mariners & Rainiers automated stats dashboard             |
+|[RIDGELINE](https://brooksgroves.com/ridgeline)                   |WUI search & rescue call volume analysis                  |
+|[Sierra Streamflow](https://brooksgroves.com/sierra-streamflow)   |Live USGS stream gage monitor for Sierra Nevada watersheds|
 |[Weather Report Bot](https://github.com/bdgroves/weather-report-bot)|Automated weather cards posted to Twitter & Bluesky       |
 
 -----

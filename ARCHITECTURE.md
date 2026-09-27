@@ -218,7 +218,7 @@ hasn't been necessary yet.
 
 **CORS:** properly restricted. `DEFAULT_ORIGINS` in the code allows only:
 - `https://brooksgroves.com`
-- `https://bdgroves.github.io`
+- `https://brooksgroves.com`
 - `http://localhost:8000` (for local dev)
 - `http://127.0.0.1:8000`
 
