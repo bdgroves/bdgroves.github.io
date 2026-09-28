@@ -14,6 +14,7 @@ does not replace `ARCHITECTURE.md` (which covers the public
 | Westin stories | westin.brooksgroves.com | Private — Cloudflare Pages + Access |
 | Journal | journal.brooksgroves.com | Private — Cloudflare Pages + Access |
 | Y2K journal | y2k.brooksgroves.com | Private — Cloudflare Pages + Access |
+| FuelCast | fuel.brooksgroves.com | Private — Cloudflare Workers (static assets) + Access · added 2026-09-28 |
 
 Public stays as-is (Jekyll build via GitHub Actions, DNS on Cloudflare
 pointing at GitHub Pages). Everything else is on the new stack.
@@ -86,6 +87,21 @@ Effectively:
 - In-page password = "you know this specific memory's key"
 
 Not all pages have the second gate. It's a per-page decision.
+
+## FuelCast (added 2026-09-28)
+
+FuelCast is the fifth private site, but it's built differently from the
+other four. Cloudflare set it up as a **Worker with static assets**
+(Workers Builds), not a classic Pages project:
+
+- Repo `bdgroves/fuelcast`; build command `bash scripts/build_site.sh`,
+  deploy command `npx wrangler deploy`
+- `wrangler.jsonc` in the repo publishes **only** `public/` (the dashboard
+  page + `data/today.json`), declares `fuel.brooksgroves.com` as the custom
+  domain, and turns off the public `*.workers.dev` and preview URLs
+- Access application `fuel`, same shared **Allowed emails** policy
+- The public site keeps a sign-in stub at `/fuelcast.html` and a locked
+  card on `outside.html`; neither fetches athlete data
 
 ## Runbooks
 
