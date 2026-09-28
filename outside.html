@@ -601,10 +601,15 @@
 
         <div class="section-label">
           <span>Today's Fueling</span>
-          <a href="/fuelcast.html" target="_blank">FuelCast ↗</a>
+          <a href="https://fuel.brooksgroves.com/" target="_blank">FuelCast 🔒</a>
         </div>
-        <a href="/fuelcast.html" class="fuelcast-card" id="fuelcast-card">
-          <div class="fuelcast-loading" id="fuelcast-loading">Loading today's plan…</div>
+        <a href="https://fuel.brooksgroves.com/" target="_blank" class="fuelcast-card" id="fuelcast-card">
+          <div class="fuelcast-row">
+            <div class="fuelcast-name">Fuel<em>Cast</em></div>
+            <div class="fuelcast-day-badge">🔒 private</div>
+          </div>
+          <div class="fuelcast-session">Today's fueling plan lives behind a sign-in now: macros, energy balance and recovery, built fresh each morning.</div>
+          <div class="fuelcast-cta"><span>Personal athlete data</span><span>Sign in →</span></div>
         </a>
 
         <!-- Daily motivation — rotates by day-of-year -->
@@ -2143,48 +2148,10 @@ async function checkKingsDaughters() {
   } catch(e) {}
 }
 
-async function loadFuelcast() {
-  const card = document.getElementById('fuelcast-card');
-  if (!card) return;
-  const FUELCAST_DATA = 'https://raw.githubusercontent.com/bdgroves/fuelcast/main/data/today.json';
-
-  try {
-    const r = await fetch(FUELCAST_DATA + '?t=' + Date.now());
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const plan = await r.json();
-    const colorClass = (plan.day_color || 'red').toLowerCase();
-    const dayLabel = (plan.day_color || 'rest').toLowerCase() + ' day';
-    let session = 'Rest day';
-    if (plan.workout) {
-      session = `${plan.workout.title} · ${plan.workout.duration_min} min`;
-    }
-    const m = plan.macros || {};
-    const race = plan.race;
-    const raceLine = race
-      ? `${race.days_to_go} days to ${race.name.replace('Ironman 70.3 ', '')}`
-      : 'Build phase';
-
-    card.innerHTML = `
-      <div class="fuelcast-row">
-        <div class="fuelcast-name">Fuel<em>Cast</em></div>
-        <div class="fuelcast-day-badge"><span class="dot ${colorClass}"></span>${dayLabel}</div>
-      </div>
-      <div class="fuelcast-session">${session}</div>
-      <div class="fuelcast-macros">
-        <div class="fuelcast-macro"><span class="v">${m.protein_g ?? '—'}</span><span class="l">Pro · g</span></div>
-        <div class="fuelcast-macro"><span class="v">${m.fat_g ?? '—'}</span><span class="l">Fat · g</span></div>
-        <div class="fuelcast-macro"><span class="v">${m.carbs_g ?? '—'}</span><span class="l">Carb · g</span></div>
-        <div class="fuelcast-macro"><span class="v">${(m.calories ?? 0).toLocaleString()}</span><span class="l">kcal</span></div>
-      </div>
-      <div class="fuelcast-cta"><span>${raceLine}</span><span>Open FuelCast →</span></div>
-    `;
-  } catch (e) {
-    card.innerHTML = `
-      <div class="fuelcast-row"><div class="fuelcast-name">Fuel<em>Cast</em></div></div>
-      <div class="fuelcast-error">Engine offline. <a href="https://github.com/bdgroves/fuelcast/actions">Status →</a></div>
-    `;
-  }
-}
+// FuelCast moved to fuel.brooksgroves.com behind Cloudflare Access (Sep 2026).
+// The card above is a static locked link: this public page never fetches
+// athlete data. The old loader read today.json from the (now private) repo.
+async function loadFuelcast() {}
 
 // ═══════════════════════════════════════════════════════════════════
 // TODAY'S PUSH — rotating sports/endurance quote, changes at midnight
