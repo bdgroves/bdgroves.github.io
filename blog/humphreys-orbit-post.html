@@ -3,7 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exploring forge3d With Washington LiDAR — Brooks Groves</title>
+  <title>Once Around Humphreys Peak — Brooks Groves</title>
+  <meta name="description" content="A forge3d camera orbit around Arizona's highest summit: USGS elevation, USGS aerial imagery, and a finishing pass in Python for the sky and labels.">
+  <meta property="og:title" content="Once Around Humphreys Peak">
+  <meta property="og:description" content="A forge3d camera orbit around Arizona's highest summit, built from USGS elevation and aerial imagery.">
+  <meta property="og:image" content="https://brooksgroves.com/blog/img/humphreys-orbit/og.jpg">
+  <meta property="og:url" content="https://brooksgroves.com/blog/humphreys-orbit-post.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,6 +88,11 @@
     .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
     .footer-links a:hover { color: var(--gold); }
+      .photo-block video { width: 100%; display: block; border: 1px solid var(--mist); background: #1c3f73; }
+    .article-body pre { background: var(--cream); border: 1px solid var(--mist); padding: 1rem 1.2rem; overflow-x: auto; font-family: 'DM Mono', monospace; font-size: 0.8rem; line-height: 1.6; margin: 1.5rem 0; }
+    .article-body pre code { background: none; padding: 0; }
+    .step-list { margin: 1.2rem 0 1.5rem 1.2rem; }
+    .step-list li { margin-bottom: 0.7rem; }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -120,123 +133,92 @@
 
   <a href="/blog/index.html" class="article-back">← Back to Blog</a>
 
-  <p class="article-kicker">Python · GIS · LiDAR · Terrain · Cartography</p>
-  <h1 class="article-title">&#128507; Exploring forge3d With Washington LiDAR</h1>
+  <p class="article-kicker">Python · forge3d · Terrain · Arizona</p>
+  <h1 class="article-title">&#128507; Once Around Humphreys Peak</h1>
   <div class="article-meta">
-    <span>April 1, 2026</span>
+    <span>September 29, 2026</span>
     <span>Brooks Groves</span>
-    <span>7 min read</span>
+    <span>6 min read</span>
   </div>
 
   <div class="article-tags">
     <a href="/tags.html#Python" class="article-tag-pill">Python</a>
-    <a href="/tags.html#GIS" class="article-tag-pill">GIS</a>
-    <a href="/tags.html#LiDAR" class="article-tag-pill">LiDAR</a>
-    <a href="/tags.html#Terrain" class="article-tag-pill">Terrain</a>
     <a href="/tags.html#forge3d" class="article-tag-pill">forge3d</a>
+    <a href="/tags.html#Terrain" class="article-tag-pill">Terrain</a>
     <a href="/tags.html#Cartography" class="article-tag-pill">Cartography</a>
-    <a href="/tags.html#Open%20Source" class="article-tag-pill">Open Source</a>
+    <a href="/tags.html#Arizona" class="article-tag-pill">Arizona</a>
+    <a href="/tags.html#USGS" class="article-tag-pill">USGS</a>
+    <a href="/tags.html#Open%20Data" class="article-tag-pill">Open Data</a>
+    <a href="/tags.html#pixi" class="article-tag-pill">pixi</a>
   </div>
 
   <div class="article-body">
 
-    <p>Every once in a while a new geospatial tool shows up and you can tell immediately it has range.</p>
+    <p>Back in April I wrote about <a href="/blog/forge3d-post.html">my first week with forge3d</a>, and I admitted something a little funny: my favorite image had nothing to do with the GPU. <em>&ldquo;No interactive viewer. No dramatic camera flythrough.&rdquo;</em> Just Python, elevation, light and composition.</p>
 
-    <p>That was my reaction to <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a>, a new Python package by Milos Popovic: a GPU-accelerated 3D terrain renderer built in Rust and shipped as prebuilt Python wheels. No Rust toolchain. No elaborate setup. Just <code>pip install forge3d</code> and go.</p>
+    <p>Six months later, I finally went and made the dramatic camera flythrough.</p>
 
-    <p>That is already a pretty compelling sentence. But what got me interested was not just the technical stack. It was the promise of a terrain workflow that felt fast, modern, and native to Python. So I did what I usually do when I find a new library that looks promising: I spun up an isolated pixi environment, opened a few notebooks, and started poking at it until I understood the shape of the thing.</p>
-
-    <p>And honestly, I was up and running much faster than I expected.</p>
-
-    <!-- HERO IMAGE — Rainier -->
     <div class="photo-block">
-      <img src="/images/rainier_social.png" alt="Mount Rainier, Washington — terrain render showing 4,391m summit with terrain colour and hillshade, rendered with forge3d and matplotlib">
-      <p class="photo-caption">Mount Rainier, Washington · 4,391m summit · 30m DEM · terrain colour + hillshade · rendered with forge3d + matplotlib</p>
+      <video autoplay muted loop playsinline preload="metadata"
+             poster="/blog/img/humphreys-orbit/poster.jpg"
+             aria-label="A camera orbits Humphreys Peak and the San Francisco Peaks in Arizona, with aerial imagery draped over 3D terrain and the summits labelled">
+        <source src="/blog/img/humphreys-orbit/humphreys-orbit.mp4" type="video/mp4">
+      </video>
+      <p class="photo-caption">Humphreys Peak, Arizona · 12,633 ft · USGS 3DEP 10 m elevation · USGS National Map aerial imagery · 1.6&times; vertical exaggeration · rendered with forge3d</p>
     </div>
 
-    <h2>Why I Tried It</h2>
+    <h2>Why Humphreys</h2>
 
-    <p>Washington State has incredibly good open LiDAR data, so it felt like the obvious place to start. I mostly wanted to see what forge3d could do — especially with lighting, relief, and terrain shading — and one of the nicest surprises was how quickly I got to something usable.</p>
+    <p>Humphreys Peak is the highest point in Arizona, the top of the San Francisco Peaks just north of Flagstaff. The Peaks are what&rsquo;s left of a big stratovolcano. Collapse and erosion hollowed its top out into a horseshoe-shaped valley called the Inner Basin, and the summits you see today &mdash; Humphreys, Agassiz, Fremont, Doyle &mdash; are pieces of its old rim.</p>
 
-    <p>I had been doing similar terrain work in R with Rayshader, and this felt much faster to get off the ground. Once I understood the basics, it really started to open up. The bottleneck was no longer the software. It was just my own imagination, plus however much great open LiDAR data I could find.</p>
+    <p>That makes it a great subject for a camera that goes all the way around. From one side it&rsquo;s a single mountain. Come round to the other and the whole thing opens up, and you&rsquo;re looking straight down into the old volcano.</p>
 
-    <p>That is probably the best compliment I can give a new geospatial tool. It got out of the way quickly enough that I could start thinking about images instead of setup.</p>
+    <h2>How It&rsquo;s Built</h2>
 
-    <h2>First Impressions</h2>
+    <p>The whole thing is a small <a href="https://pixi.sh" target="_blank">pixi</a> project, four steps from nothing to a finished video:</p>
 
-    <p>What stood out right away was that forge3d seems aimed at actual geospatial users, not just graphics people. Even early on, it already has the bones of a serious terrain workflow: DEM loading and terrain rendering, a large colormap catalog, CRS and reprojection support, Jupyter support, vector overlays, labels, and point cloud handling, and a Python API that is readable enough to learn from directly.</p>
+    <ol class="step-list">
+      <li><strong>Elevation.</strong> A 20 km square of USGS 3DEP around the summit at 10 m, requested straight from the USGS ImageServer in UTM zone 12N, so every pixel is square and in metres.</li>
+      <li><strong>Imagery.</strong> The USGS National Map aerial layer for exactly the same square, stitched from sixteen 1,024-pixel tiles into one 4,096-pixel image &mdash; about 5 m a pixel. Both sources are public domain.</li>
+      <li><strong>The orbit.</strong> forge3d&rsquo;s viewer loads the terrain, drapes the imagery, and renders one frame per camera position: 601 frames, one full turn in 20 seconds, lit by a late-afternoon sun.</li>
+      <li><strong>The finish.</strong> A pass in plain Python that swaps in a sky, adds the labels, and hands the frames to ffmpeg.</li>
+    </ol>
 
-    <p>That last part matters more than people admit. A lot of geospatial libraries technically work, but make you fight them. This one feels like it wants you to get from raw elevation data to a render worth keeping with as little ceremony as possible. That is a very good instinct for a mapping library.</p>
+    <p>The camera path is just 37 keyframes. It starts low, rises as it comes round, and drifts in a little, with a cosine ease so it never lurches:</p>
 
-    <h2>I Started With Mount St. Helens</h2>
+<pre><code>for i in range(37):
+    u = i / 36
+    ease = 0.5 - 0.5 * cos(pi * u)        # gentle in, gentle out
+    anim.add_keyframe(
+        time=u * seconds,
+        phi=225 + 360 * u,                 # one full turn
+        theta=74 - 10 * ease,              # rise for a look into the Inner Basin
+        radius=15000 - 3500 * ease,        # metres from the summit
+        fov=40, target=summit)</code></pre>
 
-    <p>I did not start by trying to reproduce the polished hero renders from the project page. I started with Mount St. Helens.</p>
+    <p>The orbit centres on the highest cell in the DEM, so pointing it at a different mountain is just a different GeoTIFF.</p>
 
-    <p>Partly because it is one of the most recognizable volcanic landscapes in the Pacific Northwest, and partly because it is just a great terrain subject. The crater, the blast zone, the radial drainage, the contrast between broad landforms and fine surface texture — it gives you a lot to work with very quickly.</p>
+    <h2>Three Things I Got Wrong</h2>
 
-    <p>It also made for a good test case because Washington's LiDAR data is good enough that you can really see the difference when you start pushing resolution. That led me to make three images: a 10-meter vs 1-meter resolution comparison, a standalone annotated terrain plate, and eventually a render of Crater Lake just to see how the workflow handled a completely different landform.</p>
+    <p><strong>My first renders were a blank white screen.</strong> The forge3d docs describe the viewer&rsquo;s camera distances in &ldquo;terrain-width world units,&rdquo; so I sized everything in pixels: a 2,000-pixel DEM, a camera 840 units out. Nothing showed up. The viewer&rsquo;s own stats gave it away: its camera anchor was sitting at easting 438,384, northing 3,911,670. The viewer had read the GeoTIFF&rsquo;s coordinates and was working in real metres, so my camera was parked somewhere inside the mountain. Once I switched to metres, exaggeration became a plain number too: 1.0 is true scale.</p>
 
-    <!-- MT ST HELENS SINGLE -->
-    <div class="photo-block">
-      <img src="/images/mt_st_helens_twitter.png" alt="Mount St. Helens, Washington — terrain render showing the crater and blast zone, USGS 3DEP data, rendered with forge3d and matplotlib">
-      <p class="photo-caption">Mount St. Helens, Washington · summit 2,526m · USGS 3DEP 10m · rendered with forge3d + matplotlib · The crater and radial drainage make it a great first test subject.</p>
-    </div>
+    <p><strong>The built-in labels floated.</strong> forge3d can draw labels, and my first version used them. They came out small, a little soft, and hanging well above the summits. So I moved them out of the renderer. forge3d&rsquo;s orbit camera is simple enough to reproduce exactly &mdash; the eye sits at the target plus <code>r&middot;(sin&theta; cos&phi;, cos&theta;, sin&theta; sin&phi;)</code>, looking back with a vertical field of view &mdash; so for every frame I can project each summit onto the image myself and draw the label in Roboto with a proper dark halo. To make sure the maths matched, I painted a red dot on the test imagery at the summit and checked that my projected point landed on it. It landed right on it.</p>
 
-    <h2>The Resolution Comparison</h2>
+    <p>Owning the labels bought two more things. A label now hides when the mountain passes in front of it, because each frame marches a line of sight from the camera to the summit across the DEM. And when two labels collide as the ridge lines up with the camera, the higher peak wins and the other fades out instead of stacking on top.</p>
 
-    <p>This is where things got interesting. Same mountain, same color scale, same basic framing — but the jump from 10-meter USGS 3DEP data to 1-meter Washington DNR LiDAR changes the image completely. Gullies sharpen. Flow structure appears. Surface texture starts to read in a way that feels much more immediate.</p>
+    <p><strong>The sky wouldn&rsquo;t turn blue.</strong> forge3d has a background colour setting, but I couldn&rsquo;t get it to take in the viewer mode I was using for shadows. The background it does draw is a perfectly flat off-white, though, so the finishing pass keys it out &mdash; background-coloured pixels connected to the top edge &mdash; and puts a gradient sky behind the mountain. Growing that mask by a single pixel swallows the anti-aliased rim, so there&rsquo;s no white fringe on the ridgeline.</p>
 
-    <p>That is where the package stops being "cool rendering tech" and starts becoming genuinely useful. The difference is not subtle. It is the difference between a terrain render that communicates landform and one that communicates geology.</p>
+    <h2>A Note on GPUs</h2>
 
-    <!-- RESOLUTION COMPARISON -->
-    <div class="photo-block">
-      <img src="/images/st-helens-resolution-comparison.png" alt="Mount St. Helens resolution comparison — USGS 3DEP 10m on left versus WA DNR LiDAR 1m on right, same area, same colour scale">
-      <p class="photo-caption">Same area · same colour scale · 10× difference in terrain detail · USGS 3DEP 10m (left) vs WA DNR LiDAR 1m (right) · Washington's open LiDAR data is where this workflow started to feel especially interesting.</p>
-    </div>
+    <p>I built and tested all of this on a cloud machine with no graphics card, using Mesa&rsquo;s software Vulkan driver. It works, which says something nice about forge3d, but it takes about 25 seconds a frame, which is most of an afternoon for one orbit. On my laptop&rsquo;s GPU it&rsquo;s far faster. Same code either way.</p>
 
-    <h2>Then Crater Lake</h2>
+    <h2>Back to April</h2>
 
-    <p>After St. Helens I wanted to test something structurally different — a caldera instead of a cone. Crater Lake is a great subject for exactly the same reasons St. Helens is: dramatic landform, clear story, and terrain that earns its elevation data.</p>
+    <p>In the first post I said that once I got the hang of forge3d, I felt mostly limited by my own ideas and by how good the open data was. That held up. Everything in this video is public: USGS elevation, USGS imagery, an open-source renderer and an open font. The hard part was a camera, a sky and five labels.</p>
 
-    <p>The USGS 3DEP data handled the caldera rim and the deep lake basin cleanly. Wizard Island reads clearly in the render. The color scale at this elevation range does exactly what you want — it separates the water, the rim, and the surrounding plateau without any manual intervention.</p>
+    <p>The April post ended with a promise to try Rainier with Washington&rsquo;s 1 m LiDAR. That&rsquo;s still on the list. Now it can orbit.</p>
 
-    <!-- CRATER LAKE -->
-    <div class="photo-block">
-      <img src="/images/crater_lake_twitter.png" alt="Crater Lake National Park, Oregon — terrain render showing the caldera, Wizard Island, and surrounding volcanic landscape, USGS 3DEP data">
-      <p class="photo-caption">Crater Lake National Park, Oregon · deepest lake in the US · rim elevation 2,716m · USGS 3DEP · rendered with forge3d + matplotlib · Wizard Island reads clearly in the basin.</p>
-    </div>
-
-    <h2>The Funny Part: My Favorite Output Wasn't Really About the GPU</h2>
-
-    <p>The render I liked most was built with a pretty plain stack: forge3d for the terrain workflow, NumPy for the hillshade-style processing, and matplotlib for composition and output. No interactive viewer. No dramatic camera flythrough. No complicated rendering pipeline. Just Python, elevation, light, and composition.</p>
-
-    <p>That is not a criticism of forge3d. If anything, it is a point in its favor. Good tools do not force you into a single aesthetic or workflow. They give you leverage. forge3d seems built for high-end interactive and rendered output, but it also works as a very clean way into terrain data and scene-making even when the final image still passes through the Python tools you already trust.</p>
-
-    <h2>What Stood Out</h2>
-
-    <p><strong>Packaging that makes experimentation easy.</strong> A Rust-backed rendering library shipped as Python wheels is just easier to say yes to. There is a big difference between "install this and start playing" and "clear your afternoon because your build chain might break." forge3d makes experimentation easy, which is exactly what a young library should do.</p>
-
-    <p><strong>It feels designed for GIS people.</strong> This is not a graphics engine pretending to understand maps. The examples, terminology, and data model all suggest a project built by somebody who understands what geospatial users actually want to do: load terrain, manage coordinate systems, bring in overlays, place labels, and make strong images.</p>
-
-    <p><strong>The source is readable.</strong> I like learning new libraries from the source when the docs are still evolving. forge3d is readable enough that this actually feels productive rather than intimidating. That matters a lot early in a project's life.</p>
-
-    <h2>Why I Think It's Worth Watching</h2>
-
-    <p>A lot of geospatial Python tools are either analytically strong and visually awkward, or visually strong and disconnected from everyday GIS workflows. forge3d looks like it wants to bridge that gap.</p>
-
-    <p>Terrain visualization is still more fragmented than it should be. You can do it in desktop GIS. You can do it in game engines. You can do it in custom graphics stacks. You can absolutely brute-force it in matplotlib. But there is still room for a tool that says: here is a modern renderer, here is a Python API, and here is a workflow that feels natural to geospatial people. That is a real niche.</p>
-
-    <p>And right now it feels like there is a lot of exciting geospatial tooling coming online in 2026. forge3d feels like part of that wave.</p>
-
-    <h2>What I Want to Do Next</h2>
-
-    <p>Now that I have the basic workflow working, I want to push it harder. The next thing on my list: find the highest-grade LiDAR I can get my hands on for Mount Rainier specifically and see what 1-meter resolution does to that summit terrain. The 30m DEM render above is already strong. What the WA DNR LiDAR does to it is going to be something else.</p>
-
-    <p>That is where I ended up with forge3d. Once I got the hang of it, I felt like I was mostly limited by my own ideas — and by the quality of the open data I could find. That is a very fun place to be. For a first pass, that is about as strong an endorsement as I can give. I installed it because I was curious. A few notebooks later, I had images I genuinely wanted to keep.</p>
-
-    <p>That is usually a sign.</p>
-
-    <p><em>Update, September 2026:</em> I finally made the camera flythrough. <a href="/blog/humphreys-orbit-post.html">Once Around Humphreys Peak</a> orbits Arizona&rsquo;s highest summit with USGS imagery draped over the terrain.</p>
+    <p class="photo-caption">Data: USGS 3D Elevation Program; USGS The National Map imagery (public domain). Rendering: <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a> by Milos Popovic. Labels: Roboto.</p>
 
   </div>
 
@@ -260,9 +242,9 @@
   </div>
 
   <div class="article-footer">
-    <span class="article-footer-author">Brooks Groves · April 2026</span>
+    <span class="article-footer-author">Brooks Groves · September 2026</span>
     <div class="article-footer-nav">
-      <a href="/blog/pixi-post.html">← Previous post</a>
+      <a href="/blog/forge3d-post.html">← Part one: forge3d with Washington LiDAR</a>
       <a href="/blog/index.html">All posts</a>
     </div>
   </div>
