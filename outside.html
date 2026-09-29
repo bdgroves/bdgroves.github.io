@@ -113,6 +113,23 @@
 
     /* PEAKS */
     .peaks-card { background:var(--cream); border:1px solid var(--mist); padding:1.1rem; }
+    /* Baseball off-season card + drawer (see initTeamsSeason) */
+    .offseason-card { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--sage); padding:1.1rem 1.25rem; }
+    .offseason-kicker { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--sage); margin-bottom:0.45rem; }
+    .offseason-main { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; line-height:1.25; }
+    .offseason-main span { color:var(--rust); }
+    .offseason-sub { font-size:0.78rem; color:var(--stone); line-height:1.6; margin-top:0.4rem; }
+    .season-drawer { margin-top:0.9rem; }
+    .season-drawer > summary { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase;
+      color:var(--stone); cursor:pointer; list-style:none; padding:0.55rem 0; border-top:1px dotted var(--mist); border-bottom:1px dotted var(--mist); }
+    .season-drawer > summary::-webkit-details-marker { display:none; }
+    .season-drawer > summary::before { content:'▸ '; color:var(--gold); }
+    .season-drawer[open] > summary::before { content:'▾ '; }
+    .season-drawer > summary:hover { color:var(--rust); }
+    .season-drawer[open] > summary { margin-bottom:0.75rem; }
+    /* In season the card goes away and the drawer is simply the content. */
+    .baseball-block.in-season .offseason-card, .baseball-block.in-season .season-drawer > summary { display:none; }
+    .baseball-block.in-season .season-drawer { margin-top:0; }
     .peaks-card-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; margin-bottom:0.25rem; }
     .peaks-card-desc { font-size:0.78rem; color:var(--stone); line-height:1.6; margin-bottom:0.5rem; }
     .peaks-card-hours { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); margin-bottom:0.6rem; }
@@ -670,24 +687,16 @@
       <div class="zone-sub">Mariners · Football · Whitman soccer · Sonora Wildcats · Pro Cycling — what I'm following</div>
     </div>
 
-    <div class="zone-grid">
+    <!-- The Teams follows the calendar. Out of baseball season (the default
+         markup below): football leads, and baseball folds into a compact
+         off-season card beside Whitman soccer, with last season's standings in
+         a drawer. From spring training on, initTeamsSeason() puts baseball back
+         in the top row, opens it, and moves Sonora down beside Whitman — the
+         in-season layout. Dates live in BB_SEASON in the script. -->
+    <div class="zone-grid" id="teams-row1">
 
-      <!-- LEFT: Baseball (MLB + MiLB) -->
-      <div>
-        <div class="section-label">
-          <span>Baseball</span>
-          <a href="https://www.mlb.com/scores" target="_blank">MLB.com ↗</a>
-        </div>
-        <div class="quick-links">
-          <a href="https://www.mlb.com/mariners" target="_blank" class="quick-link">Mariners ↗</a>
-          <a href="https://www.milb.com/tacoma" target="_blank" class="quick-link">Rainiers ↗</a>
-          <a href="https://brooksgroves.com/EDGAR" target="_blank" class="quick-link">EDGAR ↗</a>
-        </div>
-        <div id="baseball-teams"><p class="loading">Loading teams…</p></div>
-      </div>
-
-      <!-- RIGHT: Football (NFL + NCAA) -->
-      <div>
+      <!-- Football (NFL + NCAA) -->
+      <div id="football-block">
         <div class="section-label">
           <span>Football</span>
           <a href="https://www.espn.com/nfl/scoreboard" target="_blank">ESPN ↗</a>
@@ -700,15 +709,27 @@
         <div id="football-teams"><p class="loading">Loading teams…</p></div>
       </div>
 
+      <div id="sonora-block">
+        <!-- High School Football — Sonora -->
+        <div class="section-label">
+          <span>High School Football</span>
+        <a href="https://www.cifsjs.org/" target="_blank">CIF Sac-Joaquin ↗</a>
+        </div>
+        <div class="quick-links">
+          <a href="https://www.maxpreps.com/ca/sonora/sonora-wildcats/football/" target="_blank" class="quick-link">MaxPreps ↗</a>
+          <a href="https://mymotherlode.com/sports/high-school-football" target="_blank" class="quick-link">myMotherLode ↗</a>
+          <a href="https://scorestream.com/team/sonora-high-school-wildcats-2769" target="_blank" class="quick-link">Live Scores ↗</a>
+          <a href="https://gofan.co/school/CA22609" target="_blank" class="quick-link">Tickets ↗</a>
+      </div>
+        <div id="sonora-football"><p class="loading">Loading schedule…</p></div>
+      </div>
+
     </div>
 
-    <!-- Whitman soccer and Sonora football share a row: both are single-team
-         cards of similar height, so pairing them keeps the two-column rhythm
-         established above instead of dropping into a full-width stack. -->
-    <div class="zone-block zone-pair">
+    <div class="zone-block zone-pair" id="teams-row2">
 
-      <!-- College Soccer — Whitman -->
-      <div>
+      <div id="whitman-block">
+        <!-- College Soccer — Whitman -->
         <div class="section-label">
           <span>College Soccer</span>
         <a href="https://www.ncaa.com/scoreboard/soccer-men/d3" target="_blank">NCAA D-III ↗</a>
@@ -721,19 +742,26 @@
         <div id="whitman-soccer"><p class="loading">Loading schedule…</p></div>
       </div>
 
-      <!-- High School Football — Sonora -->
-      <div>
+      <!-- Baseball (MLB + MiLB) — folds away in the off-season -->
+      <div id="baseball-block" class="baseball-block">
         <div class="section-label">
-          <span>High School Football</span>
-        <a href="https://www.cifsjs.org/" target="_blank">CIF Sac-Joaquin ↗</a>
+          <span>Baseball</span>
+          <a href="https://www.mlb.com/scores" target="_blank">MLB.com ↗</a>
         </div>
-        <div class="quick-links">
-          <a href="https://www.maxpreps.com/ca/sonora/sonora-wildcats/football/" target="_blank" class="quick-link">MaxPreps ↗</a>
-          <a href="https://mymotherlode.com/sports/high-school-football" target="_blank" class="quick-link">myMotherLode ↗</a>
-          <a href="https://scorestream.com/team/sonora-high-school-wildcats-2769" target="_blank" class="quick-link">Live Scores ↗</a>
-          <a href="https://gofan.co/school/CA22609" target="_blank" class="quick-link">Tickets ↗</a>
-      </div>
-        <div id="sonora-football"><p class="loading">Loading schedule…</p></div>
+        <div class="offseason-card" id="bb-offseason">
+          <div class="offseason-kicker">Off-season</div>
+          <div class="offseason-main">&#9918; Spring training in <span id="bb-countdown">—</span></div>
+          <div class="offseason-sub">The Mariners and Rainiers are back when pitchers and catchers report in mid-February. This card opens itself back up then.</div>
+        </div>
+        <details class="season-drawer" id="bb-drawer">
+          <summary>Last season · final games &amp; standings</summary>
+          <div class="quick-links">
+          <a href="https://www.mlb.com/mariners" target="_blank" class="quick-link">Mariners ↗</a>
+          <a href="https://www.milb.com/tacoma" target="_blank" class="quick-link">Rainiers ↗</a>
+          <a href="https://brooksgroves.com/EDGAR" target="_blank" class="quick-link">EDGAR ↗</a>
+          </div>
+          <div id="baseball-teams"><p class="loading">Loading teams…</p></div>
+        </details>
       </div>
 
     </div>
@@ -2212,7 +2240,41 @@ document.getElementById('current-year').textContent=new Date().getFullYear();
   el.textContent = days > 0 ? days + ' days to go' : days === 0 ? 'Race day' : 'Past';
 })();
 
-loadBaseball();
+// ── The Teams follows the calendar ──
+// Baseball is "in season" from spring training (pitchers and catchers report,
+// mid-February) through the end of the regular season. Out of season it folds
+// into a compact card beside Whitman soccer and only loads if the drawer is
+// opened; in season it returns to the top row, open, and refreshes as before.
+// Month-day strings, so this works every year without edits.
+const BB_SEASON = { start: '02-15', end: '09-28' };
+let BB_IN_SEASON = false;
+function initTeamsSeason() {
+  const now = new Date();
+  const md = String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
+  BB_IN_SEASON = md >= BB_SEASON.start && md <= BB_SEASON.end;
+  const bb = document.getElementById('baseball-block'), drawer = document.getElementById('bb-drawer');
+  const row1 = document.getElementById('teams-row1'), row2 = document.getElementById('teams-row2');
+  const sonora = document.getElementById('sonora-block');
+  const sub = document.querySelector('#teams-row1')?.closest('.zone')?.querySelector('.zone-sub');
+  if (!bb || !drawer || !row1 || !row2) return;
+  if (BB_IN_SEASON) {
+    bb.classList.add('in-season'); drawer.open = true;
+    row1.insertBefore(bb, row1.firstElementChild);     // Baseball | Football
+    if (sonora) row2.appendChild(sonora);               // Whitman  | Sonora
+    if (sub) sub.textContent = "Mariners · Football · Whitman soccer · Sonora Wildcats · Pro Cycling — what I'm following";
+    loadBaseball();
+  } else {
+    const y = now.getFullYear() + (md > BB_SEASON.start ? 1 : 0);
+    const st = new Date(`${y}-${BB_SEASON.start}T00:00:00`);
+    const days = Math.ceil((st - now) / 86400000);
+    const cd = document.getElementById('bb-countdown');
+    if (cd) cd.textContent = days + (days === 1 ? ' day' : ' days');
+    if (sub) sub.textContent = "Football · Sonora Wildcats · Whitman soccer · Pro Cycling · Mariners in the off-season — what I'm following";
+    let loaded = false;
+    drawer.addEventListener('toggle', () => { if (drawer.open && !loaded) { loaded = true; loadBaseball(); } });
+  }
+}
+initTeamsSeason();
 loadFootball();
 loadCycling();
     loadDakar();
@@ -2242,7 +2304,10 @@ checkKingsDaughters();
 (function scheduleSportsRefresh(){
   const delay = (typeof LIVE_GAME_ACTIVE !== 'undefined' && LIVE_GAME_ACTIVE) ? 60*1000 : 5*60*1000;
   setTimeout(() => {
-    if (!document.hidden) { loadBaseball(); loadFootball(); }
+    if (!document.hidden) {
+      if (BB_IN_SEASON || document.getElementById('bb-drawer')?.open) loadBaseball();
+      loadFootball();
+    }
     scheduleSportsRefresh();
   }, delay);
 })();
