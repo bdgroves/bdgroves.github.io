@@ -25,6 +25,7 @@ jobs:
       - name: Fetch Garmin data
         env:
           GARMIN_TOKENS_JSON: ${{ secrets.GARMIN_TOKENS_JSON }}
+          FUELCAST_KEY: ${{ secrets.FUELCAST_KEY }}
         run: pixi run fetch-garmin
 
       - name: Commit data

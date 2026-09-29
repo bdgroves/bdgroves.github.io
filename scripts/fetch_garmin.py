@@ -880,6 +880,34 @@ os.makedirs('data', exist_ok=True)
 with open('data/training.json', 'w') as f:
     json.dump(output, f, indent=2)
 
+# ─── Garmin Connect+ nutrition: food logs for FuelCast ──────────────────
+# Last few days of logged food, so FuelCast can show actual vs target.
+# Best-effort; stored raw because the response shape isn't documented.
+try:
+    food = {}
+    for back in range(3):
+        d_ = (date.today() - timedelta(days=back)).isoformat()
+        try:
+            food[d_] = client.get_nutrition_daily_food_log(d_)
+        except Exception as e:
+            print(f"  Nutrition {d_}: {type(e).__name__}")
+    if food:
+        athlete_state['nutrition'] = {'food_logs': food}
+        print(f"  Nutrition: food logs for {len(food)} day(s)")
+except Exception as e:
+    print(f"WARN: nutrition fetch failed ({type(e).__name__}: {e})")
+
+# ─── Privacy: athlete state is sealed, never published in the clear ─────
+# Weight, body fat, energy, recovery and food logs used to sit here in plain
+# JSON on a public repo. Since 2026-09-28 they're encrypted with FUELCAST_KEY
+# (a secret shared only with the private fuelcast repo). No key = nothing
+# personal is written at all; FuelCast then falls back to athlete.yaml.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from sealbox import seal  # noqa: E402
+_fc_key = os.environ.get('FUELCAST_KEY', '').strip()
+private_block = {'sealed': seal(athlete_state, _fc_key)} if (_fc_key and athlete_state) else {}
+print(f"  Athlete state: {'sealed for FuelCast' if private_block else 'NOT published (no FUELCAST_KEY)'}")
+
 # Separate file, deliberately. FuelCast lives in another repo and fetches
 # this over raw.githubusercontent; keeping it out of training.json means
 # that consumer isn't downloading the whole dashboard payload, and the
@@ -889,10 +917,10 @@ with open('data/training-load.json', 'w') as f:
         'source':     'garmin',
         'updated':    datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'athlete':    'bdgroves',
-        # Body composition, measured energy and recovery. Keys are only
-        # present when their fetch succeeded, so consumers must treat each
-        # as optional.
-        **athlete_state,
+        # Body composition, energy, recovery and food logs travel ONLY inside
+        # 'sealed' (see above). The daily TSS series stays public: it's the
+        # same training load the dashboard already shows.
+        **private_block,
         **tss_block,
     }, f, indent=2)
 print(f"data/training-load.json written — {len(daily_tss)} days of TSS "
