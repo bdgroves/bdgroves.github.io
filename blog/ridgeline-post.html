@@ -144,7 +144,7 @@
   <div class="article-meta">
     <span>September 29, 2026</span>
     <span>Brooks Groves</span>
-    <span>12 min read</span>
+    <span>14 min read</span>
   </div>
   <p class="article-links">
     Live site: <a href="https://brooksgroves.com/ridgeline/">brooksgroves.com/ridgeline</a>
@@ -162,6 +162,7 @@
     <a href="/tags.html#Leaflet" class="article-tag-pill">Leaflet</a>
     <a href="/tags.html#Python" class="article-tag-pill">Python</a>
     <a href="/tags.html#GitHub%20Actions" class="article-tag-pill">GitHub Actions</a>
+    <a href="/tags.html#Yosemite" class="article-tag-pill">Yosemite</a>
   </div>
 
   <div class="article-body">
@@ -174,11 +175,11 @@
         <dt>What it is</dt>
         <dd>A map and dashboard of every mountain, technical and water rescue call that three fire departments publish, counted by year, month, hour and trailhead.</dd>
         <dt>Where</dt>
-        <dd>Phoenix (2019–2025), Scottsdale (Dec 2022 to now) and Boulder (2015 to now).</dd>
+        <dd>Phoenix (2019–2025), Scottsdale (Dec 2022 to now) and Boulder (2015 to now), plus every national park (2013–2021).</dd>
         <dt>How much</dt>
-        <dd><strong>2,136 mountain and technical rescues</strong> on the map, plus about 1,900 flood and water calls.</dd>
+        <dd><strong>2,136 mountain and technical rescues</strong> on the city maps, about 1,900 flood and water calls, and <strong>20,058 national park search-and-rescue incidents</strong>.</dd>
         <dt>How it runs</dt>
-        <dd>A GitHub Action rebuilds everything every Monday from the cities' own open data.</dd>
+        <dd>GitHub Actions rebuild the cities and the heat analysis every Monday and refresh the national parks data every month.</dd>
         <dt>Go look</dt>
         <dd><a href="https://brooksgroves.com/ridgeline/">brooksgroves.com/ridgeline</a> &middot; <a href="https://github.com/bdgroves/ridgeline" target="_blank" rel="noopener">code and data on GitHub</a></dd>
       </dl>
@@ -280,6 +281,24 @@
 
     <p>The honest summary: the closures may be doing something on the days they're in force, but the drop in rescues is mostly something else, and it happened in winter too. The <a href="https://brooksgroves.com/ridgeline/#heat">heat section on the site</a> has the tables, the charts and the 21 rescues that happened on closed trails during closed hours anyway.</p>
 
+    <h2>Update: the national parks</h2>
+
+    <p>I grew up in Groveland, on the road into Yosemite, so once the city maps worked, the obvious next question was the parks. The National Park Service has released lists of every search-and-rescue incident its rangers logged from 2013 to August 2021: 20,058 of them, across 190 parks.</p>
+
+    <p>There's a catch. Each record gives the park, the date and the kind of incident, but not where in the park it happened. So there are no dots on Half Dome. Instead the site draws every park's boundary on one national map, puts a circle on each park sized by its rescue count, and gives each park its own calendar. Click a park and it lights up, zoom in and the outline sharpens.</p>
+
+    <p>The data needed the same kind of checking as the cities. The file labelled 2019–2020 actually runs into August 2021. 420 rows have no date at all. And the early years are thin: Yosemite logged 9 incidents in 2013 and 372 in 2016. That isn't a sudden rush of reckless hikers. It's the reporting system coming into use. So every comparison uses the five complete years, 2016 to 2020.</p>
+
+    <p>What those years show:</p>
+
+    <ul>
+      <li><strong>Three parks carry a quarter of the load.</strong> The Park Service logs about 3,050 search-and-rescue incidents a year. Yosemite (about 280 a year), Grand Canyon (260) and Lake Mead (240) account for 26% of them.</li>
+      <li><strong>Per visitor, the Sierra leads.</strong> Sequoia and Kings Canyon has 90 incidents per million visits, the highest of any park with at least a million visits a year. Yosemite is next at 70, then Grand Canyon at 47. Great Smoky Mountains, the most-visited national park, has fewer than 6.</li>
+      <li><strong>Yosemite has a real season.</strong> July alone had 300 incidents over the five years. January had 18.</li>
+    </ul>
+
+    <p>A monthly GitHub Action now re-checks the Park Service's reading room, so if it posts a newer list, the map picks it up on its own.</p>
+
     <h2>What I learned</h2>
 
     <ol class="lessons">
@@ -288,6 +307,7 @@
       <li><strong>Silent failures are the worst kind.</strong> The geocoder never errored. It just returned nothing, and nothing looks exactly like "no data here." Now every run publishes a match report: how many were found, how, and which addresses weren't.</li>
       <li><strong>Check where your points pile up.</strong> One quick count of how many calls share the exact same coordinates would have caught bug one on day one. Hundreds of calls on one spot is either a very famous trailhead or a mistake. Here it was both: Echo Canyon is real, and the McDowell pile wasn't.</li>
       <li><strong>Say how precise every dot is.</strong> A dot on a map looks equally certain whether it came from a house number, a blurred block or a guess at a park. Now each one says which it is.</li>
+      <li><strong>Read the file, not the file name.</strong> A list labelled 2019–2020 ran into 2021, and a thin first few years was a reporting system warming up, not safer trails. The first thing to check in any dataset is what it actually covers.</li>
       <li><strong>Trends need the whole count.</strong> A trend built from only the calls I could map moved whenever my mapping did. Counting every call, mapped or not, is the only fair baseline.</li>
       <li><strong>Leave the correction up.</strong> The old numbers are gone from the charts, but the site and README both say what was wrong and how it was fixed. Anyone who saw the old version deserves to know why it changed.</li>
     </ol>
@@ -297,7 +317,7 @@
     <ul>
       <li><strong>What changed in winter.</strong> If the closures don't explain the decline, something else does. Visitor counts, parking and trail work are next on the list.</li>
       <li><strong>The last 422.</strong> Phoenix still has 422 mountain rescues the geocoder can't place, mostly at North Mountain and Papago Park. They need trailhead-specific matching.</li>
-      <li><strong>National parks.</strong> The Park Service's FOIA search-and-rescue lists cover about 20,500 incidents from 2013 to 2020. They have dates and parks but no locations, so Yosemite gets a calendar, not a map.</li>
+      <li><strong>Deaths in the parks.</strong> The Park Service also publishes deaths by park, cause and date from 2007 to 2023. It's a heavier dataset and needs careful handling, but it would say what the rescue counts can't: how often things end badly.</li>
       <li><strong>More cities.</strong> Anywhere that publishes located, incident-level rescue calls. If you know of one, <a href="mailto:contact@brooksgroves.com">tell me</a>.</li>
     </ul>
 
