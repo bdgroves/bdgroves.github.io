@@ -88,9 +88,10 @@
     .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
     .footer-links a:hover { color: var(--gold); }
-      .photo-block video { width: 100%; display: block; border: 1px solid var(--mist); background: #1c3f73; }
-    .article-body pre { background: var(--cream); border: 1px solid var(--mist); padding: 1rem 1.2rem; overflow-x: auto; font-family: 'DM Mono', monospace; font-size: 0.8rem; line-height: 1.6; margin: 1.5rem 0; }
-    .article-body pre code { background: none; padding: 0; }
+    .photo-block video { width: 100%; display: block; border: 1px solid var(--mist); background: #1c3f73; cursor: zoom-in; }
+    .video-actions { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .video-actions a, .video-actions button { font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); background: none; border: 1px solid var(--mist); padding: 0.45rem 0.9rem; cursor: pointer; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
+    .video-actions a:hover, .video-actions button:hover { border-color: var(--rust); color: var(--rust); }
     .step-list { margin: 1.2rem 0 1.5rem 1.2rem; }
     .step-list li { margin-bottom: 0.7rem; }
   </style>
@@ -159,11 +160,15 @@
     <p>Six months later, I finally went and made the dramatic camera flythrough.</p>
 
     <div class="photo-block">
-      <video autoplay muted loop playsinline preload="metadata"
+      <video id="orbit-video" autoplay muted loop playsinline controls preload="metadata"
              poster="/blog/img/humphreys-orbit/poster.jpg"
              aria-label="A camera orbits Humphreys Peak and the San Francisco Peaks in Arizona, with aerial imagery draped over 3D terrain and the summits labelled">
         <source src="/blog/img/humphreys-orbit/humphreys-orbit.mp4" type="video/mp4">
       </video>
+      <div class="video-actions">
+        <button type="button" id="orbit-fullscreen">&#10530; Full screen</button>
+        <a href="/blog/img/humphreys-orbit/humphreys-orbit-1080.mp4" target="_blank">&#9654; Watch in HD (1080p)</a>
+      </div>
       <p class="photo-caption">Humphreys Peak, Arizona · 12,633 ft · USGS 3DEP 10 m elevation · USGS National Map aerial imagery · 1.6&times; vertical exaggeration · rendered with forge3d</p>
     </div>
 
@@ -188,12 +193,12 @@
 
 <pre><code>for i in range(37):
     u = i / 36
-    ease = 0.5 - 0.5 * cos(pi * u)        # gentle in, gentle out
+    ease = 0.5 - 0.5 * cos(pi * u)   # gentle in, gentle out
     anim.add_keyframe(
         time=u * seconds,
-        phi=225 + 360 * u,                 # one full turn
-        theta=74 - 10 * ease,              # rise for a look into the Inner Basin
-        radius=15000 - 3500 * ease,        # metres from the summit
+        phi=225 + 360 * u,           # one full turn
+        theta=74 - 10 * ease,        # rise as it goes round
+        radius=15000 - 3500 * ease,  # metres from the summit
         fov=40, target=summit)</code></pre>
 
     <p>The orbit centres on the highest cell in the DEM, so pointing it at a different mountain is just a different GeoTIFF.</p>
@@ -221,6 +226,20 @@
     <p class="photo-caption">Data: USGS 3D Elevation Program; USGS The National Map imagery (public domain). Rendering: <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a> by Milos Popovic. Labels: Roboto.</p>
 
   </div>
+
+  <script>
+    // Full screen from the button or a click on the video (iOS uses its own player).
+    (function () {
+      var v = document.getElementById('orbit-video');
+      function big() {
+        if (v.requestFullscreen) v.requestFullscreen();
+        else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
+        else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+      }
+      document.getElementById('orbit-fullscreen').addEventListener('click', big);
+      v.addEventListener('dblclick', big);
+    })();
+  </script>
 
   <div class="reactions-section">
     <p class="reactions-label">Reactions</p>
