@@ -637,6 +637,15 @@
           <div class="mo-quote" id="mo-quote">…</div>
           <div class="mo-attrib" id="mo-attrib">—</div>
         </div>
+
+        <!-- Recent activities sit with the day-to-day things on the left
+             (race, fuel, today's push); the right column keeps the totals. -->
+        <div class="section-label">
+          <span>Recent Activities</span>
+          <a href="https://connect.garmin.com/modern/activities" target="_blank">Garmin ↗</a>
+        </div>
+        <div class="activity-list" id="activity-list"><p class="loading">Loading activities…</p></div>
+        <a href="https://connect.garmin.com/modern/" target="_blank" class="garmin-btn">Full profile on Garmin ↗</a>
       </div>
 
       <!-- RIGHT: Training Log -->
@@ -670,11 +679,7 @@
              stays last in source order and the JS never has to reposition it. -->
         <div id="beer-burn" class="beer-burn" style="display:none"></div>
 
-        <div class="col-label">Recent Activities</div>
-        <div class="activity-list" id="activity-list"><p class="loading">Loading activities…</p></div>
-        <a href="https://connect.garmin.com/modern/" target="_blank" class="garmin-btn">Full profile on Garmin ↗</a>
-
-        <div class="col-label" style="margin-top:1.5rem;">All Time</div>
+        <div class="col-label">All Time</div>
         <div class="alltime-grid" id="alltime-grid"><p class="loading">Loading…</p></div>
         <div class="updated-note" id="updated-note"></div>
       </div>
@@ -763,6 +768,26 @@
         </div>
           <div id="whitman-soccer"><p class="loading">Loading schedule…</p></div>
         </div>
+
+        <!-- Dakar Rally — its season is January, so it lives with the teams
+             column rather than inside pro cycling. -->
+        <div id="dakar-block">
+          <div class="section-label">
+            <span>Dakar Rally</span>
+            <a href="https://www.dakar.com/en" target="_blank" rel="noopener">dakar.com ↗</a>
+          </div>
+          <div class="quick-links">
+            <a href="/dakar-2027.html" class="quick-link">Stage Tracker &rarr;</a>
+            <a href="https://www.dakar.com/en" target="_blank" rel="noopener" class="quick-link">Official Site &#8599;</a>
+            <a href="https://www.dakar.com/en/ranking" target="_blank" rel="noopener" class="quick-link">Live Standings &#8599;</a>
+            <a href="https://www.dakar.com/en/route" target="_blank" rel="noopener" class="quick-link">Stage Route &#8599;</a>
+            <a href="https://www.redbull.com/int-en/tags/dakar-rally" target="_blank" rel="noopener" class="quick-link">Red Bull &#8599;</a>
+            <a href="https://www.fia.com/events/world-rally-raid-championship" target="_blank" rel="noopener" class="quick-link">W2RC &#8599;</a>
+            <a href="https://en.wikipedia.org/wiki/Dakar_Rally" target="_blank" rel="noopener" class="quick-link">History &#8599;</a>
+            <a href="/dakar.json" class="quick-link">Raw data &#8599;</a>
+          </div>
+          <div id="dakar-card"><p class="loading">Loading the Dakar&hellip;</p></div>
+        </div>
       </div>
 
     </div>
@@ -808,23 +833,6 @@
         <div>
           <div class="col-label" style="margin-top:0;">Recent Races</div>
           <div id="cycling-races"><p class="loading">Loading races…</p></div>
-
-          <!-- Dakar sits below the cycling block so the road-racing content
-               stays together. It is a different sport with a different season
-               — January, when the Grand Tours are dormant — so the two rarely
-               compete for the same space anyway. -->
-          <div class="col-label">Dakar Rally</div>
-          <div id="dakar-card"><p class="loading">Loading the Dakar&hellip;</p></div>
-          <div class="quick-links" style="margin-top:0.75rem;">
-            <a href="/dakar-2027.html" class="quick-link">Stage Tracker &rarr;</a>
-            <a href="https://www.dakar.com/en" target="_blank" rel="noopener" class="quick-link">Official Site &#8599;</a>
-            <a href="https://www.dakar.com/en/ranking" target="_blank" rel="noopener" class="quick-link">Live Standings &#8599;</a>
-            <a href="https://www.dakar.com/en/route" target="_blank" rel="noopener" class="quick-link">Stage Route &#8599;</a>
-            <a href="https://www.redbull.com/int-en/tags/dakar-rally" target="_blank" rel="noopener" class="quick-link">Red Bull &#8599;</a>
-            <a href="https://www.fia.com/events/world-rally-raid-championship" target="_blank" rel="noopener" class="quick-link">W2RC &#8599;</a>
-            <a href="https://en.wikipedia.org/wiki/Dakar_Rally" target="_blank" rel="noopener" class="quick-link">History &#8599;</a>
-            <a href="/dakar.json" class="quick-link">Raw data &#8599;</a>
-          </div>
         </div>
         <div>
           <div class="col-label" style="margin-top:0;">Latest News</div>
@@ -2260,7 +2268,7 @@ function initTeamsSeason() {
   if (BB_IN_SEASON) {
     bb.classList.add('in-season'); drawer.open = true;
     left.insertBefore(bb, left.firstElementChild);      // Baseball over Football
-    if (sub) sub.textContent = "Mariners · Football · Whitman soccer · Sonora Wildcats · Pro Cycling — what I'm following";
+    if (sub) sub.textContent = "Mariners · Football · Sonora Wildcats · Whitman soccer · Dakar · Pro Cycling — what I'm following";
     loadBaseball();
   } else {
     const y = now.getFullYear() + (md > BB_SEASON.start ? 1 : 0);
@@ -2268,7 +2276,7 @@ function initTeamsSeason() {
     const days = Math.ceil((st - now) / 86400000);
     const cd = document.getElementById('bb-countdown');
     if (cd) cd.textContent = days + (days === 1 ? ' day' : ' days');
-    if (sub) sub.textContent = "Football · Sonora Wildcats · Whitman soccer · Pro Cycling · Mariners in the off-season — what I'm following";
+    if (sub) sub.textContent = "Football · Sonora Wildcats · Whitman soccer · Dakar · Pro Cycling · Mariners in the off-season — what I'm following";
     let loaded = false;
     drawer.addEventListener('toggle', () => { if (drawer.open && !loaded) { loaded = true; loadBaseball(); } });
   }
@@ -2629,7 +2637,7 @@ loadSonoraFootball();
     } else {
       // Finished for this year. If the organiser has published next year's
       // start date we use it and count exact days; otherwise we roll the
-      // start forward twelve months as an estimate and mark it with a tilde,
+      // start forward twelve months as an estimate and mark it with "about",
       // so an announced date and a guess never look alike on the card.
       const announced = card.dataset.next;
       let next, exact;
@@ -2646,7 +2654,7 @@ loadSonoraFootball();
       const when = `${next.getDate()} ${MONTHS[next.getMonth()].slice(0,3)} ${next.getFullYear()}`;
       label = exact
         ? `Back in ${days} days \u00b7 ${when}`
-        : `Back in ~${days} days \u00b7 ${MONTHS[next.getMonth()]} ${next.getFullYear()}`;
+        : `Back in about ${days} days \u00b7 ${MONTHS[next.getMonth()]} ${next.getFullYear()}`;
       if(exact && card.dataset.nextNote) label += ` \u00b7 ${card.dataset.nextNote}`;
       if(statusEl) statusEl.title = exact
         ? 'Start date confirmed by the organiser'
