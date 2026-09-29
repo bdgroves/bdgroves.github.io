@@ -96,6 +96,9 @@
     .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
     .footer-links a:hover { color: var(--gold); }
+    /* Wide tables and long code scroll or wrap inside the column on phones. */
+    @media (max-width: 640px) { .article-body table { display:block; max-width:100%; overflow-x:auto; } }
+    .article-body code { overflow-wrap:anywhere; }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -141,7 +144,7 @@
   <div class="article-meta">
     <span>September 29, 2026</span>
     <span>Brooks Groves</span>
-    <span>11 min read</span>
+    <span>12 min read</span>
   </div>
   <p class="article-links">
     Live site: <a href="https://brooksgroves.com/ridgeline/">brooksgroves.com/ridgeline</a>
@@ -173,7 +176,7 @@
         <dt>Where</dt>
         <dd>Phoenix (2019–2025), Scottsdale (Dec 2022 to now) and Boulder (2015 to now).</dd>
         <dt>How much</dt>
-        <dd><strong>2,098 mountain and technical rescues</strong> on the map, plus about 1,900 flood and water calls.</dd>
+        <dd><strong>2,136 mountain and technical rescues</strong> on the map, plus about 1,900 flood and water calls.</dd>
         <dt>How it runs</dt>
         <dd>A GitHub Action rebuilds everything every Monday from the cities' own open data.</dd>
         <dt>Go look</dt>
@@ -218,17 +221,17 @@
 
     <p>Then, a day later, I found a nastier variant. A Scottsdale call at <em>East</em> Indian School Road had been matched, with a high score, to <em>West</em> Indian School Road, 15 miles away. Same street name, opposite side of the valley. So now a match on the right street with the wrong direction is thrown out, however confident the geocoder is. Seven of about 1,300 matches failed that check.</p>
 
-    <p>The result: <strong>mapped Phoenix mountain rescues went from 474 to 1,159 of 1,619, or 72%.</strong> The crisis cluster collapsed from 1,120 to 5, and those five are at real preserve addresses. Every dot now records how precise it is, and you can click any dot to see.</p>
+    <p>The result: <strong>mapped Phoenix mountain rescues went from 474 to 1,197 of 1,619, or 74%.</strong> The crisis cluster collapsed from 1,120 to 5, and those five are at real preserve addresses. Every dot now records how precise it is, and you can click any dot to see.</p>
 
     <h2>What the fixed data says</h2>
 
     <p>Once the map was honest, it told a better story than the one I'd had.</p>
 
-    <p><strong>It's mostly one trailhead.</strong> Echo Canyon on Camelback, <code>49XX E MCDONALD DR</code> in dispatch-speak, accounts for 310 of Phoenix's 1,159 located mountain rescues. That's more than one in four. Add Piestewa Peak, Pima Canyon on South Mountain and the Cholla trailhead, and you have most of the city.</p>
+    <p><strong>It's mostly one trailhead.</strong> Echo Canyon on Camelback, <code>49XX E MCDONALD DR</code> in dispatch-speak, accounts for 310 of Phoenix's 1,197 located mountain rescues. That's about one in four. Add Piestewa Peak, the Cholla trailhead and Pima Canyon on South Mountain, and you have most of the city.</p>
 
-    <p><strong>Rescues are down about a third.</strong> There were 206 in 2019 and about 131 a year from 2023 to 2025. Over the same stretch, Phoenix began closing the Echo Canyon and Cholla trails on extreme-heat days. That's exactly the question the researcher is studying, and it's a lead worth testing, not a finding. Lots of other things changed over those years too.</p>
+    <p><strong>Rescues are down about a fifth.</strong> Counting every call, mapped or not, there were 255 in 2019 and about 203 a year from 2023 to 2025. Over the same stretch, Phoenix began closing its busiest trails on extreme-heat days. That's exactly the question the researcher is studying, so I went and tested it. More on that below.</p>
 
-    <p><strong>There's no summer peak.</strong> I expected July. Instead Phoenix mountain rescues run 85 to 120 a month all year, and March and May are as busy as midsummer. Calls peak between 10 a.m. and noon.</p>
+    <p><strong>There's no summer peak.</strong> I expected July. Instead Phoenix mountain rescues run about 90 to 120 a month for eleven months of the year, and March and May are busier than midsummer. Only December is really quiet. Calls peak between 10 a.m. and noon.</p>
 
     <h2>Two more cities (and one I couldn't get)</h2>
 
@@ -248,7 +251,7 @@
         <tr><th>City</th><th class="num">Rescues / yr</th><th>Busiest</th><th>Quietest</th><th class="num">Weekend</th></tr>
       </thead>
       <tbody>
-        <tr><td>Phoenix</td><td class="num">~166</td><td>March</td><td>December</td><td class="num">39.7%</td></tr>
+        <tr><td>Phoenix</td><td class="num">~171</td><td>March</td><td>December</td><td class="num">39.6%</td></tr>
         <tr><td>Scottsdale</td><td class="num">~109</td><td>February</td><td>June</td><td class="num">41.3%</td></tr>
         <tr><td>Boulder</td><td class="num">~48</td><td>July</td><td>January</td><td class="num">41.5%</td></tr>
       </tbody>
@@ -260,6 +263,23 @@
 
     <p>The site lets you add flood and water calls to the map and charts. Do it for Phoenix and the busiest month flips from March to July, the monsoon. The hour-of-day chart changes too: rescues are a daytime problem, but flood calls come in around the clock.</p>
 
+    <h2>Update: did the heat closures work?</h2>
+
+    <p>Since 2021 Phoenix has closed the Echo Canyon and Cholla trails on Camelback, and the Piestewa Peak trails, from 9 a.m. to 5 p.m. whenever the Weather Service has a heat warning out. So I pulled every heat warning for Central Phoenix since 2018 and the daily high at Sky Harbor for every day, and lined them up with all 1,619 mountain-rescue calls. My warning-day counts match the city's own program review almost exactly: 20, 17, 42 and 45 days for 2021 through 2024, against their 20, 18, 42 and 45.</p>
+
+    <p>Before I got an answer, the data caught me again. Calls at the Cholla trailhead, <code>62XX E CHOLLA LN</code>, dropped from 36 in 2019 to zero, just as a new address, <code>51XX N INVERGORDON RD</code>, showed up and climbed to 23 a year. The two are the same trailhead: after the trail reopened in 2022, dispatch started logging it at the corner of Cholla Lane and Invergordon Road. Those 59 rescues had been missing from the map, and my first pass counted them as "other trails," which made the closed trails' decline look far bigger than it is. That same blind spot is why my earlier "down about a third" is now "down about a fifth."</p>
+
+    <p>With that fixed, here's what the data says:</p>
+
+    <ul>
+      <li><strong>On warning days, rescues at the closed trails halved.</strong> They went from 28 per 100 warning days to 14, while other trails barely moved. That's what working closures look like. But that's only 19 calls before and 21 after, and the statistical range includes no effect at all.</li>
+      <li><strong>The closures can't explain the long decline.</strong> There are only about 31 warning days a year. Even if every missing warning-day rescue was prevented, that's about 4 a year.</li>
+      <li><strong>The city's own numbers tell the same story.</strong> Phoenix reported 57, 47, 30 and 35 "rescues on closed trails" for 2021 to 2024. I can reproduce those within 3 a year by counting every rescue at those trails from May through October, any day, any hour. So they count <em>trails that close</em>, not rescues while closed. The same trails fell just as much from November to April, 53 down to 35, when nothing closes.</li>
+      <li><strong>Rescues don't rise with the thermometer.</strong> Calls per day are flat from below 70°F to 110°F and up. Fewer people hike on the hottest days, so each one out there takes more risk, but the count doesn't grow.</li>
+    </ul>
+
+    <p>The honest summary: the closures may be doing something on the days they're in force, but the drop in rescues is mostly something else, and it happened in winter too. The <a href="https://brooksgroves.com/ridgeline/#heat">heat section on the site</a> has the tables, the charts and the 21 rescues that happened on closed trails during closed hours anyway.</p>
+
     <h2>What I learned</h2>
 
     <ol class="lessons">
@@ -268,14 +288,16 @@
       <li><strong>Silent failures are the worst kind.</strong> The geocoder never errored. It just returned nothing, and nothing looks exactly like "no data here." Now every run publishes a match report: how many were found, how, and which addresses weren't.</li>
       <li><strong>Check where your points pile up.</strong> One quick count of how many calls share the exact same coordinates would have caught bug one on day one. Hundreds of calls on one spot is either a very famous trailhead or a mistake. Here it was both: Echo Canyon is real, and the McDowell pile wasn't.</li>
       <li><strong>Say how precise every dot is.</strong> A dot on a map looks equally certain whether it came from a house number, a blurred block or a guess at a park. Now each one says which it is.</li>
+      <li><strong>Trends need the whole count.</strong> A trend built from only the calls I could map moved whenever my mapping did. Counting every call, mapped or not, is the only fair baseline.</li>
       <li><strong>Leave the correction up.</strong> The old numbers are gone from the charts, but the site and README both say what was wrong and how it was fixed. Anyone who saw the old version deserves to know why it changed.</li>
     </ol>
 
     <h2>What's next</h2>
 
     <ul>
-      <li><strong>The closure question.</strong> Line up Phoenix's heat-closure days with Echo Canyon and Cholla calls, using daily high temperatures, and see whether the drop holds up.</li>
-      <li><strong>The last 460.</strong> Phoenix still has 460 mountain rescues the geocoder can't place, mostly at North Mountain and Papago Park. They need trailhead-specific matching.</li>
+      <li><strong>What changed in winter.</strong> If the closures don't explain the decline, something else does. Visitor counts, parking and trail work are next on the list.</li>
+      <li><strong>The last 422.</strong> Phoenix still has 422 mountain rescues the geocoder can't place, mostly at North Mountain and Papago Park. They need trailhead-specific matching.</li>
+      <li><strong>National parks.</strong> The Park Service's FOIA search-and-rescue lists cover about 20,500 incidents from 2013 to 2020. They have dates and parks but no locations, so Yosemite gets a calendar, not a map.</li>
       <li><strong>More cities.</strong> Anywhere that publishes located, incident-level rescue calls. If you know of one, <a href="mailto:contact@brooksgroves.com">tell me</a>.</li>
     </ul>
 
