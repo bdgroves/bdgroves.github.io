@@ -211,10 +211,21 @@ hasn't been necessary yet.
 | `POST /save-recipe` | Appends a recipe to `recipes.json` in this repo via the GitHub API, auto-commits with message `feat: add <title>` |
 | `POST /delete-recipe` | Removes a recipe from `recipes.json`, auto-commits `chore: remove <title>` |
 | `POST /update-recipe` | Edits an existing recipe in `recipes.json`, auto-commits `chore: edit <title>` |
+| `GET /hoplove/ping` | HopLove checks this to know one-tap saving is available |
+| `POST /hoplove/save` | HopLove scan / rating / beer edit: opens an issue on `bdgroves/hoplove` that its workflows act on. With the owner key it's Brooks's; otherwise a scan becomes a "Suggested:" issue the workflows ignore |
+
+**Limits on `POST /` (added Sept 2026 for HopLove's public scan page):** only
+the allowed origins, any `claude-*` model, `max_tokens` ≤ 4096, body ≤ 6 MB,
+40 calls per visitor per day and 400 per day in total, counted in the
+`LIMITS` KV namespace (skipped if unbound). The recipe routes are not limited.
 
 **Secrets stored in the Worker:**
 - `ANTHROPIC_API_KEY` — for the Claude API calls
 - `GITHUB_TOKEN` — fine-grained PAT with Contents R+W on this repo
+- `HOPLOVE_GITHUB_TOKEN` — fine-grained PAT, Issues R+W on `bdgroves/hoplove` only
+- `HOPLOVE_KEY` — HopLove owner password (the 🔒 Brooks button)
+
+**KV binding:** `LIMITS` (namespace `hoplove-limits`) — daily call counts.
 
 **CORS:** properly restricted. `DEFAULT_ORIGINS` in the code allows only:
 - `https://brooksgroves.com`
@@ -231,7 +242,9 @@ Overridable via the `ALLOWED_ORIGINS` env var.
 
 **Deploy method:** Manual via the Cloudflare dashboard. No Git
 integration — code is edited/uploaded directly in the Cloudflare
-editor. Source lives inside Cloudflare only, not in this repo.
+editor. A copy of the current source is kept at
+`bdgroves/hoplove/tools/worker/brooks-anthropic-proxy.js` — edit that,
+then paste the whole file into the Cloudflare editor and Deploy.
 
 ## tiny-dawn-75f1
 
