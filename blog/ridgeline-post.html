@@ -144,7 +144,7 @@
   <div class="article-meta">
     <span>September 29, 2026</span>
     <span>Brooks Groves</span>
-    <span>14 min read</span>
+    <span>15 min read</span>
   </div>
   <p class="article-links">
     Live site: <a href="https://brooksgroves.com/ridgeline/">brooksgroves.com/ridgeline</a>
@@ -177,7 +177,7 @@
         <dt>Where</dt>
         <dd>Phoenix (2019–2025), Scottsdale (Dec 2022 to now) and Boulder (2015 to now), plus every national park (2013–2021).</dd>
         <dt>How much</dt>
-        <dd><strong>2,136 mountain and technical rescues</strong> on the city maps, about 1,900 flood and water calls, and <strong>20,058 national park search-and-rescue incidents</strong>.</dd>
+        <dd><strong>2,428 mountain and technical rescues</strong> on the city maps, about 1,900 flood and water calls, and <strong>20,058 national park search-and-rescue incidents</strong>.</dd>
         <dt>How it runs</dt>
         <dd>GitHub Actions rebuild the cities and the heat analysis every Monday and refresh the national parks data every month.</dd>
         <dt>Go look</dt>
@@ -222,13 +222,13 @@
 
     <p>Then, a day later, I found a nastier variant. A Scottsdale call at <em>East</em> Indian School Road had been matched, with a high score, to <em>West</em> Indian School Road, 15 miles away. Same street name, opposite side of the valley. So now a match on the right street with the wrong direction is thrown out, however confident the geocoder is. Seven of about 1,300 matches failed that check.</p>
 
-    <p>The result: <strong>mapped Phoenix mountain rescues went from 474 to 1,197 of 1,619, or 74%.</strong> The crisis cluster collapsed from 1,120 to 5, and those five are at real preserve addresses. Every dot now records how precise it is, and you can click any dot to see.</p>
+    <p>The result: <strong>mapped Phoenix mountain rescues went from 474 to 1,197 of 1,619.</strong> A second geocoder later took that to 1,489, or 92% (more on that below). The crisis cluster collapsed from 1,120 to 5, and those five are at real preserve addresses. Every dot now records how precise it is, and you can click any dot to see.</p>
 
     <h2>What the fixed data says</h2>
 
     <p>Once the map was honest, it told a better story than the one I'd had.</p>
 
-    <p><strong>It's mostly one trailhead.</strong> Echo Canyon on Camelback, <code>49XX E MCDONALD DR</code> in dispatch-speak, accounts for 310 of Phoenix's 1,197 located mountain rescues. That's about one in four. Add Piestewa Peak, the Cholla trailhead and Pima Canyon on South Mountain, and you have most of the city.</p>
+    <p><strong>It's mostly one trailhead.</strong> Echo Canyon on Camelback, <code>49XX E MCDONALD DR</code> in dispatch-speak, accounts for 310 of Phoenix's 1,489 located mountain rescues. That's about one in five. Add Piestewa Peak, the Cholla trailhead and Pima Canyon on South Mountain, and you have most of the city.</p>
 
     <p><strong>Rescues are down about a fifth.</strong> Counting every call, mapped or not, there were 255 in 2019 and about 203 a year from 2023 to 2025. Over the same stretch, Phoenix began closing its busiest trails on extreme-heat days. That's exactly the question the researcher is studying, so I went and tested it. More on that below.</p>
 
@@ -252,7 +252,7 @@
         <tr><th>City</th><th class="num">Rescues / yr</th><th>Busiest</th><th>Quietest</th><th class="num">Weekend</th></tr>
       </thead>
       <tbody>
-        <tr><td>Phoenix</td><td class="num">~171</td><td>March</td><td>December</td><td class="num">39.6%</td></tr>
+        <tr><td>Phoenix</td><td class="num">~213</td><td>March</td><td>December</td><td class="num">41.2%</td></tr>
         <tr><td>Scottsdale</td><td class="num">~109</td><td>February</td><td>June</td><td class="num">41.3%</td></tr>
         <tr><td>Boulder</td><td class="num">~48</td><td>July</td><td>January</td><td class="num">41.5%</td></tr>
       </tbody>
@@ -278,10 +278,17 @@
       <li><strong>On closure days, rescues at the closed trails dropped by about two-thirds.</strong> They went from 32 per 100 heat days before the program to 11 on closure days since, while other trails barely moved. Compared with the same trails on ordinary days, that's roughly a halving, and the statistical range only just rules out no effect. It's 25 calls before and 15 after, so it's a signal, not a measurement.</li>
       <li><strong>The closures can't explain the long decline.</strong> There are only about 31 warning days a year. Even if every missing heat-day rescue was prevented, that's about 6 a year.</li>
       <li><strong>The city's own numbers tell the same story.</strong> Phoenix reported 57, 47, 30 and 35 "rescues on closed trails" for 2021 to 2024. I can reproduce those within 3 a year by counting every rescue at those trails from May through October, any day, any hour. So they count <em>trails that close</em>, not rescues while closed. The same trails fell just as much from November to April, 53 down to 35, when nothing closes.</li>
-      <li><strong>Rescues don't rise with the thermometer.</strong> Calls per day are flat from below 70°F to 110°F and up. Fewer people hike on the hottest days, so each one out there takes more risk, but the count doesn't grow.</li>
     </ul>
 
-    <p>The honest summary: the closures may be doing something on the days they're in force, but the drop in rescues is mostly something else, and it happened in winter too. The <a href="https://brooksgroves.com/ridgeline/#heat">heat section on the site</a> has the timeline, the tables, the charts and the 17 rescues that happened on closed trails during closed hours anyway.</p>
+    <p>Then I counted the hikers. Phoenix publishes daily numbers from infrared trail counters, and two of them sit right on the closure trails: Echo Canyon and the Piestewa summit trail. Dividing rescues by counter passes changed two of my conclusions.</p>
+
+    <ul>
+      <li><strong>Heat roughly triples the risk per hiker.</strong> I'd written that rescues don't rise with the thermometer. Per day, they don't. But the counters drop from about 2,170 passes a day below 80°F to about 740 above 105°F, so per 100,000 passes rescues go from about 9 to 26. Fewer people go out in the heat, and the ones who do get in trouble three times as often.</li>
+      <li><strong>Closure days are safer per hiker than ordinary days.</strong> Before the program, a hot day ran 50 rescues per 100,000 passes, more than twice an ordinary summer day. On closure days since, it's about 10, even though about 600 passes a day still get counted outside the closed hours. That's only 8 rescues, but it's the strongest sign yet that closing the trails works.</li>
+      <li><strong>The long decline isn't fewer hikers.</strong> Echo Canyon and Piestewa were about as busy in 2024 as in 2019, winter included, but rescues per pass fell by about a third. I checked whether the calls were just being logged as something else: every other call type at those trailheads, including the ones the city doesn't label, stayed flat. Each hike simply got safer. Why is the next question.</li>
+    </ul>
+
+    <p>The honest summary: the closures seem to do what they're meant to on the days they're in force, but the bigger story is that hiking these mountains got safer, in winter as much as summer, and nobody has explained that yet. The <a href="https://brooksgroves.com/ridgeline/#heat">heat section on the site</a> has the timeline, the per-hiker tables, the charts and the 17 rescues that happened on closed trails during closed hours anyway.</p>
 
     <h2>Update: the national parks</h2>
 
@@ -317,8 +324,8 @@
     <h2>What's next</h2>
 
     <ul>
-      <li><strong>What changed in winter.</strong> If the closures don't explain the decline, something else does. Visitor counts, parking and trail work are next on the list.</li>
-      <li><strong>The last 422.</strong> Phoenix still has 422 mountain rescues the geocoder can't place, mostly at North Mountain and Papago Park. They need trailhead-specific matching.</li>
+      <li><strong>Why each hike got safer.</strong> Same crowds, a third fewer rescues per hiker. Trail work, signs, parking and who's hiking are all on the list.</li>
+      <li><strong>The last 130.</strong> A second geocoder, the Census Bureau's, placed most of the stragglers at North Mountain, Lookout Mountain and the south side of South Mountain. 130 are left.</li>
       <li><strong>Deaths in the parks.</strong> The Park Service also publishes deaths by park, cause and date from 2007 to 2023. It's a heavier dataset and needs careful handling, but it would say what the rescue counts can't: how often things end badly.</li>
       <li><strong>More cities.</strong> Anywhere that publishes located, incident-level rescue calls. If you know of one, <a href="mailto:contact@brooksgroves.com">tell me</a>.</li>
     </ul>
