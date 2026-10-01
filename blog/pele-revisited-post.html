@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PELE — Building a Live Kīlauea Dashboard — Brooks Groves</title>
+  <title>PELE, Revisited: Watching the Longest Pause — Brooks Groves</title>
+  <meta name="description" content="Six months after building PELE, Kīlauea stopped keeping time. What the dashboard got wrong, what 54 fountaining episodes show, and how it now reads tilt, quakes and webcams live.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -81,6 +82,12 @@
     .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
     .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
     .footer-links a:hover { color:var(--gold); }
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; height: auto; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+    .note-box { background: var(--cream); border: 1px solid var(--mist); border-left: 3px solid var(--gold); padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: 0.95rem; }
+    .article-body ol, .article-body ul { margin: 0 0 1.5rem 1.5rem; }
+    .article-body li { margin-bottom: 0.6rem; }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -115,19 +122,20 @@
 <div class="article-wrap">
   <a href="/blog/index.html" class="article-back">← Blog</a>
 
-  <p class="article-kicker">Project Build · Volcanology · USGS · GitHub Actions · April 2026</p>
-  <h1 class="article-title">🌋 PELE — Building a Live Kīlauea Dashboard for a Birthday Trip</h1>
+  <p class="article-kicker">Project Update · Volcanology · USGS · October 2026</p>
+  <h1 class="article-title">🌋 PELE, Revisited: Watching the Longest Pause</h1>
   <div class="article-meta">
     <span>Brooks Groves</span>
-    <span>April 5, 2026</span>
-    <span>Python · GitHub Actions · USGS HVO</span>
+    <span>October 1, 2026</span>
+    <span>Python · GitHub Actions · Leaflet · USGS HVO</span>
   </div>
   <div class="article-tags">
     <a href="/tags.html#Volcanology" class="article-tag-pill">Volcanology</a>
+    <a href="/tags.html#K%C4%ABlauea" class="article-tag-pill">Kīlauea</a>
+    <a href="/tags.html#USGS" class="article-tag-pill">USGS</a>
     <a href="/tags.html#Python" class="article-tag-pill">Python</a>
     <a href="/tags.html#GitHub%20Actions" class="article-tag-pill">GitHub Actions</a>
-    <a href="/tags.html#USGS" class="article-tag-pill">USGS</a>
-    <a href="/tags.html#Kīlauea" class="article-tag-pill">Kīlauea</a>
+    <a href="/tags.html#Leaflet" class="article-tag-pill">Leaflet</a>
     <a href="/tags.html#Hawai%27i" class="article-tag-pill">Hawai'i</a>
     <a href="/tags.html#Data%20Pipeline" class="article-tag-pill">Data Pipeline</a>
   </div>
@@ -139,67 +147,99 @@
 
   <div class="article-body">
 
-    <div style="margin-bottom:1.5rem;font-family:'DM Mono',monospace;font-size:0.72rem;line-height:1.6;background:var(--cream);border-left:3px solid var(--gold);padding:0.8rem 1rem;">October 2026 update: the volcano broke its rhythm, and so did parts of this dashboard. <a href="/blog/pele-revisited-post.html">PELE, Revisited</a> covers what changed.</div>
+    <p>When I built PELE in April, Kīlauea ran like a clock. It had fountained 43 times since December 2024, and HVO was forecasting Episode 44 inside a one-week window. I wrote that the tiltmeters knew &ldquo;exactly how much microradian tilt means <em>tomorrow</em> versus <em>next week</em>.&rdquo; The volcano kept that rhythm all summer, through Episode 54 on August 25. Then it stopped.</p>
 
-    <p>I'm going to Hawai'i Volcanoes National Park in May for my birthday. Kīlauea is actively erupting — has been since December 23, 2024, in an episodic lava fountaining pattern not seen at the summit since the 1980s. By the time I booked the trip, the volcano had already produced 43 episodes of spectacular lava fountains, one of which sent a plume 1,000 feet into the air visible from restaurants in Hilo. The USGS Hawaiian Volcano Observatory was forecasting Episode 44 for the window of April 6–14. I had two weeks before my trip and a working knowledge of the USGS public API ecosystem. The obvious thing to do was build a dashboard.</p>
+    <p>As I write this it has been 36 days without a fountaining episode, the longest pause of the whole eruption. The old record was 29.7 days, the gap after Episode 43&rsquo;s record fountain in March. In mid-September six new vents opened on the crater&rsquo;s northwest wall and poured lava onto the floor without fountaining. And on the afternoon of September 30 the summit started shaking: 36 earthquakes that day in my data, 31 of them right under Halemaʻumaʻu, while the summit tiltmeter, flat all week, shot straight up. HVO&rsquo;s read was a shallow intrusion, magma pushing into an east&ndash;west crack near the eruption site.</p>
 
-    <p>PELE is a live monitoring dashboard for the six volcanoes of Hawai'i — Kīlauea, Mauna Loa, Hualālai, Mauna Kea, Haleakalā, and Kama'ehuakanaloa (the submarine seamount that will eventually become Hawai'i's next island). It pulls real-time data from USGS APIs every six hours via GitHub Actions, embeds live HVO webcam feeds, and tracks the ongoing eruption episode by episode.</p>
+    <p>So I went back to the dashboard I built for a birthday trip, to see whether it could actually show any of that. Mostly, it couldn&rsquo;t.</p>
 
-    <h2>The Data Sources</h2>
+    <div class="photo-block">
+      <img src="/blog/img/pele-revisited/overview.jpg" width="1366" height="950" alt="PELE overview on October 1, 2026: Kīlauea at WATCH/ORANGE, the next-episode card reading 55, waiting, pause day 37, 137 earthquakes in seven days, and the V1cam view of glowing lava on the crater floor" loading="lazy">
+      <p class="photo-caption">PELE on the morning of October 1, 2026. Episode 55 is waiting; the pause bar has run past the old record.</p>
+    </div>
 
-    <p>The USGS runs a genuinely excellent public API ecosystem. Everything PELE needs is free, unauthenticated, and well-documented:</p>
+    <h2>What it got wrong</h2>
+
+    <p>I&rsquo;ll start here, because some of it was embarrassing.</p>
+
+    <ol>
+      <li><strong>It was hiding the swarm.</strong> The earthquake query asked USGS for everything up to &ldquo;today,&rdquo; written as a date. The API reads a bare date as midnight UTC, which in Hawaiʻi is 2 p.m. the day before, so every quake since then was silently dropped, up to a full day&rsquo;s worth depending on when the job ran. On the day of the intrusion the dashboard showed 94 quakes for the week. The real number was 138.</li>
+      <li><strong>The episode counter was frozen at 45.</strong> I&rsquo;d hand-written the eruption log, and hand-written logs go stale. Worse, I&rsquo;d added a shortcut that pulled an episode number out of the latest HVO notice. The September 30 notice said &ldquo;Episode 55 fountaining remains a possibility,&rdquo; and my shortcut would have proudly announced Episode 55 as erupting.</li>
+      <li><strong>&ldquo;Elevated volcanoes&rdquo; meant the whole country.</strong> The count of volcanoes above Normal included every elevated volcano in the United States. In Hawaiʻi there&rsquo;s exactly one.</li>
+      <li><strong>Mauna Loa&rsquo;s main webcam had been frozen since February 22.</strong> The image still loaded, so the page looked fine. It was a seven-month-old picture.</li>
+      <li><strong>The new quake map went out with &ldquo;API KEY REQUIRED&rdquo; stamped across it.</strong> That one was mine, today. CARTO&rsquo;s dark basemap started requiring a key in September, I used it anyway, and I didn&rsquo;t spot it until the map was live. It&rsquo;s on Esri&rsquo;s keyless dark canvas now, like the rest of my maps.</li>
+    </ol>
+
+    <p>None of these threw an error. That&rsquo;s the lesson I keep relearning: the dangerous bugs on a live dashboard are the ones that produce a plausible number.</p>
+
+    <h2>What 54 episodes look like</h2>
+
+    <p>The fix for the frozen counter was to stop writing the log by hand. USGS keeps a table of every episode on its eruption-information page: start, end, duration, fountain height, lava volume, pause. PELE now reads that table every hour with Python&rsquo;s built-in HTML parser and turns it into JSON. It took two tries, because the table writes times as &ldquo;4 p.m.&rdquo; in some rows and leaves the year off end dates in others, and the first version left five episodes without dates.</p>
 
     <table class="spec-table">
-      <tr><th>Source</th><th>What It Provides</th><th>Refresh</th></tr>
-      <tr><td>USGS HANS Public API</td><td>Volcano alert levels, activity notices</td><td>Every 6 hours</td></tr>
-      <tr><td>USGS Earthquake Hazards</td><td>7-day seismicity catalog, FDSN query</td><td>Every 6 hours + live client-side</td></tr>
-      <tr><td>HVO Webcam Images</td><td>Kīlauea and Mauna Loa camera snapshots</td><td>Every page load</td></tr>
-      <tr><td>YouTube Data API</td><td>Auto-discover live V1/V2/V3 stream IDs</td><td>Every page load</td></tr>
-      <tr><td>USGS YouTube Livestreams</td><td>24/7 live video from three crater webcams</td><td>Continuous</td></tr>
+      <thead><tr><th>Measure</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Fountaining episodes</td><td>54, from Dec 23, 2024 to Aug 25, 2026</td></tr>
+        <tr><td>Typical episode</td><td>About 9 hours of fountaining</td></tr>
+        <tr><td>Tallest fountain</td><td>540 m (1,772 ft), south vent, Episode 43, March 10, 2026</td></tr>
+        <tr><td>Lava erupted</td><td>About 317 million cubic metres</td></tr>
+        <tr><td>Median pause, first 20 episodes</td><td>5.4 days</td></tr>
+        <tr><td>Median pause, last 10 episodes</td><td>13.0 days</td></tr>
+        <tr><td>Longest pause before now</td><td>29.7 days, after Episode 43</td></tr>
+        <tr><td>Current pause</td><td>36+ days and counting</td></tr>
+      </tbody>
     </table>
 
-    <p>The earthquake endpoint is particularly useful. A standard FDSN query gets you every seismic event within 100km of the Kīlauea summit over the past 7 days — magnitude, depth, location, timestamp. Filter for M2.0+ and you have a real-time picture of what the volcano's plumbing is doing.</p>
+    <p>Charted episode by episode, the slowdown is the story. Early on Kīlauea fountained every few days. By this summer it was every two weeks, and the fountains were getting shorter, around 150 metres for the last three episodes against 200&ndash;300 in the spring. A volcano with a steady supply of magma and a shallow reservoir that fills and empties will keep a beat. When the pauses stretch and the fountains shrink, something in that system is changing, and nobody, including HVO, can say yet whether the next chapter is Episode 55, a different kind of eruption, or a long rest.</p>
 
-    <h2>The Architecture</h2>
+    <div class="photo-block">
+      <img src="/blog/img/pele-revisited/episodes.jpg" width="1554" height="711" alt="Bar chart of fountain height (orange, above) and pause length (gold, below) for all 54 episodes; pauses lengthen steadily and the current pause, hatched, is the longest bar" loading="lazy">
+      <p class="photo-caption">Fountain height above, pause below. The hatched bar on the right is the pause that&rsquo;s still running.</p>
+    </div>
 
-    <p>Same pattern as everything else in this collection — Sierra Streamflow, EDGAR, brooksgroves.com itself. GitHub Actions runs <em>fetch.py</em> on a cron schedule, pulls from USGS APIs, writes static JSON to <em>data/</em>. The frontend reads those JSON files on page load. No server. No backend. No build step. Just files on GitHub Pages.</p>
+    <h2>Reading the sawtooth</h2>
 
-    <div class="code-block"><span class="code-comment"># .github/workflows/fetch.yml</span>
-<span class="code-key">on:</span>
-  <span class="code-key">schedule:</span>
-    - <span class="code-key">cron:</span> <span class="code-val">'0 */6 * * *'</span>   <span class="code-comment"># every 6 hours</span>
-  <span class="code-key">workflow_dispatch:</span>       <span class="code-comment"># manual trigger</span></div>
+    <p>The single best instrument for following this eruption is a tiltmeter called UWD, on the west rim of the caldera near Uēkahuna. It measures how much the ground tilts in microradians; one microradian is a kilometre-long beam lifted at one end by a millimetre. While magma refills the reservoir beneath the summit, the ground swells and the line climbs. When an episode starts, the reservoir drains through the vents and the line falls off a cliff. Plot it since December 2024 and you get a sawtooth, one tooth per episode.</p>
 
-    <p>The dual data source approach came from a lesson learned on Sierra Streamflow — if the Actions job fails, the page shouldn't go dark. So earthquake data loads both from the Actions-generated JSON cache <em>and</em> directly from the USGS FDSN API client-side. Whichever responds first wins. Belt and suspenders.</p>
+    <p>In April, PELE linked to that plot. Now it shows it. USGS draws these plots from live instruments and publishes them as images that update through the day, so PELE&rsquo;s new Monitoring tab puts them on the page: summit and rift-zone tilt for the past week, month and year; the full-eruption sawtooth; the height of the crater floor, which climbs a step with every episode as new lava piles up; sulfur dioxide; GPS stations stretching apart as the caldera inflates; and Mauna Loa next door, where summit tilt and GPS show whether magma is recharging after its 2022 eruption. Each plot has a short note on how to read it.</p>
 
-    <h2>The YouTube Problem</h2>
+    <p>On October 1, the week view of UWD is the most dramatic picture on the site: seven days of almost nothing, then a near-vertical line on the evening of September 30. That isn&rsquo;t the slow ramp of a reservoir refilling. It&rsquo;s the ground moving as a crack opens and fills with magma.</p>
 
-    <p>HVO runs three live webcam streams on the USGS YouTube channel — V1cam, V2cam, V3cam — but the video IDs change every time a stream starts. You can't hardcode them. The solution: on every page load, a JavaScript call hits the YouTube Data API, searches for currently-live streams on the USGS channel, matches them to V1/V2/V3 by title keyword, and embeds them as iframes. If the API call fails or the streams are offline, the page falls back to the static webcam snapshot images from the USGS servers, which update every few minutes anyway.</p>
+    <h2>Earthquakes in depth</h2>
 
-    <p>The V3cam has its own backstory. During Episode 38 in December 2025, a broad arcing fountain extended over 600 meters from the south vent and buried the camera under 10 meters of tephra — volcanic glass and debris. HVO had a replacement deployed within two weeks. The new V3cam is positioned at a safer angle. PELE tracks which camera feeds are live and which are offline, and degrades gracefully when a webcam goes dark.</p>
+    <p>The other half of the story is underground. PELE now tags every quake within 100 km by where it is: the summit, the rift zones, Mauna Loa, or the deep swarm under Pāhala, which has run for years about 30 km down and has nothing to do with the fountains. Then it plots depth against time for the last 30 days.</p>
 
-    <h2>The Eruption Log</h2>
+    <p>The result is two bands. Way down at 30 km is the steady blue scatter of Pāhala. Up at the very top, in the first few kilometres, is a tight orange cluster on September 30 and October 1: 49 quakes under the summit, all shallower than 5 km, in 48 hours. A typical day this month had one. Magma forcing its way up cracks rock as it goes, which is why a burst of shallow summit quakes is one of the clearest signs of an intrusion.</p>
 
-    <p>One of the most useful features is the episode tracker — a manually-maintained timeline of all 43 fountaining episodes since December 23, 2024, with dates, durations, peak heights, and notes. Episode 42's north vent fountain reached approximately 300 meters. Episode 38 buried V3cam. Episode 1 lasted about 8 hours. The pattern has settled into a recognizable inflate-pause-overflow-fountain rhythm that HVO has calibrated well enough to forecast the next episode within a week-long window.</p>
+    <div class="photo-block">
+      <img src="/blog/img/pele-revisited/depth.jpg" width="1554" height="800" alt="Scatter plot of earthquake depth over 30 days: a band of deep blue quakes near 30 km under Pāhala, and a dense cluster of shallow orange summit quakes at the far right, September 30 to October 1" loading="lazy">
+      <p class="photo-caption">Depth through time, September 1 to October 1. The orange cluster at top right is the September 30 intrusion.</p>
+    </div>
 
-    <blockquote>"They've watched 43 episodes of this eruption cycle unfold since December 2024. They've calibrated their tiltmeters. They know exactly how much microradian tilt means tomorrow versus next week."</blockquote>
+    <p>The Earthquakes tab has a new map too: quakes sized by magnitude and coloured by depth, the five volcanoes marked by alert level, with dark, satellite and topographic basemaps, and filters for region and for the last 24 hours, 7 days or 30 days.</p>
 
-    <h2>The Timing</h2>
+    <h2>Keeping it honest</h2>
 
-    <p>Episode 44 is forecast for April 6–14. The south vent started precursory overflows on April 3. The NWS issued a Special Weather Statement about potential tephra fall in downwind communities. I built this dashboard while watching the tiltmeter data tick upward in real time, knowing the next episode was days away.</p>
+    <p>The part I&rsquo;m happiest with is the least visible. Every hour, the same GitHub Action that fetches the data now checks every webcam image and every USGS plot on the page, recording whether it loads and when USGS last updated it. It finds the list by reading the page itself, so I can&rsquo;t add a camera and forget to check it. That&rsquo;s how the frozen Mauna Loa camera turned up, and it&rsquo;s why every camera on the site now wears a badge: &ldquo;LIVE · 9 min ago,&rdquo; or STALE, or OFFLINE.</p>
 
-    <p>I'll be in the park in May. If Episode 44 happens on schedule — and 43 episodes of data says it will — I'll be standing on the rim of Kīlauea while Episode 45 or 46 is probably building. The dashboard will be on my phone. The tiltmeters will be running. The V1cam will be streaming.</p>
+    <p>The other change is a rule: if a USGS service is down when the Action runs, keep the last good file. Running the fetch script on a machine with no internet showed that the old version would happily replace the volcano list with an empty one.</p>
 
-    <p>Real data. Real APIs. Real science. Served six times a day by a cron job. Built for a birthday trip.</p>
+    <div class="note-box">
+      <strong>Under the hood:</strong> still no server, no build step and no dependencies beyond the Python standard library. One Action runs at quarter past every hour and commits JSON; the page is plain HTML, CSS and JavaScript on GitHub Pages, with Leaflet for the map and hand-drawn SVG for the charts. Webcam images refresh every two minutes while the page is open, and the data every ten.
+    </div>
+
+    <h2>What I&rsquo;m watching</h2>
+
+    <p>I built PELE for a trip. The forecast windows that made April so exciting are gone for now. What&rsquo;s left is more interesting: a volcano in the middle of changing its mind, with the instruments showing it happen in real time. The next-episode card just counts the days. Whether it ends at 55, or with something else, the tiltmeter will show it first.</p>
 
     <hr>
 
-    <p>PELE is open source at <a href="https://github.com/bdgroves/PELE" target="_blank">github.com/bdgroves/PELE</a>. Live dashboard at <a href="https://brooksgroves.com/PELE" target="_blank">brooksgroves.com/PELE</a>. The volcano is ready. The question is whether we are.</p>
+    <p>PELE is open source at <a href="https://github.com/bdgroves/PELE" target="_blank">github.com/bdgroves/PELE</a>, live at <a href="https://brooksgroves.com/PELE" target="_blank">brooksgroves.com/PELE</a>. The original build post from April is <a href="/blog/pele-blog-post.html">here</a>. All volcano data, plots and webcam images are from the <a href="https://www.usgs.gov/observatories/hvo" target="_blank">USGS Hawaiian Volcano Observatory</a> and are in the public domain; for anything that matters, their <a href="https://www.usgs.gov/volcanoes/kilauea/volcano-updates" target="_blank">daily updates</a> are the source of truth.</p>
 
   </div>
 
   <div class="article-footer">
-    <span class="article-footer-author">Brooks Groves · April 2026</span>
+    <span class="article-footer-author">Brooks Groves · October 2026</span>
     <div class="article-footer-nav">
       <a href="/volcanology.html">Volcanology Hub →</a>
       <a href="/blog/index.html">← All Posts</a>
