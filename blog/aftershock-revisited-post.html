@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor — Brooks Groves</title>
+  <title>AFTERSHOCK, Revisited: Pick a Place, and Ask If It's Normal — Brooks Groves</title>
+  <meta name="description" content="Six months on, my earthquake dashboard gets a place picker, fair comparisons, ten years of normal, real aftershock sequences, and a few corrections — including Texas earthquakes it had been filing under New Mexico.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,27 +13,26 @@
     :root {
       --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
       --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
-      --white:#fdfaf4; --seismic:#c0392b; --deep:#2a3a5a; --fault:#6b3a2a;
+      --white:#fdfaf4; --lava:#c0392b; --ash:#6b6560;
     }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     html { scroll-behavior:smooth; }
     body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
     body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
-    .topline { height:4px; background:linear-gradient(90deg,var(--deep) 0%,var(--fault) 40%,var(--seismic) 70%,var(--gold) 100%); }
+    .topline { height:4px; background:linear-gradient(90deg,var(--lava) 0%,var(--gold) 50%,var(--ash) 100%); }
     header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
     .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
     .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
     nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
-    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
-    nav a:hover { color:var(--seismic); }
-    nav a.live { border:1px solid var(--seismic); padding:0.3rem 0.7rem; color:var(--seismic); }
-    nav a.live:hover { background:var(--seismic); color:var(--white); }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--lava); }
     nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
 
     .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
-    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
-    .article-back:hover { color:var(--seismic); }
-    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--seismic); margin-bottom:0.75rem; }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; transition:color 0.2s; }
+    .article-back:hover { color:var(--lava); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--lava); margin-bottom:0.75rem; }
     .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
     .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
     .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
@@ -41,40 +41,53 @@
 
     .article-body { font-size:1.05rem; line-height:1.85; }
     .article-body p { margin-bottom:1.5rem; }
-    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--seismic); }
-    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--fault); }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--lava); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--lava); }
     .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
     .article-body em { font-style:italic; }
     .article-body strong { font-weight:700; }
-    .article-body blockquote { border-left:3px solid var(--seismic); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
-    .article-body a { color:var(--seismic); text-decoration:underline; text-underline-offset:3px; }
+    .article-body blockquote { border-left:3px solid var(--lava); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--lava); text-decoration:underline; text-underline-offset:3px; }
+    .article-body a:hover { color:var(--ink); }
 
-    .live-badge { display:inline-flex; align-items:center; gap:0.5rem; background:var(--ink); color:var(--white); font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; padding:0.4rem 0.8rem; margin:1.5rem 0; text-decoration:none; }
-    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--seismic); animation:blink 1.4s infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
-    .live-badge:hover { background:var(--seismic); }
-
+    /* CODE BLOCK */
     .code-block { background:var(--ink); color:#e8e4dc; font-family:'DM Mono',monospace; font-size:0.78rem; padding:1.25rem 1.5rem; margin:1.5rem 0; overflow-x:auto; line-height:1.7; }
     .code-comment { color:#7a7268; }
+    .code-key { color:var(--gold); }
+    .code-val { color:#8ab4a0; }
 
-    .feature-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0; }
-    .feature-card { background:var(--cream); padding:1rem 1.25rem; border-left:3px solid var(--seismic); }
-    .feature-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--seismic); margin-bottom:0.4rem; }
-    .feature-body { font-size:0.82rem; color:var(--stone); line-height:1.6; }
-    @media(max-width:560px) { .feature-grid { grid-template-columns:1fr; } }
+    /* SPEC TABLE */
+    .spec-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.85rem; }
+    .spec-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .spec-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    .spec-table tr:last-child td { border-bottom:none; }
+    .spec-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--lava); }
+
+    /* LIVE BADGE */
+    .live-badge { display:inline-flex; align-items:center; gap:0.5rem; background:var(--ink); color:var(--white); font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; padding:0.4rem 0.8rem; margin:1.5rem 0; text-decoration:none; }
+    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--lava); animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .live-badge:hover { background:var(--lava); }
 
     .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
-    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); }
-    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); margin-left:1.5rem; }
-    .article-footer-nav a:hover { color:var(--seismic); }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--lava); }
 
     footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
     .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
     .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
-    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
     .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
     .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
     .footer-links a:hover { color:var(--gold); }
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; height: auto; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+    .note-box { background: var(--cream); border: 1px solid var(--mist); border-left: 3px solid var(--gold); padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: 0.95rem; }
+    .article-body ol, .article-body ul { margin: 0 0 1.5rem 1.5rem; }
+    .article-body li { margin-bottom: 0.6rem; }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -100,7 +113,7 @@
     <nav>
       <a href="/blog/index.html">Blog</a>
       <a href="/geology.html">Geology</a>
-      <a href="https://brooksgroves.com/aftershock" target="_blank" class="live">Live Dashboard ↗</a>
+      <a href="https://brooksgroves.com/aftershock" target="_blank">Live Dashboard ↗</a>
       <a href="https://github.com/bdgroves/aftershock" target="_blank" class="github">GitHub ↗</a>
     <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
   </div>
@@ -109,12 +122,12 @@
 <div class="article-wrap">
   <a href="/blog/index.html" class="article-back">← Blog</a>
 
-  <p class="article-kicker">Project Build · Geology · USGS · Seismic · GitHub Actions · April 2026</p>
-  <h1 class="article-title">🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor</h1>
+  <p class="article-kicker">Project Update · Geology · Seismic · October 2026</p>
+  <h1 class="article-title">🌍 AFTERSHOCK, Revisited: Pick a Place, and Ask If It&rsquo;s Normal</h1>
   <div class="article-meta">
     <span>Brooks Groves</span>
-    <span>April 2026</span>
-    <span>Python · Leaflet · USGS ComCat · pixi</span>
+    <span>October 2, 2026</span>
+    <span>Python · USGS ComCat · Leaflet · Chart.js</span>
   </div>
   <div class="article-tags">
     <a href="/tags.html#Geology" class="article-tag-pill">Geology</a>
@@ -132,73 +145,99 @@
   </a>
 
   <div class="article-body">
-    <div class="update-note" style="background:var(--cream);border:1px solid var(--mist);border-left:3px solid var(--gold);padding:1rem 1.25rem;margin:0 0 2rem;font-size:0.92rem;font-family:'Libre Baskerville',Georgia,serif">
-      <strong>Update, October 2026:</strong> AFTERSHOCK has been rebuilt with a place picker (the US, any state, any country or region), comparisons at the magnitude each network really catches, ten years of baselines and real aftershock sequences. Some details below describe the original version. <a href="/blog/aftershock-revisited-post.html">Read what changed &rarr;</a>
+
+    <p>I built <a href="https://brooksgroves.com/aftershock" target="_blank">AFTERSHOCK</a> in April: every earthquake USGS recorded in the last 30 days, magnitude 1.5 and up, on a dark map, with a leaderboard of US states. It worked, and it looked the part. Six months later I went back with two questions. Could it show the rest of the world as well as the United States, with a way to pick a country or a region? And were the numbers on it actually telling the truth?</p>
+
+    <p>The first was mostly a matter of building. The second turned out to be the interesting one.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/aftershock-revisited/us-overview.jpg" width="1400" height="913" alt="AFTERSHOCK dashboard showing the United States: 4,532 earthquakes in 30 days, a map of Alaska and the lower 48, and a list of recent quakes" loading="lazy">
+      <p class="photo-caption">The new AFTERSHOCK, United States view. The picker at the top covers every state and territory, every country with a quake this month, world regions and the open ocean. Every view has its own link.</p>
     </div>
 
+    <h2>What it was getting wrong</h2>
 
-    <p>I grew up in Sonora, California — a Gold Rush town wedged into the western Sierra Nevada foothills of Tuolumne County, where the hills are crumpled and old and full of stories the rocks don't easily give up. The Melones Fault Zone runs right through that country. As a kid, I walked those fault scarps without knowing what they were. I just knew the land felt different there — broken in some deep, geological way, like the earth was remembering something.</p>
+    <p><strong>It was mostly counting seismometers.</strong> The old leaderboard said Alaska was always first, &ldquo;not even close.&rdquo; Alaska is very active. But USGS&rsquo;s catalog is complete down to about M1.5 only where the US runs dense networks: Alaska, California, Hawaii, Utah, Nevada, the Pacific Northwest. Across most of the world it&rsquo;s complete to about M4.5. In the last month there were 79 earthquakes below M4 in the whole catalog outside the US, against 841 at M4 and up. At M1.5, a ranking of places mostly measures how many instruments each one has.</p>
 
-    <p>The 1989 Loma Prieta earthquake hit when I was young. Fifteen seconds, M6.9, 63 dead. I remember what it felt like when the ground — the thing you spend your entire life trusting completely — decided for a few seconds that it was done being trusted.</p>
+    <p>So the comparisons now happen where the catalog is fair: <strong>M2.5 and up between US states, M4.5 and up between countries</strong>. The map and the lists still show every quake; only the rankings and &ldquo;vs normal&rdquo; use the higher cut.</p>
 
-    <p>AFTERSHOCK is that memory grown up and given a dashboard.</p>
+    <p><strong>It was putting Texas earthquakes in New Mexico.</strong> States were read from the end of USGS&rsquo;s place description, and a quake described as &ldquo;55 km S of Whites City, New Mexico&rdquo; went to New Mexico. Fifty-five kilometres south of Whites City is Texas, in the Delaware Basin, where most of these quakes happen. AFTERSHOCK now places every quake from its coordinates, using Natural Earth state and country outlines kept in the repo. Offshore quakes go to the nearest country within 250 km, and anything farther out is labelled open ocean (the Mid-Atlantic Ridge, south of the Fiji Islands). In one run, about 180 Permian Basin quakes moved from New Mexico to Texas.</p>
 
-    <h2>What It Does</h2>
+    <p>Three smaller problems. The state outlines came from someone else&rsquo;s GitHub file, and if it didn&rsquo;t load, the whole page said &ldquo;DATA UNAVAILABLE.&rdquo; On a phone the page scrolled sideways. And the energy table in the README was off by about fifteen times: an M4 is about 15 tons of TNT, not one.</p>
 
-    <p>Every six hours, a GitHub Actions pipeline wakes up, calls the USGS Earthquake Hazards Program ComCat API, and pulls every measurable shake across the United States and beyond — M1.5 and up, worldwide. It writes a static JSON file. A dark, cinematic map on ESRI Dark Gray Canvas tiles loads it. Earthquake dots sized and colored by magnitude — tiny green pinpoints for the microseismicity, climbing through yellow, orange, red, and into deep red and purple as the energy scales up. A magnitude 7 sits on the map like a bruise.</p>
+    <h2>Is this normal?</h2>
 
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-head">The Map</div>
-        <div class="feature-body">Click any dot. Popup with magnitude, location, depth, time elapsed, and a direct USGS event page link. Every earthquake, every dot.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-head">State Deep-Dives</div>
-        <div class="feature-body">Click any US state — active or quiet. Event count, largest magnitude, average depth, magnitude distribution chart, most recent events list.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-head">National Leaderboard</div>
-        <div class="feature-body">Top states ranked by event count, color-coded by intensity. Alaska is always first. It is not even close.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-head">Hiroshima Equivalent</div>
-        <div class="feature-body">Total seismic energy expressed as a multiple of the Hiroshima bomb yield. Because 1.8×10¹⁷ joules means nothing until you say it a different way.</div>
-      </div>
+    <p>A count by itself doesn&rsquo;t mean much. 45 M2.5+ earthquakes in Texas in a month: a lot or a little? Once a week the pipeline now pulls the last ten complete years and counts them the same way, by state at M2.5+ and by country and region at M4.5+. Every view shows the daily count against that average and ten years of annual totals, with this month&rsquo;s pace beside them.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/aftershock-revisited/oklahoma-normal.jpg" width="1400" height="442" alt="Oklahoma: daily earthquake counts for the last 30 days, and annual M2.5+ totals falling from about 2,000 in 2016 to 28 in 2025" loading="lazy">
+      <p class="photo-caption">Oklahoma at M2.5+: 2,006 earthquakes in 2016, 28 in 2025.</p>
     </div>
 
-    <h2>The Filters</h2>
+    <p>The baselines turned out to be the best part of the rebuild, because they tell stories. In <strong>Oklahoma</strong>, an earthquake surge set off by injecting oil-field wastewater deep underground peaked in 2015&ndash;16. After the state ordered operators to cut injection, the count fell: 2,006 M2.5+ earthquakes in 2016, 28 in 2025.</p>
 
-    <p>Two controls that wire through everything simultaneously — the map, the state panel, the leaderboard, the recent events list. Time window buttons: 1D, 3D, 7D, 14D, 30D. Magnitude slider: drag from M1.5 up to M6.0. Watch the noise disappear. Watch the significant events remain. The interface responds instantly because all the data is already in the browser — one JSON file, loaded once.</p>
+    <div class="photo-block">
+      <img src="/blog/img/aftershock-revisited/texas-normal.jpg" width="1400" height="442" alt="Texas: daily earthquake counts, and annual M2.5+ totals rising from 16 in 2016 to over 800 in 2022" loading="lazy">
+      <p class="photo-caption">Texas went the other way: 16 in 2016, 816 in 2022, 493 last year. This month is running a little above the ten-year average.</p>
+    </div>
 
-    <h2>The Architecture</h2>
+    <p><strong>Texas</strong> went the other way, and for the same reason: 16 M2.5+ quakes in 2016, 816 in 2022, 493 last year. Most of them are in the Permian Basin, the ones I had been filing under New Mexico. Other years stand out for natural reasons: Hawai&#699;i in 2018 (12,823, during the Kīlauea summit collapse), California in 2019 (Ridgecrest), Puerto Rico in 2020, Nevada in 2020 (Monte Cristo Range).</p>
 
-    <p>Same pattern as everything else in this collection. One Python script. One JSON file. Zero databases. Zero servers.</p>
+    <p>Right now the United States as a whole is running at about 1.1 times normal at M2.5+, and the world about 0.9 times normal at M4.5+. Alaska is at about twice its usual rate. That&rsquo;s the Aleutians.</p>
 
-    <div class="code-block"><span class="code-comment"># The entire pipeline</span>
-USGS ComCat API
-  → fetch/fetch_quakes.py  (Python, every 6 hours via GitHub Actions)
-    → data/earthquakes.json
-      → index.html  (Leaflet + Chart.js, no build step)
-        → brooksgroves.com/aftershock</div>
+    <h2>Aftershocks, for real this time</h2>
 
-    <p>The whole thing is auditable in an afternoon. The automatic update commits read: <em>Seismic update: YYYY-MM-DD HH:MM UTC</em>. When those appear in the commit history, the pipeline is healthy.</p>
+    <p>The project is called AFTERSHOCK, and the homepage card has promised &ldquo;aftershock-sequence analysis&rdquo; for months. It didn&rsquo;t have any. Now it does. The pipeline works through the catalog from the largest quake down. Each main shock claims the smaller quakes inside its Gardner&ndash;Knopoff window, a distance and a length of time that both grow with magnitude: 58 km and about two years for an M6.3. Counts only include quakes above the region&rsquo;s completeness magnitude, so sequences in different places can be compared.</p>
 
-    <h2>The Quiet States</h2>
+    <div class="photo-block">
+      <img src="/blog/img/aftershock-revisited/aleutian-sequence.jpg" width="1400" height="303" alt="Daily aftershock counts after the M6.3 Aleutian earthquake of September 3, with an Omori decay curve fitted" loading="lazy">
+      <p class="photo-caption">The M6.3 south of Nikolski in the Aleutians, September 3: 218 aftershocks M2.5+ in four weeks, falling off almost exactly as Omori&rsquo;s law predicts.</p>
+    </div>
 
-    <p>One of the things I like most about the state deep-dives is how they handle quiet states. Click a state with no recent seismic activity and you don't get an error — you get a message: <em>"Quiet is not nothing — it may mean the fault is locked."</em> A locked fault accumulates strain. The quieter the fault, sometimes, the more concerning the silence.</p>
+    <p>Each sequence is checked against two old rules. <strong>Omori&rsquo;s law</strong> (1894) says aftershocks fall off roughly as one over time. The September 3 Aleutian M6.3 fits with an exponent of 1.14, close to textbook. <strong>B&aring;th&rsquo;s law</strong> says the largest aftershock is usually about 1.2 magnitudes smaller than the main shock. Here it was 0.9. When that gap is under half a magnitude, the page labels the sequence a <em>swarm</em>, because it behaves less like one fault breaking and more like fluid or magma working its way through rock. Both of this month&rsquo;s West Texas sequences are swarms by that test, which fits the injection story.</p>
 
-    <blockquote>"The fault does not forgive. The data never lies."</blockquote>
+    <p>One contrast I didn&rsquo;t expect: the M6.5 west of Nikolski two weeks later, the largest US quake of the month, has had only seven aftershocks. It was 98 km deep, inside the Pacific plate as it sinks under Alaska. Deep earthquakes are known for having few aftershocks, and you can see it here.</p>
 
-    <p>The Cascadia Subduction Zone — offshore of Washington, Oregon, and northern California — hasn't produced a full-margin rupture since January 26, 1700. That's 326 years of locked strain. AFTERSHOCK watches the microseismicity along that margin constantly. The data updates every six hours. The fault moves on its own schedule.</p>
+    <h2>The shape of the shaking</h2>
+
+    <div class="photo-block">
+      <img src="/blog/img/aftershock-revisited/shape-of-shaking.jpg" width="1400" height="593" alt="Three panels: a magnitude-frequency plot with a fitted b-value, a bar showing the share of energy by earthquake, and a depth histogram" loading="lazy">
+      <p class="photo-caption">Gutenberg&ndash;Richter, energy and depth, recalculated for whatever place you pick.</p>
+    </div>
+
+    <p>Three panels are recalculated for whatever place you pick. The <strong>Gutenberg&ndash;Richter</strong> plot shows how many quakes there were at or above each magnitude, with a <em>b-value</em> fitted above the point where the catalog is complete. A b near 1 means about ten times fewer quakes for every step up in magnitude, which is typical of tectonic faults. Higher values point to swarms, volcanoes or fluids.</p>
+
+    <p>The energy panel answers a question people often get wrong. Each step in magnitude is about 32 times more energy, so the biggest quake dominates. In the US this month the single M6.5 released 59% of all the seismic energy, and more than four thousand quakes below M3 together released about 0.1%. Small quakes don&rsquo;t usefully &ldquo;let off pressure.&rdquo; The depth panel separates shallow crustal faulting from quakes inside ocean plates sinking into the mantle, which go as deep as 700 km.</p>
+
+    <h2>Closer to home, and farther away</h2>
+
+    <p>The most-felt earthquake in the United States this month was an M4.2 on September 29 under the Key Peninsula, 6 km west-northwest of Wauna, about 28 km down. 9,488 people filed &ldquo;Did You Feel It?&rdquo; reports, far more than for anything in California this month. That&rsquo;s the South Sound: a small quake under a lot of people.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/aftershock-revisited/world-overview.jpg" width="1400" height="913" alt="AFTERSHOCK world view: 527 earthquakes M4.5+ in 30 days around the Pacific Ring of Fire" loading="lazy">
+      <p class="photo-caption">The world view, at M4.5 and up: 527 quakes in 30 days against 611 typical. Outside the US, that cut is what makes countries comparable.</p>
+    </div>
+
+    <p>Pick &ldquo;the whole world&rdquo; and the Ring of Fire draws itself. The largest quake of the month was an M6.6 off New Caledonia. The one that mattered most was an M5.5 near Jiangyou in Sichuan on September 3. USGS gave it an orange PAGER alert, meaning significant casualties or damage were likely, and the page now says so in the summary.</p>
+
+    <div class="note-box">
+      <strong>Under the hood:</strong> still one Python script and no database. It runs hourly in GitHub Actions and commits every six hours, or immediately when a new M4.5+ shows up. Location lookups are plain Python point-in-polygon, no GIS libraries. The page also reads the USGS real-time feed itself every two minutes, so a quake that happened five minutes ago is already on the map. The data file shrank from 1.2 MB to 0.9 MB despite carrying more.
+    </div>
+
+    <h2>The quiet places</h2>
+
+    <p>I kept one line from the first version. Pick a state with nothing in it, Vermont for instance, and the page still says: <em>Quiet is not nothing &mdash; it may mean the fault is locked.</em> Now it also tells you how many quakes that state has had in ten years, so you can judge the quiet for yourself.</p>
+
+    <p>The Cascadia Subduction Zone hasn&rsquo;t produced a full-margin rupture since January 26, 1700. AFTERSHOCK watches the small quakes along it every hour, and the margin moves on its own schedule.</p>
 
     <hr>
 
-    <p>Live at <a href="https://brooksgroves.com/aftershock" target="_blank">brooksgroves.com/aftershock</a>. Open source at <a href="https://github.com/bdgroves/aftershock" target="_blank">github.com/bdgroves/aftershock</a>. Built by someone who grew up walking fault scarps without knowing it.</p>
+    <p>AFTERSHOCK is open source at <a href="https://github.com/bdgroves/aftershock" target="_blank">github.com/bdgroves/aftershock</a> and live at <a href="https://brooksgroves.com/aftershock" target="_blank">brooksgroves.com/aftershock</a>. The original build story is <a href="/blog/aftershock-post.html">here</a>.</p>
 
   </div>
 
   <div class="article-footer">
-    <span class="article-footer-author">Brooks Groves · April 2026</span>
+    <span class="article-footer-author">Brooks Groves · October 2026</span>
     <div class="article-footer-nav">
       <a href="/geology.html">Geology Hub →</a>
       <a href="/blog/index.html">← All Posts</a>
