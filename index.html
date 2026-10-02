@@ -619,7 +619,7 @@
         <a href="https://brooksgroves.com/weather-station" target="_blank" class="support-story">
           <p class="support-kicker">Meteorology · 4 Stations · NWS + ACIS + Open-Meteo</p>
           <h3 class="support-hed">🌡️ Weather Station — "We Got Cows"</h3>
-          <p class="support-dek">A NOAA-ops-center-style dashboard monitoring four Western stations — Lakewood, Groveland, Reno, and Death Valley — read live from National Weather Service stations every 5 minutes. Measured-then-forecast charts, the forecaster&rsquo;s notes, records back to 1893, NWS alerts. Storm-chaser instrument panel, built for $0.</p>
+          <p class="support-dek">A NOAA-ops-center-style dashboard monitoring four Western stations — Lakewood, Sonora, Reno, and Death Valley — read live from National Weather Service stations every 5 minutes. Measured-then-forecast charts, the forecaster&rsquo;s notes, records back to 1893, NWS alerts. Storm-chaser instrument panel, built for $0.</p>
           <span class="support-link">View live dashboard →</span>
         </a>
       </div>
@@ -997,15 +997,8 @@
           ' ' + d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', timeZoneName:'short'});
       }
     } catch(e) {
-      document.getElementById('icon-lakewood').textContent = '⛅';
-      document.getElementById('temp-lakewood').textContent = '34°';
-      document.getElementById('cond-lakewood').textContent = '· Mostly Cloudy';
-      document.getElementById('icon-groveland').textContent = '🌧';
-      document.getElementById('temp-groveland').textContent = '55°';
-      document.getElementById('cond-groveland').textContent = '· Chance Rain';
-      document.getElementById('icon-deathvalley').textContent = '🔥';
-      document.getElementById('temp-deathvalley').textContent = '73°';
-      document.getElementById('cond-deathvalley').textContent = '· Sunny';
+      // No feed: leave the dashes rather than show made-up numbers.
+      document.getElementById('weather-updated').textContent = 'weather unavailable';
     }
   }
 
