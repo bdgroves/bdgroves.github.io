@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Weather Station — Four Climates, Zero Dollars — Brooks Groves</title>
+  <title>Weather Station, Revisited: Measured, Not Modelled — Brooks Groves</title>
+  <meta name="description" content="Six months on, my weather dashboard turned out to be showing a forecast model&#39;s guess, hours old. Now it reads real National Weather Service observations live, charts them into the forecast, and checks it all against records back to 1893.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,77 +13,81 @@
     :root {
       --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
       --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
-      --white:#fdfaf4; --sky:#2a5c8a; --storm:#4a3a6a;
+      --white:#fdfaf4; --lava:#c0392b; --ash:#6b6560;
     }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     html { scroll-behavior:smooth; }
     body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
     body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
-    .topline { height:4px; background:linear-gradient(90deg,var(--sky) 0%,var(--gold) 50%,var(--storm) 100%); }
+    .topline { height:4px; background:linear-gradient(90deg,var(--lava) 0%,var(--gold) 50%,var(--ash) 100%); }
     header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
     .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
     .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
     nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
     nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
-    nav a:hover { color:var(--sky); }
+    nav a:hover { color:var(--lava); }
     nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
     nav a.github:hover { background:var(--ink); color:var(--parchment); }
 
     .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
-    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
-    .article-back:hover { color:var(--sky); }
-    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--sky); margin-bottom:0.75rem; }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; transition:color 0.2s; }
+    .article-back:hover { color:var(--lava); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--lava); margin-bottom:0.75rem; }
     .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
     .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
     .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
     .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
     .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
     .article-body { font-size:1.05rem; line-height:1.85; }
     .article-body p { margin-bottom:1.5rem; }
-    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--sky); }
-    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--sky); }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--lava); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--lava); }
     .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
     .article-body em { font-style:italic; }
     .article-body strong { font-weight:700; }
-    .article-body blockquote { border-left:3px solid var(--sky); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
-    .article-body a { color:var(--sky); text-decoration:underline; text-underline-offset:3px; }
+    .article-body blockquote { border-left:3px solid var(--lava); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--lava); text-decoration:underline; text-underline-offset:3px; }
+    .article-body a:hover { color:var(--ink); }
 
-    /* STATION TABLE */
-    .station-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.85rem; }
-    .station-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
-    .station-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
-    .station-table tr:last-child td { border-bottom:none; }
-    .station-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--sky); font-weight:500; }
-
-    /* COST TABLE */
-    .cost-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.82rem; }
-    .cost-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
-    .cost-table td { padding:0.5rem 0.75rem; border-bottom:1px solid var(--mist); }
-    .cost-table .winner { color:var(--gold); font-weight:700; font-family:'DM Mono',monospace; font-size:0.75rem; }
-
-    /* CODE */
+    /* CODE BLOCK */
     .code-block { background:var(--ink); color:#e8e4dc; font-family:'DM Mono',monospace; font-size:0.78rem; padding:1.25rem 1.5rem; margin:1.5rem 0; overflow-x:auto; line-height:1.7; }
     .code-comment { color:#7a7268; }
+    .code-key { color:var(--gold); }
+    .code-val { color:#8ab4a0; }
+
+    /* SPEC TABLE */
+    .spec-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.85rem; }
+    .spec-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .spec-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    .spec-table tr:last-child td { border-bottom:none; }
+    .spec-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--lava); }
 
     /* LIVE BADGE */
     .live-badge { display:inline-flex; align-items:center; gap:0.5rem; background:var(--ink); color:var(--white); font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; padding:0.4rem 0.8rem; margin:1.5rem 0; text-decoration:none; }
-    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--sky); animation:blink 1.4s infinite; }
+    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--lava); animation:blink 1.4s infinite; }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
-    .live-badge:hover { background:var(--sky); }
+    .live-badge:hover { background:var(--lava); }
 
     .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
     .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
     .article-footer-nav { display:flex; gap:1.5rem; }
     .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
-    .article-footer-nav a:hover { color:var(--sky); }
+    .article-footer-nav a:hover { color:var(--lava); }
 
     footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
     .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
     .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
-    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
     .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
     .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
     .footer-links a:hover { color:var(--gold); }
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; height: auto; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+    .note-box { background: var(--cream); border: 1px solid var(--mist); border-left: 3px solid var(--gold); padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: 0.95rem; }
+    .article-body ol, .article-body ul { margin: 0 0 1.5rem 1.5rem; }
+    .article-body li { margin-bottom: 0.6rem; }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -108,7 +113,7 @@
     <nav>
       <a href="/blog/index.html">Blog</a>
       <a href="/meteorology.html">Meteorology</a>
-      <a href="https://brooksgroves.com/weather-station" target="_blank">Dashboard ↗</a>
+      <a href="https://brooksgroves.com/weather-station" target="_blank">Live Dashboard ↗</a>
       <a href="https://github.com/bdgroves/weather-station" target="_blank" class="github">GitHub ↗</a>
     <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
   </div>
@@ -117,21 +122,22 @@
 <div class="article-wrap">
   <a href="/blog/index.html" class="article-back">← Blog</a>
 
-  <p class="article-kicker">Project Build · Meteorology · Open-Meteo · NWS · April 2026</p>
-  <h1 class="article-title">🌡️ Weather Station — Four Climates, Zero Dollars, Half a Cup of Coffee</h1>
+  <p class="article-kicker">Project Update · Meteorology · NWS · October 2026</p>
+  <h1 class="article-title">🌡️ Weather Station, Revisited: Measured, Not Modelled</h1>
   <div class="article-meta">
     <span>Brooks Groves</span>
-    <span>April 2026</span>
-    <span>Python · GitHub Actions · Open-Meteo · NWS</span>
+    <span>October 2, 2026</span>
+    <span>NWS API · ACIS · Open-Meteo · Chart.js</span>
   </div>
   <div class="article-tags">
     <a href="/tags.html#Meteorology" class="article-tag-pill">Meteorology</a>
+    <a href="/tags.html#NWS" class="article-tag-pill">NWS</a>
+    <a href="/tags.html#Open-Meteo" class="article-tag-pill">Open-Meteo</a>
     <a href="/tags.html#Python" class="article-tag-pill">Python</a>
     <a href="/tags.html#GitHub%20Actions" class="article-tag-pill">GitHub Actions</a>
-    <a href="/tags.html#Open-Meteo" class="article-tag-pill">Open-Meteo</a>
-    <a href="/tags.html#NWS" class="article-tag-pill">NWS</a>
-    <a href="/tags.html#Pacific%20Northwest" class="article-tag-pill">Pacific Northwest</a>
+    <a href="/tags.html#Real-Time%20Data" class="article-tag-pill">Real-Time Data</a>
     <a href="/tags.html#Death%20Valley" class="article-tag-pill">Death Valley</a>
+    <a href="/tags.html#Pacific%20Northwest" class="article-tag-pill">Pacific Northwest</a>
   </div>
 
   <a href="https://brooksgroves.com/weather-station" target="_blank" class="live-badge">
@@ -140,85 +146,79 @@
   </a>
 
   <div class="article-body">
-    <div class="update-note" style="background:var(--cream);border:1px solid var(--mist);border-left:3px solid var(--gold);padding:1rem 1.25rem;margin:0 0 2rem;font-size:0.92rem;font-family:'Libre Baskerville',Georgia,serif">
-      <strong>Update, October 2026:</strong> Weather Station has been rebuilt around real measurements. A few things below were wrong: it updated every 30 minutes on paper and every three to four hours in practice, not every 15 minutes; its &ldquo;current conditions&rdquo; were a forecast model&rsquo;s estimate; and the Death Valley station is at &minus;190&nbsp;ft. <a href="/blog/weather-station-revisited-post.html">Read what changed &rarr;</a>
+
+    <p>I built <a href="https://brooksgroves.com/weather-station" target="_blank">Weather Station</a> in April, before my coffee was finished: four places that matter to me (Lakewood, Groveland, Reno and Death Valley), one dark instrument panel, zero dollars. The original post said it updated every 15 minutes. Six months later I went back to make it the best weather station I could, and the first thing I found was that it wasn&rsquo;t really a weather station at all.</p>
+
+    <h2>What it was getting wrong</h2>
+
+    <p><strong>None of it was measured.</strong> The big number at the top of the page, &ldquo;current conditions,&rdquo; came from Open-Meteo&rsquo;s forecast model: its best estimate of what the weather probably was, not a reading from a thermometer. Models are good, but they aren&rsquo;t observations, and they miss things like fog, low cloud and a calm night in a valley.</p>
+
+    <p><strong>And it wasn&rsquo;t current.</strong> The GitHub Action was scheduled for every 30 minutes, not every 15 as I&rsquo;d written. GitHub doesn&rsquo;t promise scheduled runs, and at busy times of the hour it quietly drops them. Over the last month, 193 updates actually ran out of the 1,440 scheduled. The typical gap was about three and a half hours, and the longest was eight. Every one of those runs also committed a new copy of the data to the repo: about 2,400 commits since April.</p>
+
+    <p>This morning both problems showed up at once. At ten o&rsquo;clock the page said Lakewood was 47&deg; and clear. That was the model&rsquo;s estimate for 6&nbsp;a.m., four hours earlier. At the same moment McChord Field, two miles away, was reporting 63&deg; and overcast at 3,000&nbsp;ft.</p>
+
+    <p>A few smaller things, while I was owning up. The 3-hour pressure trend compared readings from the wrong hours, because it mixed a UTC clock with local times. The hourly forecast started at midnight, so by evening most of it was in the past. And Death Valley was listed at &minus;282&nbsp;ft. That&rsquo;s Badwater Basin; the weather station at Furnace Creek is at &minus;190&nbsp;ft.</p>
+
+    <h2>Measured first</h2>
+
+    <p>The page now reads the weather itself, in your browser, every five minutes: the latest observation from the nearest National Weather Service station, with how old it is and which station it came from. The model&rsquo;s value sits beside it as a check, and anything that still comes from the model (the sky at stations without a ceilometer, pressure at stations without a barometer) is labelled <em>model</em>.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/weather-station-revisited/lakewood-now.jpg" width="1440" height="385" alt="Weather Station, Lakewood: 63 degrees and cloudy, measured an hour ago at McChord AFB; pressure 1017.9 hPa rising 1.0 in 3 hours; overcast at 3,000 ft" loading="lazy">
+      <p class="photo-caption">Lakewood this morning, measured at McChord AFB. The chips underneath show today so far, the normal and the record for the date, and what the model thinks.</p>
     </div>
 
-    <p>I was halfway through my morning coffee when the thought arrived fully formed: <em>build a weather station</em>. Not a physical one — a Davis Vantage Pro2 runs $700 and requires mounting hardware and a roof I'd rather not climb. A software one. Four stations, four climates, one dashboard, zero dollars. I had the coffee. I had the API docs open. The project was going to happen whether I finished the cup or not.</p>
+    <p>Lakewood, Reno and Death Valley have stations close by: McChord AFB, Reno&ndash;Tahoe airport and the Furnace Creek visitor center. Groveland is harder. There&rsquo;s no official station in town, and the nearest is the Mount Elizabeth fire-weather station, 15 miles off and about 2,100&nbsp;ft higher. The page says so, rather than pretending.</p>
 
-    <p>Weather Station is a real-time monitoring dashboard tracking four locations across the American West, updating every 15 minutes via GitHub Actions. It looks like something bolted to the wall of a NOAA operations center. It cost exactly nothing.</p>
+    <p>A GitHub Action still runs every hour, at 23 minutes past to stay out of the busy top of the hour, and keeps a backup copy for when a source is down. It only commits every three hours now. If the page has to fall back to the backup, it says so in the corner.</p>
 
-    <h2>The Four Stations</h2>
+    <h2>Measured, then forecast</h2>
 
-    <table class="station-table">
-      <tr><th>Station</th><th>Elevation</th><th>The Vibe</th></tr>
-      <tr>
-        <td>Lakewood, WA</td>
-        <td>300 ft</td>
-        <td>Home base. Pacific Northwest grey. The kind of place where "partly cloudy" is basically sunshine and you own four rain jackets.</td>
-      </tr>
-      <tr>
-        <td>Groveland, CA</td>
-        <td>2,844 ft</td>
-        <td>Where I grew up. Gateway to Yosemite. Pine trees, gold country air, thunderstorms rolling off the Sierra crest on summer afternoons.</td>
-      </tr>
-      <tr>
-        <td>Reno, NV</td>
-        <td>4,505 ft</td>
-        <td>High desert. Big wind, bigger sky. Where a "partly sunny" forecast means the sun is actively trying to fight you.</td>
-      </tr>
-      <tr>
-        <td>Death Valley, CA</td>
-        <td>-282 ft</td>
-        <td>The hottest place on Earth. Below sea level. The barometric pressure is higher than sea level because you're in a geological hole. We monitor this one for sport.</td>
-      </tr>
-    </table>
+    <p>The charts are the part I like best. Each one has the last 24 hours as the station recorded them (a solid line), then the forecast for the next 48 (dashed), with the normal range for the date behind them. The two lines meet at now, so you can see at a glance whether the forecast is starting from the right place.</p>
 
-    <p>The four locations aren't random — they're the geography of a life. Lakewood is home. Groveland is where I'm from. Reno is where I went to college. Death Valley is where the atmosphere runs out of ways to be reasonable. Together they give you a cross-section of the American West from the Pacific coast to the Mojave, from sea level to high desert plateau.</p>
+    <div class="photo-block">
+      <img src="/blog/img/weather-station-revisited/measured-then-forecast.jpg" width="1440" height="360" alt="Two charts for Lakewood: temperature measured over the last day then forecast for two days, against the normal high and low; and pressure and wind, measured then forecast" loading="lazy">
+      <p class="photo-caption">Lakewood: the solid lines are McChord&rsquo;s readings, the dashed lines the forecast. The pressure forecast is shifted to start from the station&rsquo;s own reading.</p>
+    </div>
 
-    <h2>What's on the Dashboard</h2>
+    <p>The measured lines are honest, which means they&rsquo;re sometimes strange. Lakewood&rsquo;s pressure sat at exactly 1016.2&nbsp;hPa for seven hours overnight. I checked the raw reports before believing it; it really did. At Mount Elizabeth the temperature barely moved all night, 68 to 70&deg; from midnight until dawn, more than 20&deg; above Groveland&rsquo;s normal low. That&rsquo;s probably the thermal belt: on a calm night cold air drains into the valleys, and a slope a couple of thousand feet up can stay warmer than the town below.</p>
 
-    <p>This isn't your phone's weather app. The instrument panel has real depth — wind compass with a proper SVG dial showing the actual direction the wind is coming from, not just a text label. Barometric pressure with a 3-hour trend arrow — rising, falling fast, steady. This is how storm chasers read the sky before the clouds arrive. NWS alerts rendered as color-coded banners pulled straight from the National Weather Service. Heat advisories in Death Valley, wind advisories in Reno, frost warnings in Groveland. Tabs get a colored dot when a station has something brewing.</p>
+    <h2>From the forecaster</h2>
 
-    <p>The astronomy panel was the unexpected pleasure — moon phase, illumination percentage, age in days, and countdowns to the next full and new moon, all calculated via Julian day math with no API required. A method that has worked since 45 BC and continues to work in a Python script in 2026. Air quality covers US AQI, PM2.5, PM10, and ozone — critical during wildfire season in the West. And 24-hour trend charts: temperature and pressure plotted on canvas-drawn charts with gradient fills. Watch the pressure drop. Feel the front coming in.</p>
+    <p>The National Weather Service writes its own forecast in words, and the page now shows it for the next few days next to the model&rsquo;s seven-day cards. Every few hours a meteorologist at the local NWS office also writes an Area Forecast Discussion: what the atmosphere is doing, and how sure they are. The page shows the synopsis, with the full discussion one click away. It&rsquo;s the best weather writing there is, and it&rsquo;s free.</p>
 
-    <blockquote>"The barometer reading plus a 3-hour trend indicator. Rising? Falling fast? Steady? The arrow tells you what's coming before the clouds do."</blockquote>
+    <div class="photo-block">
+      <img src="/blog/img/weather-station-revisited/groveland-heat.jpg" width="1440" height="490" alt="Weather Station, Groveland: a Heat Advisory banner from NWS Sacramento; 76 degrees measured at Mount Elizabeth RAWS; normal high 82, forecast 91, record 100 set in 2024" loading="lazy">
+      <p class="photo-caption">Groveland today: a Heat Advisory through October 7. The normal high for the date is 82&deg;; the forecast is 91&deg;.</p>
+    </div>
 
-    <h2>The Architecture</h2>
+    <p>Today the Sacramento office has a Heat Advisory out for the foothills, Groveland included, and the discussion explains why: highs 10 to 20 degrees above normal through Tuesday. Up in Lakewood the Seattle office&rsquo;s note this morning was about more cloud than expected knocking a couple of degrees off the high. That cloud was the 63&deg; and overcast the old page was calling 47&deg; and clear.</p>
 
-    <p>Same pattern as everything else in this collection. GitHub Actions runs <em>fetch_weather.py</em> on a 15-minute cron, pulls from Open-Meteo and the NWS API, writes <em>data/weather.json</em>. The frontend reads that JSON on page load. No frameworks. No npm install. No node_modules black hole. Python that writes JSON and HTML that reads it.</p>
+    <h2>Against the record books</h2>
 
-    <div class="code-block"><span class="code-comment"># The whole data pipeline in one line of intent</span>
-Open-Meteo + NWS API → fetch_weather.py → data/weather.json → index.html → your eyeballs</div>
+    <p>&ldquo;91&deg; in October&rdquo; means more with something to compare it to. Once a day the Action now pulls each station&rsquo;s full daily history from <a href="https://www.rcc-acis.org/" target="_blank">ACIS</a>, the NOAA Regional Climate Centers&rsquo; database, and works out the 1991&ndash;2020 normal and the record high and low for every date of the year. The records come from the longest nearby history, not the nearest station: Sea-Tac since 1945, Sonora since 1903 (Groveland itself has no long record), Reno since 1893 and Death Valley since 1911.</p>
 
-    <p>Open-Meteo is genuinely excellent — free, no API key required, open source, and it covers weather data, forecasts, and air quality in a single ecosystem. The NWS API is taxpayer-funded public infrastructure that works exactly as advertised. The moon phase is pure math. Zero authentication, zero rate limits that matter, zero cost.</p>
+    <div class="photo-block">
+      <img src="/blog/img/weather-station-revisited/record-books.jpg" width="1440" height="420" alt="The last 30 days of daily highs and lows at Sea-Tac, against the normal range and the record high and low for each date; on this date normal 65 and 50, record high 80 in 2022, record low 35 in 1950" loading="lazy">
+      <p class="photo-caption">Sea-Tac&rsquo;s September: highs mostly inside the normal band, nowhere near the records (dotted).</p>
+    </div>
 
-    <h2>The Cost Analysis</h2>
+    <p>Every forecast card now has the normal for its date underneath and a flag if the forecast reaches the record. There&rsquo;s month to date against normal, and rain since October 1, the start of the water year, against what usually falls by now. And the Death Valley page carries the number everyone wants: 134&deg;F, at Greenland Ranch (now Furnace Creek) on July 10, 1913, still the highest air temperature on record anywhere. Today it&rsquo;s forecast to reach 104&deg;, three above normal and nine short of the record for October 2.</p>
 
-    <table class="cost-table">
-      <tr><th>Item</th><th>Physical Station</th><th>This Project</th></tr>
-      <tr><td>Hardware</td><td>$330–$700</td><td class="winner">$0</td></tr>
-      <tr><td>Monthly fees</td><td>$0–$10</td><td class="winner">$0</td></tr>
-      <tr><td>Roof climbing required</td><td>Yes</td><td class="winner">No</td></tr>
-      <tr><td>Covers 4 locations</td><td>No</td><td class="winner">Yes</td></tr>
-      <tr><td>NWS alerts</td><td>No</td><td class="winner">Yes</td></tr>
-      <tr><td>Moon phase</td><td>No</td><td class="winner">Yes</td></tr>
-      <tr><td>Looks like a NOAA ops center</td><td>No</td><td class="winner">Yes</td></tr>
-      <tr><td><strong>Total</strong></td><td><strong>$385–$765</strong></td><td class="winner"><strong>$0.00</strong></td></tr>
-    </table>
+    <div class="photo-block" style="max-width:340px;margin-left:auto;margin-right:auto">
+      <img src="/blog/img/weather-station-revisited/death-valley-phone.jpg" width="390" height="1380" alt="Weather Station on a phone, Death Valley: 90 degrees and clear, measured at Furnace Creek; normal 101, record 113 in 2024; charts of the last day and the forecast" loading="lazy">
+      <p class="photo-caption">Death Valley on a phone. 105&deg; yesterday afternoon, 73&deg; at dawn.</p>
+    </div>
 
-    <h2>The Design</h2>
+    <h2>Anywhere in the US</h2>
 
-    <p>Dark instrument panel aesthetic — Barlow Condensed for the industrial gauge readouts, IBM Plex Sans for body text, JetBrains Mono for the data values. Amber accent on charcoal. Built to look like you're monitoring the atmosphere from a bunker in Oklahoma. The Twister reference in the README is intentional. Bill Paxton's character had a wind compass too. His was analog. Mine updates every 15 minutes automatically via a cron job and has never once required him to drive into an F5.</p>
+    <p>The four stations are mine, but the page doesn&rsquo;t have to stop there. Type a town into the search box and it finds the nearest NWS station, forecast office and forecast, and builds the same panel for it, with its own link. Records and normals are kept for the four home stations only.</p>
 
-    <hr>
+    <p>Everything is still free: the National Weather Service API, ACIS and Open-Meteo, none of which need a key. A physical station in my yard would still cost $385&ndash;$765, and it would only cover one of the four.</p>
 
-    <p>The whole thing was built before the coffee was finished. That's either a testament to the quality of the tooling or a sign that I should drink slower. Either way — live at <a href="https://brooksgroves.com/weather-station" target="_blank">brooksgroves.com/weather-station</a>. Open source at <a href="https://github.com/bdgroves/weather-station" target="_blank">github.com/bdgroves/weather-station</a>. The barometric pressure in Death Valley right now is higher than sea level. The atmosphere is doing something out there. Might as well watch.</p>
+    <p class="note" style="font-size:0.9rem;color:var(--stone)">Corrections to the <a href="/blog/weather-station-post.html">April post</a>: the dashboard updated every 30 minutes on paper, and in practice every three to four hours, not every 15 minutes; its &ldquo;current conditions&rdquo; were a model estimate, not measurements; and Death Valley&rsquo;s station is at &minus;190&nbsp;ft, not &minus;282&nbsp;ft.</p>
 
-  </div>
-
-  <div class="article-footer">
-    <span class="article-footer-author">Brooks Groves · April 2026</span>
+    <span class="article-footer-author">Brooks Groves · October 2026</span>
     <div class="article-footer-nav">
       <a href="/meteorology.html">Meteorology Hub →</a>
       <a href="/blog/index.html">← All Posts</a>
@@ -253,7 +253,7 @@ Open-Meteo + NWS API → fetch_weather.py → data/weather.json → index.html �
       <div class="pagelink-row">
         <a href="/blog/index.html">Blog</a>
         <a href="/meteorology.html">Meteorology</a>
-        <a href="https://brooksgroves.com/weather-station" target="_blank">Dashboard ↗</a>
+        <a href="https://brooksgroves.com/weather-station" target="_blank">Weather Station ↗</a>
       </div>
     </div>
 
