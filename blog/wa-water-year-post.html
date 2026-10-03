@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Washington’s Water Year: Rain Instead of Snow — Brooks Groves</title>
+  <meta name="description" content="Water year 2026 in Washington, one day at a time: every USGS river gauge against its normal, NOAA HRRR snowpack and rain, over 3D terrain. A record December flood, a snow drought, and a dry summer. Rendered with forge3d.">
+  <meta property="og:title" content="Washington’s Water Year: Rain Instead of Snow">
+  <meta property="og:description" content="October 2025 to September 2026, day by day: the flood, the snow that didn’t stick, and the rivers running low.">
+  <meta property="og:image" content="https://brooksgroves.com/blog/img/wa-water-year/og.jpg">
+  <meta property="og:url" content="https://brooksgroves.com/blog/wa-water-year-post.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💧</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; border-radius:4px; transition: background 0.2s, color 0.2s; 
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .article-tag-pill:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body h2 em { font-style: italic; color: var(--rust); }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body em { font-style: italic; }
+    .article-body code { font-family: 'DM Mono', monospace; font-size: 0.85em; background: var(--cream); padding: 0.15em 0.4em; border-radius: 2px; }
+    .article-body pre { background: var(--ink); color: #c8d0cc; padding: 1.25rem 1.5rem; border-radius: 2px; overflow-x: auto; margin: 1.5rem 0 2rem; font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.65; }
+    .article-body pre code { background: none; padding: 0; font-size: 1em; color: inherit; }
+    .article-body ul { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body ul li { margin-bottom: 0.4rem; }
+
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .photo-block video { width: 100%; display: block; border: 1px solid var(--mist); background: #0b1020; cursor: zoom-in; }
+    .video-actions { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .video-actions a, .video-actions button { font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); background: none; border: 1px solid var(--mist); padding: 0.45rem 0.9rem; cursor: pointer; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
+    .video-actions a:hover, .video-actions button:hover { border-color: var(--rust); color: var(--rust); }
+    .step-list { margin: 1.2rem 0 1.5rem 1.2rem; }
+    .step-list li { margin-bottom: 0.7rem; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.8rem; margin: 2rem 0 2.2rem; }
+    .stat { border: 1px solid var(--mist); padding: 0.9rem 1rem 0.8rem; text-align: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 2.1rem; line-height: 1; color: var(--rust); }
+    .stat-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); margin-top: 0.45rem; line-height: 1.5; }
+    .photo-block.narrow { max-width: 540px; margin-left: auto; margin-right: auto; }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://journal.brooksgroves.com">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">&larr; Back to Blog</a>
+
+  <p class="article-kicker">Hydrology · forge3d · Washington · USGS</p>
+  <h1 class="article-title">&#128167; Washington&rsquo;s Water Year: Rain Instead of Snow</h1>
+  <div class="article-meta">
+    <span>October 2, 2026</span>
+    <span>Brooks Groves</span>
+    <span>7 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <a href="/tags.html#Washington" class="article-tag-pill">Washington</a>
+    <a href="/tags.html#Hydrology" class="article-tag-pill">Hydrology</a>
+    <a href="/tags.html#Snowpack" class="article-tag-pill">Snowpack</a>
+    <a href="/tags.html#Drought" class="article-tag-pill">Drought</a>
+    <a href="/tags.html#USGS" class="article-tag-pill">USGS</a>
+    <a href="/tags.html#forge3d" class="article-tag-pill">forge3d</a>
+    <a href="/tags.html#Python" class="article-tag-pill">Python</a>
+    <a href="/tags.html#Open%20Data" class="article-tag-pill">Open Data</a>
+  </div>
+
+  <div class="article-body">
+
+    <p>Hydrologists don&rsquo;t keep calendar years. The water year runs October 1 to September 30, so it starts with the autumn rains, builds a snowpack through winter, melts it out in spring and ends with the rivers at their lowest. Water year 2026 ended on Wednesday, so here&rsquo;s all of it, one day at a time.</p>
+
+    <p>This builds on <a href="/blog/wa-floods-post.html">this morning&rsquo;s flood map</a>, which zoomed in on twenty days of December. This one steps back to the whole year, and the December flood turns out to be part of a bigger story.</p>
+
+    <div class="photo-block">
+      <video id="wy-video" autoplay muted loop playsinline controls preload="metadata"
+             poster="/blog/img/wa-water-year/poster.jpg"
+             aria-label="Washington's water year 2026, day by day over 3D terrain: rivers coloured by flow compared with normal, white snowpack on the Cascades and Olympics, and a rain veil. Rivers flash white in the December flood, the snowpack peaks in mid-March, the rivers turn amber with low flow by June, and fall rains bring them back in September">
+        <source src="/blog/img/wa-water-year/wa-water-year.mp4" type="video/mp4">
+      </video>
+      <div class="video-actions">
+        <button type="button" id="wy-fullscreen">&#10530; Full screen</button>
+        <a href="/blog/img/wa-water-year/wa-water-year-1080.mp4" target="_blank">&#9654; Watch in HD (1080p)</a>
+      </div>
+      <p class="photo-caption">Washington, October 1, 2025 &ndash; September 30, 2026 · daily flow at 276 USGS stream gauges against each gauge&rsquo;s normal for the date · snowpack and daily rain from NOAA HRRR · HydroRIVERS network · USGS 3DEP terrain · rendered with forge3d</p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num">6.3&times;</div><div class="stat-label">Typical river vs normal,<br>December 10</div></div>
+      <div class="stat"><div class="stat-num">~50%</div><div class="stat-label">Of normal snowpack<br>in late March</div></div>
+      <div class="stat"><div class="stat-num">0.47&times;</div><div class="stat-label">Typical river vs normal,<br>early June</div></div>
+      <div class="stat"><div class="stat-num">4th</div><div class="stat-label">Straight year of drought<br>declared by Ecology</div></div>
+    </div>
+
+    <h2>What you&rsquo;re watching</h2>
+
+    <ul>
+      <li><strong>The rivers</strong> are coloured by each USGS gauge&rsquo;s flow that day compared with its usual flow for that calendar day, the median over every earlier year it has measured. Blue is about normal. Cyan and white mean 3&times; to 30&times; normal, and amber means well below.</li>
+      <li><strong>The white on the mountains</strong> is the snowpack, the water stored in snow on the ground, from NOAA&rsquo;s HRRR model. It&rsquo;s nudged onto the ridges using the terrain, since the model works on a 3 km grid.</li>
+      <li><strong>The grey-blue veil</strong> is the day&rsquo;s rain.</li>
+      <li><strong>Hot pink</strong> marks a gauge that beat its highest daily flow on record. Five did, all in the same three days.</li>
+    </ul>
+
+    <h2>A wet year that didn&rsquo;t feel like one</h2>
+
+    <p>Here&rsquo;s the strange part. By the state Department of Ecology&rsquo;s count, Washington got 104% of its normal precipitation from October through February. It was not a dry winter. But October through February was also the third-warmest on record, back to 1895, and a lot of that water fell as rain on mountains that should have been banking it as snow.</p>
+
+    <p>You can see both halves of that in the video. In December the rain runs straight off the mountains and the rivers go white. Up top, the snowpack never fills in the way it should.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/wa-water-year/dec-flood.jpg" alt="December 11, 2025: western Washington's rivers glowing white at many times normal flow, with the Snoqualmie and Cedar beginning to glow pink" loading="lazy">
+      <p class="photo-caption">December 11: the atmospheric river. On December 10 the typical gauge in the state ran 6.3&times; its normal.</p>
+    </div>
+
+    <h2>December: the records</h2>
+
+    <p>The atmospheric river of December 8&ndash;11 is the brightest stretch of the whole year. On December 10 the median gauge in the state was running 6.3 times its normal flow for the date. Five gauges set new records for their highest daily flow, all between December 10 and 12. The <strong>Snoqualmie near Carnation</strong> averaged 80,400 cubic feet a second on December 11, against a record of 76,300 from January 2009. The <strong>Cedar at Renton</strong> carried 10,400 against 8,900 in 1990. Two more gauges upstream on the Cedar, and Skookum Creek in the Nooksack country, set records too. (<a href="/blog/wa-floods-post.html">The flood post</a> has the hour-by-hour version.)</p>
+
+    <h2>March: the snowpack tops out</h2>
+
+    <div class="photo-block">
+      <img src="/blog/img/wa-water-year/snow-peak.jpg" alt="March 14, 2026: snow across the Cascades and Olympics at its seasonal peak, with rivers on both sides of the mountains running above normal under a band of rain" loading="lazy">
+      <p class="photo-caption">March 14: the snowpack at its biggest in the model, with another storm running rivers high.</p>
+    </div>
+
+    <p>In the model, the statewide snowpack peaked around March 14, a couple of weeks ahead of the usual April 1 peak, and there wasn&rsquo;t much of it. In mid-January the Washington State Climatologist had the snowpack at 66% of normal; by late March Ecology put it near 50%, the fourth-lowest in 40 years. On April 8 Ecology declared a statewide drought emergency, the fourth drought year in a row.</p>
+
+    <h2>June: amber</h2>
+
+    <div class="photo-block">
+      <img src="/blog/img/wa-water-year/june-low.jpg" alt="June 4, 2026: the snow nearly gone except on the volcanoes and North Cascades, and rivers east of the mountains glowing amber with flows far below normal" loading="lazy">
+      <p class="photo-caption">June 4: the typical gauge at 0.47&times; normal, its lowest of the year. Late spring is when snowmelt should be filling these rivers.</p>
+    </div>
+
+    <p>This is where the missing snow shows up. In a normal year, late May and June are when snowmelt carries the rivers east of the Cascades to their high water. This year the snow had already gone, early and fast, and the rivers turned amber instead. On June 4 the typical gauge in the state was running at 0.47 times its normal flow, the lowest point of the whole year. It&rsquo;s the same water that came down in December, just at the wrong time.</p>
+
+    <p>By the end of September, autumn rain is bringing the west-side rivers back to blue and the next water year is about to start.</p>
+
+    <h2>How it&rsquo;s built</h2>
+
+    <ol class="step-list">
+      <li><strong>Gauges.</strong> For 276 active USGS stream gauges in and around the state, the script downloads the whole history of daily flow, some going back to the 1920s. From that history it works out each gauge&rsquo;s normal for every day of the year (the median for that calendar day, give or take three days) and its highest daily flow before this year.</li>
+      <li><strong>Snow and rain.</strong> 1,825 fields from NOAA&rsquo;s HRRR on AWS: one snowpack field each morning, and four six-hour rain totals a day. A byte-range trick downloads just those fields, about a megabyte each, out of files of ~150 MB.</li>
+      <li><strong>Rivers.</strong> HydroRIVERS, with every reach taking the reading of the first gauge downstream of it.</li>
+      <li><strong>Rendering.</strong> Four frames a day, so 1,460 frames plus a hold at the end, each rendered twice (the land and rivers, then the rain alone) and combined by a finishing script. Milos Popovic&rsquo;s <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a> 1.40.1 draws the terrain.</li>
+    </ol>
+
+    <p>Some honest caveats. The records here are <em>daily</em> means, so they don&rsquo;t match the instantaneous crests in the news. Summer normals on small, dry-side streams are tiny, so their colours swing hard. Recent USGS numbers are still provisional. And HRRR&rsquo;s snow is a model estimate, not a snow-pillow reading.</p>
+
+    <h2>Last thing</h2>
+
+    <p>A wet year and a drought year at once sounds like a contradiction until you watch it: plenty of water, falling as rain at the wrong time. Water year 2027 started on Thursday. Here&rsquo;s hoping for a cold, snowy one.</p>
+
+    <p class="photo-caption">Data: USGS Water Services (daily values); NOAA HRRR via the <a href="https://registry.opendata.aws/noaa-hrrr-pds/" target="_blank">NOAA Open Data Dissemination program</a>; HydroRIVERS v1.0 (Lehner &amp; Grill 2013); USGS 3D Elevation Program; Natural Earth. Facts: <a href="https://ecology.wa.gov/about-us/who-we-are/news/2026/april-8-statewide-drought-declared-due-to-dismal-snowpack" target="_blank">Washington State Department of Ecology</a>, <a href="https://climate.uw.edu/2026/01/13/december-8-11-2025-heavy-rainfall-and-flooding-historical-context-and-a-note-on-snow-drought/" target="_blank">Office of the Washington State Climatologist</a>. Rendering: <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a> by Milos Popovic. Labels: Roboto.</p>
+
+  </div>
+
+  <script>
+    (function () {
+      var v = document.getElementById('wy-video');
+      function big() {
+        if (v.requestFullscreen) v.requestFullscreen();
+        else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
+        else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+      }
+      document.getElementById('wy-fullscreen').addEventListener('click', big);
+      v.addEventListener('dblclick', big);
+    })();
+  </script>
+
+  <div class="reactions-section">
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · October 2026</span>
+    <div class="article-footer-nav">
+      <a href="/blog/wa-floods-post.html">← When Washington’s Rivers Broke Their Records</a>
+      <a href="/blog/index.html">All posts</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
+    </div>
+
+    <div class="footer-connect">
+      <div class="fc-label">Connect</div>
+      <div class="social-row">
+          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
+          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
+          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
+          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
+          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
+          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
+          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-pagelinks">
+      <div class="fc-label">More here</div>
+      <div class="pagelink-row">
+        <a href="/blog/index.html">Blog</a>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
+    <p class="footer-bottom">
+      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
+      <a href="#top">&uarr; Back to top</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this handles clicks and keeps the button's label truthful.
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function sync(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Describe what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  sync();
+  btn.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
