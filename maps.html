@@ -177,6 +177,65 @@
     </div>
   </div>
 
+  <!-- 30DAYMAPCHALLENGE: reads the gallery's days.json, so it fills in as maps are drawn -->
+  <style>
+    .dmc { margin-top:3rem; padding-top:2rem; border-top:2px solid var(--ink); }
+    .dmc-head { display:flex; justify-content:space-between; align-items:flex-end; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+    .dmc-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--rust); margin-bottom:0.35rem; }
+    .dmc-title { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3.6vw,2.3rem); font-weight:900; line-height:1.05; }
+    .dmc-desc { font-size:0.85rem; color:var(--stone); max-width:560px; line-height:1.7; margin-top:0.5rem; }
+    .dmc-count { text-align:right; }
+    .dmc-count b { font-family:'Playfair Display',serif; font-weight:900; font-size:3rem; line-height:0.9; color:var(--rust); display:block; }
+    .dmc-count span { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); }
+    .dmc-progress { display:grid; grid-template-columns:repeat(30,1fr); gap:3px; margin:0.4rem 0 1.4rem; }
+    .dmc-progress i { display:block; height:8px; background:var(--mist); }
+    .dmc-progress i.draft { background:var(--gold); opacity:0.55; }
+    .dmc-progress i.done, .dmc-progress i.posted { background:var(--gold); }
+    .dmc-strip { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(220px,1fr); gap:1rem; overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:0.75rem; }
+    .dmc-card { scroll-snap-align:start; display:block; text-decoration:none; color:var(--ink); border:1px solid var(--mist); background:var(--white); transition:border-color 0.15s, transform 0.15s; }
+    .dmc-card:hover { border-color:var(--gold); transform:translateY(-2px); }
+    .dmc-card img { display:block; width:100%; aspect-ratio:4/3; object-fit:cover; border-bottom:1px solid var(--mist); background:var(--cream); }
+    .dmc-card .t { padding:0.7rem 0.8rem 0.85rem; }
+    .dmc-card .k { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--rust); }
+    .dmc-card .h { font-family:'Playfair Display',serif; font-size:0.98rem; font-weight:700; line-height:1.25; margin-top:0.2rem; }
+    .dmc-card.all { display:flex; align-items:center; justify-content:center; text-align:center; padding:1rem; font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); }
+    .dmc-foot { display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); margin-top:0.5rem; }
+    .dmc-foot a { color:var(--gold); text-decoration:none; }
+    @media (prefers-reduced-motion: reduce) { .dmc-card { transition:none; } .dmc-card:hover { transform:none; } }
+  </style>
+  <section class="dmc" aria-labelledby="dmc-title">
+    <div class="dmc-head">
+      <div>
+        <div class="dmc-kicker">#30DayMapChallenge · November 2026</div>
+        <h2 class="dmc-title" id="dmc-title">30 Maps in November</h2>
+        <p class="dmc-desc">One map a day on the official themes, mostly about places I know: the Sierra foothills where I grew up, Rainier, Nevada and wherever geocaching has taken me. The drafts are already coming in.</p>
+      </div>
+      <div class="dmc-count" id="dmc-count"></div>
+    </div>
+    <div class="dmc-progress" id="dmc-progress" aria-hidden="true"></div>
+    <div class="dmc-strip" id="dmc-strip"><a class="dmc-card all" href="https://brooksgroves.com/30DayMapChallenge/2026/">Open the gallery →</a></div>
+    <div class="dmc-foot"><span id="dmc-legend"></span><a href="https://brooksgroves.com/30DayMapChallenge/2026/">All 30 days ↗</a></div>
+  </section>
+  <script>
+  (function(){
+    var G = 'https://brooksgroves.com/30DayMapChallenge/2026/';
+    var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+    fetch('/30DayMapChallenge/2026/days.json?t=' + Date.now(), {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(M){
+      var done = M.counts.done + M.counts.posted, made = M.days.filter(function(d){ return d.thumb; });
+      var left = Math.ceil((new Date(M.start + 'T00:00:00-07:00') - new Date()) / 864e5);
+      document.getElementById('dmc-count').innerHTML = left > 0
+        ? '<b>' + left + '</b><span>day' + (left === 1 ? '' : 's') + ' until November 1</span>'
+        : '<b>' + done + '<small style="font-size:0.4em;color:var(--stone)">/30</small></b><span>maps posted</span>';
+      document.getElementById('dmc-progress').innerHTML = M.days.map(function(d){ return '<i class="' + esc(d.status) + '" title="Day ' + d.day + '"></i>'; }).join('');
+      document.getElementById('dmc-legend').textContent = made.length + ' of 30 drafted · ' + done + ' posted';
+      document.getElementById('dmc-strip').innerHTML = made.map(function(d){
+        return '<a class="dmc-card" href="' + G + '#day-' + d.day + '"><img src="' + esc(d.thumb) + '" alt="' + esc(d.alt || d.title) + '" loading="lazy">'
+          + '<div class="t"><div class="k">Day ' + d.day + ' · ' + esc(d.theme) + '</div><div class="h">' + esc(d.title) + '</div></div></a>';
+      }).join('') + '<a class="dmc-card all" href="' + G + '">See all 30 days →</a>';
+    }).catch(function(){ /* the gallery link in the strip stays */ });
+  })();
+  </script>
+
   <!-- GIS PORTFOLIO SECTION -->
   <div style="margin-top:3rem;padding-top:2rem;border-top:2px solid var(--ink);">
     <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--stone);padding-bottom:0.75rem;border-bottom:1px solid var(--mist);margin-bottom:1.5rem;display:flex;justify-content:space-between;">
@@ -190,13 +249,6 @@
         <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:0.4rem;">AFTERSHOCK</div>
         <div style="font-size:0.8rem;color:var(--stone);line-height:1.6;margin-bottom:0.75rem;">Every M1.5+ earthquake in the US, updated every 6 hours.</div>
         <a href="https://brooksgroves.com/aftershock" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--gold);text-decoration:none;text-transform:uppercase;letter-spacing:0.08em;">Live Map ↗</a>
-      </div>
-
-      <div style="border:1px solid var(--mist);padding:1.25rem;transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--mist)'">
-        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--stone);margin-bottom:0.5rem;">Cartography · #30DayMapChallenge · Python + R</div>
-        <div style="font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:0.4rem;">30 Maps in November</div>
-        <div style="font-size:0.8rem;color:var(--stone);line-height:1.6;margin-bottom:0.75rem;">The 2026 #30DayMapChallenge, one map a day: geocaches, Groveland's fires, Rainier's viewshed, Tasman to Cook. The calendar fills in as the month goes.</div>
-        <a href="https://brooksgroves.com/30DayMapChallenge/2026/" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--gold);text-decoration:none;text-transform:uppercase;letter-spacing:0.08em;">Gallery ↗</a>
       </div>
 
       <div style="border:1px solid var(--mist);padding:1.25rem;transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--mist)'">
