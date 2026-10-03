@@ -1053,6 +1053,7 @@
 
   async function loadMLB() {
     const el = document.getElementById('mlb-scores');
+    if (!el) return;
     try {
       const today = new Date().toISOString().split('T')[0];
       const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
@@ -1123,6 +1124,7 @@
 
   async function loadBeers() {
     const el = document.getElementById('beer-list');
+    if (!el) return;
     try {
       const res = await fetch('/beers.json?t=' + Date.now());
       if (!res.ok) throw new Error();
@@ -1152,6 +1154,7 @@
   // ── CYCLING ──
   async function loadCycling() {
     const el = document.getElementById('cycling-races');
+    if (!el) return;
     try {
       const res = await fetch('/cycling.json?t=' + Date.now());
       if (!res.ok) throw new Error();
@@ -1260,6 +1263,7 @@
 
   async function loadStandings() {
     const el = document.getElementById('mlb-standings');
+    if (!el) return;
     try {
       // League 103 = AL, divisionId 200 = AL West
       const res = await fetch('https://statsapi.mlb.com/api/v1/standings?leagueId=103&season=2026&standingsTypes=regularSeason');
