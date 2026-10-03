@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lahar-watch, Revisited: The Network Watching Rainier — Brooks Groves</title>
+  <meta name="description" content="My Mount Rainier lahar dashboard was mostly invented: a random-number seismogram, stations that only had to exist to show green. Now it shows the real network, all 48 stations, the 2025 earthquake swarm, the rivers against flood stage and the published warning times.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --lava:#c0392b; --ash:#6b6560;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--lava) 0%,var(--gold) 50%,var(--ash) 100%); }
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--lava); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .article-wrap { max-width:720px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; transition:color 0.2s; }
+    .article-back:hover { color:var(--lava); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--lava); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--lava); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--lava); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body blockquote { border-left:3px solid var(--lava); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--lava); text-decoration:underline; text-underline-offset:3px; }
+    .article-body a:hover { color:var(--ink); }
+
+    /* CODE BLOCK */
+    .code-block { background:var(--ink); color:#e8e4dc; font-family:'DM Mono',monospace; font-size:0.78rem; padding:1.25rem 1.5rem; margin:1.5rem 0; overflow-x:auto; line-height:1.7; }
+    .code-comment { color:#7a7268; }
+    .code-key { color:var(--gold); }
+    .code-val { color:#8ab4a0; }
+
+    /* SPEC TABLE */
+    .spec-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.85rem; }
+    .spec-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .spec-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    .spec-table tr:last-child td { border-bottom:none; }
+    .spec-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--lava); }
+
+    /* LIVE BADGE */
+    .live-badge { display:inline-flex; align-items:center; gap:0.5rem; background:var(--ink); color:var(--white); font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; padding:0.4rem 0.8rem; margin:1.5rem 0; text-decoration:none; }
+    .live-dot { width:6px; height:6px; border-radius:50%; background:var(--lava); animation:blink 1.4s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    .live-badge:hover { background:var(--lava); }
+
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--lava); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; height: auto; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+    .note-box { background: var(--cream); border: 1px solid var(--mist); border-left: 3px solid var(--gold); padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: 0.95rem; }
+    .article-body ol, .article-body ul { margin: 0 0 1.5rem 1.5rem; }
+    .article-body li { margin-bottom: 0.6rem; }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
+</head>
+<body id="top">
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="/volcanology.html">Volcanology</a>
+      <a href="https://brooksgroves.com/lahar-watch/" target="_blank">Live Dashboard ↗</a>
+      <a href="https://github.com/bdgroves/lahar-watch" target="_blank" class="github">GitHub ↗</a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/index.html" class="article-back">← Blog</a>
+
+  <p class="article-kicker">Project Update · Volcanology · USGS · October 2026</p>
+  <h1 class="article-title">🌋 lahar-watch, Revisited: The Network Watching Rainier</h1>
+  <div class="article-meta">
+    <span>Brooks Groves</span>
+    <span>October 2, 2026</span>
+    <span>EarthScope · USGS · NOAA · ObsPy · Leaflet</span>
+  </div>
+  <div class="article-tags">
+    <a href="/tags.html#Volcanology" class="article-tag-pill">Volcanology</a>
+    <a href="/tags.html#Seismic" class="article-tag-pill">Seismic</a>
+    <a href="/tags.html#USGS" class="article-tag-pill">USGS</a>
+    <a href="/tags.html#Hydrology" class="article-tag-pill">Hydrology</a>
+    <a href="/tags.html#Python" class="article-tag-pill">Python</a>
+    <a href="/tags.html#GitHub%20Actions" class="article-tag-pill">GitHub Actions</a>
+    <a href="/tags.html#Real-Time%20Data" class="article-tag-pill">Real-Time Data</a>
+    <a href="/tags.html#Pacific%20Northwest" class="article-tag-pill">Pacific Northwest</a>
+  </div>
+
+  <a href="https://brooksgroves.com/lahar-watch/" target="_blank" class="live-badge">
+    <span class="live-dot"></span>
+    Live Dashboard · brooksgroves.com/lahar-watch
+  </a>
+
+  <div class="article-body">
+    <p>I built <a href="https://brooksgroves.com/lahar-watch/" target="_blank">lahar-watch</a> in May. Mount Rainier is the mountain in my window from Lakewood, and the thing to worry about there isn&rsquo;t lava. It&rsquo;s lahars: slurries of rock, mud and water, like wet concrete, that pour down the river valleys. More than 90,000 people live in Rainier&rsquo;s lahar hazard zones, and the USGS rates it a &ldquo;very high threat&rdquo; volcano largely because of them. I wanted a page that showed the network watching for them. Five months later I went back to do it properly, and found that almost none of the page was real.</p>
+
+    <h2>What it was getting wrong</h2>
+
+    <p><strong>The seismogram was a drawing.</strong> The waveform scrolling across the top of the dashboard was random numbers, generated in the browser, with a sine wave added for texture. The &ldquo;live seismic values&rdquo; beside it were fixed numbers with a little random jitter. Nothing on that panel had ever touched a seismometer.</p>
+
+    <p><strong>The stations weren&rsquo;t the stations.</strong> It listed 13 &ldquo;lahar monitoring stations&rdquo; with IDs I&rsquo;d made up, each pointed at a real station code. Several pointed at the wrong one. &ldquo;Carbon River,&rdquo; listed at 1,860&nbsp;ft, was actually reading Camp Schurman, 9,439&nbsp;ft up the other side of the mountain. &ldquo;White River East&rdquo; was Mount Fremont. &ldquo;PUPY, Puyallup Valley&rdquo; is Dog Mountain, 50&nbsp;km away. And &ldquo;nominal&rdquo; meant only that the station appeared in the catalogue. It never asked whether a station was sending data. A station could have been dead for a year and still show green.</p>
+
+    <p><strong>The rest was made up.</strong> The status page tested each data source in a way that couldn&rsquo;t see what came back, so it said &ldquo;reachable&rdquo; whenever a server answered at all. The travel-time calculator used invented base times, and its multipliers ran backwards: picking &ldquo;rapid onset&rdquo; gave you <em>more</em> time to escape, and &ldquo;slow build&rdquo; gave you less. Some facts were wrong too. The Park Service approved new monitoring stations in April 2022, not October 2025. The Osceola Mudflow was 2&ndash;3 cubic kilometres, not 3.8. Rainier has sent at least nine large lahars into the lowlands in the last 5,600 years, not eleven in 6,000.</p>
+
+    <p>For a page about something that could kill people, that&rsquo;s worse than a page about the weather being off. Everything below is real data, and I&rsquo;ve tried to show where each number comes from.</p>
+
+    <h2>The real network</h2>
+
+    <p>The page now asks EarthScope (the old IRIS data center) for every seismic station within about 55&nbsp;km of the summit in the two networks that watch Rainier: <strong>CC</strong>, the USGS Cascades Volcano Observatory, and <strong>UW</strong>, the University of Washington&rsquo;s Pacific Northwest Seismic Network. Every hour it asks each one for its last hour of data. A station counts as reporting only if it actually delivered data in the last 20 minutes.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/lahar-watch-revisited/dashboard-cards.jpg" width="1440" height="290" alt="Lahar Watch dashboard: volcano alert green, normal; 48 of 48 stations reporting; 6 earthquakes this week against a typical 8; lahar rivers normal" loading="lazy">
+      <p class="photo-caption">This evening: alert level normal, all 48 stations reporting, a quiet week of earthquakes, every river below flood stage.</p>
+    </div>
+
+    <p>Tonight that&rsquo;s 48 stations, and all 48 are reporting. Twenty-one have infrasound arrays: microphones for very low sounds, which can hear a debris flow through the air as well as through the ground. Many are the lahar detection stations, set in the valleys where a flow would pass: Puyallup River 01&ndash;05, Tahoma Bridge and Mount Wow, which went into the lahar paths in 2022, Carbon River, and four new stations on the White River (Greenwater, Palisades, Sun Top and Lonesome Lake) since September 2025.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/lahar-watch-revisited/network-map.jpg" width="1440" height="720" alt="Map of Mount Rainier and the Puget Sound lowland: USGS lahar hazard zones following the river valleys to Tacoma, Kent and Alder Lake, with green station markers, yellow earthquake dots near the summit, and blue river gauges" loading="lazy">
+      <p class="photo-caption">Stations (green, ringed if they have infrasound), the last 30 days of earthquakes, river gauges, and the USGS hazard zones. The orange and red reach Tacoma and the Kent valley.</p>
+    </div>
+
+    <p>The map&rsquo;s hazard zones are the official USGS ones (Hoblitt and others, 1998), read from a public map service. That service also has a layer of parcels at risk, which I left out: those are people&rsquo;s home addresses.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/lahar-watch-revisited/stations.jpg" width="1440" height="460" alt="Station table: on the volcano, 10 of 10 live, including St. Andrews Rock at 11,041 ft, Camp Muir at 10,092 ft and Camp Schurman at 9,439 ft, each with sensors, last data 2 minutes ago, and level versus normal" loading="lazy">
+      <p class="photo-caption">Each station with its real elevation, its sensors and when it last sent data, grouped from the summit down.</p>
+    </div>
+
+    <p>The last column is RSAM, the ground-motion level: the average shaking every 10 minutes, filtered to 1&ndash;10&nbsp;Hz, compared with the station&rsquo;s own normal over the past week. It needs a few days of history before it means much, and it rises with wind, rivers, storms and people as well as with the volcano, so the page calls it a prompt to look, not an alarm.</p>
+
+    <h2>What the instruments hear</h2>
+
+    <p>The seismic page draws 24-hour helicorders, the classic drum-recorder view, from the raw data: one line per hour, eight stations, one per drainage plus the summit. They&rsquo;re worth a look side by side. Camp Muir, at 10,100&nbsp;ft on the volcano, is busy all day with icequakes and wind. Tahoma Bridge, down in a lahar path, is a steady band of river noise. A lahar would look nothing like an earthquake: a long, swelling band lasting many minutes, showing up first on the stations high in the valley and then on the ones below.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/lahar-watch-revisited/helicorders.jpg" width="1440" height="780" alt="Two 24-hour helicorders, one line per hour: Camp Muir with many sharp spikes from icequakes and wind, and Tahoma Bridge with a steady band of river noise" loading="lazy">
+      <p class="photo-caption">The last 24 hours at Camp Muir (left) and Tahoma Bridge (right), filtered to 1&ndash;10&nbsp;Hz, Pacific time.</p>
+    </div>
+
+    <h2>The swarm</h2>
+
+    <p>Real data turned up a story the old page never mentioned. On July 8, 2025, Rainier started the largest earthquake swarm ever recorded there. At its peak there were about 40 earthquakes an hour, on average about 4.5&nbsp;km beneath the summit. The USGS located more than 1,350, the largest a magnitude 2.4 on July 11. Within 20&nbsp;km of the summit there were 849 in that first week alone. A typical week has about eight.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/lahar-watch-revisited/earthquakes.jpg" width="1440" height="430" alt="Two bar charts: earthquakes per week over the last two years, flat near ten except a spike of about 850 in July 2025; and per year since 2000, mostly 150 to 500, with 2025 at about 1,800 in orange" loading="lazy">
+      <p class="photo-caption">Per week for two years, and per year since 2000. The orange bar is 2025.</p>
+    </div>
+
+    <p>That makes 2025 the busiest year on record: 1,798 earthquakes within 20&nbsp;km, against 150 to 500 in every year from 2000 to 2019. The years since 2020 have run a little higher, and some of that is probably the denser network catching smaller earthquakes. The alert level stayed green the whole time. The USGS tied the swarm to the hydrothermal system, the hot water above the magma, found nothing unusual in volcanic gas or ground movement, and on August 25, 2025 said activity was back to normal. The page now shows that notice in full, straight from the Cascades Volcano Observatory, and will show the next one when it&rsquo;s issued.</p>
+
+    <h2>The rivers</h2>
+
+    <p>The page charts ten NOAA river gauges on the Puyallup, Carbon, White and Nisqually: the last seven days, NOAA&rsquo;s forecast, and flood stage where NOAA sets one. Tonight they&rsquo;re all low, at the end of a dry summer.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/lahar-watch-revisited/rivers.jpg" width="1440" height="720" alt="Eight river hydrographs for the Puyallup, Carbon and White rivers over the last week with dashed forecasts, all well below their dashed flood lines" loading="lazy">
+      <p class="photo-caption">Seven days of stage or flow, NOAA&rsquo;s forecast (dashed), and flood lines where NOAA sets them.</p>
+    </div>
+
+    <p>Last December they weren&rsquo;t. The atmospheric rivers of December 2025 put the White River at Auburn to a new record, 12,400 cubic feet per second on December 15. The Puyallup at Orting peaked at 20,800 cfs on December 10, its second-biggest flow on record, and came within about half an inch of its record stage. The Carbon at Fairfax and South Prairie Creek both had their second-highest crests.</p>
+
+    <p>Even those floods rose over many hours and stayed high for days. That&rsquo;s the point of putting the gauges here: a lahar would arrive at a gauge as a wall, the river rising many feet in minutes, far faster than any flood.</p>
+
+    <h2>How much warning</h2>
+
+    <p>The old calculator is gone. The warning page now gives the figures the USGS has published, with links: about 5 minutes for a lahar to reach homes inside the park, 15 to 60 minutes for those outside it, and 40 minutes to 3 hours of warning for most communities once a lahar is detected.</p>
+
+    <p>For the worst cases it uses the USGS&rsquo;s 2022 computer simulations of the largest likely lahars from the weak, altered rock on Rainier&rsquo;s west side: 260 million cubic metres, about the size of the Electron Mudflow of 500 years ago, which started as a landslide with no eruption. Starting from the Tahoma Glacier headwall, the flow reaches Ashford in about 20 minutes and the head of Alder Lake in about 50. Starting from the Sunset Amphitheater, it reaches the Orting lowlands in about an hour, arriving as a flow front about 4 metres deep moving at about 4 metres a second, 9&nbsp;mph. That&rsquo;s slow enough to outrun on foot, but only if you&rsquo;ve already started.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/lahar-watch-revisited/warning-time.jpg" width="1440" height="1040" alt="Warning time page: about 5 minutes inside the park, 15 to 60 minutes outside, 40 minutes to 3 hours once detected; simulated arrival times of about 20 minutes to Ashford and about 1 hour to Orting; a map of hazard zones with Orting, Alder Lake and Ashford labelled" loading="lazy">
+      <p class="photo-caption">The published figures, and the USGS simulations on the map.</p>
+    </div>
+
+    <p>That&rsquo;s why the detection stations exist. Their data reaches Washington Emergency Management and South Sound 911 within 10 seconds. The sirens go off from Orting to the Port of Tacoma, along with the Emergency Alert System, and the schools in the Puyallup valley practise walking to high ground every year. Walking, not driving: roads jam.</p>
+
+    <h2>How it runs</h2>
+
+    <p>A GitHub Action runs every hour at 17 minutes past. It reads the station catalogue and the last hour from every station, works out the ground-motion levels, draws the helicorders, and fetches the alert, the earthquakes and the rivers. The data goes to its own branch, replaced on each run, so the repo doesn&rsquo;t keep thousands of commits of old readings. Your browser reads the alert level, earthquakes and rivers live from the USGS and NOAA, and the <a href="https://brooksgroves.com/lahar-watch/status.html" target="_blank">status page</a> now really checks each source and shows what it returned. Everything is public and free: EarthScope, the USGS and NOAA, none of which need a key.</p>
+
+    <p>It&rsquo;s still an independent view of public data, not a warning system. If the sirens go off, don&rsquo;t check a website. Walk uphill, and follow <a href="https://www.piercecountywa.gov/5888/Outdoor-Warning-System" target="_blank">Pierce County</a>.</p>
+
+    <p class="note" style="font-size:0.9rem;color:var(--stone)">Sources: <a href="https://www.usgs.gov/volcanoes/mount-rainier/science/monitoring-lahars-mount-rainier" target="_blank">USGS, Monitoring lahars at Mount Rainier</a>; <a href="https://www.usgs.gov/volcanoes/mount-rainier/science/significant-lahars-mount-rainier" target="_blank">USGS, Significant lahars at Mount Rainier</a>; <a href="https://pubs.usgs.gov/publication/ofr20211118" target="_blank">George, Iverson and Cannon, 2022, USGS Open-File Report 2021-1118</a>; <a href="https://www.usgs.gov/observatories/cvo/news/monitoring-stations-detect-small-magnitude-earthquakes-mount-rainier-during" target="_blank">USGS on the 2025 swarm</a>; <a href="https://pubs.usgs.gov/of/1998/0428/" target="_blank">Hoblitt and others, 1998, USGS Open-File Report 98-428</a>; NOAA National Water Prediction Service crest histories. Code: <a href="https://github.com/bdgroves/lahar-watch" target="_blank">github.com/bdgroves/lahar-watch</a>.</p>
+
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · October 2026</span>
+    <div class="article-footer-nav">
+      <a href="/volcanology.html">Volcanology Hub →</a>
+      <a href="/blog/index.html">← All Posts</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
+    </div>
+
+    <div class="footer-connect">
+      <div class="fc-label">Connect</div>
+      <div class="social-row">
+          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
+          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
+          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
+          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
+          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
+          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
+          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-pagelinks">
+      <div class="fc-label">More here</div>
+      <div class="pagelink-row">
+        <a href="/blog/index.html">Blog</a>
+        <a href="/volcanology.html">Volcanology</a>
+        <a href="https://brooksgroves.com/lahar-watch/" target="_blank">lahar-watch ↗</a>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
+    <p class="footer-bottom">
+      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
+      <a href="#top">&uarr; Back to top</a>
+    </p>
+  </div>
+</footer>
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this handles clicks and keeps the button's label truthful.
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function sync(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Describe what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  sync();
+  btn.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
