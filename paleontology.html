@@ -144,8 +144,8 @@
 <!-- VALIDATION BANNER -->
 <div class="validation-banner">
   <div class="validation-inner">
-    <span class="validation-badge">✓ Validated</span>
-    <span class="validation-text"><strong>IceWave E02 confirmed:</strong> Model's #1 east target matched active Columbian mammoth excavation at McBones Coyote Canyon, Kennewick WA — predicted before any knowledge of the dig site. LiDAR TPI independently confirms valley floor geometry.</span>
+    <span class="validation-badge">Correction</span>
+    <span class="validation-text"><strong>IceWave's E02 "validation" was wrong.</strong> Rechecked in October 2026: E02 is 69 km from the Coyote Canyon mammoth dig, which has run since 2008, and most of IceWave's top targets turned out to be rivers and reservoirs. <a href="/blog/icewave-rechecked-post.html" style="color:inherit">Read what happened →</a></span>
   </div>
 </div>
 
@@ -220,66 +220,67 @@
     </a>
 
     <!-- ICEWAVE -->
-    <a href="https://github.com/bdgroves/project-ice-wave" target="_blank" class="project-card-lead">
-      <img src="https://raw.githubusercontent.com/bdgroves/project-ice-wave/main/assets/icewave_flag.png" alt="IceWave Flag" style="height:80px;margin-bottom:1rem;display:block;">
+    <a href="https://brooksgroves.com/project-ice-wave/" target="_blank" class="project-card-lead">
+      <img src="https://raw.githubusercontent.com/bdgroves/project-ice-wave/main/assets/icewave_flag.png" alt="IceWave flag" style="height:80px;margin-bottom:1rem;display:block;">
       <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem;">
         <span class="project-badge pleistocene">Pleistocene · 5-State</span>
-        <span class="project-badge validated">✓ Field Validated</span>
+        <span class="project-badge validated">Rechecked · Oct 2026</span>
       </div>
-      <p class="project-kicker">Megafauna · Split-Ecoregion RF · LiDAR · SGMC Lithology</p>
+      <p class="project-kicker">Ice Age animals · Random Forest · USGS 3DEP · Live PBDB</p>
       <h2 class="project-hed">🦣 Project <em class="ice">IceWave</em></h2>
-      <blockquote class="project-quote ice">Target E02 was predicted as the #1 east target before any knowledge of existing dig sites. March 2026: active Columbian mammoth excavation confirmed at McBones Coyote Canyon near Kennewick, WA.</blockquote>
-      <p class="project-dek">Split-ecoregion Random Forest predicting Pleistocene megafauna localities across Washington, Oregon, Nevada, Idaho, and Montana. West model (Willamette/Puget Sound) and east model (Columbia Basin/Owyhee) trained separately. Features include terrain, lithology score from USGS SGMC, and LiDAR-derived TPI at 15m resolution.</p>
-      <p class="project-dek">The model predicted mammoth, mastodon, horse, camel, ground sloth, short-faced bear, and Pleistocene bison localities — using the same Missoula Flood slack-water depositional geometry the real animals were buried in.</p>
+      <blockquote class="project-quote ice">I built IceWave to find where the Missoula Floods buried mammoths. Rechecked, its favourite targets were rivers and reservoirs, and its "blind validation" was 69 km off. The page shows how that happened.</blockquote>
+      <p class="project-dek">Random forests trained on Pleistocene fossil records across Washington, Oregon, Nevada, Idaho and Montana, one west of the Cascades and one east. The October 2026 re-check found two shortcuts: 23 of the 40 east records had all-zero terrain because the elevation grid never reached Montana, so zero slope (water) looked like fossils; and every background point got the same default rock score, so "not the default" meant "fossil".</p>
+      <p class="project-dek">Tested fairly, leaving out whole places and without the rock score, the east model scores an AUC of 0.65, where a coin toss is 0.5. The page colours every target by what's actually there and checks the Paleobiology Database every Monday.</p>
       <div class="project-stats">
         <div class="mini-stat">
-          <div class="mini-stat-label">West AUC</div>
-          <div class="mini-stat-value ice">0.890</div>
+          <div class="mini-stat-label">Top 6 east on water</div>
+          <div class="mini-stat-value ice">6 of 6</div>
         </div>
         <div class="mini-stat">
-          <div class="mini-stat-label">East LOO recall</div>
-          <div class="mini-stat-value ice">90%</div>
+          <div class="mini-stat-label">East AUC, fairly</div>
+          <div class="mini-stat-value ice">0.65</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-label">E02 to the dig</div>
+          <div class="mini-stat-value ice">69 km</div>
         </div>
         <div class="mini-stat">
           <div class="mini-stat-label">States</div>
           <div class="mini-stat-value ice">5</div>
-        </div>
-        <div class="mini-stat">
-          <div class="mini-stat-label">E02 validated</div>
-          <div class="mini-stat-value ice">✓</div>
         </div>
       </div>
       <div class="project-stack">
         <span class="stack-pill">Python</span>
         <span class="stack-pill">Scikit-learn</span>
         <span class="stack-pill">USGS 3DEP</span>
-        <span class="stack-pill">USGS SGMC</span>
         <span class="stack-pill">PBDB</span>
         <span class="stack-pill">iDigBio</span>
-        <span class="stack-pill">LiDAR</span>
-        <span class="stack-pill">QGIS</span>
+        <span class="stack-pill">OpenStreetMap</span>
+        <span class="stack-pill">Leaflet</span>
+        <span class="stack-pill">GitHub Actions</span>
       </div>
-      <span class="project-link">View on GitHub →</span>
+      <span class="project-link">Open the page →</span>
     </a>
 
   </div>
 
-  <!-- VALIDATION BLOCK -->
+  <!-- RECHECK BLOCK (replaces the old "called its shot" block) -->
   <div class="validation-block">
-    <h3>✓ The Model Called Its Shot</h3>
-    <p>IceWave predicted Target E02 (46.3003°N, 120.1336°W) as the #1 east priority target before any knowledge of existing excavations. The model identified the location based on terrain alone — Missoula Flood valley floor geometry, confirmed by LiDAR TPI of -5.4m.</p>
-    <p>In March 2026, an active Columbian mammoth excavation was confirmed at <strong>McBones Coyote Canyon near Kennewick, WA</strong> — within miles of the predicted pixel. Mammoth killed ~17,000 years ago, drowned in a Missoula Flood event, deposited as slack-water receded. Exactly the depositional geometry the model learned to find.</p>
+    <h3>The model didn't call its shot</h3>
+    <p>This box used to say IceWave predicted the Coyote Canyon mammoth dig "within miles of the predicted pixel": three methods, one answer. That was wrong, and I want the correction to sit where the claim did.</p>
+    <p>E02 is at 46.30&deg;N, 120.13&deg;W in the Yakima Valley, on a patch the elevation model has flattened to a single level, the way it draws ponds and rivers. The Coyote Canyon Mammoth Site is south of Kennewick, <strong>69 km</strong> away. The bones were found in 1999 and the McBones Research Center has dug there since 2008, so it wasn't blind. The "validated" label came from a line of code that marked whichever target was first. The final model ranks E02 23rd of 25.</p>
     <table class="val-table">
       <thead>
-        <tr><th>Source</th><th>Latitude</th><th>Longitude</th><th>TPI</th><th>Method</th></tr>
+        <tr><th>Claim</th><th>Was</th><th>Rechecked</th></tr>
       </thead>
       <tbody>
-        <tr><td class="match">IceWave E02</td><td>46.3003°N</td><td>120.1336°W</td><td>-5.4m ▼</td><td>ML model only</td></tr>
-        <tr><td class="match">McBones Coyote Canyon</td><td>~46.30°N</td><td>~120.1°W</td><td>—</td><td>Active excavation</td></tr>
-        <tr><td class="match">LiDAR DTM confirmation</td><td>46.3003°N</td><td>120.1336°W</td><td>-5.4m</td><td>USGS 3DEP 15m</td></tr>
+        <tr><td class="match">E02 to the dig</td><td>"the predicted pixel"</td><td>69 km</td></tr>
+        <tr><td class="match">East leave-one-out</td><td>36/40 (90%)</td><td>AUC 0.65 without the default rock score, whole places held out</td></tr>
+        <tr><td class="match">West AUC</td><td>0.890</td><td>0.63 on terrain, whole places held out</td></tr>
+        <tr><td class="match">"Valley floor" targets</td><td>13 of 20</td><td>12, and 8 of those are water</td></tr>
       </tbody>
     </table>
-    <p>Three methods. One answer.</p>
+    <p>The real mammoth is well worth a visit: <a href="https://www.mcbones.org/" target="_blank" style="color:var(--gold)">McBones runs tours</a>. The arithmetic is in <a href="https://github.com/bdgroves/project-ice-wave/blob/main/tools/check.py" target="_blank" style="color:var(--gold)">tools/check.py</a>.</p>
   </div>
 
   <!-- TOP TARGETS -->
@@ -297,7 +298,7 @@
         <span class="target-rank">#2</span>
         <span class="target-coords">40.907°N 118.464°W</span>
         <span class="target-score">0.660 ⭐</span>
-        <span class="target-priority">HIGH · most novel · 50.2km from nearest</span>
+        <span class="target-priority">HIGH · most novel · 50.3km from nearest</span>
       </div>
       <div class="target-row">
         <span class="target-rank">#3</span>
@@ -315,7 +316,7 @@
         <span class="target-rank">#7</span>
         <span class="target-coords">40.787°N 117.456°W</span>
         <span class="target-score">0.521</span>
-        <span class="target-priority">MED — was v2 #1 · demoted by TPI</span>
+        <span class="target-priority">MED — was v2 #3 · demoted by TPI</span>
       </div>
       <div class="target-row">
         <span class="target-rank">#10</span>
@@ -326,42 +327,42 @@
     </div>
 
     <div class="targets-col">
-      <h3>🦣 IceWave — Top East Targets</h3>
-      <div class="target-row validated">
+      <h3>🦣 IceWave — Top East Targets, Rechecked</h3>
+      <div class="target-row">
         <span class="target-rank">#E02</span>
-        <span class="target-coords">46.3003°N 120.1336°W</span>
-        <span class="target-score">1.000</span>
-        <span class="target-priority">VALIDATED · McBones Coyote Canyon · TPI -5.4m</span>
+        <span class="target-coords">46.300°N 120.134°W</span>
+        <span class="target-score">v4 #23</span>
+        <span class="target-priority">Flattened level patch, Yakima Valley · 69 km from the dig</span>
       </div>
       <div class="target-row">
         <span class="target-rank">#E03</span>
-        <span class="target-coords">46.6753°N 117.7586°W</span>
-        <span class="target-score">1.000</span>
-        <span class="target-priority">1B · TPI -86.3m · extreme basin</span>
+        <span class="target-coords">46.675°N 117.759°W</span>
+        <span class="target-score">water</span>
+        <span class="target-priority">Lake Bryan, Snake River reservoir</span>
       </div>
       <div class="target-row">
         <span class="target-rank">#E04</span>
-        <span class="target-coords">46.6336°N 117.3836°W</span>
-        <span class="target-score">0.994</span>
-        <span class="target-priority">1B · TPI -106.2m · extreme basin</span>
+        <span class="target-coords">46.634°N 117.384°W</span>
+        <span class="target-score">water</span>
+        <span class="target-priority">Lower Granite Lake, Snake River reservoir</span>
       </div>
       <div class="target-row">
-        <span class="target-rank">#E15</span>
-        <span class="target-coords">47.9531°N 117.8003°W</span>
-        <span class="target-score">0.814</span>
-        <span class="target-priority">1A · TPI -15.6m · valley floor</span>
-      </div>
-      <div class="target-row">
-        <span class="target-rank">#E19</span>
-        <span class="target-coords">42.4669°N 117.9392°W</span>
-        <span class="target-score">0.616</span>
-        <span class="target-priority">1A · largest channel zone · 32.39km²</span>
+        <span class="target-rank">#E16</span>
+        <span class="target-coords">47.925°N 117.356°W</span>
+        <span class="target-score">water</span>
+        <span class="target-priority">Bear Lake, north of Spokane</span>
       </div>
       <div class="target-row">
         <span class="target-rank">#E21</span>
-        <span class="target-coords">47.5086°N 121.1892°W</span>
-        <span class="target-score">0.478</span>
-        <span class="target-priority">1B · TPI -250.1m · most extreme basin</span>
+        <span class="target-coords">47.509°N 121.189°W</span>
+        <span class="target-score">water</span>
+        <span class="target-priority">Waptus Lake, Alpine Lakes Wilderness</span>
+      </div>
+      <div class="target-row">
+        <span class="target-rank">#E18</span>
+        <span class="target-coords">42.689°N 120.536°W</span>
+        <span class="target-score">v4 #1</span>
+        <span class="target-priority">On land at Paisley, OR · 8 km from the Paisley Caves, which it trained on</span>
       </div>
     </div>
   </div>
@@ -381,15 +382,15 @@
       <h3 class="context-hed">IceWave — Pleistocene West</h3>
       <div class="context-body">
         <p>The Missoula Floods were among the largest floods in Earth's history — repeated catastrophic releases from Glacial Lake Missoula that scoured the Columbia Basin and deposited slack-water sediments across eastern Washington and Oregon. Megafauna that drowned in these events were buried in exactly those slack-water deposits.</p>
-        <p>IceWave targets seven species: <strong>Columbian mammoth, woolly mammoth, American mastodon, Pleistocene horse, Yesterday's camel, Harlan's ground sloth, and short-faced bear.</strong></p>
-        <p>The model splits at -121.5°W — separate Random Forests for the maritime west (Willamette/Puget Sound) and the semi-arid east (Columbia Basin/Owyhee/Basin & Range). Lithology score from USGS SGMC and LiDAR TPI at 15m resolution give the model real depositional environment context.</p>
+        <p>IceWave set out to find <strong>Columbian mammoth, mastodon, horse, camel, bison, ground sloth and short-faced bear</strong>, with separate random forests for the wet west (Willamette Valley, Puget Sound) and the dry east (Columbia Basin, Owyhee, Basin and Range), split at -121.5&deg;.</p>
+        <p><strong>An honest caveat, found in the October 2026 recheck:</strong> the east model learned from 40 records, 16 of them small animals, birds and fish, and 23 with terrain values of zero; and it learned that a default rock score meant "not a fossil". Its top targets were reservoirs and lakes. <a href="https://brooksgroves.com/project-ice-wave/">The page</a> shows each target as it really is, and what a rebuild needs.</p>
       </div>
     </div>
   </div>
 
   <!-- LEGAL NOTE -->
   <div style="padding:1.25rem 1.5rem;border:1px solid var(--mist);background:var(--cream);font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--stone);letter-spacing:0.06em;line-height:1.7;margin-bottom:2rem;">
-    ⚠️ <strong style="color:var(--ink);">Field Use:</strong> A PRPA permit is required for all vertebrate fossil collection on federal land. Unpermitted collection is a federal crime. These projects predict where to look — they do not collect. Any finds should be reported to the relevant BLM field office and submitted to PBDB. Do not disturb McBones Coyote Canyon — active permitted excavation.
+    ⚠️ <strong style="color:var(--ink);">Field Use:</strong> A PRPA permit is required for all vertebrate fossil collection on federal land. Unpermitted collection is a federal crime. These projects suggest where to look; they don't collect, and several IceWave targets are on water. Any finds should be reported to the relevant BLM field office and submitted to PBDB. Do not disturb McBones Coyote Canyon — active permitted excavation.
   </div>
 
 </div>
