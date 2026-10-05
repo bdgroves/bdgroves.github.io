@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What’s Up With the Pikas? — Brooks Groves</title>
+  <meta name="description" content="American pikas are the poster animal of climate change in the mountains. I checked 329 of their pre-1950 museum sites against every GBIF record since 2000: where they're still found, they're found where they always were, and the low sites are the ones going missing.">
+  <meta property="og:title" content="What’s Up With the Pikas?">
+  <meta property="og:description" content="329 old museum pika sites checked against every GBIF record since 2000. Pikas are still found where they always were, except at the low sites.">
+  <meta property="og:image" content="https://brooksgroves.com/blog/img/pika/og.jpg">
+  <meta property="og:url" content="https://brooksgroves.com/blog/whats-up-with-the-pikas.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; border-radius:4px; transition: background 0.2s, color 0.2s; 
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .article-tag-pill:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body pre { background: var(--ink); color: #c8d0cc; padding: 1.25rem 1.5rem; border-radius: 2px; overflow-x: auto; margin: 1.5rem 0 2rem; font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.65; }
+    .article-body code { font-family: 'DM Mono', monospace; font-size: 0.85em; background: var(--cream); padding: 0.15em 0.4em; border-radius: 2px; }
+    .article-body pre code { background: none; padding: 0; font-size: 1em; color: inherit; }
+    .article-body ul, .article-body ol { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body li { margin-bottom: 0.4rem; }
+
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+  
+    /* ── Science-post elements ──
+       This post type needs three things the memoir template doesn't:
+       a caveat box for contested findings, a first-person method note
+       that is clearly set apart from the reporting, and a formatted
+       source list. Kept quiet so they read as apparatus, not argument. */
+    .lede { font-size:1.05rem; line-height:1.9; color:var(--ink); }
+    .caveat {
+      background:var(--cream); border-left:3px solid var(--rust);
+      padding:1rem 1.25rem; margin:1.6rem 0;
+    }
+    .caveat-label {
+      font-family:'DM Mono',monospace; font-size:0.54rem; letter-spacing:0.16em;
+      text-transform:uppercase; color:var(--rust); margin-bottom:0.45rem;
+    }
+    .caveat p { margin:0; font-size:0.84rem; line-height:1.85; color:var(--stone); }
+    .note {
+      border:1px solid var(--mist); border-top:2px solid var(--gold);
+      padding:1.1rem 1.35rem; margin:1.8rem 0; background:var(--paper-card,transparent);
+    }
+    .note p { font-size:0.85rem; line-height:1.9; color:var(--stone); margin:0 0 0.8rem; }
+    .note p:last-child { margin-bottom:0; }
+    .sources { margin:1.4rem 0 2rem; }
+    /* Source links carry the accent rather than the body-link red, so a box
+       that is almost entirely links doesn't read as a wall of colour. */
+    .sources a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--desert,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist);
+    }
+    .pull {
+      font-family:'Playfair Display',Georgia,serif; font-size:1.1rem; font-style:italic;
+      line-height:1.7; color:var(--ink); margin:1.8rem 0; padding-left:1.3rem;
+      border-left:3px solid var(--gold);
+    }
+    .cta { border:1px solid var(--mist); border-top:2px solid var(--sage); padding:1.1rem 1.35rem; margin:2rem 0; }
+    .cta p { font-size:0.9rem; line-height:1.8; margin:0 0 0.8rem; color:var(--ink); }
+    .cta a.btn { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.55rem 1.1rem; border:1.5px solid var(--sage); color:var(--sage); display:inline-block; margin:0 0.5rem 0.4rem 0; }
+    .cta a.btn:hover { background:var(--sage); color:var(--parchment); }
+    .figures { width:100%; border-collapse:collapse; font-family:'DM Mono',monospace; font-size:0.78rem; margin:0.5rem 0 1.8rem; font-variant-numeric:tabular-nums; }
+    .figures th, .figures td { text-align:left; padding:0.45rem 0.6rem; border-bottom:1px solid var(--mist); }
+    .figures th { font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); font-weight:400; }
+    .figures td.num { text-align:right; }
+    .tablewrap { overflow-x:auto; }
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; height: auto; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://journal.brooksgroves.com">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">← Back to Blog</a>
+
+  <p class="article-kicker">Science Writing &middot; Ecology &middot; Climate</p>
+  <h1 class="article-title">&#129704; What&rsquo;s Up With the Pikas?</h1>
+  <div class="article-meta">
+    <span>October 4, 2026</span>
+    <span>Brooks Groves</span>
+    <span>11 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <a href="/tags.html#Science%20Writing" class="article-tag-pill">Science Writing</a>
+    <a href="/tags.html#Ecology" class="article-tag-pill">Ecology</a>
+    <a href="/tags.html#Climate" class="article-tag-pill">Climate</a>
+    <a href="/tags.html#GBIF" class="article-tag-pill">GBIF</a>
+    <a href="/tags.html#Python" class="article-tag-pill">Python</a>
+    <a href="/tags.html#Open%20Data" class="article-tag-pill">Open Data</a>
+  </div>
+
+  <div class="article-body">
+
+    <p class="lede">If you&rsquo;ve hiked through a boulder field in the Cascades in summer, you&rsquo;ve probably heard one before you saw it: a short, squeaky <em>eep</em> from somewhere in the rocks. Then, if you stand still long enough, a small, round, grey-brown animal with round ears pops up on a boulder, looks at you, and disappears again.</p>
+
+    <p>That&rsquo;s the American pika, <em>Ochotona princeps</em>. It looks like a hamster but it&rsquo;s a lagomorph, a cousin of rabbits and hares. It lives in talus, the rockpiles that collect below cliffs, and it doesn&rsquo;t hibernate. Instead it spends the summer cutting grasses and wildflowers and stacking them in &ldquo;haypiles&rdquo; under the rocks, so it has something to eat under the snow all winter.</p>
+
+    <p>It is also, for better or worse, the most famous small mammal in climate-change science. Pikas have been called the canary in the coal mine of the mountains. So when I built a tool that pulls citable downloads from GBIF, the Global Biodiversity Information Facility, the pika was the first animal I pointed it at, with one question: <strong>are pikas being found higher up than they used to be?</strong></p>
+
+    <p>The answer turned out to be more interesting than yes or no.</p>
+
+    <h2>Why everyone worries about the pika</h2>
+
+    <p>Pikas run hot. Their body temperature sits above 40 &deg;C, and they don&rsquo;t handle heat well. In a field study published in 1974, Andrew Smith trapped pikas at dawn and held them in outdoor cages; two of them died at about 12:30, when the air had reached 29.4 &deg;C for one and just 25.5 &deg;C for the other. In a lab in Alberta, Robert MacArthur and Lawrence Wang lost two pikas after two hours at 28&ndash;30 &deg;C. That&rsquo;s a warm afternoon in a lot of places, not a heat wave.</p>
+
+    <p>In the wild, pikas cope by staying in the rocks, where the air is much cooler than the sunny surface, and by doing their haying in the cool parts of the day. But an animal that can be killed by a warm afternoon, that lives on islands of rock in a sea of warmer slopes, and that doesn&rsquo;t travel far, is exactly the kind of animal you&rsquo;d expect to be squeezed upslope as the climate warms.</p>
+
+    <p class="pull">An animal that can be killed by a warm afternoon, living on islands of rock in a sea of warmer slopes.</p>
+
+    <h2>The case for alarm</h2>
+
+    <p>The best evidence comes from going back to places where pikas were recorded long ago and looking again.</p>
+
+    <ul>
+      <li><strong>The Great Basin.</strong> In the late 1990s, Erik Beever and colleagues revisited 25 isolated pika populations in the mountain ranges of the Great Basin that had been recorded earlier in the century. Seven of the 25 appeared to be gone. The ones that hung on tended to be higher, with more talus, farther from roads and free of livestock grazing.</li>
+      <li><strong>Faster, recently.</strong> A follow-up in 2011 found the rate of local extinctions there had increased nearly five-fold in the previous ten years. The lower edge of where pikas lived had moved upslope by about 13 m per decade over the 20th century, and by about 145 m per decade since 1999.</li>
+      <li><strong>Yosemite.</strong> Craig Moritz and colleagues re-ran Joseph Grinnell&rsquo;s small-mammal surveys from the early 1900s across Yosemite National Park. Many species had shifted their ranges uphill. For pikas, the lower limit had risen by 153 m.</li>
+      <li><strong>California.</strong> Resurveys of 67 historical pika sites across California found them gone from 10. Warmer summers and smaller patches of talus best predicted which sites had been lost, and the models projected losses of 39% to 88% of those sites by 2070.</li>
+    </ul>
+
+    <h2>The case for calm</h2>
+
+    <p>Then again&hellip;</p>
+
+    <ul>
+      <li><strong>The Sierra Nevada is full of pikas.</strong> Constance Millar and Robert Westfall checked 420 talus sites with signs of pikas in the Sierra Nevada and western Great Basin and found pikas still living at 94% of them. Most of the occupied sites were on rock glaciers and similar ice-shaped rubble. Inside those rockpiles, they measured temperatures 4&ndash;7 &deg;C cooler than the ground surface around them in summer, and warmer in winter. Their conclusion: pikas there &ldquo;appear to be thriving.&rdquo;</li>
+      <li><strong>The Southern Rockies too.</strong> Liesl Erb and colleagues revisited 69 historical sites in southern Wyoming, Colorado and northern New Mexico and found pikas still at 65. The four lost sites were drier on average, so water may matter as much as heat there.</li>
+      <li><strong>Pikas at sea level.</strong> In Oregon&rsquo;s Columbia River Gorge, pikas live in mossy talus close to sea level. Johanna Varner and Denise Dearing found moss made up more than 60% of their diet at two sites. Moss is available all year, so these pikas don&rsquo;t need such big haypiles.</li>
+      <li><strong>The big review.</strong> In 2020, Andrew Smith, who has been studying pikas since the 1970s, reviewed all of it and concluded that occupancy across the major mountain ranges is &ldquo;uniformly high,&rdquo; and that &ldquo;the narrative that American pikas are going extinct appears to be an overreach.&rdquo; The losses are real, he wrote, but they&rsquo;re concentrated at low, hot, marginal sites, mostly in the Great Basin.</li>
+    </ul>
+
+    <p>The regulators landed in the same place. The U.S. Fish and Wildlife Service found in 2010 that the pika did not warrant listing under the Endangered Species Act. California made it a candidate for state protection in 2011, then declined to list it in 2013.</p>
+
+    <p>So which is it? I wanted to see what the records themselves would say.</p>
+
+    <h2>Pulling the records</h2>
+
+    <p>GBIF gathers occurrence records from museums, surveys and community science apps into one place. I asked it for every georeferenced American pika record with no flagged location problems. That download has its own DOI so anyone can check it: <strong>16,891 records</strong>, from a specimen collected in 1871 to iNaturalist photos posted this year.</p>
+
+    <p>Two kinds of record make up nearly all of it. About 6,700 are <strong>preserved specimens</strong> in museum drawers, most collected before 2000. About 10,000 are <strong>human observations</strong>, overwhelmingly iNaturalist photos from the last fifteen years. That split is going to matter.</p>
+
+    <p>For every record, I looked up the ground elevation at its coordinates from the Copernicus 30 m elevation model. Then I plotted elevation against latitude.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/pika/latitude.png" alt="Scatter chart of pika records, latitude on the horizontal axis from 35 to 55 degrees north, elevation on the vertical from 0 to 4,400 metres. The cloud of grey modern records slopes down from left to right: around 2,500 to 4,000 metres in the Sierra Nevada at 36 to 38 degrees, falling to 1,000 to 2,500 metres in Washington and southern British Columbia, with a column of points near sea level at 45.6 degrees in the Columbia River Gorge. Pre-1950 sites are drawn on top in blue where pikas have been recorded again within 3 kilometres since 2000, and rust where they haven't. The rust dots sit more often along the bottom edge of the cloud." loading="lazy">
+      <p class="photo-caption">Every pika record in GBIF, at the ground elevation of its coordinates. Grey: records since 2000. Blue and rust: the pre-1950 museum sites, explained below.</p>
+    </div>
+
+    <p>That&rsquo;s the pika&rsquo;s whole world in one picture. In the Sierra Nevada, at 36&ndash;38&deg;N, they live mostly above 2,500 m. Going north, the band slides lower, until in Washington and British Columbia pikas live from the high peaks down to a few hundred metres. And there&rsquo;s that column at 45.6&deg;N reaching down to near sea level: the Columbia River Gorge.</p>
+
+    <p>The chart also caught a mistake. A batch of pikas collected near Mount Rainier in 1919 was georeferenced to the summit, at 4,400 m. No pika lives up there. The labels written by the collector put them between 1,330 and 1,680 m. For the old specimens I used the label elevation where there was one. Where both exist, the label and the elevation model agree closely: a median difference of 3 m across 995 pre-1950 specimens, with half within 72 m.</p>
+
+    <h2>The tempting number</h2>
+
+    <p>Here&rsquo;s the easy analysis. Split the records by era, before 1950 and since 2000, and compare the median elevation in each one-degree band of latitude.</p>
+
+    <p>The modern records are higher in 16 of 17 bands, by a median of <strong>246 m</strong>. The lower edge (the 10th percentile) is up <strong>351 m</strong>. Pikas fleeing uphill, case closed?</p>
+
+    <p>No. Look at who&rsquo;s holding the camera. The old records are museum specimens, collected by biologists wherever their expeditions took them, often by road and pack train. The new records are iNaturalist photos taken by hikers, and hikers go to the high country, to the trailheads and passes and summits. Ecologists call this a change in <em>sampling</em>, and it&rsquo;s the classic trap when comparing old and new occurrence data. Morgan Tingley and Steven Beissinger wrote the paper on it in 2009.</p>
+
+    <p>You can see the trap in the state numbers. Comparing pre-1950 records to modern ones, Oregon&rsquo;s median pika <em>dropped</em> about 300 m, because the Columbia River Gorge is a short drive from Portland and a lot of people photograph its sea-level pikas. Alberta&rsquo;s rose nearly 700 m, because the Icefields Parkway puts tourists right at the alpine talus. Neither number says much about the pikas.</p>
+
+    <div class="caveat">
+      <p class="caveat-label">The trap</p>
+      <p>Comparing all old records with all new records mostly measures where people go now versus where collectors went then. To learn anything about the animal, you have to compare like with like: the same places, then and now.</p>
+    </div>
+
+    <h2>Going back to the old sites</h2>
+
+    <p>So that&rsquo;s what I did, in a rough way. I took every pre-1950 museum record with a location known to within 2 km and grouped them into localities about a kilometre across. That gave me <strong>329 historical pika localities</strong>, from 1,342 specimens collected between 1871 and 1949. For each one I asked a simple question: <strong>has anyone recorded a pika within 3 km since 2000?</strong></p>
+
+    <div class="photo-block">
+      <img src="/blog/img/pika/map.png" alt="Map of western North America from southern California and Colorado to central British Columbia and Alberta, with state and provincial lines. Small grey dots show pika records since 2000, clustered in the Sierra Nevada, the Colorado Rockies, the Cascades and the Canadian Rockies. 329 larger dots mark pre-1950 museum localities: 167 blue, with a modern record within 3 kilometres, and 162 rust, without one. Blue dominates in the Sierra Nevada and Colorado; rust is common across Idaho, Montana, eastern Oregon, Nevada and northern Washington." loading="lazy">
+      <p class="photo-caption">Blue: a pre-1950 pika site with a record within 3 km since 2000. Rust: no record since 2000 within 3 km. Grey: every record since 2000.</p>
+    </div>
+
+    <p><strong>167 of the 329 have been.</strong> That&rsquo;s about half. Where they have, the modern records sit at almost exactly the same elevation as the old ones: a median of 28 m higher, which is well within the noise of old georeferencing. At the old sites where pikas are still being found, they&rsquo;re still being found where they were.</p>
+
+    <p>The interesting part is <em>which</em> sites haven&rsquo;t been re-found. Because pikas live so much higher in the south than the north, I ranked each old site by how low it sits compared with all the pika records at the same latitude, and split them into thirds.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/pika/refound.png" alt="Horizontal bar chart. For all pre-1950 sites: lowest third for their latitude, 34 percent re-found (111 sites); middle third, 57 percent (109); highest third, 61 percent (109). For sites with five or more modern pika records within 15 kilometres: lowest third 52 percent (67), middle 75 percent (80), highest 75 percent (77)." loading="lazy">
+      <p class="photo-caption">The share of old pika sites with a record since 2000 within 3 km, by how low each site sits for its latitude.</p>
+    </div>
+
+    <p>Only <strong>34%</strong> of the lowest sites have a modern pika record nearby, against 57% and 61% for the middle and highest thirds.</p>
+
+    <p>That could still be the hikers: maybe nobody goes to the low sites. So I ran it again using only the old sites where people clearly <em>are</em> recording pikas nearby, with at least five modern records within 15 km. The gap stays: <strong>52%</strong> of the low sites re-found, against <strong>75%</strong> for both the middle and the high ones.</p>
+
+    <p class="pull">Where pikas are still being found, they&rsquo;re being found where they always were. The places they&rsquo;re most often missing from are the low ones.</p>
+
+    <div class="caveat">
+      <p class="caveat-label">What this is, and isn&rsquo;t</p>
+      <p>No record isn&rsquo;t the same as no pikas. Most of these places haven&rsquo;t been surveyed: a site counts as re-found only if someone happened to photograph a pika there and upload it. Some old coordinates are off by more than the 2 km I allowed. This is a screen of the records, not a resurvey, and the low sites are exactly where the resurveys above say to look.</p>
+    </div>
+
+    <h2>So, what&rsquo;s up with the pikas?</h2>
+
+    <p>Both camps have a point, and the records show why they keep talking past each other. The field surveys say that across most of its range the pika is doing fine, and the records don&rsquo;t contradict them: at the old sites where someone with a phone is still finding pikas, they&rsquo;re at the same elevation as a century ago, with no sign of a wholesale march uphill. The trouble is at the bottom edge: the low, warm, isolated sites, the ones the Great Basin and California resurveys flagged, are the ones least often turning up in the modern record.</p>
+
+    <p>That fits what the field biologists found: an animal that isn&rsquo;t vanishing, but is slowly losing its lowest, hottest outposts. And since pikas are poor travellers across warm ground, a lost low site probably stays lost.</p>
+
+    <p>Here in Washington, 18 of 42 old pika sites have a modern record within 3 km. Mount Rainier National Park has been watching its pikas since 2007 and has mapped about 900 pika sites, but says the trends haven&rsquo;t been analyzed yet. North of the border, a 2015 study of 114 pika sites in Alberta concluded they&rsquo;re likely to persist through this century, as long as they can keep moving upslope, which makes me happy, because those are the rockpiles along the <a href="/blog/icefields-flyover-post.html">Icefields Parkway</a>.</p>
+
+    <div class="note">
+      <p>How it was done: one GBIF download (DOI below) of every georeferenced <em>Ochotona princeps</em> record with no flagged geospatial issues, fetched by a GitHub Action with ground elevation added from the Copernicus GLO-30 elevation model. I kept records with a date between 32&deg; and 58&deg;N and west of 103&deg;W, which drops 230: a few strays filed at museums&rsquo; home cities, records from Yukon and Alaska, a strip of the far BC coast, and 65 with no year. Historical localities are pre-1950 records with coordinate uncertainty of 2 km or less, grouped into ~1 km cells, using the label elevation where there is one. Modern records are from 2000 on, with uncertainty of 1 km or less or not stated. The code and numbers are on <a href="https://github.com/bdgroves/30DayMapChallenge/tree/main/gbif/pika" target="_blank" rel="noopener">GitHub</a>.</p>
+      <p>Your pika photos count. Every iNaturalist observation with a location ends up in GBIF, and the next person to ask this question will be using them. The low sites need it most.</p>
+    </div>
+
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <p>The pika debate is a good one to read both sides of. Start with Smith&rsquo;s 2020 review; it&rsquo;s open access and covers everything.</p>
+
+    <div class="sources">
+      <div class="sources-head">&#128196; The case for alarm</div>
+      <p><strong>Beever, E.A., Brussard, P.F. &amp; Berger, J. (2003).</strong> <a href="https://doi.org/10.1644/1545-1542(2003)084%3C0037:POAEAI%3E2.0.CO;2" target="_blank" rel="noopener">Patterns of apparent extirpation among isolated populations of pikas (<em>Ochotona princeps</em>) in the Great Basin.</a> <em>Journal of Mammalogy</em> <strong>84</strong>, 37&ndash;54. &mdash; seven of 25 populations gone.</p>
+      <p><strong>Beever, E.A., Ray, C., Wilkening, J.L., Brussard, P.F. &amp; Mote, P.W. (2011).</strong> <a href="https://doi.org/10.1111/j.1365-2486.2010.02389.x" target="_blank" rel="noopener">Contemporary climate change alters the pace and drivers of extinction.</a> <em>Global Change Biology</em> <strong>17</strong>, 2054&ndash;2070. &mdash; the speed-up after 1999.</p>
+      <p><strong>Moritz, C., Patton, J.L., Conroy, C.J., Parra, J.L., White, G.C. &amp; Beissinger, S.R. (2008).</strong> <a href="https://doi.org/10.1126/science.1163428" target="_blank" rel="noopener">Impact of a century of climate change on small-mammal communities in Yosemite National Park, USA.</a> <em>Science</em> <strong>322</strong>, 261&ndash;264. &mdash; the Grinnell resurvey.</p>
+      <p><strong>Stewart, J.A.E. et al. (2015).</strong> <a href="https://doi.org/10.1111/jbi.12466" target="_blank" rel="noopener">Revisiting the past to foretell the future: summer temperature and habitat area predict pika extirpations in California.</a> <em>Journal of Biogeography</em> <strong>42</strong>, 880&ndash;890.</p>
+
+      <div class="sources-head">&#127956;&#65039; The case for calm</div>
+      <p><strong>Smith, A.T. (2020).</strong> <a href="https://doi.org/10.1093/jmammal/gyaa110" target="_blank" rel="noopener">Conservation status of American pikas (<em>Ochotona princeps</em>).</a> <em>Journal of Mammalogy</em> <strong>101</strong>, 1466&ndash;1488. &mdash; the review. Read this one.</p>
+      <p><strong>Millar, C.I. &amp; Westfall, R.D. (2010).</strong> <a href="https://doi.org/10.1657/1938-4246-42.1.76" target="_blank" rel="noopener">Distribution and climatic relationships of the American pika (<em>Ochotona princeps</em>) in the Sierra Nevada and western Great Basin, U.S.A.; periglacial landforms as refugia in warming climates.</a> <em>Arctic, Antarctic, and Alpine Research</em> <strong>42</strong>, 76&ndash;88.</p>
+      <p><strong>Erb, L.P., Ray, C. &amp; Guralnick, R. (2011).</strong> <a href="https://doi.org/10.1890/11-0175.1" target="_blank" rel="noopener">On the generality of a climate-mediated shift in the distribution of the American pika (<em>Ochotona princeps</em>).</a> <em>Ecology</em> <strong>92</strong>, 1730&ndash;1735.</p>
+      <p><strong>Varner, J. &amp; Dearing, M.D. (2014).</strong> <a href="https://doi.org/10.1644/13-MAMM-A-099.1" target="_blank" rel="noopener">Dietary plasticity in pikas as a strategy for atypical resource landscapes.</a> <em>Journal of Mammalogy</em> <strong>95</strong>, 72&ndash;81. &mdash; the moss-eating pikas of the Gorge.</p>
+      <p><strong>Shank, C.C. (2015).</strong> <a href="https://doi.org/10.22621/cfn.v129i3.1724" target="_blank" rel="noopener">Are American pikas (<em>Ochotona princeps</em>) in the Canadian Rockies vulnerable to climate change?</a> <em>Canadian Field-Naturalist</em> <strong>129</strong>, 254&ndash;262.</p>
+
+      <div class="sources-head">&#127777;&#65039; Heat, and old data</div>
+      <p><strong>Smith, A.T. (1974).</strong> <a href="https://doi.org/10.2307/1935464" target="_blank" rel="noopener">The distribution and dispersal of pikas: influences of behavior and climate.</a> <em>Ecology</em> <strong>55</strong>, 1368&ndash;1376.</p>
+      <p><strong>MacArthur, R.A. &amp; Wang, L.C.H. (1973).</strong> <a href="https://doi.org/10.1139/z73-002" target="_blank" rel="noopener">Physiology of thermoregulation in the pika, <em>Ochotona princeps</em>.</a> <em>Canadian Journal of Zoology</em> <strong>51</strong>, 11&ndash;16.</p>
+      <p><strong>Tingley, M.W. &amp; Beissinger, S.R. (2009).</strong> Detecting range shifts from historical species occurrences: new perspectives on old data. <em>Trends in Ecology &amp; Evolution</em> <strong>24</strong>, 625&ndash;633. &mdash; why old-versus-new comparisons are hard.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><strong>GBIF.org (5 October 2026).</strong> GBIF Occurrence Download <a href="https://doi.org/10.15468/dl.p7sdx7" target="_blank" rel="noopener">https://doi.org/10.15468/dl.p7sdx7</a> &mdash; the 16,891 records behind every chart here.</p>
+      <p><a href="https://www.federalregister.gov/documents/2010/02/09/2010-2405/endangered-and-threatened-wildlife-and-plants-12-month-finding-on-a-petition-to-list-the-american" target="_blank" rel="noopener">U.S. Fish and Wildlife Service 12-month finding on the American pika</a> &mdash; <em>Federal Register</em> 75, 6438, 9 February 2010.</p>
+      <p><a href="https://www.nps.gov/articles/american-pika-at-mount-rainier.htm" target="_blank" rel="noopener">American Pika at Mount Rainier</a> &mdash; National Park Service.</p>
+      <p><a href="https://www.gbif.org/species/2436982" target="_blank" rel="noopener">The pika on GBIF</a> &middot; <a href="https://github.com/bdgroves/30DayMapChallenge/tree/main/gbif" target="_blank" rel="noopener">GBIF download tool and analysis code</a></p>
+    </div>
+
+    <p>If you&rsquo;re in the mountains this fall, listen for the <em>eep</em>. They&rsquo;re busy right now, finishing the haypiles.</p>
+
+  </div>
+
+  <div class="reactions-section">
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+  <div class="article-footer">
+    <div class="article-footer-author">Brooks Groves &middot; October 2026</div>
+    <div class="article-footer-nav">
+      <a href="/blog/wa-smoke-monitors-post.html">← Previous post</a>
+      <a href="/blog/index.html">All posts →</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
+    </div>
+
+    <div class="footer-connect">
+      <div class="fc-label">Connect</div>
+      <div class="social-row">
+          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
+          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
+          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
+          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
+          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
+          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
+          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-pagelinks">
+      <div class="fc-label">More here</div>
+      <div class="pagelink-row">
+        <a href="/blog/index.html">Blog</a>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
+    <p class="footer-bottom">
+      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
+      <a href="#top">&uarr; Back to top</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this handles clicks and keeps the button's label truthful.
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function sync(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Describe what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  sync();
+  btn.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
