@@ -151,8 +151,8 @@
 
   <!-- OPENING QUOTE -->
   <div class="opening-quote">
-    <div class="opening-quote-text">"In the summer of A.D. 1054, a supernova blazed in the sky bright enough to cast shadows at night. Somewhere near Fajada Butte, at the eastern entrance to Chaco Canyon, a Chacoan astronomer watched it rise. We don't know their name. We don't know their language. We don't know what they called the sky above them. But we know they were watching, because they built it into the stone."</div>
-    <div class="opening-quote-attr">— SOLSTICE README · April 2026</div>
+    <div class="opening-quote-text">"The people who built Chaco's great houses watched where the Sun came up along the horizon, and some of what they built still lines up with it. SOLSTICE follows the same sky over the same canyon."</div>
+    <div class="opening-quote-attr">— SOLSTICE README · October 2026</div>
   </div>
 
   <!-- LEAD PROJECT — SOLSTICE -->
@@ -163,15 +163,17 @@
 
   <div class="project-lead">
     <div class="project-lead-main">
-      <p class="project-kicker">Chaco Canyon · Archaeoastronomy · ephem · forge3d · Leaflet</p>
+      <p class="project-kicker">Chaco Canyon · Archaeoastronomy · forge3d · USGS Lidar · Leaflet</p>
       <h2 class="project-hed">☀️ <em>SOLSTICE</em></h2>
-      <p class="project-dek">A live archaeoastronomy dashboard watching the same sky, over the same canyon, that the Chacoan people built their great houses to track. Current sun and moon positions computed for Chaco Canyon twice daily. Live alignment monitor for the Casa Rinconada northeast doorway — the great kiva whose entrance aligns to the summer solstice sunrise at 66.5°. Days to the next solstice and equinox. Interactive Leaflet map with all ten great houses and the Chacoan road network.</p>
+      <p class="project-dek">The sky over Chaco Canyon, computed against the real skyline. At Chaco the horizon isn't flat: the canyon walls are the horizon. SOLSTICE traces each great house's own skyline from USGS lidar and puts every sunrise of the year on it, so you can watch the Sun walk along the rim toward June and back. It shows the live Sun and Moon, whether Pueblo Bonito is in sunlight yet, the Sun Dagger on Fajada Butte, and where we are in the Moon's 18.6-year standstill cycle.</p>
       <div class="project-quote">"The canyon aligned its stones to the sky. We aligned our data to the canyon."</div>
-      <p class="project-dek">The terrain hero is a GPU-rendered 4K hillshade of Chaco Canyon from USGS 3DEP 1/3 arc-second LiDAR data, rendered via forge3d — camera southeast of the canyon looking northwest, late-afternoon sun casting shadows into the mesa cuts. Pueblo Bonito's rear wall runs true north within 0.1°. Casa Rinconada's alignment activates in the dashboard when the current sunrise azimuth falls within 3.5° of 66.5° — around the summer solstice window each June.</p>
+      <p class="project-dek">The hero is a forge3d flight down the canyon at summer solstice sunrise, from Fajada Butte past Una Vida, Chetro Ketl and Pueblo Bonito to Peñasco Blanco: 5-metre lidar terrain, NAIP aerial photography, and the Sun where it really is. It renders on GitHub's CPUs with a software Vulkan driver, no graphics card needed. Rebuilt in October 2026 with verified site locations and corrected sky claims.</p>
       <div class="project-stack">
-        <span class="stack-pill">Python ephem</span>
+        <span class="stack-pill">PyEphem</span>
+        <span class="stack-pill">astronomy-engine</span>
         <span class="stack-pill">forge3d</span>
-        <span class="stack-pill">USGS 3DEP LiDAR</span>
+        <span class="stack-pill">USGS 3DEP Lidar</span>
+        <span class="stack-pill">NAIP</span>
         <span class="stack-pill">Leaflet</span>
         <span class="stack-pill">GitHub Actions</span>
         <span class="stack-pill">rasterio</span>
@@ -180,34 +182,34 @@
       </div>
       <div style="margin-top:1.25rem;">
         <a href="https://brooksgroves.com/solstice" target="_blank" class="project-link">View Live Dashboard →</a>
-        <a href="/blog/solstice-post.html" class="project-link secondary">Read the Build Post →</a>
+        <a href="/blog/solstice-revisited-post.html" class="project-link secondary">Read the Revisited Post →</a>
       </div>
     </div>
     <div class="project-lead-stats">
       <div class="stat-block">
-        <div class="stat-label">Casa Rinconada alignment</div>
-        <div class="stat-value gold">66.5°</div>
-        <div class="stat-sub">NE doorway azimuth · summer solstice sunrise</div>
+        <div class="stat-label">Summer solstice sunrise</div>
+        <div class="stat-value gold">59.8°</div>
+        <div class="stat-sub">azimuth on a flat horizon · 61.6° over Casa Rinconada's skyline</div>
       </div>
       <div class="stat-block">
-        <div class="stat-label">Pueblo Bonito north wall precision</div>
-        <div class="stat-value">0.1°</div>
-        <div class="stat-sub">true north · within a tenth of a degree</div>
+        <div class="stat-label">June sunrise at Pueblo Bonito</div>
+        <div class="stat-value">75 min</div>
+        <div class="stat-sub">later than a flat horizon · the north wall hides it</div>
       </div>
       <div class="stat-block">
-        <div class="stat-label">Great houses mapped</div>
-        <div class="stat-value sky">10</div>
-        <div class="stat-sub">Pueblo Bonito · Casa Rinconada · Chetro Ketl · +7</div>
+        <div class="stat-label">Sites with their own skyline</div>
+        <div class="stat-value sky">11</div>
+        <div class="stat-sub">Pueblo Bonito · Chetro Ketl · Casa Rinconada · +8</div>
       </div>
       <div class="stat-block">
         <div class="stat-label">Terrain resolution</div>
-        <div class="stat-value">1/3"</div>
-        <div class="stat-sub">arc-second · USGS 3DEP · ~10m per pixel</div>
+        <div class="stat-value">5 m</div>
+        <div class="stat-sub">USGS 3DEP lidar · 30 m out to 80 km</div>
       </div>
       <div class="stat-block">
-        <div class="stat-label">Dashboard updates</div>
-        <div class="stat-value sky">2×/day</div>
-        <div class="stat-sub">06:00 and 18:00 UTC · GitHub Actions</div>
+        <div class="stat-label">Sky updates</div>
+        <div class="stat-value sky">Daily</div>
+        <div class="stat-sub">GitHub Actions · live in the browser every 30 s</div>
       </div>
     </div>
   </div>
@@ -216,14 +218,14 @@
   <div class="section-label"><span>The Great Houses of Chaco Canyon</span></div>
   <table class="great-house-table">
     <tr><th>Site</th><th>Rooms</th><th>Period</th><th>Notable</th></tr>
-    <tr><td>Pueblo Bonito</td><td>~800</td><td>850–1150 CE</td><td>Rear wall faces true north within 0.1°. Largest great house in the canyon.</td></tr>
+    <tr><td>Pueblo Bonito</td><td>~800</td><td>850–1150 CE</td><td>Largest great house in the canyon. Its long south wall runs almost exactly east–west.</td></tr>
     <tr><td>Chetro Ketl</td><td>~500</td><td>1010–1110 CE</td><td>Unique colonnade. 4 stories. One of the finest examples of Chacoan masonry.</td></tr>
-    <tr><td>Casa Rinconada</td><td>—</td><td>1000–1100 CE</td><td>Great kiva. NE doorway aligns to summer solstice sunrise at 66.5°. SOLSTICE alignment anchor.</td></tr>
+    <tr><td>Casa Rinconada</td><td>—</td><td>1000–1100 CE</td><td>Great kiva. Solstice light through a northeast window is a famous but debated claim: that wall was rebuilt after the 1930s excavation.</td></tr>
     <tr><td>Pueblo del Arroyo</td><td>~280</td><td>1075–1115 CE</td><td>Adjoins rare tri-walled structure. Late occupation.</td></tr>
-    <tr><td>Hungo Pavi</td><td>~150</td><td>900–1100 CE</td><td>Largely unexcavated. Two great kivas. Spring equinox alignments documented.</td></tr>
-    <tr><td>Una Vida</td><td>~160</td><td>850–1000 CE</td><td>One of the earliest great houses. Nearby petroglyphs including possible supernova pictograph.</td></tr>
-    <tr><td>Penasco Blanco</td><td>~150</td><td>900–1125 CE</td><td>Near the possible 1054 CE supernova pictograph — a painted hand, crescent, and bright disc.</td></tr>
-    <tr><td>Pueblo Alto</td><td>~90</td><td>1020–1100 CE</td><td>Mesa-top terminus of the Great North Road — 50 miles straight across the mesa with no practical purpose.</td></tr>
+    <tr><td>Hungo Pavi</td><td>~150</td><td>900–1100 CE</td><td>Largely unexcavated. Its plan is well preserved under the rubble.</td></tr>
+    <tr><td>Una Vida</td><td>~160</td><td>850–1000 CE</td><td>One of the earliest great houses, tucked under the canyon wall. Petroglyphs on the cliff behind it.</td></tr>
+    <tr><td>Peñasco Blanco</td><td>~150</td><td>900–1125 CE</td><td>At the canyon's west end. Below it is the painted panel (hand, crescent, star) often linked to the 1054 CE supernova.</td></tr>
+    <tr><td>Pueblo Alto</td><td>~90</td><td>1020–1100 CE</td><td>On the mesa top, where the Great North Road begins its run of about 50 km to Kutz Canyon.</td></tr>
     <tr><td>Kin Kletso</td><td>~55</td><td>1125–1150 CE</td><td>Late McElmo-tradition construction. One of the last great houses built.</td></tr>
     <tr><td>Wijiji</td><td>~90</td><td>1100–1150 CE</td><td>Easternmost great house. Accessible only by foot trail.</td></tr>
   </table>
@@ -234,8 +236,8 @@
     <div>
       <h3 class="context-hed">The Alignment at Fajada Butte</h3>
       <div class="context-body">
-        <p>On Fajada Butte, three stone slabs leaning against a cliff face create daggers of light that bisect spiral petroglyphs at every solstice, equinox, and major lunar standstill over an 18.6-year cycle. This solar marker was documented by artist Anna Sofaer in 1977 — she returned during summer solstice and watched a dagger of light bisect the center of the spiral at noon.</p>
-        <p>The great north road leaves Pueblo Alto and runs straight for fifty miles across the mesa, cutting through arroyos and climbing ridges with no apparent practical purpose. As if it wasn't built for walking, but for seeing — a line drawn from a specific point toward something on the horizon that mattered.</p>
+        <p>High on Fajada Butte, three stone slabs lean against the cliff in front of two spiral petroglyphs. Near midday, daggers of sunlight slip between them and mark the spirals at the solstices and equinoxes. Artist Anna Sofaer found it in June 1977, and later work by Sofaer and colleagues argued the spirals also record the Moon's 18.6-year standstill cycle in shadow.</p>
+        <p>The Great North Road leaves Pueblo Alto and runs about 50 km toward Kutz Canyon. It is wider and straighter than walking needed, which is why many think it meant something more than travel, though careful measurement shows it isn't a perfect true-north line.</p>
       </div>
     </div>
     <div>
@@ -253,7 +255,7 @@
     <a href="https://brooksgroves.com/solstice" target="_blank" class="related-card">
       <div class="related-kicker">Live · Archaeoastronomy · Chaco</div>
       <div class="related-hed">☀️ SOLSTICE Dashboard</div>
-      <div class="related-dek">Live sun and moon positions over Chaco Canyon. Casa Rinconada alignment monitor. 4K LiDAR terrain render. Days to the next solstice.</div>
+      <div class="related-dek">The live Sun and Moon over Chaco, each great house's real skyline with every sunrise of the year, and a forge3d flight down the canyon at solstice dawn.</div>
       <span class="related-link">Open dashboard →</span>
     </a>
     <a href="https://brooksgroves.com/project-kiva" target="_blank" class="related-card">
@@ -268,10 +270,10 @@
       <div class="related-dek">AFTERSHOCK seismic monitor — the same USGS data infrastructure that powers the seismology hub also underlies the terrain data for the Southwest.</div>
       <span class="related-link">Explore →</span>
     </a>
-    <a href="/blog/solstice-post.html" class="related-card">
-      <div class="related-kicker">Blog · Build Post · Archaeoastronomy</div>
-      <div class="related-hed">📝 The SOLSTICE Build Post</div>
-      <div class="related-dek">The 1054 CE supernova, Pueblo Bonito's true north wall, and a live dashboard tracking the summer solstice alignment at Casa Rinconada.</div>
+    <a href="/blog/solstice-revisited-post.html" class="related-card">
+      <div class="related-kicker">Blog · Revisited · Archaeoastronomy</div>
+      <div class="related-hed">📝 SOLSTICE, Revisited</div>
+      <div class="related-dek">The skyline is the calendar: every sunrise on each great house's own horizon, a forge3d flyover at solstice dawn, and what changed since April.</div>
       <span class="related-link">Read the post →</span>
     </a>
   </div>
