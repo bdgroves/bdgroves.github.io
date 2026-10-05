@@ -1,0 +1,28 @@
+name: Home topics
+
+# Rebuild the homepage topic cards whenever the post list (tags.html) or the
+# topic definitions change, so a new post shows up in its card on its own.
+on:
+  push:
+    branches: [main]
+    paths: ["tags.html", "data/topics.json", "scripts/home_topics.py"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - run: python3 scripts/home_topics.py
+      - name: Commit if the cards changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html tags.html
+          git diff --cached --quiet && exit 0
+          git commit -q -m "home: refresh topic cards"
+          for i in 1 2 3; do git pull -q --rebase origin main && git push -q && exit 0; sleep 5; done
+          exit 1
