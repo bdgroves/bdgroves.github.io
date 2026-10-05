@@ -1,30 +1,113 @@
 {
-  "_note": "Homepage topic cards. A post belongs to the first topic (in this order) that shares one of its tags. Run scripts/home_topics.py after editing (the Home topics workflow does it on push).",
-  "topics": [
-    {"id": "westin", "icon": "🛎️", "name": "Westin Stories",
-     "blurb": "Twenty-one years at the Westin Seattle: the bell desk, the regulars, the graveyard shift.",
-     "tags": ["Westin Stories", "Hospitality", "Bell Captain", "The Westin", "Service Express"]},
-    {"id": "memoir", "icon": "📖", "name": "Memoir & Old Days",
-     "blurb": "Groveland, Blinn, Camp Reno, the Y2K journals, and the friends along the way.",
-     "tags": ["Memoir", "Groveland", "Blinn College Stories", "Camp Reno", "Y2K Archive", "Coming of Age", "Family History", "Iron Door Irregulars", "Journal", "Hippie Bro", "Carl Zeus"]},
-    {"id": "earth", "icon": "🌋", "name": "Volcanoes, Fossils & Ruins",
-     "blurb": "Kīlauea, Rainier, ichthyosaurs, mammoths, Chaco Canyon and the mounds.",
-     "tags": ["Volcanology", "Geology", "Seismic", "Seismology", "Paleontology", "Archaeology", "Archaeoastronomy", "Kīlauea"]},
-    {"id": "nature", "icon": "🐟", "name": "Science & Nature",
-     "blurb": "Pikas, golden trout, Lahontan fish and Easter Island, told with maps and data.",
-     "tags": ["Science Writing", "Ecology", "GBIF", "Science", "UNR"]},
-    {"id": "weather", "icon": "🌦️", "name": "Weather & Water",
-     "blurb": "Storms, smoke, floods, snowpack, tides and the rivers of the Sierra and Northwest.",
-     "tags": ["Meteorology", "Hydrology", "Weather", "Floods", "Snowpack", "Air Quality", "Wildfire", "Climate", "Drought", "NWS", "El Niño", "Tides"]},
-    {"id": "maps", "icon": "🗺️", "name": "Maps & Flyovers",
-     "blurb": "forge3d flights, lidar and cartography, from Yosemite to the Icefields Parkway.",
-     "tags": ["forge3d", "Cartography", "Lidar", "LiDAR", "Remote Sensing", "GIS", "Geospatial", "Sentinel-2", "Leaflet"]},
-    {"id": "outdoors", "icon": "🚵", "name": "Travel & Outdoors",
-     "blurb": "Triathlons, mountain bikes, geocaches, Death Valley, Amsterdam and London.",
-     "tags": ["Travel", "Triathlon", "Mountain Biking", "Geocaching", "Pro Cycling", "Amsterdam", "London", "Vancouver", "Death Valley"]},
-    {"id": "builds", "icon": "🍺", "name": "Beer, Baseball & Builds",
-     "blurb": "The Mariners, HopLove, a cookbook, a trade journal and other things I've built.",
-     "tags": ["Mariners", "Baseball", "Beer", "Music", "Python", "GitHub Actions", "COBOL", "FORTRAN", "AI", "Building", "Web Development"]}
-  ],
-  "fallback": "builds"
+ "_note": "Homepage topic cards. A post belongs to the first topic (in this order) that shares one of its tags. Run scripts/home_topics.py after editing (the Home topics workflow does it on push). Posts on exclude_hosts (sites behind a password) are left off the cards.",
+ "topics": [
+  {
+   "id": "earth",
+   "icon": "🌋",
+   "name": "Volcanoes, Fossils & Ruins",
+   "blurb": "Kīlauea, Rainier, ichthyosaurs, mammoths, Chaco Canyon and the mounds.",
+   "tags": [
+    "Volcanology",
+    "Geology",
+    "Seismic",
+    "Seismology",
+    "Paleontology",
+    "Archaeology",
+    "Archaeoastronomy",
+    "Kīlauea"
+   ]
+  },
+  {
+   "id": "nature",
+   "icon": "🐟",
+   "name": "Science & Nature",
+   "blurb": "Pikas, golden trout, Lahontan fish and Easter Island, told with maps and data.",
+   "tags": [
+    "Science Writing",
+    "Ecology",
+    "GBIF",
+    "Science",
+    "UNR"
+   ]
+  },
+  {
+   "id": "weather",
+   "icon": "🌦️",
+   "name": "Weather & Water",
+   "blurb": "Storms, smoke, floods, snowpack, tides and the rivers of the Sierra and Northwest.",
+   "tags": [
+    "Meteorology",
+    "Hydrology",
+    "Weather",
+    "Floods",
+    "Snowpack",
+    "Air Quality",
+    "Wildfire",
+    "Climate",
+    "Drought",
+    "NWS",
+    "El Niño",
+    "Tides"
+   ]
+  },
+  {
+   "id": "maps",
+   "icon": "🗺️",
+   "name": "Maps & Flyovers",
+   "blurb": "forge3d flights, lidar and cartography, from Yosemite to the Icefields Parkway.",
+   "tags": [
+    "forge3d",
+    "Cartography",
+    "Lidar",
+    "LiDAR",
+    "Remote Sensing",
+    "GIS",
+    "Geospatial",
+    "Sentinel-2",
+    "Leaflet"
+   ]
+  },
+  {
+   "id": "sports",
+   "icon": "🚴",
+   "name": "Cycling, Sports & Training",
+   "blurb": "Grand Tour stage trackers, the Mariners, triathlon fueling and the rest of the sporting life.",
+   "tags": [
+    "Pro Cycling",
+    "Grand Tour",
+    "Mariners",
+    "Baseball",
+    "Seahawks",
+    "Triathlon",
+    "Mountain Biking",
+    "Geocaching",
+    "Travel"
+   ]
+  },
+  {
+   "id": "builds",
+   "icon": "🍺",
+   "name": "Beer & Builds",
+   "blurb": "HopLove, a searchable cookbook, a trade journal for the investment club, and other things I've made.",
+   "tags": [
+    "Beer",
+    "Hops",
+    "Building",
+    "Web Development",
+    "AI",
+    "Music"
+   ]
+  }
+ ],
+ "fallback": "builds",
+ "exclude_hosts": [
+  "memoir.brooksgroves.com",
+  "y2k.brooksgroves.com",
+  "journal.brooksgroves.com",
+  "westin.brooksgroves.com"
+ ],
+ "exclude_urls": [
+  "https://brooksgroves.com/about.html",
+  "/about.html"
+ ]
 }
