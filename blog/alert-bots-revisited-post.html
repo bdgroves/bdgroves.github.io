@@ -160,7 +160,7 @@
 
     <p>The problem wasn&rsquo;t that something broke. Things break. The problem was that nothing told me. When a post failed, the bot wrote a line to a log that nobody reads and carried on.</p>
 
-    <p>I checked the X keys tonight, and both accounts still sign in fine. So the reason for the silence will show itself on the next real post, and this time the bots will say so (more on that below). I&rsquo;ll add an update here when I know.</p>
+    <p>I checked the X keys tonight, and both accounts still sign in fine. So the reason for the silence will show itself on the next real post, and this time the bots will say so (more on that below). I&rsquo;ll add an update here when I know. <em>(Update: <a href="#update">it was the credits</a>.)</em></p>
 
     <h2>A few other things I found</h2>
 
@@ -200,9 +200,24 @@
 
     <p>And if X ever stops taking posts again, the run fails on purpose, once, so GitHub sends me an email. After that it keeps a quiet note of when the trouble started until posting works again. One email, not three months of silence.</p>
 
-    <div class="note-box">Both bots are open source: <a href="https://github.com/bdgroves/sierra-alert-bot" target="_blank">sierra-alert-bot</a> and <a href="https://github.com/bdgroves/nws-alert-bot" target="_blank">nws-alert-bot</a>. Each README lists exactly what gets posted and how to check on it. If you live under one of these skies and something should or shouldn&rsquo;t be on the list, I&rsquo;d love to hear it.</div>
 
-    <p class="note" style="font-size:0.9rem;color:var(--stone)">Alerts from the National Weather Service; fires from CAL FIRE and NIFC; spotter reports from the Iowa Environmental Mesonet; smoke from AirNow; river stages from the National Water Prediction Service; earthquakes from the USGS. The original story of the Sierra bot is <a href="/blog/sierra-alert-bot-post.html">here</a>.</p>
+    <h2 id="update">Update, the next morning: it was the credits</h2>
+
+    <p>The answer came about an hour after I published. I tested my third bot, the twice-daily weather report, and X answered right away: <strong>&ldquo;402 Payment Required: credits depleted.&rdquo;</strong> The keys were fine all along. The developer account had simply run out of API credits, and every bot had been politely failing ever since.</p>
+
+    <p>I&rsquo;m not paying for more just now. So instead of switching the bots off, I put them on standby.</p>
+
+    <ul>
+      <li><strong>The alert bots keep watching.</strong> Every run they still check the warnings, fires, rivers and quakes, and they write down what they <em>would</em> have posted. Each item gets marked as seen, so if I turn X back on someday, there won&rsquo;t be a pile of stale alerts waiting to rush out. Turning it back on is one setting, no code.</li>
+      <li><strong>The weather report stopped posting.</strong> It had been missing most of its posts anyway: it only posted if GitHub happened to run it in the 7 AM or 6 PM hour, which came out to five tries in ten days. And my <a href="https://brooksgroves.com/weather-station" target="_blank">weather station page</a> already shows live conditions all day. The report&rsquo;s dashboard still refreshes every hour.</li>
+      <li><strong>Streamchaser got the same cleanup.</strong> My river bot posts to Bluesky, and it had posted &ldquo;new 7-day peak&rdquo; 23 times in three weeks. Most of those were ordinary fall water releases from the dams on the Tuolumne, some as small as 82 cubic feet per second. Now it posts only when a river is doing something unusual for the time of year: high water, the highest flow ever measured on that date, or a free-flowing creek doubling in a storm. While I was in there I found it had never been able to look up those record highs (it was asking USGS for them by the wrong name). It can now.</li>
+    </ul>
+
+    <p>So that&rsquo;s where things stand: four bots, quieter and easier to check on, watching the Sierra and the Sound and waiting for when they&rsquo;re needed. If X ever comes back into the budget, they&rsquo;re ready.</p>
+
+    <div class="note-box">All four are open source: <a href="https://github.com/bdgroves/sierra-alert-bot" target="_blank">sierra-alert-bot</a>, <a href="https://github.com/bdgroves/nws-alert-bot" target="_blank">nws-alert-bot</a>, <a href="https://github.com/bdgroves/streamchaser" target="_blank">streamchaser</a> and <a href="https://github.com/bdgroves/weather-report-bot" target="_blank">weather-report-bot</a>. Each README lists exactly what gets posted and how to check on it. If you live under one of these skies and something should or shouldn&rsquo;t be on the list, I&rsquo;d love to hear it.</div>
+
+    <p class="note" style="font-size:0.9rem;color:var(--stone)">Alerts from the National Weather Service; river flows from USGS; fires from CAL FIRE and NIFC; spotter reports from the Iowa Environmental Mesonet; smoke from AirNow; river stages from the National Water Prediction Service; earthquakes from the USGS. The original story of the Sierra bot is <a href="/blog/sierra-alert-bot-post.html">here</a>.</p>
   </div>
 
   <div class="article-footer">
