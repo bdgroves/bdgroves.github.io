@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Survivors of an Inland Sea — Brooks Groves</title>
+  <meta name="description" content="The native fish of Pyramid Lake, Nevada: the cui-ui, found nowhere else, and the giant Lahontan cutthroat trout that vanished and came back from Pilot Peak. Maps of ice-age Lake Lahontan and GBIF records, plus heat shock proteins at UNR.">
+  <meta property="og:title" content="Survivors of an Inland Sea">
+  <meta property="og:description" content="The cui-ui, the 41-pound cutthroat, and the ice-age lake that left them in the Nevada desert.">
+  <meta property="og:image" content="https://brooksgroves.com/blog/img/pyramid-lake/og.jpg">
+  <meta property="og:url" content="https://brooksgroves.com/blog/survivors-of-an-inland-sea.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; border-radius:4px; transition: background 0.2s, color 0.2s; 
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .article-tag-pill:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body pre { background: var(--ink); color: #c8d0cc; padding: 1.25rem 1.5rem; border-radius: 2px; overflow-x: auto; margin: 1.5rem 0 2rem; font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.65; }
+    .article-body code { font-family: 'DM Mono', monospace; font-size: 0.85em; background: var(--cream); padding: 0.15em 0.4em; border-radius: 2px; }
+    .article-body pre code { background: none; padding: 0; font-size: 1em; color: inherit; }
+    .article-body ul, .article-body ol { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body li { margin-bottom: 0.4rem; }
+
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+  
+    /* ── Science-post elements ──
+       This post type needs three things the memoir template doesn't:
+       a caveat box for contested findings, a first-person method note
+       that is clearly set apart from the reporting, and a formatted
+       source list. Kept quiet so they read as apparatus, not argument. */
+    .lede { font-size:1.05rem; line-height:1.9; color:var(--ink); }
+    .caveat {
+      background:var(--cream); border-left:3px solid var(--rust);
+      padding:1rem 1.25rem; margin:1.6rem 0;
+    }
+    .caveat-label {
+      font-family:'DM Mono',monospace; font-size:0.54rem; letter-spacing:0.16em;
+      text-transform:uppercase; color:var(--rust); margin-bottom:0.45rem;
+    }
+    .caveat p { margin:0; font-size:0.84rem; line-height:1.85; color:var(--stone); }
+    .note {
+      border:1px solid var(--mist); border-top:2px solid var(--gold);
+      padding:1.1rem 1.35rem; margin:1.8rem 0; background:var(--paper-card,transparent);
+    }
+    .note p { font-size:0.85rem; line-height:1.9; color:var(--stone); margin:0 0 0.8rem; }
+    .note p:last-child { margin-bottom:0; }
+    .sources { margin:1.4rem 0 2rem; }
+    /* Source links carry the accent rather than the body-link red, so a box
+       that is almost entirely links doesn't read as a wall of colour. */
+    .sources a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--desert,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist);
+    }
+    .pull {
+      font-family:'Playfair Display',Georgia,serif; font-size:1.1rem; font-style:italic;
+      line-height:1.7; color:var(--ink); margin:1.8rem 0; padding-left:1.3rem;
+      border-left:3px solid var(--gold);
+    }
+    .cta { border:1px solid var(--mist); border-top:2px solid var(--sage); padding:1.1rem 1.35rem; margin:2rem 0; }
+    .cta p { font-size:0.9rem; line-height:1.8; margin:0 0 0.8rem; color:var(--ink); }
+    .cta a.btn { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.55rem 1.1rem; border:1.5px solid var(--sage); color:var(--sage); display:inline-block; margin:0 0.5rem 0.4rem 0; }
+    .cta a.btn:hover { background:var(--sage); color:var(--parchment); }
+    .figures { width:100%; border-collapse:collapse; font-family:'DM Mono',monospace; font-size:0.78rem; margin:0.5rem 0 1.8rem; font-variant-numeric:tabular-nums; }
+    .figures th, .figures td { text-align:left; padding:0.45rem 0.6rem; border-bottom:1px solid var(--mist); }
+    .figures th { font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); font-weight:400; }
+    .figures td.num { text-align:right; }
+    .tablewrap { overflow-x:auto; }
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; height: auto; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://journal.brooksgroves.com">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">← Back to Blog</a>
+
+  <p class="article-kicker">Science Writing &middot; Ecology &middot; Great Basin</p>
+  <h1 class="article-title">&#128031; Survivors of an Inland Sea</h1>
+  <div class="article-meta">
+    <span>October 4, 2026</span>
+    <span>Brooks Groves</span>
+    <span>11 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <a href="/tags.html#Science%20Writing" class="article-tag-pill">Science Writing</a>
+    <a href="/tags.html#Ecology" class="article-tag-pill">Ecology</a>
+    <a href="/tags.html#Nevada" class="article-tag-pill">Nevada</a>
+    <a href="/tags.html#Great%20Basin" class="article-tag-pill">Great Basin</a>
+    <a href="/tags.html#UNR" class="article-tag-pill">UNR</a>
+    <a href="/tags.html#GBIF" class="article-tag-pill">GBIF</a>
+  </div>
+
+  <div class="article-body">
+
+    <p class="lede">In the early 1990s I was a molecular biology student at the University of Nevada, Reno, working with Dr. Lee Weber on heat shock proteins in fish, including some of the fish in this story. More than thirty years later, I wanted to tell their story properly.</p>
+
+    <p>They live in Pyramid Lake, north of Reno: a big blue lake in the desert with no outlet, pale tufa towers along the shore, and white pelicans nesting on Anaho Island. The Paiute name for it, according to the U.S. Geological Survey, is <em>Cui-Ui Panunadu</em>, &ldquo;fish in standing water.&rdquo; The people who live there, the Pyramid Lake Paiute Tribe, are the <em>Kooyooe Ticutta</em>, the cui-ui eaters.</p>
+
+    <p>The fish of Pyramid Lake are some of the strangest and toughest in North America. One of them lives nowhere else on Earth. Another was the biggest cutthroat trout ever caught, then vanished, then came back from a mountain creek 300 miles away. To see why they&rsquo;re here at all, you have to go back 15,000 years.</p>
+
+    <h2>An inland sea</h2>
+
+    <div class="photo-block">
+      <img src="/blog/img/pyramid-lake/lahontan.jpg" alt="Shaded relief map of northwestern Nevada and northeastern California. A large pale-blue lake spreads across the valleys: a branching shape covering the Black Rock Desert, the Carson Sink, the Pyramid Lake and Winnemucca Lake valleys, Honey Lake, and south to Walker Lake, with the Truckee, Carson, Walker and Humboldt rivers flowing into it. Inside it, today's Pyramid Lake, Walker Lake and Honey Lake are small dark-blue patches. Lake Tahoe sits in the mountains to the southwest, outside the ancient lake. Reno, Fallon and Lovelock are marked." loading="lazy">
+      <p class="photo-caption">Lake Lahontan at its highest, drawn by flooding today&rsquo;s terrain to 1,335 m. Dark blue: what&rsquo;s left.</p>
+    </div>
+
+    <p>At the end of the last ice age, northwestern Nevada was underwater. <strong>Lake Lahontan</strong> filled the valleys between the ranges with one huge, branching lake. About 15,000 years ago it reached its highest level, 1,335 m above sea level. According to the USGS it covered 22,800 km², slightly more than Lake Ontario, and it was 281 m deep where Pyramid Lake is now. Then the climate dried and it fell fast, between about 14,000 and 13,000 years ago.</p>
+
+    <p>I drew the map above by taking a modern elevation model and filling it with water up to 1,335 m, starting from Pyramid Lake. The flood covers <strong>22,314 km²</strong>, within about 2% of the USGS figure. It&rsquo;s only an approximation, because the land has slowly rebounded since the weight of the water came off, but it shows how much of Nevada was lake.</p>
+
+    <p>Pyramid Lake and Walker Lake are the deepest leftovers. Pyramid is the end of the line for the Truckee River, which flows out of Lake Tahoe, through Reno, and into the desert, where the water has nowhere to go but up. Over thousands of years the lake has become slightly salty, about a sixth as salty as seawater.</p>
+
+    <p>When the big lake shrank, its fish were stranded in the pieces. The ones that made it are the native fish of the Lahontan basin.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/pyramid-lake/natives.jpg" alt="Five small maps of the Lahontan basin, each with the ancient lake in pale blue and today's lakes in dark blue, and rust dots for GBIF records of one fish. Cui-ui: records clustered only around Pyramid Lake. Lahontan cutthroat trout: around Pyramid Lake, Walker Lake, the Tahoe area and scattered streams to the east. Tui chub: spread widely across the basin and into northeastern California. Tahoe sucker and Lahontan redside: concentrated around Lake Tahoe and the Truckee and Carson rivers, with records scattered across the basin." loading="lazy">
+      <p class="photo-caption">Five native fishes, every GBIF record in the window. &ldquo;Inside the old lake&rdquo; means inside the 1,335 m flood on the map above.</p>
+    </div>
+
+    <h2>The cui-ui</h2>
+
+    <p>The <strong>cui-ui</strong> (say <em>kwee-wee</em>), <em>Chasmistes cujus</em>, is a big lake sucker that lives only in Pyramid Lake. It can grow to about 3.5 kg and live more than 40 years. It&rsquo;s the last genetically pure member of its genus: the other lake suckers of the West have either disappeared or mixed with other species. Of the 62 GBIF records of cui-ui in the basin, <strong>87% sit inside the footprint of Lake Lahontan</strong>, nearly all of them right around Pyramid Lake.</p>
+
+    <p>Cui-ui spend their lives in the lake but spawn in the river, swimming up the lower Truckee in spring. That&rsquo;s where the trouble began.</p>
+
+    <p>In 1905 the federal government finished <strong>Derby Dam</strong> on the Truckee, east of Reno, as the first piece of the Newlands irrigation project. It sent much of the river&rsquo;s water south to farms around Fallon. Pyramid Lake dropped about 80 feet. As the lake fell, a delta built up at the mouth of the river that the fish had trouble getting over. Next door, <strong>Winnemucca Lake</strong>, which also had cui-ui, dried up completely; cui-ui lived there until the mid-1930s, and it has been dry since the late 1930s.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/pyramid-lake/pyramid.jpg" alt="Shaded relief map of the lower Truckee River and Pyramid Lake. The Truckee flows east from Reno and Sparks, past Derby Dam (1905), turns north at Wadsworth, passes Numana Dam and Nixon, and reaches Pyramid Lake at Marble Bluff Dam and fishway (1976). The dry Winnemucca Lake valley lies east of Pyramid Lake. Rust dots for cui-ui records cluster around the river mouth and the lake; gold dots for Lahontan cutthroat trout line the western shore and the river near Reno." loading="lazy">
+      <p class="photo-caption">The Truckee from Reno to Pyramid Lake, with the three dams that matter most to its fish, and GBIF records of cui-ui and Lahontan cutthroat.</p>
+    </div>
+
+    <p>The cui-ui was on the very first federal list of endangered species, in March 1967. Then came the work of keeping it going:</p>
+
+    <ul>
+      <li><strong>A hatchery.</strong> Raising cui-ui began in 1973, and the Tribe took it over in 1977. The Koch Cui-ui Hatchery at Sutcliffe opened in 1974, named for Dave Koch, who pioneered raising them.</li>
+      <li><strong>A ladder.</strong> In 1976 Marble Bluff Dam and the Pyramid Lake Fishway were built near the river mouth, so fish could get past the delta.</li>
+      <li><strong>Water.</strong> The 1990 Truckee-Carson-Pyramid Lake Water Rights Settlement Act called for recovery plans for the cui-ui and the cutthroat, and set up a fisheries fund for the Tribe. The Truckee River Operating Agreement, signed in 2008, took effect in 2015.</li>
+    </ul>
+
+    <p>It&rsquo;s working. Since 1991 the adult population has been estimated at 500,000 to 2 million, and spawning runs in 2005, 2006, 2008 and 2010 each topped 200,000 fish. The newest project is a rock ramp at <strong>Numana Dam</strong>, funded with $8.3 million in 2023, to reopen spawning river that the fish have been cut off from for a century.</p>
+
+    <h2>The giant trout</h2>
+
+    <p>The other famous native is the <strong>Lahontan cutthroat trout</strong>, <em>Oncorhynchus clarkii henshawi</em>. In Pyramid Lake it grew enormous, eating tui chub, which still make up more than half of what biologists catch in their survey nets. In 1925 Johnny Skimmerhorn, a Paiute fisherman, caught a <strong>41-pound</strong> Lahontan cutthroat there. It&rsquo;s still the world record for any cutthroat.</p>
+
+    <p>Derby Dam was a disaster for these fish too. They spawn in the river, and with the river cut down and the delta in the way, the last natural spawning run up the Truckee was in the 1940s. The Pyramid Lake cutthroat was gone. Hatchery cutthroat from other Lahontan populations kept a fishery going. The species was listed as endangered in 1970 and moved to threatened in 1975.</p>
+
+    <p>Then, in 1977, someone found cutthroat trout in a small stream on <strong>Pilot Peak</strong>, a lone mountain on the Nevada&ndash;Utah border, about 300 miles to the east. The trout expert Robert Behnke thought they looked like Pyramid Lake fish. Decades later, Mary Peacock&rsquo;s lab at UNR settled it with DNA from museum specimens collected between 1872 and 1911: the Pilot Peak fish were the lost Pyramid Lake lineage, probably carried there long ago by people stocking trout.</p>
+
+    <p class="pull">The biggest cutthroat trout in the world disappeared from its lake in the 1940s, and turned up again in a creek 300 miles away.</p>
+
+    <p>Eggs went to the Lahontan National Fish Hatchery in 1995. The first Pilot Peak fish went into Pyramid Lake in 2006, and by 2014 they were making their own spawning runs. The giants came back: a 31-pound, 4-ounce fish in 2023, and acoustic surveys estimating about a million large cutthroat in the lake in 2019.</p>
+
+    <h2>Heat, again</h2>
+
+    <p>This is where my old lab work comes back in. Desert lake fish deal with heat: shallow spawning rivers in summer, warm lake surfaces, low water in drought years. Cui-ui eggs, for instance, survive best between 8.9 and 15 &deg;C, and poorly between 15 and 21 &deg;C.</p>
+
+    <p>Heat shock proteins are the cell&rsquo;s first line of defense against that. When a cell overheats, its proteins start to unfold, and it switches on genes for chaperones like Hsp70 and Hsp27 that grab the damaged proteins and help them refold. Lee Weber and Eileen Hickey&rsquo;s labs at UNR studied that response in mammal and fish cells, and they were co-authors with Lawrence Hightower&rsquo;s group on work showing how differently desert fish like the topminnow <em>Poeciliopsis</em> can tune it.</p>
+
+    <p>The question has come back around with new tools. In 2008, Peacock&rsquo;s UNR group heat-tested young Pilot Peak cutthroat and found that how long a fish holds out is partly inherited, and that fish in better condition last longer. In 2019, a team including Peacock scanned the genomes of Pilot Peak trout that had been heat-tested, along with the two remaining native lake populations, Independence Lake and Summit Lake. The genes linked to heat tolerance included ones for protein assembly, the job heat shock proteins do, along with metabolism, heart function and the immune system.</p>
+
+    <p>It&rsquo;s fun to see questions like the ones I was around in the early &rsquo;90s still being asked, with tools nobody had back then.</p>
+
+    <div class="note">
+      <p>How the maps were made: GBIF occurrence downloads for five native fishes (DOIs below), fetched by a GitHub Action. Terrain is the Copernicus GLO-90 elevation model; rivers, lakes and dams come from OpenStreetMap. The Lake Lahontan outline is today&rsquo;s terrain flooded to 1,335 m from Pyramid Lake, so it ignores the land&rsquo;s rebound since the water left. Tui chub records include other subspecies outside the Lahontan basin. The code is on <a href="https://github.com/bdgroves/30DayMapChallenge/tree/main/gbif/lahontan" target="_blank" rel="noopener">GitHub</a>.</p>
+    </div>
+
+    <p>If you visit Pyramid Lake, remember it&rsquo;s on the Pyramid Lake Paiute Reservation, and you&rsquo;ll need a Tribal permit to fish or camp. Stop at the fishway at Marble Bluff in spring, when the cui-ui are running. They&rsquo;ve been making that trip since the inland sea went away.</p>
+
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://podcasts.apple.com/us/podcast/cui-ui-pyramid-lake-suckers/id1546630514?i=1000634589722" target="_blank" rel="noopener">Cui-ui: Pyramid Lake Suckers</a></strong> &mdash; <em>Fish of the Week!</em>, 13 November 2023, about half an hour. With Erik Horgen of the U.S. Fish and Wildlife Service.</p>
+      <p><strong><a href="https://www.kunr.org/local-stories/2023-10-05/pyramid-lake-paiute-tribe-dam-revamp-recover-cui-ui-lahontan-cutthroat" target="_blank" rel="noopener">Pyramid Lake Paiute Tribe attempts to recover native fish with $8 million dam revamp</a></strong> &mdash; KUNR, Kaleb Roedel, 5 October 2023, about 5 min. The Numana Dam project.</p>
+      <p><strong><a href="https://www.kuer.org/health-science-environment/2022-07-05/pyramid-lake-paiute-tribe-hopes-to-boost-native-cui-ui-fish-despite-dam-impacts-and-climate-change" target="_blank" rel="noopener">Pyramid Lake Paiute Tribe hopes to boost native cui-ui fish</a></strong> &mdash; Mountain West News Bureau, 5 July 2022, about 5 min.</p>
+      <p><strong><a href="https://www.pbs.org/video/episode-609-pyramid-lake-37dtag" target="_blank" rel="noopener">Wild Nevada: Pyramid Lake</a></strong> &mdash; PBS Reno, episode 609, 27 min video.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Peacock, M.M., Hekkala, E.R., Kirchoff, V.S. &amp; Heki, L.G. (2017).</strong> <a href="https://royalsocietypublishing.org/rsos/article/4/11/171253/93494/Return-of-a-giant-DNA-from-archival-museum-samples" target="_blank" rel="noopener">Return of a giant: DNA from archival museum samples helps to identify a unique cutthroat trout lineage formerly thought to be extinct.</a> <em>Royal Society Open Science</em> <strong>4</strong>, 171253. Open access.</p>
+      <p><strong>Amish, S.J., Ali, O., Peacock, M., Miller, M., Robinson, M., Smith, S., Luikart, G. &amp; Neville, H. (2019).</strong> <a href="https://doi.org/10.1111/mec.15100" target="_blank" rel="noopener">Assessing thermal adaptation using family-based association and F<sub>ST</sub> outlier tests in a threatened trout species.</a> <em>Molecular Ecology</em> <strong>28</strong>, 2573&ndash;2593.</p>
+      <p><strong>Robinson, M.L., Gomez-Raya, L., Rauw, W.M. &amp; Peacock, M.M. (2008).</strong> <a href="https://doi.org/10.1016/j.jtherbio.2008.05.004" target="_blank" rel="noopener">Fulton&rsquo;s body condition factor K correlates with survival time in a thermal challenge experiment in juvenile Lahontan cutthroat trout (<em>Oncorhynchus clarki henshawi</em>).</a> <em>Journal of Thermal Biology</em> <strong>33</strong>, 363&ndash;368.</p>
+      <p><strong>Scoppettone, G.G., Buettner, M.E. &amp; Rissler, P.H. (1993).</strong> <a href="https://doi.org/10.1007/BF00007531" target="_blank" rel="noopener">Effect of four fluctuating temperature regimes on cui-ui, <em>Chasmistes cujus</em>, survival from egg fertilization to swim-up, and size of larvae produced.</a> <em>Environmental Biology of Fishes</em> <strong>38</strong>, 373&ndash;378.</p>
+      <p><strong>Galat, D.L., Lider, E.L., Vigg, S. &amp; Robertson, S.R. (1981).</strong> <a href="https://doi.org/10.1007/978-94-009-8665-7_22" target="_blank" rel="noopener">Limnology of a large, deep, North American terminal lake, Pyramid Lake, Nevada, U.S.A.</a> In <em>Salt Lakes</em>, 281&ndash;317. Springer.</p>
+      <p><strong>Norris, C.E., Brown, M.A., Hickey, E., Weber, L.A. &amp; Hightower, L.E. (1997).</strong> <a href="https://doi.org/10.1093/oxfordjournals.molbev.a025711" target="_blank" rel="noopener">Low-molecular-weight heat shock proteins in a desert fish (<em>Poeciliopsis lucida</em>): homologs of human Hsp27 and <em>Xenopus</em> Hsp30.</a> <em>Molecular Biology and Evolution</em> <strong>14</strong>, 1050&ndash;1061.</p>
+      <p><a href="https://pubs.usgs.gov/fs/2004/3044/" target="_blank" rel="noopener">USGS Fact Sheet 2004-3044</a> &mdash; Lake Lahontan&rsquo;s rise and fall, and where the 1,335 m comes from.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://pyramidlakefisheries.org/" target="_blank" rel="noopener">Pyramid Lake Fisheries</a> &mdash; the Tribe&rsquo;s fisheries program, hatcheries and permits. &middot; <a href="https://www.fws.gov/story/2019-02/peak-pyramid" target="_blank" rel="noopener">From Peak to Pyramid</a> &mdash; U.S. Fish and Wildlife Service. &middot; <a href="https://www.fws.gov/office/marble-bluff-fish-passage-and-research-facility/species" target="_blank" rel="noopener">Marble Bluff Fish Passage Facility</a></p>
+      <p><strong>GBIF.org (5 October 2026).</strong> GBIF Occurrence Downloads: cui-ui <a href="https://doi.org/10.15468/dl.bf6u63" target="_blank" rel="noopener">doi:10.15468/dl.bf6u63</a> &middot; Lahontan cutthroat trout <a href="https://doi.org/10.15468/dl.pf96qt" target="_blank" rel="noopener">doi:10.15468/dl.pf96qt</a> &middot; tui chub <a href="https://doi.org/10.15468/dl.xddnek" target="_blank" rel="noopener">doi:10.15468/dl.xddnek</a> &middot; Tahoe sucker <a href="https://doi.org/10.15468/dl.fmjyg6" target="_blank" rel="noopener">doi:10.15468/dl.fmjyg6</a> &middot; Lahontan redside <a href="https://doi.org/10.15468/dl.dv2epv" target="_blank" rel="noopener">doi:10.15468/dl.dv2epv</a></p>
+    </div>
+
+  </div>
+
+  <div class="reactions-section">
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+  <div class="article-footer">
+    <div class="article-footer-author">Brooks Groves &middot; October 2026</div>
+    <div class="article-footer-nav">
+      <a href="/blog/two-creeks-of-gold.html">← Previous post</a>
+      <a href="/blog/index.html">All posts →</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
+    </div>
+
+    <div class="footer-connect">
+      <div class="fc-label">Connect</div>
+      <div class="social-row">
+          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
+          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
+          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
+          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
+          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
+          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
+          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-pagelinks">
+      <div class="fc-label">More here</div>
+      <div class="pagelink-row">
+        <a href="/blog/index.html">Blog</a>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
+    <p class="footer-bottom">
+      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
+      <a href="#top">&uarr; Back to top</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this handles clicks and keeps the button's label truthful.
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function sync(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Describe what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  sync();
+  btn.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>

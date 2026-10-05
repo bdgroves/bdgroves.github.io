@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Two Creeks of Gold — Brooks Groves</title>
+  <meta name="description" content="California's state fish, the golden trout, evolved in just two Kern Plateau creeks. A coffee can in 1876 started its spread across the West; GBIF maps show where it lives now, and why its meadow streams run hot.">
+  <meta property="og:title" content="Two Creeks of Gold">
+  <meta property="og:description" content="California's state fish evolved in just two creeks. A coffee can in 1876 started its spread across the West.">
+  <meta property="og:image" content="https://brooksgroves.com/blog/img/golden-trout/og.jpg">
+  <meta property="og:url" content="https://brooksgroves.com/blog/two-creeks-of-gold.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; border-radius:4px; transition: background 0.2s, color 0.2s; 
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .article-tag-pill:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body pre { background: var(--ink); color: #c8d0cc; padding: 1.25rem 1.5rem; border-radius: 2px; overflow-x: auto; margin: 1.5rem 0 2rem; font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.65; }
+    .article-body code { font-family: 'DM Mono', monospace; font-size: 0.85em; background: var(--cream); padding: 0.15em 0.4em; border-radius: 2px; }
+    .article-body pre code { background: none; padding: 0; font-size: 1em; color: inherit; }
+    .article-body ul, .article-body ol { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body li { margin-bottom: 0.4rem; }
+
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+  
+    /* ── Science-post elements ──
+       This post type needs three things the memoir template doesn't:
+       a caveat box for contested findings, a first-person method note
+       that is clearly set apart from the reporting, and a formatted
+       source list. Kept quiet so they read as apparatus, not argument. */
+    .lede { font-size:1.05rem; line-height:1.9; color:var(--ink); }
+    .caveat {
+      background:var(--cream); border-left:3px solid var(--rust);
+      padding:1rem 1.25rem; margin:1.6rem 0;
+    }
+    .caveat-label {
+      font-family:'DM Mono',monospace; font-size:0.54rem; letter-spacing:0.16em;
+      text-transform:uppercase; color:var(--rust); margin-bottom:0.45rem;
+    }
+    .caveat p { margin:0; font-size:0.84rem; line-height:1.85; color:var(--stone); }
+    .note {
+      border:1px solid var(--mist); border-top:2px solid var(--gold);
+      padding:1.1rem 1.35rem; margin:1.8rem 0; background:var(--paper-card,transparent);
+    }
+    .note p { font-size:0.85rem; line-height:1.9; color:var(--stone); margin:0 0 0.8rem; }
+    .note p:last-child { margin-bottom:0; }
+    .sources { margin:1.4rem 0 2rem; }
+    /* Source links carry the accent rather than the body-link red, so a box
+       that is almost entirely links doesn't read as a wall of colour. */
+    .sources a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--desert,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist);
+    }
+    .pull {
+      font-family:'Playfair Display',Georgia,serif; font-size:1.1rem; font-style:italic;
+      line-height:1.7; color:var(--ink); margin:1.8rem 0; padding-left:1.3rem;
+      border-left:3px solid var(--gold);
+    }
+    .cta { border:1px solid var(--mist); border-top:2px solid var(--sage); padding:1.1rem 1.35rem; margin:2rem 0; }
+    .cta p { font-size:0.9rem; line-height:1.8; margin:0 0 0.8rem; color:var(--ink); }
+    .cta a.btn { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; padding:0.55rem 1.1rem; border:1.5px solid var(--sage); color:var(--sage); display:inline-block; margin:0 0.5rem 0.4rem 0; }
+    .cta a.btn:hover { background:var(--sage); color:var(--parchment); }
+    .figures { width:100%; border-collapse:collapse; font-family:'DM Mono',monospace; font-size:0.78rem; margin:0.5rem 0 1.8rem; font-variant-numeric:tabular-nums; }
+    .figures th, .figures td { text-align:left; padding:0.45rem 0.6rem; border-bottom:1px solid var(--mist); }
+    .figures th { font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); font-weight:400; }
+    .figures td.num { text-align:right; }
+    .tablewrap { overflow-x:auto; }
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; height: auto; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://journal.brooksgroves.com">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">← Back to Blog</a>
+
+  <p class="article-kicker">Science Writing &middot; Ecology &middot; Sierra Nevada</p>
+  <h1 class="article-title">&#128031; Two Creeks of Gold</h1>
+  <div class="article-meta">
+    <span>October 4, 2026</span>
+    <span>Brooks Groves</span>
+    <span>10 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <a href="/tags.html#Science%20Writing" class="article-tag-pill">Science Writing</a>
+    <a href="/tags.html#Ecology" class="article-tag-pill">Ecology</a>
+    <a href="/tags.html#Sierra%20Nevada" class="article-tag-pill">Sierra Nevada</a>
+    <a href="/tags.html#California" class="article-tag-pill">California</a>
+    <a href="/tags.html#GBIF" class="article-tag-pill">GBIF</a>
+    <a href="/tags.html#Cartography" class="article-tag-pill">Cartography</a>
+  </div>
+
+  <div class="article-body">
+
+    <p class="lede">I grew up in Groveland, in the Sierra Nevada foothills, so I&rsquo;ve always had a soft spot for California&rsquo;s state fish. It&rsquo;s the golden trout, <em>Oncorhynchus mykiss aguabonita</em>, and it might be the best-dressed fish in North America: a brassy, coppery back, bright golden-yellow sides, a deep red stripe down the middle, and a row of dark oval &ldquo;parr marks&rdquo; that most trout lose when they grow up and the golden trout mostly keeps.</p>
+
+    <p>California made it the state fish in 1947. What surprises most people is how small its true home is. The golden trout evolved in just two streams: <strong>Golden Trout Creek</strong> and the <strong>South Fork of the Kern River</strong>, on the Kern Plateau at the south end of the high Sierra.</p>
+
+    <p>Two creeks. That&rsquo;s the whole native range of California&rsquo;s state fish. Now it lives in high lakes from the Sierra to Wyoming, and the story of how it got there starts with a coffee can.</p>
+
+    <h2>Home</h2>
+
+    <div class="photo-block">
+      <img src="/blog/img/golden-trout/kern.jpg" alt="Shaded relief map of the Kern Plateau in the southern Sierra Nevada. The Kern River runs north to south through a deep canyon on the left. East of it, Golden Trout Creek is drawn in gold, running west from Big Whitney Meadow to Volcano Falls on the Kern. Further east the South Fork Kern River, also gold, runs south past Mulkey, Templeton and Monache meadows. West of the Kern, the Little Kern River is drawn in rust. A dashed green line outlines the Golden Trout Wilderness. Mount Whitney, Cirque Peak, the Cottonwood Lakes and Olancha Peak are labelled. Small gold and rust dots mark GBIF records of the two golden trout." loading="lazy">
+      <p class="photo-caption">The Kern Plateau. Gold: the golden trout&rsquo;s two native streams. Rust: the Little Kern River. Dots: GBIF records of each fish.</p>
+    </div>
+
+    <p>Golden Trout Creek starts in Big Whitney Meadow, below Cirque Peak, and runs about 9 miles to the Kern River, dropping from around 10,800 feet to 7,000 feet. Just before it reaches the Kern it goes over <strong>Volcano Falls</strong>, and that waterfall is the reason the golden trout exists. It keeps fish from the main Kern from swimming up, so the trout above the falls have been on their own for a very long time. The South Fork Kern, a few miles east, wanders south through a string of big, open meadows.</p>
+
+    <p>These are small fish. In their home streams they grow slowly through a short summer and top out around 20 cm, about 8 inches, living up to nine years. Over a summer the water can swing from about 3 to 20 &deg;C.</p>
+
+    <p>On the other side of the Kern canyon is a sister fish, the <strong>Little Kern golden trout</strong>, <em>O. m. whitei</em>. Geneticists have found that the two goldens are two independent lineages, each derived separately from rainbow trout, rather than one golden fish that split in two. Its range once covered about 160 km of stream in the Little Kern basin. By 1978 it was down to about 16, and that April it was listed as threatened under the Endangered Species Act.</p>
+
+    <h2>The coffee can</h2>
+
+    <p>In 1876, according to the California Department of Fish and Wildlife, 13 golden trout from Mulkey Creek, a tributary of the South Fork Kern, were put in a coffee can, carried over the divide and released into Cottonwood Creek, on the Owens Valley side of the crest. Twelve survived. The story usually credits Colonel Sherman Stevens and his brother.</p>
+
+    <p>Their descendants were later carried up into the Cottonwood Lakes, below Cirque Peak, and from 1917 the Cottonwood Lakes became the source of golden trout eggs for stocking. Pack trains carried fish all over the high Sierra. Today golden trout live in more than 300 lakes and about 1,100 km of streams outside their native range.</p>
+
+    <p>Then the eggs left California. The Forest Service brought golden trout eggs to Wyoming in 1920, and the Wind River Range became famous for them. The world record is an 11-pound, 4-ounce golden from Cook Lake in Wyoming&rsquo;s Wind Rivers, caught in 1948, although Wyoming&rsquo;s own biologists are skeptical: there are no official written records or photos, and it&rsquo;s about twice as big as any golden they&rsquo;ve seen in recent years.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/golden-trout/west.jpg" alt="Shaded relief map of the western United States. A small box around the Kern Plateau in the southern Sierra Nevada is filled with rust dots, the golden trout's home. Gold dots spread north along the high Sierra, and in clusters across central Idaho, southwest Montana and the Beartooths, the Wind River Range in Wyoming, and Colorado, with scattered dots in Washington, Utah, Nevada and Arizona." loading="lazy">
+      <p class="photo-caption">Every georeferenced California golden trout record in GBIF. Rust: inside the Kern Plateau window. Gold: everywhere else.</p>
+    </div>
+
+    <p>I pulled every California golden trout record from GBIF, the Global Biodiversity Information Facility, as a single citable download: <strong>1,133 records</strong>. Only <strong>288</strong> fall on the Kern Plateau. The other 845 are spread across 13 states and provinces, plus a few strays in museums farther away. Outside California, <strong>Idaho has the most</strong>, 333, more than the Kern Plateau itself, ahead of Montana (174) and Wyoming (100). Another 167 are in the rest of California&rsquo;s high country. Outside California they live high: half the Wyoming records are above about 3,270 m, and half the Idaho ones above about 2,600 m.</p>
+
+    <p class="pull">The oldest golden trout in GBIF is a Smithsonian specimen collected in 1876, the same year as the coffee can.</p>
+
+    <h2>&ldquo;Practically exterminated&rdquo;</h2>
+
+    <p>The golden trout&rsquo;s conservation story starts early too. The writer Stewart Edward White, who spent time in the southern Sierra, raised the alarm with President Theodore Roosevelt, and in 1904, at Roosevelt&rsquo;s request, the fish biologist Barton Warren Evermann went to survey the golden trout. He came back with a warning:</p>
+
+    <p class="pull">&ldquo;It is only a question of time, a very few years at most, when the golden trout of Volcano Creek will become practically exterminated unless it receives protection.&rdquo;</p>
+
+    <p>Volcano Creek was the old name for Golden Trout Creek. The fish wasn&rsquo;t exterminated, but the threats Evermann was starting to see are still the ones biologists worry about.</p>
+
+    <ul>
+      <li><strong>Rainbow trout.</strong> Stocked rainbows interbreed with goldens. A genetic survey in 2006 found rainbow or hybrid ancestry through most of the South Fork Kern. Golden Trout Creek was in much better shape, with several populations showing less than 5% rainbow ancestry.</li>
+      <li><strong>Brown trout.</strong> Browns eat small goldens. Managers built fish barriers on the South Fork Kern, including the Templeton Barrier in 1973 and the Schaeffer Barrier in 1981, and treated the river to remove browns in 1981, 1987 and 2000.</li>
+      <li><strong>Cattle.</strong> About 95% of the land around golden trout streams has been grazed by livestock for 130 years. Trampled meadow banks widen and flatten the streams, which lets the sun warm the water. Some grazing allotments on the plateau have been rested since 2001.</li>
+    </ul>
+
+    <p>In 2004 the state, the Forest Service and the U.S. Fish and Wildlife Service signed a conservation strategy for the golden trout. In 2011 the Fish and Wildlife Service decided it didn&rsquo;t need listing under the Endangered Species Act. It&rsquo;s a California Species of Special Concern, and CalTrout&rsquo;s State of the Salmonids report rates it <strong>1.9 out of 7: critical</strong>, down from 3.1 in 2017.</p>
+
+    <h2>Hot water in the high country</h2>
+
+    <p>You&rsquo;d think a fish living at 2,600 to 3,000 m would never have to worry about heat. But meadow streams are shallow, slow and wide open to the sun.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/golden-trout/meadows.png" alt="Horizontal bar chart of daily maximum stream temperatures in three golden trout meadows: Mulkey Meadows, 2,838 metres, 26.3 degrees C; Ramshaw Meadows, 2,640 metres, 25.5 degrees C; Big Whitney Meadow, 2,963 metres, 21.2 degrees C. A shaded band at 25 to 26 degrees marks temperatures that are lethal with prolonged exposure for some rainbow trout." loading="lazy">
+      <p class="photo-caption">Hottest daily water temperatures measured in three golden trout meadows (Nussl&eacute;, Matthews &amp; Carlson 2015).</p>
+    </div>
+
+    <p>Sébastien Nusslé, Kathleen Matthews and Stephanie Carlson put temperature loggers in golden trout meadows and found daily maximums of <strong>26.3 &deg;C at Mulkey Meadows</strong> and <strong>25.5 &deg;C at Ramshaw</strong>. Big Whitney Meadow stayed at or below about 21 &deg;C. The Mulkey and Ramshaw numbers are right at the 25&ndash;26 &deg;C where prolonged exposure is lethal for some rainbow trout. Their good news: where cattle had been kept out, the water ran about 1.6&ndash;3.5 &deg;C cooler, so how the meadows are managed can buy the fish real room as the climate warms.</p>
+
+    <p>And here&rsquo;s the part that gets me. The same paper says, plainly, that &ldquo;little is known about the heat tolerance of the California golden trout.&rdquo; One lab study, by Christopher Myrick and Joseph Cech, measured golden trout performance at 10&ndash;19 &deg;C. I couldn&rsquo;t find anyone who has measured the heat shock response of a golden trout.</p>
+
+    <h2>A heat shock aside</h2>
+
+    <p>That gap caught my eye, because heat shock proteins are where I started. In the early 1990s I was a molecular biology student at the University of Nevada, Reno, working with Dr. Lee Weber on heat shock proteins in fish.</p>
+
+    <p>When a cell gets too hot, its proteins start to unfold and clump together. Almost every living thing answers the same way: it switches on a set of genes for <strong>heat shock proteins</strong>, molecular chaperones that grab the damaged proteins and help them refold. Make enough of them in time and the cell survives a heat that would otherwise kill it. In a classic 1988 experiment, rainbow trout cells held at 28 &deg;C made heat shock proteins, including Hsp70 and Hsp27, and then survived 32 &deg;C.</p>
+
+    <p>Fish turned out to be a great place to study this, because different species, and different populations of the same species, tune the response differently. In the 1990s, Lawrence Hightower&rsquo;s group found that desert topminnows (<em>Poeciliopsis</em>) differ in which heat shock proteins they make and how much heat they can take, and in 1997, with Eileen Hickey and Lee Weber at UNR among the authors, they described the small heat shock proteins of one of them. A golden trout from a sun-baked meadow at 2,800 m and one from a cold lake in the Wind Rivers might well turn out to differ the same way. Someone should check.</p>
+
+    <div class="note">
+      <p>How the maps were made: GBIF occurrence downloads for the California golden trout (1,133 records) and the Little Kern golden trout (53), fetched by a GitHub Action, with ground elevation from the Copernicus GLO-30 elevation model. Streams, meadows and the wilderness boundary come from OpenStreetMap. &ldquo;On the Kern Plateau&rdquo; is a box around the plateau, so it includes some stocked lakes near Mount Whitney and the Cottonwood Lakes; a few old records are placed only to the nearest county or river, so treat single dots loosely. The code is on <a href="https://github.com/bdgroves/30DayMapChallenge/tree/main/gbif/golden-trout" target="_blank" rel="noopener">GitHub</a>.</p>
+    </div>
+
+    <p>Two creeks and a coffee can. The golden trout now swims in more of the West than it ever could have reached on its own, while the two creeks it came from need the most looking after. If you&rsquo;re ever up on the Kern Plateau, take a look in the water. Those parr marks are hard to miss.</p>
+
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen</div>
+      <p><strong><a href="https://howtoflyfish.orvis.com/podcasts/trout/1887-the-elusive-golden-trout-with-jessica-strickland" target="_blank" rel="noopener">The Elusive Golden Trout, with Jessica Strickland</a></strong> &mdash; <em>The Orvis Fly-Fishing Podcast</em>, 2024, about 38 min. Trout Unlimited&rsquo;s Jessica Strickland on golden trout, where they came from and what&rsquo;s being done for them.</p>
+      <p><strong><a href="https://www.wetflyswing.com/tim-huckaby-on-fly-fishing-southern-california-golden-trout-wilderness-fly-fishing-technology-bill-gates-story/" target="_blank" rel="noopener">Tim Huckaby on Fly Fishing Southern California and the Golden Trout Wilderness</a></strong> &mdash; <em>Wet Fly Swing</em> #784, 16 July 2025, about an hour. An angler&rsquo;s view of the high country.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Nussl&eacute;, S., Matthews, K.R. &amp; Carlson, S.M. (2015).</strong> <a href="https://doi.org/10.1371/journal.pone.0142426" target="_blank" rel="noopener">Mediating water temperature increases due to livestock and global change in high elevation meadow streams of the Golden Trout Wilderness.</a> <em>PLOS ONE</em> <strong>10</strong>, e0142426. Open access. &mdash; the meadow temperatures.</p>
+      <p><strong>Cordes, J.F. et al. (2006).</strong> <a href="https://doi.org/10.1577/T05-120.1" target="_blank" rel="noopener">Identifying introgressive hybridization in native populations of California golden trout based on molecular markers.</a> <em>Transactions of the American Fisheries Society</em>.</p>
+      <p><strong>Bagley, M.J. &amp; Gall, G.A.E. (1998).</strong> <a href="https://doi.org/10.1046/j.1365-294x.1998.00413.x" target="_blank" rel="noopener">Mitochondrial and nuclear DNA sequence variability among populations of rainbow trout (<em>Oncorhynchus mykiss</em>).</a> <em>Molecular Ecology</em> <strong>7</strong>, 945&ndash;961. &mdash; two goldens, two separate origins.</p>
+      <p><strong>Myrick, C.A. &amp; Cech, J.J. Jr. (2003).</strong> The physiological performance of golden trout at water temperatures of 10&ndash;19 &deg;C. <em>California Fish and Game</em> <strong>89</strong>, 20&ndash;29.</p>
+      <p><strong>Evermann, B.W. (1906).</strong> The golden trout of the southern High Sierras. <em>Bulletin of the U.S. Bureau of Fisheries</em> <strong>25</strong>, 1&ndash;51. &mdash; the 1904 survey Roosevelt asked for.</p>
+
+      <div class="sources-head">&#127777;&#65039; Heat shock proteins</div>
+      <p><strong>Mosser, D.D. &amp; Bols, N.C. (1988).</strong> <a href="https://doi.org/10.1007/BF00691143" target="_blank" rel="noopener">Relationship between heat-shock protein synthesis and thermotolerance in rainbow trout fibroblasts.</a> <em>Journal of Comparative Physiology B</em> <strong>158</strong>, 457&ndash;467.</p>
+      <p><strong>Norris, C.E., Brown, M.A., Hickey, E., Weber, L.A. &amp; Hightower, L.E. (1997).</strong> <a href="https://doi.org/10.1093/oxfordjournals.molbev.a025711" target="_blank" rel="noopener">Low-molecular-weight heat shock proteins in a desert fish (<em>Poeciliopsis lucida</em>): homologs of human Hsp27 and <em>Xenopus</em> Hsp30.</a> <em>Molecular Biology and Evolution</em> <strong>14</strong>, 1050&ndash;1061.</p>
+      <p><strong>White, C.N., Hightower, L.E. &amp; Schultz, R.J. (1994).</strong> <a href="https://doi.org/10.1093/oxfordjournals.molbev.a040085" target="_blank" rel="noopener">Variation in heat-shock proteins among species of desert fishes (Poeciliidae, <em>Poeciliopsis</em>).</a> <em>Molecular Biology and Evolution</em> <strong>11</strong>, 106&ndash;119.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://wildlife.ca.gov/Conservation/Fishes/California-Golden-Trout" target="_blank" rel="noopener">California Golden Trout</a> &mdash; California Department of Fish and Wildlife. &middot; <a href="https://caltrout.org/sos/species-accounts/trout/california-golden-trout/" target="_blank" rel="noopener">CalTrout State of the Salmonids</a> &middot; <a href="https://www.govinfo.gov/content/pkg/FR-2011-10-11/html/2011-25652.htm" target="_blank" rel="noopener">2011 Endangered Species Act finding</a> &middot; <a href="https://ecos.fws.gov/docs/five_year_review/doc3894.pdf" target="_blank" rel="noopener">Little Kern golden trout 5-year review</a></p>
+      <p><strong>GBIF.org (5 October 2026).</strong> GBIF Occurrence Downloads <a href="https://doi.org/10.15468/dl.p6g732" target="_blank" rel="noopener">doi:10.15468/dl.p6g732</a> (California golden trout) and <a href="https://doi.org/10.15468/dl.p7ndd4" target="_blank" rel="noopener">doi:10.15468/dl.p7ndd4</a> (Little Kern golden trout).</p>
+    </div>
+
+  </div>
+
+  <div class="reactions-section">
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="bottom"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+  <div class="article-footer">
+    <div class="article-footer-author">Brooks Groves &middot; October 2026</div>
+    <div class="article-footer-nav">
+      <a href="/blog/whats-up-with-the-pikas.html">← Previous post</a>
+      <a href="/blog/index.html">All posts →</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
+    </div>
+
+    <div class="footer-connect">
+      <div class="fc-label">Connect</div>
+      <div class="social-row">
+          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
+          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
+          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
+          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
+          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
+          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
+          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-pagelinks">
+      <div class="fc-label">More here</div>
+      <div class="pagelink-row">
+        <a href="/blog/index.html">Blog</a>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
+    <p class="footer-bottom">
+      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
+      <a href="#top">&uarr; Back to top</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this handles clicks and keeps the button's label truthful.
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function sync(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Describe what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  sync();
+  btn.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
