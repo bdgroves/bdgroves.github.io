@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sentinel Stockpile, Revisited: Where Did the Wind Blades Go? — Brooks Groves</title>
-  <meta name="description" content="I rebuilt Sentinel Stockpile, my project that measures cargo piles along the Columbia from orbit: it now watches four yards twice a week with a rule per cargo, checked against aerial photos, and has a live dashboard. The first thing it showed me: the wind-turbine blades at Terminal 5 are gone.">
+  <meta name="description" content="I rebuilt Sentinel Stockpile, my project that measures cargo piles along the Columbia from orbit: it now watches eight Pacific Northwest yards twice a week with a rule per cargo, checked against aerial photos, and has a live dashboard. The first thing it showed me: the wind-turbine blades at Terminal 5 are gone.">
   <meta property="og:title" content="Sentinel Stockpile, Revisited: Where Did the Wind Blades Go?">
   <meta property="og:description" content="Four summers of Sentinel-2 over four Pacific Northwest cargo yards, and a wind-energy dock that emptied out.">
   <meta property="og:image" content="https://brooksgroves.com/blog/img/sentinel-stockpile-revisited/og.jpg">
@@ -159,7 +159,7 @@
 
   <div class="article-body">
 
-    <p>Back in April I built <a href="/blog/sentinel-stockpile-post.html">Sentinel Stockpile</a>, a little project that measures piles of cargo along the Columbia River from orbit: logs at a mill, wind-turbine blades on a dock, all from free European Space Agency imagery. I loved the idea of it. This fall I came back to it, found it broken in more ways than I expected, and rebuilt the whole thing. It now watches four yards on its own, twice a week, and it has a <a href="https://brooksgroves.com/sentinel-stockpile/" target="_blank">live dashboard</a>.</p>
+    <p>Back in April I built <a href="/blog/sentinel-stockpile-post.html">Sentinel Stockpile</a>, a little project that measures piles of cargo along the Columbia River from orbit: logs at a mill, wind-turbine blades on a dock, all from free European Space Agency imagery. I loved the idea of it. This fall I came back to it, found it broken in more ways than I expected, and rebuilt the whole thing. It now watches eight yards on its own (four at first, four more added the same day), twice a week, and it has a <a href="https://brooksgroves.com/sentinel-stockpile/" target="_blank">live dashboard</a>.</p>
 
     <p>And the first thing the rebuilt version showed me was this:</p>
 
@@ -242,6 +242,26 @@
     </div>
 
     <p>These are areas, not volumes. A stack twice as tall looks the same from above, and a single blade lying alone is only a few metres wide, narrower than a pixel. I think of the numbers as an index of how busy a yard is, and the year-over-year shape as the story.</p>
+
+    <h2>Update: four more yards</h2>
+
+    <p><em>Later the same day.</em> Once the pipeline was running on its own, adding a yard turned out to be one small file and about a quarter of an hour of backfill, so I added four more: the Port of Grays Harbor&rsquo;s Terminal 4 log yard in Aberdeen, Seattle&rsquo;s Terminals 5 and 18, and Portland&rsquo;s Terminal 6. Each one got the same treatment: an outline from OpenStreetMap, three years of clear passes, and a check of the classifier against the 2023 aerial photo. The dashboard now has eight tabs.</p>
+
+    <p><strong>Grays Harbor&rsquo;s big waterfront log deck is gone.</strong> In the summer of 2023 there were rows of export logs along the water at Terminal 4, about 7.8 hectares in a typical summer week. By 2024 that was down to 2.9, and in the 2025 and 2026 pictures the waterfront rows have vanished, leaving a smaller deck further inland. (One caution: only one satellite track covers this whole yard, so it gets about half the clear looks of the others, 6 to 13 per summer.)</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/sentinel-stockpile-revisited/grays_harbor-summers.jpg" alt="Four Sentinel-2 views of Terminal 4 at the Port of Grays Harbor, Aberdeen, one each from midsummer 2023 to 2026, with orange outlines around log decks. In 2023 large outlined decks line the waterfront at the lower right; in 2024 a smaller patch remains; in 2025 and 2026 only a deck further inland is outlined" loading="lazy">
+      <p class="photo-caption">Port of Grays Harbor, Terminal 4, one clear midsummer day a year, with the log decks the classifier finds outlined.</p>
+    </div>
+
+    <p><strong>Seattle&rsquo;s Terminal 5 filled up.</strong> The terminal was rebuilt for the biggest container ships, and its modernized second berth opened in March 2024. Its container stacks held at about 3.9 hectares in the summers of 2023 and 2024, then jumped to 10.5 in 2025 and stayed near 9 this year. You can watch the stacks spread out across the yard.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/sentinel-stockpile-revisited/seattle_t5-summers.jpg" alt="Four Sentinel-2 views of Terminal 5 in West Seattle from midsummer 2023 to 2026, with orange outlines around container stacks; the outlines are sparse in 2023 and 2024 and cover much more of the yard in 2025 and 2026" loading="lazy">
+      <p class="photo-caption">Seattle Terminal 5, one clear midsummer day a year, with the container stacks the classifier finds outlined.</p>
+    </div>
+
+    <p>The other two are quieter. Terminal 18 on Harbor Island rose from 2.5 hectares in 2023 to 4.6 in 2025, then eased to 2.1 this summer. Portland&rsquo;s Terminal 6 has drifted down each year, from 3.7 to 1.7, though I&rsquo;d hold that one loosely: a lot of the boxes there are blue or white, and the container rule only sees the warm-coloured ones.</p>
 
     <h2>The dashboard</h2>
 
