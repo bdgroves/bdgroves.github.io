@@ -176,9 +176,9 @@
     </div>
 
     <div class="stat-row">
-      <div class="stat"><div class="stat-num">75</div><div class="stat-label">Minutes the canyon wall<br>delays June sunrise<br>at Pueblo Bonito</div></div>
+      <div class="stat"><div class="stat-num">76</div><div class="stat-label">Minutes the canyon wall<br>delays June sunrise<br>at Pueblo Bonito</div></div>
       <div class="stat"><div class="stat-num">59.8&deg;</div><div class="stat-label">Summer solstice sunrise<br>on a flat horizon</div></div>
-      <div class="stat"><div class="stat-num">11</div><div class="stat-label">Sites, each with<br>its own skyline</div></div>
+      <div class="stat"><div class="stat-num">8</div><div class="stat-label">Sites, each with<br>its own skyline</div></div>
       <div class="stat"><div class="stat-num">0</div><div class="stat-label">GPUs used<br>for the flyover</div></div>
     </div>
 
@@ -195,9 +195,9 @@
 
     <h2>The skyline is the calendar</h2>
 
-    <p>The first version compared each day&rsquo;s sunrise to one number. The new one starts with the land. For each of eleven sites, a small Python script walks outward from the site in every direction, a quarter of a degree at a time, across USGS lidar elevation (5-metre in the canyon, 30-metre out to 80 kilometres), and keeps the highest point it can see, allowing for the curve of the Earth. That gives each great house its own skyline. Then, for every day of the year, it finds the moment the Sun&rsquo;s top edge clears that skyline.</p>
+    <p>The first version compared each day&rsquo;s sunrise to one number. The new one starts with the land. For eight of the sites, a small Python script walks outward from the site in every direction, a quarter of a degree at a time, across USGS lidar elevation (metre-scale near the great houses, 5-metre in the rest of the canyon, 30-metre out to 80 kilometres), and keeps the highest point it can see, allowing for the curve of the Earth. That gives each great house its own skyline. Then, for every day of the year, it finds the moment the Sun&rsquo;s top edge clears that skyline.</p>
 
-    <p>The difference is bigger than I expected. On a flat horizon, the summer solstice Sun comes up at 5:51 AM. At Pueblo Bonito, which sits right under the canyon&rsquo;s north wall, it doesn&rsquo;t clear the rim until about 7:06, more than an hour later and ten degrees further around, at 69.7&deg;. At Una Vida, even closer in under the cliff, it&rsquo;s later still. Up on the mesa at Pueblo Alto and out at Pe&ntilde;asco Blanco, the skyline is nearly flat and sunrise lands within a few minutes of the textbook time.</p>
+    <p>The difference is bigger than I expected. On a flat horizon, the summer solstice Sun comes up at 5:55 AM. At Pueblo Bonito, which sits right under the canyon&rsquo;s north wall, it doesn&rsquo;t clear the rim until about 7:11, more than an hour later and ten degrees further around, at 70.4&deg;. At Una Vida, even closer in under the cliff, it&rsquo;s later still. Up on the mesa at Pueblo Alto and out at Pe&ntilde;asco Blanco, the skyline is nearly flat and sunrise lands within a few minutes of the textbook time.</p>
 
     <p>On the page, the horizon calendar draws each site&rsquo;s real skyline and puts every sunrise of the year on it, so you can watch the Sun walk north along the rim toward June and back toward December. It also marks where the Moon rises at its extremes, which brings in the slow one: the Moon&rsquo;s 18.6-year standstill cycle. The last major standstill was the winter of 2024&ndash;25, so we&rsquo;re just past it now. The next minor standstill is around 2034.</p>
 
@@ -230,7 +230,7 @@
     <p>In April I wrote that rendering on GitHub&rsquo;s servers &ldquo;isn&rsquo;t practical,&rdquo; since they have no GPU. It turns out it is, just slowly. forge3d draws with Vulkan, and Mesa ships a software Vulkan driver that runs on an ordinary CPU. With a virtual display in front of it, the forge3d terrain viewer runs headless on a GitHub Actions machine. Each frame takes about twenty seconds, so the 1,651 frames of the flyover are split across thirty jobs that run side by side, then stitched together with ffmpeg and committed back to the site.</p>
 
     <ol class="step-list">
-      <li><strong>The shape is USGS lidar.</strong> A 5-metre elevation model of the canyon, about 22 by 20 kilometres, smoothed very lightly so the viewer&rsquo;s mesh doesn&rsquo;t stair-step the cliffs.</li>
+      <li><strong>The shape is USGS lidar.</strong> The whole canyon, about 22 by 20 kilometres, drawn in layers so the ground near the camera is as sharp as the data allows (more on that below).</li>
       <li><strong>The colour is NAIP.</strong> The USDA&rsquo;s 2022 aerial photos of New Mexico, colour-graded after forge3d&rsquo;s Bryce Canyon example.</li>
       <li><strong>The light is the real Sun.</strong> forge3d&rsquo;s solar calculator places it for the date and minute on each image, and the viewer works out the shadows and the shading in the folds. A few lines of Python paint the dawn sky.</li>
     </ol>
@@ -242,12 +242,32 @@
       <p class="photo-caption">Pueblo Bonito from the north rim, summer solstice sunrise.</p>
     </div>
 
+    <h2>Update: half a metre</h2>
+
+    <p>A day after this went up, I wanted the ground sharper, so I went looking for better lidar. It turned out the lidar was already good. The catch was forge3d&rsquo;s viewer, which squeezes any terrain down to about 2,048 points across. Spread over 22 kilometres of canyon, that&rsquo;s one point every 11 metres, however fine the data underneath. The fix was to draw every frame in layers with the same camera and the same Sun: the whole canyon for the horizon, a few kilometres around the camera a little sharper, and the ground right below it sharpest of all. Each layer stays under the limit, and the finer one wins wherever it has ground.</p>
+
+    <p>Then came the real surprise. USGS&rsquo;s finished elevation product has a hole right over the canyon core, the square kilometre around Pueblo Bonito, and it fills the hole with much coarser data. A newer survey was flown over Chaco but only published as raw point clouds, so I borrowed the trick from <a href="/blog/project-kiva-post.html">Project Kiva</a>: download the tiles near each great house, keep the laser returns that reached the ground, and grid them at half a metre. That&rsquo;s 89 tiles with 10 to 17 ground points in every square metre.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/solstice-revisited/bonito-lidar-before-after.jpg" alt="Two shaded-relief views of the same 600-metre square around Pueblo Bonito. Left, from the USGS elevation service: a soft blur with the canyon wall barely shown. Right, half-metre lidar from the raw point clouds: the D-shaped great house and its walls, the boulders below the cliff, the park road and the arroyo, all crisp" loading="lazy">
+      <p class="photo-caption">The same 600 metres around Pueblo Bonito. Left: what the USGS elevation service returns. Right: half-metre ground built from the raw point clouds.</p>
+    </div>
+
+    <p>That made room for a new view on the page: Pueblo Bonito from above the canyon floor on the June solstice, about an hour after the Sun first touches the open horizon, with the Sun low on the right raking across the walls.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/solstice-revisited/bonito-close.jpg" alt="Pueblo Bonito from the air an hour after the June sunrise: the D-shaped great house with its room blocks and round kivas, the north canyon wall behind it and the boulders of Threatening Rock, which fell in 1941" loading="lazy">
+      <p class="photo-caption">Pueblo Bonito, summer solstice morning, 6:54 AM. The rubble against the back wall is Threatening Rock, which fell from the cliff in 1941.</p>
+    </div>
+
+    <p>The better ground made the skylines better too. With the canyon walls right next to the great houses now drawn from the new lidar, a few sunrises and sunsets moved by several minutes. Pueblo Bonito&rsquo;s June sunrise is five minutes later than I first had it, and Una Vida&rsquo;s nine. The flyover, the stills and the calendar on the page all use the new ground.</p>
+
     <h2>What&rsquo;s on the page now</h2>
 
     <ul>
       <li><strong>Right now:</strong> the live Sun and Moon over Chaco, computed in your browser, and whether Pueblo Bonito is in sunlight yet or still behind the canyon wall.</li>
       <li><strong>The horizon calendar</strong> for eight of the sites, with the solstices, today, and the Moon&rsquo;s standstill limits on each skyline.</li>
-      <li><strong>Two dawns, one camera:</strong> the summer and winter solstice sunrises side by side.</li>
+      <li><strong>Two dawns, one camera:</strong> the summer and winter solstice sunrises side by side, plus the view from the north rim and the Pueblo Bonito close-up.</li>
       <li><strong>The Sun Dagger</strong> on Fajada Butte, and where we are in the Moon&rsquo;s 18.6-year cycle.</li>
       <li><strong>A sight-line map</strong> that draws the solstice sunrises and the standstill moonrises from any site.</li>
       <li><strong>The places:</strong> eleven sites with notes I&rsquo;ve tried hard to get right.</li>
@@ -259,7 +279,7 @@
 
     <p>Live at <a href="https://brooksgroves.com/solstice/" target="_blank">brooksgroves.com/solstice</a> &middot; code at <a href="https://github.com/bdgroves/solstice" target="_blank">github.com/bdgroves/solstice</a> &middot; the first build post is <a href="/blog/solstice-post.html">here</a>.</p>
 
-    <p class="photo-caption">Data: USGS 3D Elevation Program; USDA NAIP 2022 via Microsoft Planetary Computer; site locations from OpenStreetMap and Wikipedia. Rendering: <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a> 1.40.1 by Milos Popovic, with Mesa&rsquo;s llvmpipe Vulkan driver. Astronomy: PyEphem and astronomy-engine. Sources for the archaeology are listed on the <a href="https://brooksgroves.com/solstice/" target="_blank">live page</a>.</p>
+    <p class="photo-caption">Data: USGS 3D Elevation Program, including the CO_CONMGaps_D24 lidar point clouds; USDA NAIP 2022 via Microsoft Planetary Computer; site locations from OpenStreetMap and Wikipedia. Rendering: <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a> 1.40.1 by Milos Popovic, with Mesa&rsquo;s llvmpipe Vulkan driver. Astronomy: PyEphem and astronomy-engine. Sources for the archaeology are listed on the <a href="https://brooksgroves.com/solstice/" target="_blank">live page</a>.</p>
 
   </div>
 
