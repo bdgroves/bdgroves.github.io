@@ -400,7 +400,7 @@
   <a href="https://brooksgroves.com/cypress-dome-watch/" target="_blank">🌳 Cypress Domes</a>
   <a href="https://brooksgroves.com/mother-lode/" target="_blank">⛏️ Mother Lode</a>
   <a href="/hoplove/">🍺 HopLove</a>
-  <a href="/blog/bdgrovesbot.html">🔥 BdgrovesBot</a>
+  <a href="/blog/bdgrovesbot.html">🔥 BdgrovesBot (parked)</a>
   <a href="/blog/alert-bots-revisited-post.html">🌙 Weather bots (standby)</a>
   <div class="nav-section">Writing</div>
   <a href="/blog/">&#128221; Blog</a>
@@ -501,7 +501,7 @@
         <a href="https://brooksgroves.com/cascadia-wx/" target="_blank">🌨 cascadia-wx</a>
         <a href="/hoplove/">🍺 HopLove</a>
         <div class="dropdown-label">Bots</div>
-        <a href="/blog/bdgrovesbot.html">🔥 BdgrovesBot</a>
+        <a href="/blog/bdgrovesbot.html">🔥 BdgrovesBot (parked)</a>
         <a href="/blog/alert-bots-revisited-post.html">🌙 The weather bots (on standby)</a>
         <div class="dropdown-label">More</div>
         <a href="/maps.html">🧭 All the maps</a>
@@ -605,19 +605,19 @@
       <a href="/blog/">The stories behind them →</a>
     </div>
     <div class="lead-grid">
-      <a href="https://brooksgroves.com/PELE" target="_blank" class="lead-story" id="featured-hero">
-        <p class="lead-kicker">Volcanology · Kīlauea · USGS HVO · Erupting Now</p>
-        <h1 class="lead-hed">🌋 PELE:<br><em>Hawaiʻi Volcanoes</em></h1>
-        <p class="lead-dek">Kīlauea is in an ongoing eruption at Halemaʻumaʻu, fountaining in episodic bursts since December 2024. PELE tracks it live — real-time summit earthquakes, HVO webcams, alert levels, and a full episodic-fountaining log. Refreshes every six hours, no human in the loop.</p>
+      <a href="https://brooksgroves.com/mother-lode/" target="_blank" class="lead-story" id="featured-hero">
+        <p class="lead-kicker">Geology · Lidar · USGS · Tuolumne County</p>
+        <h1 class="lead-hed">⛏️ Mother Lode:<br><em>Gold Country in Lidar</em></h1>
+        <p class="lead-dek">The gold belt where I grew up, with the trees peeled away. Five mining places in bare-earth lidar, from Columbia's limestone pinnacles to the Harvard pit at Jamestown, and every USGS mine feature in Tuolumne County: 1,040 adits, shafts and prospect pits.</p>
         <div class="lead-stack">
           <span class="stack-pill">Python</span>
-          <span class="stack-pill">USGS HVO</span>
-          <span class="stack-pill">GitHub Actions</span>
+          <span class="stack-pill">PDAL</span>
+          <span class="stack-pill">USGS 3DEP</span>
+          <span class="stack-pill">USGS USMIN</span>
+          <span class="stack-pill">USGS MRDS</span>
           <span class="stack-pill">Leaflet</span>
-          <span class="stack-pill">HVO Webcams</span>
-          <span class="stack-pill">ANSS Quakes</span>
         </div>
-        <span class="lead-link">View live dashboard →</span>
+        <span class="lead-link">Take a look →</span>
       </a>
     </div>
   </div>
@@ -1130,11 +1130,13 @@
   }
 
   const FEATURED = [
+    { url:"https://brooksgroves.com/mother-lode/", kicker:"Geology · Lidar · USGS · Tuolumne County", hed:"⛏️ Mother Lode:<br><em>Gold Country in Lidar</em>", dek:"The gold belt where I grew up, with the trees peeled away. Five mining places in bare-earth lidar, from Columbia's limestone pinnacles to the Harvard pit at Jamestown, and every USGS mine feature in Tuolumne County: 1,040 adits, shafts and prospect pits.", stack:["Python","PDAL","USGS 3DEP","USGS USMIN","USGS MRDS","Leaflet"] },
+    { url:"https://brooksgroves.com/project-kiva", kicker:"Archaeology · Lidar · Remote Sensing", hed:"🏺 Project Kiva:<br><em>Ruins in Bare Earth</em>", dek:"Twelve archaeological places in bare-earth lidar, from Chaco Canyon to Cahokia and the Wisconsin effigy mounds. Peel back the aerial photo, switch between relief views that make walls, mounds and ditches show, and turn each site in 3D.", stack:["Python","USGS 3DEP","Lidar","Relief Views","forge3d"] },
+    { url:"https://brooksgroves.com/solstice", kicker:"Archaeoastronomy · Chaco Canyon · Live", hed:"☀️ SOLSTICE:<br><em>The Sky Over Chaco</em>", dek:"The live Sun and Moon over Chaco Canyon, each great house's real skyline with every sunrise of the year, and a forge3d flight down the canyon at solstice dawn.", stack:["Python","PyEphem","forge3d","USGS 3DEP","Leaflet","GitHub Actions"] },
+    { url:"https://brooksgroves.com/fog-watch/", kicker:"Meteorology · ERA5 · Fog Coasts", hed:"🌫️ FOG-WATCH:<br><em>Where the Fog Lives</em>", dek:"A fog climatology for the world's great fog coasts: the Namib, the Atacama and San Francisco. Ten years of hourly ERA5 turned into a fog-blanket map with a month slider, an inland transect past Gobabeb, and heatmaps of exactly when the fog rolls in.", stack:["Python","ERA5","Open-Meteo","D3","Leaflet","GitHub Actions"] },
     { url:"https://brooksgroves.com/PELE", kicker:"Volcanology · Kīlauea · USGS HVO · Erupting Now", hed:"🌋 PELE:<br><em>Hawaiʻi Volcanoes</em>", dek:"Kīlauea is in an ongoing eruption at Halemaʻumaʻu, fountaining in episodic bursts since December 2024. PELE tracks it live — real-time summit earthquakes, HVO webcams, alert levels, and a full episodic-fountaining log. Refreshes every six hours, no human in the loop.", stack:["Python","USGS HVO","GitHub Actions","Leaflet","HVO Webcams","ANSS Quakes"] },
     { url:"https://brooksgroves.com/aftershock", kicker:"Seismology · USGS FDSN · Cascadia", hed:"🌍 AFTERSHOCK:<br><em>Real-Time Seismic Monitor</em>", dek:"A live earthquake dashboard for the US and the world — pick any state or country, compare it with ten years of normal, and follow aftershock sequences as they decay. Built to watch the ground that watches us.", stack:["Python","USGS FDSN","Leaflet","GitHub Actions","GeoJSON"] },
     { url:"https://brooksgroves.com/rainier-snowpack", kicker:"Snowpack · SNOTEL · NASA MODIS · Cascades", hed:"❄️ STORM CHASER:<br><em>Rainier Snowpack</em>", dek:"Automated Mt. Rainier snowpack monitoring — 7 SNOTEL ground stations and NASA MODIS, hourly. Nine panels track basin SWE, melt, freeze-thaw, and live NPS webcams. Runs every hour, forever, all winter and through the melt-out.", stack:["Python","R","GitHub Actions","NASA Earthdata","NRCS SNOTEL","NPS Webcam"] },
-    { url:"https://brooksgroves.com/project-paleowave/", kicker:"Machine Learning · Paleontology · Nevada", hed:"🌊 PaleoWave:<br><em>Fossil Finder</em>", dek:"A terrain model of where central Nevada's Triassic ichthyosaurs have been found, with fifty places to go and look. Rechecked in October 2026: it knows 18 places, not 30, shows its homework, and checks the Paleobiology Database every Monday for anything new.", stack:["Python","Random Forest","USGS 3DEP","PBDB","Leaflet","GitHub Actions"] },
-    { url:"https://brooksgroves.com/project-ice-wave/", kicker:"Machine Learning · Ice Age · Pacific NW", hed:"🦣 IceWave:<br><em>Rechecked</em>", dek:"A model of where mammoths and other Ice Age animals might be buried in the Northwest, rechecked honestly in October 2026. Its top targets turned out to be rivers and reservoirs; the page shows every target as it really is, and checks the Paleobiology Database every Monday.", stack:["Python","Random Forest","USGS 3DEP","PBDB","OpenStreetMap","GitHub Actions"] },
     { url:"/hoplove/", kicker:"Open Data · Hops · USDA NASS · Pacific NW", hed:"🍺 HopLove:<br><em>Know Your Hops</em>", dek:"Every hop spec sheet hands you one confident number. HopLove keeps every source's number instead — Hopsteiner, BarthHaas, the Hop Breeding Company, Indie Hops — and shows you where they disagree. 232 varieties, Washington and Oregon acreage from USDA, and a can-to-hops lookup for 2,000+ beers from 32 Pacific Northwest breweries, from Stoup and Georgetown to Block 15 — a camera button that reads the hops off any can, and my Untappd check-ins and ratings joined to the hops in each glass.", stack:["Node","Python","JSON Schema","USDA NASS","pixi","GitHub Actions"] },
     { url:"/secchi/", kicker:"Limnology · Lake Tahoe · TEON · 15-min cadence", hed:"🔵 secchi:<br><em>A Modern Secchi Disk for Lake Tahoe</em>", dek:"Live water-clarity readings from the Tahoe Environmental Observatory Network — three YSI EXO sondes around the lake, sampled every fifteen minutes, cross-checked against USGS gauges on the tributaries. An undocumented API, forty-three sensors that turned out to be thirteen devices, and a five-digit parameter code that turned out to be the pollutant the TMDL actually regulates.", stack:["Python","TEON API","USGS","Leaflet","pixi","GitHub Actions"] }
   ];
