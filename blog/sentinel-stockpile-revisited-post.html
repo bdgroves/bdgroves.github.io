@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentinel Stockpile, Revisited: Where Did the Wind Blades Go? — Brooks Groves</title>
+  <meta name="description" content="I rebuilt Sentinel Stockpile, my project that measures cargo piles along the Columbia from orbit: it now watches four yards twice a week with a rule per cargo, checked against aerial photos, and has a live dashboard. The first thing it showed me: the wind-turbine blades at Terminal 5 are gone.">
+  <meta property="og:title" content="Sentinel Stockpile, Revisited: Where Did the Wind Blades Go?">
+  <meta property="og:description" content="Four summers of Sentinel-2 over four Pacific Northwest cargo yards, and a wind-energy dock that emptied out.">
+  <meta property="og:image" content="https://brooksgroves.com/blog/img/sentinel-stockpile-revisited/og.jpg">
+  <meta property="og:url" content="https://brooksgroves.com/blog/sentinel-stockpile-revisited-post.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛰️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; border-radius:4px; transition: background 0.2s, color 0.2s; 
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .article-tag-pill:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body h2 em { font-style: italic; color: var(--rust); }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body em { font-style: italic; }
+    .article-body code { font-family: 'DM Mono', monospace; font-size: 0.85em; background: var(--cream); padding: 0.15em 0.4em; border-radius: 2px; }
+    .article-body pre { background: var(--ink); color: #c8d0cc; padding: 1.25rem 1.5rem; border-radius: 2px; overflow-x: auto; margin: 1.5rem 0 2rem; font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.65; }
+    .article-body pre code { background: none; padding: 0; font-size: 1em; color: inherit; }
+    .article-body ul { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body ul li { margin-bottom: 0.4rem; }
+
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .photo-block video { width: 100%; display: block; border: 1px solid var(--mist); background: #0b1020; cursor: zoom-in; }
+    .video-actions { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .video-actions a, .video-actions button { font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); background: none; border: 1px solid var(--mist); padding: 0.45rem 0.9rem; cursor: pointer; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
+    .video-actions a:hover, .video-actions button:hover { border-color: var(--rust); color: var(--rust); }
+    .step-list { margin: 1.2rem 0 1.5rem 1.2rem; }
+    .step-list li { margin-bottom: 0.7rem; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.8rem; margin: 2rem 0 2.2rem; }
+    .stat { border: 1px solid var(--mist); padding: 0.9rem 1rem 0.8rem; text-align: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 2.1rem; line-height: 1; color: var(--rust); }
+    .stat-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); margin-top: 0.45rem; line-height: 1.5; }
+    .photo-block.narrow { max-width: 540px; margin-left: auto; margin-right: auto; }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://journal.brooksgroves.com">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">&larr; Back to Blog</a>
+
+  <p class="article-kicker">Remote Sensing · Sentinel-2 · Pacific Northwest · Python</p>
+  <h1 class="article-title">&#128752;&#65039; Sentinel Stockpile, Revisited: Where Did the Wind Blades Go?</h1>
+  <div class="article-meta">
+    <span>October 6, 2026</span>
+    <span>Brooks Groves</span>
+    <span>7 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <a href="/tags.html#Remote%20Sensing" class="article-tag-pill">Remote Sensing</a>
+    <a href="/tags.html#Sentinel-2" class="article-tag-pill">Sentinel-2</a>
+    <a href="/tags.html#Supply%20Chain" class="article-tag-pill">Supply Chain</a>
+    <a href="/tags.html#Pacific%20Northwest" class="article-tag-pill">Pacific Northwest</a>
+    <a href="/tags.html#Python" class="article-tag-pill">Python</a>
+    <a href="/tags.html#GitHub%20Actions" class="article-tag-pill">GitHub Actions</a>
+    <a href="/tags.html#Open%20Data" class="article-tag-pill">Open Data</a>
+  </div>
+
+  <div class="article-body">
+
+    <p>Back in April I built <a href="/blog/sentinel-stockpile-post.html">Sentinel Stockpile</a>, a little project that measures piles of cargo along the Columbia River from orbit: logs at a mill, wind-turbine blades on a dock, all from free European Space Agency imagery. I loved the idea of it. This fall I came back to it, found it broken in more ways than I expected, and rebuilt the whole thing. It now watches four yards on its own, twice a week, and it has a <a href="https://brooksgroves.com/sentinel-stockpile/" target="_blank">live dashboard</a>.</p>
+
+    <p>And the first thing the rebuilt version showed me was this:</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/sentinel-stockpile-revisited/vancouver_wind-summers.jpg" alt="Four Sentinel-2 satellite views of Terminal 5 at the Port of Vancouver USA, one each from late July or early August of 2023, 2024, 2025 and 2026. In 2023 rows of white wind-turbine blades, outlined in orange, cover much of the yard; in 2024 there are fewer; in 2025 and 2026 the yard is almost bare pavement" loading="lazy">
+      <p class="photo-caption">Terminal 5, Port of Vancouver USA, the wind-energy laydown yard, one clear midsummer day a year. Orange outlines are what the classifier calls blades. 5.3 ha in July 2023; next to nothing in 2025 and 2026.</p>
+    </div>
+
+    <p>That&rsquo;s the Port of Vancouver&rsquo;s Terminal 5, where wind-turbine blades come off the ships and wait for the trucks that carry them up the Columbia River Gorge. In the summer of 2023 there were rows of them across the yard, each white blob a rack of blades. By the summer of 2025 the yard was nearly empty, and it has stayed that way through 2026.</p>
+
+    <h2>First, what I got wrong</h2>
+
+    <p>I want to start with the honest part, because it changes the numbers from the first post. When I went back through the code, three things were wrong.</p>
+
+    <ul>
+      <li><strong>Two of my four sites weren&rsquo;t where I thought.</strong> My &ldquo;Port of Vancouver&rdquo; box was sitting on downtown Vancouver, about 5 km southeast of Terminal 5, and my Weyerhaeuser box was on downtown Longview. The wind numbers in the first version were measuring bright downtown rooftops, not blades. Every yard is now drawn from the real terminal outline in OpenStreetMap, and I checked each one against an aerial photo.</li>
+      <li><strong>The pixel values were off by a constant.</strong> Since early 2022, Sentinel-2&rsquo;s processed images carry a +1000 offset in every band, which has to be subtracted. I never did, so ordinary pavement looked brighter than it is and my rules called anywhere from a quarter of a yard to all of it &ldquo;stockpile&rdquo; (Tacoma, every day).</li>
+      <li><strong>The automation had quietly stopped.</strong> The workflow had been failing since April, with three jobs racing each other to save their results, and GitHub had switched off the schedule for lack of activity.</li>
+    </ul>
+
+    <p>None of that is fun to find, but it&rsquo;s the reason to come back to old projects. So: new version, new numbers, and these ones I can show you how to check.</p>
+
+    <h2>Teaching it what cargo looks like</h2>
+
+    <p>Each Sentinel-2 pixel is 10 metres on a side, so the satellite never sees a log or a container, just patches of colour across six bands of light. The trick is that each kind of cargo has its own colour, so v3 has one rule per cargo instead of one rule for everything:</p>
+
+    <ul>
+      <li><strong>Logs, lumber and wood chips are warm.</strong> Fresh wood and bark are much redder than they are blue; pavement and roofs are grey.</li>
+      <li><strong>Wind-turbine blades are bright, neutral white.</strong> Brighter than the yard around them, with no warm tint at all.</li>
+      <li><strong>Containers are painted,</strong> mostly in reds, oranges and browns, so a stack is warmer than the concrete around it. (Blue and white boxes slip through, so the Tacoma number tracks how full the stacks are rather than counting boxes.)</li>
+    </ul>
+
+    <p>To set the rules I borrowed the USDA&rsquo;s NAIP aerial photos, which are 0.6 m per pixel and were flown over these yards in the summer and fall of 2023. I picked out log decks, chip piles, blade racks, container rows and plain pavement on the photo, read off the satellite&rsquo;s values for each one, set the thresholds between them, and then drew every pixel the rule picked on top of the photo to see what it got right.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/sentinel-stockpile-revisited/weyerhaeuser-check.jpg" alt="Left: a sharp aerial photo of the Weyerhaeuser log yards along the Columbia River at Longview, with small magenta squares marking every 10-metre pixel the classifier calls wood; the squares sit on the log decks, lumber stacks and sawdust piles. Right: the same area in the coarser Sentinel-2 satellite image, where the wood shows as salmon-orange patches" loading="lazy">
+      <p class="photo-caption">The check: the 1 August 2023 NAIP photo of Weyerhaeuser Longview with every 10 m pixel the lumber rule picks on the Sentinel-2 pass of 31 July outlined (left), and that Sentinel scene (right). Click to enlarge.</p>
+    </div>
+
+    <p>That check caught a few things I&rsquo;d never have guessed. My favourite: in August, dry grass along the riverbank is the same colour as a log deck. A single summer image can&rsquo;t tell them apart. But the grass gives itself away in spring, when it turns green, and logs never do. So v3 looks at every clear scene of the year, and any ground that&rsquo;s properly green on a good share of them is never counted as cargo.</p>
+
+    <p>The check also turned up a surprise about the sites themselves. The Port of Longview, which I&rsquo;d been tracking as a lumber port, turned out to be full of blade racks and steel inside the outline I was measuring; the big log decks were next door at Weyerhaeuser. So Longview now gets measured for blades too, which gave me two wind yards to compare.</p>
+
+    <h2>Clouds, smoke and one snowy morning</h2>
+
+    <p>This is the Pacific Northwest, so most of the work is throwing pictures away. Plainly overcast passes never even make the list. Of the ones that do, a scene only counts if Sentinel&rsquo;s own cloud map shows the area around the yard nearly clear, and that still loses 40 to 58 percent of them depending on the site, at the worst rate in winter. A few more go later: scenes where the whole yard is much brighter in blue than usual (cloud the mask missed, or smoke; one hazy day in September 2024 tripped it at three of the four yards), and the January 2024 morning when snow covered Terminal 5 and the classifier, quite reasonably, decided most of the yard was one enormous wind blade.</p>
+
+    <p>What&rsquo;s left is 135 to 177 clear looks at each yard since April 2023, about one every week or so.</p>
+
+    <h2>Four summers</h2>
+
+    <p>Here are the medians for June through September, from every clear pass:</p>
+
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num">3.6&rarr;0.1</div><div class="stat-label">ha of wind cargo<br>Terminal 5<br>2023 &rarr; 2026</div></div>
+      <div class="stat"><div class="stat-num">5.9&rarr;2.7</div><div class="stat-label">ha of wind cargo<br>Port of Longview<br>2023 &rarr; 2026</div></div>
+      <div class="stat"><div class="stat-num">&minus;24%</div><div class="stat-label">Weyerhaeuser wood<br>summer 2026 vs<br>2023&ndash;25</div></div>
+      <div class="stat"><div class="stat-num">7.4&rarr;12.8</div><div class="stat-label">ha of containers<br>Tacoma<br>2023 &rarr; 2024</div></div>
+    </div>
+
+    <p><strong>Terminal 5 emptied out, and Longview more than halved.</strong> Terminal 5 went from 3.6 hectares of blades in a typical summer week in 2023 to 1.2 in 2024, 0.3 in 2025 and 0.1 this year. Longview, the other wind yard, shrank every summer too, from 5.9 hectares to 2.7. What the satellite can&rsquo;t tell me is <em>why</em>. Wind projects run on long pipelines, and interest rates, supply chains and federal wind policy all shifted over these years. I&rsquo;d like to dig into the shipping side of it next. (The wind rule picks up anything big, bright and neutral white, so strictly this is blades plus towers and any other white cargo; on the photos, it&rsquo;s blades.) What it can tell me is that the blades stopped stacking up at Terminal 5, and that it started before 2025.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/sentinel-stockpile-revisited/vancouver_wind-yoy.jpg" alt="A line chart of active blade area at Terminal 5 by day of year, one line per year: 2023 peaks near 5 hectares in late July, 2024 stays mostly between 0.5 and 2.3 hectares, and 2025 and 2026 run along the bottom, mostly below half a hectare" loading="lazy">
+      <p class="photo-caption">Terminal 5, year over year: a three-week running median of blade area, each year on one calendar.</p>
+    </div>
+
+    <p><strong>The log yard&rsquo;s summer is smaller this year.</strong> Weyerhaeuser&rsquo;s decks and chip piles swell every summer and shrink every winter. Some of that winter dip is the wood itself (wet logs are darker than dry ones), so I only compare summers with summers. June through September of 2026 came in about a quarter below the three summers before it: 25 hectares against 32 to 34.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/sentinel-stockpile-revisited/weyerhaeuser_longview-summers.jpg" alt="Four Sentinel-2 views of the Weyerhaeuser mill and log yards at Longview from midsummer 2023 to 2026, with orange outlines around log decks, lumber stacks and chip piles; the outlined area is smaller in 2026" loading="lazy">
+      <p class="photo-caption">Weyerhaeuser Longview, one clear midsummer day a year, with the wood the classifier finds outlined.</p>
+    </div>
+
+    <p><strong>Tacoma&rsquo;s container stacks jumped in 2024</strong> (total stack area here; a container yard has no &ldquo;always-on&rdquo; ground to subtract), from 7.4 to 12.8 hectares of a typical summer, and have eased since, to 11.4 last year and 9.1 this summer, still above 2023.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/sentinel-stockpile-revisited/tacoma_port-summers.jpg" alt="Four Sentinel-2 views of the Husky and East Sitcum container terminals at the Port of Tacoma from midsummer 2023 to 2026, with orange outlines around the container stacks" loading="lazy">
+      <p class="photo-caption">Port of Tacoma, Husky and East Sitcum terminals, with the container stacks the classifier finds outlined.</p>
+    </div>
+
+    <p>These are areas, not volumes. A stack twice as tall looks the same from above, and a single blade lying alone is only a few metres wide, narrower than a pixel. I think of the numbers as an index of how busy a yard is, and the year-over-year shape as the story.</p>
+
+    <h2>The dashboard</h2>
+
+    <div class="photo-block">
+      <img src="/blog/img/sentinel-stockpile-revisited/dashboard.jpg" alt="The Sentinel Stockpile dashboard: tabs for four sites, a map of Terminal 5 with the latest satellite scene, a timeline slider and play button, figures for the active area now against a year ago and the usual for the week, and a time-series chart of every clear scene since 2023" loading="lazy">
+      <p class="photo-caption">The <a href="https://brooksgroves.com/sentinel-stockpile/" target="_blank">live dashboard</a>: pick a yard, scrub or play through every clear scene with that day&rsquo;s piles outlined, and compare a week with a year ago and with what&rsquo;s usual for it.</p>
+    </div>
+
+    <p>The <a href="https://brooksgroves.com/sentinel-stockpile/" target="_blank">dashboard</a> is the part I&rsquo;m proudest of. Pick a yard and you get the actual satellite picture with that day&rsquo;s piles outlined, a slider to scrub through every clear pass since 2023 (or a play button to watch the yard fill and empty), and the numbers: area now, against the same weeks last year, and against what&rsquo;s normal for this week. Click any dot on the chart and the map jumps to that day, so if a number looks odd you can go and see why.</p>
+
+    <h2>It runs itself now</h2>
+
+    <p>Every Monday and Thursday, a GitHub Actions workflow wakes up, asks Microsoft&rsquo;s Planetary Computer for any new Sentinel-2 passes over each yard, screens them, classifies them, rebuilds the series and the dashboard data, and saves everything in one commit. The raw band images are cached in the repository, so changing a rule means reclassifying three years of scenes in a few minutes without downloading anything again. Adding a yard is one small file with an outline in it.</p>
+
+    <p>If you want to poke at it, everything is on <a href="https://github.com/bdgroves/sentinel-stockpile" target="_blank">GitHub</a>: the rules (each with a sentence on why it works), the aerial-photo checks, a tool for trying new thresholds against the photo, and every scene&rsquo;s numbers as a CSV. I&rsquo;d love to point it at a few more yards: grain at Kalama, maybe, or the auto lots in Tacoma. And someday, radar, which sees straight through all those winter clouds.</p>
+
+    <p>For now I&rsquo;ll be checking in on Terminal 5 every Monday and Thursday, to see whether the blades come back.</p>
+
+    <hr>
+
+    <p style="font-size:0.9rem;color:var(--stone)">Contains modified Copernicus Sentinel-2 data (ESA), via Microsoft Planetary Computer. Aerial photos: USDA NAIP. Yard outlines &copy; OpenStreetMap contributors.</p>
+
+  </div>
+
+  <div class="reactions-section">
+
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · October 2026</span>
+    <div class="article-footer-nav">
+      <a href="/blog/sentinel-stockpile-post.html">← The original Sentinel Stockpile post</a>
+      <a href="/geospatial.html">Geospatial Hub</a>
+      <a href="/blog/index.html">All posts</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
+    </div>
+
+    <div class="footer-connect">
+      <div class="fc-label">Connect</div>
+      <div class="social-row">
+          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
+          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
+          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
+          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
+          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
+          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
+          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-pagelinks">
+      <div class="fc-label">More here</div>
+      <div class="pagelink-row">
+        <a href="/blog/index.html">Blog</a>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
+    <p class="footer-bottom">
+      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
+      <a href="#top">&uarr; Back to top</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this handles clicks and keeps the button's label truthful.
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function sync(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Describe what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  sync();
+  btn.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+<!-- Lightbox: click a figure to see it big; arrows step through, Esc closes -->
+<style>
+  .photo-block img{cursor:zoom-in}
+  .lb{position:fixed;inset:0;z-index:2147483000;background:rgba(18,16,13,.97);display:none;flex-direction:column;align-items:center;justify-content:center;padding:2vh 2vw;cursor:zoom-out}
+  .lb.open{display:flex}
+  .lb img{max-width:96vw;max-height:84vh;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.6);background:#111}
+  .lb p{color:#e9e2d4;font-family:'Libre Baskerville',Georgia,serif;font-size:15px;line-height:1.5;max-width:900px;text-align:center;margin:14px auto 0}
+  .lb button{position:absolute;background:rgba(0,0,0,.35);color:#f3ecdf;border:1px solid rgba(255,255,255,.25);border-radius:50%;width:44px;height:44px;font-size:22px;line-height:1;cursor:pointer}
+  .lb .lb-x{top:16px;right:16px}
+  .lb .lb-prev{left:16px;top:50%;margin-top:-22px}
+  .lb .lb-next{right:16px;top:50%;margin-top:-22px}
+  .lb button:hover{background:rgba(0,0,0,.6)}
+</style>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged image">
+  <button class="lb-x" aria-label="Close">&times;</button>
+  <button class="lb-prev" aria-label="Previous image">&#8249;</button>
+  <img alt="">
+  <p></p>
+  <button class="lb-next" aria-label="Next image">&#8250;</button>
+</div>
+<script>
+(function () {
+  const imgs = [...document.querySelectorAll('.photo-block img')];
+  const lb = document.getElementById('lb'), big = lb.querySelector('img'), cap = lb.querySelector('p');
+  let i = 0, opener = null;
+  function show(n) {
+    i = (n + imgs.length) % imgs.length;
+    const im = imgs[i], c = im.closest('.photo-block').querySelector('.photo-caption');
+    big.src = im.currentSrc || im.src; big.alt = im.alt;
+    cap.textContent = c ? c.textContent : '';
+  }
+  function open(n) { opener = document.activeElement; show(n); lb.classList.add('open'); document.body.style.overflow = 'hidden'; lb.querySelector('.lb-x').focus(); }
+  function close() { lb.classList.remove('open'); document.body.style.overflow = ''; if (opener) opener.focus(); }
+  imgs.forEach((im, n) => {
+    im.tabIndex = 0; im.setAttribute('role', 'button'); im.title = 'Click to enlarge';
+    im.addEventListener('click', () => open(n));
+    im.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(n); } });
+  });
+  lb.addEventListener('click', e => {
+    if (e.target.closest('.lb-prev')) show(i - 1);
+    else if (e.target.closest('.lb-next')) show(i + 1);
+    else close();
+  });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(i - 1);
+    if (e.key === 'ArrowRight') show(i + 1);
+  });
+})();
+</script>
+</body>
+</html>
