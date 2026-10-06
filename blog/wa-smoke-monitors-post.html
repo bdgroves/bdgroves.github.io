@@ -99,6 +99,20 @@
     .stat-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 2.1rem; line-height: 1; color: var(--rust); }
     .stat-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); margin-top: 0.45rem; line-height: 1.5; }
     .photo-block.narrow { max-width: 540px; margin-left: auto; margin-right: auto; }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist);
+    }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -216,7 +230,30 @@
       <li><strong>The monitors.</strong> AirNow, the EPA&rsquo;s real-time air-quality system, publishes every state, tribal and federal monitor&rsquo;s hourly reading, including the temporary smoke monitors set up near big fires. These are the real-time numbers, before the agencies&rsquo; final quality checks. A GitHub Action read the 1,152 hourly files for the window and kept the Washington PM2.5 readings.</li>
       <li><strong>Matching them up.</strong> The model is read at the 3 km grid cell holding each monitor, and averaged to match the monitor&rsquo;s hour.</li>
       <li><strong>Smoke versus everything.</strong> A monitor measures all fine particles; HRRR-Smoke is smoke only. So each monitor gets its everyday background, the typical reading when the model had no smoke there (usually 3 to 6 &micro;g/m&sup3;), added to the model before comparing.</li>
-      <li><strong>Days, not hours.</strong> The EPA&rsquo;s health categories are for 24-hour averages, so the comparison is too: Pacific days, with at least 18 hours reported.</li>
+      <l
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://www.kuow.org/stories/for-the-methow-valley-wildfire-smoke-is-the-norm-it-s-now-regular-for-everyone-else-too" target="_blank" rel="noopener">For the Methow Valley, wildfire smoke has created a &lsquo;fifth&rsquo; season</a></strong> &mdash; <em>Soundside</em> (KUOW), 20 July 2022, about 51 min. A whole special from the valley where Twisp and Winthrop sit, with Clean Air Methow, Twisp&rsquo;s mayor and UW&rsquo;s Joel Kaufman.</p>
+      <p><strong><a href="https://www.npr.org/2020/08/26/906385624/the-science-of-wildfire-smoke" target="_blank" rel="noopener">The Science Of Wildfire Smoke</a></strong> &mdash; <em>Short Wave</em> (NPR), 26 August 2020, about 14 min. NOAA&rsquo;s Jessica Gilman on PM2.5 and why smoke lands so far from the fire.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Ye, X., Arab, P., Ahmadov, R. et al. (2021).</strong> <a href="https://doi.org/10.5194/acp-21-14427-2021" target="_blank" rel="noopener">Evaluation and intercomparison of wildfire smoke forecasts from multiple modeling systems for the 2019 Williams Flats fire.</a> <em>Atmospheric Chemistry and Physics</em> <strong>21</strong>, 14427&ndash;14469. Open access.</p>
+      <p><strong>Chow, F.K., Yu, K.A., Young, A., James, E., Grell, G.A., Csiszar, I., Tsidulko, M., Freitas, S., Pereira, G., Giglio, L., Friberg, M.D. &amp; Ahmadov, R. (2022).</strong> <a href="https://doi.org/10.1175/BAMS-D-20-0329.1" target="_blank" rel="noopener">High-resolution smoke forecasting for the 2018 Camp Fire in California.</a> <em>Bulletin of the American Meteorological Society</em> <strong>103</strong>(6), E1531&ndash;E1552.</p>
+      <p><strong>Barkjohn, K.K., Gantt, B. &amp; Clements, A.L. (2021).</strong> <a href="https://doi.org/10.5194/amt-14-4617-2021" target="_blank" rel="noopener">Development and application of a United States-wide correction for PM2.5 data collected with the PurpleAir sensor.</a> <em>Atmospheric Measurement Techniques</em> <strong>14</strong>, 4617&ndash;4637. Open access.</p>
+      <p><a href="https://www.kqed.org/science/1969271/making-sense-of-purple-air-vs-airnow-and-a-new-map-to-rule-them-all" target="_blank" rel="noopener">From PurpleAir to AirNow, Your Air Quality Maps for Wildfire Smoke</a> &mdash; KQED Science; a clear guide to which map is measuring what.</p>
+      <p><a href="https://ecology.wa.gov/blog/august-2024/expanding-air-monitoring-for-the-2024-wildfire-season" target="_blank" rel="noopener">Expanding air monitoring for the 2024 wildfire season</a> &mdash; Washington Ecology, 2024; how the state drops portable smoke monitors near big fires.</p>
+      <p><a href="https://www.lung.org/media/press-releases/fy26-something-in-the-air-washington" target="_blank" rel="noopener">New Report Examines How Methow Valley Tracks Wildfire Smoke and Protects Residents</a> &mdash; American Lung Association, 2026; a community sensor network that caught the valley&rsquo;s nighttime inversions.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://www.airnow.gov/" target="_blank" rel="noopener">AirNow</a> &mdash; EPA&rsquo;s real-time air-quality system. &middot; <a href="https://docs.airnowapi.org/" target="_blank" rel="noopener">AirNow API</a> &mdash; the data feeds and file products. &middot; <a href="https://fire.airnow.gov/" target="_blank" rel="noopener">AirNow Fire and Smoke Map</a> &mdash; monitors, temporary smoke monitors and corrected sensors together.</p>
+      <p><a href="https://airqualitymap.ecology.wa.gov/" target="_blank" rel="noopener">AirQualityWA</a> &mdash; Washington Ecology&rsquo;s monitor map. &middot; <a href="https://wasmoke.blogspot.com/" target="_blank" rel="noopener">Washington Smoke Blog</a> &mdash; daily smoke outlooks from the state, counties, federal agencies and Tribes.</p>
+      <p><a href="https://rapidrefresh.noaa.gov/hrrr/HRRRsmoke/" target="_blank" rel="noopener">HRRR-Smoke graphics</a> &mdash; the model side of the comparison. &middot; <a href="https://registry.opendata.aws/noaa-hrrr-pds/" target="_blank" rel="noopener">NOAA HRRR on AWS</a> &mdash; the archive. &middot; <a href="https://github.com/bdgroves/wa-smoke" target="_blank" rel="noopener">wa-smoke</a> &mdash; this project&rsquo;s code.</p>
+    </div>
+i><strong>Days, not hours.</strong> The EPA&rsquo;s health categories are for 24-hour averages, so the comparison is too: Pacific days, with at least 18 hours reported.</li>
     </ul>
 
     <h2>Last thing</h2>

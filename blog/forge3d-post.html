@@ -80,6 +80,20 @@
     .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
     .footer-links a:hover { color: var(--gold); }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist);
+    }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -230,7 +244,28 @@
 
     <h2>What I Want to Do Next</h2>
 
-    <p>Now that I have the basic workflow working, I want to push it harder. The next thing on my list: find the highest-grade LiDAR I can get my hands on for Mount Rainier specifically and see what 1-meter resolution does to that summit terrain. The 30m DEM render above is already strong. What the WA DNR LiDAR does to it is going to be something else.</p>
+    <p>Now that I have the basic workflow working, I want to push it harder. The next thing on my list: find the highest-grade LiDAR I can get my hands on for Mount Rainier specifically and see what 1-meter res
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://opensource.posit.co/resources/videos/2019-11-12_tyler-morgan-wall-3d-mapping-plotting-and-printing-with-rayshader-rstudio-2019/" target="_blank" rel="noopener">3D mapping, plotting, and printing with rayshader</a></strong> &mdash; <em>rstudio::conf 2019</em> (Posit), 12 November 2019, about 21 min video. Tyler Morgan-Wall shows off rayshader, the R cousin I was using before forge3d.</p>
+      <p><strong><a href="https://lidarmag.com/podcast_episode/14-mike-zoeller-and-adam-mosbrucker/" target="_blank" rel="noopener">#14 &ndash; Mike Zoeller and Adam Mosbrucker</a></strong> &mdash; <em>LIDAR Magazine Podcast</em>, 28 October 2024. Two USGS volcano geologists on how lidar is used in the Cascades and Hawaii, from landing helicopters to tracking sediment.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Horn, B.K.P. (1981).</strong> <a href="https://doi.org/10.1109/PROC.1981.11918" target="_blank" rel="noopener">Hill shading and the reflectance map.</a> <em>Proceedings of the IEEE</em> <strong>69</strong>(1), 14&ndash;47.</p>
+      <p><a href="https://pubs.usgs.gov/publication/pp1250" target="_blank" rel="noopener">The 1980 Eruptions of Mount St. Helens, Washington</a> &mdash; Lipman &amp; Mullineaux (eds.), USGS Professional Paper 1250, 1981; the big book on how the crater got its shape.</p>
+      <p><a href="https://pubs.usgs.gov/publication/sim2832" target="_blank" rel="noopener">Geologic Map of Mount Mazama and Crater Lake Caldera, Oregon</a> &mdash; Bacon, Ramsey &amp; Dutton, USGS Scientific Investigations Map 2832, 2008; Wizard Island and the rim, rock by rock.</p>
+      <p><a href="https://atlas.co/gis-voices/2024/milos-popovic/" target="_blank" rel="noopener">Top GIS Voices 2024: Milos Popovic</a> &mdash; Atlas; a friendly profile of the mapmaker behind forge3d.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://lidarportal.dnr.wa.gov/" target="_blank" rel="noopener">Washington Lidar Portal</a> &mdash; WA DNR&rsquo;s free 1 m lidar, the star of the comparison. &middot; <a href="https://www.usgs.gov/3d-elevation-program" target="_blank" rel="noopener">USGS 3D Elevation Program (3DEP)</a> &mdash; the 10 m and 30 m elevation. &middot; <a href="https://apps.nationalmap.gov/downloader/" target="_blank" rel="noopener">The National Map Downloader</a> &mdash; grab the tiles yourself.</p>
+      <p><a href="https://www.usgs.gov/volcanoes/mount-st.-helens" target="_blank" rel="noopener">USGS: Mount St. Helens</a> &mdash; Cascades Volcano Observatory&rsquo;s page for the first test subject. &middot; <a href="https://www.nps.gov/crla/index.htm" target="_blank" rel="noopener">Crater Lake National Park</a> &mdash; NPS.</p>
+      <p><a href="https://github.com/milos-agathon/forge3d" target="_blank" rel="noopener">forge3d</a> &mdash; the code, with <a href="https://milos-agathon.github.io/forge3d/" target="_blank" rel="noopener">docs and examples</a>. &middot; <a href="https://www.rayshader.com/" target="_blank" rel="noopener">rayshader</a> &mdash; Tyler Morgan-Wall&rsquo;s R package. &middot; <a href="https://pixi.sh" target="_blank" rel="noopener">pixi</a> &mdash; the environment manager.</p>
+    </div>
+olution does to that summit terrain. The 30m DEM render above is already strong. What the WA DNR LiDAR does to it is going to be something else.</p>
 
     <p>That is where I ended up with forge3d. Once I got the hang of it, I felt like I was mostly limited by my own ideas — and by the quality of the open data I could find. That is a very fun place to be. For a first pass, that is about as strong an endorsement as I can give. I installed it because I was curious. A few notebooks later, I had images I genuinely wanted to keep.</p>
 

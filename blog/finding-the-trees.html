@@ -239,6 +239,21 @@ footer.end a:hover{color:var(--rust)}
 .article-footer-nav a:hover{color:var(--rust)}
 .footer-name{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;
   color:var(--muted)}
+    .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink,#1c1a16); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone,#7a7268);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist,#d6d0c4);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone,#7a7268);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist,#d6d0c4);
+    }
+    .sources-wrap h2 { font-family:'Playfair Display',Georgia,serif; font-size:1.5rem; margin:2.5rem 0 1rem; }
 </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -838,6 +853,29 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
   twenty-five years and given away for free, to tell me what I had been looking at.</p>
 
   <p>Worth the week.</p>
+
+  <hr>
+  <div class="sources-wrap">
+  <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://mapscaping.podbean.com/e/unravelling-the-world-of-lidar-data-in-geospatial-technology-with-nate-dugan/" target="_blank" rel="noopener">Introduction To LIDAR &amp; Point Clouds</a></strong> &mdash; <em>The MapScaping Podcast</em>, 15 February 2024, about 48 min. Nejc Dougan walks through point clouds, classification and why automated processing matters.</p>
+      <p><strong><a href="https://www.usgs.gov/media/audio/eyes-earth-episode-82-introduction-gedi" target="_blank" rel="noopener">Eyes on Earth Episode 82 &ndash; Introduction to GEDI</a></strong> &mdash; <em>Eyes on Earth</em> (USGS EROS), 24 October 2022, about 17 min. Ralph Dubayah and Laura Duncanson on measuring canopy height from a lidar on the space station.</p>
+      <p><strong><a href="https://mapscaping.podbean.com/e/gedi-space-lasers/" target="_blank" rel="noopener">GEDI space lasers</a></strong> &mdash; <em>The MapScaping Podcast</em>, 15 December 2021, about 34 min. A longer, chattier dive into canopy height and vertical structure from orbit.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>N&aelig;sset, E. (2002).</strong> <a href="https://doi.org/10.1016/S0034-4257(01)00290-5" target="_blank" rel="noopener">Predicting forest stand characteristics with airborne scanning laser using a practical two-stage procedure and field data.</a> <em>Remote Sensing of Environment</em> <strong>80</strong>(1), 88&ndash;99.</p>
+      <p><strong>Popescu, S.C. &amp; Wynne, R.H. (2004).</strong> <a href="https://doi.org/10.14358/PERS.70.5.589" target="_blank" rel="noopener">Seeing the trees in the forest: using lidar and multispectral data fusion with local filtering and variable window size for estimating tree height.</a> <em>Photogrammetric Engineering &amp; Remote Sensing</em> <strong>70</strong>(5), 589&ndash;604.</p>
+      <p><strong>Hyypp&auml;, J., Hyypp&auml;, H., Leckie, D., Gougeon, F., Yu, X. &amp; Maltamo, M. (2008).</strong> <a href="https://doi.org/10.1080/01431160701736489" target="_blank" rel="noopener">Review of methods of small-footprint airborne laser scanning for extracting forest inventory data in boreal forests.</a> <em>International Journal of Remote Sensing</em> <strong>29</strong>(5), 1339&ndash;1366.</p>
+      <p><strong>Kaartinen, H., Hyypp&auml;, J., Yu, X., Vastaranta, M. et al. (2012).</strong> <a href="https://doi.org/10.3390/rs4040950" target="_blank" rel="noopener">An international comparison of individual tree detection and extraction using airborne laser scanning.</a> <em>Remote Sensing</em> <strong>4</strong>(4), 950&ndash;974. Open access.</p>
+      <p><a href="https://doi.org/10.1007/978-94-017-8663-8" target="_blank" rel="noopener">Forestry Applications of Airborne Laser Scanning: Concepts and Case Studies</a> &mdash; Maltamo, N&aelig;sset &amp; Vauhkonen (eds.), Springer, 2014; the textbook for area-based and tree-level methods, with plenty of Nordic examples.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://www.metsakeskus.fi/en/open-forest-and-nature-information" target="_blank" rel="noopener">Finnish Forest Centre: open forest data</a> &mdash; the canopy height models and stand inventory, CC BY 4.0. &middot; <a href="https://www.maanmittauslaitos.fi/en/maps-and-spatial-data/datasets-and-interfaces/product-descriptions/laser-scanning-data-5-p" target="_blank" rel="noopener">NLS Laser Scanning Data 5 p</a> &mdash; the denser Finnish lidar, for reference. &middot; <a href="https://www.luontoon.fi/en/destinations/nuuksio-national-park" target="_blank" rel="noopener">Nuuksio National Park</a> &mdash; the real forest next door to the sheet.</p>
+      <p><a href="https://pdal.org/" target="_blank" rel="noopener">PDAL</a> &mdash; the point cloud workhorse. &middot; <a href="https://pixi.prefix.dev/" target="_blank" rel="noopener">pixi</a> &mdash; the environment manager that tamed GDAL on Windows. &middot; <a href="https://github.com/bdgroves/lidar-explore" target="_blank" rel="noopener">bdgroves/lidar-explore</a> &mdash; code, technical report and lockfile.</p>
+    </div>
+  </div>
 </div>
 
 <footer class="end">

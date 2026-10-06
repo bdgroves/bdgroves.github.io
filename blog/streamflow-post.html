@@ -78,6 +78,20 @@
 
     /* Giscus theme override to match site */
     .giscus { margin-top: 0.5rem; }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist);
+    }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -223,7 +237,30 @@ jobs:
 
     <p><strong>Cache the historical data.</strong> Right now the script re-fetches years of historical data every week, which is slow and wasteful. I should pull it once, store it in the repo, and only fetch the delta. It works fine, but it's inelegant.</p>
 
-    <p><strong>Add alerts.</strong> The whole point of watching snowmelt is knowing when something unusual happens. I have a weather bot that already posts to Bluesky — wiring up a flow alert to the same pipeline would take an afternoon. It's on the list.</p>
+    <p><strong>Add alerts.</strong> The whole point of watching snowmelt is knowing when something unusual happens. I have a weather bot that already posts to Bluesky — wiring
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://www.usgs.gov/media/videos/how-usgs-streamgages-work" target="_blank" rel="noopener">How USGS Streamgages Work</a></strong> &mdash; <em>USGS California Water Science Center</em>, 3 March 2021, about 15 min video. A gentle, kid-friendly tour of how a gage measures height and flow &mdash; the numbers behind every chart here.</p>
+      <p><strong><a href="https://www.upr.org/science/2025-09-04/new-stream-gages-in-utah-will-help-measure-water-levels" target="_blank" rel="noopener">New stream gauges in Utah will help measure water levels</a></strong> &mdash; <em>Utah Public Radio</em>, 4 September 2025, about 4 min. Caroline Long on radar and pressure sensors, 15-minute readings, and why water managers lean on them.</p>
+      <p><strong><a href="https://www.nps.gov/media/video/view.htm?id=0053D6D4-9232-5CD7-0A089C57CD38086A" target="_blank" rel="noopener">Yosemite Nature Notes 5: Snow</a></strong> &mdash; <em>Yosemite Nature Notes</em> (National Park Service), 19 March 2009, about 9 min video. How Yosemite&rsquo;s snowpack becomes water for cities and farms downstream.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Hirsch, R.M. &amp; Costa, J.E. (2004).</strong> <a href="https://doi.org/10.1029/2004EO200002" target="_blank" rel="noopener">U.S. stream flow measurement and data dissemination improve.</a> <em>Eos, Transactions American Geophysical Union</em> <strong>85</strong>(20), 197&ndash;203.</p>
+      <p><strong>Mote, P.W., Hamlet, A.F., Clark, M. &amp; Lettenmaier, D.P. (2005).</strong> <a href="https://doi.org/10.1175/BAMS-86-1-39" target="_blank" rel="noopener">Declining mountain snowpack in western North America.</a> <em>Bulletin of the American Meteorological Society</em> <strong>86</strong>(1), 39&ndash;50.</p>
+      <p><strong>Margulis, S.A., Cort&eacute;s, G., Girotto, M. &amp; Durand, M. (2016).</strong> <a href="https://doi.org/10.1175/JHM-D-15-0177.1" target="_blank" rel="noopener">A Landsat-era Sierra Nevada snow reanalysis (1985&ndash;2015).</a> <em>Journal of Hydrometeorology</em> <strong>17</strong>(4), 1203&ndash;1221.</p>
+      <p><strong>Siirila-Woodburn, E.R., Rhoades, A.M., Hatchett, B.J., Huning, L.S., Szinai, J., Tague, C., Nico, P., Feldman, D., Jones, A.D., Collins, W.D. &amp; Kaatz, L. (2021).</strong> <a href="https://doi.org/10.1038/s43017-021-00219-y" target="_blank" rel="noopener">A low-to-no snow future and its impacts on water resources in the western United States.</a> <em>Nature Reviews Earth &amp; Environment</em> <strong>2</strong>, 800&ndash;819.</p>
+      <p><a href="https://pubs.usgs.gov/publication/tm3A8" target="_blank" rel="noopener">Discharge Measurements at Gaging Stations</a> &mdash; Turnipseed &amp; Sauer, USGS Techniques and Methods 3-A8, 2010; the free field manual for how every cubic foot per second gets measured.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://waterdata.usgs.gov/" target="_blank" rel="noopener">USGS Water Data for the Nation</a> &mdash; free, keyless streamflow for the whole country. &middot; <a href="https://api.waterdata.usgs.gov/" target="_blank" rel="noopener">USGS Water Data APIs</a> &mdash; the modern API that replaces the old WaterServices endpoint.</p>
+      <p><a href="https://water.ca.gov/Programs/Flood-Management/Flood-Data/Snow-Surveys" target="_blank" rel="noopener">California DWR Snow Surveys</a> &mdash; the state&rsquo;s snowpack numbers since 1929. &middot; <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a> &mdash; the little open-source map library. &middot; <a href="https://docs.github.com/en/actions" target="_blank" rel="noopener">GitHub Actions</a> &mdash; the free scheduler that runs the whole thing.</p>
+      <p><a href="https://brooksgroves.com/sierra-streamflow/" target="_blank" rel="noopener">Sierra Streamflow</a> &mdash; the live dashboard. &middot; <a href="https://github.com/bdgroves/sierra-streamflow" target="_blank" rel="noopener">bdgroves/sierra-streamflow</a> &mdash; the code.</p>
+    </div>
+ up a flow alert to the same pipeline would take an afternoon. It's on the list.</p>
 
     <p><strong>Start simpler.</strong> I built the spaghetti charts first because they were the thing I most wanted to see. The map came later. If I'd tried to build everything at once I probably would have given up. Pick the one thing you actually care about and get that working first.</p>
 

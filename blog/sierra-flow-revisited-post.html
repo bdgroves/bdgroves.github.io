@@ -88,6 +88,20 @@
     .note-box { background: var(--cream); border: 1px solid var(--mist); border-left: 3px solid var(--gold); padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: 0.95rem; }
     .article-body ol, .article-body ul { margin: 0 0 1.5rem 1.5rem; }
     .article-body li { margin-bottom: 0.6rem; }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist);
+    }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -208,7 +222,30 @@
 
     <h2>How it runs</h2>
 
-    <p>Every morning a GitHub Action on Ubuntu installs GnuCOBOL 3.1.2, a stdlib-only Python script asks the new <a href="https://api.waterdata.usgs.gov/" target="_blank">USGS Water Data API</a> for the last 60 daily means, and the batch job compiles and runs. The outputs are committed and the page reads them. If the USGS doesn&rsquo;t answer for a gage, the job keeps that gage&rsquo;s last data and flags it as stale. The normals only need rebuilding if the period changes, so the 30 years of history aren&rsquo;t downloaded every day. All free, no keys.</p>
+    <p>Every morning a GitHub Action on Ubuntu installs GnuCOBOL 3.1.2, a stdlib-only Python script asks the new <a href="https://api.waterdata.usgs.gov/" target="_blank">USGS Water Data API</a> for the last 60 daily means, and the batch job compiles and runs. The outputs are committed and the page reads them. If the USGS doesn&rsquo;t answer for a gage, the job keeps that gage&rsquo;s last data and flags it as stale. The normals only need rebuilding if the period changes, so the 
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://www.nsa.gov/helpful-links/nsa-foia/declassification-transparency-initiatives/historical-releases/view/article/3880193/capt-grace-hopper-on-future-possibilities-data-hardware-software-and-peopl" target="_blank" rel="noopener">Capt. Grace Hopper on Future Possibilities: Data, Hardware, Software, and People (1982)</a></strong> &mdash; <em>NSA historical release</em>, 26 August 2024, about 90 min video in two parts. Hopper herself, lecturing NSA staff in August 1982 &mdash; a gem rescued from an old tape.</p>
+      <p><strong><a href="https://www.redhat.com/en/compiler-podcast/legacies-cobol" target="_blank" rel="noopener">Legacies: The COBOL Chronicles</a></strong> &mdash; <em>Compiler</em> (Red Hat), 28 September 2023, about 31 min. Two IBM engineers on why COBOL still runs banks and airlines, and who&rsquo;ll keep it going.</p>
+      <p><strong><a href="https://www.michiganpublic.org/2020-04-22/cobol-cowboys-aim-to-rescue-sluggish-state-unemployment-systems" target="_blank" rel="noopener">&lsquo;COBOL Cowboys&rsquo; Aim To Rescue Sluggish State Unemployment Systems</a></strong> &mdash; <em>NPR</em>, 22 April 2020, about 3 min. Bobby Allyn on the retired programmers called back when the pandemic swamped 1960s-era systems.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Sammet, J.E. (1978).</strong> <a href="https://doi.org/10.1145/960118.808378" target="_blank" rel="noopener">The early history of COBOL.</a> <em>ACM SIGPLAN Notices</em> <strong>13</strong>(8), 121&ndash;161.</p>
+      <p><a href="https://pubs.usgs.gov/publication/wsp1542A" target="_blank" rel="noopener">Flow-Duration Curves</a> &mdash; J.K. Searcy, USGS Water-Supply Paper 1542-A, 1959; the classic, free-to-read guide to ranking a river&rsquo;s flows by how often they happen.</p>
+      <p><strong>Vogel, R.M. &amp; Fennessey, N.M. (1994).</strong> <a href="https://doi.org/10.1061/(ASCE)0733-9496(1994)120:4(485)" target="_blank" rel="noopener">Flow-duration curves. I: New interpretation and confidence intervals.</a> <em>Journal of Water Resources Planning and Management</em> <strong>120</strong>(4), 485&ndash;504.</p>
+      <p><strong>Poff, N.L., Allan, J.D., Bain, M.B., Karr, J.R., Prestegaard, K.L., Richter, B.D., Sparks, R.E. &amp; Stromberg, J.C. (1997).</strong> <a href="https://doi.org/10.2307/1313099" target="_blank" rel="noopener">The natural flow regime.</a> <em>BioScience</em> <strong>47</strong>(11), 769&ndash;784.</p>
+      <p><strong>Yoshiyama, R.M., Fisher, F.W. &amp; Moyle, P.B. (1998).</strong> <a href="https://doi.org/10.1577/1548-8675(1998)018%3C0487:HAADOC%3E2.0.CO;2" target="_blank" rel="noopener">Historical abundance and decline of Chinook salmon in the Central Valley region of California.</a> <em>North American Journal of Fisheries Management</em> <strong>18</strong>(3), 487&ndash;521.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://api.waterdata.usgs.gov/" target="_blank" rel="noopener">USGS Water Data APIs</a> &mdash; where the morning job gets its 60 days of daily means. &middot; <a href="https://waterdata.usgs.gov/" target="_blank" rel="noopener">USGS Water Data for the Nation</a> &mdash; every gage&rsquo;s own page and history.</p>
+      <p><a href="https://waterdata.usgs.gov/blog/wdfn-stats-delivery" target="_blank" rel="noopener">Modernization of Statistical Delivery and WaterWatch Decommission</a> &mdash; USGS on retiring WaterWatch, whose percentile classes SIERRA-FLOW now borrows. &middot; <a href="https://gnucobol.sourceforge.io/" target="_blank" rel="noopener">GnuCOBOL</a> &mdash; the free compiler doing the work.</p>
+      <p><a href="https://brooksgroves.com/sierra-flow-cobol/" target="_blank" rel="noopener">SIERRA-FLOW</a> &mdash; the live console, green-bar printout and punch-card deck. &middot; <a href="https://github.com/bdgroves/sierra-flow-cobol" target="_blank" rel="noopener">bdgroves/sierra-flow-cobol</a> &mdash; the code.</p>
+    </div>
+30 years of history aren&rsquo;t downloaded every day. All free, no keys.</p>
 
     <p>Grace Hopper&rsquo;s idea was that a program should read like what it does. Version 3 finally does what it says.</p>
 
