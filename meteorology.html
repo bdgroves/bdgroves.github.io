@@ -49,6 +49,7 @@
     @media(max-width:768px) { .project-lead { grid-template-columns:1fr; } }
     .project-lead-main { padding:2rem; border-right:1px solid var(--mist); }
     .project-lead-main::before { content:'Lead Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); display:block; margin-bottom:0.75rem; }
+    .project-lead.standby .project-lead-main::before { content:'On Standby'; color:var(--stone); }
     .project-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
     .project-hed { font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3vw,2.4rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:0.75rem; }
     .project-hed em { font-style:italic; color:var(--sky); }
@@ -143,72 +144,14 @@
 <div class="page-header">
   <p class="page-eyebrow"><a href="/">Brooks Groves</a> · The Ologies</p>
   <h1 class="page-title">🌩 Meteoro<em>logy</em></h1>
-  <p class="page-sub">Automated weather intelligence across four wildly different air masses — Pacific Northwest maritime, Sierra foothills, Mojave extreme, and Great Basin high desert. Broadcast-style cards, posted twice daily, no human required.</p>
+  <p class="page-sub">Weather from the ground up to the top of the sky: the world&rsquo;s great fog coasts, four live stations across the American West, and the Northwest&rsquo;s weather balloons read in FORTRAN. Two older weather bots rest on standby at the bottom of the page.</p>
 </div>
 
 <div class="page-content">
 
-  <!-- LEAD PROJECT -->
-  <div class="section-label">
-    <span>Featured Project</span>
-    <a href="https://github.com/bdgroves/weather-report-bot" target="_blank">View on GitHub →</a>
-  </div>
-
-  <div class="project-lead">
-    <div class="project-lead-main">
-      <p class="project-kicker">Python · Matplotlib · OpenWeatherMap · GitHub Actions · Twitter · Bluesky</p>
-      <h2 class="project-hed">🌪️ <em>weather-report-bot</em></h2>
-      <blockquote class="project-quote">"It's already on the ground. It's not gonna stop."</blockquote>
-      <p class="project-dek">A fully automated broadcast-quality weather intelligence system. Twice daily it wakes up, pulls live atmospheric data across four wildly different locations, renders cinematic station cards, and fires them to Twitter and BlueSky — no human required.</p>
-      <p class="project-dek">Each station card is a 1200×675 broadcast-style graphic with three panels: current conditions with color-coded temperature and hand-drawn weather icons, an instruments panel with arc gauges for humidity and UV index plus a wind compass, and a sky & atmosphere panel with precipitation chance, cloud cover, sunrise/sunset, and pressure. Every pixel hand-drawn in Matplotlib — no emoji fonts, no templates.</p>
-      <p class="project-dek">The four stations span completely different climate regimes: Pacific Northwest maritime, Sierra Nevada foothills, Mojave Desert extreme, and Great Basin high desert. Same report time. Four completely different air masses.</p>
-      <div class="project-stack">
-        <span class="stack-pill">Python</span>
-        <span class="stack-pill">Matplotlib</span>
-        <span class="stack-pill">OpenWeatherMap</span>
-        <span class="stack-pill">GitHub Actions</span>
-        <span class="stack-pill">Tweepy</span>
-        <span class="stack-pill">Bluesky AT Protocol</span>
-        <span class="stack-pill">pixi</span>
-      </div>
-      <div style="margin-top:1.25rem;">
-        <a href="https://brooksgroves.com/weather-report-bot/" target="_blank" class="project-link">View Live Cards →</a>
-        <a href="https://github.com/bdgroves/weather-report-bot" target="_blank" class="project-link secondary">GitHub →</a>
-      </div>
-    </div>
-
-    <div class="project-lead-stats">
-      <div class="stat-block">
-        <div class="stat-label">Stations monitored</div>
-        <div class="stat-value">4</div>
-        <div class="stat-sub">Lakewood · Sonora · Death Valley · Reno</div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-label">Posts per day</div>
-        <div class="stat-value">2</div>
-        <div class="stat-sub">7am PT · 6pm PT · Twitter + Bluesky</div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-label">Card resolution</div>
-        <div class="stat-value">1200×675</div>
-        <div class="stat-sub">16:9 · 150 DPI · broadcast standard</div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-label">Rendering engine</div>
-        <div class="stat-value">Matplotlib</div>
-        <div class="stat-sub">pure geometry · every pixel hand-drawn</div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-label">Infrastructure cost</div>
-        <div class="stat-value">$0</div>
-        <div class="stat-sub">GitHub Actions free tier · ~4 min/run</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FOG-WATCH — NEWEST -->
+  <!-- FOG-WATCH — FEATURED -->
   <div class="section-label" style="margin-top:1rem;">
-    <span>🌫️ Newest Project</span>
+    <span>Featured Project</span>
     <a href="https://github.com/bdgroves/fog-watch" target="_blank">View on GitHub →</a>
   </div>
   <div class="project-lead" style="margin-bottom:3rem;">
@@ -261,56 +204,101 @@
     </div>
   </div>
 
-  <!-- SIERRA ALERT BOT — FEATURED -->
-  <div class="section-label" style="margin-top:1rem;">
-    <span>✨ Featured Project</span>
-    <a href="https://github.com/bdgroves/sierra-alert-bot" target="_blank">View on GitHub →</a>
+  <!-- WEATHER STATION -->
+  <div class="section-label" style="margin-top:3rem;">
+    <span>Also Live</span>
+    <a href="https://github.com/bdgroves" target="_blank">All on GitHub →</a>
   </div>
-  <div class="project-lead" style="margin-bottom:3rem;">
+  <div style="border:1px solid var(--mist);padding:2rem;margin-bottom:2rem;">
+    <p style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Python · Open-Meteo · NWS · GitHub Actions · 15-min updates</p>
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;margin-bottom:0.75rem;">🌡️ Weather Station</h3>
+    <p style="font-size:0.9rem;color:var(--stone);line-height:1.8;margin-bottom:1rem;">High-end real-time weather dashboard monitoring four stations across the American West — Lakewood WA, Sonora CA, Reno NV, Death Valley CA. Live National Weather Service observations read by the page every 5 minutes, measured-then-forecast charts, the local forecaster&rsquo;s discussion, NWS alerts, and every day checked against records back to 1893. Any US place by search. Zero cost, looks like a NOAA operations center.</p>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+      <a href="https://brooksgroves.com/weather-station" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--sky);color:var(--sky);">Live Dashboard →</a>
+      <a href="/blog/weather-station-revisited-post.html" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--mist);color:var(--stone);">Read: Revisited →</a>
+      <a href="/blog/weather-station-post.html" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--mist);color:var(--stone);">Read the Build Post →</a>
+      <a href="https://github.com/bdgroves/weather-station" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--mist);color:var(--stone);">GitHub →</a>
+    </div>
+  </div>
+
+  <!-- CASCADIA-WX -->
+  <div class="section-label" style="margin-top:1rem;">
+    <span>Reading the Balloons</span>
+    <a href="https://github.com/bdgroves" target="_blank">All on GitHub →</a>
+  </div>
+  <div style="border:1px solid var(--mist);padding:2rem;margin-bottom:3rem;">
+    <p style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">FORTRAN · NWS Weather Balloons · SNOTEL · Pacific Northwest</p>
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;margin-bottom:0.75rem;">🎈 CASCADIA-WX</h3>
+    <p style="font-size:0.9rem;color:var(--stone);line-height:1.8;margin-bottom:1rem;">The Pacific Northwest&rsquo;s four National Weather Service weather balloons &mdash; Quillayute, Salem, Medford and Spokane &mdash; read twice a day by a FORTRAN program. Freezing level, snow level, precipitable water and atmospheric rivers from every level of every flight, each ranked against 85,000 balloons from 1991&ndash;2020 that a second FORTRAN program turns into normals. Twelve NRCS snow stations ride along when NRCS answers. Amber-phosphor page with the job log, a green-bar printout and a FORTRAN coding form.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--stone);margin-bottom:1rem;">Rebuilt October 2026: the April snowpack figures were wrong, and the write-up explains why</p>
+    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+      <a href="https://brooksgroves.com/cascadia-wx/" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--sky);color:var(--sky);transition:background 0.2s,color 0.2s;" onmouseover="this.style.background='var(--sky)';this.style.color='white'" onmouseout="this.style.background='';this.style.color='var(--sky)'">View Dashboard →</a>
+      <a href="/blog/cascadia-wx-revisited-post.html" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--mist);color:var(--stone);">Read: Revisited →</a>
+      <a href="https://github.com/bdgroves/cascadia-wx" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--mist);color:var(--stone);transition:background 0.2s,color 0.2s;" onmouseover="this.style.background='var(--ink)';this.style.color='white';this.style.borderColor='var(--ink)'" onmouseout="this.style.background='';this.style.color='var(--stone)';this.style.borderColor='var(--mist)'">GitHub →</a>
+    </div>
+  </div>
+
+  <!-- ON STANDBY -->
+  <div class="section-label" style="margin-top:1rem;">
+    <span>🌙 On Standby — The Weather Bots</span>
+    <a href="/blog/alert-bots-revisited-post.html">Why they're resting →</a>
+  </div>
+  <p style="font-size:0.95rem;color:var(--stone);line-height:1.8;margin-bottom:2.5rem;max-width:46rem;">These two used to post to X on their own. In October 2026 the X API credits ran out, and I decided not to buy more just now, so both bots are resting. The alert bot still watches the Sierra on every run and quietly writes down what it would have said, and the weather report&rsquo;s cards still refresh every hour. For the alert bot, turning X back on is one setting, so both are ready if it ever comes back into the budget.</p>
+
+  <!-- WEATHER-REPORT-BOT — STANDBY -->
+  <div class="section-label">
+    <span>weather-report-bot · On standby</span>
+    <a href="https://github.com/bdgroves/weather-report-bot" target="_blank">View on GitHub →</a>
+  </div>
+
+  <div class="project-lead standby" style="margin-bottom:3rem;">
     <div class="project-lead-main">
-      <p class="project-kicker">Python · MetPy · Py-ART · Tweepy · pixi · 7 federal feeds</p>
-      <h2 class="project-hed">🌪️ <em>Sierra Nevada Alert Bot</em></h2>
-      <blockquote class="project-quote">"The mountains don't warn you. This bot watches so you don't have to."</blockquote>
-      <p class="project-dek">Autonomous environmental monitoring for the Sierra Nevada — wildfires, floods, earthquakes, air quality, and severe weather. It polls seven live federal data streams every few minutes on GitHub Actions and posts to <a href="https://x.com/SierraNevadaWX" target="_blank" style="color:var(--sky);">@SierraNevadaWX</a> the moment something worth knowing happens. Intel the instant it fires — not whenever you remember to scroll.</p>
-      <p class="project-dek">It started as a question — could one person, with no server and no budget, watch an entire mountain range in near-real-time? Seven feeds later, it ships with a full science toolkit: MetPy Skew-T Log-P soundings for reading the morning atmosphere, and Py-ART NEXRAD Level 2 dual-pol analysis with automatic tornado-debris, TVS, and hail signature detection.</p>
+      <p class="project-kicker">Python · Matplotlib · OpenWeatherMap · GitHub Actions · Twitter · Bluesky</p>
+      <h2 class="project-hed">🌪️ <em>weather-report-bot</em></h2>
+      <blockquote class="project-quote">"It's already on the ground. It's not gonna stop."</blockquote>
+      <p class="project-dek">A fully automated, broadcast-style weather report. Twice a day it pulled live conditions for four wildly different places, rendered cinematic station cards, and posted them to X and Bluesky with no human in the loop. It stopped posting in October 2026; the cards still refresh every hour, and the <a href="https://brooksgroves.com/weather-station" target="_blank" style="color:var(--sky);">Weather Station</a> now carries the live numbers all day.</p>
+      <p class="project-dek">Each station card is a 1200×675 broadcast-style graphic with three panels: current conditions with color-coded temperature and hand-drawn weather icons, an instruments panel with arc gauges for humidity and UV index plus a wind compass, and a sky & atmosphere panel with precipitation chance, cloud cover, sunrise/sunset, and pressure. Every pixel hand-drawn in Matplotlib — no emoji fonts, no templates.</p>
+      <p class="project-dek">The four stations span completely different climate regimes: Pacific Northwest maritime, Sierra Nevada foothills, Mojave Desert extreme, and Great Basin high desert. Same report time. Four completely different air masses.</p>
       <div class="project-stack">
         <span class="stack-pill">Python</span>
-        <span class="stack-pill">MetPy</span>
-        <span class="stack-pill">Py-ART</span>
-        <span class="stack-pill">Tweepy</span>
+        <span class="stack-pill">Matplotlib</span>
+        <span class="stack-pill">OpenWeatherMap</span>
         <span class="stack-pill">GitHub Actions</span>
+        <span class="stack-pill">Tweepy</span>
+        <span class="stack-pill">Bluesky AT Protocol</span>
         <span class="stack-pill">pixi</span>
       </div>
       <div style="margin-top:1.25rem;">
-        <a href="https://x.com/SierraNevadaWX" target="_blank" class="project-link">Follow @SierraNevadaWX →</a>
-        <a href="/blog/sierra-alert-bot-post.html" class="project-link secondary">Read the Build Post →</a>
+        <a href="https://brooksgroves.com/weather-report-bot/" target="_blank" class="project-link">See the Cards →</a>
+        <a href="https://github.com/bdgroves/weather-report-bot" target="_blank" class="project-link secondary">GitHub →</a>
       </div>
     </div>
+
     <div class="project-lead-stats">
       <div class="stat-block">
-        <div class="stat-label">Federal data streams</div>
-        <div class="stat-value">7</div>
-        <div class="stat-sub">NWS · NIFC · CAL FIRE · IEM · AirNow · NWPS · USGS</div>
+        <div class="stat-label">Stations monitored</div>
+        <div class="stat-value">4</div>
+        <div class="stat-sub">Lakewood · Sonora · Death Valley · Reno</div>
       </div>
       <div class="stat-block">
-        <div class="stat-label">Poll interval</div>
-        <div class="stat-value">~5 min</div>
-        <div class="stat-sub">GitHub Actions · dedup cache committed back</div>
+        <div class="stat-label">Status</div>
+        <div class="stat-value">Standby</div>
+        <div class="stat-sub">since Oct 2026 · cards refresh hourly</div>
       </div>
       <div class="stat-block">
-        <div class="stat-label">Coverage</div>
-        <div class="stat-value">400 mi</div>
-        <div class="stat-sub">Lassen to the White Mountains</div>
+        <div class="stat-label">Card resolution</div>
+        <div class="stat-value">1200×675</div>
+        <div class="stat-sub">16:9 · 150 DPI · broadcast standard</div>
       </div>
       <div class="stat-block">
-        <div class="stat-label">Science tools</div>
-        <div class="stat-value">2</div>
-        <div class="stat-sub">Skew-T soundings · NEXRAD dual-pol</div>
+        <div class="stat-label">Rendering engine</div>
+        <div class="stat-value">Matplotlib</div>
+        <div class="stat-sub">pure geometry · every pixel hand-drawn</div>
       </div>
       <div class="stat-block">
         <div class="stat-label">Infrastructure cost</div>
         <div class="stat-value">$0</div>
-        <div class="stat-sub">free runner · no server · no database</div>
+        <div class="stat-sub">GitHub Actions free tier · ~4 min/run</div>
       </div>
     </div>
   </div>
@@ -345,17 +333,17 @@
   </div>
 
   <!-- SCHEDULE -->
-  <div class="section-label"><span>Broadcast Schedule</span></div>
+  <div class="section-label"><span>The Old Broadcast Schedule</span></div>
   <div style="margin-bottom:3rem;">
     <div class="schedule-row">
       <span class="schedule-time">7:00 AM PT</span>
-      <span class="schedule-desc">Morning report · current conditions + full-day forecast · posted to Twitter + Bluesky</span>
-      <span class="schedule-status">Daily ✓</span>
+      <span class="schedule-desc">Morning report · current conditions + full-day forecast · posted to X + Bluesky</span>
+      <span class="schedule-status">Paused</span>
     </div>
     <div class="schedule-row">
       <span class="schedule-time">6:00 PM PT</span>
       <span class="schedule-desc">Evening report · end-of-day conditions + overnight outlook</span>
-      <span class="schedule-status">Daily ✓</span>
+      <span class="schedule-status">Paused</span>
     </div>
     <div class="schedule-row">
       <span class="schedule-time">On demand</span>
@@ -370,9 +358,9 @@
     <div>
       <h3 class="context-hed">The Pipeline</h3>
       <div class="context-body">
-        <p>GitHub Actions wakes up twice daily, runs the Python orchestrator, and pulls live atmospheric data from <strong>OpenWeatherMap One Call 3.0</strong> for all four stations simultaneously — current conditions, forecast, UV index, humidity, wind, pressure, dew point, cloud cover.</p>
+        <p>GitHub Actions woke up twice a day, ran the Python orchestrator, and pulled live atmospheric data from <strong>OpenWeatherMap One Call 3.0</strong> for all four stations simultaneously — current conditions, forecast, UV index, humidity, wind, pressure, dew point, cloud cover.</p>
         <p>The Matplotlib renderer then builds each card from scratch: temperature colored by heat level, weather icons drawn as pure geometry (no emoji fonts, no image assets), arc gauges for humidity and UV, a wind compass with directional arrow, precipitation bars, and a broadcast-style ticker across the bottom.</p>
-        <p>Cards are posted to <strong>Twitter/X via Tweepy</strong> and <strong>Bluesky via AT Protocol</strong> with live data captions and location hashtags. Total runtime: about 4 minutes on GitHub's free tier.</p>
+        <p>Cards went out to <strong>X via Tweepy</strong> and <strong>Bluesky via AT Protocol</strong> with live data captions and location hashtags (paused since October 2026). Total runtime: about 4 minutes on GitHub's free tier.</p>
       </div>
     </div>
     <div>
@@ -386,37 +374,57 @@
     </div>
   </div>
 
-  <!-- WEATHER STATION -->
-  <div class="section-label" style="margin-top:3rem;">
-    <span>Also in Meteorology</span>
-    <a href="https://github.com/bdgroves" target="_blank">All on GitHub →</a>
-  </div>
-  <div style="border:1px solid var(--mist);padding:2rem;margin-bottom:2rem;">
-    <p style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Python · Open-Meteo · NWS · GitHub Actions · 15-min updates</p>
-    <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;margin-bottom:0.75rem;">🌡️ Weather Station</h3>
-    <p style="font-size:0.9rem;color:var(--stone);line-height:1.8;margin-bottom:1rem;">High-end real-time weather dashboard monitoring four stations across the American West — Lakewood WA, Sonora CA, Reno NV, Death Valley CA. Live National Weather Service observations read by the page every 5 minutes, measured-then-forecast charts, the local forecaster&rsquo;s discussion, NWS alerts, and every day checked against records back to 1893. Any US place by search. Zero cost, looks like a NOAA operations center.</p>
-    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-      <a href="https://brooksgroves.com/weather-station" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--sky);color:var(--sky);">Live Dashboard →</a>
-      <a href="/blog/weather-station-revisited-post.html" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--mist);color:var(--stone);">Read: Revisited →</a>
-      <a href="/blog/weather-station-post.html" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--mist);color:var(--stone);">Read the Build Post →</a>
-      <a href="https://github.com/bdgroves/weather-station" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--mist);color:var(--stone);">GitHub →</a>
-    </div>
-  </div>
-
-  <!-- CASCADIA-WX -->
+  <!-- SIERRA ALERT BOT — STANDBY -->
   <div class="section-label" style="margin-top:1rem;">
-    <span>More Meteorology</span>
-    <a href="https://github.com/bdgroves" target="_blank">All on GitHub →</a>
+    <span>Sierra Nevada Alert Bot · On standby</span>
+    <a href="https://github.com/bdgroves/sierra-alert-bot" target="_blank">View on GitHub →</a>
   </div>
-  <div style="border:1px solid var(--mist);padding:2rem;margin-bottom:3rem;">
-    <p style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">FORTRAN · NWS Weather Balloons · SNOTEL · Pacific Northwest</p>
-    <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:900;margin-bottom:0.75rem;">🎈 CASCADIA-WX</h3>
-    <p style="font-size:0.9rem;color:var(--stone);line-height:1.8;margin-bottom:1rem;">The Pacific Northwest&rsquo;s four National Weather Service weather balloons &mdash; Quillayute, Salem, Medford and Spokane &mdash; read twice a day by a FORTRAN program. Freezing level, snow level, precipitable water and atmospheric rivers from every level of every flight, each ranked against 85,000 balloons from 1991&ndash;2020 that a second FORTRAN program turns into normals. Twelve NRCS snow stations ride along when NRCS answers. Amber-phosphor page with the job log, a green-bar printout and a FORTRAN coding form.</p>
-    <p style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--stone);margin-bottom:1rem;">Rebuilt October 2026: the April snowpack figures were wrong, and the write-up explains why</p>
-    <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
-      <a href="https://brooksgroves.com/cascadia-wx/" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--sky);color:var(--sky);transition:background 0.2s,color 0.2s;" onmouseover="this.style.background='var(--sky)';this.style.color='white'" onmouseout="this.style.background='';this.style.color='var(--sky)'">View Dashboard →</a>
-      <a href="/blog/cascadia-wx-revisited-post.html" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--mist);color:var(--stone);">Read: Revisited →</a>
-      <a href="https://github.com/bdgroves/cascadia-wx" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;padding:0.6rem 1.2rem;border:1.5px solid var(--mist);color:var(--stone);transition:background 0.2s,color 0.2s;" onmouseover="this.style.background='var(--ink)';this.style.color='white';this.style.borderColor='var(--ink)'" onmouseout="this.style.background='';this.style.color='var(--stone)';this.style.borderColor='var(--mist)'">GitHub →</a>
+  <div class="project-lead standby" style="margin-bottom:3rem;">
+    <div class="project-lead-main">
+      <p class="project-kicker">Python · MetPy · Py-ART · Tweepy · pixi · 7 federal feeds</p>
+      <h2 class="project-hed">🌪️ <em>Sierra Nevada Alert Bot</em></h2>
+      <blockquote class="project-quote">"The mountains don't warn you. This bot watches so you don't have to."</blockquote>
+      <p class="project-dek">Autonomous environmental monitoring for the Sierra Nevada — wildfires, floods, earthquakes, air quality, and severe weather. It polls seven live federal data streams every few minutes on GitHub Actions, and until October 2026 it posted to <a href="https://x.com/SierraNevadaWX" target="_blank" style="color:var(--sky);">@SierraNevadaWX</a> the moment something worth knowing happened. On standby it still watches every run and logs what it would have posted, ready for the day X comes back.</p>
+      <p class="project-dek">It started as a question — could one person, with no server and no budget, watch an entire mountain range in near-real-time? Seven feeds later, it ships with a full science toolkit: MetPy Skew-T Log-P soundings for reading the morning atmosphere, and Py-ART NEXRAD Level 2 dual-pol analysis with automatic tornado-debris, TVS, and hail signature detection.</p>
+      <div class="project-stack">
+        <span class="stack-pill">Python</span>
+        <span class="stack-pill">MetPy</span>
+        <span class="stack-pill">Py-ART</span>
+        <span class="stack-pill">Tweepy</span>
+        <span class="stack-pill">GitHub Actions</span>
+        <span class="stack-pill">pixi</span>
+      </div>
+      <div style="margin-top:1.25rem;">
+        <a href="/blog/alert-bots-revisited-post.html" class="project-link">Read: The Bots, Revisited →</a>
+        <a href="/blog/sierra-alert-bot-post.html" class="project-link secondary">Read the Build Post →</a>
+      </div>
+    </div>
+    <div class="project-lead-stats">
+      <div class="stat-block">
+        <div class="stat-label">Federal data streams</div>
+        <div class="stat-value">7</div>
+        <div class="stat-sub">NWS · NIFC · CAL FIRE · IEM · AirNow · NWPS · USGS</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Poll interval</div>
+        <div class="stat-value">~5 min</div>
+        <div class="stat-sub">GitHub Actions · dedup cache committed back</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Coverage</div>
+        <div class="stat-value">400 mi</div>
+        <div class="stat-sub">Lassen to the White Mountains</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Science tools</div>
+        <div class="stat-value">2</div>
+        <div class="stat-sub">Skew-T soundings · NEXRAD dual-pol</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-label">Infrastructure cost</div>
+        <div class="stat-value">$0</div>
+        <div class="stat-sub">free runner · no server · no database</div>
+      </div>
     </div>
   </div>
 
