@@ -82,6 +82,13 @@ JS = """/* site-footer.js: the brooksgroves.com footer for the project sites.
     var top = root.querySelector('a[href="#"]');
     if (top) top.addEventListener('click', function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
     document.body.appendChild(host);
+    // Full width even when the page pads or centres its <body>.
+    function bleed() {
+      host.style.marginLeft = host.style.width = '';
+      var r = host.getBoundingClientRect(), vw = document.documentElement.clientWidth;
+      if (r.left > 0.5 || r.width < vw - 0.5) { host.style.marginLeft = (-r.left) + 'px'; host.style.width = vw + 'px'; }
+    }
+    bleed(); addEventListener('resize', bleed);
   }
   if (document.body) mount(); else document.addEventListener('DOMContentLoaded', mount);
 })();
