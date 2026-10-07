@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Half a Million Trees — Brooks Groves</title>
+<link rel="canonical" href="https://brooksgroves.com/blog/half-million-trees.html">
 <meta name="description" content="Learning Snowflake and dbt on the Washington Forest Inventory and Analysis dataset — where the wood is, where it dies, what fire does to both, and five predictions that turned out wrong.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -408,30 +409,7 @@
 
 <p>Then a percentage came back saying burned plots had <em>gained</em> 12.4% biomass, on ground where 71% of the stems were dead. That one was averaging ratios instead of taking a ratio of totals — a handful of near-empty plots with tiny denominators flipped the sign on 185 plots' worth of real destruction. The correct number was <strong>−62.3%</strong>.</p>
 
-  <div class="
-    <hr>
-
-    <h2>Go deeper</h2>
-
-    <div class="sources">
-      <div class="sources-head">&#127911; Listen &amp; watch</div>
-      <p><strong><a href="https://research.fs.usda.gov/nrs/products/multimedia/podcasts/forestcast-season-3-women-research-episode-5-plots-blocks-sjana" target="_blank" rel="noopener">Women of Research: Plots to Blocks with Sjana Schanning</a></strong> &mdash; <em>ForestCast</em> (USDA Forest Service), 27 March 2023, about 28 min. An FIA ecologist on going from field plots to the data analysis that turns them into numbers.</p>
-      <p><strong><a href="https://www.npr.org/2023/03/07/1161660254/how-to-save-a-slow-growing-tree-species" target="_blank" rel="noopener">Climate change, beetles and fungus: Saving whitebark pine</a></strong> &mdash; <em>Short Wave</em> (NPR), 7 March 2023, about 14 min. ShiNaasha Pete of the Confederated Salish and Kootenai Tribes on planting rust-resistant seedlings.</p>
-      <p><strong><a href="https://www.wbur.org/hereandnow/2014/09/17/wildfire-rancher-survival" target="_blank" rel="noopener">Aftermath Of A Wildfire, A Rancher&rsquo;s Story Of Survival</a></strong> &mdash; <em>Here &amp; Now</em> (NPR/WBUR), 17 September 2014, about 5 min. Anna King visits a Twisp rancher who lost his range to the Carlton Complex.</p>
-      <p><strong><a href="https://www.nwnewsnetwork.org/disasters-and-accidents/2019-07-19/pateros-and-north-central-washington-continue-rebuilding-5-years-after-carlton-complex" target="_blank" rel="noopener">Pateros And North Central Washington Continue Rebuilding 5 Years After Carlton Complex</a></strong> &mdash; <em>Northwest News Network</em>, 19 July 2019, about 4 min. Courtney Flatt on how an Okanogan town rebuilt, metal roofs and all.</p>
-
-      <div class="sources-head">&#128196; Read</div>
-      <p><strong>van Mantgem, P.J., Stephenson, N.L., Byrne, J.C., Daniels, L.D., Franklin, J.F. et al. (2009).</strong> <a href="https://doi.org/10.1126/science.1165000" target="_blank" rel="noopener">Widespread increase of tree mortality rates in the western United States.</a> <em>Science</em> <strong>323</strong>(5913), 521&ndash;524.</p>
-      <p><strong>Tomback, D.F. &amp; Achuff, P. (2010).</strong> <a href="https://doi.org/10.1111/j.1439-0329.2010.00655.x" target="_blank" rel="noopener">Blister rust and western forest biodiversity: ecology, values and outlook for white pines.</a> <em>Forest Pathology</em> <strong>40</strong>(3&ndash;4), 186&ndash;225.</p>
-      <p><strong>Prichard, S.J., Povak, N.A., Kennedy, M.C. &amp; Peterson, D.W. (2020).</strong> <a href="https://doi.org/10.1002/eap.2104" target="_blank" rel="noopener">Fuel treatment effectiveness in the context of landform, vegetation, and large, wind-driven wildfires.</a> <em>Ecological Applications</em> <strong>30</strong>(5), e02104.</p>
-      <p><a href="https://doi.org/10.2737/SRS-GTR-80" target="_blank" rel="noopener">The Enhanced Forest Inventory and Analysis Program &ndash; National Sampling Design and Estimation Procedures</a> &mdash; Bechtold &amp; Patterson (eds.), USDA Forest Service GTR SRS-80, 2005; the rulebook for the rotating panels and how FIA turns plots into estimates.</p>
-
-      <div class="sources-head">&#128202; Data &amp; agencies</div>
-      <p><a href="https://apps.fs.usda.gov/fia/datamart/datamart.html" target="_blank" rel="noopener">FIA DataMart</a> &mdash; download the whole Washington inventory yourself. &middot; <a href="https://apps.fs.usda.gov/fiadb-api/evalidator" target="_blank" rel="noopener">EVALIDator</a> &mdash; the Forest Service&rsquo;s own estimates, for checking your SQL.</p>
-      <p><a href="https://data-nifc.opendata.arcgis.com/" target="_blank" rel="noopener">NIFC Open Data</a> &mdash; Interagency Fire Perimeter History. &middot; <a href="https://waterdata.usgs.gov/" target="_blank" rel="noopener">USGS Water Data for the Nation</a> &mdash; the river half of the warehouse. &middot; <a href="https://www.fws.gov/species/whitebark-pine-pinus-albicaulis" target="_blank" rel="noopener">USFWS: Whitebark pine</a> &mdash; the 2022 threatened listing.</p>
-      <p><a href="https://docs.getdbt.com/" target="_blank" rel="noopener">dbt Developer Hub</a> &mdash; models, tests and docs. &middot; <a href="https://github.com/bdgroves/alpine-watch-dbt" target="_blank" rel="noopener">bdgroves/alpine-watch-dbt</a> &mdash; the Snowflake + dbt project this weekend grew out of.</p>
-    </div>
-aside">
+  <div class="aside">
     <div class="aside-title">Ratio of Totals, Not Average of Ratios</div>
     <p>Say two plots burned. Plot A had 2 tons of biomass before and 3 after &mdash; some regrowth, a <em>+50%</em> reading. Plot B had 200 tons before and 20 after &mdash; a <em>&minus;90%</em> reading. Average those two percentages and you get +50% and &minus;90% split down the middle: <em>&minus;20%</em>. Sounds like a moderate loss.</p>
     <p>But Plot B lost 180 real tons. Plot A gained 1. Add up what actually existed &mdash; 202 tons before, 23 after &mdash; and the true change is <em>&minus;88.6%</em>, not &minus;20%. Averaging the percentages let a nearly-empty plot's noise carry the same vote as a fully-forested plot's collapse. Sum first, divide once, and the small plots stop drowning out the big ones.</p>
@@ -458,6 +436,29 @@ aside">
 <hr>
 
 <p style="font-size:.88rem;color:var(--ink-soft);font-style:italic">Data: USDA Forest Service Forest Inventory and Analysis; USGS Water Data; NIFC InterAgencyFirePerimeterHistory; USFS and NPS boundaries. Maps built in QGIS. A caveat worth stating: FIA publishes plot coordinates fuzzed up to about a mile to protect landowner privacy, so everything here is honest at regional scale and unreliable at the parcel level. The fire perimeter record also under-represents state and private land and thins after 2019 — absence of a fire in that dataset does not mean the ground never burned.</p>
+
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://research.fs.usda.gov/nrs/products/multimedia/podcasts/forestcast-season-3-women-research-episode-5-plots-blocks-sjana" target="_blank" rel="noopener">Women of Research: Plots to Blocks with Sjana Schanning</a></strong> &mdash; <em>ForestCast</em> (USDA Forest Service), 27 March 2023, about 28 min. An FIA ecologist on going from field plots to the data analysis that turns them into numbers.</p>
+      <p><strong><a href="https://www.npr.org/2023/03/07/1161660254/how-to-save-a-slow-growing-tree-species" target="_blank" rel="noopener">Climate change, beetles and fungus: Saving whitebark pine</a></strong> &mdash; <em>Short Wave</em> (NPR), 7 March 2023, about 14 min. ShiNaasha Pete of the Confederated Salish and Kootenai Tribes on planting rust-resistant seedlings.</p>
+      <p><strong><a href="https://www.wbur.org/hereandnow/2014/09/17/wildfire-rancher-survival" target="_blank" rel="noopener">Aftermath Of A Wildfire, A Rancher&rsquo;s Story Of Survival</a></strong> &mdash; <em>Here &amp; Now</em> (NPR/WBUR), 17 September 2014, about 5 min. Anna King visits a Twisp rancher who lost his range to the Carlton Complex.</p>
+      <p><strong><a href="https://www.nwnewsnetwork.org/disasters-and-accidents/2019-07-19/pateros-and-north-central-washington-continue-rebuilding-5-years-after-carlton-complex" target="_blank" rel="noopener">Pateros And North Central Washington Continue Rebuilding 5 Years After Carlton Complex</a></strong> &mdash; <em>Northwest News Network</em>, 19 July 2019, about 4 min. Courtney Flatt on how an Okanogan town rebuilt, metal roofs and all.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>van Mantgem, P.J., Stephenson, N.L., Byrne, J.C., Daniels, L.D., Franklin, J.F. et al. (2009).</strong> <a href="https://doi.org/10.1126/science.1165000" target="_blank" rel="noopener">Widespread increase of tree mortality rates in the western United States.</a> <em>Science</em> <strong>323</strong>(5913), 521&ndash;524.</p>
+      <p><strong>Tomback, D.F. &amp; Achuff, P. (2010).</strong> <a href="https://doi.org/10.1111/j.1439-0329.2010.00655.x" target="_blank" rel="noopener">Blister rust and western forest biodiversity: ecology, values and outlook for white pines.</a> <em>Forest Pathology</em> <strong>40</strong>(3&ndash;4), 186&ndash;225.</p>
+      <p><strong>Prichard, S.J., Povak, N.A., Kennedy, M.C. &amp; Peterson, D.W. (2020).</strong> <a href="https://doi.org/10.1002/eap.2104" target="_blank" rel="noopener">Fuel treatment effectiveness in the context of landform, vegetation, and large, wind-driven wildfires.</a> <em>Ecological Applications</em> <strong>30</strong>(5), e02104.</p>
+      <p><a href="https://doi.org/10.2737/SRS-GTR-80" target="_blank" rel="noopener">The Enhanced Forest Inventory and Analysis Program &ndash; National Sampling Design and Estimation Procedures</a> &mdash; Bechtold &amp; Patterson (eds.), USDA Forest Service GTR SRS-80, 2005; the rulebook for the rotating panels and how FIA turns plots into estimates.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://apps.fs.usda.gov/fia/datamart/datamart.html" target="_blank" rel="noopener">FIA DataMart</a> &mdash; download the whole Washington inventory yourself. &middot; <a href="https://apps.fs.usda.gov/fiadb-api/evalidator" target="_blank" rel="noopener">EVALIDator</a> &mdash; the Forest Service&rsquo;s own estimates, for checking your SQL.</p>
+      <p><a href="https://data-nifc.opendata.arcgis.com/" target="_blank" rel="noopener">NIFC Open Data</a> &mdash; Interagency Fire Perimeter History. &middot; <a href="https://waterdata.usgs.gov/" target="_blank" rel="noopener">USGS Water Data for the Nation</a> &mdash; the river half of the warehouse. &middot; <a href="https://www.fws.gov/species/whitebark-pine-pinus-albicaulis" target="_blank" rel="noopener">USFWS: Whitebark pine</a> &mdash; the 2022 threatened listing.</p>
+      <p><a href="https://docs.getdbt.com/" target="_blank" rel="noopener">dbt Developer Hub</a> &mdash; models, tests and docs. &middot; <a href="https://github.com/bdgroves/alpine-watch-dbt" target="_blank" rel="noopener">bdgroves/alpine-watch-dbt</a> &mdash; the Snowflake + dbt project this weekend grew out of.</p>
+    </div>
 
 <p class="end">· · ·</p>  </div>
 

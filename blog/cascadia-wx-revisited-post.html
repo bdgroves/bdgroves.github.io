@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CASCADIA-WX, Revisited: Reading the Balloons — Brooks Groves</title>
+  <link rel="canonical" href="https://brooksgroves.com/blog/cascadia-wx-revisited-post.html">
   <meta name="description" content="My FORTRAN mountain-weather program said the Cascade passes were bare last April. They weren't: it was asking for snow stations that don't exist. Version 3 reads four National Weather Service weather balloons twice a day and ranks them against 30 years of balloons, all in FORTRAN.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎈</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -232,7 +233,12 @@
 
     <h2>How it runs</h2>
 
-    <p>At 8:17 every morning and evening, after each round of balloons reaches the archive, a GitHub Action on Ubuntu runs the batch job: a stdlib-only Python script fetches the new balloons, GFortran 13 compiles the program, and FORTRAN runs and sets a return code, 0 for normal and 4 when something is late or missing. The outputs are committed and the page reads them; it draws charts but doesn&rsquo;t calculate anything. The snow stations are still in there, with NRCS&rsquo;s re
+    <p>At 8:17 every morning and evening, after each round of balloons reaches the archive, a GitHub Action on Ubuntu runs the batch job: a stdlib-only Python script fetches the new balloons, GFortran 13 compiles the program, and FORTRAN runs and sets a return code, 0 for normal and 4 when something is late or missing. The outputs are committed and the page reads them; it draws charts but doesn&rsquo;t calculate anything. The snow stations are still in there, with NRCS&rsquo;s real medians, and the snowpack section fills itself in on the first run after NRCS answers. All free, no keys.</p>
+
+    <p>FORTRAN was built so scientists could write formulas that look like formulas. Version 3 finally measures the atmosphere instead of guessing at it, and it does it twice a day, snow or no snow.</p>
+
+    <p class="note" style="font-size:0.9rem;color:var(--stone)">Corrections to the <a href="/blog/cascadia-wx-post.html">April post</a>: the bare passes and the 15% figure came from three station IDs that don&rsquo;t exist; the percent-of-normal figures there, including Paradise at 73%, were against made-up April 1 normals; and the atmospheric river index and storm classification were formulas, not measurements. Code: <a href="https://github.com/bdgroves/cascadia-wx" target="_blank">github.com/bdgroves/cascadia-wx</a>.</p>
+
     <hr>
 
     <h2>Go deeper</h2>
@@ -256,11 +262,6 @@
       <p><a href="https://cw3e.ucsd.edu/iwv-and-ivt-forecasts/" target="_blank" rel="noopener">CW3E atmospheric river forecasts</a> &mdash; Scripps&rsquo;s IVT and AR-scale forecasts for the West Coast. &middot; <a href="https://www.nrcs.usda.gov/washington/snow-survey" target="_blank" rel="noopener">NRCS Washington Snow Survey</a> &mdash; the snow stations, with real medians.</p>
       <p><a href="https://brooksgroves.com/cascadia-wx/" target="_blank" rel="noopener">CASCADIA-WX live page</a> &mdash; the amber terminal. &middot; <a href="https://github.com/bdgroves/cascadia-wx" target="_blank" rel="noopener">Source on GitHub</a> &mdash; FORTRAN, normals and all.</p>
     </div>
-al medians, and the snowpack section fills itself in on the first run after NRCS answers. All free, no keys.</p>
-
-    <p>FORTRAN was built so scientists could write formulas that look like formulas. Version 3 finally measures the atmosphere instead of guessing at it, and it does it twice a day, snow or no snow.</p>
-
-    <p class="note" style="font-size:0.9rem;color:var(--stone)">Corrections to the <a href="/blog/cascadia-wx-post.html">April post</a>: the bare passes and the 15% figure came from three station IDs that don&rsquo;t exist; the percent-of-normal figures there, including Paradise at 73%, were against made-up April 1 normals; and the atmospheric river index and storm classification were formulas, not measurements. Code: <a href="https://github.com/bdgroves/cascadia-wx" target="_blank">github.com/bdgroves/cascadia-wx</a>.</p>
 
   </div>
 

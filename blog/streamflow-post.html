@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Building a Live Streamflow Dashboard on a $0 Budget — Brooks Groves</title>
+  <link rel="canonical" href="https://brooksgroves.com/blog/streamflow-post.html">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -237,7 +238,16 @@ jobs:
 
     <p><strong>Cache the historical data.</strong> Right now the script re-fetches years of historical data every week, which is slow and wasteful. I should pull it once, store it in the repo, and only fetch the delta. It works fine, but it's inelegant.</p>
 
-    <p><strong>Add alerts.</strong> The whole point of watching snowmelt is knowing when something unusual happens. I have a weather bot that already posts to Bluesky — wiring
+    <p><strong>Add alerts.</strong> The whole point of watching snowmelt is knowing when something unusual happens. I have a weather bot that already posts to Bluesky — wiring up a flow alert to the same pipeline would take an afternoon. It's on the list.</p>
+
+    <p><strong>Start simpler.</strong> I built the spaghetti charts first because they were the thing I most wanted to see. The map came later. If I'd tried to build everything at once I probably would have given up. Pick the one thing you actually care about and get that working first.</p>
+
+    <hr>
+
+    <p>The dashboard is live at <a href="https://brooksgroves.com/sierra-streamflow" target="_blank">brooksgroves.com/sierra-streamflow</a>. The code is all on GitHub. If you're watching a different watershed and want to adapt it, it should be pretty straightforward to swap in your own gage IDs.</p>
+
+    <p>The snowpack this year is behind average. The flows will tell us soon enough what that means for summer.</p>
+
     <hr>
 
     <h2>Go deeper</h2>
@@ -260,15 +270,6 @@ jobs:
       <p><a href="https://water.ca.gov/Programs/Flood-Management/Flood-Data/Snow-Surveys" target="_blank" rel="noopener">California DWR Snow Surveys</a> &mdash; the state&rsquo;s snowpack numbers since 1929. &middot; <a href="https://leafletjs.com/" target="_blank" rel="noopener">Leaflet</a> &mdash; the little open-source map library. &middot; <a href="https://docs.github.com/en/actions" target="_blank" rel="noopener">GitHub Actions</a> &mdash; the free scheduler that runs the whole thing.</p>
       <p><a href="https://brooksgroves.com/sierra-streamflow/" target="_blank" rel="noopener">Sierra Streamflow</a> &mdash; the live dashboard. &middot; <a href="https://github.com/bdgroves/sierra-streamflow" target="_blank" rel="noopener">bdgroves/sierra-streamflow</a> &mdash; the code.</p>
     </div>
- up a flow alert to the same pipeline would take an afternoon. It's on the list.</p>
-
-    <p><strong>Start simpler.</strong> I built the spaghetti charts first because they were the thing I most wanted to see. The map came later. If I'd tried to build everything at once I probably would have given up. Pick the one thing you actually care about and get that working first.</p>
-
-    <hr>
-
-    <p>The dashboard is live at <a href="https://brooksgroves.com/sierra-streamflow" target="_blank">brooksgroves.com/sierra-streamflow</a>. The code is all on GitHub. If you're watching a different watershed and want to adapt it, it should be pretty straightforward to swap in your own gage IDs.</p>
-
-    <p>The snowpack this year is behind average. The flows will tell us soon enough what that means for summer.</p>
 
   </div>
 

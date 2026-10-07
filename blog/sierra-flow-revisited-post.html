@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SIERRA-FLOW, Revisited: Normal Termination — Brooks Groves</title>
+  <link rel="canonical" href="https://brooksgroves.com/blog/sierra-flow-revisited-post.html">
   <meta name="description" content="My COBOL streamflow program compared Sierra rivers with made-up medians, matched them to the wrong rivers after sorting, and could never report a falling river. Version 3 builds real normals in COBOL from 30 years of USGS data, and prints them on green-bar paper.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -222,7 +223,12 @@
 
     <h2>How it runs</h2>
 
-    <p>Every morning a GitHub Action on Ubuntu installs GnuCOBOL 3.1.2, a stdlib-only Python script asks the new <a href="https://api.waterdata.usgs.gov/" target="_blank">USGS Water Data API</a> for the last 60 daily means, and the batch job compiles and runs. The outputs are committed and the page reads them. If the USGS doesn&rsquo;t answer for a gage, the job keeps that gage&rsquo;s last data and flags it as stale. The normals only need rebuilding if the period changes, so the 
+    <p>Every morning a GitHub Action on Ubuntu installs GnuCOBOL 3.1.2, a stdlib-only Python script asks the new <a href="https://api.waterdata.usgs.gov/" target="_blank">USGS Water Data API</a> for the last 60 daily means, and the batch job compiles and runs. The outputs are committed and the page reads them. If the USGS doesn&rsquo;t answer for a gage, the job keeps that gage&rsquo;s last data and flags it as stale. The normals only need rebuilding if the period changes, so the 30 years of history aren&rsquo;t downloaded every day. All free, no keys.</p>
+
+    <p>Grace Hopper&rsquo;s idea was that a program should read like what it does. Version 3 finally does what it says.</p>
+
+    <p class="note" style="font-size:0.9rem;color:var(--stone)">Corrections to the <a href="/blog/sierra-flow-cobol-post.html">April post</a>: the percent-of-normal figures there (the Merced at 206%, the Stanislaus at 40%, Big Creek at 38%) were against made-up year-round medians, not historical ones; Big Creek is near Groveland, not Hetch Hetchy, and isn&rsquo;t the only gage without a dam above it; and the program processed the last reading of each day, not a daily mean. Code: <a href="https://github.com/bdgroves/sierra-flow-cobol" target="_blank">github.com/bdgroves/sierra-flow-cobol</a>.</p>
+
     <hr>
 
     <h2>Go deeper</h2>
@@ -245,11 +251,6 @@
       <p><a href="https://waterdata.usgs.gov/blog/wdfn-stats-delivery" target="_blank" rel="noopener">Modernization of Statistical Delivery and WaterWatch Decommission</a> &mdash; USGS on retiring WaterWatch, whose percentile classes SIERRA-FLOW now borrows. &middot; <a href="https://gnucobol.sourceforge.io/" target="_blank" rel="noopener">GnuCOBOL</a> &mdash; the free compiler doing the work.</p>
       <p><a href="https://brooksgroves.com/sierra-flow-cobol/" target="_blank" rel="noopener">SIERRA-FLOW</a> &mdash; the live console, green-bar printout and punch-card deck. &middot; <a href="https://github.com/bdgroves/sierra-flow-cobol" target="_blank" rel="noopener">bdgroves/sierra-flow-cobol</a> &mdash; the code.</p>
     </div>
-30 years of history aren&rsquo;t downloaded every day. All free, no keys.</p>
-
-    <p>Grace Hopper&rsquo;s idea was that a program should read like what it does. Version 3 finally does what it says.</p>
-
-    <p class="note" style="font-size:0.9rem;color:var(--stone)">Corrections to the <a href="/blog/sierra-flow-cobol-post.html">April post</a>: the percent-of-normal figures there (the Merced at 206%, the Stanislaus at 40%, Big Creek at 38%) were against made-up year-round medians, not historical ones; Big Creek is near Groveland, not Hetch Hetchy, and isn&rsquo;t the only gage without a dam above it; and the program processed the last reading of each day, not a daily mean. Code: <a href="https://github.com/bdgroves/sierra-flow-cobol" target="_blank">github.com/bdgroves/sierra-flow-cobol</a>.</p>
 
   </div>
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PUGET-TIDES: The Tides of Puget Sound, in FORTRAN — Brooks Groves</title>
+  <link rel="canonical" href="https://brooksgroves.com/blog/puget-tides-post.html">
   <meta name="description" content="A FORTRAN program that predicts the tide at eight NOAA gauges from Neah Bay to Tacoma, the way tide tables are made, and checks itself against NOAA every six hours. Plus storm surge, king tides, daylight minus tides for the tide pools, and sea level since 1899.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -239,7 +240,12 @@
 
     <h2>How it runs</h2>
 
-    <p>Every six hours a GitHub Action on Ubuntu runs the batch job: a stdlib-only Python script asks NOAA&rsquo;s free <a href="https://api.tidesandcurrents.noaa.gov/api/prod/" target="_blank">Tides &amp; Currents API</a> for the constituents, datums and the last month of water levels, GFortran 13 compiles the program, and FORTRAN runs and set
+    <p>Every six hours a GitHub Action on Ubuntu runs the batch job: a stdlib-only Python script asks NOAA&rsquo;s free <a href="https://api.tidesandcurrents.noaa.gov/api/prod/" target="_blank">Tides &amp; Currents API</a> for the constituents, datums and the last month of water levels, GFortran 13 compiles the program, and FORTRAN runs and sets a return code. The normals took about three minutes to build and only need rebuilding once. Bremerton is the one gap: its gauge has no record between 1978 and 2021, so it has no normals or trend, and the page says so rather than guessing. All free, no keys, and not for navigation.</p>
+
+    <p>Lord Kelvin&rsquo;s machine needed a person to turn the crank. This one runs itself, and checks its own answers against the people who still make the official tables.</p>
+
+    <p class="note" style="font-size:0.9rem;color:var(--stone)">Code: <a href="https://github.com/bdgroves/puget-tides" target="_blank">github.com/bdgroves/puget-tides</a>. The method is Schureman&rsquo;s <em>Manual of Harmonic Analysis and Prediction of Tides</em> (1958), with the moon&rsquo;s and sun&rsquo;s positions from Meeus&rsquo;s <em>Astronomical Algorithms</em>.</p>
+
     <hr>
 
     <h2>Go deeper</h2>
@@ -263,11 +269,6 @@
       <p><a href="https://tidesandcurrents.noaa.gov/benchmarks/9447130.html" target="_blank" rel="noopener">Seattle gauge 9447130 bench marks</a> &mdash; where the record since 1899 is tied to the ground. &middot; <a href="https://api.tidesandcurrents.noaa.gov/api/prod/" target="_blank" rel="noopener">CO-OPS data API</a> &mdash; free, no key.</p>
       <p><a href="https://brooksgroves.com/puget-tides/" target="_blank" rel="noopener">PUGET-TIDES live page</a> &mdash; the cyan terminal. &middot; <a href="https://github.com/bdgroves/puget-tides" target="_blank" rel="noopener">Source on GitHub</a> &mdash; the FORTRAN that adds up the 37 waves.</p>
     </div>
-s a return code. The normals took about three minutes to build and only need rebuilding once. Bremerton is the one gap: its gauge has no record between 1978 and 2021, so it has no normals or trend, and the page says so rather than guessing. All free, no keys, and not for navigation.</p>
-
-    <p>Lord Kelvin&rsquo;s machine needed a person to turn the crank. This one runs itself, and checks its own answers against the people who still make the official tables.</p>
-
-    <p class="note" style="font-size:0.9rem;color:var(--stone)">Code: <a href="https://github.com/bdgroves/puget-tides" target="_blank">github.com/bdgroves/puget-tides</a>. The method is Schureman&rsquo;s <em>Manual of Harmonic Analysis and Prediction of Tides</em> (1958), with the moon&rsquo;s and sun&rsquo;s positions from Meeus&rsquo;s <em>Astronomical Algorithms</em>.</p>
 
   </div>
 

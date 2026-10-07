@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Washington’s Smoke, Checked Against the Monitors — Brooks Groves</title>
+  <link rel="canonical" href="https://brooksgroves.com/blog/wa-smoke-monitors-post.html">
   <meta name="description" content="A reader asked how the HRRR-Smoke model in my Washington smoke animation compared with ground-level PM2.5 monitors. 56 monitors, seven weeks, day by day: where the model and the monitors agreed, and where they didn't.">
   <meta property="og:title" content="Washington’s Smoke, Checked Against the Monitors">
   <meta property="og:description" content="The smoke model against 56 Washington PM2.5 monitors: right about which days were smoky most of the time, too heavy near fresh fires, too light in the Methow valley.">
@@ -230,7 +231,15 @@
       <li><strong>The monitors.</strong> AirNow, the EPA&rsquo;s real-time air-quality system, publishes every state, tribal and federal monitor&rsquo;s hourly reading, including the temporary smoke monitors set up near big fires. These are the real-time numbers, before the agencies&rsquo; final quality checks. A GitHub Action read the 1,152 hourly files for the window and kept the Washington PM2.5 readings.</li>
       <li><strong>Matching them up.</strong> The model is read at the 3 km grid cell holding each monitor, and averaged to match the monitor&rsquo;s hour.</li>
       <li><strong>Smoke versus everything.</strong> A monitor measures all fine particles; HRRR-Smoke is smoke only. So each monitor gets its everyday background, the typical reading when the model had no smoke there (usually 3 to 6 &micro;g/m&sup3;), added to the model before comparing.</li>
-      <l
+      <li><strong>Days, not hours.</strong> The EPA&rsquo;s health categories are for 24-hour averages, so the comparison is too: Pacific days, with at least 18 hours reported.</li>
+    </ul>
+
+    <h2>Last thing</h2>
+
+    <p>Thank you to the reader who asked. It made the original project better, and I learned where to trust the model and where to check a monitor. If you were near Spokane or in the Methow this summer, the monitors are the ones that were measuring the air you actually breathed.</p>
+
+    <p class="photo-caption">Data: AirNow hourly PM2.5 (U.S. EPA and its state, tribal and federal partners; preliminary, not yet validated); NOAA HRRR-Smoke via the NOAA Open Data Dissemination program. Spokane&rsquo;s worst-air date: The Spokesman-Review. The comparison script is in the wa-smoke project.</p>
+
     <hr>
 
     <h2>Go deeper</h2>
@@ -253,14 +262,6 @@
       <p><a href="https://airqualitymap.ecology.wa.gov/" target="_blank" rel="noopener">AirQualityWA</a> &mdash; Washington Ecology&rsquo;s monitor map. &middot; <a href="https://wasmoke.blogspot.com/" target="_blank" rel="noopener">Washington Smoke Blog</a> &mdash; daily smoke outlooks from the state, counties, federal agencies and Tribes.</p>
       <p><a href="https://rapidrefresh.noaa.gov/hrrr/HRRRsmoke/" target="_blank" rel="noopener">HRRR-Smoke graphics</a> &mdash; the model side of the comparison. &middot; <a href="https://registry.opendata.aws/noaa-hrrr-pds/" target="_blank" rel="noopener">NOAA HRRR on AWS</a> &mdash; the archive. &middot; <a href="https://github.com/bdgroves/wa-smoke" target="_blank" rel="noopener">wa-smoke</a> &mdash; this project&rsquo;s code.</p>
     </div>
-i><strong>Days, not hours.</strong> The EPA&rsquo;s health categories are for 24-hour averages, so the comparison is too: Pacific days, with at least 18 hours reported.</li>
-    </ul>
-
-    <h2>Last thing</h2>
-
-    <p>Thank you to the reader who asked. It made the original project better, and I learned where to trust the model and where to check a monitor. If you were near Spokane or in the Methow this summer, the monitors are the ones that were measuring the air you actually breathed.</p>
-
-    <p class="photo-caption">Data: AirNow hourly PM2.5 (U.S. EPA and its state, tribal and federal partners; preliminary, not yet validated); NOAA HRRR-Smoke via the NOAA Open Data Dissemination program. Spokane&rsquo;s worst-air date: The Spokesman-Review. The comparison script is in the wa-smoke project.</p>
 
   </div>
 
