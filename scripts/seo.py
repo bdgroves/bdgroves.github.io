@@ -6,7 +6,8 @@ with and without a trailing slash), and no page said which one is the real
 one. This script:
 
   1. adds <link rel="canonical"> to every indexable page that lacks one, and
-  2. writes sitemap.xml listing those same canonical addresses.
+  2. writes sitemap.xml listing those same canonical addresses, plus the
+     front page of every project site the main pages link to.
 
 Pages marked noindex, the 404 page and Google's verification file are left
 out. It only covers pages in this repo; the project sites (PELE, secchi,
@@ -27,6 +28,7 @@ SITE = "https://brooksgroves.com"
 ROOT = Path(__file__).resolve().parent.parent
 SKIP_DIRS = {".git", "node_modules", "_site", ".pixi", "tools"}
 SKIP_FILES = {"404.html"}
+PROJECT_SKIP = {"hoplove", "cdn-cgi"}  # HopLove lists its own pages
 
 
 def canonical_url(rel: str) -> str:
@@ -71,12 +73,26 @@ def main() -> None:
         p.write_text(s, encoding="utf-8")
         added += 1
 
+    # The project sites (PELE, Mother Lode, secchi...) are separate repos
+    # served under this domain. Add the front page of every one the site
+    # links to, so Google gets the whole list. HopLove has its own sitemap.
+    projects = set()
+    for p, rel in pages():
+        if rel.startswith("blog/"):
+            continue
+        for name in re.findall(r'href="(?:https://brooksgroves\.com)?/([A-Za-z0-9_-]+)/?"',
+                               p.read_text(encoding="utf-8")):
+            if name in PROJECT_SKIP or (ROOT / name).exists() or (ROOT / f"{name}.html").exists():
+                continue
+            projects.add(name)
+    listed += [f"{SITE}/{name}/" for name in sorted(projects, key=str.lower)]
+
     xml = ['<?xml version="1.0" encoding="UTF-8"?>',
            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     xml += [f"  <url><loc>{u}</loc></url>" for u in listed]
     xml.append("</urlset>")
     (ROOT / "sitemap.xml").write_text("\n".join(xml) + "\n", encoding="utf-8")
-    print(f"canonical tags added: {added}; sitemap.xml: {len(listed)} pages")
+    print(f"canonical tags added: {added}; sitemap.xml: {len(listed)} pages ({len(projects)} project sites)")
 
 
 if __name__ == "__main__":
