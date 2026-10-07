@@ -26,6 +26,9 @@ jobs:
         # Adds <link rel="canonical"> to any new page and rebuilds sitemap.xml
         # (see scripts/seo.py). Only changes the deployed copy, not the repo.
         run: python3 scripts/seo.py
+      - name: Footer script for the project sites
+        # Rebuilds js/site-footer.js from tags.html's footer and css/site-footer.css.
+        run: python3 scripts/build_footer_js.py
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
