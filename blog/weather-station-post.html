@@ -83,6 +83,20 @@
     .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
     .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
     .footer-links a:hover { color:var(--gold); }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink,#1c1a16); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone,#7a7268);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist,#d6d0c4);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone,#7a7268);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist,#d6d0c4);
+    }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -209,7 +223,29 @@ Open-Meteo + NWS API → fetch_weather.py → data/weather.json → index.html �
 
     <h2>The Design</h2>
 
-    <p>Dark instrument panel aesthetic — Barlow Condensed for the industrial gauge readouts, IBM Plex Sans for body text, JetBrains Mono for the data values. Amber accent on charcoal. Built to look like you're monitoring the atmosphere from a bunker in Oklahoma. The Twister reference in the README is intentional. Bill Paxton's character had a wind compass too. His was analog. Mine updates every 15 minutes automatically via a cron job and has never once required him to drive into an F5.</p>
+    <p>Dark instrument panel aesthetic — Barlow Condensed for the industrial gauge readouts, IBM Plex Sans for body text, JetBrains Mono for the data values. Amber accent on charcoal. Built to look like you're monito
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://www.npr.org/2019/06/30/736822395/how-the-advance-weather-forecast-got-good" target="_blank" rel="noopener">How the advance weather forecast got good</a></strong> &mdash; <em>Weekend Edition Sunday</em> (NPR), 30 June 2019, about 6 min. Andrew Blum on the global, public, supercomputer-powered system behind every free forecast, including the ones this dashboard reads.</p>
+      <p><strong><a href="https://99percentinvisible.org/episode/the-shipping-forecast/" target="_blank" rel="noopener">The Shipping Forecast</a></strong> &mdash; <em>99% Invisible</em>, 25 July 2018, about 27 min. How Admiral FitzRoy and his barometers invented the weather forecast, and how it became Britain&rsquo;s favourite lullaby.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Bauer, P., Thorpe, A. &amp; Brunet, G. (2015).</strong> <a href="https://doi.org/10.1038/nature14956" target="_blank" rel="noopener">The quiet revolution of numerical weather prediction.</a> <em>Nature</em> <strong>525</strong>(7567), 47&ndash;55.</p>
+      <p><strong>Alley, R.B., Emanuel, K.A. &amp; Zhang, F. (2019).</strong> <a href="https://doi.org/10.1126/science.aav7274" target="_blank" rel="noopener">Advances in weather prediction.</a> <em>Science</em> <strong>363</strong>(6425), 342&ndash;344. A free copy is in <a href="https://dspace.mit.edu/handle/1721.1/126785" target="_blank" rel="noopener">MIT&rsquo;s repository</a>.</p>
+      <p><strong>Benjamin, S.G., Brown, J.M., Brunet, G., Lynch, P., Saito, K. &amp; Schlatter, T.W. (2019).</strong> <a href="https://doi.org/10.1175/AMSMONOGRAPHS-D-18-0020.1" target="_blank" rel="noopener">100 years of progress in forecasting and NWP applications.</a> <em>Meteorological Monographs</em> <strong>59</strong>, 13.1&ndash;13.67.</p>
+      <p><a href="https://search.worldcat.org/title/1054835332" target="_blank" rel="noopener">The Weather Machine: A Journey Inside the Forecast</a> &mdash; Andrew Blum, Ecco, 2019; a warm, readable tour of the satellites, balloons and supercomputers that make a free forecast possible.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> &mdash; the free, keyless forecast and air-quality API. &middot; <a href="https://www.weather.gov/documentation/services-web-API" target="_blank" rel="noopener">NWS API</a> &mdash; forecasts, alerts and observations straight from the Weather Service.</p>
+      <p><a href="https://www.airnow.gov/about-airnow" target="_blank" rel="noopener">AirNow</a> &mdash; the official US Air Quality Index, handy in smoke season. &middot; <a href="https://aa.usno.navy.mil/data/MoonPhases" target="_blank" rel="noopener">USNO moon phases</a> &mdash; to check the Julian-day math against.</p>
+      <p><a href="https://www.nps.gov/deva/learn/nature/weather-and-climate.htm" target="_blank" rel="noopener">Death Valley weather and climate</a> &mdash; National Park Service, with the 134&deg;F record from Furnace Creek.</p>
+      <p><a href="https://brooksgroves.com/weather-station" target="_blank" rel="noopener">Weather Station live dashboard</a> &mdash; since rebuilt around real measurements. &middot; <a href="https://github.com/bdgroves/weather-station" target="_blank" rel="noopener">Source on GitHub</a>.</p>
+    </div>
+ring the atmosphere from a bunker in Oklahoma. The Twister reference in the README is intentional. Bill Paxton's character had a wind compass too. His was analog. Mine updates every 15 minutes automatically via a cron job and has never once required him to drive into an F5.</p>
 
     <hr>
 

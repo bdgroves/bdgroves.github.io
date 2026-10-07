@@ -88,6 +88,20 @@
     .note-box { background: var(--cream); border: 1px solid var(--mist); border-left: 3px solid var(--gold); padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: 0.95rem; }
     .article-body ol, .article-body ul { margin: 0 0 1.5rem 1.5rem; }
     .article-body li { margin-bottom: 0.6rem; }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink,#1c1a16); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone,#7a7268);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist,#d6d0c4);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone,#7a7268);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist,#d6d0c4);
+    }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -218,7 +232,31 @@
 
     <h2>How it runs</h2>
 
-    <p>At 8:17 every morning and evening, after each round of balloons reaches the archive, a GitHub Action on Ubuntu runs the batch job: a stdlib-only Python script fetches the new balloons, GFortran 13 compiles the program, and FORTRAN runs and sets a return code, 0 for normal and 4 when something is late or missing. The outputs are committed and the page reads them; it draws charts but doesn&rsquo;t calculate anything. The snow stations are still in there, with NRCS&rsquo;s real medians, and the snowpack section fills itself in on the first run after NRCS answers. All free, no keys.</p>
+    <p>At 8:17 every morning and evening, after each round of balloons reaches the archive, a GitHub Action on Ubuntu runs the batch job: a stdlib-only Python script fetches the new balloons, GFortran 13 compiles the program, and FORTRAN runs and sets a return code, 0 for normal and 4 when something is late or missing. The outputs are committed and the page reads them; it draws charts but doesn&rsquo;t calculate anything. The snow stations are still in there, with NRCS&rsquo;s re
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://buzzsprout.com/1029865/12458706" target="_blank" rel="noopener">Ep 45: Atmospheric Rivers</a></strong> &mdash; <em>Water Talk</em>, 17 March 2023 (first aired June 2020), about 41 min. Daniel Swain and Katerina Gonzales on rivers in the sky, the water they bring and the floods they cause.</p>
+      <p><strong><a href="https://www.ijpr.org/weather/2025-04-18/weather-balloon-launch-suspensions-could-lead-to-less-accurate-forecasts-from-medford" target="_blank" rel="noopener">Weather balloon launch suspensions could lead to less accurate forecasts from Medford</a></strong> &mdash; <em>Jefferson Public Radio</em>, 18 April 2025, under a minute. Roman Battaglia on the staffing cuts behind Medford&rsquo;s changed launch times, the surprise in this post&rsquo;s data.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Zhu, Y. &amp; Newell, R.E. (1998).</strong> <a href="https://doi.org/10.1175/1520-0493(1998)126%3C0725:APAFMF%3E2.0.CO;2" target="_blank" rel="noopener">A proposed algorithm for moisture fluxes from atmospheric rivers.</a> <em>Monthly Weather Review</em> <strong>126</strong>(3), 725&ndash;735.</p>
+      <p><strong>Neiman, P.J., Ralph, F.M., Wick, G.A., Lundquist, J.D. &amp; Dettinger, M.D. (2008).</strong> <a href="https://doi.org/10.1175/2007JHM855.1" target="_blank" rel="noopener">Meteorological characteristics and overland precipitation impacts of atmospheric rivers affecting the West Coast of North America based on eight years of SSM/I satellite observations.</a> <em>Journal of Hydrometeorology</em> <strong>9</strong>(1), 22&ndash;47.</p>
+      <p><strong>Ralph, F.M., Rutz, J.J., Cordeira, J.M., Dettinger, M., Anderson, M., Reynolds, D., Schick, L.J. &amp; Smallcomb, C. (2019).</strong> <a href="https://doi.org/10.1175/BAMS-D-18-0023.1" target="_blank" rel="noopener">A scale to characterize the strength and impacts of atmospheric rivers.</a> <em>Bulletin of the American Meteorological Society</em> <strong>100</strong>(2), 269&ndash;289.</p>
+      <p><strong>Durre, I., Vose, R.S. &amp; Wuertz, D.B. (2006).</strong> <a href="https://doi.org/10.1175/JCLI3594.1" target="_blank" rel="noopener">Overview of the Integrated Global Radiosonde Archive.</a> <em>Journal of Climate</em> <strong>19</strong>, 53&ndash;68.</p>
+      <p><strong>May, R.M., Goebbert, K.H., Thielen, J.E., Leeman, J.R., Camron, M.D., Bruick, Z., Bruning, E.C., Manser, R.P., Arms, S.C. &amp; Marsh, P.T. (2022).</strong> <a href="https://doi.org/10.1175/BAMS-D-21-0125.1" target="_blank" rel="noopener">MetPy: A meteorological Python library for data analysis and visualization.</a> <em>Bulletin of the American Meteorological Society</em> <strong>103</strong>(10), E2273&ndash;E2284.</p>
+      <p><a href="https://doi.org/10.1007/978-3-030-28906-5" target="_blank" rel="noopener">Atmospheric Rivers</a> &mdash; Ralph, Dettinger, Rutz &amp; Waliser (eds.), Springer, 2020; the field&rsquo;s textbook, from vapour transport to the AR scale.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://mesonet.agron.iastate.edu/archive/raob/" target="_blank" rel="noopener">Iowa Environmental Mesonet RAOB archive</a> &mdash; the balloons CASCADIA-WX reads, decades deep. &middot; <a href="https://weather.uwyo.edu/upperair/sounding.shtml" target="_blank" rel="noopener">University of Wyoming soundings</a> &mdash; the cross-check for gaps and launch times.</p>
+      <p><a href="https://www.ncei.noaa.gov/products/weather-balloon/integrated-global-radiosonde-archive" target="_blank" rel="noopener">NOAA IGRA</a> &mdash; the global radiosonde archive, back to 1905. &middot; <a href="https://www.weather.gov/upperair/" target="_blank" rel="noopener">NWS Upper-air Observations Program</a> &mdash; the people who let go of the balloons.</p>
+      <p><a href="https://cw3e.ucsd.edu/iwv-and-ivt-forecasts/" target="_blank" rel="noopener">CW3E atmospheric river forecasts</a> &mdash; Scripps&rsquo;s IVT and AR-scale forecasts for the West Coast. &middot; <a href="https://www.nrcs.usda.gov/washington/snow-survey" target="_blank" rel="noopener">NRCS Washington Snow Survey</a> &mdash; the snow stations, with real medians.</p>
+      <p><a href="https://brooksgroves.com/cascadia-wx/" target="_blank" rel="noopener">CASCADIA-WX live page</a> &mdash; the amber terminal. &middot; <a href="https://github.com/bdgroves/cascadia-wx" target="_blank" rel="noopener">Source on GitHub</a> &mdash; FORTRAN, normals and all.</p>
+    </div>
+al medians, and the snowpack section fills itself in on the first run after NRCS answers. All free, no keys.</p>
 
     <p>FORTRAN was built so scientists could write formulas that look like formulas. Version 3 finally measures the atmosphere instead of guessing at it, and it does it twice a day, snow or no snow.</p>
 

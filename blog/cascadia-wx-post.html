@@ -77,6 +77,20 @@
     .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
     .footer-links a:hover { color: var(--gold); }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink,#1c1a16); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone,#7a7268);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist,#d6d0c4);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone,#7a7268);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist,#d6d0c4);
+    }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -195,7 +209,30 @@
 
     <h2>The Hatch Has to Be Maintained</h2>
 
-    <p>The README for this project has a LOST reference: <em>enter the numbers every 108 minutes or the snowpack anomaly gets worse.</em> That's a joke, but it's also not entirely wrong. The SNOTEL network has been continuously measuring snowpack since the 1970s. That unbroken record — daily observations, every station, every winter — is what makes percent-of-normal calculations meaningful. The baseline is the point. The comparison is the point. Without the continuous measurement, you just have numbers without context.</p>
+    <p>The README for this project has a LOST reference: <em>enter the numbers every 108 minutes or the snowpack anomaly gets worse.</em> That's a joke, but it's also not entirely wrong. The SNOTEL network has been continuously measuring
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://codeforthought.buzzsprout.com/1326658/13456135" target="_blank" rel="noopener">Hello Fortran!</a></strong> &mdash; <em>Code for Thought</em>, 5 September 2023, about 40 min. Thomas Clune of NASA and three fellow Fortran folks on the language&rsquo;s origins, wrangling legacy code and why science still runs on it.</p>
+      <p><strong><a href="https://www.kuow.org/stories/warm-winter-liquidates-nearly-half-of-washington-state-snowpack" target="_blank" rel="noopener">Warm winter liquidates nearly half of Washington state snowpack</a></strong> &mdash; <em>KUOW</em>, 6 February 2026, about 4 min. John Ryan on the winter this post was measuring, with the statewide snowpack near half of normal.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Charney, J.G., Fj&ouml;rtoft, R. &amp; von Neumann, J. (1950).</strong> <a href="https://doi.org/10.3402/tellusa.v2i4.8607" target="_blank" rel="noopener">Numerical integration of the barotropic vorticity equation.</a> <em>Tellus</em> <strong>2</strong>(4), 237&ndash;254. Open access.</p>
+      <p><strong>Backus, J. (1978).</strong> <a href="https://doi.org/10.1145/960118.808380" target="_blank" rel="noopener">The history of FORTRAN I, II, and III.</a> <em>ACM SIGPLAN Notices</em> <strong>13</strong>(8), 165&ndash;180.</p>
+      <p><strong>Lynch, P. (2008).</strong> <a href="https://doi.org/10.1016/j.jcp.2007.02.034" target="_blank" rel="noopener">The origins of computer weather prediction and climate modeling.</a> <em>Journal of Computational Physics</em> <strong>227</strong>(7), 3431&ndash;3444.</p>
+      <p><strong>Serreze, M.C., Clark, M.P., Armstrong, R.L., McGinnis, D.A. &amp; Pulwarty, R.S. (1999).</strong> <a href="https://doi.org/10.1029/1999WR900090" target="_blank" rel="noopener">Characteristics of the western United States snowpack from snowpack telemetry (SNOTEL) data.</a> <em>Water Resources Research</em> <strong>35</strong>(7), 2145&ndash;2160.</p>
+      <p><strong>Mote, P.W., Hamlet, A.F., Clark, M.P. &amp; Lettenmaier, D.P. (2005).</strong> <a href="https://doi.org/10.1175/BAMS-86-1-39" target="_blank" rel="noopener">Declining mountain snowpack in western North America.</a> <em>Bulletin of the American Meteorological Society</em> <strong>86</strong>(1), 39&ndash;50.</p>
+      <p><a href="https://maths.ucd.ie/~plynch/Dream/" target="_blank" rel="noopener">The Emergence of Numerical Weather Prediction: Richardson&rsquo;s Dream</a> &mdash; Peter Lynch (Cambridge University Press); the whole story from Richardson&rsquo;s hand-computed forecast to the ENIAC runs, retold by the man who re-ran them.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://www.nrcs.usda.gov/washington/snow-survey" target="_blank" rel="noopener">NRCS Washington Snow Survey</a> &mdash; the people behind the state&rsquo;s SNOTEL stations and water-supply outlooks. &middot; <a href="https://www.nrcs.usda.gov/resources/data-and-reports/snow-and-water-interactive-map" target="_blank" rel="noopener">NRCS Snow and Water Interactive Map</a> &mdash; every station&rsquo;s snow water and percent of median, on one map.</p>
+      <p><a href="https://www.weather.gov/sew/" target="_blank" rel="noopener">NWS Seattle/Tacoma</a> &mdash; the local forecast office. &middot; <a href="https://www.mmm.ucar.edu/models/wrf" target="_blank" rel="noopener">WRF model at NCAR</a> &mdash; the Fortran forecast model the post tips its hat to.</p>
+      <p><a href="https://brooksgroves.com/cascadia-wx/" target="_blank" rel="noopener">CASCADIA-WX live page</a> &mdash; now version 3, reading the balloons. &middot; <a href="https://github.com/bdgroves/cascadia-wx" target="_blank" rel="noopener">Source on GitHub</a> &mdash; the FORTRAN and the fetcher.</p>
+    </div>
+ snowpack since the 1970s. That unbroken record — daily observations, every station, every winter — is what makes percent-of-normal calculations meaningful. The baseline is the point. The comparison is the point. Without the continuous measurement, you just have numbers without context.</p>
 
     <p>CASCADIA-WX maintains that measurement in its own small way. Every morning at 8AM it wakes up, pulls the numbers, runs the physics, and commits the result. The hatch is maintained. Whether anyone is watching or not.</p>
 

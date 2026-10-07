@@ -98,6 +98,20 @@
     .nb-list li { padding: 0.9rem 0; border-bottom: 1px solid var(--mist); margin: 0 !important; }
     .nb-list .nb-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.1rem; }
     .nb-list .nb-what { display: block; font-size: 0.95rem; color: var(--stone); margin-top: 0.2rem; line-height: 1.6; }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink,#1c1a16); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone,#7a7268);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist,#d6d0c4);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone,#7a7268);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist,#d6d0c4);
+    }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -186,7 +200,32 @@
     <p>The notebooks also caught one of my own slips. Project Kiva&rsquo;s atlas was counting each site&rsquo;s laser returns over a slightly bigger area than it divided by, so the &ldquo;points per square metre&rdquo; figures all read a little high. They&rsquo;re fixed now. Serpent Mound, for example, is 6.8 per m&sup2;, not 7.9.</p>
 
     <h2>Running Them Yourself</h2>
-    <p>Each project&rsquo;s README says which data to download first; most of it is one <a href="/blog/pixi-post.html">pixi</a> command. The charts and maps need nothing special. The renders need forge3d&rsquo;s viewer, which wants a graphics card, or on Linux, Mesa&rsquo;s software Vulkan driver under a virtual display. That&rsquo;s how every frame in this post was made: a cloud computer with no GPU, a couple of minutes per notebook. SOLSTICE and Project Kiva also have a <strong>Run notebooks</strong> button in GitHub Actions that re-runs them and saves the results.</p>
+    <p>Each project&rsquo;s README says which data to download first; most of it is one <a href="/blog/pixi-post.html">pixi</a> command. The charts and maps need nothing special. The renders need forge3d&rsquo;s viewer, which wants a graphics card, or on Linux, Mesa&rsquo;s software Vulkan driver under a virtual display. That&rsquo;s h
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://www.pythonpodcast.com/episodepage/episode-10-brian-granger-and-fernando-perez-of-the-ipython-project" target="_blank" rel="noopener">Brian Granger and Fernando Perez of the IPython Project</a></strong> &mdash; <em>Podcast.__init__</em>, 13 June 2015, about 68 min. The two founders on how a better Python shell grew into the Jupyter notebook.</p>
+      <p><strong><a href="https://talkpython.fm/episodes/show/44/project-jupyter-and-ipython" target="_blank" rel="noopener">#44: Project Jupyter and IPython</a></strong> &mdash; <em>Talk Python To Me</em>, 2 February 2016, about 61 min. Core developers Min Ragan-Kelley and Matthias Bussonnier on notebooks, kernels and the big split from IPython.</p>
+      <p><strong><a href="https://www.hawaiipublicradio.org/the-conversation/2026-02-05/longtime-cartographer-map-making-nps" target="_blank" rel="noopener">Longtime cartographer reveals there&rsquo;s more to a map than meets the eye</a></strong> &mdash; <em>The Conversation</em> (Hawai&#699;i Public Radio), 5 February 2026, about 13 min. Retired National Park Service cartographer Tom Patterson on the craft of shaded relief.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Knuth, D.E. (1984).</strong> <a href="https://doi.org/10.1093/comjnl/27.2.97" target="_blank" rel="noopener">Literate programming.</a> <em>The Computer Journal</em> <strong>27</strong>(2), 97&ndash;111.</p>
+      <p><strong>Kluyver, T., Ragan-Kelley, B., P&eacute;rez, F., Granger, B., Bussonnier, M., Frederic, J., Kelley, K., Hamrick, J., Grout, J., Corlay, S., Ivanov, P., Avila, D., Abdalla, S., Willing, C. &amp; Jupyter Development Team (2016).</strong> <a href="https://doi.org/10.3233/978-1-61499-649-1-87" target="_blank" rel="noopener">Jupyter Notebooks &ndash; a publishing format for reproducible computational workflows.</a> In <em>Positioning and Power in Academic Publishing: Players, Agents and Agendas</em>, IOS Press, 87&ndash;90.</p>
+      <p><strong>Rule, A., Birmingham, A., Zuniga, C., Altintas, I., Huang, S.-C., Knight, R., Moshiri, N., Nguyen, M.H., Rosenthal, S.B., P&eacute;rez, F. &amp; Rose, P.W. (2019).</strong> <a href="https://doi.org/10.1371/journal.pcbi.1007007" target="_blank" rel="noopener">Ten simple rules for writing and sharing computational analyses in Jupyter Notebooks.</a> <em>PLOS Computational Biology</em> <strong>15</strong>(7), e1007007. Open access.</p>
+      <p><strong>Horn, B.K.P. (1981).</strong> <a href="https://doi.org/10.1109/PROC.1981.11918" target="_blank" rel="noopener">Hill shading and the reflectance map.</a> <em>Proceedings of the IEEE</em> <strong>69</strong>(1), 14&ndash;47.</p>
+      <p><strong>Kennelly, P.J. &amp; Stewart, A.J. (2014).</strong> <a href="https://doi.org/10.1080/13658816.2013.848985" target="_blank" rel="noopener">General sky models for illuminating terrains.</a> <em>International Journal of Geographical Information Science</em> <strong>28</strong>(2), 383&ndash;406.</p>
+      <p><strong>Zak&scaron;ek, K., O&scaron;tir, K. &amp; Kokalj, &Zcaron;. (2011).</strong> <a href="https://doi.org/10.3390/rs3020398" target="_blank" rel="noopener">Sky-view factor as a relief visualization technique.</a> <em>Remote Sensing</em> <strong>3</strong>(2), 398&ndash;415. Open access.</p>
+      <p><a href="https://www.esri.com/arcgis-blog/products/product/mapping/cartographic-relief-presentation-is-now-available-from-esri-press" target="_blank" rel="noopener">Cartographic Relief Presentation</a> &mdash; Eduard Imhof&rsquo;s classic on hillshading, tints and contours, back in print from Esri Press.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://github.com/milos-agathon/forge3d" target="_blank" rel="noopener">forge3d</a> &mdash; Milos Popovic&rsquo;s Rust-and-WebGPU terrain renderer for Python. &middot; <a href="https://jupyter.org/" target="_blank" rel="noopener">Project Jupyter</a> &mdash; the notebook format itself. &middot; <a href="https://pixi.prefix.dev/latest/" target="_blank" rel="noopener">pixi</a> &mdash; the one-command environments behind each project.</p>
+      <p><a href="https://www.usgs.gov/3d-elevation-program" target="_blank" rel="noopener">USGS 3D Elevation Program (3DEP)</a> &mdash; the lidar under most of these frames. &middot; <a href="https://open-meteo.com/en/docs/historical-weather-api" target="_blank" rel="noopener">Open-Meteo Historical Weather API</a> &mdash; ERA5-Land, hour by hour, for the heat dome.</p>
+      <p><a href="https://www.shadedrelief.com/" target="_blank" rel="noopener">Shaded Relief</a> &mdash; Tom Patterson&rsquo;s generous home for terrain-rendering techniques and free relief art.</p>
+    </div>
+ow every frame in this post was made: a cloud computer with no GPU, a couple of minutes per notebook. SOLSTICE and Project Kiva also have a <strong>Run notebooks</strong> button in GitHub Actions that re-runs them and saves the results.</p>
 
     <h2>Thanks for Asking</h2>
     <p>forge3d keeps turning into one of my favourite tools, thanks to Milos, and Aaron&rsquo;s question was the push I needed to show my work. If you&rsquo;ve been curious about any of these flights, now you can open the hood.</p>

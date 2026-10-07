@@ -73,6 +73,20 @@
     .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
     .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
     .footer-links a:hover { color: var(--gold); }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink,#1c1a16); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone,#7a7268);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist,#d6d0c4);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone,#7a7268);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist,#d6d0c4);
+    }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -236,7 +250,32 @@ pixi shell</code></pre>
 
     <p>The biggest lesson for me is that environment management affects more of the work than I used to admit.</p>
 
-    <p>When the setup feels fragile, everything downstream feels a little heavier. Starting a new project takes more energy. Revisiting an old one takes more confidence. Experimenting feels riskier than it should.</p>
+    <p>When the setup feels fragile, everything downstream feels a little heavier. Starting a new project takes more energy. Revisiting an old one takes more confidence. Experimenting feels riskier
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://talkpython.fm/episodes/show/439/pixi-a-fast-package-manager" target="_blank" rel="noopener">#439: Pixi, A Fast Package Manager</a></strong> &mdash; <em>Talk Python To Me</em>, 22 November 2023, about 59 min. Wolf Vollprecht and Ruben Arts of prefix.dev on why they built pixi, lock files, and installing Python itself.</p>
+      <p><strong><a href="https://se-radio.net/2024/06/se-radio-622-wolf-vollprecht-on-python-tooling-in-rust/" target="_blank" rel="noopener">SE Radio 622: Wolf Vollprecht on Python Tooling in Rust</a></strong> &mdash; <em>Software Engineering Radio</em>, 26 June 2024, about 55 min. A deeper look under pixi&rsquo;s hood, plus rattler-build and how it plays with PyPI.</p>
+      <p><strong><a href="https://talkpython.fm/198" target="_blank" rel="noopener">#198: Catching up with the Anaconda distribution</a></strong> &mdash; <em>Talk Python To Me</em>, 9 February 2019, about 65 min. Peter Wang on why compiled scientific packages needed conda in the first place, and where conda-forge fits.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Peng, R.D. (2011).</strong> <a href="https://doi.org/10.1126/science.1213847" target="_blank" rel="noopener">Reproducible research in computational science.</a> <em>Science</em> <strong>334</strong>(6060), 1226&ndash;1227.</p>
+      <p><strong>Sandve, G.K., Nekrutenko, A., Taylor, J. &amp; Hovig, E. (2013).</strong> <a href="https://doi.org/10.1371/journal.pcbi.1003285" target="_blank" rel="noopener">Ten simple rules for reproducible computational research.</a> <em>PLOS Computational Biology</em> <strong>9</strong>(10), e1003285. Open access.</p>
+      <p><strong>Wilson, G., Bryan, J., Cranston, K., Kitzes, J., Nederbragt, L. &amp; Teal, T.K. (2017).</strong> <a href="https://doi.org/10.1371/journal.pcbi.1005510" target="_blank" rel="noopener">Good enough practices in scientific computing.</a> <em>PLOS Computational Biology</em> <strong>13</strong>(6), e1005510. Open access.</p>
+      <p><strong>Gr&uuml;ning, B., Dale, R., Sj&ouml;din, A., Chapman, B.A., Rowe, J., Tomkins-Tinch, C.H., Valieris, R., K&ouml;ster, J. &amp; The Bioconda Team (2018).</strong> <a href="https://doi.org/10.1038/s41592-018-0046-7" target="_blank" rel="noopener">Bioconda: sustainable and comprehensive software distribution for the life sciences.</a> <em>Nature Methods</em> <strong>15</strong>(7), 475&ndash;476.</p>
+      <p><strong>N&uuml;st, D., Sochat, V., Marwick, B., Eglen, S.J., Head, T., Hirst, T. &amp; Evans, B.D. (2020).</strong> <a href="https://doi.org/10.1371/journal.pcbi.1008316" target="_blank" rel="noopener">Ten simple rules for writing Dockerfiles for reproducible data science.</a> <em>PLOS Computational Biology</em> <strong>16</strong>(11), e1008316. Open access.</p>
+      <p><strong>Ivie, P. &amp; Thain, D. (2018).</strong> <a href="https://doi.org/10.1145/3186266" target="_blank" rel="noopener">Reproducibility in scientific computing.</a> <em>ACM Computing Surveys</em> <strong>51</strong>(3), 1&ndash;36.</p>
+      <p><a href="https://book.the-turing-way.org/reproducible-research" target="_blank" rel="noopener">The Turing Way: Guide for Reproducible Research</a> &mdash; a friendly, free community handbook, with a whole chapter on reproducible computational environments.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://pixi.prefix.dev/latest/" target="_blank" rel="noopener">pixi documentation</a> &mdash; install, lock files, tasks and multi-environment setups. &middot; <a href="https://github.com/prefix-dev/pixi" target="_blank" rel="noopener">prefix-dev/pixi</a> &mdash; the source, written in Rust. &middot; <a href="https://pixi.prefix.dev/latest/integration/editor/r_studio/" target="_blank" rel="noopener">pixi with RStudio</a> &mdash; the R side of the story.</p>
+      <p><a href="https://conda-forge.org/" target="_blank" rel="noopener">conda-forge</a> &mdash; the community-built channel pixi pulls from by default. &middot; <a href="https://prefix.dev/channels/conda-forge/packages/r-base" target="_blank" rel="noopener">r-base on prefix.dev</a> &mdash; browse any conda-forge package and its platforms. &middot; <a href="https://prefix.dev/" target="_blank" rel="noopener">prefix.dev</a> &mdash; the team behind pixi and rattler-build.</p>
+      <p><a href="https://gdal.org/" target="_blank" rel="noopener">GDAL</a> &mdash; the compiled geospatial library at the heart of most of those &ldquo;sharp edges.&rdquo;</p>
+    </div>
+ than it should.</p>
 
     <p>A cleaner environment workflow does the opposite. It lowers the cost of starting, revisiting, and tinkering. That's not glamorous, but it's important.</p>
 

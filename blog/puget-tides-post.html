@@ -88,6 +88,20 @@
     .note-box { background: var(--cream); border: 1px solid var(--mist); border-left: 3px solid var(--gold); padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: 0.95rem; }
     .article-body ol, .article-body ul { margin: 0 0 1.5rem 1.5rem; }
     .article-body li { margin-bottom: 0.6rem; }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink,#1c1a16); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone,#7a7268);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist,#d6d0c4);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone,#7a7268);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist,#d6d0c4);
+    }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -225,7 +239,31 @@
 
     <h2>How it runs</h2>
 
-    <p>Every six hours a GitHub Action on Ubuntu runs the batch job: a stdlib-only Python script asks NOAA&rsquo;s free <a href="https://api.tidesandcurrents.noaa.gov/api/prod/" target="_blank">Tides &amp; Currents API</a> for the constituents, datums and the last month of water levels, GFortran 13 compiles the program, and FORTRAN runs and sets a return code. The normals took about three minutes to build and only need rebuilding once. Bremerton is the one gap: its gauge has no record between 1978 and 2021, so it has no normals or trend, and the page says so rather than guessing. All free, no keys, and not for navigation.</p>
+    <p>Every six hours a GitHub Action on Ubuntu runs the batch job: a stdlib-only Python script asks NOAA&rsquo;s free <a href="https://api.tidesandcurrents.noaa.gov/api/prod/" target="_blank">Tides &amp; Currents API</a> for the constituents, datums and the last month of water levels, GFortran 13 compiles the program, and FORTRAN runs and set
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://oceanservice.noaa.gov/podcast/mar14/dd57-tides-currents.html" target="_blank" rel="noopener">Diving Deeper: Tides and Currents</a></strong> &mdash; <em>NOAA Diving Deeper</em>, 18 March 2014, about 12 min. Pat Burke of NOAA&rsquo;s tides office on how the water-level gauges and the official predictions come together.</p>
+      <p><strong><a href="https://oceanservice.noaa.gov/podcast/oct15/dd63-nuisance-flooding.html" target="_blank" rel="noopener">Diving Deeper: Nuisance Flooding</a></strong> &mdash; <em>NOAA Diving Deeper</em>, October 2015, about 15 min. Billy Sweet on high-tide flooding, sea level rise and how it&rsquo;s forecast.</p>
+      <p><strong><a href="https://noaa.gov/heritage/multimedia/video/noaa-rewind-brass-brains" target="_blank" rel="noopener">NOAA Rewind: Brass Brains</a></strong> &mdash; <em>NOAA Rewind</em>, 5 June 2023, about 1 min video. A quick look at Old Brass Brains, the tide machine that printed America&rsquo;s tables from 1910 to 1965.</p>
+      <p><strong><a href="https://kuow.org/stories/record-setting-tides-flood-washington-coastlines" target="_blank" rel="noopener">Sea level on steroids: Record tides flood Washington coastlines</a></strong> &mdash; <em>KUOW</em>, 9 January 2022, about 1 min. John Ryan on low pressure stacking extra water on a king tide, a first taste of the record December 2022 would set.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Mofjeld, H.O. &amp; Larsen, L.H. (1984).</strong> <a href="https://repository.library.noaa.gov/view/noaa/9471" target="_blank" rel="noopener">Tides and tidal currents of the inland waters of western Washington.</a> <em>NOAA Technical Memorandum ERL PMEL-56</em>. Open access.</p>
+      <p><strong>Pawlowicz, R., Beardsley, B. &amp; Lentz, S. (2002).</strong> <a href="https://doi.org/10.1016/S0098-3004(02)00013-4" target="_blank" rel="noopener">Classical tidal harmonic analysis including error estimates in MATLAB using T_TIDE.</a> <em>Computers &amp; Geosciences</em> <strong>28</strong>(8), 929&ndash;937.</p>
+      <p><strong>Mazzotti, S., Jones, C. &amp; Thomson, R.E. (2008).</strong> <a href="https://doi.org/10.1029/2008JC004835" target="_blank" rel="noopener">Relative and absolute sea level rise in western Canada and northwestern United States from a combined tide gauge-GPS analysis.</a> <em>Journal of Geophysical Research</em> <strong>113</strong>.</p>
+      <p><a href="https://repository.library.noaa.gov/view/noaa/50576" target="_blank" rel="noopener">Tidal Analysis and Prediction</a> &mdash; Bruce Parker, NOAA, 2007; the modern successor to Schureman, free from NOAA&rsquo;s library.</p>
+      <p><a href="https://cig.uw.edu/publications/projected-sea-level-rise-in-washington-state-a-2018-assessment/" target="_blank" rel="noopener">Projected Sea Level Rise for Washington State &ndash; A 2018 Assessment</a> &mdash; Miller and others, Washington Sea Grant and the UW Climate Impacts Group; why the sea rises at Seattle and not at Neah Bay.</p>
+
+      <div class="sources-head">&#128202; Data &amp; agencies</div>
+      <p><a href="https://tidesandcurrents.noaa.gov/stationhome.html" target="_blank" rel="noopener">NOAA Tides &amp; Currents</a> &mdash; the gauges, constituents and official predictions the program checks itself against. &middot; <a href="https://tidesandcurrents.noaa.gov/sltrends/anomalymap.html" target="_blank" rel="noopener">NOAA Sea Level Trends</a> &mdash; the published trends at every gauge.</p>
+      <p><a href="https://tidesandcurrents.noaa.gov/benchmarks/9447130.html" target="_blank" rel="noopener">Seattle gauge 9447130 bench marks</a> &mdash; where the record since 1899 is tied to the ground. &middot; <a href="https://api.tidesandcurrents.noaa.gov/api/prod/" target="_blank" rel="noopener">CO-OPS data API</a> &mdash; free, no key.</p>
+      <p><a href="https://brooksgroves.com/puget-tides/" target="_blank" rel="noopener">PUGET-TIDES live page</a> &mdash; the cyan terminal. &middot; <a href="https://github.com/bdgroves/puget-tides" target="_blank" rel="noopener">Source on GitHub</a> &mdash; the FORTRAN that adds up the 37 waves.</p>
+    </div>
+s a return code. The normals took about three minutes to build and only need rebuilding once. Bremerton is the one gap: its gauge has no record between 1978 and 2021, so it has no normals or trend, and the page says so rather than guessing. All free, no keys, and not for navigation.</p>
 
     <p>Lord Kelvin&rsquo;s machine needed a person to turn the crank. This one runs itself, and checks its own answers against the people who still make the official tables.</p>
 
