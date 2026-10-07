@@ -23,10 +23,11 @@
 
  header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
  .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1000px; margin:0 auto; padding:0.75rem 0; }
- .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+ .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); white-space:nowrap; }
  nav { display:flex; gap:1.5rem; align-items:center; }
  nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
  nav a:hover { color:var(--rust); }
+@media(max-width:480px){ nav { gap:0.9rem; } nav a { white-space:nowrap; } }
 
  /* HERO */
  .hero { background:var(--ink); color:var(--white); padding:3rem clamp(1.5rem,5vw,4rem) 2.5rem; border-bottom:3px solid #b8722c; }
@@ -40,8 +41,11 @@
  .hero-stat-label { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.12em; text-transform:uppercase; color:#666; margin-top:0.15rem; }
 
  /* MAIN LAYOUT */
- .main { max-width:1000px; margin:0 auto; padding:2rem clamp(1.5rem,5vw,4rem); display:grid; grid-template-columns:1fr 300px; gap:2.5rem; align-items:start; }
- @media(max-width:750px) { .main { grid-template-columns:1fr; } }
+ /* The grid is the page wrapper: story column + sidebar. (It used to sit on .main,
+    which dealt the story's own paragraphs into two columns.) */
+ .wrap { max-width:1000px; margin:0 auto; padding:2rem clamp(1.5rem,5vw,4rem); display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:2.5rem; align-items:start; }
+ .main { min-width:0; }
+ @media(max-width:750px) { .wrap { grid-template-columns:minmax(0,1fr); } }
 
  /* SECTION HEADERS */
  .section-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.18em; text-transform:uppercase; color:#c0392b; border-bottom:2px solid #b8722c; padding-bottom:0.4rem; margin-bottom:1.25rem; }
@@ -152,7 +156,21 @@
  .theme-toggle:hover { color:var(--dune); }
  .theme-toggle:focus-visible { outline:2px solid var(--dune); outline-offset:3px; }
  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
   <link rel="stylesheet" href="/css/site-footer.css">
+  <style>
+    .route-map-wrap { margin:1.5rem 0 0.5rem; border:1px solid var(--mist); border-top:3px solid var(--dune); background:var(--cream); }
+    #route-map { height:min(70vh,560px); background:#d9c7a6; }
+    .route-map-cap { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.02em; color:var(--stone); padding:0.6rem 0.9rem; line-height:1.6; }
+    .route-pin { width:26px; height:26px; border-radius:50%; background:var(--dune); color:#fff; border:2px solid #fff; display:flex; align-items:center; justify-content:center; font:600 11px/1 'DM Mono',monospace; box-shadow:0 1px 4px rgba(0,0,0,.45); }
+    .route-pin.rest { background:#1c1a16; }
+    .route-pin.loop { background:#fff; color:var(--dune); border-color:var(--dune); }
+    .route-label { background:rgba(28,26,22,.82); color:#fdfaf4; border:0; box-shadow:none; font:500 11px/1.3 'DM Mono',monospace; padding:2px 6px; }
+    .route-label::before { display:none; }
+    .route-order { margin:0.75rem 0 0; padding-left:1.2rem; font-size:0.85rem; color:var(--ink); }
+    .route-order li { margin:0.2rem 0; }
+    .route-order span { color:var(--stone); font-family:'DM Mono',monospace; font-size:0.7rem; }
+  </style>
 <script>
   // Set the theme before first paint so there is no light flash on reload.
   // Shared key across every brooksgroves.com page and subdomain, so the
@@ -171,15 +189,17 @@
 <body>
 <div class="topline"></div>
 
-<nav>
-  <a href="/">Brooks Groves</a>
-  <div>
-    <a href="/outside.html">&larr; Outside</a>
-    <a href="/tags.html">Tags</a>
-    <a href="/">Home</a>
-    <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/outside.html">&larr; Outside</a>
+      <a href="/tags.html">Tags</a>
+      <a href="/">Home</a>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button>
+    </nav>
   </div>
-</nav>
+</header>
 
 <div class="hero">
   <div class="hero-inner">
@@ -216,11 +236,28 @@
       Nine of the thirteen specials run beyond 400km. Stage 10 is the monster at 515.
     </p>
 
+    <p class="intro">
+      The order of the towns is out. From the Red Sea it heads north up the coast to
+      Yanbu and AlUla, turns inland for two stages around Ha&rsquo;il on the edge of the
+      Nafud, then runs south across the plateau through Al Duwadimi to a remote refuge
+      bivouac for the first marathon. The rest day is in Bisha, with long specials
+      looping out to Wadi Ad-Dawasir and back. The second marathon climbs from Bisha
+      into the Asir highlands at Al Bahah, and a long transfer brings everyone back to
+      the Red Sea.
+    </p>
+
+    <div class="route-map-wrap">
+      <div id="route-map" role="img" aria-label="Map of Saudi Arabia showing the announced Dakar 2027 bivouac towns in order, joined by a dashed loop from King Abdullah Economic City north to Yanbu, AlUla and Ha'il, south through Al Duwadimi to Bisha and Al Bahah, and back to the Red Sea."></div>
+      <p class="route-map-cap">The announced towns, in order, joined by straight dashed lines. It&rsquo;s a sketch of the loop, not the racing line: Dakar never publishes its tracks in advance, and crews get each day&rsquo;s roadbook the night before. The refuge bivouac&rsquo;s location hasn&rsquo;t been announced. Imagery &copy; Esri, Maxar, Earthstar Geographics.</p>
+    </div>
+    <ol class="route-order" id="route-order"></ol>
+
     <div class="note-box">
-      <strong>This page is a skeleton.</strong> ASO announced the route outline in
-      June 2026 &mdash; distances, start and finish, the marathon stages. The
-      stage-by-stage breakdown, with the actual bivouac towns and terrain, is
-      usually published in November or December. Everything below marked
+      <strong>Still filling in.</strong> ASO announced the route outline in
+      May 2026 &mdash; the distances, the loop from King Abdullah Economic City, the
+      order of the towns, the rest day in Bisha and the two marathon stages. The
+      stage-by-stage breakdown, with each night&rsquo;s bivouac and each special&rsquo;s
+      length, is usually published in November or December. Everything below marked
       <em>TBA</em> fills in then, and the stage table becomes a live tracker
       once the rally starts.
     </div>
@@ -234,14 +271,14 @@
       </thead>
       <tbody>
         <tr><td class="stg-num">P</td><td>Thu 1 Jan</td><td>30 km</td><td>Prologue &mdash; sets the running order</td></tr>
-        <tr><td class="stg-num">1</td><td>Fri 2 Jan</td><td class="tba">TBA</td><td>Heads north from KAEC</td></tr>
+        <tr><td class="stg-num">1</td><td>Fri 2 Jan</td><td class="tba">TBA</td><td>Heads north up the Red Sea coast</td></tr>
         <tr><td class="stg-num">2</td><td>Sat 3 Jan</td><td class="tba">TBA</td><td></td></tr>
         <tr><td class="stg-num">3</td><td>Sun 4 Jan</td><td class="tba">TBA</td><td></td></tr>
         <tr><td class="stg-num">4</td><td>Mon 5 Jan</td><td class="tba">TBA</td><td></td></tr>
         <tr><td class="stg-num">5</td><td>Tue 6 Jan</td><td class="tba">TBA</td><td></td></tr>
         <tr class="marathon"><td class="stg-num">6</td><td>Wed 7 Jan</td><td class="tba">TBA</td><td><strong>Marathon stage</strong> &mdash; no team assistance overnight</td></tr>
         <tr class="marathon"><td class="stg-num">7</td><td>Thu 8 Jan</td><td class="tba">TBA</td><td>Marathon continues</td></tr>
-        <tr class="rest"><td class="stg-num">&mdash;</td><td>Fri 9 Jan</td><td>Rest day</td><td class="tba">Location TBA</td></tr>
+        <tr class="rest"><td class="stg-num">&mdash;</td><td>Fri 9 Jan</td><td>Rest day</td><td>Bisha</td></tr>
         <tr><td class="stg-num">8</td><td>Sat 10 Jan</td><td class="tba">TBA</td><td></td></tr>
         <tr><td class="stg-num">9</td><td>Sun 11 Jan</td><td class="tba">TBA</td><td></td></tr>
         <tr><td class="stg-num">10</td><td>Mon 12 Jan</td><td><strong>515 km</strong></td><td>Longest special of the rally &middot; returns to Bisha</td></tr>
@@ -253,8 +290,8 @@
 
     <p class="table-note">
       Dates are laid out from the announced 1&ndash;15 January window and the
-      published stage count. The rest-day position and the exact marathon
-      pairings will be confirmed with the detailed route.
+      published stage count. Which stage ends in which town, and the exact
+      marathon pairings, will be confirmed with the detailed route.
     </p>
 
     <!-- ============ WATCH ============ -->
@@ -449,11 +486,41 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-// The stage table on this page is static HTML, not data-driven — the detailed
-// 2027 route has not been published yet, so there is nothing to load. When ASO
-// releases it, this is where a loader would go, reading /data/dakar-2027.json
-// the way the Grand Tour pages read theirs.
+// The route map reads route_outline from /dakar.json: the announced towns in order.
+// When the detailed route comes out, add per-stage start/finish there and this draws them.
+(function(){
+  var el = document.getElementById('route-map');
+  if (!el || !window.L) return;
+  fetch('/dakar.json').then(function(r){ return r.json(); }).then(function(d){
+    var pts = (d.route_outline || {}).points || [];
+    var map = L.map(el, { scrollWheelZoom:false, zoomSnap:0.25 });
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 12, attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics'
+    }).addTo(map);
+    var main = [], loop = [], n = 0, bisha = null, list = document.getElementById('route-order');
+    pts.forEach(function(p){
+      var li = document.createElement('li');
+      li.innerHTML = p.name.replace(/'/g,'&rsquo;') + (p.note ? ' <span>&middot; ' + p.note.replace(/'/g,'&rsquo;') + '</span>' : '');
+      if (list) list.appendChild(li);
+      if (p.lat == null) return;
+      var ll = [p.lat, p.lon];
+      if (p.role === 'loop') { loop = [bisha, ll, bisha]; }
+      else { main.push(ll); if (p.name === 'Bisha') bisha = ll; }
+      if (p.role === 'finish') return;   // same place as the start
+      if (p.role !== 'loop') n += 1;
+      var cls = 'route-pin' + (p.role === 'rest' ? ' rest' : p.role === 'loop' ? ' loop' : '');
+      var label = p.role === 'start' ? 'S' : p.role === 'loop' ? '&#8635;' : String(n - 1);
+      L.marker(ll, { icon: L.divIcon({ className:'', html:'<div class="' + cls + '">' + label + '</div>', iconSize:[26,26], iconAnchor:[13,13] }) })
+        .bindTooltip(p.name + (p.role === 'start' ? ' (start & finish)' : p.role === 'rest' ? ' (rest day)' : ''), { permanent:true, direction:(p.label || 'right'), offset:[(p.label === 'left' ? -14 : 14),0], className:'route-label' })
+        .addTo(map);
+    });
+    var line = L.polyline(main, { color:'#f2b35e', weight:3, dashArray:'8 7', opacity:0.95 }).addTo(map);
+    if (loop.length && loop[0]) L.polyline(loop, { color:'#fdfaf4', weight:2.5, dashArray:'2 6', opacity:0.95 }).addTo(map);
+    map.fitBounds(line.getBounds().pad(0.12));
+  }).catch(function(){ el.style.display = 'none'; });
+})();
 </script>
 <script>
 // Dark mode toggle. The no-flash script in <head> sets the initial state;
