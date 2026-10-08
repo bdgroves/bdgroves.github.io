@@ -137,6 +137,10 @@
     .photo-block { margin: 2.5rem 0; }
     .photo-block img { width: 100%; height: auto; display: block; border: 1px solid var(--mist); }
     .photo-block a.zoom { display:block; cursor: zoom-in; }
+    .photo-block video { width: 100%; display: block; border: 1px solid var(--mist); background: #0b1020; }
+    .video-actions { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .video-actions a, .video-actions button { font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); background: none; border: 1px solid var(--mist); padding: 0.45rem 0.9rem; cursor: pointer; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
+    .video-actions a:hover, .video-actions button:hover { border-color: var(--rust); color: var(--rust); }
     .lightbox { position: fixed; inset: 0; z-index: 1000; background: rgba(20,17,12,.94); overflow: auto; display: none; }
     .lightbox.open { display: block; }
     .lightbox img { display: block; margin: 0 auto; max-width: none; width: 2400px; height: auto; cursor: zoom-out; }
@@ -239,6 +243,21 @@
 
     <p>Gold was found at Columbia on March 27, 1850, and at least $87 million in gold came out of the surrounding hills by the early 1900s. The bedrock here is limestone, which dissolves into knobs, pinnacles and deep potholes, and the potholes were full of rich gravel. Miners dug it out of the crevices and washed the rest away with water, and the pinnacles were left standing. In the lidar it&rsquo;s that rough, dark band running out of town, and you can walk among the rocks today at Columbia State Historic Park.</p>
 
+    <p>A map from straight overhead flattens all of that, so I flew through it. This is the same 1 m bare-earth lidar at true scale, with no stretching of the heights, and the 2022 NAIP aerial photo draped over it and shaded by the relief so the pits and pinnacles stand out. The camera comes in from the southwest over town, drops low across the diggings and the rock gardens, passes the water-filled quarry, and pulls back for a last look over Columbia. The light is late afternoon on March 27, the day of the strike.</p>
+
+    <div class="photo-block">
+      <video id="columbia-video" autoplay muted loop playsinline controls preload="metadata"
+             poster="/blog/img/mother-lode/columbia-flyover-poster.jpg"
+             aria-label="A camera flight of just under two minutes over Columbia in late-afternoon light. It starts high to the southwest over the town, drops low over the rough, pitted ground of the diggings and the limestone rock gardens, passes over a water-filled quarry, and pulls back to look over the diggings toward the old town and the airport">
+        <source src="/blog/img/mother-lode/columbia-flyover.mp4" type="video/mp4">
+      </video>
+      <div class="video-actions">
+        <button type="button" id="columbia-fullscreen">&#10530; Full screen</button>
+        <a href="/blog/img/mother-lode/columbia-flyover-1080.mp4" target="_blank">&#9654; Watch in HD (1080p)</a>
+      </div>
+      <p class="photo-caption">Over the Columbia diggings &middot; USGS 3DEP 1 m lidar, true scale &middot; NAIP 2022 aerial photo &middot; rendered with forge3d on my laptop&rsquo;s GPU</p>
+    </div>
+
     <h2>The Harvard pit: the modern version</h2>
 
     <div class="photo-block">
@@ -314,6 +333,19 @@
     <p>If you&rsquo;re ever on Highway 49, stop at Columbia and walk out among the rocks. It&rsquo;s strange, lovely ground, and now I know how it got that way.</p>
 
   </div>
+
+  <script>
+    (function () {
+      var v = document.getElementById('columbia-video');
+      if (!v) return;
+      function big() {
+        if (v.requestFullscreen) v.requestFullscreen();
+        else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
+        else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+      }
+      document.getElementById('columbia-fullscreen').addEventListener('click', big);
+    })();
+  </script>
 
   <div class="reactions-section">
     <p class="reactions-label">Reactions</p>
