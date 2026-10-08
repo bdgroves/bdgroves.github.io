@@ -971,7 +971,7 @@ function theCall(){
   R(`
     <div class="story">Two hours to the shuttle. The report needs a finding, and the finding needs to be one of exactly two words: <span class="flavor">misadventure</span>, or a name.</div>
     <div class="thought">Eleven million on misadventure. Nothing on an act by a covered party. I have never once been told to find a particular answer and I have never once worked a file where I did not know which answer was wanted.</div>
-    <div class="story">Evidence established: <b>${player.evidence.length} of 5</b>.</div>
+    <div class="story">Evidence established: <b>${player.evidence.length} of 7</b>.</div>
     <div class="choices">
       ${Object.keys(SUSPECTS).map(id=>
         `<button class="choice" id="acc_${id}"><span class="tag">NAME ${SUSPECTS[id].short.toUpperCase()}</span>${SUSPECTS[id].name}, ${SUSPECTS[id].role}.</button>`
@@ -1031,7 +1031,7 @@ function endGame(right, proof, broke){
     if(proof >= 5){
       key='complicit'; title='FILED \u2014 COMPLICIT';
       text = "The finding stands. The payout clears in six weeks and the underwriter sends a note about efficient case handling, which you do not open.";
-      coda = "You had five of six. You had a countersigned endorsement adding eleven million to a man's life six weeks before he lost it, and you filed the word that meant nobody had to explain it. " + guilty.name + " is still on that station.";
+      coda = "You had " + proof + " of seven. You had a countersigned endorsement adding eleven million to a man's life six weeks before he lost it, and you filed the word that meant nobody had to explain it. " + guilty.name + " is still on that station.";
     } else {
       key='closed'; title='FILED \u2014 CLOSED';
       text = "The finding stands. On the evidence you actually established it is even defensible \u2014 a room that reads as an accident, a certificate signed by a licensed medic, and a man who worked alone.";
@@ -1047,7 +1047,7 @@ function endGame(right, proof, broke){
   }
   else if(right && broke && proof >= 5 && rev === 'held'){
     key='clean'; title='UPHELD \u2014 SOUND FINDING';
-    text = "Named, contradicted on the record, resting on five established facts and a countersigned material alteration. The challenge is withdrawn on day eighty-eight without a hearing.";
+    text = "Named, contradicted on the record, resting on " + proof + " established facts and a countersigned material alteration. The challenge is withdrawn on day eighty-eight without a hearing.";
     coda = guilty.name + " is off the station inside a cycle. The policy does not pay. Nobody thanks you \u2014 not the family, not the underwriter, certainly not the station \u2014 and it is still the correct file. " +
            "Counsel in Reno reads your clause 15.2 argument twice and does not ask you a single question, which in eleven years has happened three times.";
   }
