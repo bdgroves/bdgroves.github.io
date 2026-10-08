@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Finding the Trees — Brooks Groves</title>
 <link rel="canonical" href="https://brooksgroves.com/blog/finding-the-trees.html">
-<meta name="description" content="Building a LiDAR tree detector, then spending a week discovering what its numbers actually meant. Synthetic forest, Finnish national canopy data, and a national forest inventory as the referee.">
+<meta name="description" content="Building a LiDAR tree detector, then spending a week discovering what its numbers actually meant. Synthetic forest, Finnish national canopy data, and the Finnish Forest Centre's forest inventory as the referee.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,300&family=DM+Mono:wght@300;400;500&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
@@ -300,6 +300,7 @@ footer.end a:hover{color:var(--rust)}
     <span>August 2026</span>
     <span>~18 min</span>
     <span><a href="https://github.com/bdgroves/lidar-explore">github.com/bdgroves/lidar-explore</a></span>
+    <span><a href="https://brooksgroves.com/lidar-explore/">Explore it: the interactive page &rarr;</a></span>
   </div>
   <div class="article-tags">
     <a href="/tags.html#LiDAR" class="article-tag-pill">LiDAR</a>
@@ -466,8 +467,8 @@ footer.end a:hover{color:var(--rust)}
     <tr class="spot"><td>6.31</td><td class="n">78.4%</td><td class="n">98.6%</td><td class="n">5</td><td class="n">0.44 m</td></tr>
   </table>
 
-  <p>At half a point per square meter a one-meter canopy raster has more empty cells than
-  filled ones. Missing data gets written as zero. The surface becomes a field of isolated
+  <p>At half a point per square meter about one cell in eight of a one-meter canopy raster
+  gets no laser return at all. Missing data gets written as zero. The surface becomes a field of isolated
   spikes separated by artificial valleys, and that roughness manufactures extra local maxima.
   Some of them, by luck, land near real trees. Recall rises.</p>
 
@@ -508,8 +509,8 @@ footer.end a:hover{color:var(--rust)}
   <p>But the Finnish Forest Centre publishes something better for my purposes: finished
   canopy height models <em>derived</em> from that licensed data, at one meter, openly licensed,
   no registration. And alongside them, the actual forest inventory — 1,840 stand polygons for
-  my map sheet, with measured heights, basal areas, species composition, and a professional
-  management plan listing which stands foresters intend to cut between 2026 and 2035.</p>
+  my map sheet, with inventory heights, basal areas, species composition, and a
+  management plan listing which stands are proposed for cutting between 2026 and 2035.</p>
 
   <p>Real ground truth. Not mine. And a published index with direct download URLs and
   per-tile statistics, so fetching became a database query rather than a scraping exercise:</p>
@@ -700,21 +701,38 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
   <h2><span class="num">Act Six</span>The result I nearly didn't report</h2>
 
   <p>Last piece. The inventory includes a real management plan — 5,059 operations proposed for
-  2026 to 2035 — so I could score my harvest ranking against decisions professional foresters
-  had already made. This was going to be the payoff: <em>my algorithm agrees with the
-  experts.</em></p>
+  2026 to 2035 — so I could score my harvest ranking against the plan's own proposals. This was going to be the payoff: <em>my algorithm agrees with the
+  plan.</em></p>
 
   <p>It did. Fifteen out of fifteen. Precision 100%.</p>
 
   <p>And it means nothing.</p>
 
   <p>Because once you filter stands to development class 04 — <em>uudistuskypsä</em>,
-  literally “regeneration-ripe”, a forester's own judgement that a stand has reached rotation
+  literally “regeneration-ripe”, the inventory's call that a stand has reached rotation
   age — <strong>471 of 472 eligible stands were already on the cutting list</strong>. The base
   rate in my candidate pool was 100%. Lift over random: 1.00×.</p>
 
   <p>I could not have been wrong. The classification did all the work; the expensive remote
   sensing added nothing on top of it.</p>
+
+  <div class="wrong">
+    <span class="tag">Update, October 8, 2026</span>
+    <p>I rebuilt the whole project from scratch on the Finnish Forest Centre's latest data release,
+    which labels where every record comes from, and it corrected two things I'd said. The cutting
+    proposals aren't foresters' field calls: all but one on this sheet are <em>simulated</em> by the
+    Forest Centre's planning calculation from the inventory itself, which is most likely why the
+    mature stands were all on the list. And nearly all of the inventory the rebuild validated against wasn't
+    measured on the ground: the Forest Centre interpreted it from airborne laser data, so the
+    height agreement is largely laser checked against laser. One smaller fix: I'd written that a
+    half-point-per-metre raster has more empty cells than filled ones. Measured, it's about one in
+    eight, because the raster writer fills cells from nearby points; the holes still make the fake
+    peaks. The stem-count gap still stands. The correlations and the synthetic results reproduced
+    within a few hundredths, and the counts moved a little with the new data: 1,489 stands
+    qualify instead of 1,295, and 545 of 547 mature stands were on the cutting list instead of
+    471 of 472. The details, and the rebuilt
+    numbers, are on the <a href="https://brooksgroves.com/lidar-explore/">interactive page</a>.</p>
+  </div>
 
   <div class="wrong">
     <span class="tag">Where I was wrong</span>
@@ -817,19 +835,19 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
   sensing, feeding harvest planning and yield forecasting. The pitch is a database with a row
   for every tree.</p>
 
-  <p>Having now measured it against a national inventory, I would say the honest version is
+  <p>Having now measured it against a real forest inventory, I would say the honest version is
   narrower and more useful. Canopy height models are <em>excellent</em> at height and area-based
-  structure — 1.2 meters and r = 0.96 against field-measured stands is genuinely good, and it
+  structure — 1.2 meters and r = 0.96 against the Forest Centre's inventory is genuinely good, and it
   scales to millions of hectares for the cost of a flight. They are <em>poor</em> at counting
   individual stems, and the shortfall is not a tuning problem. It is the physics of looking
   down at a closed canopy.</p>
 
-  <p>Which is precisely why Finland's national inventory runs on the area-based approach —
+  <p>Which is precisely why the Forest Centre's own inventory runs on the area-based approach —
   predicting stand attributes from height distributions rather than finding individual trees —
   on data thinner than anything I tested. They arrived there decades ago. My density study
   rediscovered the reasoning from the wrong end.</p>
 
-  <p>And the harvest benchmark said something about where value actually sits: a forester's
+  <p>And the harvest benchmark said something about where value actually sits: the
   development-class call already determined the cutting list. If remote sensing is going to
   earn its cost, it will be somewhere that classification cannot reach — detecting change
   <em>since</em> the last inventory, flagging stands whose stocking no longer matches their
@@ -849,9 +867,9 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
   score that got better as my data got worse.</p>
 
   <p>The forest was there the whole time. Four hundred and fifty invented trees in a Finnish
-  national park I have never visited, then 1,295 real stands measured by people who actually
-  walked into them with calipers. It took a national inventory, built by strangers over
-  twenty-five years and given away for free, to tell me what I had been looking at.</p>
+  national park I have never visited, then 1,295 real stands from an inventory built by
+  strangers over twenty-five years, first with calipers and lately from the air, and given away
+  for free. It took that to tell me what I had been looking at.</p>
 
   <p>Worth the week.</p>
 
