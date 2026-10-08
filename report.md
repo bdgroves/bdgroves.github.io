@@ -1,0 +1,589 @@
+# Link check
+
+999 URLs found, 980 checked, 218 not OK.
+
+- **400** https://facebook.com/CoconinoNF
+  - on: /blog/pocket-fire-post.html:515
+- **403** https://volcano.si.edu
+  - on: /volcanology.html:182, /learning/volcanology/index.html:767, /learning/volcanology/index.html:768
+- **403** https://substack.com/@volcanista
+  - on: /volcanology.html:186
+- **403** https://www.redbull.com/int-en/tags/dakar-rally
+  - on: /dakar-2027.html:410, /outside.html:783
+- **403** https://www.peaksandpints.com/
+  - on: /index.html:935
+- **403** https://doi.org/10.15468/dl.bf6u63
+  - on: /ecology.html:189, /blog/survivors-of-an-inland-sea.html:298
+- **403** https://doi.org/10.15468/dl.p6g732
+  - on: /ecology.html:244, /blog/two-creeks-of-gold.html:301
+- **403** https://doi.org/10.15468/dl.p7sdx7
+  - on: /ecology.html:300, /blog/whats-up-with-the-pikas.html:351, /blog/pikas-part-2-washington.html:253
+- **403** https://www.procyclingstats.com
+  - on: /outside.html:801
+- **403** https://www.peaksandpints.com/on-tap/
+  - on: /outside.html:867, /outside.html:875
+- **403** https://www.feynmanlectures.caltech.edu/
+  - on: /learning/quantum-physics/index.html:686
+- **403** https://www.worldcircuit.co.uk
+  - on: /learning/afropop/index.html:621
+- **403** https://watershed.ucdavis.edu
+  - on: /learning/ecogeomorphology/index.html:606
+- **403** https://www.fws.gov/refuge/nisqually
+  - on: /learning/ecogeomorphology/index.html:612
+- **403** https://doi.org/10.14358/PERS.70.5.589
+  - on: /blog/finding-the-trees.html:888
+- **403** https://doi.org/10.1080/01431160701736489
+  - on: /blog/finding-the-trees.html:889
+- **403** https://doi.org/10.3390/rs4040950
+  - on: /blog/finding-the-trees.html:890
+- **403** https://mitpressbookstore.mit.edu/book/9780262517263
+  - on: /blog/sierra-flow-cobol-post.html:256
+- **403** https://www.gao.gov/products/gao-16-468
+  - on: /blog/sierra-flow-cobol-post.html:258
+- **403** https://gnucobol.sourceforge.io
+  - on: /blog/sierra-flow-cobol-post.html:264
+- **403** https://doi.org/10.1644/1545-1542(2003)084%3C0037:POAEAI%3E2.0.CO;2
+  - on: /blog/whats-up-with-the-pikas.html:333
+- **403** https://doi.org/10.1111/j.1365-2486.2010.02389.x
+  - on: /blog/whats-up-with-the-pikas.html:334
+- **403** https://doi.org/10.1126/science.1163428
+  - on: /blog/whats-up-with-the-pikas.html:335
+- **403** https://doi.org/10.1111/jbi.12466
+  - on: /blog/whats-up-with-the-pikas.html:336
+- **403** https://doi.org/10.1093/jmammal/gyaa110
+  - on: /blog/whats-up-with-the-pikas.html:339
+- **403** https://doi.org/10.1657/1938-4246-42.1.76
+  - on: /blog/whats-up-with-the-pikas.html:340
+- **403** https://doi.org/10.1890/11-0175.1
+  - on: /blog/whats-up-with-the-pikas.html:341
+- **403** https://doi.org/10.1644/13-MAMM-A-099.1
+  - on: /blog/whats-up-with-the-pikas.html:342
+- **403** https://doi.org/10.2307/1935464
+  - on: /blog/whats-up-with-the-pikas.html:346
+- **403** https://doi.org/10.1139/z73-002
+  - on: /blog/whats-up-with-the-pikas.html:347
+- **403** https://www.gbif.org/species/2436982
+  - on: /blog/whats-up-with-the-pikas.html:354
+- **403** https://doi.org/10.1029/JB092iB13p13715
+  - on: /blog/pele-blog-post.html:225
+- **403** https://doi.org/10.1126/science.aav7046
+  - on: /blog/pele-blog-post.html:226
+- **403** https://doi.org/10.1126/science.aay9070
+  - on: /blog/pele-blog-post.html:227
+- **403** https://doi.org/10.1152/physrev.1952.32.2.135
+  - on: /blog/dipodomys-post.html:240
+- **403** https://doi.org/10.2307/3504260
+  - on: /blog/dipodomys-post.html:241
+- **403** https://doi.org/10.1093/biolinnean/blz027
+  - on: /blog/dipodomys-post.html:243
+- **403** https://doi.org/10.1093/biosci/biab093
+  - on: /blog/dipodomys-post.html:244
+- **403** https://www.gbif.org/species/2439535
+  - on: /blog/dipodomys-post.html:247
+- **403** https://coconino.az.gov/pocketfire
+  - on: /blog/pocket-fire-post.html:512
+- **403** https://doi.org/10.1093/jof/92.1.39
+  - on: /blog/pocket-fire-post.html:536
+- **403** https://doi.org/10.1073/pnas.1607171113
+  - on: /blog/pocket-fire-post.html:538
+- **403** https://ein.az.gov/
+  - on: /blog/pocket-fire-post.html:543
+- **403** https://doi.org/10.1111/gcb.12046
+  - on: /blog/watching-a-mountain-burn.html:748
+- **403** https://doi.org/10.1139/x03-053
+  - on: /blog/watching-a-mountain-burn.html:749
+- **403** https://catalog.washoecountylibrary.us/Record/52400
+  - on: /blog/watching-a-mountain-burn.html:750
+- **403** https://www.bloomberg.com/news/articles/2016-09-19/odd-lots-space-robots-are-helping-hedge-funds-invest
+  - on: /blog/sentinel-stockpile-revisited-post.html:310
+- **403** https://doi.org/10.1257/jep.30.4.171
+  - on: /blog/sentinel-stockpile-revisited-post.html:319
+- **403** https://joemorrison.substack.com/p/satellite-imagery-is-not-becoming
+  - on: /blog/sentinel-stockpile-revisited-post.html:322
+- **403** https://doi.org/10.1002/joc.2007
+  - on: /blog/weather-station-revisited-post.html:305
+- **403** https://royalsocietypublishing.org/rsos/article/4/11/171253/93494/Return-of-a-giant-DNA-from-archival-museum-samples
+  - on: /blog/survivors-of-an-inland-sea.html:288
+- **403** https://doi.org/10.1111/mec.15100
+  - on: /blog/survivors-of-an-inland-sea.html:289
+- **403** https://doi.org/10.1093/oxfordjournals.molbev.a025711
+  - on: /blog/survivors-of-an-inland-sea.html:293, /blog/two-creeks-of-gold.html:296
+- **403** https://www.fws.gov/story/2019-02/peak-pyramid
+  - on: /blog/survivors-of-an-inland-sea.html:297
+- **403** https://www.fws.gov/office/marble-bluff-fish-passage-and-research-facility/species
+  - on: /blog/survivors-of-an-inland-sea.html:297
+- **403** https://doi.org/10.15468/dl.pf96qt
+  - on: /blog/survivors-of-an-inland-sea.html:298
+- **403** https://doi.org/10.15468/dl.xddnek
+  - on: /blog/survivors-of-an-inland-sea.html:298
+- **403** https://doi.org/10.15468/dl.fmjyg6
+  - on: /blog/survivors-of-an-inland-sea.html:298
+- **403** https://doi.org/10.15468/dl.dv2epv
+  - on: /blog/survivors-of-an-inland-sea.html:298
+- **403** https://doi.org/10.1128/mbio.00463-26
+  - on: /blog/where-the-fog-lives.html:301
+- **403** https://www.sciencedirect.com/science/article/pii/S0048969718330134
+  - on: /blog/where-the-fog-lives.html:303
+- **403** https://doi.org/10.1002/ecs2.2996
+  - on: /blog/where-the-fog-lives.html:304
+- **403** https://doi.org/10.1126/science.ade5755
+  - on: /blog/pele-revisited-post.html:265
+- **403** https://doi.org/10.1002/9781118872079.ch11
+  - on: /blog/pele-revisited-post.html:266
+- **403** https://doi.org/10.1126/science.aaz1822
+  - on: /blog/pele-revisited-post.html:267
+- **403** https://doi.org/10.1126/sciadv.ado1459
+  - on: /blog/easter-island.html:276
+- **403** https://doi.org/10.1145/960118.808380
+  - on: /blog/cascadia-wx-post.html:232
+- **403** https://doi.org/10.1029/1999WR900090
+  - on: /blog/cascadia-wx-post.html:234
+- **403** https://www.nsa.gov/helpful-links/nsa-foia/declassification-transparency-initiatives/historical-releases/view/article/3880193/capt-grace-hopper-on-future-possibilities-data-hardware-software-and-peopl
+  - on: /blog/sierra-flow-revisited-post.html:238
+- **403** https://doi.org/10.1145/960118.808378
+  - on: /blog/sierra-flow-revisited-post.html:243
+- **403** https://doi.org/10.1061/(ASCE)0733-9496(1994)120:4(485)
+  - on: /blog/sierra-flow-revisited-post.html:245
+- **403** https://doi.org/10.2307/1313099
+  - on: /blog/sierra-flow-revisited-post.html:246
+- **403** https://doi.org/10.1577/1548-8675(1998)018%3C0487:HAADOC%3E2.0.CO;2
+  - on: /blog/sierra-flow-revisited-post.html:247
+- **403** https://gnucobol.sourceforge.io/
+  - on: /blog/sierra-flow-revisited-post.html:251
+- **403** https://doi.org/10.1111/j.1708-8305.2008.00269.x
+  - on: /blog/ridgeline-post.html:370
+- **403** https://doi.org/10.1177/1556264614544103
+  - on: /blog/ridgeline-post.html:372
+- **403** https://doi.org/10.1111/j.1752-1688.2004.tb01046.x
+  - on: /blog/the-creek-that-isnt-there.html:344
+- **403** https://doi.org/10.1093/biosci/bit027
+  - on: /blog/the-creek-that-isnt-there.html:345
+- **403** https://www.ppic.org/blog/how-weather-whiplash-could-change-california/
+  - on: /blog/the-creek-that-isnt-there.html:348
+- **403** https://doi.org/10.1785/BSSA0640051363
+  - on: /blog/aftershock-revisited-post.html:265
+- **403** https://doi.org/10.1785/BSSA0340040185
+  - on: /blog/aftershock-revisited-post.html:266
+- **403** https://doi.org/10.1126/science.1225942
+  - on: /blog/aftershock-revisited-post.html:267
+- **403** https://doi.org/10.1126/sciadv.1601542
+  - on: /blog/aftershock-revisited-post.html:268
+- **403** https://doi.org/10.1029/2019JB018558
+  - on: /blog/aftershock-revisited-post.html:269
+- **403** https://www.beg.utexas.edu/texnet-cisr
+  - on: /blog/aftershock-revisited-post.html:275
+- **403** https://doi.org/10.1145/2422956.2422957
+  - on: /blog/games-engine.html:413
+- **403** https://doi.org/10.1145/1814256.1814260
+  - on: /blog/games-engine.html:414
+- **403** https://doi.org/10.1145/1226736.1226767
+  - on: /blog/alert-bots-revisited-post.html:247
+- **403** https://doi.org/10.1504/IJEM.2009.031564
+  - on: /blog/alert-bots-revisited-post.html:248
+- **403** https://doi.org/10.1080/1369118X.2013.862561
+  - on: /blog/alert-bots-revisited-post.html:249
+- **403** https://doi.org/10.1111/risa.12262
+  - on: /blog/alert-bots-revisited-post.html:250, /blog/sierra-alert-bot-post.html:292
+- **403** https://doi.org/10.1111/1468-5973.70076
+  - on: /blog/alert-bots-revisited-post.html:251
+- **403** https://www.fire.ca.gov/incidents
+  - on: /blog/alert-bots-revisited-post.html:258, /blog/bdgrovesbot.html:294, /blog/sierra-alert-bot-post.html:299
+- **403** https://doi.org/10.1073/pnas.1014985107
+  - on: /blog/solstice-revisited-post.html:316
+- **403** https://doi.org/10.1073/pnas.0812817106
+  - on: /blog/solstice-revisited-post.html:317
+- **403** https://bookshop.org/a/9492/9781442246454
+  - on: /blog/solstice-revisited-post.html:318
+- **403** https://bowerhousebooks.com/?p=2176
+  - on: /blog/solstice-revisited-post.html:319
+- **403** https://whc.unesco.org/en/list/353/
+  - on: /blog/solstice-revisited-post.html:322
+- **403** https://www.axios.com/local/seattle/2026/08/28/washington-wildfires-851000-acres-spokane-fires
+  - on: /blog/wa-smoke-post.html:250
+- **403** https://doi.org/10.1289/ehp.1409277
+  - on: /blog/wa-smoke-post.html:265
+- **403** https://doi.org/10.1073/pnas.2011048118
+  - on: /blog/wa-smoke-post.html:266
+- **403** https://doi.org/10.1029/91WR00690
+  - on: /blog/sierra-streamflow-2027-post.html:251
+- **403** https://doi.org/10.3390/w3020445
+  - on: /blog/sierra-streamflow-2027-post.html:254
+- **403** https://explore.museumca.org/goldrush/dist-columbia.html
+  - on: /blog/mother-lode-post.html:319
+- **403** https://explore.museumca.org/goldrush/dist-jamestown.html
+  - on: /blog/mother-lode-post.html:319
+- **403** https://explore.museumca.org/goldrush/dist-bigoak.html
+  - on: /blog/mother-lode-post.html:319
+- **403** https://www.hmdb.org/m.asp?m=194153
+  - on: /blog/mother-lode-post.html:319
+- **403** https://doi.org/10.1126/science.236.4804.942
+  - on: /blog/aftershock-post.html:225
+- **403** https://doi.org/10.1029/JB082i020p02981
+  - on: /blog/aftershock-post.html:227
+- **403** https://doi.org/10.1126/science.1213847
+  - on: /blog/pixi-post.html:279
+- **403** https://doi.org/10.1145/3186266
+  - on: /blog/pixi-post.html:284
+- **403** https://www.mdpi.com/2072-4292/10/2/180
+  - on: /blog/alpine-watch-revisited-post.html:267
+- **403** https://geemap.org
+  - on: /blog/onda-riparian-post.html:353, /blog/onda-riparian-post.html:376
+- **403** https://doi.org/10.1093/biosci/biu036
+  - on: /blog/onda-riparian-post.html:367
+- **403** https://doi.org/10.1111/rec.12869
+  - on: /blog/onda-riparian-post.html:369
+- **403** https://doi.org/10.1002/eco.1993
+  - on: /blog/onda-riparian-post.html:370
+- **403** https://doi.org/10.1577/T05-120.1
+  - on: /blog/two-creeks-of-gold.html:289
+- **403** https://doi.org/10.1046/j.1365-294x.1998.00413.x
+  - on: /blog/two-creeks-of-gold.html:290
+- **403** https://doi.org/10.1093/oxfordjournals.molbev.a040085
+  - on: /blog/two-creeks-of-gold.html:297
+- **403** https://caltrout.org/sos/species-accounts/trout/california-golden-trout/
+  - on: /blog/two-creeks-of-gold.html:300
+- **403** https://doi.org/10.15468/dl.p7ndd4
+  - on: /blog/two-creeks-of-gold.html:301
+- **403** https://colindonihue.com/2018/07/25/behind-the-paper-hurricane-induced-selection-on-the-morphology-of-an-island-lizard/
+  - on: /blog/six-islands-six-lizards.html:274
+- **403** https://www.gbif.org/
+  - on: /blog/six-islands-six-lizards.html:281
+- **403** https://doi.org/10.1029/2004EO200002
+  - on: /blog/streamflow-post.html:262
+- **403** https://water.ca.gov/Programs/Flood-Management/Flood-Data/Snow-Surveys
+  - on: /blog/streamflow-post.html:270
+- **403** https://doi.org/10.1126/science.aav7274
+  - on: /blog/weather-station-post.html:244
+- **403** https://search.worldcat.org/title/1054835332
+  - on: /blog/weather-station-post.html:246
+- **403** https://doi.org/10.1086/382763
+  - on: /blog/humphreys-orbit-post.html:253
+- **403** https://doi.org/10.1145/2491055.2491061
+  - on: /blog/bdgrovesbot.html:286
+- **403** https://doi.org/10.1177/0002764212469367
+  - on: /blog/bdgrovesbot.html:287
+- **403** https://doi.org/10.1145/3359317
+  - on: /blog/bdgrovesbot.html:289
+- **403** https://www.niemanlab.org/2026/03/i-was-surprised-how-upset-some-people-got-a-conversation-with-the-creator-of-tomwikiassist-the-bot-that-edited-wikipedia/
+  - on: /blog/bdgrovesbot.html:290
+- **403** https://doi.org/10.1126/science.1165000
+  - on: /blog/half-million-trees.html:452
+- **403** https://doi.org/10.1111/j.1439-0329.2010.00655.x
+  - on: /blog/half-million-trees.html:453
+- **403** https://doi.org/10.1002/eap.2104
+  - on: /blog/half-million-trees.html:454
+- **403** https://doi.org/10.1029/2018GL081080
+  - on: /blog/wa-water-year-post.html:276
+- **403** https://doi.org/10.1126/science.abf5787
+  - on: /blog/paleowave-rechecked-post.html:223
+- **403** https://doi.org/10.1073/pnas.1216750110
+  - on: /blog/paleowave-rechecked-post.html:224
+- **403** https://doi.org/10.1080/02724634.1999.10011121
+  - on: /blog/paleowave-rechecked-post.html:225
+- **403** https://doi.org/10.1002/evan.20324
+  - on: /blog/paleowave-rechecked-post.html:226
+- **403** https://doi.org/10.1111/2041-210X.13107
+  - on: /blog/paleowave-rechecked-post.html:227
+- **403** https://frap.fire.ca.gov
+  - on: /blog/tuolumne-watershed-post.html:279, /blog/tuolumne-watershed-post.html:347
+- **403** https://doi.org/10.1029/TR038i006p00913
+  - on: /blog/tuolumne-watershed-post.html:363
+- **403** https://doi.org/10.1002/eap.1586
+  - on: /blog/tuolumne-watershed-post.html:368
+- **403** https://www.fire.ca.gov/what-we-do/fire-resource-assessment-program
+  - on: /blog/tuolumne-watershed-post.html:372
+- **403** https://doi.org/10.1029/2022GL099396
+  - on: /blog/wa-heat-dome-post.html:276
+- **403** https://doi.org/10.4319/lo.1988.33.6.1321
+  - on: /blog/secchi-post.html:434
+- **403** https://doi.org/10.4319/lo.1984.29.3.0620
+  - on: /blog/secchi-post.html:436
+- **403** https://doi.org/10.1111/nph.13995
+  - on: /blog/secchi-post.html:437
+- **403** https://tahoe.ucdavis.edu/stateofthelake
+  - on: /blog/secchi-post.html:438, /blog/secchi-post.html:442
+- **403** https://doi.org/10.1086/623053
+  - on: /blog/icewave-rechecked-post.html:232
+- **403** https://doi.org/10.1130/0016-7606(1985)96%3C1271:CFPCJF%3E2.0.CO;2
+  - on: /blog/icewave-rechecked-post.html:233
+- **403** https://doi.org/10.1126/science.1207663
+  - on: /blog/icewave-rechecked-post.html:235
+- **403** https://doi.org/10.1111/ecog.02881
+  - on: /blog/icewave-rechecked-post.html:236
+- **403** https://repository.library.noaa.gov/view/noaa/9471
+  - on: /blog/puget-tides-post.html:261
+- **403** https://doi.org/10.1029/2008JC004835
+  - on: /blog/puget-tides-post.html:263
+- **403** https://repository.library.noaa.gov/view/noaa/50576
+  - on: /blog/puget-tides-post.html:264
+- **403** https://doi.org/10.1093/comjnl/27.2.97
+  - on: /blog/forge3d-notebooks-post.html:221
+- **403** https://doi.org/10.1080/13658816.2013.848985
+  - on: /blog/forge3d-notebooks-post.html:225
+- **403** https://doi.org/10.3390/rs3020398
+  - on: /blog/forge3d-notebooks-post.html:226
+- **403** https://www.shadedrelief.com/
+  - on: /blog/forge3d-notebooks-post.html:232
+- **403** https://doi.org/10.1111/disa.12092
+  - on: /blog/sierra-alert-bot-post.html:293
+- **403** https://doi.org/10.1073/pnas.1205198109
+  - on: /blog/project-kiva-post.html:312
+- **403** https://doi.org/10.3390/rs11070747
+  - on: /blog/project-kiva-post.html:316
+- **403** https://whc.unesco.org/en/list/353
+  - on: /blog/project-kiva-post.html:323
+- **403** https://whc.unesco.org/en/list/198
+  - on: /blog/project-kiva-post.html:323
+- **403** https://whc.unesco.org/en/list/1435
+  - on: /blog/project-kiva-post.html:323
+- **403** https://whc.unesco.org/en/list/1689
+  - on: /blog/project-kiva-post.html:323
+- **403** https://whc.unesco.org/en/tentativelists/5248
+  - on: /blog/project-kiva-post.html:323
+- **403** https://www.piercecountywa.gov/5888/Outdoor-Warning-System
+  - on: /blog/lahar-watch-revisited-post.html:251
+- **403** https://doi.org/10.1785/0220240112
+  - on: /blog/lahar-watch-revisited-post.html:267
+- **403** https://doi.org/10.1130/0016-7606(1997)109%3C0143:TOMFMR%3E2.3.CO;2
+  - on: /blog/lahar-watch-revisited-post.html:268
+- **403** https://doi.org/10.1130/0091-7613(2001)029%3C0779:VCPBHA%3E2.0.CO;2
+  - on: /blog/lahar-watch-revisited-post.html:270
+- **403** https://watchers.news/2025/12/12/skagit-snohomish-rivers-record-breaking-levels-washington-us-december-2025/
+  - on: /blog/wa-floods-post.html:267
+- **403** https://doi.org/10.1002/2017GL075399
+  - on: /blog/wa-floods-post.html:281
+- **403** https://www.monolake.org/learn/stateofthelake/
+  - on: /blog/mono-flyover-post.html:298
+- **403** https://law.justia.com/cases/california/supreme-court/3d/33/419.html
+  - on: /blog/mono-flyover-post.html:298
+- **403** https://volcano.si.edu/volcano.cfm?vn=323110
+  - on: /blog/mono-flyover-post.html:298
+- **403** https://www.monolake.org/learn/aboutmonolake/naturalhistory/tufa/
+  - on: /blog/mono-flyover-post.html:298
+- **403** https://www.monolake.org/learn/aboutmonolake/naturalhistory/brineshrimp/
+  - on: /blog/mono-flyover-post.html:298
+- **403** https://www.monolake.org/learn/aboutmonolake/naturalhistory/alkaliflies/
+  - on: /blog/mono-flyover-post.html:298
+- **403** https://www.monolake.org/learn/aboutmonolake/humanhistory/kootzadukaapeople/
+  - on: /blog/mono-flyover-post.html:298
+- **403** https://doi.org/10.1029/JB091iB12p12539
+  - on: /blog/mono-flyover-post.html:314
+- **403** https://doi.org/10.1029/JB094iB11p15587
+  - on: /blog/mono-flyover-post.html:315
+- **403** https://doi.org/10.4319/lo.1993.38.5.1020
+  - on: /blog/mono-flyover-post.html:316
+- **403** https://www.monolake.org/
+  - on: /blog/mono-flyover-post.html:323
+- **404** https://www.fia.com/events/world-rally-raid-championship
+  - on: /dakar-2027.html:411, /outside.html:784
+- **404** https://en.wikipedia.org/wiki/Wildfires_in_Tuolumne_County,_California
+  - on: /blog/bdgrovesbot.html:183
+- **405** https://doi.org/10.1175/JCLI3321.1
+  - on: /blog/sierra-flow-cobol-post.html:259, /blog/sierra-streamflow-2027-post.html:253
+- **405** https://doi.org/10.1175/1520-0493(1998)126%3C0725:APAFMF%3E2.0.CO;2
+  - on: /blog/cascadia-wx-revisited-post.html:252
+- **405** https://doi.org/10.1175/2007JHM855.1
+  - on: /blog/cascadia-wx-revisited-post.html:253
+- **405** https://doi.org/10.1175/BAMS-D-18-0023.1
+  - on: /blog/cascadia-wx-revisited-post.html:254, /blog/wa-floods-post.html:280
+- **405** https://doi.org/10.1175/JCLI3594.1
+  - on: /blog/cascadia-wx-revisited-post.html:255
+- **405** https://doi.org/10.1175/BAMS-D-21-0125.1
+  - on: /blog/cascadia-wx-revisited-post.html:256, /blog/sierra-alert-bot-post.html:291
+- **405** https://doi.org/10.1175/1520-0442(1998)011%3C3128:MDAERT%3E2.0.CO;2
+  - on: /blog/pocket-fire-post.html:537
+- **405** https://doi.org/10.1175/1520-0434(1993)008%3C0281:WIAGFA%3E2.0.CO;2
+  - on: /blog/weather-station-revisited-post.html:303
+- **405** https://doi.org/10.1175/BAMS-D-11-00197.1
+  - on: /blog/weather-station-revisited-post.html:304
+- **405** https://doi.org/10.1175/BAMS-D-12-00093.1
+  - on: /blog/weather-station-revisited-post.html:306
+- **405** https://doi.org/10.1175/BAMS-86-1-39
+  - on: /blog/cascadia-wx-post.html:235, /blog/streamflow-post.html:263
+- **405** https://doi.org/10.1175/WAF-D-21-0151.1
+  - on: /blog/wa-smoke-post.html:263
+- **405** https://doi.org/10.1175/1520-0442(1999)012%3C2881:EAHEIT%3E2.0.CO;2
+  - on: /blog/sierra-streamflow-2027-post.html:252
+- **405** https://doi.org/10.1175/JHM-D-15-0177.1
+  - on: /blog/streamflow-post.html:264
+- **405** https://doi.org/10.1175/AMSMONOGRAPHS-D-18-0020.1
+  - on: /blog/weather-station-post.html:245
+- **405** https://doi.org/10.1175/BAMS-D-20-0329.1
+  - on: /blog/wa-smoke-monitors-post.html:254
+- **405** https://doi.org/10.1175/JAM2235.1
+  - on: /blog/sierra-alert-bot-post.html:289
+- **405** https://doi.org/10.1175/2011JHM1358.1
+  - on: /blog/wa-floods-post.html:279
+- **405** https://doi.org/10.1175/JHM-D-14-0080.1
+  - on: /blog/wa-floods-post.html:282
+- **406** https://www.cbsnews.com/video/north-american-heat-wave-climate-change-analysis-jeff-berardelli-2021-07-07
+  - on: /blog/wa-heat-dome-post.html:270
+- **429** https://www.arcadiapublishing.com/products/groveland-and-big-oak-flat-9781467105286
+  - on: /blog/mother-lode-post.html:329
+- **ERR TimeoutError: The read operation timed out** https://www.nrcs.usda.gov/washington/snow-survey
+  - on: /blog/cascadia-wx-revisited-post.html:262, /blog/cascadia-wx-post.html:239
+- **ERR TimeoutError: The read operation timed out** https://www.nrcs.usda.gov/resources/data-and-reports/snow-and-water-interactive-map
+  - on: /blog/cascadia-wx-post.html:239, /blog/rainier-snowpack-post.html:255, /blog/wa-water-year-post.html:283
+- **ERR TimeoutError: The read operation timed out** https://www.nrcs.usda.gov/programs-initiatives/sswsf-snow-survey-and-water-supply-forecasting-program
+  - on: /blog/secchi-post.html:444
+- **ERR URLError: <urlopen error [Errno -2] Name or service not known>** https://alerts.weather.gov/
+  - on: /blog/tuolumne-watershed-post.html:325
+- **ERR URLError: <urlopen error [Errno 101] Network is unreachable>** https://home.chpc.utah.edu/~whiteman/homepage/book.html
+  - on: /blog/weather-station-revisited-post.html:308
+- **ERR URLError: <urlopen error [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failur** https://www.mcbones.org/
+  - on: /paleontology.html:285, /blog/icewave-rechecked-post.html:171, /blog/icewave-rechecked-post.html:242
+- **ERR URLError: <urlopen error timed out>** https://doi.org/10.3402/tellusa.v2i4.8607
+  - on: /blog/cascadia-wx-post.html:231
+- **ERR URLError: <urlopen error timed out>** https://grovelandmuseum.org/
+  - on: /blog/mother-lode-post.html:327
+- **ERR URLError: <urlopen error timed out>** https://doi.org/10.5334/jors.119
+  - on: /blog/sierra-alert-bot-post.html:290
+
+## Redirected (146)
+
+- http://creativecommons.org/licenses/by-nc-nd/4.0/ -> https://creativecommons.org/licenses/by-nc-nd/4.0/
+- https://afropop.org -> https://www.afropop.org/
+- https://book.the-turing-way.org/reproducible-research -> https://book.the-turing-way.org/reproducible-research/reproducible-research/
+- https://buzzsprout.com/1029865/12458706 -> https://www.buzzsprout.com/1029865/episodes/12458706
+- https://cartographicperspectives.org/ -> https://cartographicperspectives.org/index.php/journal
+- https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land -> https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land?tab=overview
+- https://climate.uw.edu/?p=10039 -> https://climate.uw.edu/2026/01/12/december-notable-weather-events/
+- https://codeforthought.buzzsprout.com/1326658/13456135 -> https://codeforthought.buzzsprout.com/1326658/episodes/13456135
+- https://docs.bsky.app/ -> https://bsky.network/
+- https://doi.org/10.1007/978-3-030-28906-5 -> https://link.springer.com/book/10.1007/978-3-030-28906-5?error=cookies_not_supported&code=30f88014-76a6-4969-992b-f46e36cf6c64
+- https://doi.org/10.1007/978-3-319-59909-0_11 -> https://link.springer.com/chapter/10.1007/978-3-319-59909-0_11?error=cookies_not_supported&code=0b14ec48-de47-45f0-9f94-2a26b06cd42d
+- https://doi.org/10.1007/978-94-009-8665-7_22 -> https://link.springer.com/chapter/10.1007/978-94-009-8665-7_22?error=cookies_not_supported&code=11d9db99-05e2-4474-9a55-9bcd644e6dc0
+- https://doi.org/10.1007/978-94-017-8663-8 -> https://link.springer.com/book/10.1007/978-94-017-8663-8?error=cookies_not_supported&code=8ac47dd3-e4a6-469e-8847-2ebf25d4887d
+- https://doi.org/10.1007/BF00007531 -> https://link.springer.com/article/10.1007/BF00007531?error=cookies_not_supported&code=dddeddac-dc0d-4095-8b65-2a287df60eb9
+- https://doi.org/10.1007/BF00691143 -> https://link.springer.com/article/10.1007/BF00691143?error=cookies_not_supported&code=7e83cc82-b94b-4c63-be28-48b3d6340301
+- https://doi.org/10.1007/s00027-005-0798-x -> https://link.springer.com/article/10.1007/s00027-005-0798-x?error=cookies_not_supported&code=80a9f5bb-9195-4662-8cbe-8baf14240e3a
+- https://doi.org/10.1007/s00445-008-0245-7 -> https://link.springer.com/article/10.1007/s00445-008-0245-7?error=cookies_not_supported&code=a55fd330-5249-4cdf-9a52-f8d5b1b20733
+- https://doi.org/10.1016/S0022-1694(00)00194-3 -> https://linkinghub.elsevier.com/retrieve/pii/S0022169400001943
+- https://doi.org/10.1016/S0034-4257(01)00290-5 -> https://linkinghub.elsevier.com/retrieve/pii/S0034425701002905
+- https://doi.org/10.1016/S0098-3004(02)00013-4 -> https://linkinghub.elsevier.com/retrieve/pii/S0098300402000134
+- https://doi.org/10.1016/j.anbehav.2017.06.004 -> https://linkinghub.elsevier.com/retrieve/pii/S0003347217301793
+- https://doi.org/10.1016/j.compenvurbsys.2007.11.006 -> https://linkinghub.elsevier.com/retrieve/pii/S0198971507000890
+- https://doi.org/10.1016/j.cub.2022.11.005 -> https://linkinghub.elsevier.com/retrieve/pii/S0960982222017614
+- https://doi.org/10.1016/j.earscirev.2013.03.004 -> https://linkinghub.elsevier.com/retrieve/pii/S0012825213000536
+- https://doi.org/10.1016/j.earscirev.2020.103181 -> https://linkinghub.elsevier.com/retrieve/pii/S0012825220302270
+- https://doi.org/10.1016/j.geomorph.2016.10.019 -> https://linkinghub.elsevier.com/retrieve/pii/S0169555X16302756
+- https://doi.org/10.1016/j.jas.2014.07.004 -> https://linkinghub.elsevier.com/retrieve/pii/S0305440314002465
+- https://doi.org/10.1016/j.jcp.2007.02.034 -> https://linkinghub.elsevier.com/retrieve/pii/S0021999107000952
+- https://doi.org/10.1016/j.jtherbio.2008.05.004 -> https://linkinghub.elsevier.com/retrieve/pii/S0306456508000636
+- https://doi.org/10.1016/j.jvolgeores.2004.05.019 -> https://linkinghub.elsevier.com/retrieve/pii/S0377027304001635
+- https://doi.org/10.1016/j.rse.2006.12.006 -> https://linkinghub.elsevier.com/retrieve/pii/S0034425706005128
+- https://doi.org/10.1016/j.rse.2010.07.008 -> https://linkinghub.elsevier.com/retrieve/pii/S0034425710002245
+- https://doi.org/10.1016/j.rse.2011.11.026 -> https://linkinghub.elsevier.com/retrieve/pii/S0034425712000636
+- https://doi.org/10.1016/j.rse.2013.12.008 -> https://linkinghub.elsevier.com/retrieve/pii/S0034425713004483
+- https://doi.org/10.1016/j.rse.2022.112990 -> https://linkinghub.elsevier.com/retrieve/pii/S0034425722001043
+- https://doi.org/10.1017/S0022109023001448 -> https://www.cambridge.org/core/journals/journal-of-financial-and-quantitative-analysis/article/on-the-capital-market-consequences-of-big-data-evidence-from-outer-space/2F5F99D68D1F8940F61578F198D6C005
+- https://doi.org/10.1017/S1743921311012683 -> https://www.cambridge.org/core/journals/proceedings-of-the-international-astronomical-union/article/ancestors-and-the-sun-astronomy-architecture-and-culture-at-chaco-canyon/150F977118B39B0277381207C61D0707
+- https://doi.org/10.1017/aap.2022.31 -> https://www.cambridge.org/core/journals/advances-in-archaeological-practice/article/lidarderived-road-profiles/2B1E79B3AD53454E623AFD3001068D54
+- https://doi.org/10.1029/2017EO068775 -> https://eos.org/opinions/defining-snow-drought-and-why-it-matters
+- https://doi.org/10.1038/262284a0 -> https://www.nature.com/articles/262284a0?error=cookies_not_supported&code=82fac6f1-d632-46e1-9ebd-dcb31714626b
+- https://doi.org/10.1038/35054533 -> https://www.nature.com/articles/35054533?error=cookies_not_supported&code=3c46344f-e9ee-4b45-be6d-534334c4b87c
+- https://doi.org/10.1038/369546a0 -> https://www.nature.com/articles/369546a0?error=cookies_not_supported&code=928cbaaf-d830-45a4-888d-fcb580fc8c31
+- https://doi.org/10.1038/379246a0 -> https://www.nature.com/articles/379246a0?error=cookies_not_supported&code=36eaae51-6efb-4cf4-a4b1-179e2747eaff
+- https://doi.org/10.1038/nature07893 -> https://www.nature.com/articles/nature07893?error=cookies_not_supported&code=5bcaf589-2bc3-4562-b9f6-96ebe8c04a97
+- https://doi.org/10.1038/nature14956 -> https://www.nature.com/articles/nature14956?error=cookies_not_supported&code=35732779-9ba6-4ddd-a810-04b69d4a110a
+- https://doi.org/10.1038/ngeo2407 -> https://www.nature.com/articles/ngeo2407?error=cookies_not_supported&code=0bfc60eb-ec6a-4e44-b238-22ee3cc843ac
+- https://doi.org/10.1038/ngeo2686 -> https://www.nature.com/articles/ngeo2686?error=cookies_not_supported&code=6e361c0f-1ee5-4910-ad0d-005cd1ac3c3c
+- https://doi.org/10.1038/s41467-023-36289-3 -> https://www.nature.com/articles/s41467-023-36289-3?error=cookies_not_supported&code=7bf31092-8dad-4877-b9b2-157f639cf82b
+- https://doi.org/10.1038/s41558-018-0140-y -> https://www.nature.com/articles/s41558-018-0140-y?error=cookies_not_supported&code=823d51fc-fd2a-46fe-8f21-0b38541d046b
+- https://doi.org/10.1038/s41586-018-0352-3 -> https://www.nature.com/articles/s41586-018-0352-3?error=cookies_not_supported&code=91a93f1c-c013-4701-8729-a689378f5841
+- https://doi.org/10.1038/s41586-021-03436-z -> https://www.nature.com/articles/s41586-021-03436-z?error=cookies_not_supported&code=239565d1-44b6-4536-b478-1e9fc2404ad5
+- https://doi.org/10.1038/s41586-021-03565-5 -> https://www.nature.com/articles/s41586-021-03565-5?error=cookies_not_supported&code=f354543d-6431-4bab-b9b3-689da939d05d
+- https://doi.org/10.1038/s41586-024-07881-4 -> https://www.nature.com/articles/s41586-024-07881-4?error=cookies_not_supported&code=916b8c9f-b1ba-4464-bfaf-f4c714eb314b
+- https://doi.org/10.1038/s41592-018-0046-7 -> https://www.nature.com/articles/s41592-018-0046-7?error=cookies_not_supported&code=67c8f7ea-627c-44a1-a3dc-2b861241e10c
+- https://doi.org/10.1038/s41612-018-0012-1 -> https://www.nature.com/articles/s41612-018-0012-1?error=cookies_not_supported&code=f9b8e408-46c5-48ad-b190-ba3edf35b935
+- https://doi.org/10.1038/s43017-021-00219-y -> https://www.nature.com/articles/s43017-021-00219-y?error=cookies_not_supported&code=5c3e169d-a81e-45f5-9c49-2c8e0e6de9e0
+- https://doi.org/10.1038/s43247-022-00459-w -> https://www.nature.com/articles/s43247-022-00459-w?error=cookies_not_supported&code=86c5bbc2-6f39-428c-9fee-a8fa2642c685
+- https://doi.org/10.1038/s43247-025-02801-4 -> https://www.nature.com/articles/s43247-025-02801-4?error=cookies_not_supported&code=87dfa55e-0e40-43c8-83d2-7a7d7a7a52e9
+- https://doi.org/10.1038/srep28581 -> https://www.nature.com/articles/srep28581?error=cookies_not_supported&code=e365c4a4-2ae8-474a-b129-2a0496a15c0e
+- https://doi.org/10.1088/1748-9326/11/5/054021 -> https://validate.perfdrive.com/fb803c746e9148689b3984a31fccd902/?ssa=35e4d401-af8f-41bf-bbb7-17faf8497d0a&ssb=74609271636&ssc=https%3A%2F%2Fiopscience.iop.org%2Farticle%2F10.1088%2F1748-9326%2F11%2F5%2F054021&ssi=13b122f3-cnvj-485d-bfbb-0ad17a33a7d6&ssk=botmanager_support@radware.com&ssm=93665884828535311109536875694788&ssn=d4288a17c1be9b9348004ac13dc30f31fe7461717ce7-4271-4b33-86aa65&sso=188c13e8-b58675b6bb466c94795c3074ed3e392c070768b41e351e2a&ssp=65867228411791401930179142336250583&ssq=10055497221525679423372215984646189437714&ssr=NTIuMTczLjEwLjQ5&sst=Mozilla/5.0%20(Windows%20NT%2010.0;%20Win64;%20x64)%20AppleWebKit/537.36%20(KHTML,%20like%20Gecko)%20Chrome/128%20Safari/537.36&ssu=&ssv=&ssw=&ssx=eyJ1em14IjoiN2ZjMDAwMDc0OWQxMTYtYmM5Ny00NzJiLTk2MTItNGIwZGIyMjY0ZTM1MS0xNzkxNDcyMjE1NTg1MC0wMDgxOGQ0NWM4Nzc2ZDQ4Njk1MTAiLCJfX3V6bWYiOiI3ZjkwMDA2MTcxN2NlNy00MjcxLTRiMzMtODNlOC1iNTg2NzViNmJiNDYxLTE3OTE0NzIyMTU1ODUwLTAwNTNkYmY2NjFjOGU0NDJjYjgxMCIsInJkIjoiaW9wLm9yZyJ9
+- https://doi.org/10.1109/52.841602 -> https://ieeexplore.ieee.org/document/841602/
+- https://doi.org/10.1109/MC.2012.82 -> https://ieeexplore.ieee.org/document/6163451/
+- https://doi.org/10.1109/PROC.1981.11918 -> https://ieeexplore.ieee.org/document/1456186/
+- https://doi.org/10.1109/TCIAIG.2011.2148116 -> https://ieeexplore.ieee.org/document/5756645/
+- https://doi.org/10.1117/12.2278218 -> https://www.spiedigitallibrary.org/conference-proceedings-of-spie/10427/2278218/Sen2Cor-for-Sentinel-2/10.1117/12.2278218.full
+- https://doi.org/10.1186/1742-9994-7-23 -> https://link.springer.com/article/10.1186/1742-9994-7-23?error=cookies_not_supported&code=f0c37417-5ce0-495a-ab9c-afae1d30d42c
+- https://doi.org/10.1249/mss.0b013e31802ca597 -> https://www.ovid.com/jnls/acsm-msse/abstract/10.1249/mss.0b013e31802ca597~exercise-and-fluid-replacement?redirectionsource=fulltextview
+- https://doi.org/10.1371/journal.pcbi.1003285 -> https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003285
+- https://doi.org/10.1371/journal.pcbi.1005510 -> https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005510
+- https://doi.org/10.1371/journal.pcbi.1007007 -> https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1007007
+- https://doi.org/10.1371/journal.pcbi.1008316 -> https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1008316
+- https://doi.org/10.1371/journal.pone.0142426 -> https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0142426
+- https://doi.org/10.1371/journal.pone.0210409 -> https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0210409
+- https://doi.org/10.1580/08-WEME-OR-299R.1 -> https://bioone.org/journals/wilderness-and-environmental-medicine/volume-20/issue-3/08-WEME-OR-299R.1/Dead-Men-Walking--Search-and-Rescue-in-US-National/10.1580/08-WEME-OR-299R.1.short
+- https://doi.org/10.17226/1007 -> https://www.nationalacademies.org/publications/1007
+- https://doi.org/10.17226/24935 -> https://www.nationalacademies.org/projects/DEPS-CSTB-15-02/publication/24935
+- https://doi.org/10.22621/cfn.v129i3.1724 -> https://www.canadianfieldnaturalist.ca/index.php/cfn/article/view/1724
+- https://doi.org/10.2737/SRS-GTR-80 -> https://research.fs.usda.gov/treesearch/20371
+- https://doi.org/10.3189/2013JoG12J135 -> https://www.cambridge.org/core/journals/journal-of-glaciology/article/glacier-change-of-the-columbia-icefield-canadian-rocky-mountains-19192009/5C559B9555753755FEC2AEC299035D5A
+- https://doi.org/10.3233/978-1-61499-649-1-87 -> https://ebooks.iospress.nl/publication/42900
+- https://doi.org/10.4294/jpe1952.43.1 -> https://www.jstage.jst.go.jp/article/jpe1952/43/1/43_1_1/_article
+- https://doi.org/10.5194/acp-21-14427-2021 -> https://acp.copernicus.org/articles/21/14427/2021/
+- https://doi.org/10.5194/acp-26-681-2026 -> https://acp.copernicus.org/articles/26/681/2026/
+- https://doi.org/10.5194/amt-14-4617-2021 -> https://amt.copernicus.org/articles/14/4617/2021/
+- https://doi.org/10.5194/esd-13-1689-2022 -> https://esd.copernicus.org/articles/13/1689/2022/
+- https://doi.org/10.5194/hess-15-667-2011 -> https://hess.copernicus.org/articles/15/667/2011/
+- https://doi.org/10.5194/isprs-annals-V-2-2020-427-2020 -> https://isprs-annals.copernicus.org/articles/V-2-2020/427/2020/
+- https://doi.org/10.5210/fm.v21i1.6027 -> https://firstmonday.org/ojs/index.php/fm/article/view/6027
+- https://doi.org/10.5281/zenodo.13522065 -> https://zenodo.org/records/13522065
+- https://doi.org/10.7183/0002-7316.75.3.657 -> https://www.cambridge.org/core/journals/american-antiquity/article/abs/placing-the-poverty-point-mounds-in-their-temporal-context/68CAC45CF0AC8194EBF345CBBFF66828
+- https://fuel.brooksgroves.com/ -> https://bdgroves.cloudflareaccess.com/cdn-cgi/access/login/fuel.brooksgroves.com?kid=e606b1c9f3a49618f480f0e9411f6724966148fd5bfaed8fc3198861c9479718&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJlMWQxZWRkYWYxN2JiOWJhMWY5MjRkMmIyNDlmNjIzY2MyMjJjYjY2YTVlMGM0NGI2NDE4YTg1ZTNhOTk0MTEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6ImU2MDZiMWM5ZjNhNDk2MThmNDgwZjBlOTQxMWY2NzI0OTY2MTQ4ZmQ1YmZhZWQ4ZmMzMTk4ODYxYzk0Nzk3MTgiLCJob3N0bmFtZSI6ImZ1ZWwuYnJvb2tzZ3JvdmVzLmNvbSIsInJlZGlyZWN0X3VybCI6Ii8iLCJzZXJ2aWNlX3Rva2VuX3N0YXR1cyI6ZmFsc2UsImlzX3dhcnAiOmZhbHNlLCJpc19nYXRld2F5IjpmYWxzZSwiZXhwIjoxNzkxNDcyNDg1LCJuYmYiOjE3OTE0NzIxODUsImlhdCI6MTc5MTQ3MjE4NSwiYXV0aF9zdGF0dXMiOiJOT05FIiwibXRsc19hdXRoIjp7ImNlcnRfaXNzdWVyX2RuIjoiIiwiY2VydF9zZXJpYWwiOiIiLCJjZXJ0X2lzc3Vlcl9za2kiOiIiLCJjZXJ0X3ByZXNlbnRlZCI6ZmFsc2UsImNvbW1vbl9uYW1lIjoiIiwiYXV0aF9zdGF0dXMiOiJOT05FIn0sInJlYWxfY291bnRyeSI6IlVTIiwiYXBwX3Nlc3Npb25faGFzaCI6ImMyZWVjZmMyNDU1Y2Q3ZTQ5YzgwNjk2NTNlNDIwZjcwNDc1YzU4ZWI4MDY2ZmMwNjUzZjY5NDJhYjZhZjE5MDAifQ.aIw1jDTBmkCPOPHI4yTJsP--SljADHDb-9cGSr_pb_BppaWNFVRNJhZC59EKicH_blRkbo-Ntg6uje15B3UALQiXEARTDmydlRdUbaSm-LuDYqoppJeegLxx4JO-myEHg5arTXaxcRlZ4Giyvqr-trX3iHoJHkyU5j3T1IGr-icJDcrkF9CPsn4qadN7XQbwJxfMQD19RRJBcdGN0rA_Qs724Sk9fxo2E5Coy7-YYKHhyrKK5GlWnMiDlMGSX8h8xiw15GErNEsXqUqxDIvOHLCNAHbBEz_e31wnue2HLzW1QAF_I0VrBs_HsU1p54S9WBEoQgg6vVnXmkb1oqf5uA&redirect_url=%2F
+- https://gdal.org/ -> https://gdal.org/en/stable/
+- https://journal.brooksgroves.com -> https://bdgroves.cloudflareaccess.com/cdn-cgi/access/login/journal.brooksgroves.com?kid=48a6389c95fb927dfcf55f725162b772437e766c1813ba496640ef340ac4f0f2&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJlMWQxZWRkYWYxN2JiOWJhMWY5MjRkMmIyNDlmNjIzY2MyMjJjYjY2YTVlMGM0NGI2NDE4YTg1ZTNhOTk0MTEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjQ4YTYzODljOTVmYjkyN2RmY2Y1NWY3MjUxNjJiNzcyNDM3ZTc2NmMxODEzYmE0OTY2NDBlZjM0MGFjNGYwZjIiLCJob3N0bmFtZSI6ImpvdXJuYWwuYnJvb2tzZ3JvdmVzLmNvbSIsInJlZGlyZWN0X3VybCI6Ii8iLCJzZXJ2aWNlX3Rva2VuX3N0YXR1cyI6ZmFsc2UsImlzX3dhcnAiOmZhbHNlLCJpc19nYXRld2F5IjpmYWxzZSwiZXhwIjoxNzkxNDcyNDgzLCJuYmYiOjE3OTE0NzIxODMsImlhdCI6MTc5MTQ3MjE4MywiYXV0aF9zdGF0dXMiOiJOT05FIiwibXRsc19hdXRoIjp7ImNlcnRfaXNzdWVyX2RuIjoiIiwiY2VydF9zZXJpYWwiOiIiLCJjZXJ0X2lzc3Vlcl9za2kiOiIiLCJjZXJ0X3ByZXNlbnRlZCI6ZmFsc2UsImNvbW1vbl9uYW1lIjoiIiwiYXV0aF9zdGF0dXMiOiJOT05FIn0sInJlYWxfY291bnRyeSI6IlVTIiwiYXBwX3Nlc3Npb25faGFzaCI6IjUyYTIxYWJiYmVmOTc4ZTg1OTEyNTMzYTA2ZDJmZTYxZWY5OGNkYjJkYTIwM2Q2NzI5MGMzNGNmYTk1NDViNjUifQ.eciZsaLooJ-MSp-VDO84W66xMJ7Szabs1QWiR-Ger6ta_DMmgcF6eZK0aAN25RH6XStWYB6SxYUZUu8Wl8A-BX-_i98d_kyuHS7hdogugmoMwB4qkOPfHjEubuQiwMt6PWCHCKB2Y5YfqblWY0klpv5sicwez711uziIdSrBXc2S-n9FHioMm1MLWAFQBHYOREufxQKZZS86T8EwjUcssTFmwaWa2Cn_YhSIuMF2XQXw6ycwZk6CO0B6Ut6xtpEGiTRWA3G6iALVL3tXFftcpsp_n2kSiRAM0N6OgRLra5d6u-7iCepouY-ODloPQOJRwpqvxWhFf9rhT8Txq1sOCA&redirect_url=%2F
+- https://journal.brooksgroves.com/myles.html -> https://bdgroves.cloudflareaccess.com/cdn-cgi/access/login/journal.brooksgroves.com?kid=48a6389c95fb927dfcf55f725162b772437e766c1813ba496640ef340ac4f0f2&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJlMWQxZWRkYWYxN2JiOWJhMWY5MjRkMmIyNDlmNjIzY2MyMjJjYjY2YTVlMGM0NGI2NDE4YTg1ZTNhOTk0MTEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjQ4YTYzODljOTVmYjkyN2RmY2Y1NWY3MjUxNjJiNzcyNDM3ZTc2NmMxODEzYmE0OTY2NDBlZjM0MGFjNGYwZjIiLCJob3N0bmFtZSI6ImpvdXJuYWwuYnJvb2tzZ3JvdmVzLmNvbSIsInJlZGlyZWN0X3VybCI6Ii9teWxlcy5odG1sIiwic2VydmljZV90b2tlbl9zdGF0dXMiOmZhbHNlLCJpc193YXJwIjpmYWxzZSwiaXNfZ2F0ZXdheSI6ZmFsc2UsImV4cCI6MTc5MTQ3MjQ4NSwibmJmIjoxNzkxNDcyMTg1LCJpYXQiOjE3OTE0NzIxODUsImF1dGhfc3RhdHVzIjoiTk9ORSIsIm10bHNfYXV0aCI6eyJjZXJ0X2lzc3Vlcl9kbiI6IiIsImNlcnRfc2VyaWFsIjoiIiwiY2VydF9pc3N1ZXJfc2tpIjoiIiwiY2VydF9wcmVzZW50ZWQiOmZhbHNlLCJjb21tb25fbmFtZSI6IiIsImF1dGhfc3RhdHVzIjoiTk9ORSJ9LCJyZWFsX2NvdW50cnkiOiJVUyIsImFwcF9zZXNzaW9uX2hhc2giOiI4NDBmZWYwYzg5ZDYzY2QzNmU1ODhmMWY1ZWQ0ZjRkNjJmZTBhMjQyMjc1OWRlZmRkNDkyNjQ2MmYzMjM3YzJkIn0.MAD6mBeHn5H5T1XIS4cqW_BmWP1z36LuoSZS_hEEeZ-bqa8Edq4cAlgWS-UXlfqfs0xvt079pOMl0voqh6FWeJFz6FfTw-y6e7-HCv2EO9In0yHr0krC56NeKJwrNMu6DJpQhQTGxyr8VQR9uUtg65KpQlWHkC5iSrAgFTZAI0lhwOkNKWgBJac5yQwNKTHyrjLj49z8l-F54xQ5P6rZyoV11X8baAiutcsHF-hFrcVsfMJAh-uRoFovbeUzZKCvty7RHIOoNVmdXg0mFxjZdHYgYvxkuWUTDLdia9RAkd5vmI1t9pK96ll9WBGnln-6Yqk9WPVrHKbA7D3Gzs1O5w&redirect_url=%2Fmyles.html
+- https://kpbs.org/news/2013/jul/15/doubts-cloud-death-valleys-100-year-heat-record -> https://www.kpbs.org/news/evening-edition/2013/07/15/doubts-cloud-death-valleys-100-year-heat-record
+- https://kuow.org/stories/record-setting-tides-flood-washington-coastlines -> https://www.kuow.org/podcast/newsroom/2022-01-09/record-setting-tides-flood-washington-coastlines
+- https://kuow.org/stories/seattle-now-let-s-never-do-that-again -> https://www.kuow.org/2021-07-02/seattle-now-let-s-never-do-that-again
+- https://memoir.brooksgroves.com -> https://bdgroves.cloudflareaccess.com/cdn-cgi/access/login/memoir.brooksgroves.com?kid=5f73414d0e19f6490524d9a72593e31d1cabfd6459b9ce264bc9c1d1b23ec42b&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJlMWQxZWRkYWYxN2JiOWJhMWY5MjRkMmIyNDlmNjIzY2MyMjJjYjY2YTVlMGM0NGI2NDE4YTg1ZTNhOTk0MTEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjVmNzM0MTRkMGUxOWY2NDkwNTI0ZDlhNzI1OTNlMzFkMWNhYmZkNjQ1OWI5Y2UyNjRiYzljMWQxYjIzZWM0MmIiLCJob3N0bmFtZSI6Im1lbW9pci5icm9va3Nncm92ZXMuY29tIiwicmVkaXJlY3RfdXJsIjoiLyIsInNlcnZpY2VfdG9rZW5fc3RhdHVzIjpmYWxzZSwiaXNfd2FycCI6ZmFsc2UsImlzX2dhdGV3YXkiOmZhbHNlLCJleHAiOjE3OTE0NzI0ODQsIm5iZiI6MTc5MTQ3MjE4NCwiaWF0IjoxNzkxNDcyMTg0LCJhdXRoX3N0YXR1cyI6Ik5PTkUiLCJtdGxzX2F1dGgiOnsiY2VydF9pc3N1ZXJfZG4iOiIiLCJjZXJ0X3NlcmlhbCI6IiIsImNlcnRfaXNzdWVyX3NraSI6IiIsImNlcnRfcHJlc2VudGVkIjpmYWxzZSwiY29tbW9uX25hbWUiOiIiLCJhdXRoX3N0YXR1cyI6Ik5PTkUifSwicmVhbF9jb3VudHJ5IjoiVVMiLCJhcHBfc2Vzc2lvbl9oYXNoIjoiZTlhNzUwY2Q5ODU0NWJjYzI3NmQxZTk4Y2EwNDBhYWNiZTc2NjRlZTJhZjE2OWI3NmIyMmRhZDA3YTU4MDRmMSJ9.NpQeXDy-L85wVVV0_DabiunNpfktCvNYYnNWxS8ltkKa-eVZtjM6jl69Sq7nsqW2RzTe45fS6B8k_JE8ooOaEJ6mSWh-WaDlWBlzXh8kzQBBl1cEgDUwGZUCjIB15ySVBrlASWODyRoqYPrg1ZJPF7XbS3OyFIfug_FxqsiaOY5iwKXD3mxEL2T3E1nNJtnwgjb2aRsxn4s3oBoW4Mjzi-wWycpm5ULWtkL8zKFvY2OSBwMuD9Sbhdzieo1sn6UJaei5jYV0TXMT3O5IAPC4vzN9d9PPmRqNJLxY8J7eCKlPb4b6jAswDJ1he6XuRn9yBpYPZKd651dW0eLM4aT-Tw&redirect_url=%2F
+- https://memoir.brooksgroves.com/an-island-below-an-island.html -> https://bdgroves.cloudflareaccess.com/cdn-cgi/access/login/memoir.brooksgroves.com?kid=5f73414d0e19f6490524d9a72593e31d1cabfd6459b9ce264bc9c1d1b23ec42b&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJlMWQxZWRkYWYxN2JiOWJhMWY5MjRkMmIyNDlmNjIzY2MyMjJjYjY2YTVlMGM0NGI2NDE4YTg1ZTNhOTk0MTEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjVmNzM0MTRkMGUxOWY2NDkwNTI0ZDlhNzI1OTNlMzFkMWNhYmZkNjQ1OWI5Y2UyNjRiYzljMWQxYjIzZWM0MmIiLCJob3N0bmFtZSI6Im1lbW9pci5icm9va3Nncm92ZXMuY29tIiwicmVkaXJlY3RfdXJsIjoiL2FuLWlzbGFuZC1iZWxvdy1hbi1pc2xhbmQuaHRtbCIsInNlcnZpY2VfdG9rZW5fc3RhdHVzIjpmYWxzZSwiaXNfd2FycCI6ZmFsc2UsImlzX2dhdGV3YXkiOmZhbHNlLCJleHAiOjE3OTE0NzI1NDUsIm5iZiI6MTc5MTQ3MjI0NSwiaWF0IjoxNzkxNDcyMjQ1LCJhdXRoX3N0YXR1cyI6Ik5PTkUiLCJtdGxzX2F1dGgiOnsiY2VydF9pc3N1ZXJfZG4iOiIiLCJjZXJ0X3NlcmlhbCI6IiIsImNlcnRfaXNzdWVyX3NraSI6IiIsImNlcnRfcHJlc2VudGVkIjpmYWxzZSwiY29tbW9uX25hbWUiOiIiLCJhdXRoX3N0YXR1cyI6Ik5PTkUifSwicmVhbF9jb3VudHJ5IjoiVVMiLCJhcHBfc2Vzc2lvbl9oYXNoIjoiMjEzZmUzMzU5NzAxNDljNWQwNjc5NjZmMjU4YzNmNmVhMDFiMjlmNTVkNjVhZjM5YWE4M2M3NzNhNzYyZTA1YyJ9.V33fI96duQi-e2hDFNvEC6TH-3J2RPuiZibK-5bkjr47_K4lvYpiUyGcLAVMfn1FMzb1q3NRFFsgMoLHTlQzSmIuVVe8XOMisBt4oPTiA2CE1-eJCModV-ll4ArcsIf3Lu1GiDnqdl0vYtNE0C5BeIV_suaoCjvnxR7IMeydBLc4NyokvLuvL3an5RLDDauRtz901EHNFeYnxzeTP2B5euuWQ3ZhqhzADffkpBsnKF_SgjQonULG8bwddKQzcWz2aChVwoCnvnHEX8ggfCsUtHKpy4H2h6trVf_2SKbrVOdyJUQeYW3k-LNmugcSgk4RQE0xhjCOy2muuNFl5phBxg&redirect_url=%2Fan-island-below-an-island.html
+- https://memoir.brooksgroves.com/blinn-college-stories.html -> https://bdgroves.cloudflareaccess.com/cdn-cgi/access/login/memoir.brooksgroves.com?kid=5f73414d0e19f6490524d9a72593e31d1cabfd6459b9ce264bc9c1d1b23ec42b&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJlMWQxZWRkYWYxN2JiOWJhMWY5MjRkMmIyNDlmNjIzY2MyMjJjYjY2YTVlMGM0NGI2NDE4YTg1ZTNhOTk0MTEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjVmNzM0MTRkMGUxOWY2NDkwNTI0ZDlhNzI1OTNlMzFkMWNhYmZkNjQ1OWI5Y2UyNjRiYzljMWQxYjIzZWM0MmIiLCJob3N0bmFtZSI6Im1lbW9pci5icm9va3Nncm92ZXMuY29tIiwicmVkaXJlY3RfdXJsIjoiL2JsaW5uLWNvbGxlZ2Utc3Rvcmllcy5odG1sIiwic2VydmljZV90b2tlbl9zdGF0dXMiOmZhbHNlLCJpc193YXJwIjpmYWxzZSwiaXNfZ2F0ZXdheSI6ZmFsc2UsImV4cCI6MTc5MTQ3MjQ4NSwibmJmIjoxNzkxNDcyMTg1LCJpYXQiOjE3OTE0NzIxODUsImF1dGhfc3RhdHVzIjoiTk9ORSIsIm10bHNfYXV0aCI6eyJjZXJ0X2lzc3Vlcl9kbiI6IiIsImNlcnRfc2VyaWFsIjoiIiwiY2VydF9pc3N1ZXJfc2tpIjoiIiwiY2VydF9wcmVzZW50ZWQiOmZhbHNlLCJjb21tb25fbmFtZSI6IiIsImF1dGhfc3RhdHVzIjoiTk9ORSJ9LCJyZWFsX2NvdW50cnkiOiJVUyIsImFwcF9zZXNzaW9uX2hhc2giOiIxZWQ1NjNmOTQ2ODU5MDk2MTVjMGQ2ZWJhMDUxZjA0YTFlMDcwM2E4NzIwODJkZThlOTZmZTI5OGUzOGIyZTEzIn0.J101eX58nmrbOJQmiTdYQLF1Cw75p6RLThIilg3AsAjwpn8rkmj6i57dAn64CXkPd4KOCpij9g-Br7voiD3K8oivVuluMpn3W4Ih5zElI78xomdYk5q16objVYXnz19eDvZXffhZesRKQ8pu3wYVKopsDWjLYVO-aZX6AZ8BaDLw758yLeYrn86m-F6NlDph_8gEDiqzx8Npg1wEbUa8e8G6wVjAKz2mAdEbmlXSvmk49k68IcsB2QR7l8YEEmH8N0lcdvBUBk-XavAt33C8y6IBsMr5eAIWN8P3DFXLuAmt5a58EXVwopvrEvCFn7lksrAZTgSsqPoGgmyh-D6aeg&redirect_url=%2Fblinn-college-stories.html
+- https://memoir.brooksgroves.com/paragon-peavine.html -> https://bdgroves.cloudflareaccess.com/cdn-cgi/access/login/memoir.brooksgroves.com?kid=5f73414d0e19f6490524d9a72593e31d1cabfd6459b9ce264bc9c1d1b23ec42b&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJlMWQxZWRkYWYxN2JiOWJhMWY5MjRkMmIyNDlmNjIzY2MyMjJjYjY2YTVlMGM0NGI2NDE4YTg1ZTNhOTk0MTEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjVmNzM0MTRkMGUxOWY2NDkwNTI0ZDlhNzI1OTNlMzFkMWNhYmZkNjQ1OWI5Y2UyNjRiYzljMWQxYjIzZWM0MmIiLCJob3N0bmFtZSI6Im1lbW9pci5icm9va3Nncm92ZXMuY29tIiwicmVkaXJlY3RfdXJsIjoiL3BhcmFnb24tcGVhdmluZS5odG1sIiwic2VydmljZV90b2tlbl9zdGF0dXMiOmZhbHNlLCJpc193YXJwIjpmYWxzZSwiaXNfZ2F0ZXdheSI6ZmFsc2UsImV4cCI6MTc5MTQ3MjQ5NCwibmJmIjoxNzkxNDcyMTk0LCJpYXQiOjE3OTE0NzIxOTQsImF1dGhfc3RhdHVzIjoiTk9ORSIsIm10bHNfYXV0aCI6eyJjZXJ0X2lzc3Vlcl9kbiI6IiIsImNlcnRfc2VyaWFsIjoiIiwiY2VydF9pc3N1ZXJfc2tpIjoiIiwiY2VydF9wcmVzZW50ZWQiOmZhbHNlLCJjb21tb25fbmFtZSI6IiIsImF1dGhfc3RhdHVzIjoiTk9ORSJ9LCJyZWFsX2NvdW50cnkiOiJVUyIsImFwcF9zZXNzaW9uX2hhc2giOiI1MGQ0ZGM1NzYyMDRmYjYzYWQzZTllMTEyMzg5NDM0NzlkZmNhOGRiMjgwYTRhYjI3YzJmMDdkYTIwMzgyNDY3In0.ftZFJ1fpVjeKcCwLidI1hjL_uSnCJb8kWlueoD3r1JkDk8hVivjdpMKsx_P_7YT51ee77E7HisWD6yHtsCglFPUwzWNIOPOSH6Hiksv0b2SAFQ2cm0kaVhZkDdb7ZAX_XLlgdJlYhD-D8a35eGZMc8yVth_7RrW5vaYQOhKgK4RvDfHsaoGpzj2GMQfyT7vd3YY7N1JVdwe7s8eqbFa_bsrhWT1D7QJuuVdGuny8ki7mfuhFFZQ80yoBetT_Cijxxm1XY67UCkDsjYI4qjUzOECGV_S3k-wnDc4XhZb1sd8nXjycZ-pY7e1xwtQgWR36Bu5d-LgU7yREpkBdwChyow&redirect_url=%2Fparagon-peavine.html
+- https://memoir.brooksgroves.com/sierra-foothills.html -> https://bdgroves.cloudflareaccess.com/cdn-cgi/access/login/memoir.brooksgroves.com?kid=5f73414d0e19f6490524d9a72593e31d1cabfd6459b9ce264bc9c1d1b23ec42b&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJlMWQxZWRkYWYxN2JiOWJhMWY5MjRkMmIyNDlmNjIzY2MyMjJjYjY2YTVlMGM0NGI2NDE4YTg1ZTNhOTk0MTEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjVmNzM0MTRkMGUxOWY2NDkwNTI0ZDlhNzI1OTNlMzFkMWNhYmZkNjQ1OWI5Y2UyNjRiYzljMWQxYjIzZWM0MmIiLCJob3N0bmFtZSI6Im1lbW9pci5icm9va3Nncm92ZXMuY29tIiwicmVkaXJlY3RfdXJsIjoiL3NpZXJyYS1mb290aGlsbHMuaHRtbCIsInNlcnZpY2VfdG9rZW5fc3RhdHVzIjpmYWxzZSwiaXNfd2FycCI6ZmFsc2UsImlzX2dhdGV3YXkiOmZhbHNlLCJleHAiOjE3OTE0NzI0ODUsIm5iZiI6MTc5MTQ3MjE4NSwiaWF0IjoxNzkxNDcyMTg1LCJhdXRoX3N0YXR1cyI6Ik5PTkUiLCJtdGxzX2F1dGgiOnsiY2VydF9pc3N1ZXJfZG4iOiIiLCJjZXJ0X3NlcmlhbCI6IiIsImNlcnRfaXNzdWVyX3NraSI6IiIsImNlcnRfcHJlc2VudGVkIjpmYWxzZSwiY29tbW9uX25hbWUiOiIiLCJhdXRoX3N0YXR1cyI6Ik5PTkUifSwicmVhbF9jb3VudHJ5IjoiVVMiLCJhcHBfc2Vzc2lvbl9oYXNoIjoiOWFjZjgxMDk0MjE1ZjA3YmQ4YTY1YmRiOWIxNDc1ZmY2MmIxM2QxYTc1YjU3Y2ZiMzU5YmM0YWNhODQ5OTY5YSJ9.jLTtay72751SeexqU-Ii7QuvPIEpP4LeVe_vbtu_1WsBBYJyp2iAupqTfOrtin5inBsArbcI0Rbr4_wI8_P_mjE6sFkiPSJzMh0eMgByd0KRNDWoX1Z5HnmJmcdyc7bMLSlOD7bE0Am5a2M9MEeGfBK8oSVxQ4D046oYsw58vRXD6ePmfp-aAeg40kGEHGCylmSQ5qKfrdzt7kvQ4cCCrQ9R6P3yXJI2pCLcG5tfKnWnAo2yXz6gZIrKFttrffa20nTJH3x8xEW37zmOqCzcgazGeJrFyf1L9rqczJQlJ017aSiHMQ-jRNzIZ0r9rB4Egl8XS4wsmYUA3DZCKlQ7ew&redirect_url=%2Fsierra-foothills.html
+- https://mil.wa.gov/volcanoes -> https://mil.wa.gov/volcano
+- https://mississippivalleytraveler.com/?p=27994 -> https://mississippivalleytraveler.com/episode-14-the-remarkable-earthworks-and-people-of-poverty-point/
+- https://noaa.gov/heritage/multimedia/video/noaa-rewind-brass-brains -> https://www.noaa.gov/multimedia/noaa-rewind-brass-brains
+- https://opb.org/news/series/unprepared/jan-26-1700-how-scientists-know-when-the-last-big-earthquake-happened-here/ -> https://www.opb.org:443/news/series/unprepared/jan-26-1700-how-scientists-know-when-the-last-big-earthquake-happened-here/
+- https://outlooks.airfire.org/outlook/760194b8 -> https://smoke-outlooks.wildlandfiresmoke.net/?outlook=760194b8
+- https://pdal.org/ -> https://pdal.org/en/2.10.2/
+- https://pen-and-sword.co.uk/Interpreting-Archaeological-Topography-Hardback/p/51965 -> https://www.pen-and-sword.co.uk/Interpreting-Archaeological-Topography-Hardback/p/51965
+- https://pixi.sh -> https://pixi.prefix.dev/
+- https://planetgeocast.buzzsprout.com/1237277/14716656-the-history-of-granite-dr-mike-ackerson -> https://planetgeocast.buzzsprout.com/1237277/episodes/14716656-the-history-of-granite-dr-mike-ackerson
+- https://planetgeocast.buzzsprout.com/1237277/9548739 -> https://planetgeocast.buzzsprout.com/1237277/episodes/9548739
+- https://reptile-database.reptarium.cz/species?genus=Anolis&species=chrysops -> https://reptile-database.reptarium.cz/Anolis/chrysops
+- https://reptile-database.reptarium.cz/species?genus=Anolis&species=kahouannensis -> https://reptile-database.reptarium.cz/Anolis/kahouannensis
+- https://shows.acast.com/65ca317b6000930017dd2f83/67d6ba8eb3ef7ea352e98fb5 -> https://shows.acast.com/65ca317b6000930017dd2f83/episodes/67d6ba8eb3ef7ea352e98fb5
+- https://talkpython.fm/198 -> https://talkpython.fm/episodes/show/198/catching-up-with-the-anaconda-distribution
+- https://volcanoes.usgs.gov/observatories/hvo/ -> https://www.usgs.gov/observatories/hvo
+- https://waterdata.usgs.gov/monitoring-location/10336610/ -> https://waterdata.usgs.gov/monitoring-location/USGS-10336610/
+- https://waterdata.usgs.gov/monitoring-location/10337000/ -> https://waterdata.usgs.gov/monitoring-location/USGS-10337000/
+- https://westin.brooksgroves.com -> https://bdgroves.cloudflareaccess.com/cdn-cgi/access/login/westin.brooksgroves.com?kid=67c1ad09960b0455fa6c8269926f4f3453a6236b27ea457d1268d346f7a591b5&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJlMWQxZWRkYWYxN2JiOWJhMWY5MjRkMmIyNDlmNjIzY2MyMjJjYjY2YTVlMGM0NGI2NDE4YTg1ZTNhOTk0MTEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjY3YzFhZDA5OTYwYjA0NTVmYTZjODI2OTkyNmY0ZjM0NTNhNjIzNmIyN2VhNDU3ZDEyNjhkMzQ2ZjdhNTkxYjUiLCJob3N0bmFtZSI6Indlc3Rpbi5icm9va3Nncm92ZXMuY29tIiwicmVkaXJlY3RfdXJsIjoiLyIsInNlcnZpY2VfdG9rZW5fc3RhdHVzIjpmYWxzZSwiaXNfd2FycCI6ZmFsc2UsImlzX2dhdGV3YXkiOmZhbHNlLCJleHAiOjE3OTE0NzI0ODQsIm5iZiI6MTc5MTQ3MjE4NCwiaWF0IjoxNzkxNDcyMTg0LCJhdXRoX3N0YXR1cyI6Ik5PTkUiLCJtdGxzX2F1dGgiOnsiY2VydF9pc3N1ZXJfZG4iOiIiLCJjZXJ0X3NlcmlhbCI6IiIsImNlcnRfaXNzdWVyX3NraSI6IiIsImNlcnRfcHJlc2VudGVkIjpmYWxzZSwiY29tbW9uX25hbWUiOiIiLCJhdXRoX3N0YXR1cyI6Ik5PTkUifSwicmVhbF9jb3VudHJ5IjoiVVMiLCJhcHBfc2Vzc2lvbl9oYXNoIjoiNTg3MmZkMGE3ZTI3MmJjZDMyNzI2YjZkZjA3ZjE2OWFjOTkxMTFmM2JiODQwN2IyZmQzNDFiNzM1MzJiMmNhYSJ9.WrOG79ilsl8j_znFimd9Uh6tYI5bYzZ2Nk1McLZbzrEjDOV9nbYdqRAB2WS7gInRflhERIjXO5jASXW6P39ji52nXILYQNpKDF_OHoTVfr_HugBVBsz9V8qf56Z_cdcM2ZFJr_imn1N5ELI1ZVnu-bLykGgCh7hYfbLYmwt5D0oNuPuybJcAKm-VRfFFrEI8FdLwyhJSRAyYk5CVVqS5GvoAOnc2IyFYwj5ayVGwGU2Hgy21Q2IWvLVnqOqn0_wkIcQIllspSDgoLW6t9w5r1uV5SEoK0qLawY91pgteV3cBIfTgfVfsyxqhYhjh3l18OYJg6RIb2_gfmIaCI4XHeA&redirect_url=%2F
+- https://westin.brooksgroves.com/cantina-wrestling.html -> https://bdgroves.cloudflareaccess.com/cdn-cgi/access/login/westin.brooksgroves.com?kid=67c1ad09960b0455fa6c8269926f4f3453a6236b27ea457d1268d346f7a591b5&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJlMWQxZWRkYWYxN2JiOWJhMWY5MjRkMmIyNDlmNjIzY2MyMjJjYjY2YTVlMGM0NGI2NDE4YTg1ZTNhOTk0MTEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjY3YzFhZDA5OTYwYjA0NTVmYTZjODI2OTkyNmY0ZjM0NTNhNjIzNmIyN2VhNDU3ZDEyNjhkMzQ2ZjdhNTkxYjUiLCJob3N0bmFtZSI6Indlc3Rpbi5icm9va3Nncm92ZXMuY29tIiwicmVkaXJlY3RfdXJsIjoiL2NhbnRpbmEtd3Jlc3RsaW5nLmh0bWwiLCJzZXJ2aWNlX3Rva2VuX3N0YXR1cyI6ZmFsc2UsImlzX3dhcnAiOmZhbHNlLCJpc19nYXRld2F5IjpmYWxzZSwiZXhwIjoxNzkxNDcyNTQ0LCJuYmYiOjE3OTE0NzIyNDQsImlhdCI6MTc5MTQ3MjI0NCwiYXV0aF9zdGF0dXMiOiJOT05FIiwibXRsc19hdXRoIjp7ImNlcnRfaXNzdWVyX2RuIjoiIiwiY2VydF9zZXJpYWwiOiIiLCJjZXJ0X2lzc3Vlcl9za2kiOiIiLCJjZXJ0X3ByZXNlbnRlZCI6ZmFsc2UsImNvbW1vbl9uYW1lIjoiIiwiYXV0aF9zdGF0dXMiOiJOT05FIn0sInJlYWxfY291bnRyeSI6IlVTIiwiYXBwX3Nlc3Npb25faGFzaCI6ImM1ZDNkNWIxOTk5YTM0ZjRkOWQyZDdiNzM1MmM0N2RmNjNlYTdhMGViNjkxNDE0ZWY0NDlkNDZhMTYwZWY4YzgifQ.OqK-VlMEIn43NNPbLXW_DxQGCqcEZoJELOYrpzjUm_CWwQjKVSQ2PCt2Z0-IvpnlukSwqgY0N3llr_GJSwA4VO6qcqn2WZV6XJlyyvxDAD9YNdrvBIygc0PPJULn26lpVDfc3wFPPorRUmGsWDh8rU8Mab48iS0USGu7JqxDuL8Znd4j3xigm6lGMlQdFaZTQd_1nYAWQfVHza_jmkQBkZ7-qAEdqR21LFvyzuJ6uke0KG7JdOL48mcW0VuRQW2EUCRKG2ako9wtB0G6Ql88616a9PJm_2Jzbfj39NK6CLu8_-6TJPszeaeBRzxRbfHPSJahXGyFzH8X-nrU3NdCZg&redirect_url=%2Fcantina-wrestling.html
+- https://www.blm.gov/programs/cultural-resources/paleontology -> https://www.blm.gov/programs/paleontology
+- https://www.chacoarchive.org/ -> https://www.chacoarchive.org:443/cra/
+- https://www.fs.usda.gov/coconino -> https://www.fs.usda.gov/r03/coconino
+- https://www.fs.usda.gov/htnf -> https://www.fs.usda.gov/r04/humboldt-toiyabe
+- https://www.fs.usda.gov/stanislaus -> https://www.fs.usda.gov/r05/stanislaus
+- https://www.github.com/ARM-DOE/pyart -> https://github.com/ARM-DOE/pyart
+- https://www.goodreads.com/user/show/9579797 -> https://www.goodreads.com/user/show/9579797-brooks
+- https://www.instagram.com/lidar.america/ -> https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Flidar.america%2F&is_from_rle
+- https://www.ironman.com/im703-victoria -> https://www.ironman.com/races/im703-victoria
+- https://www.kuow.org/stories/for-the-methow-valley-wildfire-smoke-is-the-norm-it-s-now-regular-for-everyone-else-too -> https://www.kuow.org/health/2022-07-20/for-the-methow-valley-wildfire-smoke-is-the-norm-it-s-now-regular-for-everyone-else-too
+- https://www.kuow.org/stories/warm-winter-liquidates-nearly-half-of-washington-state-snowpack -> https://www.kuow.org/environment/2026-02-06/warm-winter-liquidates-nearly-half-of-washington-state-snowpack
+- https://www.lakewoodrotary.com/ -> https://lakewoodrotary.com/
+- https://www.letour.fr -> https://www.letour.fr/en/
+- https://www.milb.com/tacoma -> https://www.mlb.com/milb/tacoma
+- https://www.nature.com/articles/d41586-024-02963-9 -> https://www.nature.com/articles/d41586-024-02963-9?error=cookies_not_supported&code=ffdfdeaa-34e8-4e39-adcf-755640a947e4
+- https://www.nnf.org.na -> https://nnf.org.na/
+- https://www.nprillinois.org/2026-09-30/what-can-we-expect-with-this-years-record-breaking-el-nino -> https://www.nprillinois.org/2026-09-30/this-years-super-el-nino-could-be-a-preview-of-life-on-a-much-warmer-earth
+- https://www.nps.gov/bicy/ -> https://www.nps.gov/bicy/index.htm
+- https://www.nps.gov/efmo/ -> https://www.nps.gov/efmo/index.htm
+- https://www.nps.gov/havo/ -> https://www.nps.gov/havo/index.htm
+- https://www.oregon.gov/odf -> https://www.oregon.gov/odf/Pages/index.aspx
+- https://www.studioone.com -> https://www.ds1.com/
+- https://www.tchistory.org/ -> https://tchistory.org/
+- https://www.velonews.com -> https://velo.outsideonline.com/?scope=anon
+- https://y2k.brooksgroves.com -> https://bdgroves.cloudflareaccess.com/cdn-cgi/access/login/y2k.brooksgroves.com?kid=6f4270ff3590ed70ce9fbcd037d49302fe8c69fb2a51c44c949c9a0776799c0c&meta=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjJlMWQxZWRkYWYxN2JiOWJhMWY5MjRkMmIyNDlmNjIzY2MyMjJjYjY2YTVlMGM0NGI2NDE4YTg1ZTNhOTk0MTEifQ.eyJ0eXBlIjoibWV0YSIsImF1ZCI6IjZmNDI3MGZmMzU5MGVkNzBjZTlmYmNkMDM3ZDQ5MzAyZmU4YzY5ZmIyYTUxYzQ0Yzk0OWM5YTA3NzY3OTljMGMiLCJob3N0bmFtZSI6Inkyay5icm9va3Nncm92ZXMuY29tIiwicmVkaXJlY3RfdXJsIjoiLyIsInNlcnZpY2VfdG9rZW5fc3RhdHVzIjpmYWxzZSwiaXNfd2FycCI6ZmFsc2UsImlzX2dhdGV3YXkiOmZhbHNlLCJleHAiOjE3OTE0NzI0ODQsIm5iZiI6MTc5MTQ3MjE4NCwiaWF0IjoxNzkxNDcyMTg0LCJhdXRoX3N0YXR1cyI6Ik5PTkUiLCJtdGxzX2F1dGgiOnsiY2VydF9pc3N1ZXJfZG4iOiIiLCJjZXJ0X3NlcmlhbCI6IiIsImNlcnRfaXNzdWVyX3NraSI6IiIsImNlcnRfcHJlc2VudGVkIjpmYWxzZSwiY29tbW9uX25hbWUiOiIiLCJhdXRoX3N0YXR1cyI6Ik5PTkUifSwicmVhbF9jb3VudHJ5IjoiVVMiLCJhcHBfc2Vzc2lvbl9oYXNoIjoiZTE3ODNhYTZiYWEwZmFjZWEyZDAzOTNiNmQyZDRkYjM5ZjI2MTA1MjkxNGRmZjk1YjY3Y2UwNzEzOTk3MTQ1NSJ9.eQ90c-t-F2H_CCM_9xbJKkCVJ6O1QIeElbiN2hHZBPNY307_dHO-b7HsWDw3vgbcaAst7-cqcuJc1_TE_WP7qa_NHlKvmnY4TKbIU61dQIezZ4s_Cw1GhOHMiPnY2EKC_rlCV2Ntxbe4ZYpXeKsKPqomTb6flUvasQP-fdqgggcgrnOPC6HhzW_XQl3kr2qs4PEKrVD1NOAUx1ZYfbxWf7kbUNPapEQv8OIts3LjxPpkVPoa8mbVBs72RfxzDpuLBxkBBmvyZSVvoXDLUBM-zq7mPsZ3xmjFFBGoaYMxaEtKjakXnGKqXcW5NsNQ9E8WkSJsaCTS-Nzk8xZlL_Mz3Q&redirect_url=%2F
