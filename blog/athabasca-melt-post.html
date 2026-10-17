@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Athabasca Glacier, 1844 to 2100 — Brooks Groves</title>
+  <link rel="canonical" href="https://brooksgroves.com/blog/athabasca-melt-post.html">
+  <meta name="description" content="A 75-second forge3d film of the Athabasca Glacier from the Icefield Centre lookout on the Icefields Parkway, from its 1844 Little Ice Age high stand to 2100 under three emissions scenarios, with the Columbia Icefield, its three oceans and the science behind the film.">
+  <meta property="og:title" content="The Athabasca Glacier, 1844 to 2100">
+  <meta property="og:description" content="One view from the Icefield Centre lookout, 256 years of ice: the Athabasca Glacier from 1844 to 2100.">
+  <meta property="og:image" content="https://brooksgroves.com/blog/img/athabasca-melt/og.jpg">
+  <meta property="og:url" content="https://brooksgroves.com/blog/athabasca-melt-post.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏔️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; border-radius:4px; transition: background 0.2s, color 0.2s; 
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .article-tag-pill:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body h2 em { font-style: italic; color: var(--rust); }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body em { font-style: italic; }
+    .article-body code { font-family: 'DM Mono', monospace; font-size: 0.85em; background: var(--cream); padding: 0.15em 0.4em; border-radius: 2px; }
+    .article-body pre { background: var(--ink); color: #c8d0cc; padding: 1.25rem 1.5rem; border-radius: 2px; overflow-x: auto; margin: 1.5rem 0 2rem; font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.65; }
+    .article-body pre code { background: none; padding: 0; font-size: 1em; color: inherit; }
+    .article-body ul { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body ul li { margin-bottom: 0.4rem; }
+
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .photo-block video { width: 100%; display: block; border: 1px solid var(--mist); background: #0b1020; cursor: zoom-in; }
+    .video-actions { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .video-actions a, .video-actions button { font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); background: none; border: 1px solid var(--mist); padding: 0.45rem 0.9rem; cursor: pointer; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
+    .video-actions a:hover, .video-actions button:hover { border-color: var(--rust); color: var(--rust); }
+    .step-list { margin: 1.2rem 0 1.5rem 1.2rem; }
+    .step-list li { margin-bottom: 0.7rem; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.8rem; margin: 2rem 0 2.2rem; }
+    .stat { border: 1px solid var(--mist); padding: 0.9rem 1rem 0.8rem; text-align: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 2.1rem; line-height: 1; color: var(--rust); }
+    .stat-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); margin-top: 0.45rem; line-height: 1.5; }
+    .photo-block.narrow { max-width: 540px; margin-left: auto; margin-right: auto; }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist);
+    }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav>
+      <a href="/blog/index.html">Blog</a>
+      <a href="https://journal.brooksgroves.com">Journal</a>
+      <a href="https://github.com/bdgroves" target="_blank">Projects</a>
+      <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Reading</a>
+      <a href="https://x.com/bdgroves" target="_blank">Twitter</a>
+      <a href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/bdgroves" target="_blank" class="github">GitHub ↗</a>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">&larr; Back to Blog</a>
+
+  <p class="article-kicker">Canadian Rockies · Columbia Icefield · Glaciers · Climate · forge3d</p>
+  <h1 class="article-title">&#129482; The Athabasca Glacier, 1844 to 2100</h1>
+  <div class="article-meta">
+    <span>October 17, 2026</span>
+    <span>Brooks Groves</span>
+    <span>11 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <a href="/tags.html#Canadian%20Rockies" class="article-tag-pill">Canadian Rockies</a>
+    <a href="/tags.html#Glaciers" class="article-tag-pill">Glaciers</a>
+    <a href="/tags.html#Climate" class="article-tag-pill">Climate</a>
+    <a href="/tags.html#Geology" class="article-tag-pill">Geology</a>
+    <a href="/tags.html#forge3d" class="article-tag-pill">forge3d</a>
+    <a href="/tags.html#Open%20Data" class="article-tag-pill">Open Data</a>
+    <a href="/tags.html#Python" class="article-tag-pill">Python</a>
+  </div>
+
+  <div class="article-body">
+
+    <p>Partway up the Icefields Parkway, between Banff and Jasper, the road climbs over Sunwapta Pass and the big tongue of the Athabasca Glacier swings into view across the valley. Most people stop at the Columbia Icefield Centre and look out over a wide, rocky valley floor to the ice. There are little signposts on the trail out to the toe that mark where the ice used to end, and the years on them get closer and closer to the glacier as you walk.</p>
+
+    <p>Those signposts are the heart of a story that&rsquo;s hard to see standing still, because a glacier changes too slowly to watch. So I tried to show it. After my <a href="/blog/icefields-flyover-post.html">flight up the Icefields Parkway</a>, I pointed <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a> at this one view, from just above the Icefield Centre lookout, and let the years run: from 1844, when the ice reached almost to where the Centre stands today, through the present, to 2100.</p>
+
+    <div class="photo-block">
+      <video id="melt-video" autoplay muted loop playsinline controls preload="metadata"
+             poster="/blog/img/athabasca-melt/poster.jpg"
+             aria-label="A 75-second film from a fixed point just above the Columbia Icefield Centre, looking south-west up the Athabasca Glacier between Mount Athabasca and Mount Andromeda. In 1844 the ice fills the valley almost to the camera. Through the 1800s and 1900s the tongue thins and pulls back up the valley, leaving bare moraine and small lakes, while a counter in the corner shows the year and a chart tracks the share of the 1844 ice that remains. From today, a projection carries on to 2100 under a middle emissions scenario, and the tongue withdraws up to the icefall and out of sight. An end card compares 2100 under low, middle and high emissions.">
+        <source src="/blog/img/athabasca-melt/athabasca-melt.mp4" type="video/mp4">
+      </video>
+      <div class="video-actions">
+        <button type="button" id="melt-fullscreen">&#10530; Full screen</button>
+        <a href="/blog/img/athabasca-melt/athabasca-melt-1080.mp4" target="_blank">&#9654; Watch in HD (1080p)</a>
+      </div>
+      <p class="photo-caption">The Athabasca Glacier from above the Icefield Centre lookout, 1844 to 2100 · terrain NRCan MRDEM 30 m · Sentinel-2 imagery, August 2025 · ice thickness Farinotti et al. 2019 · projections OGGM v1.6.3 · rendered with forge3d 1.42</p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num">~2 km</div><div class="stat-label">Shorter than<br>in 1844</div></div>
+      <div class="stat"><div class="stat-num">27%</div><div class="stat-label">Of the glacier&rsquo;s ice<br>gone, 1844 to today</div></div>
+      <div class="stat"><div class="stat-num">3</div><div class="stat-label">Oceans the icefield&rsquo;s<br>meltwater reaches</div></div>
+      <div class="stat"><div class="stat-num">17%</div><div class="stat-label">Of the 1844 ice left<br>in 2100, middle scenario</div></div>
+    </div>
+
+    <h2>The roof of the Rockies</h2>
+
+    <p>The Athabasca is one tongue of something much bigger. The Columbia Icefield sits on the Continental Divide along the Banff&ndash;Jasper boundary, a plateau of snow and ice of roughly 200 to 230 square kilometres, depending on who&rsquo;s measuring and when, up to 365 m (about 1,200 feet) thick, and ringed by some of the highest peaks in the Canadian Rockies. Mount Columbia, on its western edge, is the highest point in Alberta at 3,747 m. Six major glaciers pour off it, and the Athabasca and the Saskatchewan are the best known.</p>
+
+    <p>Here&rsquo;s the bit I love: the meltwater goes to three oceans. Water off the Athabasca Glacier heads down the Athabasca River toward the Mackenzie and the Arctic Ocean. The Saskatchewan Glacier feeds the North Saskatchewan, which crosses the prairies to Hudson Bay and from there the Atlantic. And the icefield&rsquo;s western side drains into the Columbia, which runs all the way to the Pacific past the bottom of my own state. The name Athabasca comes from Cree, often given as &ldquo;grass or reeds here and there,&rdquo; and it was first a name for Lake Athabasca, far downstream.</p>
+
+    <p>For European explorers the icefield was a late discovery. The British climbers J. Norman Collie and Hermann Woolley first reported it in 1898, after making the first ascent of Mount Athabasca. Indigenous people had hunted and traded across these passes long before that. The road came later still. Work on what was then called the &ldquo;Wonder Trail&rdquo; began in 1931 as a Depression-era project for 600 unemployed men, and the modern paved Icefields Parkway was finished by 1961.</p>
+
+    <h2>The view from the lookout</h2>
+
+    <p>Stand at the Icefield Centre and look across at the glacier, and you&rsquo;re standing about where its snout was in the 1840s. Ben Gadd, the Jasper naturalist who wrote the interpretive guide to this walk, puts it plainly: in 1844 the Athabasca was about 8 km long, &ldquo;reaching all the way to where Icefield Centre is now.&rdquo; Today it&rsquo;s about 6 km.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/athabasca-melt/1840s.jpg" alt="The Athabasca Glacier in the late 1840s as reconstructed in the film: a broad, thick tongue of ice filling the valley floor and reaching nearly to the camera, between Mount Athabasca on the left and the slopes of Wilcox Peak on the right" loading="lazy">
+      <p class="photo-caption">The late 1840s, near the Little Ice Age high stand: the tongue fills the valley almost to the lookout. Click any image to enlarge.</p>
+    </div>
+
+    <p>The ground itself tells you where the ice was. On both sides of the valley, long ridges of loose rubble run down toward the road. Those are lateral moraines, the rock the glacier carried along its edges and dropped there, and the ice once stood as high as their crests. At its highest, the east moraine stands about 124 m above the valley floor. Down by the road, a curving terminal moraine marks the mid-1840s front, and trees several metres tall now grow on it. Walk toward the glacier and the plants get smaller and sparser until, near the ice, there are none at all. You&rsquo;re walking forward in time through ground the ice gave up.</p>
+
+    <h2>A little ice age, and the long retreat</h2>
+
+    <p>The 1840s were the high-water mark of what&rsquo;s called the Little Ice Age, a few centuries of cooler weather that eased off in the late 1800s. Tree rings show the Columbia Icefield&rsquo;s glaciers advancing and pulling back in cycles, with the latest big advance peaking in the 1840s. Since then the trend has been one direction. The toe pulled back about 1.5 km between 1870 and 1981, and about 1 km of that came between 1919 and 1979. These days it gives up something like 10 to 25 m each summer, and the glacier loses about 5 m of depth a year.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/athabasca-melt/1950.jpg" alt="The film around 1950: the glacier tongue has pulled back up the valley to a rounded front, with bare moraine and a small turquoise lake below it" loading="lazy">
+      <p class="photo-caption">Around 1950 in the film: the front has backed up the valley, and the chart reads 83% of the 1844 ice.</p>
+    </div>
+
+    <p>We can also see it in photographs. In 1917 the surveyor Arthur Oliver Wheeler set up his camera just below Wilcox Peak and photographed the Athabasca. In 2011 the University of Victoria&rsquo;s Mountain Legacy Project found his exact spot and took the same picture again. Side by side, they&rsquo;re a wonderful way to see a century of change in a single glance.</p>
+
+    <p>You&rsquo;ll often read that the glacier has lost half its volume. My own numbers come out lower for the glacier as a whole: about 2.26 km&sup3; of ice in 1844 and about 1.64 km&sup3; today, so a little over a quarter gone. Much of the thick ice up toward the icefall hasn&rsquo;t changed much yet, and the loss is concentrated low down, in the tongue you see from the road. So the difference probably comes from which part of the glacier gets counted. Either way, it&rsquo;s a lot of ice.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/athabasca-melt/today.jpg" alt="The Athabasca Glacier today in the film, a narrower grey tongue ending well up the valley, with small yellow posts labelled front about 1950 and front about 2000 standing on the bare ground below it" loading="lazy">
+      <p class="photo-caption">Today. The posts mark the front around 1950 and around 2000, a bit like the signposts on the real trail.</p>
+    </div>
+
+    <h2>What comes next</h2>
+
+    <p>For the future I used the Open Global Glacier Model (OGGM), an open-source model that projects every glacier on Earth, one at a time, under many climate models. Its runs for the Athabasca give the glacier&rsquo;s volume and length each year to 2100 under three emissions scenarios, from SSP1-2.6, where the world cuts emissions hard, to SSP5-8.5, where it doesn&rsquo;t. The film follows the middle path, SSP2-4.5, using the median of 14 climate models.</p>
+
+    <p>On that middle path, the front pulls back about another 1.2 km by 2050, and by then about half of the 1844 ice is left. Through the 2060s the tongue withdraws to the foot of the icefall. By 2100 there&rsquo;s no glacier left on the valley floor in front of the Icefield Centre, and about 17% of the 1844 ice remains, tucked up high where you can&rsquo;t see it from the lookout. Parks Canada&rsquo;s own summary is similar: the glacier &ldquo;may be gone by 2100.&rdquo;</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/athabasca-melt/2050.jpg" alt="The film in 2050 under the middle scenario: a short, thin tongue of ice remains below the icefall, and the old front posts stand far out on the bare valley floor" loading="lazy">
+      <p class="photo-caption">2050, middle scenario: a short tongue below the icefall, and about half the 1844 ice left.</p>
+    </div>
+
+    <div class="photo-block">
+      <img src="/blog/img/athabasca-melt/2100.jpg" alt="The film in 2100 under the middle scenario: the valley is bare rock and moraine all the way up to the notch between the peaks, with no glacier tongue visible" loading="lazy">
+      <p class="photo-caption">2100, middle scenario: the valley is bare up to the notch where the icefall was.</p>
+    </div>
+
+    <p>That&rsquo;s the middle road, though, and the road isn&rsquo;t picked yet. That&rsquo;s why the film ends with a card showing all three. Relative to the ice in 2020, the models&rsquo; median leaves about 37% under low emissions, 22% under the middle path and essentially none under high emissions. The spread between climate models is wide (the low path ranges from 12% to 80%), but the order never changes: the less warming, the more glacier.</p>
+
+    <div class="photo-block">
+      <img src="/blog/img/athabasca-melt/scenarios.jpg" alt="The film's end card, titled The Athabasca in 2100 depends on how much warming we allow, with three views of the valley in 2100: SSP1-2.6 low emissions with 37 percent of 2020's ice left, SSP2-4.5 middle with 22 percent, and SSP5-8.5 high emissions with 0 percent" loading="lazy">
+      <p class="photo-caption">The end card: the Athabasca in 2100 under low, middle and high emissions, with the range across climate models.</p>
+    </div>
+
+    <p>The bigger picture says the same thing. A 2015 study led by Garry Clarke at UBC projected that western Canada&rsquo;s glaciers will lose about 70% of their 2005 volume by 2100. A 2023 global study in <em>Science</em> led by David Rounce put it in a phrase I like: every increase in temperature matters. Their numbers run from losing about a quarter of the world&rsquo;s glacier mass between 2015 and 2100 at 1.5&nbsp;&deg;C of warming, to about 40% at 4&nbsp;&deg;C. For a glacier like the Athabasca, those tenths of a degree are the difference between a tongue you can walk up to and a view of bare rock.</p>
+
+    <h2>Why the ice matters downstream</h2>
+
+    <p>Glaciers act like a savings account for water. Snow falls on the icefield in winter, and the ice gives it back slowly through the summer, most of all in late summer and in dry years, just when the rivers need it. Glacier melt is a small but important part of the flow in the Bow, North Saskatchewan and Athabasca rivers in those dry spells. John Pomeroy and his team at the University of Saskatchewan have spent years measuring it here.</p>
+
+    <p>Wildfires play a part too. Caroline Aubry-Wake, then a PhD student in Pomeroy&rsquo;s group, tracked the Athabasca through six melt seasons, from 2015 to 2020. She found that smoke can shade the ice for a while, but the soot it leaves behind darkens the surface, and over those summers that boosted melt by a little over 10%. Smoky summers are now a part of how these glaciers melt.</p>
+
+    <h2>How it&rsquo;s made</h2>
+
+    <p>The view is a real place, built from open data. The terrain is Natural Resources Canada&rsquo;s 30 m Medium Resolution Digital Elevation Model, resampled to 10 m. Canada&rsquo;s high-resolution lidar doesn&rsquo;t cover the icefield, so 30 m is the best there is up here. The color is a cloud-free Sentinel-2 satellite image from 24 August 2025. I separated ice, bare ground and the little meltwater lakes with simple band ratios, so the old ice can be painted onto ground that&rsquo;s bare today. The glacier outlines come from the Randolph Glacier Inventory, and the ice thickness under them from the Farinotti et al. (2019) consensus estimate, which gives the shape of the bed the glacier sits on.</p>
+
+    <p>The past is a reconstruction, built so that it matches what we know. The 1844 surface rises toward the published height of the lateral moraines, then blends back into today&rsquo;s ice up the glacier. The front follows the dated positions above (on my map it&rsquo;s 1.6 km from the 1840s moraine to the toe in the glacier inventory, whose outline dates from the mid-2000s, a bit shy of Gadd&rsquo;s &ldquo;nearly 2 km&rdquo;), and near the front the ice thins the way real snouts do, following a simple physical rule for how thick ice can be at a given distance behind its edge. As a check, my reconstruction loses 0.31 km&sup3; between 1919 and 1979. That&rsquo;s a little more than the 0.23 km&sup3; Reynolds and Young measured from maps for the lower glacier alone, as you&rsquo;d expect when the whole glacier is counted. Today&rsquo;s volume matches OGGM&rsquo;s to within 1%.</p>
+
+    <p>The future uses OGGM&rsquo;s year-by-year volume and length. The front retreats by OGGM&rsquo;s change in length, and the ice behind it thins in the pattern Matthias Huss and colleagues worked out for large glaciers, which puts most of the thinning near the toe. The thinning is solved each year so the volume lands right on OGGM&rsquo;s. The neighboring glaciers on Mount Athabasca and Mount Andromeda follow their own OGGM runs.</p>
+
+    <p>A few honest limits. At 30 m, the ridges are softer than lidar would make them. Everything before today is a careful reconstruction, not a photograph. And the camera sits about 220 m above the lookout, more like a drone than a person, so the old tongue doesn&rsquo;t hide behind its own moraine. It was all rendered without a graphics card, split into 40 pieces on GitHub&rsquo;s free computers. The code is on <a href="https://github.com/bdgroves/icefields-flyover" target="_blank">GitHub</a>, in the <code>melt</code> folder.</p>
+
+    <p>If you&rsquo;re driving the Parkway, give yourself the hour to walk the Toe of the Athabasca trail and read the signposts. It&rsquo;s about 1.4 km there and back, and please stay behind the barriers. The ice is beautiful and full of hidden crevasses.</p>
+
+    <hr>
+
+    <p style="font-size:0.9rem;color:var(--stone)"><strong>Sources:</strong> <a href="https://earthsciencescanada.com/geovista/PDFs_en/vistas8_agci.pdf" target="_blank">Gadd (2011), GeoVista: Athabasca Glacier / Icefield Centre</a> · <a href="https://bathgeolsoc.org.uk/journal/articles/1985/1985_Athabasca_Glacier.html" target="_blank">Bath Geological Society (1985): The Athabasca Glacier</a> · <a href="https://www.thecanadianencyclopedia.ca/en/article/columbia-icefield" target="_blank">The Canadian Encyclopedia: Columbia Icefield</a> · <a href="https://en.wikipedia.org/wiki/Columbia_Icefield" target="_blank">Wikipedia: Columbia Icefield</a> · <a href="https://en.wikipedia.org/wiki/Athabasca_Glacier" target="_blank">Athabasca Glacier</a> · <a href="https://en.wikipedia.org/wiki/Athabasca" target="_blank">Athabasca (name)</a> · <a href="https://parks.canada.ca/pn-np/ab/jasper/activ/itineraires-itineraries/promenadedesglaciers-icefieldsparkway/pghistoire-iphistory" target="_blank">Parks Canada: a brief history of the Icefields Parkway</a> · <a href="https://parks.canada.ca/nature/science/climat-climate/glace-ice2" target="_blank">Parks Canada: Ice</a> · <a href="https://mountainlegacy.ca/project/ice/" target="_blank">Mountain Legacy Project: Focus on Ice and Snow</a> · <a href="https://doi.org/10.3189/2013JoG12J135" target="_blank">Tennant &amp; Menounos (2013)</a> · <a href="https://doi.org/10.1038/ngeo2407" target="_blank">Clarke et al. (2015)</a> · <a href="https://doi.org/10.1126/science.abo1324" target="_blank">Rounce et al. (2023)</a> · <a href="https://phys.org/news/2022-04-wildfire-glacier-affects-mountain-runoff.html" target="_blank">Wildfire smoke accelerates glacier melt (USask, 2022)</a> · <a href="https://www.cbc.ca/newsinteractives/features/the-canary-in-the-icefield" target="_blank">CBC: The canary in the icefield</a> · <a href="https://nationalparkstraveler.org/2023/10/trails-ive-hiked-toe-athabasca-glacier" target="_blank">National Parks Traveler: Toe of the Athabasca Glacier</a>.</p>
+
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#127911; Listen &amp; watch</div>
+      <p><strong><a href="https://shows.acast.com/65ca317b6000930017dd2f83/67d6ba8eb3ef7ea352e98fb5" target="_blank" rel="noopener">Glaciers: What Future?</a></strong> &mdash; <em>Mountain Voices</em> (UIAA), 17 March 2025, about 53 min. Ice climber Will Gadd and repeat-photographer Mary Sanseverino on the Athabasca Glacier and why its retreat matters.</p>
+      <p><strong><a href="https://podscripts.co/podcasts/the-current/climbing-canadas-melting-glaciers" target="_blank" rel="noopener">Climbing Canada&rsquo;s melting glaciers</a></strong> &mdash; <em>The Current</em> (CBC), 14 January 2026. Mountain guides on how shrinking ice is changing routes on the Athabasca, Mount Athabasca and the Wapta Icefield.</p>
+      <p><strong><a href="https://www.cbc.ca/newsinteractives/features/the-canary-in-the-icefield" target="_blank" rel="noopener">The canary in the icefield</a></strong> &mdash; CBC News interactive, with video from the field in August 2023. John Pomeroy&rsquo;s team on Peyto Glacier, and why larger glaciers like the Athabasca could still be saved.</p>
+      <p><strong><a href="https://collection.nfb.ca/film/great-northern-wilderness-across-the-great-divide" target="_blank" rel="noopener">Great Northern Wilderness: Across the Great Divide</a></strong> &mdash; National Film Board of Canada, 2005, 52 min. Tom Radford&rsquo;s journey from the prairie over the Divide to the Pacific, past the Columbia Icefield where rivers part for three oceans.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><strong>Gadd, B. (2011).</strong> <a href="https://earthsciencescanada.com/geovista/PDFs_en/vistas8_agci.pdf" target="_blank" rel="noopener">GeoVista: Athabasca Glacier and Icefield Centre.</a> Earth Sciences Canada. A short, friendly field guide to the walk from the Centre to the toe.</p>
+      <p><strong>Tennant, C. &amp; Menounos, B. (2013).</strong> <a href="https://doi.org/10.3189/2013JoG12J135" target="_blank" rel="noopener">Glacier change of the Columbia Icefield, Canadian Rocky Mountains, 1919&ndash;2009.</a> <em>Journal of Glaciology</em> <strong>59</strong>(216), 671&ndash;686. The icefield lost about 23% of its area over those 90 years.</p>
+      <p><strong>Clarke, G.K.C., Jarosch, A.H., Anslow, F.S., Radi&#263;, V. &amp; Menounos, B. (2015).</strong> <a href="https://doi.org/10.1038/ngeo2407" target="_blank" rel="noopener">Projected deglaciation of western Canada in the twenty-first century.</a> <em>Nature Geoscience</em> <strong>8</strong>, 372&ndash;377.</p>
+      <p><strong>Rounce, D.R. et al. (2023).</strong> <a href="https://doi.org/10.1126/science.abo1324" target="_blank" rel="noopener">Global glacier change in the 21st century: Every increase in temperature matters.</a> <em>Science</em> <strong>379</strong>, 78&ndash;83.</p>
+      <p><strong>Aubry-Wake, C., Bertoncini, A. &amp; Pomeroy, J.W. (2022).</strong> <a href="https://phys.org/news/2022-04-wildfire-glacier-affects-mountain-runoff.html" target="_blank" rel="noopener">Fire and ice: the impact of wildfire-affected albedo and irradiance on glacier melt.</a> <em>Earth&rsquo;s Future</em>.</p>
+      <p><strong>Farinotti, D. et al. (2019).</strong> <a href="https://doi.org/10.1038/s41561-019-0300-3" target="_blank" rel="noopener">A consensus estimate for the ice thickness distribution of all glaciers on Earth.</a> <em>Nature Geoscience</em> <strong>12</strong>, 168&ndash;173.</p>
+
+      <div class="sources-head">&#128202; Data &amp; tools</div>
+      <p><a href="https://mountainlegacy.ca/project/ice/" target="_blank" rel="noopener">Mountain Legacy Project</a> &mdash; Wheeler&rsquo;s 1917 Athabasca photo and its 2011 repeat, and thousands more. &middot; <a href="https://oggm.org" target="_blank" rel="noopener">OGGM</a> &mdash; the open glacier model behind the projections. &middot; <a href="https://www.glims.org/RGI/" target="_blank" rel="noopener">Randolph Glacier Inventory</a> &mdash; outlines of every glacier on Earth.</p>
+      <p><a href="https://open.canada.ca/data/en/dataset?q=MRDEM" target="_blank" rel="noopener">NRCan MRDEM</a> &mdash; Canada&rsquo;s elevation model. &middot; <a href="https://dataspace.copernicus.eu" target="_blank" rel="noopener">Copernicus Sentinel-2</a> &mdash; the satellite imagery. &middot; <a href="https://github.com/milos-agathon/forge3d" target="_blank" rel="noopener">forge3d</a> &mdash; the Python terrain renderer. &middot; <a href="https://github.com/bdgroves/icefields-flyover" target="_blank" rel="noopener">icefields-flyover</a> &mdash; this project&rsquo;s code.</p>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      var v = document.getElementById('melt-video');
+      function big() {
+        if (v.requestFullscreen) v.requestFullscreen();
+        else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
+        else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+      }
+      document.getElementById('melt-fullscreen').addEventListener('click', big);
+      v.addEventListener('dblclick', big);
+    })();
+  </script>
+
+  <div class="reactions-section">
+
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · October 2026</span>
+    <div class="article-footer-nav">
+      <a href="/blog/ruby-flyover-post.html">← Into the Rubies</a>
+      <a href="/geology.html">Geology Hub</a>
+      <a href="/blog/index.html">All posts</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
+    </div>
+
+    <div class="footer-connect">
+      <div class="fc-label">Connect</div>
+      <div class="social-row">
+          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
+          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
+          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
+          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
+          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
+          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
+          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-pagelinks">
+      <div class="fc-label">More here</div>
+      <div class="pagelink-row">
+        <a href="/blog/index.html">Blog</a>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
+    <p class="footer-bottom">
+      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
+      <a href="#top">&uarr; Back to top</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this handles clicks and keeps the button's label truthful.
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function sync(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Describe what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  sync();
+  btn.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+<!-- Lightbox: click a figure to see it big; arrows step through, Esc closes -->
+<style>
+  .photo-block img{cursor:zoom-in}
+  .lb{position:fixed;inset:0;z-index:2147483000;background:rgba(18,16,13,.97);display:none;flex-direction:column;align-items:center;justify-content:center;padding:2vh 2vw;cursor:zoom-out}
+  .lb.open{display:flex}
+  .lb img{max-width:96vw;max-height:84vh;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.6);background:#111}
+  .lb p{color:#e9e2d4;font-family:'Libre Baskerville',Georgia,serif;font-size:15px;line-height:1.5;max-width:900px;text-align:center;margin:14px auto 0}
+  .lb button{position:absolute;background:rgba(0,0,0,.35);color:#f3ecdf;border:1px solid rgba(255,255,255,.25);border-radius:50%;width:44px;height:44px;font-size:22px;line-height:1;cursor:pointer}
+  .lb .lb-x{top:16px;right:16px}
+  .lb .lb-prev{left:16px;top:50%;margin-top:-22px}
+  .lb .lb-next{right:16px;top:50%;margin-top:-22px}
+  .lb button:hover{background:rgba(0,0,0,.6)}
+  .lb img{cursor:zoom-in}
+  .lb.zoomed{display:block;overflow:auto;padding:0}
+  .lb.zoomed img{max-width:none;max-height:none;cursor:zoom-out;display:block;margin:0 auto}
+  .lb.zoomed p{display:none}
+  .lb.zoomed button{position:fixed}
+</style>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged image">
+  <button class="lb-x" aria-label="Close">&times;</button>
+  <button class="lb-prev" aria-label="Previous image">&#8249;</button>
+  <img alt="">
+  <p></p>
+  <button class="lb-next" aria-label="Next image">&#8250;</button>
+</div>
+<script>
+(function () {
+  const imgs = [...document.querySelectorAll('.photo-block img')];
+  const lb = document.getElementById('lb'), big = lb.querySelector('img'), cap = lb.querySelector('p');
+  let i = 0, opener = null;
+  function show(n) {
+    lb.classList.remove('zoomed');
+    i = (n + imgs.length) % imgs.length;
+    const im = imgs[i], c = im.closest('.photo-block').querySelector('.photo-caption');
+    big.src = im.dataset.full || im.currentSrc || im.src; big.alt = im.alt;
+    cap.textContent = c ? c.textContent : '';
+  }
+  function open(n) { opener = document.activeElement; show(n); lb.classList.add('open'); document.body.style.overflow = 'hidden'; lb.querySelector('.lb-x').focus(); }
+  function close() { lb.classList.remove('open', 'zoomed'); document.body.style.overflow = ''; if (opener) opener.focus(); }
+  imgs.forEach((im, n) => {
+    im.tabIndex = 0; im.setAttribute('role', 'button'); im.title = 'Click to enlarge';
+    im.addEventListener('click', () => open(n));
+    im.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(n); } });
+  });
+  lb.addEventListener('click', e => {
+    if (e.target === big) {                      // click the picture: full size, scroll to look around
+      const r = big.getBoundingClientRect(), fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
+      lb.classList.toggle('zoomed');
+      if (lb.classList.contains('zoomed')) { lb.scrollLeft = fx * big.naturalWidth - innerWidth / 2; lb.scrollTop = fy * big.naturalHeight - innerHeight / 2; }
+      return;
+    }
+    if (e.target.closest('.lb-prev')) show(i - 1);
+    else if (e.target.closest('.lb-next')) show(i + 1);
+    else close();
+  });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(i - 1);
+    if (e.key === 'ArrowRight') show(i + 1);
+  });
+})();
+</script>
+</body>
+</html>
