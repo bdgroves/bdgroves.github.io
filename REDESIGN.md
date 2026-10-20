@@ -56,7 +56,7 @@ then merges.
 | 1 | Readability fixes in the shared stylesheet | ✅ live Oct 20 |
 | 2 | "Keep reading" cards at the end of every post | ✅ live Oct 20 |
 | 3a | Homepage images: featured carousel and image topic cards | ✅ live Oct 20 |
-| 3b | Homepage layout: six-door nav, Start-here paths, Live right now | ✅ on `redesign-b` |
+| 3b | Homepage layout: six-door nav, Start-here paths, Live right now | ✅ live Oct 20 |
 | 4 | Topic pages; Work, Maps & films, Live data pages | |
 | 5 | Outside page; the Stories front door | |
 | 6 | Shared header across brooksgroves.com and the subdomains | |
@@ -115,7 +115,7 @@ footer of every post (69 posts), between `KEEP-READING` markers, plus a
 - Images live in `images/features/` (1200 px wide for projects, 800×350 for
   topics), cut from images already in the posts.
 
-### Step 3b: menu, Start here, Live right now (on `redesign-b`)
+### Step 3b: menu, Start here, Live right now (live Oct 20)
 
 - **Menu:** six doors (Work, Writing, Maps & films, Live data, Outside,
   About). Each label is a link to its landing (`/#work`, `/writing/`,
