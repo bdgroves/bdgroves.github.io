@@ -214,6 +214,12 @@
     .ology-card:last-child { border-right:none; }
     @media(max-width:1100px) { .ologies-grid { grid-template-columns:repeat(3,1fr); } }
     @media(max-width:560px) { .ologies-grid { grid-template-columns:1fr 1fr; } }
+    .stories-strip { display:flex; flex-wrap:wrap; align-items:baseline; gap:.4rem 1.25rem; margin:1.5rem 0; padding:1rem 1.25rem;
+                     border:1px dashed var(--mist); color:var(--ink); text-decoration:none; }
+    .stories-strip:hover { border-color:var(--stone); }
+    .ss-k { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:var(--stone); }
+    .ss-t { flex:1; min-width:220px; font-size:.92rem; color:var(--stone); }
+    .ss-go { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.08em; color:var(--rust); }
     .stories-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:1px solid var(--mist); }
     @media(max-width:680px) { .stories-grid { grid-template-columns:1fr 1fr; } }
     @media(max-width:480px) { .stories-grid { grid-template-columns:1fr; } }
@@ -359,7 +365,7 @@
     .beer-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; transition:color 0.2s; }
     .beer-brewery { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); text-transform:uppercase; margin-top:0.1rem; }
     .beer-comment { font-size:0.72rem; color:var(--stone); font-style:italic; margin-top:0.15rem; }
-    .beer-date { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--mist); margin-top:0.1rem; }
+    .beer-date { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); margin-top:0.1rem; }
     .untappd-link { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
     .untappd-link:hover { color:var(--gold); }
 
@@ -1050,54 +1056,14 @@
   <!-- WRITING + READING -->
   
 <!-- DAILY QUOTE -->
-    <div class="lead-section-label">
-      <span>Stories &amp; Journeys</span>
-      <a href="https://memoir.brooksgroves.com">Memoir →</a>
-    </div>
-    <div class="stories-grid">
-      <a href="https://journal.brooksgroves.com" target="_blank" class="ology-card">
-        <span class="ology-icon">🧭</span>
-        <h3 class="ology-name">Travel Journals</h3>
-        <p class="ology-desc">Day-by-day logbooks from the road and the water — research sidebars, maps, and the small absurdities of going places.</p>
-        <p class="ology-projects">The Amsterdam &amp; London Logs · The Koningsdam Logs · Aimeeland</p>
-        <span class="ology-link">Read the journals →</span>
-      </a>
-      <a href="https://memoir.brooksgroves.com/sierra-foothills.html" target="_blank" class="ology-card">
-        <span class="ology-icon">⛰️</span>
-        <h3 class="ology-name">The Sierra Foothills</h3>
-        <p class="ology-desc">Growing up in Groveland, California — Gold Rush country on the road to Yosemite. The Iron Door Irregulars, Hippie Bro and the duct-taped Datsun, Crazy Irvin, and long roads east to Mono Lake and the desert.</p>
-        <p class="ology-projects">Daff Dome · Frank's Keys · Hippie Bro · The Long Way Around</p>
-        <span class="ology-link">Read the collection →</span>
-      </a>
-      <a href="https://memoir.brooksgroves.com/blinn-college-stories.html" target="_blank" class="ology-card">
-        <span class="ology-icon">🤠</span>
-        <h3 class="ology-name">The Blinn College Stories</h3>
-        <p class="ology-desc">Two years at the oldest junior college in Texas, 1988–1990 — a Sierra-foothills kid eighteen hundred miles from home in German farm country. Public Enemy down the hallway, Lone Star at nine in the morning, and a dorm since erased from the map.</p>
-        <p class="ology-projects">Deep in the Heart of Texas · The Quest · The Vikings of Brenham · &amp; six more</p>
-        <span class="ology-link">Read the stories →</span>
-      </a>
-      <a href="https://memoir.brooksgroves.com" target="_blank" class="ology-card">
-        <span class="ology-icon">📻</span>
-        <h3 class="ology-name">Seattle Stories</h3>
-        <p class="ology-desc">True stories from a Seattle life — the radio, the basement studios and the bars, the years after the foothills.</p>
-        <p class="ology-projects">The RV Has Spoken · The Gnar-BQ</p>
-        <span class="ology-link">Read the stories →</span>
-      </a>
-      <a href="https://westin.brooksgroves.com" target="_blank" class="ology-card">
-        <span class="ology-icon">🛎️</span>
-        <h3 class="ology-name">Westin Stories</h3>
-        <p class="ology-desc">Tales from the graveyard shift at the Westin Seattle — the doormen, the bellmen, the after-hours crew, and the beautiful chaos of hotel life.</p>
-        <p class="ology-projects">The Cantina · Elmo · Room 1331</p>
-        <span class="ology-link">Read the stories →</span>
-      </a>
-      <a href="https://journal.brooksgroves.com/myles.html" target="_blank" class="ology-card">
-        <span class="ology-icon">🦆</span>
-        <h3 class="ology-name">Fiction · <em>Myles</em></h3>
-        <p class="ology-desc">One rubber duck, the American West, and the tradition of Duck Duck Jeep. ~5,500 words of literary fiction, currently in submission.</p>
-        <p class="ology-projects">The Sun · Longreads</p>
-        <span class="ology-link">Read the fiction →</span>
-      </a>
-    </div>
+    <!-- Stories & Journeys: the gated collections are mostly for family and
+         friends, so the homepage gives them one quiet line instead of six
+         cards. The full front door is the Writing page. -->
+    <a class="stories-strip" href="/writing/">
+      <span class="ss-k">Stories &amp; journeys 🔒</span>
+      <span class="ss-t">Memoir, travel journals, the Westin years, the Y2K archive and <em>Myles</em>, for family and friends.</span>
+      <span class="ss-go">The collections →</span>
+    </a>
 
 <div class="daily-quote" id="daily-quote-wrap"></div>
 
