@@ -80,13 +80,13 @@ def build():
         n = len(g)
         out += [
             f'        <section class="topic-card" aria-labelledby="topic-{t["id"]}">',
-            *([f'          <a class="topic-media" href="/tags.html#topic={t["id"]}" tabindex="-1" aria-hidden="true">'
+            *([f'          <a class="topic-media" href="/topics/{t["id"]}/" tabindex="-1" aria-hidden="true">'
                f'<img class="topic-img" src="{esc(t["img"])}" alt="" loading="lazy" decoding="async"></a>']
               if t.get("img") else []),
-            f'          <h3 class="topic-name" id="topic-{t["id"]}"><span class="topic-icon" aria-hidden="true">{t["icon"]}</span>{esc(t["name"])}</h3>',
+            f'          <h3 class="topic-name" id="topic-{t["id"]}"><span class="topic-icon" aria-hidden="true">{t["icon"]}</span><a href="/topics/{t["id"]}/">{esc(t["name"])}</a></h3>',
             f'          <p class="topic-blurb">{esc(t["blurb"])}</p>',
             f'          <ul class="topic-latest">{items}</ul>',
-            f'          <a class="topic-all" href="/tags.html#topic={t["id"]}">All {n} {"entry" if n == 1 else "entries"} &rarr;</a>',
+            f'          <a class="topic-all" href="/topics/{t["id"]}/">All {n} {"entry" if n == 1 else "entries"} &rarr;</a>',
             '        </section>']
     out += ['      </div>', '      <!-- TOPICS:END -->']
     block = "\n".join(out)

@@ -233,6 +233,34 @@ html pre {
 html .post-item-date { color: var(--stone); }
 
 /* ──────────────────────────────────────────────────────────────
+   SITE MENU — the six doors in every page header (redesign step 4)
+
+   Written into each page by scripts/site_nav.py as <nav class="site-nav">.
+   Pages already style a bare `nav` in their own ways; these rules make the
+   menu look the same everywhere. `html header nav.site-nav` is (0,1,3), so
+   it beats a page's `nav` (0,0,1) and `header nav a` (0,0,3).
+   ────────────────────────────────────────────────────────────── */
+html header nav.site-nav {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end;
+  gap: .35rem 1.35rem; margin: 0; padding: 0; position: static; transform: none;
+  background: none; border: 0; width: auto;
+}
+html header nav.site-nav a {
+  font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .12em;
+  text-transform: uppercase; text-decoration: none; color: var(--ink);
+  padding: .2rem 0; border: 0; border-bottom: 2px solid transparent; background: none;
+  white-space: nowrap; display: inline-block;
+}
+html header nav.site-nav a:hover { color: var(--rust); border-bottom-color: var(--rust); background: none; }
+html header nav.site-nav a[aria-current="page"] { color: var(--rust); border-bottom-color: var(--rust); }
+html header nav.site-nav a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+html header nav.site-nav .theme-toggle { margin-left: .25rem; padding: 0; }
+@media (max-width: 720px) {
+  html header .masthead-inner, html header.top .wrap { flex-wrap: wrap; row-gap: .5rem; }
+  html header nav.site-nav { width: 100%; justify-content: flex-start; gap: .3rem 1rem; }
+}
+
+/* ──────────────────────────────────────────────────────────────
    KEEP READING — three related posts above the footer (redesign step 2)
 
    Generated into every post by scripts/keep_reading.py, between

@@ -57,9 +57,9 @@ then merges.
 | 2 | "Keep reading" cards at the end of every post | ✅ live Oct 20 |
 | 3a | Homepage images: featured carousel and image topic cards | ✅ live Oct 20 |
 | 3b | Homepage layout: six-door nav, Start-here paths, Live right now | ✅ live Oct 20 |
-| 4 | Topic pages; Work, Maps & films, Live data pages | |
+| 4 | Topic pages (/topics/) | ✅ on `redesign-c` |
 | 5 | Outside page; the Stories front door | |
-| 6 | Shared header across brooksgroves.com and the subdomains | |
+| 6 | Shared header across brooksgroves.com and the subdomains | main site ✅ on `redesign-c`; subdomains to do |
 | — | og:image on every post (social previews, search) | ongoing, needs images |
 | — | RSS feed | |
 
@@ -132,6 +132,30 @@ footer of every post (69 posts), between `KEEP-READING` markers, plus a
   M2.5+ quake of the last day from the USGS feed AFTERSHOCK uses, and
   Rainier from `/rainier-snowpack/data/processed/snotel_latest.json`. A
   tile that can't load says so and still links to its dashboard.
+
+### Step 4: topic pages (on `redesign-c`)
+
+`scripts/topic_pages.py` writes `/topics/` and `/topics/<id>/` from
+`tags.html` and `data/topics.json` (each topic now lists its
+`dashboards`: name, url, img, blurb). Each page: hero image and blurb,
+live dashboards as image cards, every post with its picture and a tag
+filter (tool tags like Python are skipped; `#tag=Wildfire` links work),
+and the other topics. Homepage topic cards and Keep reading's "More in"
+link here now. Runs in the Home topics workflow.
+
+### Step 6 (main site): the same menu on every page (on `redesign-c`)
+
+`scripts/site_nav.py` puts the six doors in the header of 105 pages,
+marks the current door, and keeps each page's theme button. Left alone:
+the homepage (its own menu with dropdowns), the topic pages (same links,
+their own header), the games, 404, and four pages with their own
+designs (FuelCast, Sports, Recipes, the recipe extractor). Styles:
+"SITE MENU" in `css/site-footer.css`. Runs in the Home topics workflow.
+
+A note on the contrast audit: dark-mode counts include colours caught
+mid-transition (pages animate colour for 0.15–0.2 s). Re-measured after
+600 ms, the blog index, tags page and secchi post have zero dark-mode
+failures. Use a longer settle time for dark-mode numbers.
 
 ## Image wish list
 
