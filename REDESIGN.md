@@ -177,6 +177,16 @@ emoji in the zone headings, dates and small labels in readable
 the whole card. Every id the live-data scripts use is unchanged. On a
 phone the jump cards hide and the sticky bar does the job.
 
+### Homepage topic cards moved up (live Oct 20)
+
+The six topic cards were live but sat far down the page in the Writing
+column, under "Stories & Journeys", where Brooks didn't see them. They
+now have their own full-width **Topics** section right after Start here
+(order: Featured → Start here → Topics → Live right now → The Work …).
+`home_topics.py` writes two blocks: the cards between `TOPICS` markers
+and the "Latest" post between `LATEST` markers (still in the Writing
+column).
+
 ## Image wish list
 
 Posts and projects with no usable image yet (33). Each needs a 1200×630
