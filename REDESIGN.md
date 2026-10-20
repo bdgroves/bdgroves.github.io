@@ -239,12 +239,6 @@ picture works; add it as the post's og:image or to `IMAGE_OVERRIDES` in
 `scripts/keep_reading.py`, and every card, cover and preview picks it up.
 
 Recent posts (most seen):
-- Where the Trail Runs Out (RIDGELINE)
-- Six Islands, Six Lizards (ANOLE-WATCH)
-- What Really Happened on Easter Island
-- The Alert Bots, Revisited
-- I Wanted to Play Star Frontiers Again (games engine)
-- FuelCast
 
 Older posts:
 - Thirty Minutes, Fifty Years of Fire (Tuolumne watershed)
@@ -262,7 +256,7 @@ Other pages:
 - Quantum Physics and Volcanology curricula
 - Sports and Beer; Giro, Tour and Vuelta trackers
 
-Done with Brooks's images: The Rock Eaters, HopLove, Project Kiva, LiDAR Explore, PELE,
+Done with Brooks's images: RIDGELINE, Six Islands, Rapa Nui (Easter Island), The Alert Bots, Four Games One Engine, FuelCast (batch 1, from `docs/hero-prompts-batch-1.md`), The Rock Eaters, HopLove, Project Kiva, LiDAR Explore, PELE,
 Rainier Snowpack, SIERRA-FLOW, FOG-WATCH, AFTERSHOCK, Sierra Streamflow,
 PUGET-TIDES. Reusing pictures already on the site: SOLSTICE, Weather
 Station and CASCADIA-WX first posts (from their "Revisited" posts).

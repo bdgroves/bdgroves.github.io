@@ -60,6 +60,13 @@ IMAGE_OVERRIDES = {
     "/blog/sierra-streamflow-2027-post.html": "/images/features/streamflow.jpg",
     "/blog/puget-tides-post.html": "/images/features/puget-tides.jpg",
     "/blog/rock-eaters-post.html": "/blog/img/rock-eaters/og.jpg",
+    # hero images made with docs/hero-prompts-batch-1.md (Oct 20)
+    "/blog/ridgeline-post.html": "/blog/img/ridgeline-post/og.jpg",
+    "/blog/six-islands-six-lizards.html": "/blog/img/six-islands-six-lizards/og.jpg",
+    "/blog/easter-island.html": "/blog/img/easter-island/og.jpg",
+    "/blog/alert-bots-revisited-post.html": "/blog/img/alert-bots-revisited-post/og.jpg",
+    "/blog/games-engine.html": "/blog/img/games-engine/og.jpg",
+    "/fuelcast.html": "/images/features/fuelcast.jpg",
     # the first versions of projects whose "Revisited" posts have pictures
     "/blog/solstice-post.html": "/images/features/solstice.jpg",
     "/blog/weather-station-post.html": "/blog/img/weather-station-revisited/measured-then-forecast.jpg",
