@@ -241,7 +241,7 @@ Rainier Snowpack, SIERRA-FLOW, FOG-WATCH, AFTERSHOCK, Sierra Streamflow,
 PUGET-TIDES. Reusing pictures already on the site: SOLSTICE, Weather
 Station and CASCADIA-WX first posts (from their "Revisited" posts).
 
-### Homepage The Work + Publications, Bookshelf, search, faster images (on `redesign-f`)
+### Homepage The Work + Publications, Bookshelf, search, faster images (live Oct 20)
 
 - **The Work**: all 18 project cards are image cards (WebP thumbnails in
   `images/thumbs/`). **Selected Publications** is a card.
