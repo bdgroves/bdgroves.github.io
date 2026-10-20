@@ -53,9 +53,9 @@ then merges.
 
 | # | Step | Status |
 |---|---|---|
-| 1 | Readability fixes in the shared stylesheet | ✅ on `redesign-a` |
-| 2 | "Keep reading" cards at the end of every post | ✅ on `redesign-a` |
-| 3a | Homepage images: featured carousel and image topic cards | ✅ on `redesign-a` |
+| 1 | Readability fixes in the shared stylesheet | ✅ live Oct 20 |
+| 2 | "Keep reading" cards at the end of every post | ✅ live Oct 20 |
+| 3a | Homepage images: featured carousel and image topic cards | ✅ live Oct 20 |
 | 3b | Homepage layout: six-door nav, Start-here paths, Live right now | next |
 | 4 | Topic pages; Work, Maps & films, Live data pages | |
 | 5 | Outside page; the Stories front door | |
