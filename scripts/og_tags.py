@@ -91,6 +91,9 @@ def main():
                     s = re.sub(r'(<meta[^>]+property="og:image"[^>]+content=")[^"]*(")', r"\g<1>" + SITE + pic + r"\g<2>", s, count=1)
                 else:
                     add.append(f'<meta property="og:image" content="{SITE}{pic}">')
+        if meta(s, "twitter:card") == "summary" and (meta(s, "og:image") or any("og:image" in x for x in add)):
+            # the small square card wastes the picture; use the large one
+            s = re.sub(r'(<meta[^>]+name="twitter:card"[^>]+content=")summary(")', r"\1summary_large_image\2", s, count=1)
         if not meta(s, "twitter:card"):
             add.append('<meta name="twitter:card" content="summary_large_image">')
         if add:
