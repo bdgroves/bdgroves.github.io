@@ -154,6 +154,9 @@ picture; when one lands, add it as the post's `og:image` (or to
 
 Done: **HopLove** (the "Look at a can. Know the hops." poster,
 `images/features/hoplove.jpg` and `.webp`).
+Done: **Project Kiva** ("Reading the ground with lasers") and **LiDAR Explore**
+("From point clouds to forest intelligence"), from Brooks, Oct 20. LiDAR Explore
+was added to the featured carousel (10 projects now).
 
 ## Known issues to pick up
 

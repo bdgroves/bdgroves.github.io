@@ -48,6 +48,8 @@ SIBLING_REPOS = ("hoplove/", "secchi/", "PELE/", "aftershock/", "solstice/", "pr
 IMAGE_OVERRIDES = {
     "/hoplove/": "/images/features/hoplove.jpg",
     "/blog/hoplove-post.html": "/images/features/hoplove.jpg",
+    "/blog/finding-the-trees.html": "/images/features/lidar-explore.jpg",
+    "/blog/project-kiva-post.html": "/images/features/project-kiva.jpg",
 }
 # Accent for the no-image card, by topic id (same accents as the redesign mockups).
 TOPIC_COLORS = {"earth": "var(--rust)", "nature": "var(--sage)", "weather": "#5a7a8a",
