@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Work · Brooks Groves</title>
+  <meta name="description" content="Brooks Groves&#x27;s GIS and data projects: live dashboards, lidar atlases and analyses, by field.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Work · Brooks Groves">
+  <meta property="og:description" content="Brooks Groves&#x27;s GIS and data projects: live dashboards, lidar atlases and analyses, by field.">
+  <meta property="og:url" content="https://brooksgroves.com/work/">
+  <meta property="og:image" content="https://brooksgroves.com/images/features/mother-lode.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc; --sage:#4a5c45; --rust:#8b3a2a;
+             --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sky:#5a7a8a; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; line-height:1.7; }
+    a { color:var(--rust); }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust),var(--gold) 50%,var(--sage)); }
+    .tp-header { border-bottom:2px solid var(--ink); }
+    .tp-header-in { max-width:1200px; margin:0 auto; padding:18px clamp(16px,4vw,32px); display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:10px 32px; }
+    .tp-name { font-family:'Playfair Display',serif; font-weight:900; font-size:30px; letter-spacing:-.02em; text-decoration:none; color:var(--ink); }
+    .tp-nav { display:flex; flex-wrap:wrap; align-items:center; gap:6px 22px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+    .tp-nav a { color:var(--ink); text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px; }
+    .tp-nav a:hover { color:var(--rust); border-bottom-color:var(--rust); }
+    .tp-nav a[aria-current="page"] { color:var(--rust); border-bottom-color:var(--rust); }
+    .tp-main { max-width:1200px; margin:0 auto; padding:0 clamp(16px,4vw,32px) 24px; }
+    .tp-hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:32px; align-items:center; padding:36px 0 28px; border-bottom:4px solid var(--tc,var(--gold)); }
+    .tp-hero img { width:100%; aspect-ratio:16/7; object-fit:cover; display:block; border:1px solid var(--mist); }
+    .tp-back { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--stone); text-decoration:none; }
+    .tp-back:hover { color:var(--rust); }
+    .tp-h1 { margin:10px 0 12px; font-family:'Playfair Display',serif; font-weight:900; font-size:clamp(34px,5vw,52px); line-height:1.05; letter-spacing:-.02em; }
+    .tp-blurb { margin:0 0 10px; font-size:18px; color:var(--stone); max-width:36em; }
+    .tp-count { font-family:'DM Mono',monospace; font-size:12px; color:var(--stone); }
+    @media (max-width:760px) { .tp-hero { grid-template-columns:1fr; gap:18px; padding-top:24px; } .tp-hero img { order:-1; } }
+    .tp-sec { padding:32px 0; border-bottom:1px solid var(--mist); }
+    .tp-sec:last-of-type { border-bottom:none; }
+    .tp-label { margin:0 0 16px; font-family:'DM Mono',monospace; font-weight:400; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink); }
+    .tp-dash { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
+    .tp-card { display:flex; flex-direction:column; gap:6px; padding:0 0 16px; border:1px solid var(--mist); background:var(--white); color:var(--ink); text-decoration:none; overflow:hidden; transition:border-color .18s, box-shadow .18s, transform .18s; }
+    .tp-card:hover { border-color:var(--stone); transform:translateY(-2px); box-shadow:0 10px 24px -16px rgba(28,26,22,.45); }
+    .tp-card img, .tp-card .tp-noimg { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; margin-bottom:6px; border-bottom:1px solid var(--mist); background:var(--cream); }
+    .tp-noimg { display:flex !important; align-items:center; justify-content:center; font-size:44px; border-bottom:3px solid var(--tc,var(--gold)) !important; }
+    .tp-card b { padding:0 16px; font-family:'Playfair Display',serif; font-size:18px; line-height:1.3; }
+    .tp-card span.d { padding:0 16px; font-size:13.5px; color:var(--stone); line-height:1.55; }
+    .tp-chips { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 8px; }
+    .tp-chip { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; padding:8px 12px; border:1px solid var(--mist); background:none; color:var(--ink); cursor:pointer; }
+    .tp-chip:hover { border-color:var(--ink); }
+    .tp-chip[aria-pressed="true"] { background:var(--ink); color:var(--parchment); border-color:var(--ink); }
+    .tp-chip:focus-visible, .tp-card:focus-visible { outline:2px solid var(--rust); outline-offset:2px; }
+    .tp-post { display:grid; grid-template-columns:120px minmax(0,1fr) 200px; gap:24px; padding:20px 0; border-bottom:1px solid var(--mist); align-items:start; }
+    .tp-post[hidden] { display:none; }
+    .tp-date { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--stone); padding-top:4px; }
+    .tp-post h3 { margin:0 0 6px; font-family:'Playfair Display',serif; font-size:21px; line-height:1.3; }
+    .tp-post h3 a { color:var(--ink); text-decoration:none; }
+    .tp-post h3 a:hover { color:var(--rust); }
+    .tp-post p { margin:0; font-size:15px; color:var(--stone); line-height:1.65; }
+    .tp-thumb { display:block; }
+    .tp-thumb img { width:200px; aspect-ratio:3/2; object-fit:cover; display:block; border:1px solid var(--mist); }
+    @media (max-width:760px) { .tp-post { grid-template-columns:1fr; gap:8px; } .tp-thumb { order:-1; } .tp-thumb img { width:100%; aspect-ratio:16/9; } }
+    .tp-empty { font-size:15px; color:var(--stone); padding:16px 0; }
+    .tp-others { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px; }
+    .tp-other { display:flex; flex-direction:column; border:1px solid var(--mist); background:var(--white); color:var(--ink); text-decoration:none; overflow:hidden; }
+    .tp-other img { width:100%; aspect-ratio:16/7; object-fit:cover; display:block; }
+    .tp-other span { padding:10px 12px; font-family:'Playfair Display',serif; font-weight:700; font-size:15px; line-height:1.3; }
+    .tp-other small { display:block; font-family:'DM Mono',monospace; font-weight:400; font-size:11px; color:var(--stone); margin-top:2px; }
+    .tp-other:hover { border-color:var(--ink); }
+    .theme-toggle { background:none; border:none; cursor:pointer; padding:0; font-size:14px; color:var(--stone); }
+    @media (prefers-reduced-motion: reduce) { .tp-card { transition:none; } .tp-card:hover { transform:none; } }
+    html[data-theme="dark"] .tp-chip[aria-pressed="true"] { background:var(--ink); color:#17150f; }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+  <script>
+    (function(){ try { var s = localStorage.getItem('bg_theme'); var d = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+      if (s === 'dark' || (!s && d)) document.documentElement.setAttribute('data-theme','dark'); } catch(e) {} })();
+  </script>
+
+<style>
+  .hb-fields { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px; }
+  .hb-field { display:flex; flex-direction:column; gap:4px; padding:16px 18px; border:1px solid var(--mist); border-top:3px solid var(--gold);
+              background:var(--white); color:var(--ink); text-decoration:none; }
+  .hb-field:hover { border-color:var(--stone); }
+  .hb-field b { font-family:'Playfair Display',serif; font-size:19px; }
+  .hb-field span { font-size:14px; color:var(--stone); line-height:1.55; }
+  .hb-stack { display:flex; flex-wrap:wrap; gap:6px; padding:2px 16px 0; }
+  .hb-stack i { font-style:normal; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+                color:var(--stone); border:1px solid var(--mist); padding:2px 7px; }
+  .hb-live { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+  .hb-tile { display:flex; flex-direction:column; gap:5px; padding:18px 20px; border:1px solid var(--mist); background:var(--white);
+             color:var(--ink); text-decoration:none; border-top:3px solid var(--rust); }
+  .hb-tile:nth-child(2) { border-top-color:var(--gold); } .hb-tile:nth-child(3) { border-top-color:#5a7a8a; }
+  .hb-tile:hover { border-color:var(--ink); }
+  .hb-k { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--stone); }
+  .hb-v { font-family:'Playfair Display',serif; font-weight:900; font-size:28px; line-height:1.15; }
+  .hb-s { font-size:14px; color:var(--stone); line-height:1.5; }
+  .hb-group { margin:28px 0 12px; font-family:'Playfair Display',serif; font-size:22px; font-weight:700; }
+  .hb-group:first-of-type { margin-top:0; }
+  .hb-group a { color:var(--ink); text-decoration:none; } .hb-group a:hover { color:var(--rust); }
+</style>
+</head>
+<body>
+<div class="topline"></div>
+<header class="tp-header">
+  <div class="tp-header-in">
+    <a class="tp-name" href="/">Brooks Groves</a>
+    <nav class="tp-nav" aria-label="Main"><a href="/work/" aria-current="page">Work</a><a href="/writing/">Writing</a><a href="/maps.html">Maps &amp; films</a><a href="/live/">Live data</a><a href="/outside.html">Outside</a><a href="/about.html">About</a><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
+  </div>
+</header>
+
+<main class="tp-main">
+  <section class="tp-sec" style="border-bottom:4px solid var(--gold)">
+    <a class="tp-back" href="/">&larr; Home</a>
+    <h1 class="tp-h1">Work</h1>
+    <p class="tp-blurb">10 featured projects and eight fields: live dashboards, lidar atlases and the analyses behind them.</p>
+  </section>
+  <section class="tp-sec" aria-labelledby="f-h">
+    <h2 class="tp-label" id="f-h">Featured projects</h2>
+    <div class="tp-dash">
+      <a class="tp-card" href="https://brooksgroves.com/mother-lode/"><img src="/images/features/mother-lode.jpg" alt="" loading="lazy" decoding="async"><b>⛏️ Mother Lode: Gold Country in Lidar</b><span class="d">The gold belt where I grew up, with the trees peeled away. Five mining places in bare-earth lidar, from Columbia&#x27;s limestone pinnacles to the Harvard pit at Jamestown, and every USGS mine feature in Tuolumne County: 1,040 adits, shafts and prospect pits.</span><span class="hb-stack"><i>Python</i><i>PDAL</i><i>USGS 3DEP</i><i>USGS USMIN</i><i>USGS MRDS</i></span></a>
+      <a class="tp-card" href="https://brooksgroves.com/project-kiva"><img src="/images/features/project-kiva.jpg" alt="" loading="lazy" decoding="async"><b>🏺 Project Kiva: Ruins in Bare Earth</b><span class="d">Twelve archaeological places in bare-earth lidar, from Chaco Canyon to Cahokia and the Wisconsin effigy mounds. Peel back the aerial photo, switch between relief views that make walls, mounds and ditches show, and turn each site in 3D.</span><span class="hb-stack"><i>Python</i><i>USGS 3DEP</i><i>Lidar</i><i>Relief Views</i><i>forge3d</i></span></a>
+      <a class="tp-card" href="https://brooksgroves.com/lidar-explore/"><img src="/images/features/lidar-explore.jpg" alt="" loading="lazy" decoding="async"><b>🌲 LiDAR Explore: From Point Clouds to Forest Intelligence</b><span class="d">A synthetic Finnish forest with every tree known, then 1,840 real stands checked against Finland&#x27;s national inventory. Spin the point cloud, thin the laser and watch detection fall apart, and click any stand. Rebuilt from the open data on GitHub.</span><span class="hb-stack"><i>Python</i><i>PDAL</i><i>laspy</i><i>rasterio</i><i>Leaflet</i></span></a>
+      <a class="tp-card" href="https://brooksgroves.com/solstice"><img src="/images/features/solstice.jpg" alt="" loading="lazy" decoding="async"><b>☀️ SOLSTICE: The Sky Over Chaco</b><span class="d">The live Sun and Moon over Chaco Canyon, each great house&#x27;s real skyline with every sunrise of the year, and a forge3d flight down the canyon at solstice dawn.</span><span class="hb-stack"><i>Python</i><i>PyEphem</i><i>forge3d</i><i>USGS 3DEP</i><i>Leaflet</i></span></a>
+      <a class="tp-card" href="https://brooksgroves.com/fog-watch/"><img src="/images/features/fog-watch.jpg" alt="" loading="lazy" decoding="async"><b>🌫️ FOG-WATCH: Where the Fog Lives</b><span class="d">A fog climatology for the world&#x27;s great fog coasts: the Namib, the Atacama and San Francisco. Ten years of hourly ERA5 turned into a fog-blanket map with a month slider, an inland transect past Gobabeb, and heatmaps of exactly when the fog rolls in.</span><span class="hb-stack"><i>Python</i><i>ERA5</i><i>Open-Meteo</i><i>D3</i><i>Leaflet</i></span></a>
+      <a class="tp-card" href="https://brooksgroves.com/PELE"><img src="/images/features/pele.jpg" alt="" loading="lazy" decoding="async"><b>🌋 PELE: Hawaiʻi Volcanoes</b><span class="d">Kīlauea is in an ongoing eruption at Halemaʻumaʻu, fountaining in episodic bursts since December 2024. PELE tracks it live — real-time summit earthquakes, HVO webcams, alert levels, and a full episodic-fountaining log. Refreshes every six hours, no human in the loop.</span><span class="hb-stack"><i>Python</i><i>USGS HVO</i><i>GitHub Actions</i><i>Leaflet</i><i>HVO Webcams</i></span></a>
+      <a class="tp-card" href="https://brooksgroves.com/aftershock"><img src="/images/features/aftershock.jpg" alt="" loading="lazy" decoding="async"><b>🌍 AFTERSHOCK: Real-Time Seismic Monitor</b><span class="d">A live earthquake dashboard for the US and the world — pick any state or country, compare it with ten years of normal, and follow aftershock sequences as they decay. Built to watch the ground that watches us.</span><span class="hb-stack"><i>Python</i><i>USGS FDSN</i><i>Leaflet</i><i>GitHub Actions</i><i>GeoJSON</i></span></a>
+      <a class="tp-card" href="https://brooksgroves.com/rainier-snowpack"><img src="/images/features/rainier.jpg" alt="" loading="lazy" decoding="async"><b>❄️ STORM CHASER: Rainier Snowpack</b><span class="d">Automated Mt. Rainier snowpack monitoring — 7 SNOTEL ground stations and NASA MODIS, hourly. Nine panels track basin SWE, melt, freeze-thaw, and live NPS webcams. Runs every hour, forever, all winter and through the melt-out.</span><span class="hb-stack"><i>Python</i><i>R</i><i>GitHub Actions</i><i>NASA Earthdata</i><i>NRCS SNOTEL</i></span></a>
+      <a class="tp-card" href="/hoplove/"><img src="/images/features/hoplove.jpg" alt="" loading="lazy" decoding="async"><b>🍺 HopLove: Know Your Hops</b><span class="d">Every hop spec sheet hands you one confident number. HopLove keeps every source&#x27;s number instead — Hopsteiner, BarthHaas, the Hop Breeding Company, Indie Hops — and shows you where they disagree. 232 varieties, Washington and Oregon acreage from USDA, and a can-to-hops lookup for 2,000+ beers from 32 Pacific Northwest breweries, from Stoup and Georgetown to Block 15 — a camera button that reads the hops off any can, and my Untappd check-ins and ratings joined to the hops in each glass.</span><span class="hb-stack"><i>Node</i><i>Python</i><i>JSON Schema</i><i>USDA NASS</i><i>pixi</i></span></a>
+      <a class="tp-card" href="/secchi/"><img src="/images/features/secchi.jpg" alt="" loading="lazy" decoding="async"><b>🔵 secchi: A Modern Secchi Disk for Lake Tahoe</b><span class="d">Live water-clarity readings from the Tahoe Environmental Observatory Network — three YSI EXO sondes around the lake, sampled every fifteen minutes, cross-checked against USGS gauges on the tributaries. An undocumented API, forty-three sensors that turned out to be thirteen devices, and a five-digit parameter code that turned out to be the pollutant the TMDL actually regulates.</span><span class="hb-stack"><i>Python</i><i>TEON API</i><i>USGS</i><i>Leaflet</i><i>pixi</i></span></a>
+    </div>
+  </section>
+  <section class="tp-sec" aria-labelledby="by-h">
+    <h2 class="tp-label" id="by-h">By field</h2>
+    <div class="hb-fields">
+      <a class="hb-field" href="/meteorology.html"><b>🌩 Meteorology</b><span>Weather pipelines, atmospheric analysis, and forecast automation.</span></a>
+      <a class="hb-field" href="/hydrology.html"><b>💧 Hydrology</b><span>Streamflow, snowpack, and water-resource tracking across the Sierra and Cascades.</span></a>
+      <a class="hb-field" href="/geospatial.html"><b>🗺 Geospatial</b><span>GIS and remote sensing in Python, R and QGIS, led by a study of how far West Coast wildfires burn from fire stations.</span></a>
+      <a class="hb-field" href="/volcanology.html"><b>🌋 Volcanology</b><span>Live eruption monitoring and lahar hazard tracking.</span></a>
+      <a class="hb-field" href="/paleontology.html"><b>🦕 Paleontology</b><span>Machine-learning fossil-locality prediction: finding where to dig next.</span></a>
+      <a class="hb-field" href="/ecology.html"><b>🌿 Ecology</b><span>Projects mapped from GBIF and iNaturalist: cui-ui, golden trout, pikas, island lizards and kangaroo rats.</span></a>
+      <a class="hb-field" href="/geology.html"><b>🪨 Geology</b><span>Gold country in bare-earth lidar, and the ground that shakes.</span></a>
+      <a class="hb-field" href="/archaeology.html"><b>🏺 Archaeology</b><span>Ancient places in lidar, and the sky the builders watched.</span></a>
+    </div>
+  </section>
+  <section class="tp-sec">
+    <p class="tp-blurb">Every project is open source: <a href="https://github.com/bdgroves" target="_blank" rel="noopener">the code is on GitHub</a>, and <a href="/topics/">the posts behind them are here, by topic</a>.</p>
+  </section>
+</main>
+
+<script src="/js/site-footer.js" defer></script>
+<script>
+(function(){
+  var root = document.documentElement, btn = document.getElementById('theme-toggle');
+  function sync(){ var d = root.getAttribute('data-theme') === 'dark'; btn.textContent = d ? '\u25D0' : '\u25D1';
+    var l = d ? 'Switch to light mode' : 'Switch to dark mode'; btn.setAttribute('aria-label', l); btn.setAttribute('title', l); }
+  sync();
+  btn.addEventListener('click', function(){ var d = root.getAttribute('data-theme') === 'dark';
+    if (d) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', d ? 'light' : 'dark'); } catch(e) {}
+    sync(); });
+  // Tag filter: show the posts that carry the chosen tag.
+  var chips = document.querySelectorAll('.tp-chip'), rows = document.querySelectorAll('.tp-post'), empty = document.getElementById('tp-empty');
+  function pick(tag){
+    var shown = 0;
+    chips.forEach(function(c){ c.setAttribute('aria-pressed', c.dataset.tag === tag ? 'true' : 'false'); });
+    rows.forEach(function(r){ var ok = !tag || (r.dataset.tags || '').split('|').indexOf(tag) >= 0; r.hidden = !ok; if (ok) shown++; });
+    if (empty) empty.hidden = shown > 0;
+    try { history.replaceState(null, '', tag ? '#tag=' + encodeURIComponent(tag) : location.pathname); } catch(e) {}
+  }
+  chips.forEach(function(c){ c.addEventListener('click', function(){ pick(c.dataset.tag); }); });
+  var m = location.hash.match(/^#tag=(.+)$/); if (m) pick(decodeURIComponent(m[1]));
+})();
+</script>
+</body>
+</html>

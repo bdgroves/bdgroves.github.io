@@ -38,8 +38,8 @@ TOOL_TAGS = {"Python", "R", "JavaScript", "GitHub Actions", "Open Data", "Leafle
              "Automation", "Open Source", "Web", "Dashboard", "API", "Cloudflare",
              "Real-Time Data", "Personal Infrastructure", "Building", "AI"}
 
-NAV = [("Work", "/#work"), ("Writing", "/writing/"), ("Maps &amp; films", "/maps.html"),
-       ("Live data", "/#live"), ("Outside", "/outside.html"), ("About", "/about.html")]
+NAV = [("Work", "/work/"), ("Writing", "/writing/"), ("Maps &amp; films", "/maps.html"),
+       ("Live data", "/live/"), ("Outside", "/outside.html"), ("About", "/about.html")]
 
 HEAD = """<!DOCTYPE html>
 <html lang="en">
@@ -72,6 +72,7 @@ HEAD = """<!DOCTYPE html>
     .tp-nav {{ display:flex; flex-wrap:wrap; align-items:center; gap:6px 22px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }}
     .tp-nav a {{ color:var(--ink); text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px; }}
     .tp-nav a:hover {{ color:var(--rust); border-bottom-color:var(--rust); }}
+    .tp-nav a[aria-current="page"] {{ color:var(--rust); border-bottom-color:var(--rust); }}
     .tp-main {{ max-width:1200px; margin:0 auto; padding:0 clamp(16px,4vw,32px) 24px; }}
     .tp-hero {{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:32px; align-items:center; padding:36px 0 28px; border-bottom:4px solid var(--tc,var(--gold)); }}
     .tp-hero img {{ width:100%; aspect-ratio:16/7; object-fit:cover; display:block; border:1px solid var(--mist); }}
@@ -163,8 +164,8 @@ TAIL = """
 """
 
 
-def nav_html():
-    return "".join(f'<a href="{h}">{t}</a>' for t, h in NAV)
+def nav_html(current="Writing"):
+    return "".join(f'<a href="{h}"{" aria-current=\"page\"" if t == current else ""}>{t}</a>' for t, h in NAV)
 
 
 def page_url(t):

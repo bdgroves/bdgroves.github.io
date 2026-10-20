@@ -30,8 +30,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DOORS = [("Work", "/#work"), ("Writing", "/writing/"), ("Maps &amp; films", "/maps.html"),
-         ("Live data", "/#live"), ("Outside", "/outside.html"), ("About", "/about.html")]
+DOORS = [("Work", "/work/"), ("Writing", "/writing/"), ("Maps &amp; films", "/maps.html"),
+         ("Live data", "/live/"), ("Outside", "/outside.html"), ("About", "/about.html")]
 SKIP = {"index.html", "404.html"}
 SKIP_DIRS = {".git", "node_modules", "_site", ".pixi", "tools", "games", "hightimes-db"}
 
@@ -55,6 +55,10 @@ def door_for(rel: str) -> str | None:
         return "Writing"
     if rel.startswith("topics/"):
         return "Writing"
+    if rel.startswith("work/"):
+        return "Work"
+    if rel.startswith("live/"):
+        return "Live data"
     return None
 
 
