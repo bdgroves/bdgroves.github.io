@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: '0 6 * * *'
   workflow_dispatch:
+    inputs:
+      republish:
+        description: "Republish the site even if the shelf didn't change"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -95,7 +100,7 @@ jobs:
       # Pages deploy directly; the Bookshelf on Outside is then current the
       # same morning.
       - name: Republish the site
-        if: steps.commit.outputs.changed == 'true'
+        if: steps.commit.outputs.changed == 'true' || inputs.republish
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run jekyll-gh-pages.yml --ref main --repo "${{ github.repository }}"
