@@ -205,6 +205,30 @@ from `data/topics.json`, grouped by topic, weather first). The Work and
 Live data doors now open these pages on every site, including the story
 sites.
 
+### Finishing touches (on `redesign-g`)
+
+- **Dark mode**: text set in `--mist` (a border colour) is now `--stone`
+  on the race, Dakar, concert, tags, quotes and learning pages; page
+  accent variables (--lava, --storm, --deep, --forest …) get brighter
+  dark-mode values in `css/site-footer.css`. Audit (600 ms settle): dark
+  failures 1,334 → 573, light 640 → 448.
+- **Menus**: Recipes and the Recipe Extractor get the six doors.
+  FuelCast's page is a sign-in screen and Sports redirects to Outside, so
+  both are left as they are.
+- **Stories & Journeys** on the homepage is one quiet line linking to the
+  Writing page (the full front door), instead of six cards.
+- **Latest writing** moved up: the four newest posts as image cards, right
+  after Start here (written by `home_topics.py` between LATEST markers).
+  The old Writing column at the bottom is gone; the **quote of the day**
+  is now a quiet sign-off just above the footer.
+- **Outside** gets a fifth jump card, 📚 The Bookshelf.
+- **Analytics**: Brooks enabled Cloudflare's automatic injection for
+  brooksgroves.com, so the token is not needed. `scripts/analytics.py`
+  (Cloudflare Web Analytics, adds the beacon to every public page once
+  `data/analytics.json` has a site token) is the fallback; `scripts/analytics.py` adds Cloudflare Web Analytics to
+  every public page once `data/analytics.json` has the site token. Empty
+  token = off.
+
 ## Image wish list
 
 Pages that still show an emoji on their cards (23, Oct 20). Any 1200×630

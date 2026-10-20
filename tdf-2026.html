@@ -88,7 +88,7 @@
  .gc-name { font-weight:700; font-family:'Playfair Display',serif; }
  .gc-team { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); display:block; font-weight:400; }
  .gc-time { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); text-align:right; }
- .gc-empty { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--mist); padding:1rem 0; text-align:center; }
+ .gc-empty { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); padding:1rem 0; text-align:center; }
 
  /* JERSEYS */
  .jerseys { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; }
@@ -96,7 +96,7 @@
  .jersey-icon { font-size:1.4rem; }
  .jersey-label { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); margin-top:0.2rem; }
  .jersey-holder { font-family:'Playfair Display',serif; font-size:0.78rem; font-weight:700; margin-top:0.2rem; color:var(--ink); }
- .jersey-holder.empty { color:var(--mist); font-weight:400; font-style:italic; }
+ .jersey-holder.empty { color:var(--stone); font-weight:400; font-style:italic; }
 
  /* KEY STAGES */
  .key-stage { padding-bottom:0.75rem; border-bottom:1px solid var(--mist); margin-bottom:0.75rem; }
@@ -371,7 +371,7 @@ function renderStages(data) {
  el.className = 'stage-item' + (s.date <= today && !s.winner ? ' active' : '');
  el.innerHTML = `
  <div class="stage-num">S${s.num}</div>
- <div class="stage-date">${fmtDate(s.date)}<br><span style="color:var(--mist);font-size:0.5rem">${s.day.slice(0,3).toUpperCase()}</span></div>
+ <div class="stage-date">${fmtDate(s.date)}<br><span style="color:var(--stone);font-size:0.5rem">${s.day.slice(0,3).toUpperCase()}</span></div>
  <div class="stage-body">
  <div class="stage-route">${s.from} → ${s.to}</div>
  <div class="stage-desc-short">${s.desc}</div>
@@ -397,7 +397,7 @@ function renderStages(data) {
  <div class="stage-km">${s.km}km</div>
  <div class="stage-elev">↑${s.elevation.toLocaleString()}m</div>
  <div><span class="stage-type ${TYPE_CLASSES[s.type]}">${TYPE_LABELS[s.type]}</span></div>
- <div style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--mist);margin-top:0.4rem;">tap to expand</div>
+ <div style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--stone);margin-top:0.4rem;">tap to expand</div>
  </div>`;
 
  // Click to expand

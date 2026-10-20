@@ -256,7 +256,7 @@ html header nav.site-nav a[aria-current="page"] { color: var(--rust); border-bot
 html header nav.site-nav a:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
 html header nav.site-nav .theme-toggle { margin-left: .25rem; padding: 0; }
 @media (max-width: 720px) {
-  html header .masthead-inner, html header.top .wrap { flex-wrap: wrap; row-gap: .5rem; }
+  html header .masthead-inner, html header.top .wrap, html header .masthead-top { flex-wrap: wrap; row-gap: .5rem; }
   html header nav.site-nav { width: 100%; justify-content: flex-start; gap: .3rem 1rem; }
 }
 
@@ -461,6 +461,32 @@ html[data-theme="dark"] .mobile-nav,
 html[data-theme="dark"] .masthead { background: #17150f; }
 /* The weather bar is var(--ink) too, which turns light in dark mode. */
 html[data-theme="dark"] .weather-bar { background: #0f0d0a; }
+html[data-theme="dark"] .weather-bar .wx-hi { color: #d6d0c4; }
+html[data-theme="dark"] .weather-bar .wx-rain { color: #8fb4cf; }
+
+/* Page accents. Many pages add their own colour variables (--lava, --storm,
+   --deep, --forest …) tuned for parchment; on the dark background they
+   were too dark to read. Brighter versions of the same hues, used only in
+   dark mode. Same (0,1,1) specificity as above, so they beat a page's
+   :root. Pages that use one of these as a badge background get dark text
+   on it in dark mode (--white flips), so the brighter fill helps there too. */
+html[data-theme="dark"] {
+  --lava: #e0705c; --fire: #e0705c; --seismic: #e0705c;
+  --music: #d97aa6; --pink: #ff7aa3;
+  --deep: #9db8db; --storm: #86aedb; --sky: #8fb4cf; --study: #8fb4cf; --river: #8fb4cf; --water: #78bad8;
+  --green: #74c79b; --forest: #94c780; --accent-deep: #a6c987; --contained: #a6c987; --contain: #a6c987;
+  --petroglyph: #c99b72; --char: #cfa98d; --dune: #e2a565;
+  --data: #dbb557; --mesa: #dbb557; --savanna: #dbb557;
+  --ink-soft: #b9ae9e;
+}
+/* A few pages use those accents as a dark panel behind light text; keep
+   those panels dark. */
+html[data-theme="dark"] .validation-banner,
+html[data-theme="dark"] .validation-block,
+html[data-theme="dark"] .project-badge.pleistocene { background: #1e2d44; }
+html[data-theme="dark"] .progress-box,
+html[data-theme="dark"] .stat-cell.contained { background: #2f4a22; color: #ece6da; }
+html[data-theme="dark"] .route-pin { background: #a8652a; }
 html[data-theme="dark"] img:not([src*=".svg"]) { filter: brightness(.92); }
 
 /* Code and pre blocks read as "inverted" in light mode; leave them dark. */

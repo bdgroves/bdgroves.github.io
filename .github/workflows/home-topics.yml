@@ -6,7 +6,7 @@ name: Home topics
 on:
   push:
     branches: [main]
-    paths: ["tags.html", "data/topics.json", "scripts/home_topics.py", "scripts/keep_reading.py", "scripts/topic_pages.py", "scripts/hub_pages.py", "scripts/site_nav.py", "scripts/og_tags.py", "scripts/post_polish.py", "scripts/web_images.py"]
+    paths: ["tags.html", "data/topics.json", "data/analytics.json", "scripts/analytics.py", "scripts/home_topics.py", "scripts/keep_reading.py", "scripts/topic_pages.py", "scripts/hub_pages.py", "scripts/site_nav.py", "scripts/og_tags.py", "scripts/post_polish.py", "scripts/web_images.py"]
   workflow_dispatch:
 
 permissions:
@@ -27,6 +27,7 @@ jobs:
       - run: python scripts/site_nav.py       # the six-door menu on every page
       - run: python scripts/og_tags.py        # link-preview tags on every post
       - run: python scripts/post_polish.py    # cover picture + reading aids on every post
+      - run: python scripts/analytics.py      # Cloudflare Web Analytics beacon (token in data/analytics.json)
       - run: python -m pip install --quiet pillow
       - run: python scripts/web_images.py     # WebP copies + srcset; runs last
       - name: Commit if the cards changed
