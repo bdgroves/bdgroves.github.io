@@ -122,7 +122,6 @@ picture; when one lands, add it as the post's `og:image` (or to
 `IMAGE_OVERRIDES` in `scripts/keep_reading.py`) and re-run the script.
 
 - The Rock Eaters
-- The Handoff: Teaching SIERRA-FLOW a New Language
 - The Alert Bots, Revisited
 - Where the Trail Runs Out (RIDGELINE)
 - Six Islands, Six Lizards
@@ -143,9 +142,7 @@ picture; when one lands, add it as the post's `og:image` (or to
 - DIPODOMYS
 - Little Free Pantry
 - Weather Station
-- PELE post
 - FORTRAN, Snowpack, and the Language the Atmosphere Speaks
-- COBOL, Streamflow, and Artemis II
 - Why I Switched to pixi
 - Building a Live Streamflow Dashboard
 - A Draught of the South Land (book review)
@@ -157,6 +154,8 @@ Done: **HopLove** (the "Look at a can. Know the hops." poster,
 Done: **Project Kiva** ("Reading the ground with lasers") and **LiDAR Explore**
 ("From point clouds to forest intelligence"), from Brooks, Oct 20. LiDAR Explore
 was added to the featured carousel (10 projects now).
+Done: **PELE**, **Rainier Snowpack** (also the Weather & Water topic card) and
+**SIERRA-FLOW** (cards for the COBOL and Handoff posts), from Brooks, Oct 20.
 
 ## Known issues to pick up
 

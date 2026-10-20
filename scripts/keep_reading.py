@@ -50,6 +50,10 @@ IMAGE_OVERRIDES = {
     "/blog/hoplove-post.html": "/images/features/hoplove.jpg",
     "/blog/finding-the-trees.html": "/images/features/lidar-explore.jpg",
     "/blog/project-kiva-post.html": "/images/features/project-kiva.jpg",
+    "/blog/pele-blog-post.html": "/images/features/pele.jpg",
+    "/blog/rainier-snowpack-post.html": "/images/features/rainier.jpg",
+    "/blog/sierra-flow-cobol-post.html": "/images/features/sierra-flow.jpg",
+    "/blog/sierra-flow-handoff-post.html": "/images/features/sierra-flow.jpg",
 }
 # Accent for the no-image card, by topic id (same accents as the redesign mockups).
 TOPIC_COLORS = {"earth": "var(--rust)", "nature": "var(--sage)", "weather": "#5a7a8a",
