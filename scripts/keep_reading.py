@@ -59,6 +59,7 @@ IMAGE_OVERRIDES = {
     "/blog/streamflow-post.html": "/images/features/streamflow.jpg",
     "/blog/sierra-streamflow-2027-post.html": "/images/features/streamflow.jpg",
     "/blog/puget-tides-post.html": "/images/features/puget-tides.jpg",
+    "/blog/rock-eaters-post.html": "/blog/img/rock-eaters/og.jpg",
     # the first versions of projects whose "Revisited" posts have pictures
     "/blog/solstice-post.html": "/images/features/solstice.jpg",
     "/blog/weather-station-post.html": "/blog/img/weather-station-revisited/measured-then-forecast.jpg",

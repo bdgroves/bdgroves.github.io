@@ -231,12 +231,14 @@ sites.
 
 ## Image wish list
 
+**Every new post gets a picture** (standing rule from Oct 20). Make it with
+the house-style prompt in `docs/hero-image-prompt.md`.
+
 Pages that still show an emoji on their cards (23, Oct 20). Any 1200×630
 picture works; add it as the post's og:image or to `IMAGE_OVERRIDES` in
 `scripts/keep_reading.py`, and every card, cover and preview picks it up.
 
 Recent posts (most seen):
-- The Rock Eaters
 - Where the Trail Runs Out (RIDGELINE)
 - Six Islands, Six Lizards (ANOLE-WATCH)
 - What Really Happened on Easter Island
@@ -260,7 +262,7 @@ Other pages:
 - Quantum Physics and Volcanology curricula
 - Sports and Beer; Giro, Tour and Vuelta trackers
 
-Done with Brooks's images: HopLove, Project Kiva, LiDAR Explore, PELE,
+Done with Brooks's images: The Rock Eaters, HopLove, Project Kiva, LiDAR Explore, PELE,
 Rainier Snowpack, SIERRA-FLOW, FOG-WATCH, AFTERSHOCK, Sierra Streamflow,
 PUGET-TIDES. Reusing pictures already on the site: SOLSTICE, Weather
 Station and CASCADIA-WX first posts (from their "Revisited" posts).
