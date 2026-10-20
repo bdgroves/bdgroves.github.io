@@ -6,7 +6,7 @@ name: Home topics
 on:
   push:
     branches: [main]
-    paths: ["tags.html", "data/topics.json", "scripts/home_topics.py", "scripts/keep_reading.py", "scripts/topic_pages.py", "scripts/site_nav.py", "scripts/og_tags.py"]
+    paths: ["tags.html", "data/topics.json", "scripts/home_topics.py", "scripts/keep_reading.py", "scripts/topic_pages.py", "scripts/site_nav.py", "scripts/og_tags.py", "scripts/post_polish.py"]
   workflow_dispatch:
 
 permissions:
@@ -22,6 +22,7 @@ jobs:
       - run: python3 scripts/topic_pages.py    # /topics/ and one landing page per topic
       - run: python3 scripts/site_nav.py       # the six-door menu on every page
       - run: python3 scripts/og_tags.py        # link-preview tags on every post
+      - run: python3 scripts/post_polish.py    # cover picture + reading aids on every post
       - name: Commit if the cards changed
         run: |
           git config user.name  "github-actions[bot]"
