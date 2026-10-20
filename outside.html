@@ -2297,8 +2297,9 @@ document.getElementById('current-year').textContent=new Date().getFullYear();
     const res = await fetch('/books.json?t=' + Date.now());
     if (!res.ok) throw new Error(res.status);
     const d = await res.json();
-    const books = [...(d.currently_reading || []).map(b => ({...b, s:'reading'})),
-                   ...(d.recently_read || []).slice(0, 8).map(b => ({...b, s:'done'}))];
+    const reading = (d.currently_reading || []).map(b => ({...b, s:'reading'}));
+    const books = [...reading,
+                   ...(d.recently_read || []).slice(0, Math.max(0, 12 - reading.length)).map(b => ({...b, s:'done'}))];   // 12 on the shelf
     if (!books.length) throw new Error('empty');
     el.innerHTML = books.map(b => {
       const img = b.image ? b.image.replace(/\._S[XY]\d+_\./, '._SX300_.') : '';

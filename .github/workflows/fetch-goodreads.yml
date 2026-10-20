@@ -60,7 +60,7 @@ jobs:
 
           try:
               xml = fetch_shelf("read")
-              output["recently_read"] = parse_books(xml, limit=5)
+              output["recently_read"] = parse_books(xml, limit=12)   # the Bookshelf on Outside shows up to 12 books
               print(f"Recently read: {len(output['recently_read'])} books")
           except Exception as e:
               print(f"Error: {e}")
