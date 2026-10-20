@@ -57,9 +57,9 @@ then merges.
 | 2 | "Keep reading" cards at the end of every post | ✅ live Oct 20 |
 | 3a | Homepage images: featured carousel and image topic cards | ✅ live Oct 20 |
 | 3b | Homepage layout: six-door nav, Start-here paths, Live right now | ✅ live Oct 20 |
-| 4 | Topic pages (/topics/) | ✅ live Oct 20 |
+| 4 | Topic pages (/topics/), /work/ and /live/ | ✅ live Oct 20 |
 | 5 | Outside page; the Stories front door | |
-| 6 | Shared header across brooksgroves.com and the subdomains | main site ✅ live Oct 20; journal, memoir, Y2K, Westin on `site-menu` branches |
+| 6 | Shared header across brooksgroves.com and the subdomains | main site ✅ live Oct 20; journal, memoir, Y2K, Westin live Oct 20 |
 | — | og:image on every post (social previews, search) | ongoing, needs images |
 | — | RSS feed | |
 
@@ -187,7 +187,7 @@ now have their own full-width **Topics** section right after Start here
 and the "Latest" post between `LATEST` markers (still in the Writing
 column).
 
-### Posts: cover, reading type, progress, contents (on `redesign-e`)
+### Posts: cover, reading type, progress, contents (live Oct 20)
 
 `scripts/post_polish.py` puts each post's own picture as a wide cover
 above the article (skipped if the same picture already opens it; 38 of
@@ -196,7 +196,7 @@ a Contents list for posts with four or more sections (open on desktop,
 folded on phones). Headline and body type are a little larger and
 balanced. Styles: "POSTS" in `css/site-footer.css`.
 
-### Work and Live data pages (on `redesign-e`)
+### Work and Live data pages (live Oct 20)
 
 `scripts/hub_pages.py` builds `/work/` (the 10 featured projects from the
 homepage `FEATURED` list, with images and stack, then the eight fields)
