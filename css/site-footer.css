@@ -64,7 +64,7 @@ html footer .fc-label {
   font-size: .5rem;
   letter-spacing: .16em;
   text-transform: uppercase;
-  color: #3a3a36;
+  color: #9a9183;  /* was #3a3a36: 1.5:1 on the footer, now 5.6:1 */
   margin-bottom: .35rem;
 }
 html footer .fc-value,
@@ -184,7 +184,7 @@ html footer .footer-private .fp-where {
   font-size: .55rem;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: #3a3a36;
+  color: #9a9183;  /* was #3a3a36: 1.5:1 on the footer, now 5.6:1 */
   margin-top: .5rem;
 }
 html footer .footer-private .fp-links { display: flex; flex-wrap: wrap; gap: 1.1rem; align-items: baseline; }
@@ -196,6 +196,128 @@ html footer .footer-private .fp-links a {
   border-bottom: 1px solid transparent;
 }
 html footer .footer-private .fp-links a:hover { color: var(--gold, #c8922a); border-bottom-color: var(--gold, #c8922a); }
+
+/* ──────────────────────────────────────────────────────────────
+   READABILITY — site-wide (redesign step 1, October 2026)
+
+   The light palette's secondary text failed WCAG AA: --stone #7a7268
+   was 4.2:1 on parchment and 3.9:1 on cream, and --gold #c8922a was
+   2.4:1. A Playwright audit of all 116 pages found ~12,300 text
+   elements under the bar, most of them --stone. These two values
+   keep the same hues, just darker:
+     --stone #6b645a  5.2:1 on parchment, 4.8:1 on cream
+     --gold  #8a6418  4.7:1 on parchment
+
+   `html:root` is (0,1,1) against the inline `:root` (0,1,0), so it
+   wins regardless of load order. It sits ABOVE the dark block, which
+   has the same specificity and so wins in dark mode by coming later.
+
+   Dark surfaces inside the light theme (the footer, nav dropdowns,
+   the mobile menu, the weather bar) want the brighter values back,
+   so they get the dark-theme pair locally. Custom properties inherit,
+   so setting them on the surface covers everything inside it.
+   ────────────────────────────────────────────────────────────── */
+html:root {
+  --stone: #6b645a;
+  --gold: #8a6418;
+}
+html footer,
+html .dropdown,
+html .mobile-nav,
+html .weather-bar,
+html pre {
+  --stone: #a2988a;  /* 6.3:1 on --ink */
+  --gold: #d9a63f;
+}
+/* Dates on the tags page were set in --mist, a border colour (1.35:1). */
+html .post-item-date { color: var(--stone); }
+
+/* ──────────────────────────────────────────────────────────────
+   KEEP READING — three related posts above the footer (redesign step 2)
+
+   Generated into every post by scripts/keep_reading.py, between
+   KEEP-READING markers. Everything is scoped `html .keep-reading ...`
+   so a post's own inline rules for a, h2, img and so on can't reach in.
+   Colours are the shared variables, so dark mode needs nothing extra.
+   ────────────────────────────────────────────────────────────── */
+html .keep-reading {
+  display: block;
+  margin: 4rem 0 0;
+  padding: 2.25rem clamp(1rem, 4vw, 3rem) 2.5rem;
+  border-top: 2px solid var(--ink);
+  background: var(--parchment);
+  font-family: 'Libre Baskerville', Georgia, serif;
+  text-align: left;
+}
+/* Posts style bare section, nav, h2, a and img in their own ways; reset
+   the inherited bits so the cards look the same on every post. */
+html .keep-reading, html .keep-reading * {
+  text-transform: none; letter-spacing: normal; text-align: left;
+  font-style: normal; box-sizing: border-box;
+}
+html .keep-reading .kr-inner { max-width: 1100px; margin: 0 auto; display: block; }
+html .keep-reading .kr-head {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  justify-content: space-between; gap: .5rem 1.5rem; margin: 0 0 1.25rem;
+}
+html .keep-reading .kr-label {
+  margin: 0; padding: 0; border: 0;
+  font-family: 'DM Mono', monospace; font-weight: 400;
+  font-size: .75rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--ink);
+}
+html .keep-reading .kr-more {
+  font-family: 'DM Mono', monospace; font-size: .75rem; letter-spacing: .06em;
+  color: var(--rust); text-decoration: none; border-bottom: 1px solid transparent;
+}
+html .keep-reading .kr-more:hover { border-bottom-color: var(--rust); }
+html .keep-reading .kr-grid {
+  display: grid; gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+html .keep-reading .kr-card {
+  display: flex; flex-direction: column; gap: .45rem;
+  padding: 0 0 1.1rem; overflow: hidden;
+  background: var(--white); border: 1px solid var(--mist);
+  color: var(--ink); text-decoration: none;
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+html .keep-reading .kr-card:hover {
+  transform: translateY(-2px); border-color: var(--stone);
+  box-shadow: 0 10px 24px -14px rgba(28, 26, 22, .45);
+}
+html .keep-reading .kr-card:focus-visible { outline: 2px solid var(--rust); outline-offset: 3px; }
+html .keep-reading .kr-img {
+  display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover;
+  margin: 0 0 .35rem; border: 0; border-bottom: 1px solid var(--mist);
+  background: var(--cream); max-width: none; height: auto;
+}
+html .keep-reading .kr-noimg {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.6rem; line-height: 1;
+  background: var(--cream);
+  border-bottom: 3px solid var(--kr-c, var(--gold));
+}
+html .keep-reading .kr-meta {
+  padding: 0 1.1rem;
+  font-family: 'DM Mono', monospace; font-size: .68rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--stone);
+}
+html .keep-reading .kr-title {
+  padding: 0 1.1rem;
+  font-family: 'Playfair Display', Georgia, serif; font-weight: 700;
+  font-size: 1.12rem; line-height: 1.3; color: var(--ink);
+}
+html .keep-reading .kr-card:hover .kr-title { color: var(--rust); }
+html .keep-reading .kr-dek {
+  padding: 0 1.1rem;
+  font-size: .85rem; line-height: 1.6; color: var(--stone);
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  html .keep-reading .kr-card { transition: none; }
+  html .keep-reading .kr-card:hover { transform: none; }
+}
 
 /* ──────────────────────────────────────────────────────────────
    DARK MODE — site-wide
@@ -242,6 +364,8 @@ html[data-theme="dark"] footer .footer-name { color: #ece6da; }
 html[data-theme="dark"] .dropdown,
 html[data-theme="dark"] .mobile-nav,
 html[data-theme="dark"] .masthead { background: #17150f; }
+/* The weather bar is var(--ink) too, which turns light in dark mode. */
+html[data-theme="dark"] .weather-bar { background: #0f0d0a; }
 html[data-theme="dark"] img:not([src*=".svg"]) { filter: brightness(.92); }
 
 /* Code and pre blocks read as "inverted" in light mode; leave them dark. */
