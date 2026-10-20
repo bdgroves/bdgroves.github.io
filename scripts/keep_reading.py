@@ -59,6 +59,10 @@ IMAGE_OVERRIDES = {
     "/blog/streamflow-post.html": "/images/features/streamflow.jpg",
     "/blog/sierra-streamflow-2027-post.html": "/images/features/streamflow.jpg",
     "/blog/puget-tides-post.html": "/images/features/puget-tides.jpg",
+    # the first versions of projects whose "Revisited" posts have pictures
+    "/blog/solstice-post.html": "/images/features/solstice.jpg",
+    "/blog/weather-station-post.html": "/blog/img/weather-station-revisited/measured-then-forecast.jpg",
+    "/blog/cascadia-wx-post.html": "/blog/img/cascadia-wx-revisited/console.jpg",
 }
 # Accent for the no-image card, by topic id (same accents as the redesign mockups).
 TOPIC_COLORS = {"earth": "var(--rust)", "nature": "var(--sage)", "weather": "#5a7a8a",

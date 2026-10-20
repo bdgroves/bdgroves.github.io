@@ -207,44 +207,50 @@ sites.
 
 ## Image wish list
 
-Posts and projects with no usable image yet (33). Each needs a 1200×630
-picture; when one lands, add it as the post's `og:image` (or to
-`IMAGE_OVERRIDES` in `scripts/keep_reading.py`) and re-run the script.
+Pages that still show an emoji on their cards (23, Oct 20). Any 1200×630
+picture works; add it as the post's og:image or to `IMAGE_OVERRIDES` in
+`scripts/keep_reading.py`, and every card, cover and preview picks it up.
 
+Recent posts (most seen):
 - The Rock Eaters
-- The Alert Bots, Revisited
 - Where the Trail Runs Out (RIDGELINE)
-- Six Islands, Six Lizards
-- FuelCast
+- Six Islands, Six Lizards (ANOLE-WATCH)
 - What Really Happened on Easter Island
-- From a Pile of Bookmarks to a Searchable Cookbook
-- Bob's Gang Wanted a Trade Journal
-- Boo Before You're Ready
+- The Alert Bots, Revisited
 - I Wanted to Play Star Frontiers Again (games engine)
-- Thirty Minutes, Fifty Years of Fire (its og:image points at
-  `/images/tuolumne-watershed-map.png`, which doesn't exist: a broken social
-  preview today)
+- FuelCast
+
+Older posts:
+- Thirty Minutes, Fifty Years of Fire (Tuolumne watershed)
 - BdgrovesBot
-- SOLSTICE post
 - Sierra Nevada Alert Bot
 - DIPODOMYS
 - Little Free Pantry
-- Weather Station
-- FORTRAN, Snowpack, and the Language the Atmosphere Speaks
+- From a Pile of Bookmarks to a Searchable Cookbook
+- Bob's Gang Wanted a Trade Journal
+- Boo Before You're Ready
 - Why I Switched to pixi
+
+Other pages:
 - A Draught of the South Land (book review)
 - Quantum Physics and Volcanology curricula
 - Sports and Beer; Giro, Tour and Vuelta trackers
 
-Done: **HopLove** (the "Look at a can. Know the hops." poster,
-`images/features/hoplove.jpg` and `.webp`).
-Done: **Project Kiva** ("Reading the ground with lasers") and **LiDAR Explore**
-("From point clouds to forest intelligence"), from Brooks, Oct 20. LiDAR Explore
-was added to the featured carousel (10 projects now).
-Done: **PELE**, **Rainier Snowpack** (also the Weather & Water topic card) and
-**SIERRA-FLOW** (cards for the COBOL and Handoff posts), from Brooks, Oct 20.
-Done: **FOG-WATCH** and **AFTERSHOCK** (carousel + post cards), **Sierra Streamflow**
-and **PUGET-TIDES** (post cards), from Brooks, Oct 20.
+Done with Brooks's images: HopLove, Project Kiva, LiDAR Explore, PELE,
+Rainier Snowpack, SIERRA-FLOW, FOG-WATCH, AFTERSHOCK, Sierra Streamflow,
+PUGET-TIDES. Reusing pictures already on the site: SOLSTICE, Weather
+Station and CASCADIA-WX first posts (from their "Revisited" posts).
+
+### Homepage The Work + Publications, Bookshelf, search, faster images (on `redesign-f`)
+
+- **The Work**: all 18 project cards are image cards (WebP thumbnails in
+  `images/thumbs/`). **Selected Publications** is a card.
+- **Reading** left the homepage for **The Bookshelf** on the Outside page
+  (bigger Goodreads covers; same `/books.json`).
+- **Search**: `/search/` (Pagefind). The index is built in the Pages
+  deploy workflow, not committed; every menu has "⌕ Search".
+- **Faster images**: `scripts/web_images.py` (runs last) serves WebP
+  copies from `img-opt/` with srcset; originals stay for link previews.
 
 ## Known issues to pick up
 
