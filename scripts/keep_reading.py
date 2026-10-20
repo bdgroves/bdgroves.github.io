@@ -84,7 +84,9 @@ def card_image(f: Path | None, url: str) -> str:
     s = BLOCK_RE.sub("", f.read_text(encoding="utf-8"))   # never pick up another post's card
     m = re.search(r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"', s) or \
         re.search(r'<meta[^>]+content="([^"]+)"[^>]+property="og:image"', s)
-    cands = [m.group(1)] if m else []
+    # og_tags.py gives image-less posts their topic's picture for link
+    # previews; on a card that would just repeat, so it doesn't count here.
+    cands = [m.group(1)] if m and "/images/features/topic-" not in m.group(1) else []
     body = s[s.find("<body"):]
     for im in re.finditer(r'<img[^>]+src="([^"]+)"', body):
         c = im.group(1)
