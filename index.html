@@ -96,10 +96,13 @@
     .lead-story { padding:0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); transition:background 0.2s; min-height:380px; }
     .lead-story > .lead-body { padding:2.25rem 2.5rem; display:flex; flex-direction:column; justify-content:center; }
     .lead-media { display:block; position:relative; overflow:hidden; background:var(--cream); border-right:1px solid var(--mist); }
-    .lead-img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s ease, opacity .35s ease; }
-    .lead-story:hover .lead-img { transform:scale(1.03); }
+    /* The whole image always shows (contain); a blurred copy of it fills the
+       rest of the frame so wide and tall images both sit naturally. */
+    .lead-img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; padding:.75rem; transition:transform .6s ease, opacity .35s ease; }
+    .lead-bg { position:absolute; inset:-8%; width:116%; height:116%; object-fit:cover; display:block; filter:blur(22px) saturate(1.1) brightness(.85); opacity:.9; transition:opacity .35s ease; }
+    .lead-story:hover .lead-img { transform:scale(1.015); }
     .lead-noimg { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:5rem; background:linear-gradient(160deg,var(--cream),var(--mist)); }
-    .lead-story.is-swapping .lead-body, .lead-story.is-swapping .lead-img { opacity:0; }
+    .lead-story.is-swapping .lead-body, .lead-story.is-swapping .lead-img, .lead-story.is-swapping .lead-bg { opacity:0; }
     .lead-story .lead-body { transition:opacity .35s ease; }
     @media(max-width:820px) { .lead-story { grid-template-columns:1fr; min-height:0; } .lead-media { aspect-ratio:16/9; border-right:none; border-bottom:1px solid var(--mist); } .lead-story > .lead-body { padding:1.5rem 1.25rem 1.75rem; } }
     .lead-controls { display:flex; align-items:center; gap:.75rem; padding:.7rem 1rem; }
@@ -108,12 +111,12 @@
     .lead-dot { width:28px; height:4px; padding:0; border:0; background:var(--mist); cursor:pointer; position:relative; }
     .lead-dot::after { content:''; position:absolute; inset:-10px 0; }
     .lead-dot[aria-current="true"] { background:var(--rust); }
-    @media(max-width:560px) { .lead-dot { width:16px; } }
+    @media(max-width:560px) { .lead-dot { width:12px; } .lead-dots { gap:.3rem; } }
     .lead-btn { font-family:'DM Mono',monospace; font-size:.8rem; background:none; border:1px solid var(--mist); color:var(--ink); width:2.1rem; height:2.1rem; cursor:pointer; line-height:1; }
     .lead-btn:hover { border-color:var(--ink); }
     .lead-btn:focus-visible, .lead-dot:focus-visible { outline:2px solid var(--rust); outline-offset:2px; }
     .lead-pause { font-size:.55rem; letter-spacing:-.1em; }
-    @media (prefers-reduced-motion: reduce) { .lead-img, .lead-story .lead-body { transition:none; } .lead-story:hover .lead-img { transform:none; } }
+    @media (prefers-reduced-motion: reduce) { .lead-img, .lead-bg, .lead-story .lead-body { transition:none; } .lead-story:hover .lead-img { transform:none; } }
     .lead-story:hover { background:var(--cream); }
     .lead-story .lead-body::before { content:'Featured Project'; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); display:block; margin-bottom:0.75rem; }
     .lead-kicker { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
@@ -634,7 +637,7 @@
     </div>
     <div class="lead-grid">
       <a href="https://brooksgroves.com/mother-lode/" target="_blank" class="lead-story" id="featured-hero">
-        <div class="lead-media"><img class="lead-img" src="/images/features/mother-lode.jpg" alt="Bare-earth lidar of Big Oak Flat, with the old mining places labelled" width="1200" height="1028"></div>
+        <div class="lead-media"><img class="lead-bg" src="/images/features/mother-lode.jpg" alt="" aria-hidden="true"><img class="lead-img" src="/images/features/mother-lode.jpg" alt="Bare-earth lidar of Big Oak Flat, with the old mining places labelled" width="1200" height="1028"></div>
         <div class="lead-body">
         <p class="lead-kicker">Geology · Lidar · USGS · Tuolumne County</p>
         <h1 class="lead-hed">⛏️ Mother Lode:<br><em>Gold Country in Lidar</em></h1>
@@ -1206,7 +1209,7 @@
     function paint(f) {
       el.href = f.url;
       media.innerHTML = f.img
-        ? `<img class="lead-img" src="${f.img}" alt="${f.alt || ''}">`
+        ? `<img class="lead-bg" src="${f.img}" alt="" aria-hidden="true"><img class="lead-img" src="${f.img}" alt="${f.alt || ''}">`
         : `<span class="lead-noimg" aria-hidden="true">${(f.hed.match(/^\S+/) || [''])[0]}</span>`;
       el.querySelector('.lead-kicker').textContent = f.kicker;
       el.querySelector('.lead-hed').innerHTML = f.hed;
