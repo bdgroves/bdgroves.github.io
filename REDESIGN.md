@@ -57,9 +57,9 @@ then merges.
 | 2 | "Keep reading" cards at the end of every post | ✅ live Oct 20 |
 | 3a | Homepage images: featured carousel and image topic cards | ✅ live Oct 20 |
 | 3b | Homepage layout: six-door nav, Start-here paths, Live right now | ✅ live Oct 20 |
-| 4 | Topic pages (/topics/) | ✅ on `redesign-c` |
+| 4 | Topic pages (/topics/) | ✅ live Oct 20 |
 | 5 | Outside page; the Stories front door | |
-| 6 | Shared header across brooksgroves.com and the subdomains | main site ✅ on `redesign-c`; subdomains to do |
+| 6 | Shared header across brooksgroves.com and the subdomains | main site ✅ live Oct 20; subdomains to do |
 | — | og:image on every post (social previews, search) | ongoing, needs images |
 | — | RSS feed | |
 
@@ -133,7 +133,7 @@ footer of every post (69 posts), between `KEEP-READING` markers, plus a
   Rainier from `/rainier-snowpack/data/processed/snotel_latest.json`. A
   tile that can't load says so and still links to its dashboard.
 
-### Step 4: topic pages (on `redesign-c`)
+### Step 4: topic pages (live Oct 20)
 
 `scripts/topic_pages.py` writes `/topics/` and `/topics/<id>/` from
 `tags.html` and `data/topics.json` (each topic now lists its
@@ -143,7 +143,7 @@ filter (tool tags like Python are skipped; `#tag=Wildfire` links work),
 and the other topics. Homepage topic cards and Keep reading's "More in"
 link here now. Runs in the Home topics workflow.
 
-### Step 6 (main site): the same menu on every page (on `redesign-c`)
+### Step 6 (main site): the same menu on every page (live Oct 20)
 
 `scripts/site_nav.py` puts the six doors in the header of 105 pages,
 marks the current door, and keeps each page's theme button. Left alone:
