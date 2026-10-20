@@ -56,7 +56,7 @@ then merges.
 | 1 | Readability fixes in the shared stylesheet | ✅ live Oct 20 |
 | 2 | "Keep reading" cards at the end of every post | ✅ live Oct 20 |
 | 3a | Homepage images: featured carousel and image topic cards | ✅ live Oct 20 |
-| 3b | Homepage layout: six-door nav, Start-here paths, Live right now | next |
+| 3b | Homepage layout: six-door nav, Start-here paths, Live right now | ✅ on `redesign-b` |
 | 4 | Topic pages; Work, Maps & films, Live data pages | |
 | 5 | Outside page; the Stories front door | |
 | 6 | Shared header across brooksgroves.com and the subdomains | |
@@ -114,6 +114,24 @@ footer of every post (69 posts), between `KEEP-READING` markers, plus a
   `scripts/home_topics.py` writes it into the card.
 - Images live in `images/features/` (1200 px wide for projects, 800×350 for
   topics), cut from images already in the posts.
+
+### Step 3b: menu, Start here, Live right now (on `redesign-b`)
+
+- **Menu:** six doors (Work, Writing, Maps & films, Live data, Outside,
+  About). Each label is a link to its landing (`/#work`, `/writing/`,
+  `/maps.html`, `/#live`, `/outside.html`, `/about.html`) and opens a
+  dropdown on hover or keyboard focus. Nothing from the old seven
+  dropdowns was dropped; it was regrouped. The phone drawer uses the
+  same six doors. Only the homepage has the new menu so far; the other
+  pages get it with the shared header (step 6).
+- **Start here:** three cards under the carousel (maps and data; outdoors
+  and nature; stories), four hand-picked links each. Edit the list in
+  `index.html` (search for `START HERE`).
+- **Live right now:** three tiles read live data in the browser:
+  Kīlauea from `/PELE/data/volcanoes.json` + `episodes.json`, the biggest
+  M2.5+ quake of the last day from the USGS feed AFTERSHOCK uses, and
+  Rainier from `/rainier-snowpack/data/processed/snotel_latest.json`. A
+  tile that can't load says so and still links to its dashboard.
 
 ## Image wish list
 
