@@ -277,3 +277,6 @@ Station and CASCADIA-WX first posts (from their "Revisited" posts).
   `build_footer_js.py` if it matters.
 - Some POSTS dates are "April 2026" or "2026" rather than ISO dates; cards
   show them as written.
+
+### Oct 20 — football scores fixed
+ESPN stopped letting browsers call `site.api.espn.com/.../teams/{id}` (CORS), so the three football cards on Outside showed "Data unavailable". `loadFootball()` now builds each card from the `teams/{id}/schedule` feed, which is still open and carries the record, standing and logo. Checked live: Seahawks 3-3, UW 4-3, Nevada 2-4, with last and next games.
