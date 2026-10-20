@@ -1013,7 +1013,9 @@ function renderGames(el, games) {
 // ═══════════════════════════════════════════════════════════════════
 // FOOTBALL — NFL + NCAA team cards with records, next games, standings
 // Config-driven: add teams by editing FOOTBALL_TEAMS below. ESPN's public
-// site.api.espn.com is CORS-open and no key is required.
+// site.api.espn.com needs no key. Its scoreboard, schedule and standings
+// endpoints are CORS-open; /teams/{id} stopped being so in Oct 2026 (see
+// teamFromSchedule in loadFootball).
 // ═══════════════════════════════════════════════════════════════════
 // Season-year helpers — computed, not hardcoded, so these panels keep working
 // after the calendar rolls over.
@@ -1540,8 +1542,10 @@ async function loadFootball() {
       return Promise.all(
         urls.map(u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null))
       )
-        .then(results => ({ id: cfg.id, events: results.filter(Boolean).flatMap(d => d.events || []) }))
-        .catch(err => { console.warn('schedule fetch failed', cfg.shortName, err); return { id: cfg.id, events: [] }; });
+        .then(results => ({ id: cfg.id, events: results.filter(Boolean).flatMap(d => d.events || []),
+                            // the regular-season response's team block, else any
+                            team: (results[2] && results[2].team) || (results.find(d => d && d.team) || {}).team || null }))
+        .catch(err => { console.warn('schedule fetch failed', cfg.shortName, err); return { id: cfg.id, events: [], team: null }; });
     });
     // Standings fetches — one per unique league (dedupes NFL/CFB across configs)
     const leagues = [...new Set(FOOTBALL_TEAMS.map(t => t.league))];
@@ -1591,6 +1595,20 @@ async function loadFootball() {
     const freshById = new Map();
     scoreboardResults.forEach(({ events }) => events.forEach(e => freshById.set(String(e.id), e)));
 
+    // October 2026: ESPN stopped sending CORS headers on /teams/{id}, so the
+    // browser blocks that call and every card read "Data unavailable". The
+    // schedule, scoreboard and standings endpoints still allow it, and the
+    // schedule response carries a small team block (record, logo, standing),
+    // so build the card's team from that when /teams/{id} is blocked.
+    const teamFromSchedule = Object.fromEntries(rawScheduleResults.map(({ id, team: t }) => {
+      if (!t) return [String(id), null];
+      const m = String(t.recordSummary || '').match(/^(\d+)-(\d+)(?:-(\d+))?/);
+      const stats = m ? [{ name: 'wins', value: +m[1] }, { name: 'losses', value: +m[2] }, { name: 'ties', value: +(m[3] || 0) }] : [];
+      return [String(id), { id: t.id, abbreviation: t.abbreviation, displayName: t.displayName,
+        logos: t.logo ? [{ href: t.logo }] : [], standingSummary: t.standingSummary,
+        record: { items: [{ summary: t.recordSummary || '0-0', stats }] } }];
+    }));
+
     const scheduleResults = rawScheduleResults.map(({ id, events }) => {
       // Replace in place (not append) — this is what prevents the duplicate.
       // Also de-dupe by event id: we now fetch four seasontype variants and
@@ -1626,7 +1644,7 @@ async function loadFootball() {
     const nextByTeamId   = Object.fromEntries(scheduleResults.map(s => [String(s.id), s.nextEvent]));
     const liveByTeamId   = Object.fromEntries(scheduleResults.map(s => [String(s.id), s.liveEvent]));
     el.innerHTML = teamResults.map(({ cfg, team }) =>
-      renderFootballCard(cfg, team, standingsByLeague[cfg.league], recentByTeamId[String(cfg.id)], nextByTeamId[String(cfg.id)], liveByTeamId[String(cfg.id)])
+      renderFootballCard(cfg, team || teamFromSchedule[String(cfg.id)], standingsByLeague[cfg.league], recentByTeamId[String(cfg.id)], nextByTeamId[String(cfg.id)], liveByTeamId[String(cfg.id)])
     ).join('');
   } catch (e) {
     console.error('football load error:', e);
