@@ -187,6 +187,24 @@ now have their own full-width **Topics** section right after Start here
 and the "Latest" post between `LATEST` markers (still in the Writing
 column).
 
+### Posts: cover, reading type, progress, contents (on `redesign-e`)
+
+`scripts/post_polish.py` puts each post's own picture as a wide cover
+above the article (skipped if the same picture already opens it; 38 of
+68 posts get one) and adds `js/post.js`: a thin reading-progress bar and
+a Contents list for posts with four or more sections (open on desktop,
+folded on phones). Headline and body type are a little larger and
+balanced. Styles: "POSTS" in `css/site-footer.css`.
+
+### Work and Live data pages (on `redesign-e`)
+
+`scripts/hub_pages.py` builds `/work/` (the 10 featured projects from the
+homepage `FEATURED` list, with images and stack, then the eight fields)
+and `/live/` (the three live readings, then all 24 dashboards and tools
+from `data/topics.json`, grouped by topic, weather first). The Work and
+Live data doors now open these pages on every site, including the story
+sites.
+
 ## Image wish list
 
 Posts and projects with no usable image yet (33). Each needs a 1200×630
