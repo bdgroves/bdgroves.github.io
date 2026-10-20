@@ -55,7 +55,8 @@ then merges.
 |---|---|---|
 | 1 | Readability fixes in the shared stylesheet | ✅ on `redesign-a` |
 | 2 | "Keep reading" cards at the end of every post | ✅ on `redesign-a` |
-| 3 | New homepage: carousel, topic cards, Start-here paths | next |
+| 3a | Homepage images: featured carousel and image topic cards | ✅ on `redesign-a` |
+| 3b | Homepage layout: six-door nav, Start-here paths, Live right now | next |
 | 4 | Topic pages; Work, Maps & films, Live data pages | |
 | 5 | Outside page; the Stories front door | |
 | 6 | Shared header across brooksgroves.com and the subdomains | |
@@ -100,6 +101,19 @@ footer of every post (69 posts), between `KEEP-READING` markers, plus a
 - Re-running is a no-op; the Home topics workflow runs it after
   `home_topics.py`, so adding a post to `tags.html` is still all it takes.
 - Styles: "KEEP READING" section of `css/site-footer.css`.
+
+### Step 3a: homepage images (done)
+
+- The featured project is now a carousel: image on the left (on top on a
+  phone), text on the right, ←/→ buttons, a bar per project, a pause
+  button. It starts on a random project, rotates every 8 s, pauses while the
+  mouse or keyboard focus is on it, and never auto-rotates for visitors who
+  ask for reduced motion. Each `FEATURED` entry in `index.html` has `img` and
+  `alt`; an empty `img` shows the project's emoji instead (FOG-WATCH today).
+- Topic cards are image cards. Each topic in `data/topics.json` has an `img`;
+  `scripts/home_topics.py` writes it into the card.
+- Images live in `images/features/` (1200 px wide for projects, 800×350 for
+  topics), cut from images already in the posts.
 
 ## Image wish list
 
