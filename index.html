@@ -60,6 +60,7 @@
     .section-nav-btn { font-family:'DM Mono',monospace; font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; background:none; border:none; cursor:pointer; padding:0.7rem 1rem; color:var(--stone); transition:color 0.2s; white-space:nowrap; display:flex; align-items:center; gap:0.3rem; }
     .section-nav-btn:hover { color:var(--ink); }
     a.section-nav-btn { text-decoration:none; color:var(--ink); }
+    .nav-search-home { color:var(--ink); }
     .section-nav-item:focus-within .dropdown { display:block; }
     .section-nav-item:focus-within .section-nav-btn svg { transform:rotate(180deg); }
     .dropdown { max-height:min(75vh,640px); overflow-y:auto; }
@@ -182,6 +183,30 @@
     .pub-venue em { color:var(--ink); font-weight:700; font-style:italic; }
     @media(max-width:640px) { .pub-item { grid-template-columns:1fr; gap:0.3rem; } .pub-year { padding-top:0; } }
     .support-link { font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--rust); margin-top:0.5rem; display:block; }
+    /* The Work and Publications, redesign (Oct 2026): image cards in the same style as the topic cards. */
+    .work-group { border:none; margin-bottom:2.25rem; }
+    .work-group-head { background:none; padding:0 0 .7rem; border-bottom:2px solid var(--ink); margin-bottom:1rem; }
+    .work-group-name { font-size:1.35rem; font-weight:900; }
+    .work-group-link { color:var(--rust); }
+    .work-cards { grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:1rem; }
+    @media(max-width:900px) { .work-cards { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); } }
+    .work-cards .support-story, .work-cards .support-story:last-child, .work-cards .support-story:nth-child(4n) {
+      display:flex; flex-direction:column; padding:0 0 1.1rem; border:1px solid var(--mist); background:var(--white);
+      overflow:hidden; transition:border-color .18s, box-shadow .18s, transform .18s; }
+    .work-cards .support-story:hover { background:var(--white); border-color:var(--stone); transform:translateY(-2px); box-shadow:0 10px 24px -16px rgba(28,26,22,.45); }
+    .support-media { display:block; aspect-ratio:16/9; overflow:hidden; border-bottom:1px solid var(--mist); margin-bottom:.9rem; background:var(--cream); }
+    .support-media img { width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s ease; }
+    .support-story:hover .support-media img { transform:scale(1.04); }
+    .work-cards .support-kicker, .work-cards .support-hed, .work-cards .support-dek, .work-cards .support-link { padding:0 1.1rem; }
+    .work-cards .support-link { margin-top:auto; padding-top:.6rem; }
+    @media (prefers-reduced-motion: reduce) { .work-cards .support-story, .support-media img { transition:none; } .work-cards .support-story:hover, .support-story:hover .support-media img { transform:none; } }
+    .pub-list { border:none; display:grid; gap:1rem; }
+    .pub-item { background:var(--white); border:1px solid var(--mist); border-left:3px solid var(--rust); padding:1.4rem 1.6rem; grid-template-columns:6rem 1fr; }
+    .pub-item:hover { background:var(--white); border-color:var(--stone); border-left-color:var(--rust); }
+    .pub-year { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900; letter-spacing:0; color:var(--rust); line-height:1; }
+    .pub-title { font-size:1.3rem; line-height:1.3; }
+    .below-fold.no-reading { grid-template-columns:1fr; }
+    .below-fold.no-reading .below-col { padding:0; border:none; }
 
     .ologies-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:0; border:1px solid var(--mist); }
     @media(max-width:680px) { .ologies-grid { grid-template-columns:1fr; } }
@@ -511,6 +536,7 @@
   <a href="/concerts.html">🎫 Concerts</a>
   <a href="/games.html">🎲 Games</a>
   <a href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener">📕 Reading</a>
+  <a href="/search/" class="nav-door">⌕ Search &rarr;</a>
   <a href="/about.html" class="nav-door">About &rarr;</a>
   <a href="https://github.com/bdgroves" target="_blank" rel="noopener">GitHub ↗</a>
   <a href="https://x.com/bdgroves" target="_blank" rel="noopener">X / Twitter ↗</a>
@@ -676,6 +702,7 @@
       </div>
     </div>
 
+    <a class="section-nav-link nav-search-home" href="/search/" aria-label="Search">⌕ Search</a>
     <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button>
 
   </nav>
@@ -692,7 +719,7 @@
     </div>
     <div class="lead-grid">
       <a href="https://brooksgroves.com/mother-lode/" target="_blank" class="lead-story" id="featured-hero">
-        <div class="lead-media"><img class="lead-bg" src="/images/features/mother-lode.jpg" alt="" aria-hidden="true"><img class="lead-img" src="/images/features/mother-lode.jpg" alt="Bare-earth lidar of Big Oak Flat, with the old mining places labelled" width="1200" height="1028"></div>
+        <div class="lead-media"><img class="lead-bg" src="/img-opt/images/features/mother-lode.jpg.w640.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"><img class="lead-img" src="/img-opt/images/features/mother-lode.jpg.w640.webp" alt="Bare-earth lidar of Big Oak Flat, with the old mining places labelled" width="1200" height="1028" loading="lazy" decoding="async"></div>
         <div class="lead-body">
         <p class="lead-kicker">Geology · Lidar · USGS · Tuolumne County</p>
         <h1 class="lead-hed">⛏️ Mother Lode:<br><em>Gold Country in Lidar</em></h1>
@@ -755,42 +782,42 @@
       <!-- TOPICS:START (generated by scripts/home_topics.py; edit data/topics.json) -->
       <div class="topic-grid">
         <section class="topic-card" aria-labelledby="topic-weather">
-          <a class="topic-media" href="/topics/weather/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/images/features/topic-weather.jpg" alt="" loading="lazy" decoding="async"></a>
+          <a class="topic-media" href="/topics/weather/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/img-opt/images/features/topic-weather.jpg.w640.webp" alt="" loading="lazy" decoding="async"></a>
           <h3 class="topic-name" id="topic-weather"><span class="topic-icon" aria-hidden="true">🌦️</span><a href="/topics/weather/">Weather &amp; Water</a></h3>
           <p class="topic-blurb">Storms, smoke, floods, snowpack, tides and the rivers of the Sierra and Northwest.</p>
           <ul class="topic-latest"><li><a href="/blog/sierra-flow-handoff-post.html">The Handoff: Teaching SIERRA-FLOW a New Language</a></li><li><a href="/blog/wildfire-response-gaps-post.html">The Gap That Isn’t: Who Answers a Wildfire in Eastern Oregon</a></li></ul>
           <a class="topic-all" href="/topics/weather/">All 25 entries &rarr;</a>
         </section>
         <section class="topic-card" aria-labelledby="topic-earth">
-          <a class="topic-media" href="/topics/earth/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/images/features/topic-earth.jpg" alt="" loading="lazy" decoding="async"></a>
+          <a class="topic-media" href="/topics/earth/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/img-opt/images/features/topic-earth.jpg.w640.webp" alt="" loading="lazy" decoding="async"></a>
           <h3 class="topic-name" id="topic-earth"><span class="topic-icon" aria-hidden="true">🌋</span><a href="/topics/earth/">Volcanoes, Fossils &amp; Ruins</a></h3>
           <p class="topic-blurb">Kīlauea, Rainier, ichthyosaurs, mammoths, Chaco Canyon and the mounds.</p>
           <ul class="topic-latest"><li><a href="/blog/rock-eaters-post.html">The Rock Eaters</a></li><li><a href="/blog/athabasca-melt-post.html">The Athabasca Glacier, 1844 to 2100</a></li></ul>
           <a class="topic-all" href="/topics/earth/">All 17 entries &rarr;</a>
         </section>
         <section class="topic-card" aria-labelledby="topic-maps">
-          <a class="topic-media" href="/topics/maps/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/images/features/topic-maps.jpg" alt="" loading="lazy" decoding="async"></a>
+          <a class="topic-media" href="/topics/maps/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/img-opt/images/features/topic-maps.jpg.w640.webp" alt="" loading="lazy" decoding="async"></a>
           <h3 class="topic-name" id="topic-maps"><span class="topic-icon" aria-hidden="true">🗺️</span><a href="/topics/maps/">Maps &amp; Flyovers</a></h3>
           <p class="topic-blurb">forge3d flights, lidar and cartography, from Yosemite to the Icefields Parkway.</p>
           <ul class="topic-latest"><li><a href="/blog/forge3d-notebooks-post.html">Open the Hood: Notebooks for My forge3d Projects</a></li><li><a href="/blog/sentinel-stockpile-revisited-post.html">Sentinel Stockpile, Revisited: Where Did the Wind Blades Go?</a></li></ul>
           <a class="topic-all" href="/topics/maps/">All 14 entries &rarr;</a>
         </section>
         <section class="topic-card" aria-labelledby="topic-nature">
-          <a class="topic-media" href="/topics/nature/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/images/features/topic-nature.jpg" alt="" loading="lazy" decoding="async"></a>
+          <a class="topic-media" href="/topics/nature/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/img-opt/images/features/topic-nature.jpg.w640.webp" alt="" loading="lazy" decoding="async"></a>
           <h3 class="topic-name" id="topic-nature"><span class="topic-icon" aria-hidden="true">🐟</span><a href="/topics/nature/">Science &amp; Nature</a></h3>
           <p class="topic-blurb">Pikas, golden trout, Lahontan fish and Easter Island, told with maps and data.</p>
           <ul class="topic-latest"><li><a href="/blog/cypress-domes-post.html">Cypress Domes: Reading Water From the Shape of a Forest</a></li><li><a href="/blog/pikas-part-2-washington.html">Pikas, Part 2: Washington’s Quiet Rockpiles</a></li></ul>
           <a class="topic-all" href="/topics/nature/">All 11 entries &rarr;</a>
         </section>
         <section class="topic-card" aria-labelledby="topic-sports">
-          <a class="topic-media" href="/topics/sports/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/images/features/topic-sports.jpg" alt="" loading="lazy" decoding="async"></a>
+          <a class="topic-media" href="/topics/sports/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/img-opt/images/features/topic-sports.jpg.w640.webp" alt="" loading="lazy" decoding="async"></a>
           <h3 class="topic-name" id="topic-sports"><span class="topic-icon" aria-hidden="true">🚴</span><a href="/topics/sports/">Cycling, Sports &amp; Training</a></h3>
           <p class="topic-blurb">Grand Tour stage trackers, the Mariners, triathlon fueling and the rest of the sporting life.</p>
           <ul class="topic-latest"><li><a href="/blog/edgar-2026-season-post.html">76–86: The Mariners Season, and What My Dashboard Missed</a></li><li><a href="/fuelcast.html">FuelCast</a></li></ul>
           <a class="topic-all" href="/topics/sports/">All 6 entries &rarr;</a>
         </section>
         <section class="topic-card" aria-labelledby="topic-builds">
-          <a class="topic-media" href="/topics/builds/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/images/features/topic-builds.jpg" alt="" loading="lazy" decoding="async"></a>
+          <a class="topic-media" href="/topics/builds/" tabindex="-1" aria-hidden="true"><img class="topic-img" src="/img-opt/images/features/topic-builds.jpg.w640.webp" alt="" loading="lazy" decoding="async"></a>
           <h3 class="topic-name" id="topic-builds"><span class="topic-icon" aria-hidden="true">🍺</span><a href="/topics/builds/">Beer &amp; Builds</a></h3>
           <p class="topic-blurb">HopLove, a searchable cookbook, a trade journal for the investment club, and other things I&#x27;ve made.</p>
           <ul class="topic-latest"><li><a href="/hoplove/">HopLove</a></li><li><a href="/blog/hoplove-post.html">What’s in the Can? Building HopLove</a></li></ul>
@@ -837,18 +864,21 @@
       <div class="work-group-head"><h3 class="work-group-name">🌩 Meteorology</h3><span class="work-group-blurb">Weather pipelines, atmospheric analysis, and forecast automation.</span><a href="/meteorology.html" class="work-group-link">Explore →</a></div>
       <div class="work-cards">
         <a href="https://brooksgroves.com/fog-watch/" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/fog-watch.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Meteorology · ERA5 · Fog Coasts</p>
           <h3 class="support-hed">🌫️ FOG-WATCH — Where the Fog Lives</h3>
           <p class="support-dek">A fog climatology for the world&rsquo;s great fog coasts: the Namib, the Atacama and San Francisco. Ten years of hourly ERA5 turned into a fog-blanket map with a month slider, an inland transect past Gobabeb, and heatmaps of exactly when the fog rolls in.</p>
           <span class="support-link">View the maps →</span>
         </a>
         <a href="https://brooksgroves.com/cascadia-wx" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/cascadia-wx-revisited-console.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Meteorology · FORTRAN · Weather Balloons</p>
           <h3 class="support-hed">🎈 CASCADIA-WX — Reading the Balloons</h3>
           <p class="support-dek">The Northwest&rsquo;s four weather balloons, read twice a day in GFortran: freezing level, snow level and atmospheric rivers, each against 30 years of balloons. Amber-phosphor page, green-bar printout.</p>
           <span class="support-link">View dashboard →</span>
         </a>
         <a href="https://brooksgroves.com/weather-station" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/weather-station.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Meteorology · 4 Stations · NWS + ACIS + Open-Meteo</p>
           <h3 class="support-hed">🌡️ Weather Station — "We Got Cows"</h3>
           <p class="support-dek">A NOAA-ops-center-style dashboard monitoring four Western stations — Lakewood, Sonora, Reno, and Death Valley — read live from National Weather Service stations every 5 minutes. Measured-then-forecast charts, the forecaster&rsquo;s notes, records back to 1893, NWS alerts. Storm-chaser instrument panel, built for $0.</p>
@@ -860,30 +890,35 @@
       <div class="work-group-head"><h3 class="work-group-name">💧 Hydrology</h3><span class="work-group-blurb">Streamflow, snowpack, and water-resource tracking across the Sierra and Cascades.</span><a href="/hydrology.html" class="work-group-link">Explore →</a></div>
       <div class="work-cards">
         <a href="https://brooksgroves.com/rainier-snowpack" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/rainier.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Snowpack · SNOTEL · NASA MODIS · Webcams</p>
           <h3 class="support-hed">❄️ STORM CHASER — Rainier Snowpack</h3>
           <p class="support-dek">Real-time Mt. Rainier snowpack intelligence — 7 SNOTEL ground stations, NASA MODIS satellite snow cover with 14-day cloud fallback, and 6 live NPS webcams. Nine panels, hourly, forever. "You don't chase the mountain. The mountain chases you."</p>
           <span class="support-link">View live dashboard →</span>
         </a>
         <a href="https://brooksgroves.com/sierra-streamflow" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/streamflow.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Hydrology · USGS · Sierra Nevada</p>
           <h3 class="support-hed">💧 Sierra Streamflow Monitor</h3>
           <p class="support-dek">Eight USGS gages across the Tuolumne, Merced, Stanislaus, and Big Creek watersheds — live flow with historical spaghetti charts on a Leaflet map.</p>
           <span class="support-link">View dashboard →</span>
         </a>
         <a href="/secchi/" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/secchi.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Limnology · Lake Tahoe · TEON · 15-min cadence</p>
           <h3 class="support-hed">🔵 secchi — a modern Secchi disk</h3>
           <p class="support-dek">Live water-clarity readings from the Tahoe Environmental Observatory Network — three YSI EXO sondes around the lake sampled every fifteen minutes, cross-checked against USGS gauges on the tributaries. Wildfire smoke deposition overlay and a chlorophyll-based Secchi nowcast are next.</p>
           <span class="support-link">View live dashboard →</span>
         </a>
         <a href="https://brooksgroves.com/puget-tides" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/puget-tides.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Tides · FORTRAN · NOAA · Puget Sound</p>
           <h3 class="support-hed">🌊 PUGET-TIDES — in FORTRAN</h3>
           <p class="support-dek">Eight NOAA tide gauges from Neah Bay to Tacoma. FORTRAN predicts the tide from its 37 harmonic constituents and checks itself against NOAA&rsquo;s tables every six hours, then measures the surge and finds the king tides and daylight minus tides of the year ahead.</p>
           <span class="support-link">View dashboard →</span>
         </a>
         <a href="https://brooksgroves.com/sierra-flow-cobol" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/sierra-flow.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Hydrology · COBOL · Retro</p>
           <h3 class="support-hed">🖥️ SIERRA-FLOW — in COBOL</h3>
           <p class="support-dek">Eight Sierra rivers run through a GnuCOBOL batch job every morning and checked against 30 years of normal for the date, which COBOL builds itself. The report prints on green-bar paper; the program is on punch cards. Yes, COBOL.</p>
@@ -895,12 +930,14 @@
       <div class="work-group-head"><h3 class="work-group-name">🌋 Volcanology</h3><span class="work-group-blurb">Live eruption monitoring and lahar hazard tracking.</span><a href="/volcanology.html" class="work-group-link">Explore →</a></div>
       <div class="work-cards">
         <a href="https://brooksgroves.com/PELE" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/pele.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Volcanology · Kīlauea · USGS HVO</p>
           <h3 class="support-hed">🌋 PELE — Hawaiʻi Volcanoes</h3>
           <p class="support-dek">Real-time Kīlauea eruption tracker — lava-lake activity, SO₂ emissions, and episodic fountaining via USGS Hawaiian Volcano Observatory feeds. Updated every 6 hours.</p>
           <span class="support-link">View dashboard →</span>
         </a>
         <a href="https://brooksgroves.com/lahar-watch" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/lahar-watch-revisited-network-map.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Hazard · Volcano · USGS · NOAA</p>
           <h3 class="support-hed">🌋 LAHAR-WATCH — Flank Hazard</h3>
           <p class="support-dek">The network that watches Mount Rainier for lahars, live: every seismometer and infrasound sensor and whether it&rsquo;s reporting, the USGS alert level, earthquakes against 25 years of normal, and the lahar rivers against flood stage.</p>
@@ -912,12 +949,14 @@
       <div class="work-group-head"><h3 class="work-group-name">🦕 Paleontology</h3><span class="work-group-blurb">Machine-learning fossil-locality prediction — finding where to dig next.</span><a href="/paleontology.html" class="work-group-link">Explore →</a></div>
       <div class="work-cards">
         <a href="https://brooksgroves.com/project-paleowave/" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/paleowave-p01.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Machine Learning · Paleontology · Nevada</p>
           <h3 class="support-hed">🌊 PaleoWave — Fossil Finder</h3>
           <p class="support-dek">A terrain model of where central Nevada's Triassic ichthyosaurs have been found, and fifty places it says to go and look. Rechecked in October 2026: it knows 18 places, shows its homework, and checks the Paleobiology Database every week.</p>
           <span class="support-link">Open the page →</span>
         </a>
         <a href="https://brooksgroves.com/project-ice-wave/" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/icewave-e02.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Machine Learning · Ice Age · PNW</p>
           <h3 class="support-hed">🦣 IceWave — Rechecked</h3>
           <p class="support-dek">A model of where mammoths and other Ice Age animals might be buried across five states. Rechecked in October 2026: its top targets were rivers and reservoirs, and its "validation" at a real mammoth dig was 69 km off. The page shows how, and what holds.</p>
@@ -929,12 +968,14 @@
       <div class="work-group-head"><h3 class="work-group-name">🪨 Geology</h3><span class="work-group-blurb">Gold country in bare-earth lidar, and the ground that shakes.</span><a href="/geology.html" class="work-group-link">Explore →</a></div>
       <div class="work-cards">
         <a href="https://brooksgroves.com/mother-lode/" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/mother-lode.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Geology · Lidar · USGS · Tuolumne County</p>
           <h3 class="support-hed">⛏️ Mother Lode — Gold Country in Lidar</h3>
           <p class="support-dek">The gold belt where I grew up, with the trees peeled away: five mining places in bare-earth lidar, from Columbia&rsquo;s limestone pinnacles to the Harvard pit at Jamestown, and every USGS mine feature in Tuolumne County &mdash; 1,040 adits, shafts and prospect pits.</p>
           <span class="support-link">Open the map →</span>
         </a>
         <a href="https://brooksgroves.com/aftershock" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/aftershock.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Seismology · USGS FDSN · Live</p>
           <h3 class="support-hed">🌍 AFTERSHOCK — Real-Time Quakes</h3>
           <p class="support-dek">Live earthquakes for the US and the world — pick any state or country, see it against ten years of normal, and follow aftershock sequences as they decay.</p>
@@ -946,12 +987,14 @@
       <div class="work-group-head"><h3 class="work-group-name">🏺 Archaeology</h3><span class="work-group-blurb">Ancient places in lidar, and the sky the builders watched.</span><a href="/archaeology.html" class="work-group-link">Explore →</a></div>
       <div class="work-cards">
         <a href="https://brooksgroves.com/project-kiva" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/project-kiva.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Lidar · Remote Sensing · Atlas</p>
           <h3 class="support-hed">🏺 Project Kiva — Ruins in Bare Earth</h3>
           <p class="support-dek">Twelve archaeological places in bare-earth lidar, from Chaco Canyon to Cahokia and the Wisconsin effigy mounds. Peel back the aerial photo, switch relief views, and turn each site in 3D.</p>
           <span class="support-link">Open the atlas →</span>
         </a>
         <a href="https://brooksgroves.com/solstice" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/solstice.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Archaeoastronomy · Chaco Canyon · Live</p>
           <h3 class="support-hed">☀️ SOLSTICE — The Sky Over Chaco</h3>
           <p class="support-dek">The live Sun and Moon over Chaco, each great house&rsquo;s real skyline with every sunrise of the year, and a forge3d flight down the canyon at solstice dawn.</p>
@@ -963,12 +1006,14 @@
       <div class="work-group-head"><h3 class="work-group-name">🔭 More</h3><span class="work-group-blurb">Sport analytics, beer, and the odd curveball.</span></div>
       <div class="work-cards">
         <a href="/hoplove/" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/hoplove.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Open Data · Hops · USDA NASS · Pacific NW</p>
           <h3 class="support-hed">🍺 HopLove — know your hops</h3>
           <p class="support-dek">An open hop database that shows its sources: 232 varieties, every number cited to the breeder, grower or merchant who published it, disagreements left visible. Washington and Oregon acreage by variety from USDA, and What's in the Can — 2,000+ beers from 32 breweries, Bellingham to Corvallis, hop by hop. Or snap a can and it reads the hops for you.</p>
           <span class="support-link">Open HopLove →</span>
         </a>
         <a href="https://brooksgroves.com/EDGAR" target="_blank" class="support-story">
+          <span class="support-media"><img src="/images/thumbs/edgar-2026-season.webp" alt="" loading="lazy" decoding="async" width="640" height="360"></span>
           <p class="support-kicker">Baseball · Mariners · MLB Stats API</p>
           <h3 class="support-hed">⚾ EDGAR — Mariners Analytics</h3>
           <p class="support-dek">Early Data & Game Analytics Report — the 2026 Mariners in one line, the AL West race, FIP and pitch arsenals from Baseball Savant, and the Rainiers. Rebuilt nightly by GitHub Actions from MLB StatsAPI and Savant.</p>
@@ -1056,7 +1101,7 @@
 
 <div class="daily-quote" id="daily-quote-wrap"></div>
 
-<div class="below-fold">
+<div class="below-fold no-reading">
     <div class="below-col">
       <div class="col-label">
         <span>Writing</span>
@@ -1078,14 +1123,6 @@
 
 
 
-    </div>
-    <div class="below-col">
-      <div class="col-label">
-        <span>Reading</span>
-        <a href="https://www.goodreads.com/user/show/9579797" target="_blank">Goodreads →</a>
-      </div>
-      <div id="reading-list"><p class="book-loading">Loading from Goodreads…</p></div>
-      <a href="https://www.goodreads.com/user/show/9579797" target="_blank" class="goodreads-link">View all 982 books →</a>
     </div>
   </div>
 
@@ -1297,16 +1334,16 @@
   }
 
   const FEATURED = [
-    { url:"https://brooksgroves.com/mother-lode/", img:"/images/features/mother-lode.jpg", alt:"Bare-earth lidar of Big Oak Flat, with the old mining places labelled", kicker:"Geology · Lidar · USGS · Tuolumne County", hed:"⛏️ Mother Lode:<br><em>Gold Country in Lidar</em>", dek:"The gold belt where I grew up, with the trees peeled away. Five mining places in bare-earth lidar, from Columbia's limestone pinnacles to the Harvard pit at Jamestown, and every USGS mine feature in Tuolumne County: 1,040 adits, shafts and prospect pits.", stack:["Python","PDAL","USGS 3DEP","USGS USMIN","USGS MRDS","Leaflet"] },
-    { url:"https://brooksgroves.com/project-kiva", img:"/images/features/project-kiva.jpg", alt:"Project Kiva: a block of ground half point cloud, half bare earth, with a ring and walls showing through", kicker:"Archaeology · Lidar · Remote Sensing", hed:"🏺 Project Kiva:<br><em>Ruins in Bare Earth</em>", dek:"Twelve archaeological places in bare-earth lidar, from Chaco Canyon to Cahokia and the Wisconsin effigy mounds. Peel back the aerial photo, switch between relief views that make walls, mounds and ditches show, and turn each site in 3D.", stack:["Python","USGS 3DEP","Lidar","Relief Views","forge3d"] },
-    { url:"https://brooksgroves.com/lidar-explore/", img:"/images/features/lidar-explore.jpg", alt:"LiDAR Explore: a forest turning from photo to point cloud to mapped forest stands", kicker:"Lidar · Forestry · Finland · Validation", hed:"🌲 LiDAR Explore:<br><em>From Point Clouds to Forest Intelligence</em>", dek:"A synthetic Finnish forest with every tree known, then 1,840 real stands checked against Finland's national inventory. Spin the point cloud, thin the laser and watch detection fall apart, and click any stand. Rebuilt from the open data on GitHub.", stack:["Python","PDAL","laspy","rasterio","Leaflet","Three.js"] },
-    { url:"https://brooksgroves.com/solstice", img:"/images/features/solstice.jpg", alt:"Chaco Canyon at the summer solstice sunrise", kicker:"Archaeoastronomy · Chaco Canyon · Live", hed:"☀️ SOLSTICE:<br><em>The Sky Over Chaco</em>", dek:"The live Sun and Moon over Chaco Canyon, each great house's real skyline with every sunrise of the year, and a forge3d flight down the canyon at solstice dawn.", stack:["Python","PyEphem","forge3d","USGS 3DEP","Leaflet","GitHub Actions"] },
-    { url:"https://brooksgroves.com/fog-watch/", img:"/images/features/fog-watch.jpg", alt:"FOG-WATCH: a fog bank pouring off a dark ocean onto orange desert dunes", kicker:"Meteorology · ERA5 · Fog Coasts", hed:"🌫️ FOG-WATCH:<br><em>Where the Fog Lives</em>", dek:"A fog climatology for the world's great fog coasts: the Namib, the Atacama and San Francisco. Ten years of hourly ERA5 turned into a fog-blanket map with a month slider, an inland transect past Gobabeb, and heatmaps of exactly when the fog rolls in.", stack:["Python","ERA5","Open-Meteo","D3","Leaflet","GitHub Actions"] },
-    { url:"https://brooksgroves.com/PELE", img:"/images/features/pele.jpg", alt:"PELE poster: a lava fountain at Kīlauea at dusk", kicker:"Volcanology · Kīlauea · USGS HVO · Erupting Now", hed:"🌋 PELE:<br><em>Hawaiʻi Volcanoes</em>", dek:"Kīlauea is in an ongoing eruption at Halemaʻumaʻu, fountaining in episodic bursts since December 2024. PELE tracks it live — real-time summit earthquakes, HVO webcams, alert levels, and a full episodic-fountaining log. Refreshes every six hours, no human in the loop.", stack:["Python","USGS HVO","GitHub Actions","Leaflet","HVO Webcams","ANSS Quakes"] },
-    { url:"https://brooksgroves.com/aftershock", img:"/images/features/aftershock.jpg", alt:"AFTERSHOCK: a glowing epicentre over the California coast, with quakes traced down into the crust", kicker:"Seismology · USGS FDSN · Cascadia", hed:"🌍 AFTERSHOCK:<br><em>Real-Time Seismic Monitor</em>", dek:"A live earthquake dashboard for the US and the world — pick any state or country, compare it with ten years of normal, and follow aftershock sequences as they decay. Built to watch the ground that watches us.", stack:["Python","USGS FDSN","Leaflet","GitHub Actions","GeoJSON"] },
-    { url:"https://brooksgroves.com/rainier-snowpack", img:"/images/features/rainier.jpg", alt:"Rainier Snowpack poster: Mount Rainier at dusk with its snow stations lit up", kicker:"Snowpack · SNOTEL · NASA MODIS · Cascades", hed:"❄️ STORM CHASER:<br><em>Rainier Snowpack</em>", dek:"Automated Mt. Rainier snowpack monitoring — 7 SNOTEL ground stations and NASA MODIS, hourly. Nine panels track basin SWE, melt, freeze-thaw, and live NPS webcams. Runs every hour, forever, all winter and through the melt-out.", stack:["Python","R","GitHub Actions","NASA Earthdata","NRCS SNOTEL","NPS Webcam"] },
-    { url:"/hoplove/", img:"/images/features/hoplove.jpg", alt:"HopLove poster: a beer can opening into fresh hops", kicker:"Open Data · Hops · USDA NASS · Pacific NW", hed:"🍺 HopLove:<br><em>Know Your Hops</em>", dek:"Every hop spec sheet hands you one confident number. HopLove keeps every source's number instead — Hopsteiner, BarthHaas, the Hop Breeding Company, Indie Hops — and shows you where they disagree. 232 varieties, Washington and Oregon acreage from USDA, and a can-to-hops lookup for 2,000+ beers from 32 Pacific Northwest breweries, from Stoup and Georgetown to Block 15 — a camera button that reads the hops off any can, and my Untappd check-ins and ratings joined to the hops in each glass.", stack:["Node","Python","JSON Schema","USDA NASS","pixi","GitHub Actions"] },
-    { url:"/secchi/", img:"/images/features/secchi.jpg", alt:"The secchi banner: Lake Tahoe’s clear blue water", kicker:"Limnology · Lake Tahoe · TEON · 15-min cadence", hed:"🔵 secchi:<br><em>A Modern Secchi Disk for Lake Tahoe</em>", dek:"Live water-clarity readings from the Tahoe Environmental Observatory Network — three YSI EXO sondes around the lake, sampled every fifteen minutes, cross-checked against USGS gauges on the tributaries. An undocumented API, forty-three sensors that turned out to be thirteen devices, and a five-digit parameter code that turned out to be the pollutant the TMDL actually regulates.", stack:["Python","TEON API","USGS","Leaflet","pixi","GitHub Actions"] }
+    { url:"https://brooksgroves.com/mother-lode/", img:"/img-opt/images/features/mother-lode.jpg.w640.webp", alt:"Bare-earth lidar of Big Oak Flat, with the old mining places labelled", kicker:"Geology · Lidar · USGS · Tuolumne County", hed:"⛏️ Mother Lode:<br><em>Gold Country in Lidar</em>", dek:"The gold belt where I grew up, with the trees peeled away. Five mining places in bare-earth lidar, from Columbia's limestone pinnacles to the Harvard pit at Jamestown, and every USGS mine feature in Tuolumne County: 1,040 adits, shafts and prospect pits.", stack:["Python","PDAL","USGS 3DEP","USGS USMIN","USGS MRDS","Leaflet"] },
+    { url:"https://brooksgroves.com/project-kiva", img:"/img-opt/images/features/project-kiva.jpg.w640.webp", alt:"Project Kiva: a block of ground half point cloud, half bare earth, with a ring and walls showing through", kicker:"Archaeology · Lidar · Remote Sensing", hed:"🏺 Project Kiva:<br><em>Ruins in Bare Earth</em>", dek:"Twelve archaeological places in bare-earth lidar, from Chaco Canyon to Cahokia and the Wisconsin effigy mounds. Peel back the aerial photo, switch between relief views that make walls, mounds and ditches show, and turn each site in 3D.", stack:["Python","USGS 3DEP","Lidar","Relief Views","forge3d"] },
+    { url:"https://brooksgroves.com/lidar-explore/", img:"/img-opt/images/features/lidar-explore.jpg.w640.webp", alt:"LiDAR Explore: a forest turning from photo to point cloud to mapped forest stands", kicker:"Lidar · Forestry · Finland · Validation", hed:"🌲 LiDAR Explore:<br><em>From Point Clouds to Forest Intelligence</em>", dek:"A synthetic Finnish forest with every tree known, then 1,840 real stands checked against Finland's national inventory. Spin the point cloud, thin the laser and watch detection fall apart, and click any stand. Rebuilt from the open data on GitHub.", stack:["Python","PDAL","laspy","rasterio","Leaflet","Three.js"] },
+    { url:"https://brooksgroves.com/solstice", img:"/img-opt/images/features/solstice.jpg.w640.webp", alt:"Chaco Canyon at the summer solstice sunrise", kicker:"Archaeoastronomy · Chaco Canyon · Live", hed:"☀️ SOLSTICE:<br><em>The Sky Over Chaco</em>", dek:"The live Sun and Moon over Chaco Canyon, each great house's real skyline with every sunrise of the year, and a forge3d flight down the canyon at solstice dawn.", stack:["Python","PyEphem","forge3d","USGS 3DEP","Leaflet","GitHub Actions"] },
+    { url:"https://brooksgroves.com/fog-watch/", img:"/img-opt/images/features/fog-watch.jpg.w640.webp", alt:"FOG-WATCH: a fog bank pouring off a dark ocean onto orange desert dunes", kicker:"Meteorology · ERA5 · Fog Coasts", hed:"🌫️ FOG-WATCH:<br><em>Where the Fog Lives</em>", dek:"A fog climatology for the world's great fog coasts: the Namib, the Atacama and San Francisco. Ten years of hourly ERA5 turned into a fog-blanket map with a month slider, an inland transect past Gobabeb, and heatmaps of exactly when the fog rolls in.", stack:["Python","ERA5","Open-Meteo","D3","Leaflet","GitHub Actions"] },
+    { url:"https://brooksgroves.com/PELE", img:"/img-opt/images/features/pele.jpg.w640.webp", alt:"PELE poster: a lava fountain at Kīlauea at dusk", kicker:"Volcanology · Kīlauea · USGS HVO · Erupting Now", hed:"🌋 PELE:<br><em>Hawaiʻi Volcanoes</em>", dek:"Kīlauea is in an ongoing eruption at Halemaʻumaʻu, fountaining in episodic bursts since December 2024. PELE tracks it live — real-time summit earthquakes, HVO webcams, alert levels, and a full episodic-fountaining log. Refreshes every six hours, no human in the loop.", stack:["Python","USGS HVO","GitHub Actions","Leaflet","HVO Webcams","ANSS Quakes"] },
+    { url:"https://brooksgroves.com/aftershock", img:"/img-opt/images/features/aftershock.jpg.w640.webp", alt:"AFTERSHOCK: a glowing epicentre over the California coast, with quakes traced down into the crust", kicker:"Seismology · USGS FDSN · Cascadia", hed:"🌍 AFTERSHOCK:<br><em>Real-Time Seismic Monitor</em>", dek:"A live earthquake dashboard for the US and the world — pick any state or country, compare it with ten years of normal, and follow aftershock sequences as they decay. Built to watch the ground that watches us.", stack:["Python","USGS FDSN","Leaflet","GitHub Actions","GeoJSON"] },
+    { url:"https://brooksgroves.com/rainier-snowpack", img:"/img-opt/images/features/rainier.jpg.w640.webp", alt:"Rainier Snowpack poster: Mount Rainier at dusk with its snow stations lit up", kicker:"Snowpack · SNOTEL · NASA MODIS · Cascades", hed:"❄️ STORM CHASER:<br><em>Rainier Snowpack</em>", dek:"Automated Mt. Rainier snowpack monitoring — 7 SNOTEL ground stations and NASA MODIS, hourly. Nine panels track basin SWE, melt, freeze-thaw, and live NPS webcams. Runs every hour, forever, all winter and through the melt-out.", stack:["Python","R","GitHub Actions","NASA Earthdata","NRCS SNOTEL","NPS Webcam"] },
+    { url:"/hoplove/", img:"/img-opt/images/features/hoplove.jpg.w640.webp", alt:"HopLove poster: a beer can opening into fresh hops", kicker:"Open Data · Hops · USDA NASS · Pacific NW", hed:"🍺 HopLove:<br><em>Know Your Hops</em>", dek:"Every hop spec sheet hands you one confident number. HopLove keeps every source's number instead — Hopsteiner, BarthHaas, the Hop Breeding Company, Indie Hops — and shows you where they disagree. 232 varieties, Washington and Oregon acreage from USDA, and a can-to-hops lookup for 2,000+ beers from 32 Pacific Northwest breweries, from Stoup and Georgetown to Block 15 — a camera button that reads the hops off any can, and my Untappd check-ins and ratings joined to the hops in each glass.", stack:["Node","Python","JSON Schema","USDA NASS","pixi","GitHub Actions"] },
+    { url:"/secchi/", img:"/img-opt/images/features/secchi.jpg.w640.webp", alt:"The secchi banner: Lake Tahoe’s clear blue water", kicker:"Limnology · Lake Tahoe · TEON · 15-min cadence", hed:"🔵 secchi:<br><em>A Modern Secchi Disk for Lake Tahoe</em>", dek:"Live water-clarity readings from the Tahoe Environmental Observatory Network — three YSI EXO sondes around the lake, sampled every fifteen minutes, cross-checked against USGS gauges on the tributaries. An undocumented API, forty-three sensors that turned out to be thirteen devices, and a five-digit parameter code that turned out to be the pollutant the TMDL actually regulates.", stack:["Python","TEON API","USGS","Leaflet","pixi","GitHub Actions"] }
   ];
   // Featured projects: an image-led carousel. Starts on a random project,
   // rotates every 8 s, pauses on hover/focus or with the pause button, and
@@ -1631,7 +1668,6 @@
   setTimeout(loadWeather, 150);
   loadMLB();
   loadStandings();
-  loadBooks();
   loadBeers();
   loadCycling();
   loadCyclingNews();

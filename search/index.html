@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search · Brooks Groves</title>
+  <meta name="description" content="Search every post, project and page on brooksgroves.com.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <!-- The index and these two files are built at deploy time by Pagefind
+       (see .github/workflows/jekyll-gh-pages.yml); they don't exist in the repo. -->
+  <link href="/pagefind/pagefind-ui.css" rel="stylesheet">
+  <style>
+    :root { --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc; --sage:#4a5c45; --rust:#8b3a2a;
+            --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; line-height:1.7; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust),var(--gold) 50%,var(--sage)); }
+    .tp-header { border-bottom:2px solid var(--ink); }
+    .tp-header-in { max-width:1200px; margin:0 auto; padding:18px clamp(16px,4vw,32px); display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:10px 32px; }
+    .tp-name { font-family:'Playfair Display',serif; font-weight:900; font-size:30px; letter-spacing:-.02em; text-decoration:none; color:var(--ink); }
+    .tp-nav { display:flex; flex-wrap:wrap; align-items:center; gap:6px 22px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+    .tp-nav a { color:var(--ink); text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px; }
+    .tp-nav a:hover, .tp-nav a[aria-current="page"] { color:var(--rust); border-bottom-color:var(--rust); }
+    .theme-toggle { background:none; border:none; cursor:pointer; padding:0; font-size:14px; color:var(--stone); }
+    main { max-width:820px; margin:0 auto; padding:36px clamp(16px,4vw,32px) 64px; }
+    h1 { margin:0 0 6px; font-family:'Playfair Display',serif; font-weight:900; font-size:clamp(34px,5vw,52px); letter-spacing:-.02em; }
+    .lede { margin:0 0 26px; color:var(--stone); font-size:17px; }
+    .nojs { font-size:15px; color:var(--stone); }
+    .lede a, .nojs a { color:var(--rust); text-underline-offset:3px; }
+    /* Pagefind UI in the house style */
+    #search {
+      --pagefind-ui-scale: .95;
+      --pagefind-ui-primary: var(--rust);
+      --pagefind-ui-text: var(--ink);
+      --pagefind-ui-background: var(--white);
+      --pagefind-ui-border: var(--mist);
+      --pagefind-ui-tag: var(--cream);
+      --pagefind-ui-border-width: 1px;
+      --pagefind-ui-border-radius: 0;
+      --pagefind-ui-image-border-radius: 0;
+      --pagefind-ui-image-box-ratio: 3 / 2;
+      --pagefind-ui-font: 'Libre Baskerville', Georgia, serif;
+    }
+    #search .pagefind-ui__search-input { font-family:'Libre Baskerville',Georgia,serif; }
+    #search .pagefind-ui__result-link { font-family:'Playfair Display',serif; font-weight:700; color:var(--ink); }
+    #search .pagefind-ui__result-link:hover { color:var(--rust); }
+    #search .pagefind-ui__message, #search .pagefind-ui__button { font-family:'DM Mono',monospace; }
+    #search mark { background:rgba(200,146,42,.28); color:inherit; padding:0 .1em; }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+  <script>
+    (function(){ try { var s = localStorage.getItem('bg_theme'); var d = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+      if (s === 'dark' || (!s && d)) document.documentElement.setAttribute('data-theme','dark'); } catch(e) {} })();
+  </script>
+</head>
+<body>
+<div class="topline"></div>
+<header class="tp-header">
+  <div class="tp-header-in">
+    <a class="tp-name" href="/">Brooks Groves</a>
+    <nav class="tp-nav" aria-label="Main"><a href="/work/">Work</a><a href="/writing/">Writing</a><a href="/maps.html">Maps &amp; films</a><a href="/live/">Live data</a><a href="/outside.html">Outside</a><a href="/about.html">About</a><a href="/search/" aria-current="page" aria-label="Search">⌕ Search</a><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
+  </div>
+</header>
+<main>
+  <h1>Search</h1>
+  <p class="lede">Every post, project and page on the site. Try <a href="?q=pika">pika</a>, <a href="?q=K%C4%ABlauea">Kīlauea</a> or <a href="?q=lidar">lidar</a>.</p>
+  <div id="search"></div>
+  <noscript><p class="nojs">Search needs JavaScript. Everything is also listed <a href="/topics/">by topic</a>.</p></noscript>
+</main>
+<script src="/pagefind/pagefind-ui.js"></script>
+<script>
+  (function(){
+    if (!window.PagefindUI) {
+      document.getElementById('search').innerHTML = '<p class="nojs">Search isn’t available just now. Everything is also listed <a href="/topics/">by topic</a>.</p>';
+      return;
+    }
+    var ui = new PagefindUI({ element: '#search', showSubResults: true, showImages: true, resetStyles: false,
+                              translations: { placeholder: 'Search brooksgroves.com' } });
+    var q = new URLSearchParams(location.search).get('q');
+    if (q) ui.triggerSearch(q);
+  })();
+</script>
+<script src="/js/site-footer.js" defer></script>
+<script>
+(function(){
+  var root = document.documentElement, btn = document.getElementById('theme-toggle');
+  function sync(){ var d = root.getAttribute('data-theme') === 'dark'; btn.textContent = d ? '◐' : '◑';
+    var l = d ? 'Switch to light mode' : 'Switch to dark mode'; btn.setAttribute('aria-label', l); btn.setAttribute('title', l); }
+  sync();
+  btn.addEventListener('click', function(){ var d = root.getAttribute('data-theme') === 'dark';
+    if (d) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', d ? 'light' : 'dark'); } catch(e) {}
+    sync(); });
+})();
+</script>
+</body>
+</html>

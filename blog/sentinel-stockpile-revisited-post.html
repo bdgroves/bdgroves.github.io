@@ -145,6 +145,7 @@
       <a href="/live/">Live data</a>
       <a href="/outside.html">Outside</a>
       <a href="/about.html">About</a>
+      <a href="/search/" class="nav-search" aria-label="Search">⌕ Search</a>
       <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button>
     </nav>
   </div>
@@ -172,7 +173,7 @@
     <a href="/tags.html#Open%20Data" class="article-tag-pill">Open Data</a>
   </div>
 
-  <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/blog/img/sentinel-stockpile-revisited/og.jpg" alt="" decoding="async" fetchpriority="high"></figure><!-- POST-COVER:END -->
+  <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/blog/img/sentinel-stockpile-revisited/og.jpg.w640.webp" alt="" decoding="async" fetchpriority="high"></figure><!-- POST-COVER:END -->
   <div class="article-body">
 
     <p>Back in April I built <a href="/blog/sentinel-stockpile-post.html">Sentinel Stockpile</a>, a little project that measures piles of cargo along the Columbia River from orbit: logs at a mill, wind-turbine blades on a dock, all from free European Space Agency imagery. I loved the idea of it. This fall I came back to it, found it broken in more ways than I expected, and rebuilt the whole thing. It now watches eight yards on its own (four at first, four more added the same day), twice a week, and it has a <a href="https://brooksgroves.com/sentinel-stockpile/" target="_blank">live dashboard</a>.</p>
@@ -180,7 +181,7 @@
     <p>And the first thing the rebuilt version showed me was this:</p>
 
     <div class="photo-block">
-      <img src="/blog/img/sentinel-stockpile-revisited/vancouver_wind-summers.jpg" alt="Four Sentinel-2 satellite views of Terminal 5 at the Port of Vancouver USA, one each from late July or early August of 2023, 2024, 2025 and 2026. In 2023 rows of white wind-turbine blades, outlined in orange, cover much of the yard; in 2024 there are fewer; in 2025 and 2026 the yard is almost bare pavement" loading="lazy">
+      <img src="/img-opt/blog/img/sentinel-stockpile-revisited/vancouver_wind-summers.jpg.w1600.webp" alt="Four Sentinel-2 satellite views of Terminal 5 at the Port of Vancouver USA, one each from late July or early August of 2023, 2024, 2025 and 2026. In 2023 rows of white wind-turbine blades, outlined in orange, cover much of the yard; in 2024 there are fewer; in 2025 and 2026 the yard is almost bare pavement" loading="lazy" srcset="/img-opt/blog/img/sentinel-stockpile-revisited/vancouver_wind-summers.jpg.w640.webp 640w, /img-opt/blog/img/sentinel-stockpile-revisited/vancouver_wind-summers.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px" decoding="async">
       <p class="photo-caption">Terminal 5, Port of Vancouver USA, the wind-energy laydown yard, one clear midsummer day a year. Orange outlines are what the classifier calls blades. 5.3 ha in July 2023; next to nothing in 2025 and 2026.</p>
     </div>
 
@@ -211,7 +212,7 @@
     <p>To set the rules I borrowed the USDA&rsquo;s NAIP aerial photos, which are 0.6 m per pixel and were flown over these yards in the summer and fall of 2023. I picked out log decks, chip piles, blade racks, container rows and plain pavement on the photo, read off the satellite&rsquo;s values for each one, set the thresholds between them, and then drew every pixel the rule picked on top of the photo to see what it got right.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/sentinel-stockpile-revisited/weyerhaeuser-check.jpg" alt="Left: a sharp aerial photo of the Weyerhaeuser log yards along the Columbia River at Longview, with small magenta squares marking every 10-metre pixel the classifier calls wood; the squares sit on the log decks, lumber stacks and sawdust piles. Right: the same area in the coarser Sentinel-2 satellite image, where the wood shows as salmon-orange patches" loading="lazy">
+      <img src="/img-opt/blog/img/sentinel-stockpile-revisited/weyerhaeuser-check.jpg.w1600.webp" alt="Left: a sharp aerial photo of the Weyerhaeuser log yards along the Columbia River at Longview, with small magenta squares marking every 10-metre pixel the classifier calls wood; the squares sit on the log decks, lumber stacks and sawdust piles. Right: the same area in the coarser Sentinel-2 satellite image, where the wood shows as salmon-orange patches" loading="lazy" srcset="/img-opt/blog/img/sentinel-stockpile-revisited/weyerhaeuser-check.jpg.w640.webp 640w, /img-opt/blog/img/sentinel-stockpile-revisited/weyerhaeuser-check.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px" decoding="async">
       <p class="photo-caption">The check: the 1 August 2023 NAIP photo of Weyerhaeuser Longview with every 10 m pixel the lumber rule picks on the Sentinel-2 pass of 31 July outlined (left), and that Sentinel scene (right). Click to enlarge.</p>
     </div>
 
@@ -239,21 +240,21 @@
     <p><strong>Terminal 5 emptied out, and Longview more than halved.</strong> Terminal 5 went from 3.6 hectares of blades in a typical summer week in 2023 to 1.2 in 2024, 0.3 in 2025 and 0.1 this year. Longview, the other wind yard, shrank every summer too, from 5.9 hectares to 2.7. What the satellite can&rsquo;t tell me is <em>why</em>. Wind projects run on long pipelines, and interest rates, supply chains and federal wind policy all shifted over these years. I&rsquo;d like to dig into the shipping side of it next. (The wind rule picks up anything big, bright and neutral white, so strictly this is blades plus towers and any other white cargo; on the photos, it&rsquo;s blades.) What it can tell me is that the blades stopped stacking up at Terminal 5, and that it started before 2025.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/sentinel-stockpile-revisited/vancouver_wind-yoy.jpg" alt="A line chart of active blade area at Terminal 5 by day of year, one line per year: 2023 peaks near 5 hectares in late July, 2024 stays mostly between 0.5 and 2.3 hectares, and 2025 and 2026 run along the bottom, mostly below half a hectare" loading="lazy">
+      <img src="/img-opt/blog/img/sentinel-stockpile-revisited/vancouver_wind-yoy.jpg.w640.webp" alt="A line chart of active blade area at Terminal 5 by day of year, one line per year: 2023 peaks near 5 hectares in late July, 2024 stays mostly between 0.5 and 2.3 hectares, and 2025 and 2026 run along the bottom, mostly below half a hectare" loading="lazy" decoding="async">
       <p class="photo-caption">Terminal 5, year over year: a three-week running median of blade area, each year on one calendar.</p>
     </div>
 
     <p><strong>The log yard&rsquo;s summer is smaller this year.</strong> Weyerhaeuser&rsquo;s decks and chip piles swell every summer and shrink every winter. Some of that winter dip is the wood itself (wet logs are darker than dry ones), so I only compare summers with summers. June through September of 2026 came in about a quarter below the three summers before it: 25 hectares against 32 to 34.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/sentinel-stockpile-revisited/weyerhaeuser_longview-summers.jpg" alt="Four Sentinel-2 views of the Weyerhaeuser mill and log yards at Longview from midsummer 2023 to 2026, with orange outlines around log decks, lumber stacks and chip piles; the outlined area is smaller in 2026" loading="lazy">
+      <img src="/img-opt/blog/img/sentinel-stockpile-revisited/weyerhaeuser_longview-summers.jpg.w1600.webp" alt="Four Sentinel-2 views of the Weyerhaeuser mill and log yards at Longview from midsummer 2023 to 2026, with orange outlines around log decks, lumber stacks and chip piles; the outlined area is smaller in 2026" loading="lazy" srcset="/img-opt/blog/img/sentinel-stockpile-revisited/weyerhaeuser_longview-summers.jpg.w640.webp 640w, /img-opt/blog/img/sentinel-stockpile-revisited/weyerhaeuser_longview-summers.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px" decoding="async">
       <p class="photo-caption">Weyerhaeuser Longview, one clear midsummer day a year, with the wood the classifier finds outlined.</p>
     </div>
 
     <p><strong>Tacoma&rsquo;s container stacks jumped in 2024</strong> (total stack area here; a container yard has no &ldquo;always-on&rdquo; ground to subtract), from 7.4 to 12.8 hectares of a typical summer, and have eased since, to 11.4 last year and 9.1 this summer, still above 2023.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/sentinel-stockpile-revisited/tacoma_port-summers.jpg" alt="Four Sentinel-2 views of the Husky and East Sitcum container terminals at the Port of Tacoma from midsummer 2023 to 2026, with orange outlines around the container stacks" loading="lazy">
+      <img src="/img-opt/blog/img/sentinel-stockpile-revisited/tacoma_port-summers.jpg.w1600.webp" alt="Four Sentinel-2 views of the Husky and East Sitcum container terminals at the Port of Tacoma from midsummer 2023 to 2026, with orange outlines around the container stacks" loading="lazy" srcset="/img-opt/blog/img/sentinel-stockpile-revisited/tacoma_port-summers.jpg.w640.webp 640w, /img-opt/blog/img/sentinel-stockpile-revisited/tacoma_port-summers.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px" decoding="async">
       <p class="photo-caption">Port of Tacoma, Husky and East Sitcum terminals, with the container stacks the classifier finds outlined.</p>
     </div>
 
@@ -266,14 +267,14 @@
     <p><strong>Grays Harbor&rsquo;s big waterfront log deck is gone.</strong> In the summer of 2023 there were rows of export logs along the water at Terminal 4, about 7.8 hectares in a typical summer week. By 2024 that was down to 2.9, and in the 2025 and 2026 pictures the waterfront rows have vanished, leaving a smaller deck further inland. (One caution: only one satellite track covers this whole yard, so it gets about half the clear looks of the others, 6 to 13 per summer.)</p>
 
     <div class="photo-block">
-      <img src="/blog/img/sentinel-stockpile-revisited/grays_harbor-summers.jpg" alt="Four Sentinel-2 views of Terminal 4 at the Port of Grays Harbor, Aberdeen, one each from midsummer 2023 to 2026, with orange outlines around log decks. In 2023 large outlined decks line the waterfront at the lower right; in 2024 a smaller patch remains; in 2025 and 2026 only a deck further inland is outlined" loading="lazy">
+      <img src="/img-opt/blog/img/sentinel-stockpile-revisited/grays_harbor-summers.jpg.w1600.webp" alt="Four Sentinel-2 views of Terminal 4 at the Port of Grays Harbor, Aberdeen, one each from midsummer 2023 to 2026, with orange outlines around log decks. In 2023 large outlined decks line the waterfront at the lower right; in 2024 a smaller patch remains; in 2025 and 2026 only a deck further inland is outlined" loading="lazy" srcset="/img-opt/blog/img/sentinel-stockpile-revisited/grays_harbor-summers.jpg.w640.webp 640w, /img-opt/blog/img/sentinel-stockpile-revisited/grays_harbor-summers.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px" decoding="async">
       <p class="photo-caption">Port of Grays Harbor, Terminal 4, one clear midsummer day a year, with the log decks the classifier finds outlined.</p>
     </div>
 
     <p><strong>Seattle&rsquo;s Terminal 5 filled up.</strong> The terminal was rebuilt for the biggest container ships, and its modernized second berth opened in March 2024. Its container stacks held at about 3.9 hectares in the summers of 2023 and 2024, then jumped to 10.5 in 2025 and stayed near 9 this year. You can watch the stacks spread out across the yard.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/sentinel-stockpile-revisited/seattle_t5-summers.jpg" alt="Four Sentinel-2 views of Terminal 5 in West Seattle from midsummer 2023 to 2026, with orange outlines around container stacks; the outlines are sparse in 2023 and 2024 and cover much more of the yard in 2025 and 2026" loading="lazy">
+      <img src="/img-opt/blog/img/sentinel-stockpile-revisited/seattle_t5-summers.jpg.w1600.webp" alt="Four Sentinel-2 views of Terminal 5 in West Seattle from midsummer 2023 to 2026, with orange outlines around container stacks; the outlines are sparse in 2023 and 2024 and cover much more of the yard in 2025 and 2026" loading="lazy" srcset="/img-opt/blog/img/sentinel-stockpile-revisited/seattle_t5-summers.jpg.w640.webp 640w, /img-opt/blog/img/sentinel-stockpile-revisited/seattle_t5-summers.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px" decoding="async">
       <p class="photo-caption">Seattle Terminal 5, one clear midsummer day a year, with the container stacks the classifier finds outlined.</p>
     </div>
 
@@ -282,7 +283,7 @@
     <h2>The dashboard</h2>
 
     <div class="photo-block">
-      <img src="/blog/img/sentinel-stockpile-revisited/dashboard.jpg" alt="The Sentinel Stockpile dashboard: tabs for four sites, a map of Terminal 5 with the latest satellite scene, a timeline slider and play button, figures for the active area now against a year ago and the usual for the week, and a time-series chart of every clear scene since 2023" loading="lazy">
+      <img src="/img-opt/blog/img/sentinel-stockpile-revisited/dashboard.jpg.w640.webp" alt="The Sentinel Stockpile dashboard: tabs for four sites, a map of Terminal 5 with the latest satellite scene, a timeline slider and play button, figures for the active area now against a year ago and the usual for the week, and a time-series chart of every clear scene since 2023" loading="lazy" decoding="async">
       <p class="photo-caption">The <a href="https://brooksgroves.com/sentinel-stockpile/" target="_blank">live dashboard</a>: pick a yard, scrub or play through every clear scene with that day&rsquo;s piles outlined, and compare a week with a year ago and with what&rsquo;s usual for it.</p>
     </div>
 
@@ -369,13 +370,13 @@
     <div class="kr-head"><h2 class="kr-label">Keep reading</h2><a class="kr-more" href="/topics/maps/">More in 🗺️ Maps &amp; Flyovers &rarr;</a></div>
     <div class="kr-grid">
       <a class="kr-card" href="/blog/sentinel-stockpile-post.html">
-        <img class="kr-img" src="/images/sentinel-time-series.png" alt="" loading="lazy" decoding="async">
+        <img class="kr-img" src="/img-opt/images/sentinel-time-series.png.w640.webp" alt="" loading="lazy" decoding="async" srcset="/img-opt/images/sentinel-time-series.png.w640.webp 640w, /img-opt/images/sentinel-time-series.png.w1600.webp 1600w" sizes="(max-width: 600px) 92vw, 400px">
         <span class="kr-meta">April 2026</span>
         <span class="kr-title">🛰️ Sentinel Stockpile — The Economy You Can See From Space</span>
         <span class="kr-dek">12 months of Sentinel-2 imagery tracking lumber stockpiles at the Port of Longview.</span>
       </a>
       <a class="kr-card" href="/blog/icefields-flyover-post.html">
-        <img class="kr-img" src="/blog/img/icefields-flyover/og.jpg" alt="" loading="lazy" decoding="async">
+        <img class="kr-img" src="/img-opt/blog/img/icefields-flyover/og.jpg.w640.webp" alt="" loading="lazy" decoding="async">
         <span class="kr-meta">Oct 2, 2026</span>
         <span class="kr-title">🏔️ Up the Icefields Parkway</span>
         <span class="kr-dek">A 95-second flight up the Icefields Parkway on a September evening: Lake Louise, Bow Lake, a slow pass over Peyto Lake, and the Columbia Icefield. Satellite elevation and Sentinel-2 imagery, rendered with forge3d 1.40.1, plus why the lakes first came out grey.</span>

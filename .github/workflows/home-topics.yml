@@ -6,7 +6,7 @@ name: Home topics
 on:
   push:
     branches: [main]
-    paths: ["tags.html", "data/topics.json", "scripts/home_topics.py", "scripts/keep_reading.py", "scripts/topic_pages.py", "scripts/hub_pages.py", "scripts/site_nav.py", "scripts/og_tags.py", "scripts/post_polish.py"]
+    paths: ["tags.html", "data/topics.json", "scripts/home_topics.py", "scripts/keep_reading.py", "scripts/topic_pages.py", "scripts/hub_pages.py", "scripts/site_nav.py", "scripts/og_tags.py", "scripts/post_polish.py", "scripts/web_images.py"]
   workflow_dispatch:
 
 permissions:
@@ -17,18 +17,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - run: python3 scripts/home_topics.py
-      - run: python3 scripts/keep_reading.py   # "Keep reading" cards at the end of each post
-      - run: python3 scripts/topic_pages.py    # /topics/ and one landing page per topic
-      - run: python3 scripts/hub_pages.py      # /work/ and /live/
-      - run: python3 scripts/site_nav.py       # the six-door menu on every page
-      - run: python3 scripts/og_tags.py        # link-preview tags on every post
-      - run: python3 scripts/post_polish.py    # cover picture + reading aids on every post
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/home_topics.py
+      - run: python scripts/keep_reading.py   # "Keep reading" cards at the end of each post
+      - run: python scripts/topic_pages.py    # /topics/ and one landing page per topic
+      - run: python scripts/hub_pages.py      # /work/ and /live/
+      - run: python scripts/site_nav.py       # the six-door menu on every page
+      - run: python scripts/og_tags.py        # link-preview tags on every post
+      - run: python scripts/post_polish.py    # cover picture + reading aids on every post
+      - run: python -m pip install --quiet pillow
+      - run: python scripts/web_images.py     # WebP copies + srcset; runs last
       - name: Commit if the cards changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A -- "*.html"
+          git add -A -- "*.html" img-opt/
           git diff --cached --quiet && exit 0
           git commit -q -m "home: refresh topic cards and keep-reading links"
           for i in 1 2 3; do git pull -q --rebase origin main && git push -q && exit 0; sleep 5; done

@@ -59,6 +59,10 @@ IMAGE_OVERRIDES = {
     "/blog/streamflow-post.html": "/images/features/streamflow.jpg",
     "/blog/sierra-streamflow-2027-post.html": "/images/features/streamflow.jpg",
     "/blog/puget-tides-post.html": "/images/features/puget-tides.jpg",
+    # the first versions of projects whose "Revisited" posts have pictures
+    "/blog/solstice-post.html": "/images/features/solstice.jpg",
+    "/blog/weather-station-post.html": "/blog/img/weather-station-revisited/measured-then-forecast.jpg",
+    "/blog/cascadia-wx-post.html": "/blog/img/cascadia-wx-revisited/console.jpg",
 }
 # Accent for the no-image card, by topic id (same accents as the redesign mockups).
 TOPIC_COLORS = {"earth": "var(--rust)", "nature": "var(--sage)", "weather": "#5a7a8a",
@@ -105,6 +109,11 @@ def card_image(f: Path | None, url: str) -> str:
 
 
 def site_path(src: str, url: str) -> str:
+    # web_images.py serves WebP copies from /img-opt/<original>.w<N>.webp;
+    # cards and previews name the original.
+    m = re.match(r"(?:https://brooksgroves\.com)?/img-opt/(.+)\.w\d+\.webp$", src)
+    if m:
+        src = "/" + m.group(1)
     if src.startswith(SITE):
         src = src[len(SITE):]
     elif not src.startswith(("/", "http")):           # relative to the post

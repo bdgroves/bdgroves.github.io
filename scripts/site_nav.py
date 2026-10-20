@@ -73,6 +73,7 @@ def nav(rel: str, toggle: str, indent: str = "    ") -> str:
     cur = FIXED_DOOR or door_for(rel)
     links = "".join(
         f'\n{indent}  <a href="{BASE}{h}"{" aria-current=\"page\"" if t == cur else ""}>{t}</a>' for t, h in DOORS)
+    links += f'\n{indent}  <a href="{BASE}/search/" class="nav-search" aria-label="Search">⌕ Search</a>'
     tog = f"\n{indent}  {toggle.strip()}" if toggle else ""
     return f'<nav class="site-nav" aria-label="Main">{links}{tog}\n{indent}</nav>'
 

@@ -140,6 +140,7 @@
       <a href="/live/">Live data</a>
       <a href="/outside.html">Outside</a>
       <a href="/about.html">About</a>
+      <a href="/search/" class="nav-search" aria-label="Search">⌕ Search</a>
       <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button>
     </nav>
   </div>
@@ -170,7 +171,7 @@
     Live Page · brooksgroves.com/puget-tides
   </a>
 
-  <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/images/features/puget-tides.jpg" alt="" decoding="async" fetchpriority="high"></figure><!-- POST-COVER:END -->
+  <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/images/features/puget-tides.jpg.w640.webp" alt="" decoding="async" fetchpriority="high"></figure><!-- POST-COVER:END -->
   <div class="article-body">
     <p>This is the third of my old-language weather and water projects. <a href="/blog/sierra-flow-revisited-post.html">SIERRA-FLOW</a> does Sierra Nevada rivers in COBOL, and <a href="/blog/cascadia-wx-revisited-post.html">CASCADIA-WX</a> reads the Northwest&rsquo;s weather balloons in FORTRAN. I wanted one more that I could check against something real every single day, and I live a few miles from the water. So PUGET-TIDES follows the tide in from the Pacific at eight NOAA gauges, from Neah Bay at the tip of the Olympic Peninsula, through the Strait of Juan de Fuca, past the San Juans and Port Townsend, and down the Sound to Seattle and Tacoma.</p>
 
@@ -181,7 +182,7 @@
     <p>That&rsquo;s how tide tables have always been made. Lord Kelvin built a brass machine of pulleys and gears to add the waves up in 1872, and the Coast and Geodetic Survey printed America&rsquo;s tide tables on one, nicknamed Old Brass Brains, until the mid-1960s. PUGET-TIDES does it in FORTRAN: it works out where the moon and sun are from scratch, applies the corrections for the moon&rsquo;s 18.6-year cycle, and adds up all 37 waves at every gauge, every six minutes, a year ahead. All eight gauges take it about two seconds.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/puget-tides/coding-form.jpg" width="1088" height="367" alt="A cream FORTRAN coding form with the program's loop written in blue in its column grid: sum the constituents, h = Z0 + SUM f H cos(V + u - kappa), then a do loop over the 37 constituents adding each one's cosine" loading="lazy">
+      <img src="/img-opt/blog/img/puget-tides/coding-form.jpg.w640.webp" width="1088" height="367" alt="A cream FORTRAN coding form with the program's loop written in blue in its column grid: sum the constituents, h = Z0 + SUM f H cos(V + u - kappa), then a do loop over the 37 constituents adding each one's cosine" loading="lazy" decoding="async">
       <p class="photo-caption">The loop that adds up the 37 waves, copied live from the source onto a 1957 FORTRAN coding form.</p>
     </div>
 
@@ -190,7 +191,7 @@
     <p>The fun part is that NOAA publishes its own predictions, so every run checks itself. On the first run, FORTRAN found the same 257 high and low tides NOAA lists for the coming week at the eight gauges, every one within 0.8 minutes and a hundredth of a foot. NOAA rounds to the minute, so that&rsquo;s about as close as two tide tables can agree. Over whole years, FORTRAN&rsquo;s hourly tide matches NOAA&rsquo;s to two thousandths of a foot on average.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/puget-tides/hilo.jpg" width="1088" height="1075" alt="A dark cyan terminal table of Seattle's high and low tides for the coming week, with FORTRAN's heights beside NOAA's, identical to the hundredth, and the minutes between them, all under one; beside it, 257 of 257 matched at eight gauges" loading="lazy">
+      <img src="/img-opt/blog/img/puget-tides/hilo.jpg.w640.webp" width="1088" height="1075" alt="A dark cyan terminal table of Seattle's high and low tides for the coming week, with FORTRAN's heights beside NOAA's, identical to the hundredth, and the minutes between them, all under one; beside it, 257 of 257 matched at eight gauges" loading="lazy" decoding="async">
       <p class="photo-caption">The week ahead at Seattle: FORTRAN's highs and lows beside NOAA's published table, and the check at all eight gauges.</p>
     </div>
 
@@ -203,7 +204,7 @@
     <p>The measured water level is almost never exactly the tide. The difference is the surge: wind piling water up, low air pressure letting the sea rise (about a foot for every 30 hectopascals), river water pouring in. FORTRAN subtracts its tide from every six-minute reading for the last month, and a second program, NORMALS, did the same for 1.78 million hours of readings from 1991 to 2020, so each day&rsquo;s surge can be compared with thirty years of the same weeks.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/puget-tides/week.jpg" width="1088" height="603" alt="Two charts for Seattle: the measured water level in cyan tracing almost exactly over FORTRAN's dashed amber tide for a week, then the tide alone for three days ahead; below, the surge in coral wandering between zero and three quarters of a foot above a shaded normal band" loading="lazy">
+      <img src="/img-opt/blog/img/puget-tides/week.jpg.w640.webp" width="1088" height="603" alt="Two charts for Seattle: the measured water level in cyan tracing almost exactly over FORTRAN's dashed amber tide for a week, then the tide alone for three days ahead; below, the surge in coral wandering between zero and three quarters of a foot above a shaded normal band" loading="lazy" decoding="async">
       <p class="photo-caption">A week at Seattle. Top: the measured water over FORTRAN&rsquo;s tide. Bottom: the difference, the surge, against the normal range for these dates.</p>
     </div>
 
@@ -216,7 +217,7 @@
     <p><strong>Minus tides for the tide pools.</strong> My favorite part. FORTRAN finds every low tide below zero that comes while the sun is up, using its own sunrise and sunset. Right now the answer for Seattle is none until March 12, because in fall and winter the big low tides come in the middle of the night. By summer they&rsquo;ve swung round to midday, and the lowest of the year is the morning of the Fourth of July: 3.9 feet below zero at 11:36. That&rsquo;s a beach walk worth planning.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/puget-tides/minus.jpg" width="1088" height="491" alt="A year of yellow dots below a zero line, one for each daylight minus tide at Seattle: none from October to early March, then more and deeper through spring and summer, the deepest near minus four feet in late June and early July" loading="lazy">
+      <img src="/img-opt/blog/img/puget-tides/minus.jpg.w640.webp" width="1088" height="491" alt="A year of yellow dots below a zero line, one for each daylight minus tide at Seattle: none from October to early March, then more and deeper through spring and summer, the deepest near minus four feet in late June and early July" loading="lazy" decoding="async">
       <p class="photo-caption">Every daylight minus tide at Seattle in the next twelve months. None until March; the deepest around the Fourth of July.</p>
     </div>
 
@@ -225,14 +226,14 @@
     <p>The tide is a wave, and you can watch it travel. It reaches Port Angeles about two hours after Neah Bay, Port Townsend in three and a half, and Seattle and Tacoma about four and a third. Along the way it shrinks in the Strait, where the main lunar tide is only two-thirds of the ocean&rsquo;s, then grows again as Puget Sound&rsquo;s long inlets funnel it, until at Tacoma it&rsquo;s almost half again as big as at Neah Bay.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/puget-tides/map.jpg" width="1088" height="880" alt="A dark map of the Strait of Juan de Fuca and Puget Sound with eight cyan circles sized by the tide, labelled with how many hours after Neah Bay it arrives: plus 2.1 at Port Angeles, 3.6 at Port Townsend, 4.3 at Seattle and Tacoma; a table below lists each gauge's tide, range and record high" loading="lazy">
+      <img src="/img-opt/blog/img/puget-tides/map.jpg.w640.webp" width="1088" height="880" alt="A dark map of the Strait of Juan de Fuca and Puget Sound with eight cyan circles sized by the tide, labelled with how many hours after Neah Bay it arrives: plus 2.1 at Port Angeles, 3.6 at Port Townsend, 4.3 at Seattle and Tacoma; a table below lists each gauge's tide, range and record high" loading="lazy" decoding="async">
       <p class="photo-caption">The tide coming in: each circle sized by the main lunar tide, labelled with hours after Neah Bay.</p>
     </div>
 
     <p>Sea level is moving too. FORTRAN fits a trend to every monthly mean at each gauge, and they come out within 0.05 millimeters a year of NOAA&rsquo;s published trends. Seattle is up 2.1 millimeters a year since 1899, about eight inches a century. Neah Bay is going the other way, down 1.7 millimeters a year, because the land there is rising faster than the sea.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/puget-tides/sealevel.jpg" width="1088" height="780" alt="Seattle's yearly mean sea level from 1899 to 2026 climbing about ten inches with a dashed trend line through it, and a spike in 1983; below, a table of each gauge's trend beside NOAA's, Neah Bay negative" loading="lazy">
+      <img src="/img-opt/blog/img/puget-tides/sealevel.jpg.w640.webp" width="1088" height="780" alt="Seattle's yearly mean sea level from 1899 to 2026 climbing about ten inches with a dashed trend line through it, and a spike in 1983; below, a table of each gauge's trend beside NOAA's, Neah Bay negative" loading="lazy" decoding="async">
       <p class="photo-caption">Seattle&rsquo;s sea level since 1899, with FORTRAN&rsquo;s trend, and every gauge beside NOAA&rsquo;s published numbers.</p>
     </div>
 
@@ -241,12 +242,12 @@
     <p>The <a href="https://brooksgroves.com/puget-tides/" target="_blank">live page</a> is a cyan cousin of CASCADIA-WX&rsquo;s amber terminal. It plays back the latest job log, shows each gauge&rsquo;s water level, tide and surge, draws the week of measured water over FORTRAN&rsquo;s tide, lists the highs and lows beside NOAA&rsquo;s, and has the king tides, the minus tides and sea level since 1899. The report comes off a line printer on blue-bar paper, and the loop that adds up the 37 waves is copied live onto a 1957 FORTRAN coding form.</p>
 
     <div class="photo-block">
-      <img src="/blog/img/puget-tides/cards.jpg" width="1088" height="465" alt="Eight terminal cards in order from the ocean, Neah Bay to Tacoma, each with the water level in large cyan numbers, the predicted tide and surge, the 24-hour surge against normal, the air pressure's share, and the next high and low" loading="lazy">
+      <img src="/img-opt/blog/img/puget-tides/cards.jpg.w640.webp" width="1088" height="465" alt="Eight terminal cards in order from the ocean, Neah Bay to Tacoma, each with the water level in large cyan numbers, the predicted tide and surge, the 24-hour surge against normal, the air pressure's share, and the next high and low" loading="lazy" decoding="async">
       <p class="photo-caption">The water now at all eight gauges, in order from the ocean to the end of the Sound.</p>
     </div>
 
     <div class="photo-block">
-      <img src="/blog/img/puget-tides/printout.jpg" width="1052" height="1762" alt="The PUGET-TIDES report on blue-bar fanfold paper with tractor-feed holes: the water now, the next two days of highs and lows, FORTRAN against NOAA, the tide coming in, king tides, daylight minus tides and sea level" loading="lazy">
+      <img src="/img-opt/blog/img/puget-tides/printout.jpg.w640.webp" width="1052" height="1762" alt="The PUGET-TIDES report on blue-bar fanfold paper with tractor-feed holes: the water now, the next two days of highs and lows, FORTRAN against NOAA, the tide coming in, king tides, daylight minus tides and sea level" loading="lazy" decoding="async">
       <p class="photo-caption">This afternoon&rsquo;s printout, 132 columns, exactly as FORTRAN wrote it.</p>
     </div>
 
@@ -300,19 +301,19 @@
     <div class="kr-head"><h2 class="kr-label">Keep reading</h2><a class="kr-more" href="/topics/weather/">More in 🌦️ Weather &amp; Water &rarr;</a></div>
     <div class="kr-grid">
       <a class="kr-card" href="/blog/cascadia-wx-revisited-post.html">
-        <img class="kr-img" src="/blog/img/cascadia-wx-revisited/sites.jpg" alt="" loading="lazy" decoding="async">
+        <img class="kr-img" src="/img-opt/blog/img/cascadia-wx-revisited/sites.jpg.w640.webp" alt="" loading="lazy" decoding="async">
         <span class="kr-meta">Oct 3, 2026</span>
         <span class="kr-title">🎈 CASCADIA-WX, Revisited: Reading the Balloons</span>
         <span class="kr-dek">My FORTRAN weather program said the Cascade passes were bare last April. It was asking for snow stations that don’t exist. Version 3 reads the Northwest’s four weather balloons twice a day and ranks them against 85,000 balloons from 1991 to 2020, all in FORTRAN.</span>
       </a>
       <a class="kr-card" href="/blog/cascadia-wx-post.html">
-        <span class="kr-img kr-noimg" style="--kr-c:#5a7a8a" aria-hidden="true">💾</span>
+        <img class="kr-img" src="/img-opt/blog/img/cascadia-wx-revisited/console.jpg.w640.webp" alt="" loading="lazy" decoding="async">
         <span class="kr-meta">April 2026</span>
         <span class="kr-title">💾 FORTRAN, Snowpack, and the Language the Atmosphere Speaks</span>
         <span class="kr-dek">The Cascades at 15% of normal snowpack. FORTRAN has been computing the atmosphere for 75 years.</span>
       </a>
       <a class="kr-card" href="/blog/rainier-snowpack-post.html">
-        <img class="kr-img" src="/images/features/rainier.jpg" alt="" loading="lazy" decoding="async">
+        <img class="kr-img" src="/img-opt/images/features/rainier.jpg.w640.webp" alt="" loading="lazy" decoding="async">
         <span class="kr-meta">Oct 7, 2026</span>
         <span class="kr-title">❄️ Storm Chaser: Watching Rainier’s Snow, Every Hour</span>
         <span class="kr-dek">Ten snow stations, two satellites and six webcams, checked every hour: how my Mount Rainier snowpack page works, what last winter’s lean year looked like, and what four decades of El Niño winters say about the one ahead.</span>
