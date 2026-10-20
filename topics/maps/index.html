@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maps &amp; Flyovers · Brooks Groves</title>
+  <meta name="description" content="forge3d flights, lidar and cartography, from Yosemite to the Icefields Parkway. 14 posts and 3 live dashboards.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Maps &amp; Flyovers · Brooks Groves">
+  <meta property="og:description" content="forge3d flights, lidar and cartography, from Yosemite to the Icefields Parkway. 14 posts and 3 live dashboards.">
+  <meta property="og:url" content="https://brooksgroves.com/topics/maps/">
+  <meta property="og:image" content="https://brooksgroves.com/images/features/topic-maps.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc; --sage:#4a5c45; --rust:#8b3a2a;
+             --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sky:#5a7a8a; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; line-height:1.7; }
+    a { color:var(--rust); }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust),var(--gold) 50%,var(--sage)); }
+    .tp-header { border-bottom:2px solid var(--ink); }
+    .tp-header-in { max-width:1200px; margin:0 auto; padding:18px clamp(16px,4vw,32px); display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:10px 32px; }
+    .tp-name { font-family:'Playfair Display',serif; font-weight:900; font-size:30px; letter-spacing:-.02em; text-decoration:none; color:var(--ink); }
+    .tp-nav { display:flex; flex-wrap:wrap; align-items:center; gap:6px 22px; font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+    .tp-nav a { color:var(--ink); text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px; }
+    .tp-nav a:hover { color:var(--rust); border-bottom-color:var(--rust); }
+    .tp-main { max-width:1200px; margin:0 auto; padding:0 clamp(16px,4vw,32px) 24px; }
+    .tp-hero { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:32px; align-items:center; padding:36px 0 28px; border-bottom:4px solid var(--tc,var(--gold)); }
+    .tp-hero img { width:100%; aspect-ratio:16/7; object-fit:cover; display:block; border:1px solid var(--mist); }
+    .tp-back { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--stone); text-decoration:none; }
+    .tp-back:hover { color:var(--rust); }
+    .tp-h1 { margin:10px 0 12px; font-family:'Playfair Display',serif; font-weight:900; font-size:clamp(34px,5vw,52px); line-height:1.05; letter-spacing:-.02em; }
+    .tp-blurb { margin:0 0 10px; font-size:18px; color:var(--stone); max-width:36em; }
+    .tp-count { font-family:'DM Mono',monospace; font-size:12px; color:var(--stone); }
+    @media (max-width:760px) { .tp-hero { grid-template-columns:1fr; gap:18px; padding-top:24px; } .tp-hero img { order:-1; } }
+    .tp-sec { padding:32px 0; border-bottom:1px solid var(--mist); }
+    .tp-sec:last-of-type { border-bottom:none; }
+    .tp-label { margin:0 0 16px; font-family:'DM Mono',monospace; font-weight:400; font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:var(--ink); }
+    .tp-dash { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
+    .tp-card { display:flex; flex-direction:column; gap:6px; padding:0 0 16px; border:1px solid var(--mist); background:var(--white); color:var(--ink); text-decoration:none; overflow:hidden; transition:border-color .18s, box-shadow .18s, transform .18s; }
+    .tp-card:hover { border-color:var(--stone); transform:translateY(-2px); box-shadow:0 10px 24px -16px rgba(28,26,22,.45); }
+    .tp-card img, .tp-card .tp-noimg { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; margin-bottom:6px; border-bottom:1px solid var(--mist); background:var(--cream); }
+    .tp-noimg { display:flex !important; align-items:center; justify-content:center; font-size:44px; border-bottom:3px solid var(--tc,var(--gold)) !important; }
+    .tp-card b { padding:0 16px; font-family:'Playfair Display',serif; font-size:18px; line-height:1.3; }
+    .tp-card span.d { padding:0 16px; font-size:13.5px; color:var(--stone); line-height:1.55; }
+    .tp-chips { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 8px; }
+    .tp-chip { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; padding:8px 12px; border:1px solid var(--mist); background:none; color:var(--ink); cursor:pointer; }
+    .tp-chip:hover { border-color:var(--ink); }
+    .tp-chip[aria-pressed="true"] { background:var(--ink); color:var(--parchment); border-color:var(--ink); }
+    .tp-chip:focus-visible, .tp-card:focus-visible { outline:2px solid var(--rust); outline-offset:2px; }
+    .tp-post { display:grid; grid-template-columns:120px minmax(0,1fr) 200px; gap:24px; padding:20px 0; border-bottom:1px solid var(--mist); align-items:start; }
+    .tp-post[hidden] { display:none; }
+    .tp-date { font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--stone); padding-top:4px; }
+    .tp-post h3 { margin:0 0 6px; font-family:'Playfair Display',serif; font-size:21px; line-height:1.3; }
+    .tp-post h3 a { color:var(--ink); text-decoration:none; }
+    .tp-post h3 a:hover { color:var(--rust); }
+    .tp-post p { margin:0; font-size:15px; color:var(--stone); line-height:1.65; }
+    .tp-thumb { display:block; }
+    .tp-thumb img { width:200px; aspect-ratio:3/2; object-fit:cover; display:block; border:1px solid var(--mist); }
+    @media (max-width:760px) { .tp-post { grid-template-columns:1fr; gap:8px; } .tp-thumb { order:-1; } .tp-thumb img { width:100%; aspect-ratio:16/9; } }
+    .tp-empty { font-size:15px; color:var(--stone); padding:16px 0; }
+    .tp-others { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px; }
+    .tp-other { display:flex; flex-direction:column; border:1px solid var(--mist); background:var(--white); color:var(--ink); text-decoration:none; overflow:hidden; }
+    .tp-other img { width:100%; aspect-ratio:16/7; object-fit:cover; display:block; }
+    .tp-other span { padding:10px 12px; font-family:'Playfair Display',serif; font-weight:700; font-size:15px; line-height:1.3; }
+    .tp-other small { display:block; font-family:'DM Mono',monospace; font-weight:400; font-size:11px; color:var(--stone); margin-top:2px; }
+    .tp-other:hover { border-color:var(--ink); }
+    .theme-toggle { background:none; border:none; cursor:pointer; padding:0; font-size:14px; color:var(--stone); }
+    @media (prefers-reduced-motion: reduce) { .tp-card { transition:none; } .tp-card:hover { transform:none; } }
+    html[data-theme="dark"] .tp-chip[aria-pressed="true"] { background:var(--ink); color:#17150f; }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+  <script>
+    (function(){ try { var s = localStorage.getItem('bg_theme'); var d = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+      if (s === 'dark' || (!s && d)) document.documentElement.setAttribute('data-theme','dark'); } catch(e) {} })();
+  </script>
+</head>
+<body>
+<div class="topline"></div>
+<header class="tp-header">
+  <div class="tp-header-in">
+    <a class="tp-name" href="/">Brooks Groves</a>
+    <nav class="tp-nav" aria-label="Main"><a href="/#work">Work</a><a href="/writing/">Writing</a><a href="/maps.html">Maps &amp; films</a><a href="/#live">Live data</a><a href="/outside.html">Outside</a><a href="/about.html">About</a><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
+  </div>
+</header>
+
+<main class="tp-main" style="--tc:var(--gold)">
+  <section class="tp-hero">
+    <div>
+      <a class="tp-back" href="/topics/">&larr; All topics</a>
+      <h1 class="tp-h1">🗺️ Maps &amp; Flyovers</h1>
+      <p class="tp-blurb">forge3d flights, lidar and cartography, from Yosemite to the Icefields Parkway.</p>
+      <p class="tp-count">14 posts · 3 live dashboards</p>
+    </div>
+    <img src="/images/features/topic-maps.jpg" alt="" width="800" height="350">
+  </section>
+  <section class="tp-sec" aria-labelledby="dash-h">
+    <h2 class="tp-label" id="dash-h">Live dashboards</h2>
+    <div class="tp-dash">
+      <a class="tp-card" href="https://brooksgroves.com/lidar-explore/"><img src="/images/features/lidar-explore.jpg" alt="" loading="lazy" decoding="async"><b>🌲 LiDAR Explore</b><span class="d">A synthetic Finnish forest, then 1,840 real stands checked against Finland’s national inventory.</span></a>
+      <a class="tp-card" href="https://brooksgroves.com/sentinel-stockpile/"><span class="tp-noimg" aria-hidden="true">🛰️</span><b>🛰️ Sentinel Stockpile</b><span class="d">Eight Pacific Northwest yards measured twice a week from Sentinel-2.</span></a>
+      <a class="tp-card" href="https://brooksgroves.com/30DayMapChallenge/2026/"><span class="tp-noimg" aria-hidden="true">🗺️</span><b>🗺️ #30DayMapChallenge 2026</b><span class="d">A map a day through November.</span></a>
+    </div>
+  </section>
+  <section class="tp-sec" aria-labelledby="posts-h">
+    <h2 class="tp-label" id="posts-h">Posts</h2>
+    <div class="tp-chips" role="group" aria-label="Filter posts by tag">
+      <button class="tp-chip" type="button" data-tag="" aria-pressed="true">All 14</button>
+      <button class="tp-chip" type="button" data-tag="Cartography" aria-pressed="false">Cartography 6</button>
+      <button class="tp-chip" type="button" data-tag="GIS" aria-pressed="false">GIS 5</button>
+      <button class="tp-chip" type="button" data-tag="Remote Sensing" aria-pressed="false">Remote Sensing 4</button>
+      <button class="tp-chip" type="button" data-tag="Pacific Northwest" aria-pressed="false">Pacific Northwest 4</button>
+      <button class="tp-chip" type="button" data-tag="Sentinel-2" aria-pressed="false">Sentinel-2 3</button>
+      <button class="tp-chip" type="button" data-tag="Geospatial" aria-pressed="false">Geospatial 3</button>
+      <button class="tp-chip" type="button" data-tag="Lidar" aria-pressed="false">Lidar 2</button>
+      <button class="tp-chip" type="button" data-tag="Supply Chain" aria-pressed="false">Supply Chain 2</button>
+    </div>
+    <article class="tp-post" data-tags="forge3d|Python|Jupyter|Lidar|Cartography|Open Data"><span class="tp-date">Oct 6, 2026</span><div><h3><a href="/blog/forge3d-notebooks-post.html">📖 Open the Hood: Notebooks for My forge3d Projects</a></h3><p>Asked on X whether I use forge3d from notebooks or through agents, I made walkthrough notebooks for nine forge3d projects: Chaco Canyon, Serpent Mound, Yosemite, Humphreys Peak, the Icefields Parkway and four Washington animations, each running the project’s own code from raw data to a finished frame.</p></div><a class="tp-thumb" href="/blog/forge3d-notebooks-post.html" tabindex="-1" aria-hidden="true"><img src="/blog/img/forge3d-notebooks/og.jpg" alt="" loading="lazy" decoding="async"></a></article>
+    <article class="tp-post" data-tags="Remote Sensing|Sentinel-2|Supply Chain|Pacific Northwest|Python|GitHub Actions|Open Data"><span class="tp-date">Oct 6, 2026</span><div><h3><a href="/blog/sentinel-stockpile-revisited-post.html">🛰️ Sentinel Stockpile, Revisited: Where Did the Wind Blades Go?</a></h3><p>I came back to my satellite stockpile project, found two sites in the wrong place and a bug in every pixel, and rebuilt it: eight Pacific Northwest yards measured twice a week with a colour rule per cargo, checked against aerial photos, and a live dashboard. The first thing it showed me: the wind blades at Terminal 5 are gone.</p></div><a class="tp-thumb" href="/blog/sentinel-stockpile-revisited-post.html" tabindex="-1" aria-hidden="true"><img src="/blog/img/sentinel-stockpile-revisited/og.jpg" alt="" loading="lazy" decoding="async"></a></article>
+    <article class="tp-post" data-tags="Canadian Rockies|forge3d|Sentinel-2|Glaciers|Python|Cartography|Open Data"><span class="tp-date">Oct 2, 2026</span><div><h3><a href="/blog/icefields-flyover-post.html">🏔️ Up the Icefields Parkway</a></h3><p>A 95-second flight up the Icefields Parkway on a September evening: Lake Louise, Bow Lake, a slow pass over Peyto Lake, and the Columbia Icefield. Satellite elevation and Sentinel-2 imagery, rendered with forge3d 1.40.1, plus why the lakes first came out grey.</p></div><a class="tp-thumb" href="/blog/icefields-flyover-post.html" tabindex="-1" aria-hidden="true"><img src="/blog/img/icefields-flyover/og.jpg" alt="" loading="lazy" decoding="async"></a></article>
+    <article class="tp-post" data-tags="Yosemite|Sierra Nevada|forge3d|Lidar|Python|Cartography|Open Data"><span class="tp-date">Oct 2, 2026</span><div><h3><a href="/blog/yosemite-flyover-post.html">🏔️ Down Yosemite Valley and Back</a></h3><p>A 73-second flight through Yosemite Valley on a June evening: down Half Dome’s face, past El Capitan to Tunnel View and back. USGS lidar and aerial imagery, rendered with forge3d 1.40.1’s new flythrough tools, plus what’s real and what’s painted.</p></div><a class="tp-thumb" href="/blog/yosemite-flyover-post.html" tabindex="-1" aria-hidden="true"><img src="/blog/img/yosemite-flyover/og.jpg" alt="" loading="lazy" decoding="async"></a></article>
+    <article class="tp-post" data-tags="Python|forge3d|Terrain|Cartography|Arizona|USGS|Open Data|pixi"><span class="tp-date">Sep 29, 2026</span><div><h3><a href="/blog/humphreys-orbit-post.html">🗻 Once Around Humphreys Peak</a></h3><p>Back in April my favourite forge3d image had no camera flythrough. This one is nothing but: one slow orbit of Arizona’s highest summit, built from USGS elevation and aerial imagery, with a sky and labels added in plain Python. Plus three things I got wrong, starting with a blank white screen.</p></div><a class="tp-thumb" href="/blog/humphreys-orbit-post.html" tabindex="-1" aria-hidden="true"><img src="/blog/img/humphreys-orbit/og.jpg" alt="" loading="lazy" decoding="async"></a></article>
+    <article class="tp-post" data-tags="Search &amp; Rescue|Geocoding|GIS|Open Data|Arizona|Colorado|Leaflet|Python|GitHub Actions|Yosemite"><span class="tp-date">Sep 29, 2026</span><div><h3><a href="/blog/ridgeline-post.html">⛰️ Where the Trail Runs Out</a></h3><p>A researcher asked why two of my numbers didn’t match. The answer: roads named after mountains had pinned 1,560 city calls to the wrong preserves, and blurred addresses had hidden most of the real rescues. Fixing it put 1,489 Phoenix mountain rescues on the map, added Scottsdale and Boulder, tested whether Phoenix’s heat closures explain the drop in rescues (mostly, they don’t), and mapped 20,058 national park rescues.</p></div><span></span></article>
+    <article class="tp-post" data-tags="JavaScript|Games|Game Design|Geospatial|Nevada|Testing|Workflow|Side Projects"><span class="tp-date">Sep 10, 2026</span><div><h3><a href="/blog/games-engine.html">🎲 I Wanted to Play Star Frontiers Again. I Accidentally Built a Game Engine.</a></h3><p>It started with a photo of the 1983 Star Frontiers Referee’s Screen on Instagram. Four browser games and roughly two thousand lines of JavaScript later: a shared engine where a new module is content plus a config object, dice rendered with real per-type silhouettes in CSS clip-path, and every sound synthesized in Web Audio with no files to host. The fourth game, Railroad Valley: Nine Litres, runs on genuine USGS topo tiles of Nye County, Nevada — 37 locations on real coordinates, walking times computed from terrain pace plus a Naismith climb penalty, and a water model where 38°C costs 1.33 litres an hour walking against the nine litres you started with. Also three failures documented in public: dice checks that could never succeed because the modifier spread was wider than the die, atmosphere written where information was needed, and death clocks the player could not see. The standing fix was tools/audit-dice.js, which boots every game headlessly and flags impossible checks — it has caught five real bugs, two of them already live.</p></div><span></span></article>
+    <article class="tp-post" data-tags="LiDAR|Remote Sensing|Point Clouds|Python|PDAL|Finland|Forestry|Snowflake|GIS"><span class="tp-date">2026</span><div><h3><a href="/blog/finding-the-trees.html">🌲 Finding the Trees</a></h3><p>A stretch project into airborne LiDAR and point clouds — PDAL pipelines, ground classification, canopy height models, individual tree detection — built end to end from a synthetic Finnish boreal stand through to real national data. The detector scored 78.4% recall against 450 trees whose positions I set myself, then recall rose as the point cloud thinned, a +0.00 m ground calibration concealed a canopy bias, two definitions of mean height landed on opposite sides of the truth, and a 100% harvest-targeting precision turned out to be structurally guaranteed. Validated against 1,295 stands from the Finnish Forest Centre inventory: height to within 1.19 m at r = 0.962, roughly one stem in six recovered.</p></div><a class="tp-thumb" href="/blog/finding-the-trees.html" tabindex="-1" aria-hidden="true"><img src="/images/features/lidar-explore.jpg" alt="" loading="lazy" decoding="async"></a></article>
+    <article class="tp-post" data-tags="Remote Sensing|Geospatial|ONDA|Oregon|Landsat|Sentinel-1|Google Earth Engine|Python|NDVI|Riparian|Field Report|Reproducibility"><span class="tp-date">2026</span><div><h3><a href="/blog/onda-riparian-post.html">🌿 Eight Years Later — A 2018 Volunteer GIS Project Gets Its Answer</a></h3><p>Rebuilding a 2018 Google Earth Engine NDVI prototype as a modern Python remote-sensing pipeline. Forty-two years of Landsat, a Sentinel-1 SAR cross-check, and real statistics on three ONDA riparian restoration sites in eastern Oregon — with one two-sensor disagreement that turned out to be the signal.</p></div><a class="tp-thumb" href="/blog/onda-riparian-post.html" tabindex="-1" aria-hidden="true"><img src="https://raw.githubusercontent.com/bdgroves/onda-riparian-2026/main/outputs/hero_figure.png" alt="" loading="lazy" decoding="async"></a></article>
+    <article class="tp-post" data-tags="Community GIS|Leaflet|Food Access|Lakewood WA|Civic Tech|Pacific Northwest|Rotary"><span class="tp-date">Apr 7, 2026</span><div><h3><a href="/blog/little-free-pantry-post.html">🏠 Little Free Pantry — Mapping Food Access in Lakewood</a></h3><p>Interactive map for the Lakewood Rotary pantry network. 24/7 no-barrier food access across South Sound communities.</p></div><span></span></article>
+    <article class="tp-post" data-tags="Remote Sensing|GIS|Sentinel-2|Python|Supply Chain|Pacific Northwest|pixi|Columbia River|Lumber"><span class="tp-date">April 2026</span><div><h3><a href="/blog/sentinel-stockpile-post.html">🛰️ Sentinel Stockpile — The Economy You Can See From Space</a></h3><p>12 months of Sentinel-2 imagery tracking lumber stockpiles at the Port of Longview.</p></div><a class="tp-thumb" href="/blog/sentinel-stockpile-post.html" tabindex="-1" aria-hidden="true"><img src="/images/sentinel-time-series.png" alt="" loading="lazy" decoding="async"></a></article>
+    <article class="tp-post" data-tags="GIS|LiDAR|forge3d|Python|Terrain|Pacific Northwest|Washington|Cartography|Open Source"><span class="tp-date">Apr 1, 2026</span><div><h3><a href="/blog/forge3d-post.html">🗻 Exploring forge3d With Washington LiDAR</a></h3><p>A GPU-accelerated terrain renderer in Python. Mount St. Helens, Crater Lake, and 1-meter LiDAR.</p></div><a class="tp-thumb" href="/blog/forge3d-post.html" tabindex="-1" aria-hidden="true"><img src="/images/rainier_social.png" alt="" loading="lazy" decoding="async"></a></article>
+    <article class="tp-post" data-tags="Python|R|pixi|GIS|Environments|Reproducibility|Geospatial|Windows|Workflow"><span class="tp-date">March 2026</span><div><h3><a href="/blog/pixi-post.html">📦 Why I Switched to pixi for Python and R Environments</a></h3><p>After years of conda headaches, a cleaner path to reproducible geospatial work.</p></div><span></span></article>
+    <article class="tp-post" data-tags="Book Review|Cartography|New Zealand|Maps|Cartographic Perspectives"><span class="tp-date">2025</span><div><h3><a href="/writing/draught-south-land.html">A Draught of the South Land — Book Review</a></h3><p>Review of Paul Moon on cartography in New Zealand. Cartographic Perspectives No. 105.</p></div><span></span></article>
+    <p class="tp-empty" id="tp-empty" hidden>No posts with that tag.</p>
+  </section>
+  <section class="tp-sec" aria-labelledby="more-h">
+    <h2 class="tp-label" id="more-h">Other topics</h2>
+    <div class="tp-others">
+      <a class="tp-other" href="/topics/weather/"><img src="/images/features/topic-weather.jpg" alt="" loading="lazy"><span>🌦️ Weather &amp; Water<small>25 posts</small></span></a>
+      <a class="tp-other" href="/topics/earth/"><img src="/images/features/topic-earth.jpg" alt="" loading="lazy"><span>🌋 Volcanoes, Fossils &amp; Ruins<small>17 posts</small></span></a>
+      <a class="tp-other" href="/topics/nature/"><img src="/images/features/topic-nature.jpg" alt="" loading="lazy"><span>🐟 Science &amp; Nature<small>11 posts</small></span></a>
+      <a class="tp-other" href="/topics/sports/"><img src="/images/features/topic-sports.jpg" alt="" loading="lazy"><span>🚴 Cycling, Sports &amp; Training<small>6 posts</small></span></a>
+      <a class="tp-other" href="/topics/builds/"><img src="/images/features/topic-builds.jpg" alt="" loading="lazy"><span>🍺 Beer &amp; Builds<small>5 posts</small></span></a>
+    </div>
+  </section>
+</main>
+
+<script src="/js/site-footer.js" defer></script>
+<script>
+(function(){
+  var root = document.documentElement, btn = document.getElementById('theme-toggle');
+  function sync(){ var d = root.getAttribute('data-theme') === 'dark'; btn.textContent = d ? '\u25D0' : '\u25D1';
+    var l = d ? 'Switch to light mode' : 'Switch to dark mode'; btn.setAttribute('aria-label', l); btn.setAttribute('title', l); }
+  sync();
+  btn.addEventListener('click', function(){ var d = root.getAttribute('data-theme') === 'dark';
+    if (d) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', d ? 'light' : 'dark'); } catch(e) {}
+    sync(); });
+  // Tag filter: show the posts that carry the chosen tag.
+  var chips = document.querySelectorAll('.tp-chip'), rows = document.querySelectorAll('.tp-post'), empty = document.getElementById('tp-empty');
+  function pick(tag){
+    var shown = 0;
+    chips.forEach(function(c){ c.setAttribute('aria-pressed', c.dataset.tag === tag ? 'true' : 'false'); });
+    rows.forEach(function(r){ var ok = !tag || (r.dataset.tags || '').split('|').indexOf(tag) >= 0; r.hidden = !ok; if (ok) shown++; });
+    if (empty) empty.hidden = shown > 0;
+    try { history.replaceState(null, '', tag ? '#tag=' + encodeURIComponent(tag) : location.pathname); } catch(e) {}
+  }
+  chips.forEach(function(c){ c.addEventListener('click', function(){ pick(c.dataset.tag); }); });
+  var m = location.hash.match(/^#tag=(.+)$/); if (m) pick(decodeURIComponent(m[1]));
+})();
+</script>
+</body>
+</html>

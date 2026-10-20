@@ -11,7 +11,7 @@ repo it picks three others, writes them as image cards between
     <!-- KEEP-READING:START --> ... <!-- KEEP-READING:END -->
 
 just above the page's site <footer>, and links "More in <topic>" to
-tags.html#topic=<id>.
+/topics/<id>/ (built by scripts/topic_pages.py).
 
 How the three are picked:
   * same topic first, scored by shared tags, newest breaking ties;
@@ -161,7 +161,7 @@ def block(post, picks, topic, colors, imgs) -> str:
             f'      </a>')
     more = ""
     if topic:
-        more = (f'<a class="kr-more" href="/tags.html#topic={topic["id"]}">More in {topic["icon"]} '
+        more = (f'<a class="kr-more" href="/topics/{topic["id"]}/">More in {topic["icon"]} '
                 f'{esc(topic["name"])} &rarr;</a>')
     return "\n".join([
         START,
