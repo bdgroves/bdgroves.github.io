@@ -58,10 +58,17 @@ def door_for(rel: str) -> str | None:
     return None
 
 
+# Set by --other-site: absolute links, one fixed door, and the page's own
+# "← Memoir"-style back link kept (it's how readers get around a collection).
+BASE = ""
+FIXED_DOOR = None
+KEEP_BACK = False
+
+
 def nav(rel: str, toggle: str, indent: str = "    ") -> str:
-    cur = door_for(rel)
+    cur = FIXED_DOOR or door_for(rel)
     links = "".join(
-        f'\n{indent}  <a href="{h}"{" aria-current=\"page\"" if t == cur else ""}>{t}</a>' for t, h in DOORS)
+        f'\n{indent}  <a href="{BASE}{h}"{" aria-current=\"page\"" if t == cur else ""}>{t}</a>' for t, h in DOORS)
     tog = f"\n{indent}  {toggle.strip()}" if toggle else ""
     return f'<nav class="site-nav" aria-label="Main">{links}{tog}\n{indent}</nav>'
 
@@ -89,11 +96,31 @@ def fix(rel: str, s: str) -> str | None:
         tog = TOGGLE.search(head)                    # move the button into the menu
         if tog:
             head = head[:tog.start()].rstrip() + "\n    " + head[tog.end():].lstrip()
-        return s[:m.start()] + head + nav(rel, tog.group(0) if tog else "") + s[m.end():]
+        back = m.group(0)[len(m.group(1)):] + "\n    " if KEEP_BACK else ""
+        rest = s[m.end():]
+        if not tog:                                  # the button may follow the back link instead
+            t2 = TOGGLE.search(rest[:400])
+            if t2 and not rest[:t2.start()].strip():
+                tog, rest = t2, rest[t2.end():]
+        return s[:m.start()] + head + back + nav(rel, tog.group(0) if tog else "") + rest
     return None
 
 
 def main():
+    """python3 scripts/site_nav.py [--other-site DIR]
+
+    --other-site DIR runs it on one of the story sites (journal, memoir,
+    Y2K, Westin): links point at https://brooksgroves.com, "Writing" is the
+    current door, and each page's back link to its collection is kept.
+    """
+    import argparse
+    global ROOT, BASE, FIXED_DOOR, KEEP_BACK
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--other-site")
+    a = ap.parse_args()
+    if a.other_site:
+        ROOT, BASE, FIXED_DOOR, KEEP_BACK = Path(a.other_site).resolve(), "https://brooksgroves.com", "Writing", True
+        SKIP.discard("index.html")                   # a story site's index is its collection page
     changed, done, missed = 0, 0, []
     for f in sorted(ROOT.rglob("*.html")):
         rel = f.relative_to(ROOT).as_posix()

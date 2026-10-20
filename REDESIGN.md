@@ -59,7 +59,7 @@ then merges.
 | 3b | Homepage layout: six-door nav, Start-here paths, Live right now | ✅ live Oct 20 |
 | 4 | Topic pages (/topics/) | ✅ live Oct 20 |
 | 5 | Outside page; the Stories front door | |
-| 6 | Shared header across brooksgroves.com and the subdomains | main site ✅ live Oct 20; subdomains to do |
+| 6 | Shared header across brooksgroves.com and the subdomains | main site ✅ live Oct 20; journal, memoir, Y2K, Westin on `site-menu` branches |
 | — | og:image on every post (social previews, search) | ongoing, needs images |
 | — | RSS feed | |
 
@@ -156,6 +156,26 @@ A note on the contrast audit: dark-mode counts include colours caught
 mid-transition (pages animate colour for 0.15–0.2 s). Re-measured after
 600 ms, the blog index, tags page and secchi post have zero dark-mode
 failures. Use a longer settle time for dark-mode numbers.
+
+### Step 6 (story sites): journal, memoir, Y2K, Westin
+
+Same script, run from this repo against each clone:
+`python3 scripts/site_nav.py --other-site ../brooks-memoir`. Links are
+absolute (https://brooksgroves.com/...), Writing is the current door, and
+each page's own "← Memoir"-style back link is kept. Two pages were done
+by hand: the journal's bridge-of-promise.html (its own nav markup) and
+Westin's index (its header had a "← brooksgroves.com" link, replaced by
+the menu). Gates and noindex are untouched. Each repo has a `site-menu`
+branch; merge after Brooks checks behind the password.
+
+### Outside page (on `redesign-d`)
+
+Four jump cards under the intro (My Season, The Teams, Pro Cycling, The
+Taproom; the race card shows the live countdown), a sticky section bar,
+emoji in the zone headings, dates and small labels in readable
+`--stone` instead of `--mist`, and finished Grand Tours no longer fade
+the whole card. Every id the live-data scripts use is unchanged. On a
+phone the jump cards hide and the sticky bar does the job.
 
 ## Image wish list
 
