@@ -35,6 +35,7 @@ SCRIPT = '<script src="/js/post.js" defer></script>'
 
 def norm(src: str) -> str:
     src = src.replace(SITE, "").split("?")[0]
+    src = re.sub(r"^/img-opt/(.+)\.w\d+\.webp$", r"/\1", src)   # a WebP copy counts as its original
     return src.rsplit("/", 1)[-1]
 
 

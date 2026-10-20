@@ -105,6 +105,11 @@ def card_image(f: Path | None, url: str) -> str:
 
 
 def site_path(src: str, url: str) -> str:
+    # web_images.py serves WebP copies from /img-opt/<original>.w<N>.webp;
+    # cards and previews name the original.
+    m = re.match(r"(?:https://brooksgroves\.com)?/img-opt/(.+)\.w\d+\.webp$", src)
+    if m:
+        src = "/" + m.group(1)
     if src.startswith(SITE):
         src = src[len(SITE):]
     elif not src.startswith(("/", "http")):           # relative to the post
