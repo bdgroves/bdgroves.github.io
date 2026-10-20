@@ -234,11 +234,9 @@ sites.
 **Every new post gets a picture** (standing rule from Oct 20). Make it with
 the house-style prompt in `docs/hero-image-prompt.md`.
 
-Pages that still show an emoji on their cards (23, Oct 20). Any 1200×630
+Pages that still show an emoji on their cards (16, Oct 20). Any 1200×630
 picture works; add it as the post's og:image or to `IMAGE_OVERRIDES` in
 `scripts/keep_reading.py`, and every card, cover and preview picks it up.
-
-Recent posts (most seen):
 
 Older posts:
 - Thirty Minutes, Fifty Years of Fire (Tuolumne watershed)
