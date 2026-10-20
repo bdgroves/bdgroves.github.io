@@ -165,7 +165,8 @@ TAIL = """
 
 
 def nav_html(current="Writing"):
-    return "".join(f'<a href="{h}"{" aria-current=\"page\"" if t == current else ""}>{t}</a>' for t, h in NAV)
+    return ("".join(f'<a href="{h}"{" aria-current=\"page\"" if t == current else ""}>{t}</a>' for t, h in NAV)
+            + '<a href="/search/" aria-label="Search">⌕ Search</a>')
 
 
 def page_url(t):
