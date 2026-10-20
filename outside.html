@@ -71,6 +71,22 @@
     .page-title em { font-style:italic; color:var(--rust); }
     .page-sub { font-size:0.975rem; color:var(--stone); max-width:580px; line-height:1.8; margin-bottom:1.25rem; }
     .page-tags { display:flex; gap:0.4rem; flex-wrap:wrap; }
+    .jump-cards { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:1rem; margin-top:1.75rem; }
+    @media(max-width:900px) { .jump-cards { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media(max-width:600px) { .jump-cards { display:none; } } /* the sticky bar below does the job on a phone */
+    .jump-card { display:flex; flex-direction:column; gap:.3rem; padding:1rem 1.1rem; background:var(--white); border:1px solid var(--mist); border-top:3px solid var(--rust); text-decoration:none; color:var(--ink); transition:border-color .18s, transform .18s, box-shadow .18s; }
+    .jump-card:nth-child(2) { border-top-color:var(--sage); } .jump-card:nth-child(3) { border-top-color:var(--gold); } .jump-card:nth-child(4) { border-top-color:#5a7a8a; }
+    .jump-card:hover { transform:translateY(-2px); box-shadow:0 10px 24px -16px rgba(28,26,22,.45); border-color:var(--stone); }
+    .jc-k { font-family:'DM Mono',monospace; font-size:.58rem; letter-spacing:.12em; text-transform:uppercase; color:var(--stone); }
+    .jc-t { font-family:'Playfair Display',serif; font-weight:900; font-size:1.25rem; line-height:1.2; }
+    .jc-s { font-size:.8rem; color:var(--stone); line-height:1.45; }
+    .jump-bar { position:sticky; top:0; z-index:50; background:var(--parchment); border-bottom:1px solid var(--mist); }
+    .jump-bar-in { max-width:1200px; margin:0 auto; padding:.55rem clamp(1.5rem,5vw,4rem); display:flex; gap:.4rem 1.6rem; flex-wrap:wrap; }
+    .jump-bar a { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink); text-decoration:none; white-space:nowrap; }
+    .jump-bar a:hover { color:var(--rust); }
+    .zone { scroll-margin-top:3rem; } #cycling { scroll-margin-top:3rem; }
+    .zone-emoji { font-style:normal; }
+    @media (prefers-reduced-motion: reduce) { .jump-card { transition:none; } .jump-card:hover { transform:none; } }
     .page-tag { font-family:'DM Mono',monospace; font-size:0.52rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.2rem 0.55rem; border-radius:4px; text-decoration:none; transition:all 0.15s; }
     .page-tag:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
     .page-content { max-width:1200px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
@@ -95,7 +111,7 @@
     .team-home { text-align:right; }
     .team-name { font-family:'Playfair Display',serif; font-size:0.85rem; font-weight:600; }
     .team-name.winner { color:var(--ink); }
-    .team-name.loser { color:var(--mist); }
+    .team-name.loser { color:var(--stone); }
     .game-score-block { text-align:center; min-width:60px; }
     .score-line { font-family:'DM Mono',monospace; font-size:0.88rem; letter-spacing:0.05em; }
     .score-status { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-top:0.1rem; }
@@ -149,7 +165,7 @@
     .ytd-sport { font-family:'DM Mono',monospace; font-size:0.48rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.4rem; }
     .ytd-val { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:900; color:var(--ink); line-height:1; }
     .ytd-unit { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); }
-    .ytd-sub { font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--mist); margin-top:0.25rem; }
+    .ytd-sub { font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--stone); margin-top:0.25rem; }
     .activity-list { display:flex; flex-direction:column; }
     .activity-item { display:grid; grid-template-columns:2rem 1fr auto; align-items:center; gap:0.75rem; padding:0.7rem 0; border-bottom:1px solid var(--mist); text-decoration:none; color:inherit; transition:background 0.1s; }
     .activity-item:hover { background:var(--cream); margin:0 -0.5rem; padding-left:0.5rem; padding-right:0.5rem; }
@@ -158,14 +174,14 @@
     .activity-name { font-weight:700; font-size:0.88rem; color:var(--ink); margin-bottom:0.1rem; }
     .activity-item:hover .activity-name { color:var(--garmin); }
     .activity-meta { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); display:flex; gap:0.5rem; flex-wrap:wrap; }
-    .activity-date { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--mist); text-align:right; white-space:nowrap; }
+    .activity-date { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); text-align:right; white-space:nowrap; }
     .alltime-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; }
     @media(max-width:500px) { .alltime-grid { grid-template-columns:1fr; } }
     .alltime-card { background:var(--cream); padding:1rem; border-left:3px solid var(--gold); }
     .alltime-label { font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-bottom:0.4rem; }
     .alltime-val { font-family:'Playfair Display',serif; font-size:1.25rem; font-weight:900; color:var(--ink); }
     .alltime-unit { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); }
-    .alltime-count { font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--mist); margin-top:0.15rem; }
+    .alltime-count { font-family:'DM Mono',monospace; font-size:0.48rem; color:var(--stone); margin-top:0.15rem; }
     /* .strava-btn removed — see .garmin-btn below */
     .garmin-btn { display:inline-block; margin-top:0.75rem; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--garmin); border:1px solid var(--garmin); padding:0.3rem 0.7rem; }
     .garmin-btn:hover { background:var(--garmin); color:var(--white); }
@@ -181,7 +197,7 @@
     .beer-name { font-family:'Playfair Display',serif; font-size:0.88rem; font-weight:700; margin-bottom:0.1rem; line-height:1.2; }
     .beer-brewery { font-family:'DM Mono',monospace; font-size:0.52rem; color:var(--stone); text-transform:uppercase; }
     .beer-comment { font-size:0.72rem; color:var(--stone); font-style:italic; margin-top:0.15rem; }
-    .beer-date { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--mist); margin-top:0.1rem; }
+    .beer-date { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); margin-top:0.1rem; }
 
     /* EVENTS */
     .event-row { display:flex; justify-content:space-between; align-items:baseline; padding:0.65rem 0; border-bottom:1px solid var(--mist); gap:1rem; }
@@ -231,7 +247,7 @@
     .news-title { font-size:0.84rem; font-weight:700; font-family:'Playfair Display',serif; line-height:1.3; }
 
     .sport-note { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); padding:0.75rem 0; }
-    .loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--mist); padding:1rem 0; }
+    .loading { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); padding:1rem 0; }
     /* ── Garmin badges ──
        Milestone awards (first 5K, distance totals, streaks). Only recent ones
        show; see BADGE_WINDOW_DAYS in scripts/fetch_garmin.py. Styled as chips
@@ -305,7 +321,7 @@
     .dakar-cat.feat .dakar-cat-l { color:var(--dune); }
     .dakar-blurb { font-family:'Libre Baskerville',serif; font-size:0.66rem; font-style:italic; color:var(--stone); line-height:1.7; margin:0.15rem 0 0 1.4rem; }
 
-    .updated-note { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--mist); margin-top:1.5rem; }
+    .updated-note { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); margin-top:1.5rem; }
 
     footer { background:var(--ink); color:var(--stone); padding:2.5rem clamp(1.5rem,5vw,4rem); margin-top:4rem; }
     .footer-inner { max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
@@ -369,7 +385,7 @@
     .race-card .event-loc { font-size:0.78rem; color:var(--stone); margin-top:0.15rem; }
     .race-card .event-meta { margin-left:auto; text-align:right; flex-shrink:0; }
     .race-card .event-meta span { display:block; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--stone); }
-    .tour-card.tour-finished { opacity:0.62; }
+    .tour-card.tour-finished .tour-card-dates, .tour-card.tour-finished .tour-card-country { opacity:0.75; }
     .tour-card.tour-live { box-shadow:0 0 0 2px var(--rust); }
 
     /* FOOTBALL — team cards + compact standings */
@@ -581,24 +597,26 @@
   <p class="page-eyebrow"><a href="/">Brooks Groves</a></p>
   <h1 class="page-title"><em>Outside</em></h1>
   <p class="page-sub">Baseball, cycling, running, triathlon, beer. Endurance athlete in my 50s — still chasing PRs and big horizons. Life outside the office.</p>
-  <div class="page-tags">
-    <a href="/tags.html#Baseball" class="page-tag">Baseball</a>
-    <a href="/tags.html#Mariners" class="page-tag">Mariners</a>
-    <a href="/tags.html#Seahawks" class="page-tag">Seahawks</a>
-    <a href="/tags.html#Pro%20Cycling" class="page-tag">Pro Cycling</a>
-    <a href="/tags.html#Triathlon" class="page-tag">Triathlon</a>
-    <a href="/tags.html#Running" class="page-tag">Running</a>
-    <a href="/tags.html#Beer" class="page-tag">Beer</a>
-    <a href="/tags.html#Garmin" class="page-tag">Garmin</a>
+  <div class="jump-cards">
+    <a class="jump-card" href="#season"><span class="jc-k">Racing · training · fueling</span><span class="jc-t">🏁 My Season</span><span class="jc-s" id="jc-race">Ironman 70.3 Victoria</span></a>
+    <a class="jump-card" href="#teams"><span class="jc-k">Football · baseball · soccer · Dakar</span><span class="jc-t">🏈 The Teams</span><span class="jc-s">Seahawks, Huskies, Nevada, Mariners, Sonora, Whitman</span></a>
+    <a class="jump-card" href="#cycling"><span class="jc-k">Giro · Tour · Vuelta</span><span class="jc-t">🚴 Pro Cycling</span><span class="jc-s">Grand Tours, races and the news</span></a>
+    <a class="jump-card" href="#taproom"><span class="jc-k">Untappd · Peaks &amp; Pints</span><span class="jc-t">🍺 The Taproom</span><span class="jc-s">What’s in the glass</span></a>
   </div>
 </div>
+
+<nav class="jump-bar" aria-label="On this page">
+  <div class="jump-bar-in">
+    <a href="#season">🏁 My Season</a><a href="#teams">🏈 The Teams</a><a href="#cycling">🚴 Pro Cycling</a><a href="#taproom">🍺 The Taproom</a>
+  </div>
+</nav>
 
 <div class="page-content">
 
   <!-- ========== ZONE 1: MY SEASON ========== -->
-  <div class="zone">
+  <div class="zone" id="season">
     <div class="zone-header">
-      <div class="zone-title"><em>My Season</em></div>
+      <div class="zone-title"><span class="zone-emoji" aria-hidden="true">🏁</span> <em>My Season</em></div>
       <div class="zone-sub">Racing · Training · Fueling — the year in motion</div>
     </div>
 
@@ -694,9 +712,9 @@
   </div>
 
   <!-- ========== ZONE 2: THE TEAMS ========== -->
-  <div class="zone">
+  <div class="zone" id="teams">
     <div class="zone-header">
-      <div class="zone-title"><em>The Teams</em></div>
+      <div class="zone-title"><span class="zone-emoji" aria-hidden="true">🏈</span> <em>The Teams</em></div>
       <div class="zone-sub">Mariners · Football · Whitman soccer · Sonora Wildcats · Pro Cycling — what I'm following</div>
     </div>
 
@@ -797,7 +815,7 @@
     </div>
 
     <!-- Pro Cycling — full width within the zone -->
-    <div class="zone-block">
+    <div class="zone-block" id="cycling">
       <div class="section-label">
         <span>Pro Cycling</span>
         <a href="https://www.cyclingnews.com" target="_blank">Cyclingnews ↗</a>
@@ -847,9 +865,9 @@
   </div>
 
   <!-- ========== ZONE 3: THE TAPROOM ========== -->
-  <div class="zone">
+  <div class="zone" id="taproom">
     <div class="zone-header">
-      <div class="zone-title"><em>The Taproom</em></div>
+      <div class="zone-title"><span class="zone-emoji" aria-hidden="true">🍺</span> <em>The Taproom</em></div>
       <div class="zone-sub">Untappd · Peaks &amp; Pints — what's in the glass</div>
     </div>
 
@@ -2251,6 +2269,8 @@ document.getElementById('current-year').textContent=new Date().getFullYear();
   const now = new Date();
   const days = Math.ceil((race - now) / (1000 * 60 * 60 * 24));
   el.textContent = days > 0 ? days + ' days to go' : days === 0 ? 'Race day' : 'Past';
+  const jc = document.getElementById('jc-race');
+  if (jc && days > 0) jc.textContent = 'Ironman 70.3 Victoria in ' + days + ' days';
 })();
 
 // ── The Teams follows the calendar ──
