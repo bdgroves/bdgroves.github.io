@@ -125,7 +125,6 @@ picture; when one lands, add it as the post's `og:image` (or to
 - The Alert Bots, Revisited
 - Where the Trail Runs Out (RIDGELINE)
 - Six Islands, Six Lizards
-- Where the Fog Lives (FOG-WATCH)
 - FuelCast
 - What Really Happened on Easter Island
 - From a Pile of Bookmarks to a Searchable Cookbook
@@ -138,13 +137,11 @@ picture; when one lands, add it as the post's `og:image` (or to
 - BdgrovesBot
 - SOLSTICE post
 - Sierra Nevada Alert Bot
-- AFTERSHOCK post
 - DIPODOMYS
 - Little Free Pantry
 - Weather Station
 - FORTRAN, Snowpack, and the Language the Atmosphere Speaks
 - Why I Switched to pixi
-- Building a Live Streamflow Dashboard
 - A Draught of the South Land (book review)
 - Quantum Physics and Volcanology curricula
 - Sports and Beer; Giro, Tour and Vuelta trackers
@@ -156,6 +153,8 @@ Done: **Project Kiva** ("Reading the ground with lasers") and **LiDAR Explore**
 was added to the featured carousel (10 projects now).
 Done: **PELE**, **Rainier Snowpack** (also the Weather & Water topic card) and
 **SIERRA-FLOW** (cards for the COBOL and Handoff posts), from Brooks, Oct 20.
+Done: **FOG-WATCH** and **AFTERSHOCK** (carousel + post cards), **Sierra Streamflow**
+and **PUGET-TIDES** (post cards), from Brooks, Oct 20.
 
 ## Known issues to pick up
 

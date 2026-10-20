@@ -54,6 +54,11 @@ IMAGE_OVERRIDES = {
     "/blog/rainier-snowpack-post.html": "/images/features/rainier.jpg",
     "/blog/sierra-flow-cobol-post.html": "/images/features/sierra-flow.jpg",
     "/blog/sierra-flow-handoff-post.html": "/images/features/sierra-flow.jpg",
+    "/blog/where-the-fog-lives.html": "/images/features/fog-watch.jpg",
+    "/blog/aftershock-post.html": "/images/features/aftershock.jpg",
+    "/blog/streamflow-post.html": "/images/features/streamflow.jpg",
+    "/blog/sierra-streamflow-2027-post.html": "/images/features/streamflow.jpg",
+    "/blog/puget-tides-post.html": "/images/features/puget-tides.jpg",
 }
 # Accent for the no-image card, by topic id (same accents as the redesign mockups).
 TOPIC_COLORS = {"earth": "var(--rust)", "nature": "var(--sage)", "weather": "#5a7a8a",
