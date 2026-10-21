@@ -82,7 +82,10 @@ def main():
         if not meta(s, "og:url"):
             add.append(f'<meta property="og:url" content="{SITE}{url_path}">')
         img = meta(s, "og:image")
-        if not img or not exists_here(img):
+        over = IMAGE_OVERRIDES.get(url_path)
+        # a hand-picked picture (IMAGE_OVERRIDES) replaces a topic stand-in;
+        # a post's own chosen og:image is kept
+        if not img or not exists_here(img) or (over and "/images/features/topic-" in img):
             pic = IMAGE_OVERRIDES.get(url_path) or card_image(f, SITE + url_path)
             if not pic and p:
                 pic = by_id.get(topic_of(p, topics, fallback), {}).get("img", "")
