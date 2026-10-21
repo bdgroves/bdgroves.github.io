@@ -372,7 +372,7 @@
 const PLACES_LIVED = [
   {
     name: 'Groveland, CA',
-    lat: 37.8274, lng: -120.2338,
+    lat: 37.8385, lng: -120.2310,
     years: '1970–1983 · 1983–1988',
     desc: 'Born and raised. Parents were Forest Rangers. Tuolumne County, western gateway to Yosemite. Learned to swim in the Tuolumne River at Rainbow Pools. Tioga Pass every summer. Came back after Janesville.',
     color: '#c8922a'
@@ -386,14 +386,14 @@ const PLACES_LIVED = [
   },
   {
     name: 'Janesville, CA',
-    lat: 40.2749, lng: -120.5266,
+    lat: 40.2966, lng: -120.5249,
     years: '~1981–82 (5th–6th grade)',
     desc: 'Dad transferred to the Plumas National Forest. Janesville Elementary — Go Wildcats. Played 1st base for the Janesville Pirates and Dodgers. Wrote a letter to President Reagan about a new national park. He wrote back.',
     color: '#c8922a'
   },
   {
     name: 'Groveland, CA (return)',
-    lat: 37.7274, lng: -120.2338,
+    lat: 37.8352, lng: -120.2285,
     years: '~1983–1988',
     desc: 'Back home to Tuolumne County after the Plumas years. Sonora Union High School. The Sierra Nevada right where it always was.',
     color: '#c8922a'
@@ -494,8 +494,21 @@ PLACES_LIVED.forEach((p, i) => {
     <div class="place-desc">${p.desc}</div>
   `;
   item.addEventListener('click', () => {
-    map.setView([p.lat, p.lng], 9, { animate: true });
-    marker.openPopup();
+    // The list sits under the map, so bring the whole map into view first
+    // (clear of the sticky header) if any of it is off screen.
+    const mapEl = document.getElementById('map');
+    const r = mapEl.getBoundingClientRect();
+    const headerH = (document.querySelector('header') || { offsetHeight: 0 }).offsetHeight;
+    if (r.top < headerH || r.bottom > window.innerHeight) {
+      window.scrollTo({ top: window.scrollY + r.top - headerH - 12, behavior: 'smooth' });
+    }
+    // Aim a little north of the place so the marker sits low and its popup
+    // fits above it; otherwise the popup's auto-pan pulls the place off-centre.
+    const zoom = 11;
+    const pt = map.project([p.lat, p.lng], zoom).subtract([0, 90]);
+    map.closePopup();
+    map.flyTo(map.unproject(pt, zoom), zoom, { duration: 0.9 });
+    map.once('moveend', () => marker.openPopup());
   });
   document.getElementById('place-list').appendChild(item);
 });
