@@ -33,7 +33,7 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "img-opt"
 WIDTHS = (640, 1600)
 SKIP_DIRS = {".git", "node_modules", "_site", ".pixi", "img-opt", "games", "hightimes-db", "pagefind"}
-CARD = re.compile(r'class="(?:kr-img|topic-img|lead-img|lead-bg|tour-card-img)"|class="support-media"|class="lw-media"|tp-card|tp-thumb|tp-other|path-')
+CARD = re.compile(r'class="(?:kr-img|topic-img|lead-img|lead-bg|tour-card-img|jc-img)"|class="support-media"|class="lw-media"|tp-card|tp-thumb|tp-other|path-')
 SIZES = {
     "card": "(max-width: 600px) 92vw, 400px",
     "cover": "(max-width: 1140px) 100vw, 1100px",
