@@ -77,6 +77,7 @@ IMAGE_OVERRIDES = {
     "/blog/investment-club-blog.html": "/blog/img/investment-club-blog/og.jpg",
     "/blog/halloween-in-august.html": "/blog/img/halloween-in-august/og.jpg",
     "/blog/pixi-post.html": "/blog/img/pixi-post/og.jpg",
+    "/blog/wherobots-post.html": "/blog/img/wherobots-post/og.jpg",
     "/writing/draught-south-land.html": "/writing/img/draught-south-land-og.jpg",
     "/learning/quantum-physics/": "/learning/img/quantum-physics-og.jpg",
     "/learning/volcanology/": "/learning/img/volcanology-og.jpg",
