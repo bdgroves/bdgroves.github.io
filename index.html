@@ -887,6 +887,11 @@
         <span class="live-v" data-live="v">…</span>
         <span class="live-s" data-live="s">Checking STORM CHASER</span>
       </a>
+      <a class="live-tile" id="live-tahoe" href="https://brooksgroves.com/secchi/" target="_blank" rel="noopener">
+        <span class="live-k">🏞️ Lake Tahoe level</span>
+        <span class="live-v" data-live="v">…</span>
+        <span class="live-s" data-live="s">Checking secchi</span>
+      </a>
     </div>
   </div>
 
@@ -1425,6 +1430,26 @@
       if (typeof i.precip_pct_median === 'number') bits.push(`water-year precipitation ${i.precip_pct_median}% of median`);
       set('live-rainier', v, (bits.length ? bits.join(' · ') : 'Seven SNOTEL stations around the mountain') + '.');
     }).catch(() => set('live-rainier', 'See STORM CHASER', 'The live feed didn’t load just now.'));
+
+    // Lake Tahoe's surface, from the USGS gage at Tahoe City by way of secchi's
+    // snapshot (gage height + the 6,220 ft datum = the elevation agencies quote).
+    getJSON('/secchi/assets/latest.json').then(d => {
+      const g = (d.gauges || {})['10337000'] || {};
+      const r = (g.readings || {})['00065:00011:datum'];
+      if (!r || typeof r.value !== 'number') throw new Error('no level');
+      const ft2 = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const bits = [];
+      const t = ((g.series || {})['00065:00011'] || {}).trend;
+      if (t && typeof t.change === 'number') {
+        const inch = Math.round(Math.abs(t.change) * 12 * 10) / 10;
+        bits.push(inch < 0.1 ? 'Holding steady since yesterday' : `${t.change < 0 ? 'Down' : 'Up'} ${inch} in since yesterday`);
+      }
+      const vs = r.vs || {}, f1 = x => Math.abs(x).toFixed(1);
+      if (typeof vs['natural rim'] === 'number') bits.push(vs['natural rim'] >= 0 ? `${f1(vs['natural rim'])} ft above the natural rim` : `${f1(vs['natural rim'])} ft below the natural rim`);
+      if (typeof vs['legal maximum'] === 'number' && vs['legal maximum'] < 0) bits.push(`${f1(vs['legal maximum'])} ft below the legal limit`);
+      if (g.observed_at) bits.push(ago(Date.now() - Date.parse(g.observed_at)));
+      set('live-tahoe', `${ft2.format(r.value)} ft`, bits.join(' · ') + '.');
+    }).catch(() => set('live-tahoe', 'See secchi', 'The live feed didn’t load just now.'));
   })();
 
   async function loadBooks() {
