@@ -78,6 +78,11 @@ IMAGE_OVERRIDES = {
     "/blog/halloween-in-august.html": "/blog/img/halloween-in-august/og.jpg",
     "/blog/pixi-post.html": "/blog/img/pixi-post/og.jpg",
     "/blog/wherobots-post.html": "/blog/img/wherobots-post/og.jpg",
+    # Ecology card heroes (Oct 21)
+    "/blog/alpine-watch-revisited-post.html": "/images/features/alpine-watch.jpg",
+    "/blog/cypress-domes-post.html": "/images/features/cypress-domes.jpg",
+    "/blog/pikas-part-2-washington.html": "/images/features/pikas.jpg",
+    "/blog/whats-up-with-the-pikas.html": "/images/features/pikas.jpg",
     "/writing/draught-south-land.html": "/writing/img/draught-south-land-og.jpg",
     "/learning/quantum-physics/": "/learning/img/quantum-physics-og.jpg",
     "/learning/volcanology/": "/learning/img/volcanology-og.jpg",
