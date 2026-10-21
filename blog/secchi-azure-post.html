@@ -154,7 +154,7 @@
   <div class="article-meta">
     <span>Brooks Groves</span>
     <span>October 21, 2026</span>
-    <span>SQL Server · Azure SQL · bcp · GitHub Actions · QGIS</span>
+    <span>SQL Server · Azure SQL · C# · .NET · GitHub Actions · QGIS</span>
   </div>
   <div class="article-tags">
     <a href="/tags.html#Lake%20Tahoe" class="article-tag-pill">Lake Tahoe</a>
@@ -163,6 +163,8 @@
     <a href="/tags.html#QGIS" class="article-tag-pill">QGIS</a>
     <a href="/tags.html#GIS" class="article-tag-pill">GIS</a>
     <a href="/tags.html#Data%20Engineering" class="article-tag-pill">Data Engineering</a>
+    <a href="/tags.html#C%23" class="article-tag-pill">C#</a>
+    <a href="/tags.html#.NET" class="article-tag-pill">.NET</a>
     <a href="/tags.html#AI" class="article-tag-pill">AI</a>
   </div>
 
@@ -238,6 +240,27 @@
 
     <p>I built this with Claude Code, an AI coding assistant, the same way I've built most of secchi. It drafts quickly, and I direct, review and decide. What makes me trust the result isn't who typed it. It's the checks: 201 tests before every change, the exact reconcile, and the sabotage test that caught my too-kind allowance. I wrote down <a href="https://github.com/bdgroves/secchi/blob/main/docs/ai-use.md" target="_blank" rel="noopener">how that works</a>, including what went wrong and what caught it. And I wrote the whole method up as a <a href="https://github.com/bdgroves/secchi/blob/main/docs/cloud/runbook.md" target="_blank" rel="noopener">runbook</a> for anyone moving many databases instead of one. Inventory, copy, prove, run side by side, watch the bill.</p>
 
+    <h2>Then I did it again, in C#</h2>
+
+    <p>That afternoon I wanted to see the same move from the .NET side, since C# is what a lot of SQL Server shops build with. So I wrote a small C# program, <code>secchi-cloud</code>, that does two jobs the Python side already did, but its own way.</p>
+
+    <p>The first is a check. It reads every one of the 12 million rows back out of SQL Server and does all the arithmetic itself: the checksums, the counts, the exact smallest and largest values, and the sum, kept as a whole number with no size limit so nothing rounds. Now there are three independent versions of the fingerprint: DuckDB on my files, SQL Server's own, and C#. All three agree, <strong>131 of 131 table-months, to the last digit</strong>. To make sure it wasn't just agreeing politely, I changed one stream reading by 0.001 in a copy of the export, and C# flagged exactly that month.</p>
+
+    <p>The second is a loader. <code>bcp</code> is Microsoft's command-line tool for bulk loading; <code>SqlBulkCopy</code> is the same idea built into .NET. So, naturally, I raced them, reloading all 12 million readings each way:</p>
+
+    <table class="spec-table">
+      <thead><tr><th>Loader</th><th>Time</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>bcp</td><td>26 s</td><td>131 of 131 match</td></tr>
+        <tr><td>SqlBulkCopy, first try</td><td>41 s</td><td>131 of 131 match</td></tr>
+        <tr><td>SqlBulkCopy, streaming</td><td>25 s</td><td>131 of 131 match</td></tr>
+      </tbody>
+    </table>
+
+    <p>My first try lost by a lot. It read 100,000 rows at a time into an in-memory table, then sent them, and all that packing and unpacking adds up. The fix was to let <code>SqlBulkCopy</code> read straight from the file, one row at a time, as fast as the server takes them. That brought it level with <code>bcp</code>. Call it a tie, since one run on a shared computer can wobble by a few seconds. The C# loader also checks every value on the way in, and stops with the line and column if anything doesn't fit, which <code>bcp</code> doesn't do.</p>
+
+    <p>One surprise along the way: Microsoft's SQL Server library refused to connect at all because of a setting I'd turned on to make number parsing identical on every computer. It turns out the library needs the language data to understand SQL Server's text settings. One line in the project file, and a good reminder that the first failure is often the most educational one. The whole thing builds and runs on my Windows PC too, and I wrote a <a href="https://github.com/bdgroves/secchi/blob/main/docs/cloud/dotnet.md" target="_blank" rel="noopener">plain-words walkthrough of the C#</a>, file by file, for anyone curious how it fits together.</p>
+
     <h2>What's next</h2>
 
     <p>secchi's files on GitHub stay the original. The cloud copy is a practice twin that proves itself every other morning. Next I'd like to point ArcGIS Pro at the same views, port the last few data-quality flags, and maybe let the <a href="https://brooksgroves.com/secchi/">live secchi page</a> show when the cloud copy last matched. Meanwhile the lake keeps doing what it's done for two million years, and now it has one more place to keep score.</p>
@@ -248,7 +271,7 @@
 
     <div class="sources">
       <div class="sources-head">&#128196; Read</div>
-      <p><a href="https://github.com/bdgroves/secchi/blob/main/docs/cloud.md" target="_blank" rel="noopener">secchi in SQL Server and Azure SQL Database</a> &mdash; the full write-up: the four steps, what "matches" means, costs and results. &middot; <a href="https://github.com/bdgroves/secchi/blob/main/docs/cloud/runbook.md" target="_blank" rel="noopener">The runbook</a> &mdash; the same method for many databases. &middot; <a href="https://github.com/bdgroves/secchi/blob/main/docs/ai-use.md" target="_blank" rel="noopener">How AI is used here</a>.</p>
+      <p><a href="https://github.com/bdgroves/secchi/blob/main/docs/cloud.md" target="_blank" rel="noopener">secchi in SQL Server and Azure SQL Database</a> &mdash; the full write-up: the four steps, what "matches" means, costs and results. &middot; <a href="https://github.com/bdgroves/secchi/blob/main/docs/cloud/runbook.md" target="_blank" rel="noopener">The runbook</a> &mdash; the same method for many databases. &middot; <a href="https://github.com/bdgroves/secchi/blob/main/docs/ai-use.md" target="_blank" rel="noopener">How AI is used here</a>. &middot; <a href="https://github.com/bdgroves/secchi/blob/main/docs/cloud/dotnet.md" target="_blank" rel="noopener">How the C# works</a> &mdash; a walkthrough, file by file.</p>
       <p><a href="/blog/secchi-post.html">A Plate on a Rope</a> &mdash; the first secchi post, about the sensors and the lake. &middot; <a href="/blog/sierra-flow-handoff-post.html">The Handoff</a> &mdash; the same "prove it matches" idea, from COBOL to C#.</p>
 
       <div class="sources-head">&#128202; Data &amp; tools</div>
