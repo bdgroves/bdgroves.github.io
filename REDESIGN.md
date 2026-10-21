@@ -284,3 +284,7 @@ ESPN stopped letting browsers call `site.api.espn.com/.../teams/{id}` (CORS), so
 ### Oct 20 — batch 2 pictures wired in
 All 15 batch-2 pictures are in. Nine posts (Tuolumne watershed, BdgrovesBot, Sierra alert bot, DIPODOMYS, Little Free Pantry, cookbook, investment club, Halloween in August, pixi) now have their own picture on the cover, on cards and in link previews, replacing the topic stand-ins. The Giro, Tour and Vuelta pages have their pictures behind the page header, and so do their cards on Outside. Quantum physics, volcanology and the Draught of the South Land review each have a cover picture. All six of those pages now have link-preview pictures too.
 `og_tags.py` now lets an IMAGE_OVERRIDES picture replace a topic stand-in. A post's own chosen og:image is still kept.
+
+### Oct 21 — redesign wrapped
+Done today: The Work rebuilt into six full sections (28 cards); house-style pictures for every Work card, the carousel, the six topic cards, the Outside jump cards and the homepage share picture (prompts in docs/hero-prompts-*.md); pictures shown whole at 16:9 on topic cards, topic pages and post thumbnails; Maps page fixes (clickable dashboard cards, places-lived zoom, Chiricahua National Park); a Lake Tahoe level tile; a new post (Wherobots).
+Still open: alt text for the hero pictures; a Lighthouse speed/accessibility pass; optional restyle of the five original heroes (PELE, STORM CHASER, Project Kiva, LiDAR Explore, HopLove); Brooks's branch clean-up and the Cloudflare analytics check.
