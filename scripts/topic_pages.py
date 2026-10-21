@@ -75,7 +75,7 @@ HEAD = """<!DOCTYPE html>
     .tp-nav a[aria-current="page"] {{ color:var(--rust); border-bottom-color:var(--rust); }}
     .tp-main {{ max-width:1200px; margin:0 auto; padding:0 clamp(16px,4vw,32px) 24px; }}
     .tp-hero {{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:32px; align-items:center; padding:36px 0 28px; border-bottom:4px solid var(--tc,var(--gold)); }}
-    .tp-hero img {{ width:100%; aspect-ratio:16/7; object-fit:cover; display:block; border:1px solid var(--mist); }}
+    .tp-hero img {{ width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; display:block; border:1px solid var(--mist); }}
     .tp-back {{ font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--stone); text-decoration:none; }}
     .tp-back:hover {{ color:var(--rust); }}
     .tp-h1 {{ margin:10px 0 12px; font-family:'Playfair Display',serif; font-weight:900; font-size:clamp(34px,5vw,52px); line-height:1.05; letter-spacing:-.02em; }}
@@ -97,7 +97,7 @@ HEAD = """<!DOCTYPE html>
     .tp-chip:hover {{ border-color:var(--ink); }}
     .tp-chip[aria-pressed="true"] {{ background:var(--ink); color:var(--parchment); border-color:var(--ink); }}
     .tp-chip:focus-visible, .tp-card:focus-visible {{ outline:2px solid var(--rust); outline-offset:2px; }}
-    .tp-post {{ display:grid; grid-template-columns:120px minmax(0,1fr) 200px; gap:24px; padding:20px 0; border-bottom:1px solid var(--mist); align-items:start; }}
+    .tp-post {{ display:grid; grid-template-columns:120px minmax(0,1fr) 224px; gap:24px; padding:20px 0; border-bottom:1px solid var(--mist); align-items:start; }}
     .tp-post[hidden] {{ display:none; }}
     .tp-date {{ font-family:'DM Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--stone); padding-top:4px; }}
     .tp-post h3 {{ margin:0 0 6px; font-family:'Playfair Display',serif; font-size:21px; line-height:1.3; }}
@@ -105,12 +105,12 @@ HEAD = """<!DOCTYPE html>
     .tp-post h3 a:hover {{ color:var(--rust); }}
     .tp-post p {{ margin:0; font-size:15px; color:var(--stone); line-height:1.65; }}
     .tp-thumb {{ display:block; }}
-    .tp-thumb img {{ width:200px; aspect-ratio:3/2; object-fit:cover; display:block; border:1px solid var(--mist); }}
+    .tp-thumb img {{ width:224px; aspect-ratio:16/9; object-fit:cover; display:block; border:1px solid var(--mist); }}
     @media (max-width:760px) {{ .tp-post {{ grid-template-columns:1fr; gap:8px; }} .tp-thumb {{ order:-1; }} .tp-thumb img {{ width:100%; aspect-ratio:16/9; }} }}
     .tp-empty {{ font-size:15px; color:var(--stone); padding:16px 0; }}
     .tp-others {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:14px; }}
     .tp-other {{ display:flex; flex-direction:column; border:1px solid var(--mist); background:var(--white); color:var(--ink); text-decoration:none; overflow:hidden; }}
-    .tp-other img {{ width:100%; aspect-ratio:16/7; object-fit:cover; display:block; }}
+    .tp-other img {{ width:100%; aspect-ratio:16/9; object-fit:cover; display:block; }}
     .tp-other span {{ padding:10px 12px; font-family:'Playfair Display',serif; font-weight:700; font-size:15px; line-height:1.3; }}
     .tp-other small {{ display:block; font-family:'DM Mono',monospace; font-weight:400; font-size:11px; color:var(--stone); margin-top:2px; }}
     .tp-other:hover {{ border-color:var(--ink); }}
@@ -218,7 +218,7 @@ def build():
                    f'{f" · {len(dashes)} live dashboards" if dashes else ""}</p>')
         out.append('    </div>')
         if t.get("img"):
-            out.append(f'    <img src="{esc(t["img"])}" alt="" width="800" height="350">')
+            out.append(f'    <img src="{esc(t["img"])}" alt="" width="800" height="450">')
         out.append('  </section>')
 
         if dashes:
