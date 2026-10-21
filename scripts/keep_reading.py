@@ -52,8 +52,8 @@ IMAGE_OVERRIDES = {
     "/blog/project-kiva-post.html": "/images/features/project-kiva.jpg",
     "/blog/pele-blog-post.html": "/images/features/pele.jpg",
     "/blog/rainier-snowpack-post.html": "/images/features/rainier.jpg",
-    "/blog/sierra-flow-cobol-post.html": "/images/features/sierra-flow.jpg",
-    "/blog/sierra-flow-handoff-post.html": "/images/features/sierra-flow.jpg",
+    "/blog/sierra-flow-cobol-post.html": "/images/features/sierra-flow-hero.jpg",
+    "/blog/sierra-flow-handoff-post.html": "/images/features/sierra-flow-hero.jpg",
     "/blog/where-the-fog-lives.html": "/images/features/fog-watch.jpg",
     "/blog/aftershock-post.html": "/images/features/aftershock.jpg",
     "/blog/streamflow-post.html": "/images/features/streamflow.jpg",
@@ -78,6 +78,19 @@ IMAGE_OVERRIDES = {
     "/blog/halloween-in-august.html": "/blog/img/halloween-in-august/og.jpg",
     "/blog/pixi-post.html": "/blog/img/pixi-post/og.jpg",
     "/blog/wherobots-post.html": "/blog/img/wherobots-post/og.jpg",
+    # batch 3 heroes (Oct 21)
+    "/blog/weather-station-revisited-post.html": "/images/features/weather-station.jpg",
+    "/blog/solstice-revisited-post.html": "/images/features/solstice-hero.jpg",
+    "/blog/sierra-flow-revisited-post.html": "/images/features/sierra-flow-hero.jpg",
+    "/blog/sentinel-stockpile-revisited-post.html": "/images/features/sentinel-stockpile.jpg",
+    "/blog/sentinel-stockpile-post.html": "/images/features/sentinel-stockpile.jpg",
+    "/blog/ruby-flyover-post.html": "/images/features/ruby-flyover.jpg",
+    "/blog/paleowave-rechecked-post.html": "/images/features/paleowave.jpg",
+    "/blog/mother-lode-post.html": "/images/features/mother-lode-hero.jpg",
+    "/blog/lahar-watch-revisited-post.html": "/images/features/lahar-watch.jpg",
+    "/blog/icewave-rechecked-post.html": "/images/features/icewave.jpg",
+    "/blog/edgar-2026-season-post.html": "/images/features/edgar.jpg",
+    "/blog/cascadia-wx-revisited-post.html": "/images/features/cascadia-wx.jpg",
     # Ecology card heroes (Oct 21)
     "/blog/alpine-watch-revisited-post.html": "/images/features/alpine-watch.jpg",
     "/blog/cypress-domes-post.html": "/images/features/cypress-domes.jpg",
@@ -90,9 +103,9 @@ IMAGE_OVERRIDES = {
     "/tdf-2026.html": "/images/features/tdf-2026.jpg",
     "/vuelta-2026.html": "/images/features/vuelta-2026.jpg",
     # the first versions of projects whose "Revisited" posts have pictures
-    "/blog/solstice-post.html": "/images/features/solstice.jpg",
-    "/blog/weather-station-post.html": "/blog/img/weather-station-revisited/measured-then-forecast.jpg",
-    "/blog/cascadia-wx-post.html": "/blog/img/cascadia-wx-revisited/console.jpg",
+    "/blog/solstice-post.html": "/images/features/solstice-hero.jpg",
+    "/blog/weather-station-post.html": "/images/features/weather-station.jpg",
+    "/blog/cascadia-wx-post.html": "/images/features/cascadia-wx.jpg",
 }
 # Accent for the no-image card, by topic id (same accents as the redesign mockups).
 TOPIC_COLORS = {"earth": "var(--rust)", "nature": "var(--sage)", "weather": "#5a7a8a",
