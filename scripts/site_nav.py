@@ -72,6 +72,19 @@ FIXED_DOOR = None
 KEEP_BACK = False
 
 
+# The search box in the menu. On a story site (--other-site) it searches that
+# site's own /search.html; everywhere else, the main site's /search/.
+SEARCH_URL = "/search/"
+SEARCH_PH = "Search"
+SEARCH_LABEL = "Search brooksgroves.com"
+
+
+def search_form() -> str:
+    return (f'<form class="nav-search" action="{SEARCH_URL}" role="search"><input type="search" name="q" '
+            f'placeholder="{SEARCH_PH}" aria-label="{SEARCH_LABEL}" autocomplete="off">'
+            f'<button type="submit" aria-label="Search">⌕</button></form>')
+
+
 _MENUS: dict | None = None
 
 
@@ -111,7 +124,7 @@ def nav(rel: str, toggle: str, indent: str = "    ") -> str:
         inner = "".join(f"\n{indent}      {x}" for x in drop)
         links += (f'\n{indent}  <div class="sn-item{end}">{door}'
                   f'\n{indent}    <div class="sn-drop">{inner}\n{indent}    </div>\n{indent}  </div>')
-    links += f'\n{indent}  <a href="{BASE}/search/" class="nav-search" aria-label="Search">⌕ Search</a>'
+    links += f'\n{indent}  ' + search_form()
     tog = f"\n{indent}  {toggle.strip()}" if toggle else ""
     return f'<nav class="site-nav" aria-label="Main">{links}{tog}\n{indent}</nav>'
 
@@ -157,13 +170,17 @@ def main():
     current door, and each page's back link to its collection is kept.
     """
     import argparse
-    global ROOT, BASE, FIXED_DOOR, KEEP_BACK
+    global ROOT, BASE, FIXED_DOOR, KEEP_BACK, SEARCH_URL, SEARCH_PH, SEARCH_LABEL
     ap = argparse.ArgumentParser()
     ap.add_argument("--other-site")
     a = ap.parse_args()
     if a.other_site:
         ROOT, BASE, FIXED_DOOR, KEEP_BACK = Path(a.other_site).resolve(), "https://brooksgroves.com", "Writing", True
         SKIP.discard("index.html")                   # a story site's index is its collection page
+        SKIP.add("search.html")                      # its own search page has the box built in
+        name = {"brooks-memoir": "the memoir", "westin-stories": "Westin Stories", "y2k-journal": "the Y2K Journal",
+                "brooks-journal": "the Journal"}.get(ROOT.name, "this site")
+        SEARCH_URL, SEARCH_PH, SEARCH_LABEL = "/search.html", "Search", f"Search {name}"
     changed, done, missed = 0, 0, []
     for f in sorted(ROOT.rglob("*.html")):
         rel = f.relative_to(ROOT).as_posix()

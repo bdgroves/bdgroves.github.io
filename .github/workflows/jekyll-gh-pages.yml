@@ -36,13 +36,19 @@ jobs:
           destination: ./_site
       - name: Search index (Pagefind)
         # Builds the site search that /search/ uses into _site/pagefind/.
-        # Menus, footers, the Keep-reading cards and the Contents box are left
-        # out so results match the page's own words. Games and the old
-        # hightimes-db pages aren't in the globs, so they aren't indexed.
+        # The project sites (Mother Lode, secchi, PELE...) live in their own
+        # repos, so scripts/crawl_projects.py fetches their published pages
+        # into a staging copy first and they are indexed with the right URLs;
+        # only the index is deployed. Menus, footers, the Keep-reading cards
+        # and the Contents box are left out so results match the page's own
+        # words. Games and the old hightimes-db pages aren't in the globs.
         run: |
           sudo chown -R "$(id -u):$(id -g)" _site
-          npx -y pagefind@1.3.0 --site _site \
-            --glob "{*.html,blog/*.html,topics/**/*.html,work/*.html,live/*.html,writing/*.html,learning/**/*.html,recipes/*.html}" \
+          mkdir -p "$RUNNER_TEMP/search-stage"
+          cp -r _site/. "$RUNNER_TEMP/search-stage/"
+          PROJECTS=$(python3 scripts/crawl_projects.py "$RUNNER_TEMP/search-stage" || true)
+          npx -y pagefind@1.3.0 --site "$RUNNER_TEMP/search-stage" --output-path _site/pagefind \
+            --glob "{*.html,blog/*.html,topics/**/*.html,work/*.html,live/*.html,writing/*.html,learning/**/*.html,recipes/*.html${PROJECTS:+,$PROJECTS}}" \
             --exclude-selectors "header, nav, footer, .keep-reading, .post-toc, .topline, .weather-bar, .mobile-nav, .jump-bar, .lead-controls, script, style"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

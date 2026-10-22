@@ -176,7 +176,7 @@ def nav_html(current="Writing"):
             end = " sn-end" if i >= len(NAV) - 2 else ""
             door = f'<div class="sn-item{end}">{door}<div class="sn-drop">{"".join(d)}</div></div>'
         out.append(door)
-    return "".join(out) + '<a href="/search/" aria-label="Search">⌕ Search</a>'
+    return "".join(out) + site_nav.search_form()
 
 
 def page_url(t):

@@ -550,3 +550,32 @@ html body .page-header .page-cover {
   object-fit: cover; object-position: 50% 75%;
   margin-top: 1.75rem; border: 1px solid var(--mist);
 }
+
+/* ──────────────────────────────────────────────────────────────
+   SEARCH BOX in the menu (scripts/site_nav.py, topic_pages.py and the
+   homepage). Submits ?q= to the search page, which runs it at once.
+   ────────────────────────────────────────────────────────────── */
+html header form.nav-search, html form.nav-search-home {
+  display: inline-flex; align-items: center; margin: 0; padding: 0;
+  border: 1px solid var(--mist); background: var(--white, #fdfaf4);
+}
+html header form.nav-search input, html form.nav-search-home input {
+  font-family: 'DM Mono', monospace; font-size: .64rem; letter-spacing: .08em;
+  width: 7.5rem; padding: .32rem .5rem; border: 0; background: transparent; color: var(--ink);
+  outline: none; transition: width .2s ease; -webkit-appearance: none; appearance: none;
+}
+html header form.nav-search input::placeholder, html form.nav-search-home input::placeholder {
+  color: var(--stone); text-transform: uppercase; letter-spacing: .12em;
+}
+html header form.nav-search input:focus, html form.nav-search-home input:focus { width: 12rem; }
+html header form.nav-search:focus-within, html form.nav-search-home:focus-within { border-color: var(--rust); }
+html header form.nav-search button, html form.nav-search-home button {
+  border: 0; background: none; color: var(--stone); cursor: pointer; padding: .25rem .5rem;
+  font-size: .8rem; line-height: 1;
+}
+html header form.nav-search button:hover, html form.nav-search-home button:hover { color: var(--rust); }
+html form.nav-search-home { margin-left: .75rem; }
+@media (prefers-reduced-motion: reduce) { html header form.nav-search input { transition: none; } }
+@media (max-width: 720px) {
+  html header form.nav-search input:focus { width: 9rem; }
+}
