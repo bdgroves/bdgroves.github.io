@@ -8,6 +8,8 @@ Same look and header as the topic pages (it reuses topic_pages.HEAD/TAIL).
 /work/  the featured projects (the homepage carousel's FEATURED list, read
         from index.html, with their images), then the eight fields, then a
         line to the code on GitHub.
+/maps.html  (only the block between its maps-cards markers) the GIS projects,
+        the map dashboards and the flyover films, as picture cards.
 /live/  three live readings (Kīlauea, the day's biggest quake, Rainier's
         snowpack; the same data and code as the homepage panel), then every
         dashboard listed in data/topics.json, grouped by topic.
@@ -132,6 +134,70 @@ def page(path, title, desc, img, h1, blurb, sections, js=""):
     return "\n".join(out)
 
 
+# /maps.html: picture cards under the map. Dashboards come from data/topics.json
+# (so a new one shows up on its own); these lists only say which go where.
+MAP_PROJECTS = ["https://brooksgroves.com/mother-lode/", "https://brooksgroves.com/project-kiva",
+                "https://brooksgroves.com/lidar-explore/", "https://brooksgroves.com/solstice",
+                "https://brooksgroves.com/cypress-dome-watch/", "https://brooksgroves.com/sentinel-stockpile/",
+                "https://brooksgroves.com/dipodomys", "https://brooksgroves.com/30DayMapChallenge/2026/"]
+MAP_DASH_TOPICS = ["earth", "weather", "nature"]       # everything else in these topics counts as a dashboard
+FILMS = [
+    ("/blog/athabasca-melt-post.html", "/blog/img/athabasca-melt/og.jpg", "🧊 The Athabasca Glacier, 1844 to 2100",
+     "One view from the Icefield Centre lookout, 256 years of ice."),
+    ("/blog/icefields-flyover-post.html", "/blog/img/icefields-flyover/og.jpg", "🏔️ The Icefields Parkway",
+     "Lake Louise to the Columbia Icefield in 95 seconds."),
+    ("/blog/ruby-flyover-post.html", "/images/features/ruby-flyover.jpg", "💎 The Ruby Mountains",
+     "Up Lamoille Canyon to Liberty Lake on 1 m lidar."),
+    ("/blog/mono-flyover-post.html", "/blog/img/mono-flyover/og.jpg", "🌋 Mono Basin",
+     "Tioga Pass, Mono Lake and the Mono Craters on 1 m lidar."),
+    ("/blog/yosemite-flyover-post.html", "/blog/img/yosemite-flyover/og.jpg", "🧗 Yosemite",
+     "Half Dome to Tunnel View and back on a June evening."),
+]
+MAPS_CSS = """  <style>
+    .mp { margin-top:3rem; padding-top:2rem; border-top:2px solid var(--ink); }
+    .mp-head { font-family:'Playfair Display',serif; font-size:clamp(1.4rem,3vw,1.9rem); font-weight:900; margin:0 0 .35rem; }
+    .mp-desc { color:var(--stone); font-size:.95rem; line-height:1.6; margin:0 0 1.25rem; max-width:62ch; }
+    .mp-group { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; color:var(--stone); margin:1.75rem 0 .75rem; }
+    .mp .tp-dash { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
+    .mp .tp-card { display:flex; flex-direction:column; gap:6px; padding:0 0 16px; border:1px solid var(--mist); background:var(--white); color:var(--ink); text-decoration:none; overflow:hidden; transition:border-color .18s, box-shadow .18s, transform .18s; }
+    .mp .tp-card:hover { border-color:var(--stone); transform:translateY(-2px); box-shadow:0 10px 24px -16px rgba(28,26,22,.45); }
+    .mp .tp-card:focus-visible { outline:2px solid var(--rust); outline-offset:2px; }
+    .mp .tp-card img { width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; display:block; margin-bottom:6px; border-bottom:1px solid var(--mist); background:var(--cream); }
+    .mp .tp-card b { padding:0 16px; font-family:'Playfair Display',serif; font-size:18px; line-height:1.3; }
+    .mp .tp-card span.d { padding:0 16px; font-size:13.5px; color:var(--stone); line-height:1.55; }
+    @media (prefers-reduced-motion: reduce) { .mp .tp-card { transition:none; } .mp .tp-card:hover { transform:none; } }
+  </style>"""
+
+
+def maps_cards(cfg) -> bool:
+    path = ROOT / "maps.html"
+    s = path.read_text(encoding="utf-8")
+    a, b = "<!-- maps-cards:start (scripts/hub_pages.py) -->", "<!-- maps-cards:end -->"
+    if a not in s or b not in s:
+        print("hub pages: maps.html has no maps-cards markers, skipped")
+        return False
+    dash = {x["url"]: x for t in cfg["topics"] for x in t.get("dashboards", [])}
+    projects = [dash[u] for u in MAP_PROJECTS if u in dash]
+    live = [x for t in cfg["topics"] if t["id"] in MAP_DASH_TOPICS for x in t.get("dashboards", [])
+            if x["url"] not in MAP_PROJECTS]
+    out = [a, MAPS_CSS, '  <section class="mp" aria-labelledby="mp-h">',
+           '    <h2 class="mp-head" id="mp-h">Projects, dashboards and films</h2>',
+           '    <p class="mp-desc">The maps that grew into projects: lidar atlases and analyses, dashboards that update on their own, and flyover films.</p>',
+           '    <h3 class="mp-group">GIS projects</h3>', '    <div class="tp-dash">']
+    out += [card(x["url"], x.get("img", ""), x["name"], x["blurb"]) for x in projects]
+    out += ['    </div>', '    <h3 class="mp-group">Live dashboards</h3>', '    <div class="tp-dash">']
+    out += [card(x["url"], x.get("img", ""), x["name"], x["blurb"]) for x in live]
+    out += ['    </div>', '    <h3 class="mp-group">Flyover films</h3>', '    <div class="tp-dash">']
+    out += [card(u, img, n, d) for u, img, n, d in FILMS]
+    out += ['    </div>', '  </section>', '  ' + b]
+    i, j = s.index(a), s.index(b) + len(b)
+    new = s[:i] + "\n".join(out) + s[j:]
+    if new == s:
+        return False
+    path.write_text(new, encoding="utf-8")
+    return True
+
+
 def build():
     cfg = json.loads((ROOT / "data/topics.json").read_text(encoding="utf-8"))
     changed = 0
@@ -183,6 +249,7 @@ def build():
         "/images/features/pele.jpg", "Live data",
         f"{n} dashboards and tools, from Kīlauea to Lake Tahoe. First, three live readings, as of each dashboard’s last update:",
         sec, LIVE_JS))
+    changed += maps_cards(cfg)
     print(f"hub pages: /work/ ({len(feats)} projects), /live/ ({n} dashboards); {changed} changed")
 
 

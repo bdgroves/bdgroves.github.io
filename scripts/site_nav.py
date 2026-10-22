@@ -4,9 +4,12 @@ The site menu: the same six doors on every page.
     python3 scripts/site_nav.py
 
 Work · Writing · Maps & films · Live data · Outside · About, with the page's
-own door marked (aria-current). The homepage has its own richer menu with
-dropdowns and is left alone; so are the games (full-screen, their own
-chrome) and the 404 page.
+own door marked (aria-current). Each door has the same dropdown as on the
+homepage: the lists are read from the homepage's own menu, so editing a
+dropdown there and re-running this changes it everywhere. Dropdowns open on
+hover or keyboard focus on screens with a mouse; on phones the doors are plain
+links to their hub pages. The homepage keeps its own menu and is left alone;
+so are the games (full-screen, their own chrome) and the 404 page.
 
 Pages carry their header inline, in three shapes; each is handled:
 
@@ -69,10 +72,45 @@ FIXED_DOOR = None
 KEEP_BACK = False
 
 
+_MENUS: dict | None = None
+
+
+def menus() -> dict:
+    """{door href: [dropdown lines]} from the homepage's <nav class="section-nav">."""
+    global _MENUS
+    if _MENUS is None:
+        _MENUS = {}
+        home = (Path(__file__).resolve().parent.parent / "index.html").read_text(encoding="utf-8")
+        navm = re.search(r'<nav class="section-nav"[^>]*>(.*?)</nav>', home, re.S)
+        items = re.findall(r'<div class="section-nav-item">\s*<a class="section-nav-btn" href="([^"]+)"[^>]*>.*?</a>'
+                           r'\s*<div class="dropdown">(.*?)</div>\s*</div>', navm.group(1) if navm else "", re.S)
+        for href, body in items:
+            lines = []
+            for m in re.finditer(r'<div class="dropdown-label">(.*?)</div>|<a ([^>]*)>(.*?)</a>', body, re.S):
+                if m.group(1) is not None:
+                    lines.append(f'<span class="sn-label">{m.group(1).strip()}</span>')
+                    continue
+                attrs = m.group(2)
+                attrs = re.sub(r'href="(/[^"]*)"', lambda h: f'href="{BASE}{h.group(1)}"', attrs)
+                attrs = attrs.replace('class="dropdown-contact"', 'class="sn-contact"').replace('class="dim"', 'class="sn-dim"')
+                lines.append(f'<a {attrs.strip()}>{m.group(3).strip()}</a>')
+            _MENUS[href] = lines
+    return _MENUS
+
+
 def nav(rel: str, toggle: str, indent: str = "    ") -> str:
     cur = FIXED_DOOR or door_for(rel)
-    links = "".join(
-        f'\n{indent}  <a href="{BASE}{h}"{" aria-current=\"page\"" if t == cur else ""}>{t}</a>' for t, h in DOORS)
+    links = ""
+    for i, (t, h) in enumerate(DOORS):
+        door = f'<a href="{BASE}{h}"{" aria-current=\"page\"" if t == cur else ""}>{t}</a>'
+        drop = menus().get(h)
+        if not drop:
+            links += f'\n{indent}  {door}'
+            continue
+        end = " sn-end" if i >= len(DOORS) - 2 else ""
+        inner = "".join(f"\n{indent}      {x}" for x in drop)
+        links += (f'\n{indent}  <div class="sn-item{end}">{door}'
+                  f'\n{indent}    <div class="sn-drop">{inner}\n{indent}    </div>\n{indent}  </div>')
     links += f'\n{indent}  <a href="{BASE}/search/" class="nav-search" aria-label="Search">⌕ Search</a>'
     tog = f"\n{indent}  {toggle.strip()}" if toggle else ""
     return f'<nav class="site-nav" aria-label="Main">{links}{tog}\n{indent}</nav>'

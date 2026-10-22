@@ -129,7 +129,7 @@ HEAD = """<!DOCTYPE html>
 <header class="tp-header">
   <div class="tp-header-in">
     <a class="tp-name" href="/">Brooks Groves</a>
-    <nav class="tp-nav" aria-label="Main">{nav}<button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
+    <nav class="tp-nav site-nav" aria-label="Main">{nav}<button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button></nav>
   </div>
 </header>
 """
@@ -165,8 +165,18 @@ TAIL = """
 
 
 def nav_html(current="Writing"):
-    return ("".join(f'<a href="{h}"{" aria-current=\"page\"" if t == current else ""}>{t}</a>' for t, h in NAV)
-            + '<a href="/search/" aria-label="Search">⌕ Search</a>')
+    """The six doors with the homepage's dropdowns (the same lists site_nav.py uses)."""
+    import site_nav
+    drops = site_nav.menus()
+    out = []
+    for i, (t, h) in enumerate(NAV):
+        door = f'<a href="{h}"{" aria-current=\"page\"" if t == current else ""}>{t}</a>'
+        d = drops.get(h)
+        if d:
+            end = " sn-end" if i >= len(NAV) - 2 else ""
+            door = f'<div class="sn-item{end}">{door}<div class="sn-drop">{"".join(d)}</div></div>'
+        out.append(door)
+    return "".join(out) + '<a href="/search/" aria-label="Search">⌕ Search</a>'
 
 
 def page_url(t):
