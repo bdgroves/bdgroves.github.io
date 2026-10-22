@@ -319,6 +319,7 @@
        the reason this card exists. Desert palette rather than the site's
        usual gold so it reads as its own thing. */
     .dakar { border:1px solid var(--mist); border-left:3px solid var(--dune); background:var(--cream); padding:1rem 1.1rem; }
+    .dakar-hero { display:block; width:calc(100% + 2.2rem); height:auto; max-width:none; margin:-1rem -1.1rem 0.9rem; aspect-ratio:16/9; object-fit:cover; }
     .dakar-top { display:flex; flex-wrap:wrap; gap:0.5rem 1rem; align-items:baseline; justify-content:space-between; }
     .dakar-name { font-family:'Playfair Display',serif; font-size:1.05rem; font-weight:700; color:var(--ink); }
     .dakar-when { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
@@ -1728,6 +1729,7 @@ async function loadDakar() {
 
     el.innerHTML = `
       <div class="dakar">
+        <img class="dakar-hero" src="/img-opt/images/features/dakar-2027.jpg.w640.webp" alt="" loading="lazy" decoding="async" width="640" height="360" srcset="/img-opt/images/features/dakar-2027.jpg.w640.webp 640w, /img-opt/images/features/dakar-2027.jpg.w1600.webp 1600w" sizes="(max-width: 600px) 92vw, 400px">
         <div class="dakar-top">
           <div>
             <div class="dakar-name">${esc(e.name)}</div>
