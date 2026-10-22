@@ -139,7 +139,8 @@ def page(path, title, desc, img, h1, blurb, sections, js=""):
 MAP_PROJECTS = ["https://brooksgroves.com/mother-lode/", "https://brooksgroves.com/project-kiva",
                 "https://brooksgroves.com/lidar-explore/", "https://brooksgroves.com/solstice",
                 "https://brooksgroves.com/cypress-dome-watch/", "https://brooksgroves.com/sentinel-stockpile/",
-                "https://brooksgroves.com/dipodomys", "https://brooksgroves.com/30DayMapChallenge/2026/"]
+                "https://brooksgroves.com/dipodomys", "https://brooksgroves.com/little-free-pantry",
+                "https://brooksgroves.com/30DayMapChallenge/2026/"]
 MAP_DASH_TOPICS = ["earth", "weather", "nature"]       # everything else in these topics counts as a dashboard
 FILMS = [
     ("/blog/athabasca-melt-post.html", "/blog/img/athabasca-melt/og.jpg", "🧊 The Athabasca Glacier, 1844 to 2100",
