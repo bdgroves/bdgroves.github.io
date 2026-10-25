@@ -168,6 +168,15 @@
     /* In season the card goes away and the drawer is simply the content. */
     .baseball-block.in-season .offseason-card, .baseball-block.in-season .season-drawer > summary { display:none; }
     .baseball-block.in-season .season-drawer { margin-top:0; }
+    /* EDGAR picture card, always shown at the top of Baseball */
+    .edgar-card { display:block; text-decoration:none; color:var(--ink); background:var(--cream); border:1px solid var(--mist); margin-bottom:0.9rem; overflow:hidden; }
+    .edgar-card img { display:block; width:100%; height:auto; aspect-ratio:16/9; object-fit:cover; border-bottom:1px solid var(--mist); }
+    .edgar-body { display:block; padding:0.85rem 1.1rem 1rem; }
+    .edgar-k { display:block; font-family:'DM Mono',monospace; font-size:0.5rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--sage); margin-bottom:0.35rem; }
+    .edgar-t { display:block; font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; line-height:1.25; }
+    .edgar-s { display:block; font-size:0.78rem; color:var(--stone); line-height:1.6; margin-top:0.35rem; }
+    .edgar-go { display:block; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--rust); margin-top:0.55rem; }
+    .edgar-card:hover .edgar-t, .edgar-card:focus-visible .edgar-t { color:var(--rust); }
     .peaks-card-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:700; margin-bottom:0.25rem; }
     .peaks-card-desc { font-size:0.78rem; color:var(--stone); line-height:1.6; margin-bottom:0.5rem; }
     .peaks-card-hours { font-family:'DM Mono',monospace; font-size:0.5rem; color:var(--stone); margin-bottom:0.6rem; }
@@ -864,6 +873,15 @@
             <span>Baseball</span>
             <a href="https://www.mlb.com/scores" target="_blank">MLB.com ↗</a>
           </div>
+          <a class="edgar-card" href="https://brooksgroves.com/EDGAR" target="_blank" rel="noopener">
+            <img src="/images/features/edgar.jpg" alt="" loading="lazy" decoding="async" width="1672" height="941">
+            <span class="edgar-body">
+              <span class="edgar-k">My Mariners dashboard</span>
+              <span class="edgar-t">&#9918; EDGAR: Mariners Analytics</span>
+              <span class="edgar-s">The Mariners in one line, the AL West race, pitch arsenals from Baseball Savant and the Rainiers, rebuilt every night.</span>
+              <span class="edgar-go">Open the dashboard &rarr;</span>
+            </span>
+          </a>
           <div class="offseason-card" id="bb-offseason">
             <div class="offseason-kicker">Off-season</div>
             <div class="offseason-main">&#9918; Spring training in <span id="bb-countdown">—</span></div>
