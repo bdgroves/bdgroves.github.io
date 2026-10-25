@@ -579,3 +579,22 @@ html form.nav-search-home { margin-left: .75rem; }
 @media (max-width: 720px) {
   html header form.nav-search input:focus { width: 9rem; }
 }
+
+/* Picture strip at the top of the field pages' project and related cards
+   (hydrology, geospatial, volcanology, archaeology, ecology). Bleeds to the
+   card's edges; the cards keep their own padding for the text. */
+html body .project-card > .card-media,
+html body .related-card > .card-media {
+  display: block; aspect-ratio: 16 / 9; overflow: hidden; background: var(--cream, #ede8dc);
+  margin: -1.5rem -1.5rem 1rem; border-bottom: 1px solid var(--mist, #d6d0c4);
+}
+html body .related-card > .card-media { margin: -1.25rem -1.25rem 0.9rem; }
+html body .project-card > .card-media img,
+html body .related-card > .card-media img {
+  display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 30%;
+  transition: transform .4s ease;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html body .project-card:hover > .card-media img,
+  html body .related-card:hover > .card-media img { transform: scale(1.03); }
+}
