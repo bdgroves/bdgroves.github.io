@@ -53,7 +53,7 @@ IMAGE_OVERRIDES = {
     "/blog/pele-blog-post.html": "/images/features/pele.jpg",
     "/blog/rainier-snowpack-post.html": "/images/features/rainier.jpg",
     "/blog/sierra-flow-cobol-post.html": "/images/features/sierra-flow-hero.jpg",
-    "/blog/sierra-flow-handoff-post.html": "/images/features/sierra-flow-hero.jpg",
+    "/blog/sierra-flow-handoff-post.html": "/images/features/sierra-flow-handoff.jpg",
     "/blog/where-the-fog-lives.html": "/images/features/fog-watch.jpg",
     "/blog/aftershock-post.html": "/images/features/aftershock.jpg",
     "/blog/streamflow-post.html": "/images/features/streamflow.jpg",
