@@ -5,7 +5,7 @@ For the four game cards on brooksgroves.com/games.html. House style, nudged towa
 
 ## KELLATH'S DRIFT
 
-Save as: `images/features/game-kellaths-drift.jpg`
+Save as: `images/features/game-kellaths-drift-2.jpg` (the second round; the serif title matches the others)
 
 ```
 Create a wide, cinematic website hero image for my project.
