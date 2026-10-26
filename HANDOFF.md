@@ -29,27 +29,22 @@ The redesign (direction A, "Refined almanac") is **done and live**. Every card, 
 - **Games** (/games.html): five cards with pictures: Kellath's Drift, Offline Protocol, Adjuster's Report, Railroad Valley, Plate Hunter.
 - **Maps:** dashboard cards are whole links, places-lived zoom fixed, Chiricahua National Park added (made a national park Oct 20, 2026).
 - **Analytics:** Cloudflare Web Analytics is on and verified. The token is in `data/analytics.json`, and `scripts/analytics.py` adds the beacon to all pages. Automatic injection never worked, because the site is served by GitHub, not through Cloudflare.
+- **Story sites:** all seven memoir collection cards have pictures, and the Westin, Y2K and Journal home pages have covers. The Plate Hunter post has its cover too.
 - **Branches:** cleaned up. The website repo has `main` plus `link-report` (the link checker's output). secchi's `dotnet-stream` is work in progress, so leave it.
 
 ## Open items (pick from here)
 
-1. **Story collection pictures.** Ten prompts are ready in `brooks-memoir/docs/picture-prompts.md`:
-   - Seven for the memoir collection cards: Blinn, Sierra Foothills, Camp Reno, Paragon, Seattle, Travel, Carl Zeus
-   - Covers for the Westin, Y2K and Journal home pages
-
-   Waiting on Brooks's images. Then add them to the memoir `index.html` collection cards and the other sites' home pages.
-2. **Write the first story** from the list. Suggested: *Hurricane Gilbert* (Blinn, Sept 1988).
+1. **Write the first story** from the list. Suggested: *Hurricane Gilbert* (Blinn, Sept 1988).
    - The list (32 stories, all sorted by collection) is the Google Doc "Story Ideas" in Brooks's Drive, with the same list in `brooks-memoir/STORY-IDEAS.md`.
    - Tick off both when a story is published.
-3. **Review analytics** in early November: what people click, then tune the homepage.
-4. **Plate Hunter post:** it uses a different layout, with no cover picture. Offered to add `game-plate-hunter-2.jpg` across the top.
-5. **QGIS:** stay on 4.2.2. Releases 4.2.3 and 3.44.15 are blocked by Smart App Control (QGIS issues #67751 and #67814, no fix yet). A weekly check was offered but not set up.
-6. **Optional:**
+2. **Review analytics** in early November: what people click, then tune the homepage.
+3. **QGIS:** stay on 4.2.2. Releases 4.2.3 and 3.44.15 are blocked by Smart App Control (QGIS issues #67751 and #67814, no fix yet). A weekly check was offered but not set up.
+4. **Optional:**
    - Alt text for the hero pictures
    - A Lighthouse speed and accessibility pass
    - Restyling the five original heroes (PELE, STORM CHASER, Project Kiva, LiDAR Explore, HopLove)
    - A HOLDOVER prompt once that game is built
-7. **Parked:** the Ruby Crest trail story (the blog post covers enough for now) and the secchi note to the Tahoe Institute and UNR alumni.
+5. **Parked:** the Ruby Crest trail story (the blog post covers enough for now) and the secchi note to the Tahoe Institute and UNR alumni.
 
 ## How to add a picture (the routine)
 
