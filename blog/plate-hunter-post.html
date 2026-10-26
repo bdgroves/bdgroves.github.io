@@ -48,6 +48,7 @@
     /* PROSE */
     p { margin-bottom:1.35rem; }
     h2 { font-family:'Playfair Display',serif; font-size:1.35rem; font-weight:700; margin:2.5rem 0 0.85rem; letter-spacing:-0.01em; }
+    h3 { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; margin:1.9rem 0 0.6rem; }
     blockquote { border-left:3px solid var(--gold); margin:1.75rem 0; padding:0.75rem 0 0.75rem 1.5rem; font-style:italic; color:var(--stone); font-size:0.975rem; line-height:1.75; }
     pre { background:var(--cream); border:1px solid var(--mist); border-radius:4px; padding:1.25rem 1.5rem; margin:1.5rem 0; overflow-x:auto; }
     code { font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--rust); }
@@ -56,6 +57,9 @@
     li { margin-bottom:0.4rem; font-size:0.95rem; }
     hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
     table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.875rem; }
+    .ph-cover { margin:0 0 2rem; }
+    h2[id] { scroll-margin-top:90px; }
+    .ph-cover img { display:block; width:100%; height:auto; border:1px solid var(--mist); }
     th { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-align:left; padding:0.6rem 0.75rem; border-bottom:2px solid var(--ink); color:var(--stone); }
     td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
     tr:last-child td { border-bottom:none; }
@@ -213,7 +217,7 @@
 
   <div class="post-byline">
     Brooks Groves<br>
-    April 2026<br>
+    April 2026 · updated October 2026<br>
     HTML · CSS · JavaScript · DOL Open Data
   </div>
 
@@ -229,11 +233,13 @@
 
   <a href="https://brooksgroves.com/plate-hunter" target="_blank" class="post-live">Live App · brooksgroves.com/plate-hunter ↗</a>
 
+  <figure class="ph-cover"><img src="/img-opt/images/features/game-plate-hunter-2.jpg.w1600.webp" srcset="/img-opt/images/features/game-plate-hunter-2.jpg.w640.webp 640w, /img-opt/images/features/game-plate-hunter-2.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 700px" alt="From the back seat at golden hour, a child points past the front seats at the license plate of the car ahead, a road atlas open on their lap" width="1672" height="941" decoding="async" fetchpriority="high"></figure>
+
   <p>
     On April 20, 2026, the Seattle Times ran a data story about Washington specialty license plates. Gene Balk had pulled the DOL's annual registration report and found that in 2025, nearly 184,000 vehicles in the state carried a special-design plate, generating $5.8 million in fees. He listed the top sellers — WSU with 24,100 plates, Seahawks with 11,100 — and then buried the real story in the last paragraph.
   </p>
 
-  <p style="font-size:0.95rem; border-left:3px solid var(--gold); padding:0.2rem 0 0.2rem 1.1rem; color:var(--stone);"><strong>Update, October 2026:</strong> Plate Hunter grew up. It now has the classic road-trip game too: spot a plate from every state and watch a US map fill in. And the specialty hunt now covers every state, more than 7,000 plates, with Oregon, Idaho, California and Nevada checked against their current lists first. It works with no signal and installs to your phone's home screen. Washington's points now come from the Department of Licensing's own plate counts, which moved a few plates around: the Seattle Storm plate, on about 100 cars, is now legendary. A weekly check of the licensing agencies' pages flags new plates as they come out. <a href="https://brooksgroves.com/plate-hunter/">Play it here</a>.</p>
+  <p style="font-size:0.95rem; border-left:3px solid var(--gold); padding:0.2rem 0 0.2rem 1.1rem; color:var(--stone);"><strong>Update, October 2026:</strong> Plate Hunter grew up. It now covers every state, every Canadian province and territory, and more than 8,000 specialty plates, all checked against the licensing agencies' current lists, with a little robot that watches for new ones. The story of how that happened is at the end, in <a href="#six-months-later">Six Months Later</a>. <a href="https://brooksgroves.com/plate-hunter/">Play it here</a>.</p>
 
   <blockquote>
     "The least popular special-design plate last year was the square dancer design, on only five vehicles, despite being one of the least expensive." — Seattle Times, April 20, 2026
@@ -317,13 +323,95 @@
     But the core mechanic is already working. The real plate photos load. The rarity tiers are real. The confetti fires when you find something good. And somewhere on the roads of Washington, five square dancer plates are waiting to be tapped.
   </p>
 
+
+  <h2 id="six-months-later">Six Months Later: Every State, and Canada</h2>
+
+  <p>
+    That "Work in Progress" list turned out to be a to-do list. Here's where Plate Hunter stands in October 2026.
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>What</th><th>Then (April)</th><th>Now (October)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Places</td><td>Washington</td><td>All 50 states, DC, and Canada's 10 provinces and 3 territories</td></tr>
+      <tr><td>Specialty plates</td><td>72</td><td><strong>8,035</strong></td></tr>
+      <tr><td>Checked against the agency's current list</td><td>1 state</td><td>Every state, province and territory</td></tr>
+      <tr><td>With the official plate artwork</td><td>72</td><td>7,900 (98%)</td></tr>
+      <tr><td>Keeping it fresh</td><td>Me, by hand</td><td>A robot, twice a week</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Two games in one</h3>
+
+  <p>
+    Every road trip already plays the classic version: spot a plate from every state before you get home. So the app now opens on a US map that fills in gold as you go, with a list of every state's everyday plate underneath. Tiny states like Rhode Island and Delaware get their own tap-friendly buttons beside the map. Start a new trip whenever you set off again, and the states you've ever seen are kept.
+  </p>
+
+  <p>
+    The specialty hunt is still the deep cut, and it's the same game as in April: see a plate, tap it, earn the points. Washington's points still come from how many cars really carry each plate. Everywhere else, every plate is worth the same until I find counts for those states too.
+  </p>
+
+  <h3>From one state to all of them</h3>
+
+  <p>
+    Jon Keegan's 2023 dataset was the starting point for every state, just like it was for Washington. But a 2023 snapshot can't know about plates that came out in 2024, 2025 and 2026, so I went back to each licensing agency's own catalog and compared, state by state. That turned up about 750 plates newer than the snapshot: new universities, new sports teams, America's 250th anniversary plates in several states, and a lot of plates the snapshot had simply missed.
+  </p>
+
+  <p>
+    Some of those catalogs were easy to read. Others only exist inside a web page that builds itself as you scroll (Texas's My Plates, Arizona, Kentucky), and a few, like Maryland's 777-entry list of organization plates, run forty pages deep. Those I read in a real browser, page by page. North Carolina keeps its plate store behind a login, but its public order forms list every plate it sells, which turned out to be just as good.
+  </p>
+
+  <p>
+    Plates a state no longer sells stay in the game. They're still out there on older cars, so they keep their place with a quiet note: "No longer sold, still on the road." When a plate merely went missing from a catalog, without any sign it was retired, I left it alone. Texas's Choose Life plate and North Carolina's NASCAR driver plates are still very much hunt-able.
+  </p>
+
+  <h3>Only the real pictures</h3>
+
+  <p>
+    Every plate picture comes from the licensing agency or the plate's own sponsor, never a photo of someone's car. Every new picture gets a look before it goes in, and a few have come back out: a "Plate Coming Soon" placeholder, a sheet of four tiny plates, one with a photo-sharing watermark across it. Those plates show a drawn stand-in with the plate's name until a proper picture turns up.
+  </p>
+
+  <p>
+    One fun wrinkle: Illinois's website won't talk to the servers that download pictures for the game. It talks to a person in a normal browser just fine, though. So I opened the site in Chrome, ran a small script that saved all 48 missing Illinois pictures, and dropped them into the project by hand. Every Illinois military and veteran plate now shows the state's own artwork.
+  </p>
+
+  <h3>A robot that watches for new plates</h3>
+
+  <p>
+    New plates come out all the time, so Plate Hunter now has a little robot that runs on GitHub every Monday and Thursday. It visits 83 agency pages, compares every plate picture it finds with the ones already in the game, and opens an issue listing anything new. I reply <code>/add</code> or <code>/skip</code>, and it does the rest: adds the plate, downloads the picture, and gives it a NEW badge in the app for 60 days.
+  </p>
+
+  <h3>And then, Canada</h3>
+
+  <p>
+    The April plan said "Canadian provinces as bonus tiers," and that's live now too. A USA / Canada switch on the map flips to all 10 provinces and 3 territories, each with its own count, so one road trip can cover both. The specialty hunt adds 141 Canadian plates: 69 from Ontario (Leafs, Raptors, Blue Jays, universities and regiments), Manitoba's Jets and Blue Bombers, Saskatchewan's Rider Pride, Alberta's Oilers and Flames, B.C.'s Parks plates, and Prince Edward Island's wildlife conservation series with a red fox, a blue jay and a lady's slipper.
+  </p>
+
+  <p>
+    My favorite find of the whole project is Canadian, too: Nunavut's everyday plate is shaped like a polar bear. The Northwest Territories has driven around on a bear-shaped plate since 1970, and in 2025 Nunavut brought back a polar bear of its own.
+  </p>
+
+  <h3>What changed under the hood</h3>
+
+  <p>
+    The April build was one HTML file. It's still no framework and no build step, and GitHub Pages still serves it for free. But the plates now live in one data file per state or province, a handful of small Python scripts check and update them, and GitHub Actions runs the robot and downloads pictures. The app works with no signal, and it installs to your phone's home screen like a real app.
+  </p>
+
+  <h3>Still on the list</h3>
+
+  <p>
+    A true App Store and Play Store version for road trips. Rarity points for more states, as I find registration counts. Pictures for the last few plates that don't have one yet. And, sure, maybe Mexico someday. The square dancer is still out there, and now so is a polar bear.
+  </p>
+
   <hr>
 
   <p>
     Open source at <a href="https://github.com/bdgroves/plate-hunter" target="_blank">github.com/bdgroves/plate-hunter</a>. Live app at <a href="https://brooksgroves.com/plate-hunter" target="_blank">brooksgroves.com/plate-hunter</a>. Built in Lakewood, WA. The square dancer is out there.
   </p>
 
-  <p class="post-sign">Brooks Groves · April 2026</p>
+  <p class="post-sign">Brooks Groves · April 2026, updated October 2026</p>
 
   <div class="post-footer-links">
     <a href="/blog/index.html">← All Posts</a>
