@@ -200,3 +200,51 @@ IMPORTANT CONSTRAINTS:
 - Make the result visually related to a polished series of environmental and geoscience project heroes, while giving this project its own distinctive identity.
 - Generate the finished image directly without asking follow-up questions unless a truly essential detail is missing.
 ```
+
+---
+
+## PLATE HUNTER
+
+Save as: `images/features/game-plate-hunter.jpg` (replaces the map screenshot on the card)
+
+```
+Create a wide, cinematic website hero image for my project.
+
+PROJECT TITLE: "PLATE HUNTER"
+
+SOURCE MATERIAL:
+Read the attached README, webpage, or article before designing the image. Identify the project's central story, geographic setting, data, and most visually meaningful moment.
+
+PROJECT SUMMARY:
+A road-trip license plate game. Spot a plate from every state and watch a US map fill in, or hunt more than 7,000 specialty plates, where the rarer a plate is on real roads, the more it is worth. It started with a newspaper line: Washington's square dancer plate is on only five vehicles in the whole state. A robot checks the licensing offices twice a week so new plates appear on their own. This is a small browser game on my site, so treat the picture as a game's key art: one memorable moment, cinematic and grounded, painted rather than cartoonish, with no game interface, buttons or phone screens.
+
+KEY VISUAL IDEAS:
+- The view from the back seat of a family car on a Washington highway at golden hour: the eastern Palouse, rolling wheat hills, a two-lane road unspooling toward a low sun
+- A child's hand and finger pointing forward between the front seats at the car ahead, the moment of spotting something rare
+- On that car's bumper, a specialty license plate with a small dancing-couple emblem, catching the light: the five-in-the-whole-state plate. Show it as a believable plate shape and colour only, with no readable letters, numbers or state name
+- A well-worn paper road atlas open across the back seat, its map of the United States with about a third of the states shaded in warm gold, as if filled in by hand along the way
+- A few other cars and a pickup further down the road, their plates small, varied colours, all unreadable
+
+DESIRED HOUSE STYLE:
+Create a sophisticated editorial illustration that blends cinematic landscape photography, realistic natural textures, map art and restrained data art. It should feel warm, observant and grounded, like the best road-trip memory, not like an advertisement.
+
+Use a panoramic 16:9 composition designed for a website hero and social sharing. Build the scene around the actual moment the game is about rather than showing a screenshot. Integrate the map and the idea of collecting naturally into the scene. They should feel part of the world, not pasted on as a user interface.
+
+Keep the composition visually rich but readable. Use strong depth, a clear visual path from the pointing hand to the plate ahead, realistic landscape detail, and one memorable idea. Leave some breathing room around the title.
+
+TITLE:
+Add only the exact title "PLATE HUNTER" in the upper-left. Use large, restrained uppercase lettering with generous tracking in a refined editorial serif. Add one short, thin accent rule beneath it.
+
+COLOR AND MOOD:
+Warm parchment, wheat gold, late-sun amber and soft sage, with deep ink shadows inside the car and one rust-red accent. The image should feel joyful, curious and nostalgic, the feeling of a long drive with somebody keeping score.
+
+IMPORTANT CONSTRAINTS:
+- Spell the title exactly.
+- Add no other words, labels, numbers, logos, or watermarks. No readable text on any license plate.
+- Do not draw any real team, university, brand or state logo on the plates.
+- Do not show a phone, app screen, dashboard or infographic.
+- Show no faces; the people are only a hand and the back of the front seats.
+- Avoid generic stock-photo composition and avoid cartoon styling.
+- Make the result visually related to a polished series of environmental and project heroes, while giving this project its own distinctive identity.
+- Generate the finished image directly without asking follow-up questions unless a truly essential detail is missing.
+```
