@@ -91,6 +91,7 @@ IMAGE_OVERRIDES = {
     "/blog/icewave-rechecked-post.html": "/images/features/icewave.jpg",
     "/blog/edgar-2026-season-post.html": "/images/features/edgar.jpg",
     "/blog/cascadia-wx-revisited-post.html": "/images/features/cascadia-wx.jpg",
+    "/blog/plate-hunter-post.html": "/images/features/game-plate-hunter-2.jpg",
     # Ecology card heroes (Oct 21)
     "/blog/alpine-watch-revisited-post.html": "/images/features/alpine-watch.jpg",
     "/blog/cypress-domes-post.html": "/images/features/cypress-domes.jpg",

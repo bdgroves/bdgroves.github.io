@@ -205,7 +205,7 @@ IMPORTANT CONSTRAINTS:
 
 ## PLATE HUNTER
 
-Save as: `images/features/game-plate-hunter.jpg` (replaces the map screenshot on the card)
+Save as: `images/features/game-plate-hunter-2.jpg` (done Oct 26; replaced the map screenshot on the card)
 
 ```
 Create a wide, cinematic website hero image for my project.
