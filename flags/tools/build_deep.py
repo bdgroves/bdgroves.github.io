@@ -25,7 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_packs import DATA, commons_info, filename, gather, pick_flag, qid, sparql, story, tidy_about  # noqa: E402
 
 DEEP = DATA / "deep"
-VERSION = 1                 # bump when the rules below change
+VERSION = 2                 # bump when the rules below change
 MIN_FLAGS = 5               # a country needs at least this many to get its own set
 SECOND_LEVEL = "Q12357832"  # second-level administrative division
 
@@ -61,6 +61,16 @@ def short_type(label: str) -> str:
     """'province of Italy' -> 'Province'; 'municipality of Brazil' -> 'Municipality'."""
     t = re.split(r"\s+(?:of|in)\s+", label or "", maxsplit=1)[0].strip()
     return (t[:1].upper() + t[1:])[:40] if t else "District"
+
+
+def plural(t: str) -> str:
+    """'municipality' -> 'municipalities', 'city with powiat rights' -> 'cities with powiat rights'."""
+    first, _, rest = t.partition(" ")
+    if first.endswith("y") and first[-2:-1] not in "aeiou":
+        first = first[:-1] + "ies"
+    elif not first.endswith("s"):
+        first += "s"
+    return (first + (" " + rest if rest else "")).lower()
 
 
 def list_sets(meta: list[dict]) -> None:
@@ -110,7 +120,8 @@ def main() -> int:
             if pid in old:
                 meta.append(old[pid])
             continue
-        recs = {k: o for k, o in recs.items() if k not in taken and o["coord"] and o["flags"]}
+        recs = {k: o for k, o in recs.items() if k not in taken and o["coord"] and o["flags"]
+                and not all("former" in (tl or "").lower() for _, tl in o["type"])}   # a former municipality is gone
         files = {o["q"]: pick_flag(o["flags"]) for o in recs.values()}
         info = commons_info(sorted(set(files.values())), size=True)
         flags, types = [], {}
@@ -118,7 +129,8 @@ def main() -> int:
             c = info.get(files[o["q"]])
             if not c:
                 continue
-            t = short_type(sorted(o["type"])[0][1]) if o["type"] else "District"
+            live = sorted((t for t in o["type"] if "former" not in (t[1] or "").lower()), key=lambda t: t[1])
+            t = short_type(live[0][1]) if live else "District"
             types[t] = types.get(t, 0) + 1
             parent = sorted(o["parent"], key=lambda x: x[1])
             fid = o["q"].lower()
@@ -142,7 +154,7 @@ def main() -> int:
         if len(flags) < MIN_FLAGS:
             continue
         top = sorted(types.items(), key=lambda x: -x[1])[:2]
-        blurb = " and ".join(t.lower() + ("s" if not t.endswith("s") else "") for t, _ in top).capitalize()
+        blurb = " and ".join(plural(t) for t, _ in top).capitalize()
         (DEEP / f"{cq.lower()}.json").write_text(json.dumps({"id": pid, "name": cname, "blurb": blurb, "flags": flags},
                                                             ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         meta.append({"id": pid, "name": cname, "area": "Go deeper", "blurb": blurb, "count": len(flags),
