@@ -218,9 +218,10 @@ function renderPin() {
   if (S.pinmap) { S.pinmap.remove(); S.pinmap = null; }
   if (!window.L) { $('#pinmap').innerHTML = '<div class="noimg">The map didn\'t load. Check your connection.</div>'; return; }
   const m = L.map('pinmap', { worldCopyJump: true, minZoom: 1 });
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
-    maxZoom: 18, subdomains: 'abcd',
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  // Esri's canvas basemap: borders and coastlines, no place names (dark version in dark mode)
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  L.tileLayer(`https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_${dark ? 'Dark' : 'Light'}_Gray_Base/MapServer/tile/{z}/{y}/{x}`, {
+    maxZoom: 16, attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
   }).addTo(m);
   if (S.packId === 'world') m.setView([20, 10], 2); else m.fitBounds(packBounds(), { padding: [20, 20] });
   let mark = null;
