@@ -5,8 +5,8 @@
 
 const ROUND = 10;
 const KIND = { country: 'Country', state: 'US state', province: 'Canadian province', territory: 'Canadian territory',
-  mxstate: 'Mexican state', dependency: 'Territory', region: 'Region', city: 'City', county: 'County' };
-const ZOOM = { country: 4, state: 5, province: 4, territory: 3, mxstate: 6, dependency: 6, region: 6, county: 8, city: 9 };
+  mxstate: 'Mexican state', dependency: 'Territory', region: 'Region', city: 'City', county: 'County', division: 'District' };
+const ZOOM = { country: 4, state: 5, province: 4, territory: 3, mxstate: 6, dependency: 6, region: 6, county: 8, division: 8, city: 9 };
 const CATS = {
   country: { packs: ['world'], label: 'a country' },
   state: { packs: ['us-states', 'canada', 'mexico'], label: 'a US state, Canadian province or Mexican state' },
@@ -34,15 +34,16 @@ const S = {
   mode: store.get('fa_mode', 'name'),          // 'name': four choices · 'pin': click where it flies
 };
 // Pin it: points fall off with distance; a miss of SCALE miles keeps about a third of the 1,000
-const PIN_SCALE = { country: 500, state: 250, province: 350, territory: 450, mxstate: 150, dependency: 400, region: 220, county: 50, city: 120 };
+const PIN_SCALE = { country: 500, state: 250, province: 350, territory: 450, mxstate: 150, dependency: 400, region: 220, county: 50, division: 60, city: 120 };
 
 /* ---------- small helpers ---------- */
 const isTop = f => ['state', 'province', 'territory', 'mxstate', 'country'].includes(f.kind);
-const sub = f => f.kind === 'country' ? `Country · ${f.region}` : isTop(f) ? KIND[f.kind] : `${KIND[f.kind]} · ${f.region}`;
-const playable = p => p.flags.filter(f => f.ready !== false && !f.named);
+const sub = f => f.kind === 'country' ? `Country · ${f.region}` : isTop(f) ? KIND[f.kind] : `${f.type || KIND[f.kind]} · ${f.region}`;
+const playable = p => p.flags.filter(f => f.ready && !f.named);   // ready: picture saved, or (deeper sets) lettering checked
 function aboutLine(f) {
-  let s = f.about ? f.about.charAt(0).toUpperCase() + f.about.slice(1) : KIND[f.kind];
+  let s = f.about ? f.about.charAt(0).toUpperCase() + f.about.slice(1) : (f.type || KIND[f.kind]);
   if (!isTop(f) && f.region && !s.includes(f.region)) s += `, ${f.region}`;
+  if (f.country && f.country !== f.region && !s.includes(f.country)) s += `, ${f.country}`;
   if (f.pop) s += ` · pop. ${f.pop.toLocaleString()}`;
   return s;
 }
@@ -107,8 +108,17 @@ function status() {
 /* ---------- play ---------- */
 function packPicker() {
   const areas = [...new Set(S.packs.map(k => k.area))];
-  return areas.map(a => `<div class="area"><div class="area-name">${esc(a)}</div><div class="packs">${S.packs.filter(k => k.area === a).map(k =>
+  return areas.map(a => a === 'Go deeper' ? deepPicker(S.packs.filter(k => k.area === a)) : `<div class="area"><div class="area-name">${esc(a)}</div><div class="packs">${S.packs.filter(k => k.area === a).map(k =>
     `<button class="pack" data-pack="${k.id}" aria-pressed="${k.id === S.packId}"><b>${esc(k.name)}</b><small>${k.count ? k.count.toLocaleString() + ' flags · ' : ''}${esc(k.blurb)}</small></button>`).join('')}</div></div>`).join('');
+}
+// 100+ countries' provinces, departments, counties and towns: a menu, not a wall of buttons
+function deepPicker(list) {
+  const on = list.find(k => k.id === S.packId);
+  return `<div class="area"><div class="area-name">Go deeper: provinces, counties and towns</div>
+    <div class="deep${on ? ' on' : ''}"><select id="deepSel" aria-label="Pick a country">
+      <option value="">Pick a country… (${list.length} of them, ${list.reduce((n, k) => n + (k.count || 0), 0).toLocaleString()} flags)</option>
+      ${list.map(k => `<option value="${k.id}"${k.id === S.packId ? ' selected' : ''}>${esc(k.name)} · ${k.count.toLocaleString()} · ${esc(k.blurb)}</option>`).join('')}
+    </select></div></div>`;
 }
 function renderStart() {
   const p = S.pack, best = store.get(bestKey(), null), pl = playable(p);
@@ -124,11 +134,12 @@ function renderStart() {
       <button class="mode" data-mode="pin" aria-pressed="${S.mode === 'pin'}">📍 Pin it<small>Click where it flies</small></button>
     </div>
     ${packPicker()}
-    ${pl.length >= 4 ? `<button class="btn" id="go">${S.mode === 'pin' ? 'Pin' : 'Name'} ${ROUND}: ${esc(p.name)}</button>` : `<p class="wait">The robot is still fetching this set's pictures. Try another set, or check back in an hour.</p>`}
+    ${pl.length >= 4 ? `<button class="btn" id="go">${S.mode === 'pin' ? 'Pin' : 'Name'} ${ROUND}: ${esc(p.name)}</button>` : `<p class="wait">The robot is still checking this set's flags (about 800 an hour). Try another set, or check back soon.</p>`}
     ${best !== null ? `<div class="best">Your best here: ${bestText(best)}</div>` : ''}
   </div>`;
   if ($('#go')) $('#go').onclick = startRound;
   $('#main').querySelectorAll('.pack').forEach(b => b.onclick = async () => { await loadPack(b.dataset.pack); renderStart(); });
+  if ($('#deepSel')) $('#deepSel').onchange = async e => { if (e.target.value) { await loadPack(e.target.value); renderStart(); } };
   $('#main').querySelectorAll('.mode').forEach(b => b.onclick = () => { S.mode = b.dataset.mode; store.set('fa_mode', S.mode); renderStart(); });
   status();
 }
@@ -143,11 +154,11 @@ function startRound() {
 
 function choicesFor(f) {
   // two neighbours (same country or continent) when there are any, so the choices make you look closely
-  const pool = S.pack.flags.filter(x => x.id !== f.id && x.ready !== false);
+  const pool = S.pack.flags.filter(x => x.id !== f.id && x.ready);
   const near = shuffle(pool.filter(x => x.region === f.region));
   const sameKind = shuffle(pool.filter(x => !near.includes(x) && x.kind === f.kind));
   const rest = shuffle(pool.filter(x => !near.includes(x) && !sameKind.includes(x)));
-  const picks = [...near.slice(0, 2), ...sameKind, ...rest].slice(0, 3);
+  const picks = [...near.slice(0, 2), ...sameKind, ...rest, ...near.slice(2)].slice(0, 3);
   return shuffle([f, ...picks]);
 }
 

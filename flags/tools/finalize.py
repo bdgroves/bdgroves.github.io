@@ -48,7 +48,8 @@ def fit_for_daily(cat: str, f: dict) -> bool:
 def main() -> int:
     overrides = json.loads((DATA / "overrides.json").read_text(encoding="utf-8")) if (DATA / "overrides.json").exists() else {}
     packs = {}
-    for p in sorted(DATA.glob("*.json")):
+    named_checked = json.loads((DATA / "named.json").read_text(encoding="utf-8")) if (DATA / "named.json").exists() else {}
+    for p in sorted([*DATA.glob("*.json"), *(DATA / "deep").glob("*.json")]):
         doc = json.loads(p.read_text(encoding="utf-8"))
         if isinstance(doc, dict) and "flags" in doc and "id" in doc:
             changed = False
@@ -60,7 +61,8 @@ def main() -> int:
                     else:
                         f.pop("named", None)
                     changed = True
-                ready = (ROOT / f["img"]).exists()
+                # a picture on the site is ready once saved; one shown from Commons once its lettering is checked
+                ready = f["id"] in named_checked if f["img"].startswith("http") else (ROOT / f["img"]).exists()
                 if bool(f.get("ready")) != ready:
                     f["ready"] = ready; changed = True
             if changed:

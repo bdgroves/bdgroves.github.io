@@ -154,12 +154,12 @@ def continent(conts: set[str]) -> str | None:
     return next((c for c in CONT_ORDER if c in named), None)
 
 
-def commons_info(files: list[str]) -> dict[str, dict]:
+def commons_info(files: list[str], size: bool = False) -> dict[str, dict]:
     info = {}
     strip = lambda s: re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s or ""))).strip()
     for i in range(0, len(files), 50):
         titles = "|".join("File:" + f for f in files[i:i + 50])
-        j = get("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata&format=json&titles="
+        j = get("https://commons.wikimedia.org/w/api.php?action=query&prop=imageinfo&iiprop=extmetadata" + ("|size|mime" if size else "") + "&format=json&titles="
                 + urllib.parse.quote(titles))
         norm = {n["to"]: n["from"] for n in j["query"].get("normalized", [])}
         for p in j["query"]["pages"].values():
@@ -173,6 +173,9 @@ def commons_info(files: list[str]) -> dict[str, dict]:
                 "url": m.get("LicenseUrl", {}).get("value") or None,
                 "page": "https://commons.wikimedia.org/wiki/File:" + urllib.parse.quote(p["title"][5:].replace(" ", "_")),
             }
+            if size:
+                info[title]["width"] = p["imageinfo"][0].get("width")
+                info[title]["mime"] = p["imageinfo"][0].get("mime", "")
         time.sleep(0.3)
     return info
 

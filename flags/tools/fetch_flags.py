@@ -107,17 +107,20 @@ def main() -> int:
     got = left = 0
     fails: dict[str, int] = {}
     # the picker's order (countries and US states first), then anything else
-    order = [m["id"] for m in json.loads((DATA / "packs.json").read_text(encoding="utf-8"))["packs"]] if (DATA / "packs.json").exists() else []
-    rank = lambda p: order.index(p.stem) if p.stem in order else len(order)
-    for pack in sorted(DATA.glob("*.json"), key=lambda p: (rank(p), p.stem)):
+    meta = json.loads((DATA / "packs.json").read_text(encoding="utf-8"))["packs"] if (DATA / "packs.json").exists() else []
+    order = [ROOT / m["file"] for m in meta]
+    rank = lambda p: order.index(p) if p in order else len(order)
+    files = [*DATA.glob("*.json"), *(DATA / "deep").glob("*.json")]
+    for pack in sorted(files, key=lambda p: (rank(p), p.stem)):
         doc = json.loads(pack.read_text(encoding="utf-8"))
         if not isinstance(doc, dict) or "flags" not in doc:
             continue
         hand_made = pack.stem == "pnw"                  # its 'named' marks were set by hand
         changed = False
         for f in doc["flags"]:
-            dest = ROOT / f["img"]
-            if dest.exists():
+            remote = f["img"].startswith("http")       # the deeper level: shown straight from Commons
+            dest = None if remote else ROOT / f["img"]
+            if (remote and f["id"] in named) or (dest and dest.exists()):
                 continue
             host = urllib.parse.urlsplit(f["src"]).hostname or ""
             if time.monotonic() > DEADLINE or fails.get(host, 0) >= 8:
@@ -140,6 +143,12 @@ def main() -> int:
                     changed = True
                 if hits:
                     print(f"  {f['name']}: name on the flag ({', '.join(hits)})")
+            if remote:
+                if not f.get("ready"):
+                    f["ready"] = True; changed = True
+                got += 1
+                time.sleep(0.2)
+                continue
             small = im if im.width <= 480 else im.resize((480, round(im.height * 480 / im.width)), Image.LANCZOS)
             dest.parent.mkdir(parents=True, exist_ok=True)
             small.save(dest, "WEBP", quality=86, method=6)
