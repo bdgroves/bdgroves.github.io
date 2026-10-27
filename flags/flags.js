@@ -205,6 +205,30 @@ function packBounds() {
   // the middle 96% of the set's places, so one far-flung island doesn't zoom the map out to the whole world
   return [[q(lats, 0.02), q(lons, 0.02)], [q(lats, 0.98), q(lons, 0.98)]];
 }
+// The pin map is drawn from Natural Earth borders (public domain), so it carries no place names at all.
+const TOPO_JS = 'https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js';
+const WORLD_TOPO = 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-50m.json';
+const US_TOPO = 'https://cdn.jsdelivr.net/npm/us-atlas@3.0.1/states-10m.json';
+let BORDERS = null;
+const loadScript = src => new Promise((res, rej) => { const el = document.createElement('script'); el.src = src; el.onload = res; el.onerror = rej; document.head.appendChild(el); });
+function borders() {
+  BORDERS = BORDERS || (async () => {
+    if (!window.topojson) await loadScript(TOPO_JS);
+    const [w, u] = await Promise.all([loadFile(WORLD_TOPO), loadFile(US_TOPO)]);
+    return { land: topojson.feature(w, w.objects.countries), states: topojson.mesh(u, u.objects.states, (a, b) => a !== b) };
+  })().catch(e => { BORDERS = null; throw e; });
+  return BORDERS;
+}
+async function drawBorders(m) {
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const land = dark ? '#2e2a22' : '#f7f2e8', line = dark ? '#5d5548' : '#b3a998';
+  try {
+    const b = await borders();
+    if (S.pinmap !== m) return;                 // the round moved on while the borders loaded
+    L.geoJSON(b.land, { style: { color: line, weight: 0.8, fillColor: land, fillOpacity: 1 }, interactive: false }).addTo(m);
+    L.geoJSON(b.states, { style: { color: line, weight: 0.6, dashArray: '3 3', fill: false }, interactive: false }).addTo(m);
+  } catch (e) { $('#pinmap').insertAdjacentHTML('beforeend', '<div class="maperr">The map\'s borders didn\'t load; you can still pin.</div>'); }
+}
 function renderPin() {
   const r = S.round, f = r.items[r.i];
   r.answered = false; r.guess = null;
@@ -217,13 +241,10 @@ function renderPin() {
   </div>`;
   if (S.pinmap) { S.pinmap.remove(); S.pinmap = null; }
   if (!window.L) { $('#pinmap').innerHTML = '<div class="noimg">The map didn\'t load. Check your connection.</div>'; return; }
-  const m = L.map('pinmap', { worldCopyJump: true, minZoom: 1 });
-  // Esri's canvas basemap: borders and coastlines, no place names (dark version in dark mode)
-  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-  L.tileLayer(`https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_${dark ? 'Dark' : 'Light'}_Gray_Base/MapServer/tile/{z}/{y}/{x}`, {
-    maxZoom: 16, attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors',
-  }).addTo(m);
-  if (S.packId === 'world') m.setView([20, 10], 2); else m.fitBounds(packBounds(), { padding: [20, 20] });
+  const m = L.map('pinmap', { minZoom: 1, zoomSnap: 0.5, preferCanvas: true, maxBounds: [[-85, -200], [85, 200]] });
+  m.attributionControl.addAttribution('Borders: <a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener">Natural Earth</a>');
+  drawBorders(m);
+  if (S.packId === 'world') m.setView([20, 10], 1.5); else m.fitBounds(packBounds(), { padding: [20, 20] });
   let mark = null;
   m.on('click', e => {
     if (r.answered) return;
