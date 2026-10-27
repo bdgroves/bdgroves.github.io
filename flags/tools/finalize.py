@@ -45,12 +45,20 @@ def fit_for_daily(cat: str, f: dict) -> bool:
 
 
 def main() -> int:
+    overrides = json.loads((DATA / "overrides.json").read_text(encoding="utf-8")) if (DATA / "overrides.json").exists() else {}
     packs = {}
     for p in sorted(DATA.glob("*.json")):
         doc = json.loads(p.read_text(encoding="utf-8"))
         if isinstance(doc, dict) and "flags" in doc and "id" in doc:
             changed = False
             for f in doc["flags"]:
+                n = overrides.get(f["id"])            # Brooks's (or Claude's) call beats the text check
+                if isinstance(n, bool) and n != bool(f.get("named")):
+                    if n:
+                        f["named"] = True
+                    else:
+                        f.pop("named", None)
+                    changed = True
                 ready = (ROOT / f["img"]).exists()
                 if bool(f.get("ready")) != ready:
                     f["ready"] = ready; changed = True
