@@ -26,7 +26,7 @@ AHEAD = 21
 CATS = {
     "country": ["world"],
     "state": ["us-states", "canada", "mexico"],
-    "region": [f"regions-{c}" for c in ("africa", "americas", "europe", "asia", "oceania")],
+    "region": ["territories"] + [f"regions-{c}" for c in ("africa", "americas", "europe", "asia", "oceania")],
     "city": ["us-cities"] + [f"cities-{c}" for c in ("africa", "americas", "europe", "asia", "oceania")],
     "northwest": ["pnw"],
 }

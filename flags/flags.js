@@ -5,12 +5,12 @@
 
 const ROUND = 10;
 const KIND = { country: 'Country', state: 'US state', province: 'Canadian province', territory: 'Canadian territory',
-  mxstate: 'Mexican state', region: 'Region', city: 'City', county: 'County' };
-const ZOOM = { country: 4, state: 5, province: 4, territory: 3, mxstate: 6, region: 6, county: 8, city: 9 };
+  mxstate: 'Mexican state', dependency: 'Territory', region: 'Region', city: 'City', county: 'County' };
+const ZOOM = { country: 4, state: 5, province: 4, territory: 3, mxstate: 6, dependency: 6, region: 6, county: 8, city: 9 };
 const CATS = {
   country: { packs: ['world'], label: 'a country' },
   state: { packs: ['us-states', 'canada', 'mexico'], label: 'a US state, Canadian province or Mexican state' },
-  region: { packs: ['regions-africa', 'regions-americas', 'regions-europe', 'regions-asia', 'regions-oceania'], label: 'a state, province or region somewhere in the world' },
+  region: { packs: ['territories', 'regions-africa', 'regions-americas', 'regions-europe', 'regions-asia', 'regions-oceania'], label: 'a state, province or region somewhere in the world' },
   city: { packs: ['us-cities', 'cities-africa', 'cities-americas', 'cities-europe', 'cities-asia', 'cities-oceania'], label: 'a city' },
   northwest: { packs: ['pnw'], label: 'a place in the Pacific Northwest' },
 };

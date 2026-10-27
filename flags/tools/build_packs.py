@@ -30,7 +30,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent          # flags/
 DATA = ROOT / "data"
-BUILD = 2                    # bump when the queries or the pack rules change, so the next run rebuilds
+BUILD = 3                    # bump when the queries or the pack rules change, so the next run rebuilds
 UA = {"User-Agent": "FlagAtlas/1.0 (https://brooksgroves.com/flags/; https://github.com/bdgroves) python-urllib",
       "Accept": "application/json"}
 
@@ -46,8 +46,9 @@ PACKS = [
     ("canada", "Canada", "North America", "Provinces and territories"),
     ("mexico", "Mexico", "North America", "The states of Mexico"),
     ("us-cities", "US cities", "North America", "American cities that fly their own flag"),
+    ("territories", "Territories and home nations", "Regions of the world", "Scotland, Greenland, Puerto Rico, Bermuda…"),
     *[(f"regions-{c}", f"Regions: {CONT_NAME[c]}", "Regions of the world", "States, provinces and regions") for c in CONT_ORDER],
-    *[(f"cities-{c}", f"Cities: {CONT_NAME[c]}", "Big cities", "Cities of 200,000 people or more") for c in CONT_ORDER],
+    *[(f"cities-{c}", f"Cities: {CONT_NAME[c]}", "Big cities", "Cities of 100,000 people or more") for c in CONT_ORDER],
 ]
 
 COMMON = """OPTIONAL { ?item wdt:P625 ?coord } OPTIONAL { ?item wdt:P1082 ?pop }
@@ -59,11 +60,17 @@ QUERIES = {
  ?item wdt:P31 wd:Q3624078 ; wdt:P41 ?flag . FILTER NOT EXISTS {{ ?item wdt:P576 [] }}
  OPTIONAL {{ ?item wdt:P30 ?cont }} {COMMON} }}""",
     "regions": f"""SELECT ?item ?itemLabel ?itemDescription ?flag ?coord ?pop ?country ?countryLabel ?cont ?type ?flagArticle ?article WHERE {{
- ?item wdt:P31 ?type . ?type wdt:P279 wd:Q10864048 . ?item wdt:P41 ?flag ; wdt:P17 ?country .
+ ?item wdt:P31 ?type . ?type wdt:P279/wdt:P279? wd:Q10864048 . ?item wdt:P41 ?flag ; wdt:P17 ?country .
  FILTER NOT EXISTS {{ ?item wdt:P576 [] }} FILTER NOT EXISTS {{ ?country wdt:P576 [] }} OPTIONAL {{ ?country wdt:P30 ?cont }} {COMMON} }}""",
     "cities": f"""SELECT ?item ?itemLabel ?itemDescription ?flag ?coord ?pop ?country ?countryLabel ?cont ?flagArticle ?article WHERE {{
- ?item wdt:P31/wdt:P279? wd:Q515 ; wdt:P41 ?flag ; wdt:P1082 ?p0 ; wdt:P17 ?country . FILTER(?p0 >= 200000)
+ ?item wdt:P31/wdt:P279? wd:Q515 ; wdt:P41 ?flag ; wdt:P1082 ?p0 ; wdt:P17 ?country . FILTER(?p0 >= 100000)
  FILTER NOT EXISTS {{ ?item wdt:P576 [] }} FILTER NOT EXISTS {{ ?country wdt:P576 [] }} OPTIONAL {{ ?country wdt:P30 ?cont }} {COMMON} }}""",
+    "territories": f"""SELECT ?item ?itemLabel ?itemDescription ?flag ?coord ?pop ?country ?countryLabel ?cont ?flagArticle ?article WHERE {{
+ VALUES ?t {{ wd:Q161243 wd:Q783733 wd:Q3336843 wd:Q66724388 wd:Q46395 }}
+ ?item wdt:P31 ?t ; wdt:P41 ?flag . FILTER NOT EXISTS {{ ?item wdt:P576 [] }}
+ OPTIONAL {{ ?item wdt:P17 ?country . FILTER NOT EXISTS {{ ?country wdt:P576 [] }} OPTIONAL {{ ?country wdt:P30 ?cont }} }}
+ OPTIONAL {{ ?item wdt:P30 ?cont }}
+ FILTER NOT EXISTS {{ ?item wdt:P17 ?gone . ?gone wdt:P576 [] }} {COMMON} }}""",
     "uscities": f"""SELECT ?item ?itemLabel ?itemDescription ?flag ?coord ?pop ?state ?stateLabel ?flagArticle ?article WHERE {{
  ?item wdt:P31/wdt:P279? wd:Q515 ; wdt:P17 wd:Q30 ; wdt:P41 ?flag .
  FILTER NOT EXISTS {{ ?item wdt:P576 [] }}
@@ -193,8 +200,9 @@ def main() -> int:
     countries = gather(sparql(QUERIES["countries"]))
     regions = gather(sparql(QUERIES["regions"]), extra=("country", "type"))
     cities = gather(sparql(QUERIES["cities"]), extra=("country",))
+    territories = gather(sparql(QUERIES["territories"]), extra=("country",))
     uscities = gather(sparql(QUERIES["uscities"]), extra=("state",))
-    print(f"  {len(countries)} countries, {len(regions)} regions, {len(cities)} cities, {len(uscities)} US cities")
+    print(f"  {len(countries)} countries, {len(regions)} regions, {len(territories)} territories, {len(cities)} cities, {len(uscities)} US cities")
 
     named = json.loads((DATA / "named.json").read_text(encoding="utf-8")) if (DATA / "named.json").exists() else {}
     overrides = json.loads((DATA / "overrides.json").read_text(encoding="utf-8")) if (DATA / "overrides.json").exists() else {}
@@ -216,6 +224,12 @@ def main() -> int:
         c = continent(o["conts"])
         if c:
             add("world", o, "country", CONT_NAME[c])
+    country_files = {f["file"] for f in packs["world"]}
+    for o in territories.values():
+        if o["flags"] & country_files:
+            continue                                  # "Denmark" the constituent country flies Denmark's flag
+        cs = sorted(o["country"])
+        add("territories", o, "dependency", cs[0][1] if cs else "")
     for o in regions.values():
         cs = sorted(o["country"])
         if not cs:
