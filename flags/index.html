@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Flag Atlas: guess the flag, find the place</title>
+<meta name="description" content="A flag guessing game that goes past countries: states, provinces, cities and counties. Name the flag, then see where it flies and the story behind its design. Starting with the Pacific Northwest.">
+<meta name="theme-color" content="#f5f0e8">
+<meta property="og:title" content="Flag Atlas">
+<meta property="og:description" content="Guess the flag, find the place: states, provinces, cities and counties, starting with the Pacific Northwest.">
+<meta property="og:url" content="https://brooksgroves.com/flags/">
+<link rel="canonical" href="https://brooksgroves.com/flags/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏳️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="flags.css">
+<script>
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && dark)) document.documentElement.setAttribute('data-theme','dark');
+    } catch(e) {}
+  })();
+</script>
+</head>
+<body>
+<div class="topline"></div>
+<div class="sitebar"><div class="masthead-inner">
+  <a href="https://brooksgroves.com/" class="site-name">Brooks Groves</a>
+  <nav class="sitenav" aria-label="brooksgroves.com">
+    <a href="https://brooksgroves.com/games.html">Games</a>
+    <a href="https://brooksgroves.com/">Home</a>
+    <button id="theme-toggle" class="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark mode">&#9680;</button>
+  </nav>
+</div></div>
+
+<div class="console">
+  <div class="gamehead">
+    <div>
+      <h1>Flag Atlas</h1>
+      <div class="sub">Guess the flag &middot; find the place &middot; learn the story</div>
+    </div>
+    <div class="badge" id="badge">Pacific Northwest</div>
+  </div>
+  <div class="statusbar" id="statusbar" aria-live="polite"></div>
+  <div class="navbar" role="tablist" aria-label="Game">
+    <button class="navbtn tab" role="tab" data-view="play" aria-selected="true">&#127937; Play</button>
+    <button class="navbtn tab" role="tab" data-view="browse" aria-selected="false">&#128218; All flags</button>
+    <button class="navbtn narrow" id="aboutBtn" aria-label="How to play and where the flags come from">?</button>
+  </div>
+  <main id="main"><div class="empty"><b>&#127937;</b>Raising the flags&hellip;</div></main>
+  <div class="navbar bottom">
+    <a class="navbtn" href="https://github.com/bdgroves/bdgroves.github.io/tree/main/flags">Code</a>
+    <a class="navbtn navhome" href="https://brooksgroves.com/games.html">&#127968; Games</a>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; Flags from Wikimedia Commons, places from Wikidata</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://brooksgroves.com/games.html">Games</a>
+      <a href="https://brooksgroves.com/">Home</a>
+    </div>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Flag details">
+  <button class="drawer-x" id="drawerX" aria-label="Close">&#10005;</button>
+  <div id="drawerInner"></div>
+</div>
+<noscript><p style="padding:20px">Flag Atlas needs JavaScript to run.</p></noscript>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="flags.js"></script>
+</body>
+</html>

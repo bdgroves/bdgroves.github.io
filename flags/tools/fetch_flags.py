@@ -14,6 +14,7 @@ import io
 import json
 import sys
 import time
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -26,6 +27,7 @@ UA = {"User-Agent": "FlagAtlas/1.0 (https://brooksgroves.com/flags/; https://git
 
 def fetch(url: str, dest: Path) -> bool:
     try:
+        url = urllib.parse.quote(url, safe=":/?=&%")          # file names can hold dashes like "2021–present"
         with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30) as r:
             raw = r.read(10_000_000)
         im = Image.open(io.BytesIO(raw))
