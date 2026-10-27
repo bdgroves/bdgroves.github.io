@@ -25,7 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_packs import DATA, commons_info, filename, gather, pick_flag, qid, sparql, story, tidy_about  # noqa: E402
 
 DEEP = DATA / "deep"
-VERSION = 2                 # bump when the rules below change
+VERSION = 3                 # bump when the rules below change
 MIN_FLAGS = 5               # a country needs at least this many to get its own set
 SECOND_LEVEL = "Q12357832"  # second-level administrative division
 
@@ -64,13 +64,16 @@ def short_type(label: str) -> str:
 
 
 def plural(t: str) -> str:
-    """'municipality' -> 'municipalities', 'city with powiat rights' -> 'cities with powiat rights'."""
-    first, _, rest = t.partition(" ")
-    if first.endswith("y") and first[-2:-1] not in "aeiou":
-        first = first[:-1] + "ies"
-    elif not first.endswith("s"):
-        first += "s"
-    return (first + (" " + rest if rest else "")).lower()
+    """'municipality' -> 'municipalities'; 'metropolitan city' -> 'metropolitan cities';
+    'city with powiat rights' -> 'cities with powiat rights' (the noun before 'with'/'of' takes the plural)."""
+    def one(w: str) -> str:
+        if w.endswith("y") and w[-2:-1] not in "aeiou":
+            return w[:-1] + "ies"
+        return w if w.endswith("s") else w + "s"
+    words = t.lower().split()
+    cut = next((i for i, w in enumerate(words) if w in ("with", "of", "in")), len(words))
+    words[cut - 1] = one(words[cut - 1])
+    return " ".join(words)
 
 
 def list_sets(meta: list[dict]) -> None:
