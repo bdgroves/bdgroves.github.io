@@ -30,8 +30,11 @@ const loadFile = url => (cache[url] = cache[url] || getJSON(url));
 
 const S = {
   view: store.get('fa_view', 'today'), packs: FALLBACK_PACKS, pack: null, packId: store.get('fa_pack', 'world'),
-  round: null, seen: store.get('fa_seen', {}), filter: 'all', q: '', shown: 120, map: null,
+  round: null, seen: store.get('fa_seen', {}), filter: 'all', q: '', shown: 120, map: null, pinmap: null,
+  mode: store.get('fa_mode', 'name'),          // 'name': four choices · 'pin': click where it flies
 };
+// Pin it: points fall off with distance; a miss of SCALE miles keeps about a third of the 1,000
+const PIN_SCALE = { country: 500, state: 250, province: 350, territory: 450, mxstate: 150, dependency: 400, region: 220, county: 50, city: 120 };
 
 /* ---------- small helpers ---------- */
 const isTop = f => ['state', 'province', 'territory', 'mxstate', 'country'].includes(f.kind);
@@ -50,9 +53,9 @@ function credit(f) {
   const c = f.credit || {}, lic = c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.license)}</a>` : esc(c.license || '');
   return `Flag image: ${c.artist ? esc(c.artist) + ', ' : ''}${lic}, via <a href="${esc(c.page)}" target="_blank" rel="noopener">Wikimedia Commons</a>.${f.story && !f.note ? ` Story: from <a href="${esc(f.story_url)}" target="_blank" rel="noopener">Wikipedia</a> (<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>).` : ''} Place facts: Wikidata.`;
 }
-function revealCard(f, verdict) {
+function revealCard(f, verdict, noMap) {
   const story = f.note || f.story;
-  return `<div class="reveal">
+  return `<div class="reveal${noMap ? ' solo' : ''}">
     <div class="txt">
       ${verdict ? `<div class="verdict ${verdict.ok ? 'right' : 'wrong'}">${esc(verdict.text)}</div>` : ''}
       <div class="place">${esc(f.name)}</div>
@@ -61,7 +64,7 @@ function revealCard(f, verdict) {
       ${f.wiki ? `<a class="more" href="${esc(f.wiki)}" target="_blank" rel="noopener">More about ${esc(f.name)} →</a>` : ''}
       <p class="credit">${credit(f)}</p>
     </div>
-    <div class="minimap" id="minimap" aria-label="Map showing ${esc(f.name)}"></div>
+    ${noMap ? '' : `<div class="minimap" id="minimap" aria-label="Map showing ${esc(f.name)}"></div>`}
   </div>`;
 }
 function drawMap(f, extra = []) {
@@ -83,8 +86,10 @@ function drawMap(f, extra = []) {
 }
 
 /* ---------- status bar ---------- */
+const bestKey = () => (S.mode === 'pin' ? 'fa_bestpin_' : 'fa_best_') + S.packId;
+const bestText = b => S.mode === 'pin' ? `${b.toLocaleString()} pts` : `${b}/${ROUND}`;
 function status() {
-  const p = S.pack, r = S.round, best = store.get('fa_best_' + S.packId, null);
+  const p = S.pack, r = S.round, best = store.get(bestKey(), null);
   if (S.view === 'today') {
     const st = store.get('fa_daily_stats', { played: 0, won: 0, streak: 0, best: 0 });
     $('#statusbar').innerHTML = `<span>Played <b>${st.played}</b></span><span>Solved <b>${st.won}</b></span><span>Streak <b>${st.streak}</b></span><span>Best streak <b>${st.best}</b></span>`;
@@ -95,8 +100,8 @@ function status() {
   const pl = p ? playable(p) : [];
   const known = pl.filter(f => (S.seen[f.id] || {}).r).length;
   $('#statusbar').innerHTML = r && !r.over
-    ? `<span>Flag <b>${Math.min(r.i + 1, r.items.length)}/${r.items.length}</b></span><span>Score <b>${r.score}</b></span><span>Streak <b>${r.streak}</b></span>${best !== null ? `<span>Best <b>${best}/${ROUND}</b></span>` : ''}`
-    : `<span>Flags you know <b>${known}/${pl.length}</b></span>${best !== null ? `<span>Best round <b>${best}/${ROUND}</b></span>` : ''}`;
+    ? `<span>Flag <b>${Math.min(r.i + 1, r.items.length)}/${r.items.length}</b></span><span>Score <b>${r.score.toLocaleString()}</b></span>${r.mode === 'pin' ? '' : `<span>Streak <b>${r.streak}</b></span>`}${best !== null ? `<span>Best <b>${bestText(best)}</b></span>` : ''}`
+    : `<span>Flags you know <b>${known}/${pl.length}</b></span>${best !== null ? `<span>Best round <b>${bestText(best)}</b></span>` : ''}`;
 }
 
 /* ---------- play ---------- */
@@ -106,18 +111,25 @@ function packPicker() {
     `<button class="pack" data-pack="${k.id}" aria-pressed="${k.id === S.packId}"><b>${esc(k.name)}</b><small>${k.count ? k.count.toLocaleString() + ' flags · ' : ''}${esc(k.blurb)}</small></button>`).join('')}</div></div>`).join('');
 }
 function renderStart() {
-  const p = S.pack, best = store.get('fa_best_' + S.packId, null), pl = playable(p);
+  const p = S.pack, best = store.get(bestKey(), null), pl = playable(p);
   const peek = shuffle(pl).slice(0, 5);
   $('#main').innerHTML = `<div class="start">
-    <h2>Whose flag is it?</h2>
-    <p>You'll see ${ROUND} flags. Pick the place that flies each one, then see where it is on the map and the story behind the design. Pick a set below: countries are the warm-up; cities and regions are where it gets good.</p>
+    <h2>${S.mode === 'pin' ? 'Where does it fly?' : 'Whose flag is it?'}</h2>
+    <p>${S.mode === 'pin'
+      ? `You'll see ${ROUND} flags. Click the map where you think each one flies; the closer you land, the more points, up to 1,000 a flag. The map has no names on it, so it's you and your geography.`
+      : `You'll see ${ROUND} flags. Pick the place that flies each one, then see where it is on the map and the story behind the design.`} Pick a set below: countries are the warm-up; cities and regions are where it gets good.</p>
     <div class="peek" aria-hidden="true">${peek.map((f, i) => `<img src="${esc(f.img)}" alt="" style="--t:${[-4, 3, -2, 4, -3][i]}deg" onerror="this.remove()">`).join('')}</div>
+    <div class="modes" role="group" aria-label="How to play">
+      <button class="mode" data-mode="name" aria-pressed="${S.mode === 'name'}">🔤 Name it<small>Four choices</small></button>
+      <button class="mode" data-mode="pin" aria-pressed="${S.mode === 'pin'}">📍 Pin it<small>Click where it flies</small></button>
+    </div>
     ${packPicker()}
-    ${pl.length >= 4 ? `<button class="btn" id="go">Start a round: ${esc(p.name)}</button>` : `<p class="wait">The robot is still fetching this set's pictures. Try another set, or check back in an hour.</p>`}
-    ${best !== null ? `<div class="best">Your best here: ${best} of ${ROUND}</div>` : ''}
+    ${pl.length >= 4 ? `<button class="btn" id="go">${S.mode === 'pin' ? 'Pin' : 'Name'} ${ROUND}: ${esc(p.name)}</button>` : `<p class="wait">The robot is still fetching this set's pictures. Try another set, or check back in an hour.</p>`}
+    ${best !== null ? `<div class="best">Your best here: ${bestText(best)}</div>` : ''}
   </div>`;
   if ($('#go')) $('#go').onclick = startRound;
   $('#main').querySelectorAll('.pack').forEach(b => b.onclick = async () => { await loadPack(b.dataset.pack); renderStart(); });
+  $('#main').querySelectorAll('.mode').forEach(b => b.onclick = () => { S.mode = b.dataset.mode; store.set('fa_mode', S.mode); renderStart(); });
   status();
 }
 
@@ -125,7 +137,7 @@ function startRound() {
   const flags = playable(S.pack);   // a flag with its own name on it would be a giveaway
   const fresh = shuffle(flags.filter(f => !(S.seen[f.id] || {}).r)), known = shuffle(flags.filter(f => (S.seen[f.id] || {}).r));
   const items = [...fresh, ...known].slice(0, ROUND);
-  S.round = { items: shuffle(items), i: 0, score: 0, streak: 0, answers: [], over: false };
+  S.round = { items: shuffle(items), i: 0, score: 0, streak: 0, answers: [], over: false, mode: S.mode };
   renderQuestion();
 }
 
@@ -139,7 +151,15 @@ function choicesFor(f) {
   return shuffle([f, ...picks]);
 }
 
+function nextFlag(last) {
+  const r = S.round;
+  if (last) return finish();
+  r.i++; renderQuestion(); scrollTo({ top: $('.console').offsetTop - 10, behavior: 'smooth' });
+}
+const markSeen = (f, ok) => { const s = S.seen[f.id] || { r: 0, w: 0 }; ok ? s.r++ : s.w++; S.seen[f.id] = s; store.set('fa_seen', S.seen); };
+
 function renderQuestion() {
+  if (S.round.mode === 'pin') return renderPin();
   const r = S.round, f = r.items[r.i];
   r.opts = choicesFor(f); r.answered = false;
   $('#main').innerHTML = `<div class="q">
@@ -160,7 +180,7 @@ function answer(k) {
   const f = r.items[r.i], pick = r.opts[k], ok = pick.id === f.id;
   r.answers.push({ id: f.id, ok });
   if (ok) { r.score++; r.streak++; } else r.streak = 0;
-  const s = S.seen[f.id] || { r: 0, w: 0 }; ok ? s.r++ : s.w++; S.seen[f.id] = s; store.set('fa_seen', S.seen);
+  markSeen(f, ok);
   $('#main').querySelectorAll('.choice').forEach((b, i) => {
     b.disabled = true;
     if (r.opts[i].id === f.id) b.classList.add('right');
@@ -172,24 +192,90 @@ function answer(k) {
   $('#after').innerHTML = revealCard(f, { ok, text: ok ? '✓ Right' : `✗ Not quite: you picked ${pick.name} (${sub(pick)})` }) +
     `<div class="next-row"><button class="btn" id="next">${last ? 'See how you did' : 'Next flag →'}</button></div>`;
   drawMap(f);
-  $('#next').onclick = () => { if (last) finish(); else { r.i++; renderQuestion(); scrollTo({ top: $('.console').offsetTop - 10, behavior: 'smooth' }); } };
+  $('#next').onclick = () => nextFlag(last);
+  $('#next').focus({ preventScroll: true });
+  status();
+}
+
+/* ---------- Pin it: click where the flag flies ---------- */
+function packBounds() {
+  const pts = playable(S.pack).map(f => [f.lat, f.lon]);
+  const lats = pts.map(p => p[0]).sort((a, b) => a - b), lons = pts.map(p => p[1]).sort((a, b) => a - b);
+  const q = (a, x) => a[Math.min(a.length - 1, Math.max(0, Math.round(x * (a.length - 1))))];
+  // the middle 96% of the set's places, so one far-flung island doesn't zoom the map out to the whole world
+  return [[q(lats, 0.02), q(lons, 0.02)], [q(lats, 0.98), q(lons, 0.98)]];
+}
+function renderPin() {
+  const r = S.round, f = r.items[r.i];
+  r.answered = false; r.guess = null;
+  $('#main').innerHTML = `<div class="q">
+    <div class="q-label">Flag ${r.i + 1} of ${r.items.length} · where does this flag fly? Click the map, then lock it in.</div>
+    <div class="flagframe small">${flagImg(f, 'A flag to place on the map')}</div>
+    <div class="pinmap" id="pinmap" aria-label="Map: click where this flag flies"></div>
+    <div class="next-row"><button class="btn" id="lock" disabled>Lock it in</button></div>
+    <div id="after"></div>
+  </div>`;
+  if (S.pinmap) { S.pinmap.remove(); S.pinmap = null; }
+  if (!window.L) { $('#pinmap').innerHTML = '<div class="noimg">The map didn\'t load. Check your connection.</div>'; return; }
+  const m = L.map('pinmap', { worldCopyJump: true, minZoom: 1 });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
+    maxZoom: 18, subdomains: 'abcd',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  }).addTo(m);
+  if (S.packId === 'world') m.setView([20, 10], 2); else m.fitBounds(packBounds(), { padding: [20, 20] });
+  let mark = null;
+  m.on('click', e => {
+    if (r.answered) return;
+    const ll = e.latlng.wrap();
+    r.guess = { lat: ll.lat, lon: ll.lng };
+    if (mark) mark.setLatLng(e.latlng); else mark = L.circleMarker(e.latlng, { radius: 7, color: '#2a4a6b', weight: 3, fillColor: '#6fa0cc', fillOpacity: 0.9 }).addTo(m);
+    $('#lock').disabled = false;
+  });
+  S.pinmap = m;
+  setTimeout(() => m.invalidateSize(), 60);
+  $('#lock').onclick = () => lockPin(mark);
+  status();
+}
+function lockPin(mark) {
+  const r = S.round; if (r.answered || !r.guess) return;
+  r.answered = true;
+  const f = r.items[r.i], mi = Math.round(miles(r.guess, f));
+  const pts = Math.round(1000 * Math.exp(-mi / (PIN_SCALE[f.kind] || 200)));
+  r.score += pts; r.answers.push({ id: f.id, ok: pts >= 500, pts, mi });
+  markSeen(f, pts >= 500);
+  const m = S.pinmap, here = mark.getLatLng();
+  // draw the answer on whichever copy of the world is nearest the guess
+  const lon = f.lon + 360 * Math.round((here.lng - f.lon) / 360);
+  L.polyline([here, [f.lat, lon]], { color: '#8b3a2a', weight: 2, dashArray: '6 6' }).addTo(m);
+  L.circleMarker([f.lat, lon], { radius: 9, color: '#8b3a2a', weight: 3, fillColor: '#c8922a', fillOpacity: 0.95 }).bindTooltip(f.name, { permanent: true, direction: 'top', offset: [0, -8] }).addTo(m);
+  m.fitBounds([here, [f.lat, lon]], { padding: [50, 50], maxZoom: ZOOM[f.kind] || 6 });
+  const img = $('.flagframe img'); if (img) img.alt = 'Flag of ' + f.name;
+  const last = r.i === r.items.length - 1;
+  const words = mi < 1 ? 'Dead on!' : pts >= 900 ? 'Bullseye territory.' : pts >= 600 ? 'Close!' : pts >= 250 ? 'In the neighborhood.' : 'A long way off.';
+  $('#lock').closest('.next-row').remove();
+  $('#after').innerHTML = revealCard(f, { ok: pts >= 500, text: `📍 ${mi.toLocaleString()} mi off · +${pts.toLocaleString()} points · ${words}` }, true) +
+    `<div class="next-row"><button class="btn" id="next">${last ? 'See how you did' : 'Next flag →'}</button></div>`;
+  $('#next').onclick = () => nextFlag(last);
   $('#next').focus({ preventScroll: true });
   status();
 }
 
 function finish() {
   const r = S.round; r.over = true;
-  const best = store.get('fa_best_' + S.packId, null);
+  const pin = r.mode === 'pin', max = pin ? ROUND * 1000 : ROUND;
+  const best = store.get(bestKey(), null);
   const newBest = best === null || r.score > best;
-  if (newBest) store.set('fa_best_' + S.packId, r.score);
-  const line = r.score === ROUND ? 'A perfect round. You could design these.' : r.score >= 8 ? 'You really know your flags.' : r.score >= 5 ? 'Not bad at all, and now you know a few more.' : 'These are hard. Every round, you know a few more.';
+  if (newBest) store.set(bestKey(), r.score);
+  const frac = r.score / max;
+  const line = frac === 1 ? 'A perfect round. You could design these.' : frac >= 0.8 ? 'You really know your flags.' : frac >= 0.5 ? 'Not bad at all, and now you know a few more.' : 'These are hard. Every round, you know a few more.';
   $('#main').innerHTML = `<div class="done">
-    <div class="big">${r.score} / ${r.items.length}</div>
+    <div class="big">${pin ? `${r.score.toLocaleString()} <small>points</small>` : `${r.score} / ${r.items.length}`}</div>
     <div class="verdict-line">${line}${newBest && best !== null ? ' New best!' : ''}</div>
-    <div class="recap">${r.items.map((f, i) => `<button class="${r.answers[i].ok ? 'r' : 'w'}" data-id="${f.id}">${flagImg(f, 'Flag of ' + f.name)}<span>${esc(f.name)}</span><small>${r.answers[i].ok ? '✓ ' : '✗ '}${esc(f.region)}</small></button>`).join('')}</div>
+    <div class="recap">${r.items.map((f, i) => { const a = r.answers[i]; return `<button class="${a.ok ? 'r' : 'w'}" data-id="${f.id}">${flagImg(f, 'Flag of ' + f.name)}<span>${esc(f.name)}</span><small>${pin ? `${a.mi.toLocaleString()} mi · +${a.pts}` : `${a.ok ? '✓ ' : '✗ '}${esc(f.region)}`}</small></button>`; }).join('')}</div>
     <button class="btn" id="again">Another round</button>
     <button class="btn ghost" id="toAll">See all ${S.pack.flags.length.toLocaleString()} flags</button>
   </div>`;
+  if (S.pinmap) { S.pinmap.remove(); S.pinmap = null; }
   $('#again').onclick = startRound;
   $('#toAll').onclick = () => show('browse');
   $('#main').querySelectorAll('.recap button').forEach(b => b.onclick = () => openFlag(b.dataset.id));
@@ -372,6 +458,7 @@ async function show(view) {
   S.view = view; store.set('fa_view', view);
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.view === view));
   if (S.map) { S.map.remove(); S.map = null; }
+  if (S.pinmap) { S.pinmap.remove(); S.pinmap = null; }
   if (view === 'today') return renderToday();
   if (view === 'browse') { S.round = null; renderBrowse(); }
   else if (S.round && !S.round.over) renderQuestion();
@@ -387,7 +474,8 @@ async function loadPack(id) {
 document.addEventListener('keydown', e => {
   if ($('#drawer').classList.contains('open')) { if (e.key === 'Escape') closeDrawer(); return; }
   if (S.view !== 'play' || !S.round) return;
-  if (!S.round.answered && /^[1-4]$/.test(e.key)) { const b = $(`.choice[data-k="${+e.key - 1}"]`); if (b) b.click(); }
+  if (!S.round.answered && S.round.mode === 'pin') { if (e.key === 'Enter' && $('#lock') && !$('#lock').disabled) $('#lock').click(); }
+  else if (!S.round.answered && /^[1-4]$/.test(e.key)) { const b = $(`.choice[data-k="${+e.key - 1}"]`); if (b) b.click(); }
   else if (S.round.answered && e.key === 'Enter' && $('#next') && document.activeElement !== $('#next')) $('#next').click();
 });
 
