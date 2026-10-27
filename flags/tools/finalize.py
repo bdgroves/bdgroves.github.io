@@ -37,10 +37,11 @@ def fit_for_daily(cat: str, f: dict) -> bool:
     """Keep the daily flag findable: well-known regions and cities, every country, state and Northwest flag."""
     if not f.get("ready") or f.get("named"):
         return False
-    if cat == "region":
-        return bool(f.get("story")) or (f.get("pop") or 0) >= 2_000_000
-    if cat == "city":
-        return bool(f.get("story") or f.get("note")) or (f.get("pop") or 0) >= 500_000
+    pop = f.get("pop") or 0
+    if cat == "region":                          # big, well-known regions: Bavaria, Queensland, Sichuan…
+        return pop >= 4_000_000 or (bool(f.get("story")) and pop >= 1_500_000)
+    if cat == "city":                            # big cities, or ones with a famous flag
+        return pop >= 1_000_000 or (bool(f.get("story") or f.get("note")) and pop >= 400_000)
     return True
 
 
@@ -87,6 +88,14 @@ def main() -> int:
     for v in days.values():                     # a rebuild can move a place to another pack: keep the day, fix the address
         if v["id"] in home and home[v["id"]] != v["pack"]:
             v["pack"] = home[v["id"]]
+    # days not here yet can still change: drop any whose flag no longer fits (named since, or rules tightened)
+    flag_of = {(pid, f["id"]): f for pid, doc in packs.items() for f in doc["flags"]}
+    today = dt.date.today()
+    for k in [k for k, v in days.items() if dt.date.fromisoformat(k) > today]:
+        f = flag_of.get((days[k]["pack"], days[k]["id"]))
+        if not f or not fit_for_daily(days[k]["cat"], f):
+            days = {d: v for d, v in days.items() if d < k}     # keep the past and today; redo from here on
+            break
     last = max((dt.date.fromisoformat(d) for d in days), default=START - dt.timedelta(days=1))
     end = dt.date.today() + dt.timedelta(days=AHEAD)
     d = last + dt.timedelta(days=1)
