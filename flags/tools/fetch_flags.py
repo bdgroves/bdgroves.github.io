@@ -106,7 +106,10 @@ def main() -> int:
     overrides = json.loads((DATA / "overrides.json").read_text(encoding="utf-8")) if (DATA / "overrides.json").exists() else {}
     got = left = 0
     fails: dict[str, int] = {}
-    for pack in sorted(DATA.glob("*.json")):
+    # the picker's order (countries and US states first), then anything else
+    order = [m["id"] for m in json.loads((DATA / "packs.json").read_text(encoding="utf-8"))["packs"]] if (DATA / "packs.json").exists() else []
+    rank = lambda p: order.index(p.stem) if p.stem in order else len(order)
+    for pack in sorted(DATA.glob("*.json"), key=lambda p: (rank(p), p.stem)):
         doc = json.loads(pack.read_text(encoding="utf-8"))
         if not isinstance(doc, dict) or "flags" not in doc:
             continue

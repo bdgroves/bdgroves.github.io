@@ -30,6 +30,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent          # flags/
 DATA = ROOT / "data"
+BUILD = 2                    # bump when the queries or the pack rules change, so the next run rebuilds
 UA = {"User-Agent": "FlagAtlas/1.0 (https://brooksgroves.com/flags/; https://github.com/bdgroves) python-urllib",
       "Accept": "application/json"}
 
@@ -59,10 +60,10 @@ QUERIES = {
  OPTIONAL {{ ?item wdt:P30 ?cont }} {COMMON} }}""",
     "regions": f"""SELECT ?item ?itemLabel ?itemDescription ?flag ?coord ?pop ?country ?countryLabel ?cont ?type ?flagArticle ?article WHERE {{
  ?item wdt:P31 ?type . ?type wdt:P279 wd:Q10864048 . ?item wdt:P41 ?flag ; wdt:P17 ?country .
- FILTER NOT EXISTS {{ ?item wdt:P576 [] }} OPTIONAL {{ ?country wdt:P30 ?cont }} {COMMON} }}""",
+ FILTER NOT EXISTS {{ ?item wdt:P576 [] }} FILTER NOT EXISTS {{ ?country wdt:P576 [] }} OPTIONAL {{ ?country wdt:P30 ?cont }} {COMMON} }}""",
     "cities": f"""SELECT ?item ?itemLabel ?itemDescription ?flag ?coord ?pop ?country ?countryLabel ?cont ?flagArticle ?article WHERE {{
  ?item wdt:P31/wdt:P279? wd:Q515 ; wdt:P41 ?flag ; wdt:P1082 ?p0 ; wdt:P17 ?country . FILTER(?p0 >= 200000)
- FILTER NOT EXISTS {{ ?item wdt:P576 [] }} OPTIONAL {{ ?country wdt:P30 ?cont }} {COMMON} }}""",
+ FILTER NOT EXISTS {{ ?item wdt:P576 [] }} FILTER NOT EXISTS {{ ?country wdt:P576 [] }} OPTIONAL {{ ?country wdt:P30 ?cont }} {COMMON} }}""",
     "uscities": f"""SELECT ?item ?itemLabel ?itemDescription ?flag ?coord ?pop ?state ?stateLabel ?flagArticle ?article WHERE {{
  ?item wdt:P31/wdt:P279? wd:Q515 ; wdt:P17 wd:Q30 ; wdt:P41 ?flag .
  FILTER NOT EXISTS {{ ?item wdt:P576 [] }}
@@ -182,8 +183,9 @@ def tidy_about(desc: str) -> str:
 def main() -> int:
     stamp = DATA / "packs.json"
     if "--force" not in sys.argv and stamp.exists():
-        built = json.loads(stamp.read_text(encoding="utf-8")).get("built", "2000-01-01")
-        if (dt.date.today() - dt.date.fromisoformat(built)).days < 7:
+        old = json.loads(stamp.read_text(encoding="utf-8"))
+        built = old.get("built", "2000-01-01")
+        if old.get("version") == BUILD and (dt.date.today() - dt.date.fromisoformat(built)).days < 7:
             print(f"packs built {built}; nothing to do (use --force to rebuild)")
             return 0
 
@@ -281,7 +283,7 @@ def main() -> int:
     pnw = json.loads((DATA / "pnw.json").read_text(encoding="utf-8"))
     meta.insert(2, {"id": "pnw", "name": pnw["name"], "area": "Start here", "blurb": "Hand-picked, with the stories",
                     "count": len(pnw["flags"]), "file": "data/pnw.json"})
-    stamp.write_text(json.dumps({"built": today, "packs": meta}, ensure_ascii=False, indent=1), encoding="utf-8")
+    stamp.write_text(json.dumps({"built": today, "version": BUILD, "packs": meta}, ensure_ascii=False, indent=1), encoding="utf-8")
     (DATA / "stories.json").write_text(json.dumps(stories_cache, ensure_ascii=False, indent=0), encoding="utf-8")
     print(f"{sum(m['count'] for m in meta)} flags in {len(meta)} packs")
     return 0

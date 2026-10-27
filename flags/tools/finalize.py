@@ -75,6 +75,10 @@ def main() -> int:
     path = DATA / "daily.json"
     daily = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"start": START.isoformat(), "days": {}}
     days = daily["days"]
+    home = {f["id"]: pid for pid, doc in packs.items() for f in doc["flags"]}
+    for v in days.values():                     # a rebuild can move a place to another pack: keep the day, fix the address
+        if v["id"] in home and home[v["id"]] != v["pack"]:
+            v["pack"] = home[v["id"]]
     last = max((dt.date.fromisoformat(d) for d in days), default=START - dt.timedelta(days=1))
     end = dt.date.today() + dt.timedelta(days=AHEAD)
     d = last + dt.timedelta(days=1)
