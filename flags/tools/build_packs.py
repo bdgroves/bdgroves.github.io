@@ -62,9 +62,6 @@ QUERIES = {
     "regions": f"""SELECT ?item ?itemLabel ?itemDescription ?flag ?coord ?pop ?country ?countryLabel ?cont ?type ?flagArticle ?article WHERE {{
  ?item wdt:P31 ?type . ?type wdt:P279/wdt:P279? wd:Q10864048 . ?item wdt:P41 ?flag ; wdt:P17 ?country .
  FILTER NOT EXISTS {{ ?item wdt:P576 [] }} FILTER NOT EXISTS {{ ?country wdt:P576 [] }} OPTIONAL {{ ?country wdt:P30 ?cont }} {COMMON} }}""",
-    "cities": f"""SELECT ?item ?itemLabel ?itemDescription ?flag ?coord ?pop ?country ?countryLabel ?cont ?flagArticle ?article WHERE {{
- ?item wdt:P31/wdt:P279? wd:Q515 ; wdt:P41 ?flag ; wdt:P1082 ?p0 ; wdt:P17 ?country . FILTER(?p0 >= 100000)
- FILTER NOT EXISTS {{ ?item wdt:P576 [] }} FILTER NOT EXISTS {{ ?country wdt:P576 [] }} OPTIONAL {{ ?country wdt:P30 ?cont }} {COMMON} }}""",
     "territories": f"""SELECT ?item ?itemLabel ?itemDescription ?flag ?coord ?pop ?country ?countryLabel ?cont ?flagArticle ?article WHERE {{
  VALUES ?t {{ wd:Q161243 wd:Q783733 wd:Q3336843 wd:Q66724388 wd:Q46395 }}
  ?item wdt:P31 ?t ; wdt:P41 ?flag . FILTER NOT EXISTS {{ ?item wdt:P576 [] }}
@@ -76,6 +73,21 @@ QUERIES = {
  FILTER NOT EXISTS {{ ?item wdt:P576 [] }}
  OPTIONAL {{ ?item wdt:P131/wdt:P131? ?state . ?state wdt:P31 wd:Q35657 }} {COMMON} }}""",
 }
+# Cities come in population bands: one query for every city of 100,000+ runs past Wikidata's 60-second limit.
+CITY_BANDS = [(100_000, 250_000), (250_000, 700_000), (700_000, 10**10)]
+CITY_COMMON = """OPTIONAL { ?item wdt:P625 ?coord }
+ OPTIONAL { ?item wdt:P163 ?fi . ?flagArticle schema:about ?fi ; schema:isPartOf <https://en.wikipedia.org/> }
+ OPTIONAL { ?article schema:about ?item ; schema:isPartOf <https://en.wikipedia.org/> }
+ SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }"""
+
+
+def city_query(lo: int, hi: int) -> str:
+    return f"""SELECT ?item ?itemLabel ?itemDescription ?flag ?coord ?pop ?country ?countryLabel ?cont ?flagArticle ?article WHERE {{
+ ?item wdt:P31/wdt:P279? wd:Q515 ; wdt:P41 ?flag ; wdt:P1082 ?pop ; wdt:P17 ?country . FILTER(?pop >= {lo} && ?pop < {hi})
+ FILTER NOT EXISTS {{ ?item wdt:P576 [] }} FILTER NOT EXISTS {{ ?country wdt:P576 [] }}
+ OPTIONAL {{ ?country wdt:P30 ?cont }} {CITY_COMMON} }}"""
+
+
 US, CA, MX = "Q30", "Q16", "Q96"
 US_STATE, CA_TERRITORY = "Q35657", "Q9357527"
 
@@ -199,7 +211,7 @@ def main() -> int:
     print("asking Wikidata…", flush=True)
     countries = gather(sparql(QUERIES["countries"]))
     regions = gather(sparql(QUERIES["regions"]), extra=("country", "type"))
-    cities = gather(sparql(QUERIES["cities"]), extra=("country",))
+    cities = gather([row for lo, hi in CITY_BANDS for row in sparql(city_query(lo, hi))], extra=("country",))
     territories = gather(sparql(QUERIES["territories"]), extra=("country",))
     uscities = gather(sparql(QUERIES["uscities"]), extra=("state",))
     print(f"  {len(countries)} countries, {len(regions)} regions, {len(territories)} territories, {len(cities)} cities, {len(uscities)} US cities")
