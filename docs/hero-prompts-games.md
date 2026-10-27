@@ -1,5 +1,5 @@
 # Hero prompts: the games (Oct 26, 2026)
-For the four game cards on brooksgroves.com/games.html. House style, nudged toward game key art. Send the results to Claude.
+For the game cards on brooksgroves.com/games.html (Flag Atlas added Oct 27). House style, nudged toward game key art. Send the results to Claude.
 
 ---
 
@@ -244,6 +244,54 @@ IMPORTANT CONSTRAINTS:
 - Do not draw any real team, university, brand or state logo on the plates.
 - Do not show a phone, app screen, dashboard or infographic.
 - Show no faces; the people are only a hand and the back of the front seats.
+- Avoid generic stock-photo composition and avoid cartoon styling.
+- Make the result visually related to a polished series of environmental and project heroes, while giving this project its own distinctive identity.
+- Generate the finished image directly without asking follow-up questions unless a truly essential detail is missing.
+```
+
+---
+
+## FLAG ATLAS
+
+Save as: `images/features/game-flag-atlas-2.jpg` (replaces the temporary flag collage on the card; a new file name so browsers don't keep the old one)
+
+```
+Create a wide, cinematic website hero image for my project.
+
+PROJECT TITLE: "FLAG ATLAS"
+
+SOURCE MATERIAL:
+Read the attached README, webpage, or article before designing the image. Identify the project's central story, geographic setting, data, and most visually meaningful moment.
+
+PROJECT SUMMARY:
+A flag guessing game that goes far past countries: more than 15,000 flags of countries, states, provinces, cities, counties and towns around the world. Name each flag, or pin it on a map with no names on it, then learn where it flies and the story behind its design, with a new Flag of the Day for everyone. A robot gathers the flags every week from open map data. This is a small browser game on my site, so treat the picture as a game's key art: one memorable moment, cinematic and grounded, painted rather than cartoonish, with no game interface, buttons or phone screens.
+
+KEY VISUAL IDEAS:
+- A cartographer's desk in a quiet map room at early morning: a large, beautifully aged world map spread across it, warm window light raking across the paper
+- Dozens of small cloth flags on slim brass map pins planted all over the map, densest in Europe and the Americas and scattered across every continent, like a collection that has been growing for years; their colours make the map glow
+- A hand (no face) about to press one more flag pin into the coast of the Pacific Northwest, where a few pins already stand
+- A fine dashed line in ink running from one pin to another across an ocean, like a measured guess, and faint graticule lines and a compass rose on the map
+- Behind the desk, a few more flags hanging softly from shelves and a window, the morning sun catching them: a new flag every day
+
+DESIRED HOUSE STYLE:
+Create a sophisticated editorial illustration that blends cinematic still-life photography, realistic textures of paper, brass, cloth and wood, map art and restrained data art. It should feel curious, warm and learned, like a geographer's study, not like an advertisement.
+
+Use a panoramic 16:9 composition designed for a website hero and social sharing. Build the scene around the act of finding where a flag belongs rather than showing a screenshot. Integrate the map, the pins and the measuring line naturally into the scene. They should feel part of the world, not pasted on as a user interface.
+
+Keep the composition visually rich but readable. Use strong depth, a clear visual path from the hand to the pin to the map, realistic detail, and one memorable idea. Leave some breathing room around the title.
+
+TITLE:
+Add only the exact title "FLAG ATLAS" in the upper-left. Use large, restrained uppercase lettering with generous tracking in a refined editorial serif. Add one short, thin accent rule beneath it.
+
+COLOR AND MOOD:
+Warm parchment, aged-map cream, brass and walnut, deep ink-navy shadows, with the flags as small bright points of red, blue, gold, green and white. The image should feel joyful, curious and exploratory, the pleasure of a world that keeps getting bigger the more you look.
+
+IMPORTANT CONSTRAINTS:
+- Spell the title exactly.
+- Add no other words, labels, numbers, logos, or watermarks. No readable place names on the map.
+- Keep the flags simple bold designs in the spirit of real flags (stripes, crosses, stars, suns, crescents, bands) but do not copy any specific real flag exactly, and draw no seals, coats of arms or lettering on them.
+- Do not show a phone, app screen, dashboard or infographic.
+- Show no faces; the person is only a hand.
 - Avoid generic stock-photo composition and avoid cartoon styling.
 - Make the result visually related to a polished series of environmental and project heroes, while giving this project its own distinctive identity.
 - Generate the finished image directly without asking follow-up questions unless a truly essential detail is missing.
