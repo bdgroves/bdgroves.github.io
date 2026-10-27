@@ -215,7 +215,15 @@ function borders() {
   BORDERS = BORDERS || (async () => {
     if (!window.topojson) await loadScript(TOPO_JS);
     const [w, u] = await Promise.all([loadFile(WORLD_TOPO), loadFile(US_TOPO)]);
-    return { land: topojson.feature(w, w.objects.countries), states: topojson.mesh(u, u.objects.states, (a, b) => a !== b) };
+    const land = topojson.feature(w, w.objects.countries);
+    // Russia, Fiji and Antarctica cross the 180° line; unwrap each outline so it runs on past 180°
+    // instead of jumping back across the whole map (which Leaflet draws as a streak).
+    const unwrap = ring => { for (let i = 1; i < ring.length; i++) { const d = ring[i][0] - ring[i - 1][0]; if (d > 180) ring[i][0] -= 360 * Math.round(d / 360); else if (d < -180) ring[i][0] += 360 * Math.round(-d / 360); } };
+    for (const f of land.features) {
+      const g = f.geometry; if (!g) continue;
+      (g.type === 'Polygon' ? [g.coordinates] : g.coordinates).forEach(poly => poly.forEach(unwrap));
+    }
+    return { land, states: topojson.mesh(u, u.objects.states, (a, b) => a !== b) };
   })().catch(e => { BORDERS = null; throw e; });
   return BORDERS;
 }
