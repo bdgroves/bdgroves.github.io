@@ -35,6 +35,7 @@ The redesign (direction A, "Refined almanac") is **done and live**. Every card, 
 - **Maps:** dashboard cards are whole links, places-lived zoom fixed, Chiricahua National Park added (made a national park Oct 20, 2026).
 - **Analytics:** Cloudflare Web Analytics is on and verified. The token is in `data/analytics.json`, and `scripts/analytics.py` adds the beacon to all pages. Automatic injection never worked, because the site is served by GitHub, not through Cloudflare.
 - **Story sites:** all seven memoir collection cards have pictures, and the Westin, Y2K and Journal home pages have covers. The Plate Hunter post has its cover too.
+- **Beer note picture:** a watercolor pint with Rainier and the Port of Tacoma (`images/thumbs/beer-note.webp`, full size in `images/features/beer-note.jpg`) sits above the beer note on the homepage, the Writing page and the memoir home page. A stronger fade in dark mode hides the paper edge.
 - **Branches:** cleaned up. The website repo has `main` plus `link-report` (the link checker's output). secchi's `dotnet-stream` is work in progress, so leave it.
 
 ## Open items (pick from here)
