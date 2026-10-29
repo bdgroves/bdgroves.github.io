@@ -1,0 +1,66 @@
+/* ──────────────────────────────────────────────────────────────
+   beer-note.css — the "Beer money" tip box for the games pages
+   (Games hub, each game, Flag Atlas, Plate Hunter).
+
+   The box brings its own colours, so it reads the same on any game's
+   background, and follows the site's dark mode via [data-theme="dark"].
+   Picture: /images/thumbs/beer-note.webp (click goes to Ko-fi).
+   ────────────────────────────────────────────────────────────── */
+.beer-box {
+  --bb-bg: #f5f0e8; --bb-ink: #1c1a16; --bb-stone: #7a7268;
+  --bb-rust: #8b3a2a; --bb-gold: #c8922a; --bb-mist: #d6d0c4;
+  box-sizing: border-box;
+  max-width: 640px; width: calc(100% - 2rem);
+  margin: 3rem auto; padding: 2rem 1.75rem;
+  background: var(--bb-bg); color: var(--bb-stone);
+  border: 1px solid var(--bb-mist); border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  text-align: center;
+  font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+}
+[data-theme="dark"] .beer-box {
+  --bb-bg: #17150f; --bb-ink: #ece6da; --bb-stone: #a2988a;
+  --bb-rust: #cf6b52; --bb-gold: #d9a63f; --bb-mist: #3a352d;
+}
+.beer-box .beer-art-link { display: block; width: max-content; margin: 0 auto 1rem; border-radius: 50%; }
+.beer-box .beer-art {
+  display: block; width: 120px; height: auto; aspect-ratio: 1 / 1;
+  transition: transform .25s ease;
+  -webkit-mask-image: radial-gradient(circle, #000 55%, transparent 72%);
+          mask-image: radial-gradient(circle, #000 55%, transparent 72%);
+}
+[data-theme="dark"] .beer-box .beer-art {
+  -webkit-mask-image: radial-gradient(circle, #000 42%, transparent 64%);
+          mask-image: radial-gradient(circle, #000 42%, transparent 64%);
+}
+.beer-box .beer-art-link:hover .beer-art,
+.beer-box .beer-art-link:focus-visible .beer-art { transform: scale(1.04); }
+.beer-box .beer-art-link:focus-visible { outline: 2px solid var(--bb-rust); outline-offset: 4px; }
+.beer-box .beer-kicker {
+  font-family: 'DM Mono', ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--bb-stone); margin: 0 0 0.75rem;
+}
+.beer-box .beer-title {
+  font-family: 'Playfair Display', Georgia, serif; font-weight: 900;
+  font-size: 1.4rem; line-height: 1.25; margin: 0 0 0.6rem; color: var(--bb-ink);
+}
+.beer-box .beer-text {
+  font-size: 0.92rem; line-height: 1.7; max-width: 460px;
+  margin: 0 auto 1.4rem; color: var(--bb-stone);
+}
+.beer-box .beer-text a { color: var(--bb-rust); text-decoration: underline; text-underline-offset: 2px; }
+.beer-box .beer-btn {
+  display: inline-block;
+  font-family: 'DM Mono', ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--bb-bg); background: var(--bb-rust);
+  padding: 0.75rem 1.6rem; border-radius: 3px; text-decoration: none;
+  transition: background .2s, color .2s;
+}
+.beer-box .beer-btn:hover, .beer-box .beer-btn:focus-visible { background: var(--bb-gold); color: var(--bb-ink); }
+.beer-box .beer-fine {
+  font-family: 'DM Mono', ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.6rem; letter-spacing: 0.05em; color: var(--bb-stone); opacity: .7;
+  margin: 1.1rem 0 0;
+}
