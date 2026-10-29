@@ -39,8 +39,8 @@ The redesign (direction A, "Refined almanac") is **done and live**. Every card, 
 
 ## Open items (pick from here)
 
-1. **Write the first story** from the list. Suggested: *Hurricane Gilbert* (Blinn, Sept 1988).
-   - The list (32 stories, all sorted by collection) is the Google Doc "Story Ideas" in Brooks's Drive, with the same list in `brooks-memoir/STORY-IDEAS.md`.
+1. **Keep writing stories.** Published so far: *Hurricane Gilbert* and *The Math Gods of Brenham* (both Blinn). 33 ideas are left.
+   - The list is the Google Doc "Story Ideas" in Brooks's Drive, with the same list in `brooks-memoir/STORY-IDEAS.md`.
    - Tick off both when a story is published.
 2. **Review analytics** in early November: what people click, then tune the homepage.
 3. **QGIS:** stay on 4.2.2. Releases 4.2.3 and 3.44.15 are blocked by Smart App Control (QGIS issues #67751 and #67814, no fix yet). A weekly check was offered but not set up.
