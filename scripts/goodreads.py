@@ -77,9 +77,46 @@ def strip(s: str) -> str:
     return html.unescape(re.sub(r"<[^>]+>", "", s)).strip()
 
 
+_PROFILE: list[str] = []
+
+
+def profile() -> str:
+    if not _PROFILE:
+        _PROFILE.append(get(f"https://www.goodreads.com/user/show/{USER_ID}"))
+    return _PROFILE[0]
+
+
+def from_updates() -> list[dict]:
+    """Books finished lately, from the profile's 'Recent updates': each 'rated a book' or
+    'finished reading' entry, newest first. (The shelf itself now needs a sign-in.)"""
+    page = profile()
+    books = []
+    for m in re.finditer(r'<tr class="update"[^>]*data-timestamp="([^"]*)"[^>]*>(.*?)</tr>', page, re.S):
+        when, row = m.group(1), m.group(2)
+        action = strip((re.search(r'class="updateAction">(.*?)</div>', row, re.S) or [None, ""])[1])
+        if not re.search(r"\b(rated a book|finished reading|has read|marked .* as read)\b", action):
+            continue
+        t = re.search(r'<a class="bookTitle" href="([^"]+)">(.*?)</a>', row, re.S)
+        if not t:
+            continue
+        a = re.search(r'class="authorName"[^>]*>(.*?)</a>', row, re.S)
+        img = re.search(r'<img[^>]+src="([^"]+)"', row)
+        stars = sum(int(x) for x in re.findall(r'staticStar p(\d+)', row)) / 10
+        try:
+            read_at = datetime.strptime(when.strip(), "%B %d, %Y %H:%M").strftime("%a, %d %b %Y")
+        except ValueError:
+            read_at = ""
+        books.append({"title": strip(t.group(2)), "author": strip(a.group(1)) if a else "",
+                      "image": img.group(1) if img else "",
+                      "link": "https://www.goodreads.com" + t.group(1).split("?")[0],
+                      "rating": f"{stars:g}" if stars else "", "shelf": "read", "read_at": read_at})
+    print(f"  updates: {len(books)} finished lately: {', '.join(b['title'][:30] for b in books[:4]) or '-'}")
+    return books
+
+
 def from_profile() -> list[dict]:
     """Currently reading, from the public profile page's 'currently reading' block."""
-    page = get(f"https://www.goodreads.com/user/show/{USER_ID}")
+    page = profile()
     i = page.find('id="currentlyReadingReviews"')
     if i < 0:
         raise RuntimeError(f"no currently-reading block (page {len(page):,} chars; "
@@ -166,8 +203,19 @@ def main() -> None:
             books = from_export(SHELF_SIZE, out["recently_read"])
             if books:
                 out["recently_read"] = books
-        else:
-            print(f"read: no {EXPORT.relative_to(ROOT)} yet; keeping the last {len(out['recently_read'])}")
+        try:
+            fresh = from_updates()
+        except Exception as e2:
+            fresh = []
+            print(f"read updates: {e2}")
+        if fresh:
+            key = lambda b: b.get("link") or b["title"].lower()
+            have = {key(b) for b in fresh}
+            out["recently_read"] = (fresh + [b for b in out["recently_read"] if key(b) not in have
+                                             and b["title"].lower() not in {f["title"].lower() for f in fresh}])[:SHELF_SIZE]
+            print(f"read (updates): {len(fresh)} new on top; shelf of {len(out['recently_read'])}")
+        elif not EXPORT.exists():
+            print(f"read: keeping the last {len(out['recently_read'])}")
 
     # a book being read isn't also shown as finished
     reading = {b["title"].lower() for b in out["currently_reading"]}
