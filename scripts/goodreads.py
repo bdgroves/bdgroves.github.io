@@ -89,11 +89,12 @@ def profile() -> str:
 def from_updates() -> list[dict]:
     """Books finished lately, from the profile's 'Recent updates': each 'rated a book' or
     'finished reading' entry, newest first. (The shelf itself now needs a sign-in.)"""
-    page = profile()
+    # the profile page loads its updates afterwards, from this address
+    page = get(f"https://www.goodreads.com/user/delayable_user_show/{USER_ID}?csm_scope=delayable_user_show&skip_cache=false")
     books = []
-    for m in re.finditer(r'<tr class="update"[^>]*data-timestamp="([^"]*)"[^>]*>(.*?)</tr>', page, re.S):
+    for m in re.finditer(r"""<tr class=['"]update['"][^>]*data-timestamp=['"]([^'"]*)['"][^>]*>(.*?)</tr>""", page, re.S):
         when, row = m.group(1), m.group(2)
-        action = strip((re.search(r'class="updateAction">(.*?)</div>', row, re.S) or [None, ""])[1])
+        action = strip((re.search(r"""class=['"]updateAction['"]>(.*?)</div>""", row, re.S) or [None, ""])[1])
         if not re.search(r"\b(rated a book|finished reading|has read|marked .* as read)\b", action):
             continue
         t = re.search(r'<a class="bookTitle" href="([^"]+)">(.*?)</a>', row, re.S)
