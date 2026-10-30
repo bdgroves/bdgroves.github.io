@@ -143,6 +143,8 @@ MAP_PROJECTS = ["https://brooksgroves.com/mother-lode/", "https://brooksgroves.c
                 "https://brooksgroves.com/30DayMapChallenge/2026/"]
 MAP_DASH_TOPICS = ["earth", "weather", "nature"]       # everything else in these topics counts as a dashboard
 FILMS = [
+    ("/blog/zermatt-diorama-post.html", "/blog/img/zermatt-diorama/og.jpg", "🐄 Zermatt in Miniature",
+     "The Matterhorn, gondolas, the Gornergrat train, chalets and cows."),
     ("/blog/dakar-diorama-post.html", "/blog/img/dakar-diorama/og.jpg", "🏁 The Dakar in Miniature",
      "The 2027 rally from the Algarve to Marrakech, with a convoy in the dust."),
     ("/blog/amalfi-diorama-post.html", "/blog/img/amalfi-diorama/og.jpg", "🍋 The Amalfi Coast in Miniature",

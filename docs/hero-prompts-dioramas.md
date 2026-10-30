@@ -9,6 +9,8 @@ or send it to Claude to wire in.
 - Seattle: done (`blog/img/seattle-diorama/illustration.jpg`)
 - Yosemite: waiting
 - Amalfi: waiting
+- Dakar: waiting
+- Zermatt: waiting
 
 ---
 
@@ -83,6 +85,34 @@ Sunny, joyful, wistful, a favourite trip made small enough to hold and dream abo
 CONSTRAINTS:
 - No words, labels, logos, signs, numbers or watermarks (including on the drinks).
 - No people's faces.
+- 16:9, wide.
+- Generate the image directly without asking follow-up questions.
+```
+
+## Zermatt & the Matterhorn
+
+```
+Create a wide, warm, photorealistic illustration of a hand-made miniature Zermatt and the Matterhorn sitting on a wooden table by a window on a crisp summer morning, like a tilt-shift photograph of a beautiful scale model.
+
+THE MODEL:
+- The Matterhorn rising sharp and pointed at the back of the model, its Hörnli ridge running toward the viewer, rock faces streaked with snow, a pink glow of first light on the summit.
+- The village of Zermatt in the valley below: dark larch-wood chalets on white stone bases with grey slate roofs and bright red geraniums in the window boxes, a little church spire, and a river running through.
+- Red gondola cabins strung along a cable from the village up the green slopes, with tiny pylons, and a big red cable car crossing toward a glacier.
+- The little red Gornergrat cog train climbing through larch woods and past a small lake that reflects the Matterhorn.
+- Green alpine pastures with a herd of black Eringer and brown cows with bells, two or three of them dressed for the Alpabzug in tall crowns of colorful flowers with big brass bells on embroidered straps.
+- An alphorn player in a red vest, white shirt and black hat on a grassy shoulder, his long wooden alphorn resting on the meadow, pointed toward the Matterhorn.
+- A couple of colorful paragliders drifting over the valley, a small Swiss flag on a hut, and white glaciers spilling off the peaks on one side.
+- The base of the model cut away to show layers of rock.
+
+THE TABLE:
+Soft morning window light, a mug of hot chocolate, a small wedge of Swiss cheese and a folded hiking map beside the model, soft depth of field, so it reads clearly as a crafted object.
+
+MOOD:
+Joyful, storybook, crisp and clean: the Switzerland of postcards made small enough to hold. Deep greens, warm wood browns, geranium red, snow white and a clear blue sky.
+
+CONSTRAINTS:
+- No words, labels, logos, signs, numbers or watermarks.
+- No people's faces in detail; figures are tiny.
 - 16:9, wide.
 - Generate the image directly without asking follow-up questions.
 ```

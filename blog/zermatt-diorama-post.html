@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zermatt in Miniature: The Matterhorn, the Gondolas and the Cows — Brooks Groves</title>
+  <link rel="canonical" href="https://brooksgroves.com/blog/zermatt-diorama-post.html">
+  <meta name="description" content="A tilt-and-spin 3D diorama of Zermatt and the Matterhorn from swisstopo elevation data and OpenStreetMap: gondolas and cable cars on their cables, the Gornergrat cog railway, ski runs, chalets, alphorn players, and cows dressed for the Alpabzug.">
+  <meta property="og:title" content="Zermatt in Miniature: The Matterhorn, the Gondolas and the Cows">
+  <meta property="og:description" content="Fly a miniature Zermatt: ride the gondola and the Gornergrat train, visit the cows on the high pastures, and flip to ski season under the Matterhorn.">
+  <meta property="og:image" content="https://brooksgroves.com/blog/img/zermatt-diorama/og.jpg">
+  <meta property="og:url" content="https://brooksgroves.com/blog/zermatt-diorama-post.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐄</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; border-radius:4px; transition: background 0.2s, color 0.2s; 
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .article-tag-pill:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body h2 em { font-style: italic; color: var(--rust); }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body em { font-style: italic; }
+    .article-body code { font-family: 'DM Mono', monospace; font-size: 0.85em; background: var(--cream); padding: 0.15em 0.4em; border-radius: 2px; }
+    .article-body pre { background: var(--ink); color: #c8d0cc; padding: 1.25rem 1.5rem; border-radius: 2px; overflow-x: auto; margin: 1.5rem 0 2rem; font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.65; }
+    .article-body pre code { background: none; padding: 0; font-size: 1em; color: inherit; }
+    .article-body ul { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body ul li { margin-bottom: 0.4rem; }
+
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .photo-block video { width: 100%; display: block; border: 1px solid var(--mist); background: #0b1020; cursor: zoom-in; }
+    .video-actions { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .video-actions a, .video-actions button { font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); background: none; border: 1px solid var(--mist); padding: 0.45rem 0.9rem; cursor: pointer; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
+    .video-actions a:hover, .video-actions button:hover { border-color: var(--rust); color: var(--rust); }
+    .step-list { margin: 1.2rem 0 1.5rem 1.2rem; }
+    .step-list li { margin-bottom: 0.7rem; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.8rem; margin: 2rem 0 2.2rem; }
+    .stat { border: 1px solid var(--mist); padding: 0.9rem 1rem 0.8rem; text-align: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 2.1rem; line-height: 1; color: var(--rust); }
+    .stat-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); margin-top: 0.45rem; line-height: 1.5; }
+    .photo-block.narrow { max-width: 540px; margin-left: auto; margin-right: auto; }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist);
+    }
+    .diorama-embed { position: relative; aspect-ratio: 16 / 10; border: 1px solid var(--mist); background: #e9e2d6; overflow: hidden; }
+    .photo-block .diorama-embed img, .diorama-embed img { position: absolute; inset: 0; width: 100%; height: 100% !important; object-fit: cover; display: block; filter: saturate(0.9) brightness(0.92); border: none; }
+    .diorama-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .diorama-embed button { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--parchment); background: var(--ink); border: none; padding: 0.9rem 1.4rem; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.25); transition: background .2s; }
+    .diorama-embed button:hover { background: var(--rust); }
+    .sidebar { margin: 2.2rem 0 2.4rem; padding: 1.3rem 1.5rem 0.6rem; background: var(--cream); border-left: 3px solid var(--gold); border-radius: 2px; }
+    .sidebar-kicker { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rust); margin-bottom: 0.35rem !important; }
+    .sidebar h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin: 0 0 0.75rem; line-height: 1.25; }
+    .sidebar p, .sidebar li { font-size: 0.92rem; line-height: 1.75; }
+    .sidebar p { margin-bottom: 0.9rem; }
+    .sidebar ul { margin-bottom: 0.9rem; }
+    [data-theme="dark"] .sidebar { background: rgba(255,255,255,0.05); }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav class="site-nav" aria-label="Main">
+      <div class="sn-item"><a href="/work/">Work</a>
+        <div class="sn-drop">
+          <span class="sn-label">By field</span>
+          <a href="/meteorology.html">🌩 Meteorology</a>
+          <a href="/hydrology.html">💧 Hydrology</a>
+          <a href="/geospatial.html">🗺 Geospatial</a>
+          <a href="/volcanology.html">🌋 Volcanology</a>
+          <a href="/paleontology.html">🦕 Paleontology</a>
+          <a href="/ecology.html">🌿 Ecology</a>
+          <a href="/geology.html">🪨 Geology</a>
+          <a href="/archaeology.html">🏺 Archaeology</a>
+          <span class="sn-label">Projects</span>
+          <a href="https://brooksgroves.com/mother-lode/" target="_blank" rel="noopener">⛏️ Mother Lode</a>
+          <a href="https://brooksgroves.com/project-kiva" target="_blank" rel="noopener">🏺 Project Kiva</a>
+          <a href="https://brooksgroves.com/lidar-explore/" target="_blank" rel="noopener">🌲 LiDAR Explore</a>
+          <a href="/hoplove/">🍺 HopLove</a>
+          <a href="https://brooksgroves.com/little-free-pantry" target="_blank" rel="noopener">🏠 Little Free Pantry</a>
+          <span class="sn-label">Bots</span>
+          <a href="/blog/bdgrovesbot.html">🔥 BdgrovesBot (parked)</a>
+          <a href="/blog/alert-bots-revisited-post.html">🌙 The weather bots (on standby)</a>
+          <a href="https://github.com/bdgroves" target="_blank" rel="noopener">The code, on GitHub ↗</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/writing/" aria-current="page">Writing</a>
+        <div class="sn-drop">
+          <a href="/blog/">📝 Blog</a>
+          <a href="/writing/">📖 All writing</a>
+          <a href="/tags.html">🏷️ Posts by topic</a>
+          <span class="sn-label">Learning</span>
+          <a href="/learning/">📚 All curricula</a>
+          <a href="/learning/quantum-physics/">⚛️ Quantum Physics</a>
+          <a href="/learning/volcanology/">🌋 Volcanology</a>
+          <a href="/learning/desert-montane-ecosystems/">🌵 Desert &amp; Montane Ecosystems</a>
+          <a href="/learning/ecogeomorphology/">🌊 Ecogeomorphology</a>
+          <a href="/learning/grunge/">🎸 Grunge</a>
+          <a href="/learning/reggae/">🎵 Reggae</a>
+          <a href="/learning/afropop/">🌍 Afropop</a>
+          <a href="/learning/punk/">🎸 Punk Rock</a>
+          <a href="/learning/newwave/">🎹 New Wave</a>
+          <span class="sn-label">Stories 🔒</span>
+          <a href="https://memoir.brooksgroves.com">📜 Memoir</a>
+          <a href="https://westin.brooksgroves.com">🏨 Westin Stories</a>
+          <a href="https://journal.brooksgroves.com">✈️ Journal</a>
+          <a href="https://y2k.brooksgroves.com" target="_blank" rel="noopener">💾 Y2K Archive</a>
+          <a href="/recipes.html">🍳 Recipes</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/maps.html">Maps &amp; films</a>
+        <div class="sn-drop">
+          <a href="/maps.html">🧭 All the maps</a>
+          <a href="https://brooksgroves.com/30DayMapChallenge/2026/" target="_blank" rel="noopener">🗺️ #30DayMapChallenge 2026</a>
+          <span class="sn-label">Flyover films</span>
+          <a href="/blog/seattle-diorama-post.html">🏙️ Seattle in Miniature</a>
+          <a href="/blog/zermatt-diorama-post.html">🐄 Zermatt in Miniature</a>
+          <a href="/blog/dakar-diorama-post.html">🏁 The Dakar in Miniature</a>
+          <a href="/blog/amalfi-diorama-post.html">🍋 The Amalfi Coast in Miniature</a>
+          <a href="/blog/yosemite-diorama-post.html">🧗 Yosemite in Miniature</a>
+          <a href="/blog/athabasca-melt-post.html">🧊 The Athabasca Glacier, 1844 to 2100</a>
+          <a href="/blog/icefields-flyover-post.html">🏔️ The Icefields Parkway</a>
+          <a href="/blog/ruby-flyover-post.html">💎 The Ruby Mountains</a>
+          <a href="/blog/mono-flyover-post.html">🌋 Mono Basin</a>
+          <a href="/blog/yosemite-flyover-post.html">🧗 Yosemite</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/live/">Live data</a>
+        <div class="sn-drop">
+          <span class="sn-label">Updating on their own</span>
+          <a href="/secchi/">🔵 secchi: Lake Tahoe</a>
+          <a href="https://brooksgroves.com/rainier-snowpack" target="_blank" rel="noopener">❄️ Rainier Snowpack</a>
+          <a href="https://brooksgroves.com/PELE" target="_blank" rel="noopener">🌋 PELE: Kīlauea</a>
+          <a href="https://brooksgroves.com/lahar-watch" target="_blank" rel="noopener">🌋 lahar-watch</a>
+          <a href="https://brooksgroves.com/aftershock" target="_blank" rel="noopener">🌍 AFTERSHOCK</a>
+          <a href="https://brooksgroves.com/sierra-streamflow" target="_blank" rel="noopener">💧 Sierra Streamflow</a>
+          <a href="https://brooksgroves.com/puget-tides/" target="_blank" rel="noopener">🌊 PUGET-TIDES</a>
+          <a href="https://brooksgroves.com/fog-watch/" target="_blank" rel="noopener">🌫️ FOG-WATCH</a>
+          <a href="https://brooksgroves.com/solstice" target="_blank" rel="noopener">☀️ SOLSTICE</a>
+          <a href="https://brooksgroves.com/weather-station" target="_blank" rel="noopener">🌡️ Weather Station</a>
+          <a href="https://brooksgroves.com/Alpine-watch/" target="_blank" rel="noopener">🏔️ ALPINE-WATCH</a>
+          <a href="https://brooksgroves.com/cypress-dome-watch/" target="_blank" rel="noopener">🌳 Cypress Domes</a>
+          <a href="https://brooksgroves.com/sentinel-stockpile/" target="_blank" rel="noopener">🛰️ Sentinel Stockpile</a>
+          <a href="https://brooksgroves.com/EDGAR" target="_blank" rel="noopener">⚾ EDGAR</a>
+        </div>
+      </div>
+      <div class="sn-item sn-end"><a href="/outside.html">Outside</a>
+        <div class="sn-drop">
+          <a href="/outside.html">🏔 Outside</a>
+          <a href="/concerts.html">🎫 Concerts</a>
+          <a href="/games.html">🎲 Games</a>
+          <a href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener">📕 Reading</a>
+        </div>
+      </div>
+      <div class="sn-item sn-end"><a href="/about.html">About</a>
+        <div class="sn-drop">
+          <a href="/about.html">👤 About me</a>
+          <span class="sn-label">Connect</span>
+          <a href="mailto:contact@brooksgroves.com" class="sn-contact">✉︎ contact@brooksgroves.com</a>
+          <a href="https://github.com/bdgroves" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="https://x.com/bdgroves" target="_blank" rel="noopener">X / Twitter ↗</a>
+          <a href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener">Bluesky ↗</a>
+          <a href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener">Strava ↗</a>
+          <a href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener">Untappd ↗</a>
+          <a href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener">Goodreads ↗</a>
+        </div>
+      </div>
+      <form class="nav-search" action="/search/" role="search"><input type="search" name="q" placeholder="Search" aria-label="Search brooksgroves.com" autocomplete="off"><button type="submit" aria-label="Search">⌕</button></form>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">&larr; Back to Blog</a>
+
+  <p class="article-kicker">Switzerland · Zermatt · Matterhorn · swisstopo · Three.js · OpenStreetMap</p>
+  <h1 class="article-title">&#128004; Zermatt in Miniature: The Matterhorn, the Gondolas and the Cows</h1>
+  <div class="article-meta">
+    <span>October 30, 2026</span>
+    <span>Brooks Groves</span>
+    <span>12 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <a href="/tags.html#Switzerland" class="article-tag-pill">Switzerland</a>
+    <a href="/tags.html#Matterhorn" class="article-tag-pill">Matterhorn</a>
+    <a href="/tags.html#Travel" class="article-tag-pill">Travel</a>
+    <a href="/tags.html#Geology" class="article-tag-pill">Geology</a>
+    <a href="/tags.html#History" class="article-tag-pill">History</a>
+    <a href="/tags.html#3D" class="article-tag-pill">3D</a>
+    <a href="/tags.html#Three.js" class="article-tag-pill">Three.js</a>
+    <a href="/tags.html#OpenStreetMap" class="article-tag-pill">OpenStreetMap</a>
+    <a href="/tags.html#Open%20Data" class="article-tag-pill">Open Data</a>
+  </div>
+
+  <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/blog/img/zermatt-diorama/og.jpg.w1600.webp" alt="" decoding="async" fetchpriority="high" srcset="/img-opt/blog/img/zermatt-diorama/og.jpg.w640.webp 640w, /img-opt/blog/img/zermatt-diorama/og.jpg.w1600.webp 1600w" sizes="(max-width: 1140px) 100vw, 1100px"></figure><!-- POST-COVER:END -->
+  <div class="article-body">
+
+    <p>After Seattle, Yosemite, the Amalfi Coast and the Dakar, I wanted to go big and detailed. Switzerland was the obvious choice. It has some of the best free 3D map data in the world, and the most famous mountain in Europe. So here is Zermatt and the Matterhorn, in miniature: the gondolas and the cable cars, the little red Gornergrat train, ski runs, chalets with red geraniums in the window boxes, alphorn players, and herds of cows on the high pastures. A few of the cows are dressed up in flowers for the trip down the mountain.</p>
+
+    <div class="photo-block">
+      <video id="zm-video" autoplay muted loop playsinline controls preload="metadata"
+             poster="/blog/img/zermatt-diorama/poster.jpg"
+             aria-label="A 60-second flight over a miniature Zermatt. It opens wide on the whole board with the Matterhorn and Monte Rosa, swings in to the Matterhorn and the village, rides along with the Gornergrat train, looks across the Gorner Glacier to Monte Rosa, drops down to the cows on the pastures, follows a gondola up the mountain, passes the Riffelsee and the Hörnli ridge, and ends at dusk with headlamps on the ridge">
+        <source src="/blog/img/zermatt-diorama/zermatt-diorama.mp4" type="video/mp4">
+      </video>
+      <div class="video-actions">
+        <button type="button" id="zm-fullscreen">&#10530; Full screen</button>
+        <a href="/blog/img/zermatt-diorama/zermatt-diorama-1080.mp4" target="_blank">&#9654; Watch in HD (1080p)</a>
+        <a href="https://brooksgroves.com/seattle-diorama/?place=zermatt" target="_blank" rel="noopener">&#9673; Fly it yourself</a>
+      </div>
+      <p class="photo-caption">Zermatt and the Matterhorn, morning to dusk, in summer · swisstopo swissALTI3D · OpenStreetMap · rendered in Three.js on GitHub&rsquo;s free computers</p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num">46</div><div class="stat-label">Lifts, cables<br>and all</div></div>
+      <div class="stat"><div class="stat-num">243</div><div class="stat-label">Ski runs<br>for winter</div></div>
+      <div class="stat"><div class="stat-num">2,620</div><div class="stat-label">Chalets and<br>hotels</div></div>
+      <div class="stat"><div class="stat-num">275</div><div class="stat-label">Cows, 45 of them<br>in flowers</div></div>
+    </div>
+
+    <h2>Try it first</h2>
+
+    <p>Drag to spin it, scroll to zoom, and tilt it right down to the pastures. <em>Fly to</em> takes you to the Matterhorn, Zermatt village, Gornergrat and Monte Rosa, the Riffelsee, the Hörnli ridge and its hut, Matterhorn Glacier Paradise, Sunnegga and the Stellisee, the Gorner Glacier, the cows above Findeln, and an alphorn player by the Riffelsee. Under <em>Ride along</em> you can ride the Gornergrat train, take the gondola up from Zermatt, or fly with a paraglider. The <em>Summer</em> switch turns it into ski season, and the <em>Snow</em> button brings in a storm.</p>
+
+    <div class="photo-block">
+      <div class="diorama-embed" id="zm-embed">
+        <img src="/img-opt/blog/img/zermatt-diorama/overview.jpg.w1600.webp" alt="" loading="lazy" decoding="async" srcset="/img-opt/blog/img/zermatt-diorama/overview.jpg.w640.webp 640w, /img-opt/blog/img/zermatt-diorama/overview.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+        <button type="button" id="zm-embed-go">&#9654;&nbsp; Explore the live diorama here</button>
+      </div>
+      <p class="photo-caption">Loads the live 3D Zermatt right in this page (a few MB of data, so give it a moment) · or <a href="https://brooksgroves.com/seattle-diorama/?place=zermatt" target="_blank" rel="noopener">open it full screen</a></p>
+    </div>
+
+    <h2>The mountain</h2>
+
+    <p>The Matterhorn stands 4,478&nbsp;m (14,692&nbsp;ft) on the border between Switzerland and Italy, and from Zermatt you see it end-on: the Hörnli ridge running straight at you, the east face on the left and the north face on the right. That&rsquo;s the view on every chocolate box, and it&rsquo;s the one the diorama opens on. At dawn and dusk the light goes pink on the summit while the village is still in shadow. Climbers set off up the Hörnli ridge from the hut at 3,260&nbsp;m in the dark, and on the diorama you can see their headlamps on the ridge before sunrise.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/zermatt-diorama/matterhorn.jpg.w1600.webp" alt="The miniature Matterhorn at golden hour, seen from the Zermatt side: its pointed summit with the Hörnli ridge running toward the viewer, rock faces streaked with snow, the Dent d'Hérens behind on the right and green pastures on the left" loading="lazy" decoding="async" srcset="/img-opt/blog/img/zermatt-diorama/matterhorn.jpg.w640.webp 640w, /img-opt/blog/img/zermatt-diorama/matterhorn.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">The Matterhorn at golden hour, from the Zermatt side.</p>
+    </div>
+
+    <aside class="sidebar">
+      <p class="sidebar-kicker">&#129704; The science</p>
+      <h3>A mountain with an African top</h3>
+      <p>The Matterhorn is a classic glacial horn. Glaciers sat in bowls on all four sides of it and ate back into the rock until only a sharp pyramid with four faces and four ridges was left. The rock has a stranger story. The upper part of the mountain is old gneiss from the edge of the African plate, which was shoved up and over the rocks of Europe when the two continents collided to make the Alps. Geologists like to say the Matterhorn has an African summit standing on European feet.</p>
+    </aside>
+
+    <aside class="sidebar">
+      <p class="sidebar-kicker">&#9968;&#65039; History</p>
+      <h3>14 July 1865</h3>
+      <p>The Matterhorn was one of the last great Alpine peaks to be climbed. Edward Whymper had failed seven times before his party of seven finally reached the top by the Hörnli ridge on 14 July 1865. On the way down a rope broke, and four of them fell to their deaths down the north face. The tragedy made the mountain famous overnight. Today the Hörnli ridge is the normal route, and the hut at its foot, rebuilt for the 150th anniversary in 2015, is where most climbers start.</p>
+    </aside>
+
+    <h2>Zermatt</h2>
+
+    <p>The village sits at about 1,600&nbsp;m at the head of its valley, and it&rsquo;s car-free: visitors leave their cars down at Täsch and ride the train in. In the diorama all 2,620 buildings in the village and on the slopes are chalets, with a white stone base, dark larch wood above, grey slate roofs, and red geraniums in boxes under the windows. At night the windows light up one by one.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/zermatt-diorama/village.jpg.w1600.webp" alt="The miniature village of Zermatt in late afternoon light: hundreds of little chalets with grey roofs along the river, larch and pine woods on the slopes, and green meadows climbing the valley sides" loading="lazy" decoding="async" srcset="/img-opt/blog/img/zermatt-diorama/village.jpg.w640.webp 640w, /img-opt/blog/img/zermatt-diorama/village.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">Zermatt village, with the Vispa running through it.</p>
+    </div>
+
+    <h2>Gondolas, cable cars and a cog railway</h2>
+
+    <p>Zermatt is a lift lover&rsquo;s dream, and every one of the 46 lifts on the board comes from OpenStreetMap. Each gets its towers where the real ones stand, a cable that sags between them, and the right kind of cabin. The red gondolas of the Matterhorn Express loop up from the village. The big cable cars shuttle in pairs, one up while the other comes down, and wait at the stations. The chairlifts carry their chairs over the pastures. The 3S Matterhorn Glacier Ride goes up to Klein Matterhorn at 3,883&nbsp;m, the highest cable car station in Europe.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/zermatt-diorama/gondola.jpg.w1600.webp" alt="Riding along with a red gondola in the miniature Zermatt, its cabins strung along the cable over green pastures, larch woods and the hamlets above the village" loading="lazy" decoding="async" srcset="/img-opt/blog/img/zermatt-diorama/gondola.jpg.w640.webp 640w, /img-opt/blog/img/zermatt-diorama/gondola.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">Riding the gondola up from Zermatt.</p>
+    </div>
+
+    <p>Then there&rsquo;s the train. The Gornergrat railway climbs from the village through the larch woods, past the Riffelalp and the Riffelsee, to Gornergrat at 3,089&nbsp;m. From there you get one of the great views of the Alps: Monte Rosa, the Breithorn, the Gorner Glacier and the Matterhorn all at once. On the diorama the little red train works its way up and down the line, and you can ride along.</p>
+
+    <aside class="sidebar">
+      <p class="sidebar-kicker">&#128646; Engineering</p>
+      <h3>A train with teeth</h3>
+      <p>The Gornergrat railway opened in 1898. It was the first electric cog railway in Switzerland, and it&rsquo;s still the highest open-air cog railway in Europe. A toothed rack between the rails meshes with a cog wheel under the train, so it can climb grades no ordinary wheel on rail could manage. It runs year-round, carrying hikers in summer and skiers in winter.</p>
+    </aside>
+
+    <h2>Glaciers and Monte Rosa</h2>
+
+    <p>Look south-east from Gornergrat and the whole skyline is ice. Monte Rosa&rsquo;s Dufourspitze, at 4,634&nbsp;m the highest point in Switzerland, stands at the end of a wall of peaks over the Gorner Glacier, the second-largest glacier in the Alps. All the glaciers on the board come from OpenStreetMap. The diorama keeps the ice off the very steepest faces, the way it is on the real mountain. The Gorner Glacier is shrinking fast. A board like this one, built every week from fresh map data, will slowly show it.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/zermatt-diorama/gornergrat.jpg.w1600.webp" alt="Looking across the miniature Gorner Glacier toward Monte Rosa: broad white ice flowing between grey rock ridges, with the Gornergrat railway's trails in the foreground" loading="lazy" decoding="async" srcset="/img-opt/blog/img/zermatt-diorama/gornergrat.jpg.w640.webp 640w, /img-opt/blog/img/zermatt-diorama/gornergrat.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">The Gorner Glacier and Monte Rosa, from above Gornergrat.</p>
+    </div>
+
+    <h2>Cows, flowers and an alphorn</h2>
+
+    <p>In summer the herds go up to the high pastures, and the diorama has 275 cows in 18 herds between about 1,750 and 2,550&nbsp;m. Most are black Eringer cows, the local breed of the Valais, with some Brown Swiss mixed in, and all of them wear bells. Every so often you&rsquo;ll spot one dressed for the Alpabzug, with a tall headdress of flowers and a little fir on top, and a big Treichel bell on an embroidered strap. And at a few of the best viewpoints, a man in a red vest and black hat stands playing an alphorn toward the Matterhorn.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/zermatt-diorama/cows.jpg.w1600.webp" alt="A herd of black Eringer and brown cows grazing on a green pasture above Findeln in the miniature, a few of them wearing flower headdresses, with an alpine hut, larches and the Stellisee lake nearby" loading="lazy" decoding="async" srcset="/img-opt/blog/img/zermatt-diorama/cows.jpg.w640.webp 640w, /img-opt/blog/img/zermatt-diorama/cows.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">A herd above Findeln, with a few cows already dressed for the trip down.</p>
+    </div>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/zermatt-diorama/alphorn.jpg.w1600.webp" alt="A tiny alphorn player in a red vest and black hat on a grassy shoulder in the miniature, his long wooden horn resting on the ground, with a chairlift running up the slope behind him and a Swiss flag nearby" loading="lazy" decoding="async" srcset="/img-opt/blog/img/zermatt-diorama/alphorn.jpg.w640.webp 640w, /img-opt/blog/img/zermatt-diorama/alphorn.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">An alphorn player by the Riffelsee, turned to face the Matterhorn.</p>
+    </div>
+
+    <aside class="sidebar">
+      <p class="sidebar-kicker">&#128004; Culture</p>
+      <h3>Queens and the Alpabzug</h3>
+      <p>The Eringer cow is short, strong and black, and she likes a fight. Every spring in the Valais the cows settle who leads the herd by locking horns, and the winner is crowned the <em>reine</em>, the queen. The big festivals of these cow fights draw thousands of people. At the end of summer comes the Alpabzug, when the herds walk down from the high pastures to the valleys. The cows wear flowers and the biggest bells, and the queen gets the grandest headdress of all. The alphorn, a wooden horn about three and a half metres long, was once a herders&rsquo; instrument too, used to call across the valleys.</p>
+    </aside>
+
+    <h2>Ski season</h2>
+
+    <p>Flip the <em>Summer</em> switch off and it&rsquo;s winter. Snow comes down to the valley floor, the lakes freeze, the chalet roofs turn white and the larches go bare. The cows go home to their barns, and 243 ski runs appear, marked blue, red and black just like the piste map, with skiers carving their way down them. In summer the skiing doesn&rsquo;t stop completely: up on the glaciers below Klein Matterhorn the runs stay open all year, and the diorama keeps just those ones open in summer.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/zermatt-diorama/winter.jpg.w1600.webp" alt="The whole miniature Zermatt in winter: snow from the valley floor to the summits, the Matterhorn and the peaks around it white, and the lift lines and ski runs drawn across the slopes" loading="lazy" decoding="async" srcset="/img-opt/blog/img/zermatt-diorama/winter.jpg.w640.webp 640w, /img-opt/blog/img/zermatt-diorama/winter.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">The same board in ski season.</p>
+    </div>
+
+    <h2>Night in the village</h2>
+
+    <p>Slide the clock to <em>Night</em> and Zermatt glows. Every chalet has its own pattern of lit windows, the lift stations go quiet, and up on the Hörnli ridge the first headlamps start to move.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/zermatt-diorama/night.jpg.w1600.webp" alt="The miniature Zermatt at night, hundreds of chalet windows glowing warm yellow along the river under the dark wooded slopes" loading="lazy" decoding="async" srcset="/img-opt/blog/img/zermatt-diorama/night.jpg.w640.webp 640w, /img-opt/blog/img/zermatt-diorama/night.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">Zermatt after dark.</p>
+    </div>
+
+    <h2>How it&rsquo;s made</h2>
+
+    <p>This one starts with the best data I&rsquo;ve had for any of these. Since 2021 swisstopo, the Swiss federal mapping office, has given its data away free. That includes <a href="https://www.swisstopo.admin.ch/en/height-model-swissalti3d" target="_blank" rel="noopener">swissALTI3D</a>, a model of the whole country&rsquo;s ground surface on a 2&nbsp;m grid, in 1&nbsp;km tiles. The build script asks swisstopo&rsquo;s catalog for every tile in the box, about 250 of them, and resamples them onto an 18&nbsp;m grid for the diorama. The strip on the Italian side of the border, beyond swisstopo&rsquo;s coverage, is filled in from Terrain Tiles on AWS. Heights are stretched a quarter taller than life so the relief reads from above.</p>
+
+    <p>Everything else comes from OpenStreetMap: the lifts with every tower, the railway, the 243 ski runs and their colors, the glaciers, the lakes and streams, the woods, the trails, and the 2,620 buildings, which the code turns into chalets by fitting a box and a gabled roof to each footprint. The cows are placed on open pasture of the right height and slope, in herds. The alphorn players, the flags and the paragliders I placed by hand.</p>
+
+    <p>As before, I built it with Claude. I brought the ideas and the wish list (the cows were my idea), and Claude wrote the code. GitHub Actions builds and publishes it, and the film was rendered there too, split across 20 free computers. The code is on <a href="https://github.com/bdgroves/seattle-diorama" target="_blank" rel="noopener">GitHub</a>.</p>
+
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#128073; Start here</div>
+      <p><strong><a href="https://brooksgroves.com/seattle-diorama/?place=zermatt" target="_blank" rel="noopener">The live diorama</a></strong> &mdash; ride the train and the gondola, fly with a paraglider, flip to ski season. Seattle, Yosemite, Tuolumne Meadows, the Amalfi Coast and the Dakar are in the place picker too.</p>
+      <p><strong><a href="/blog/dakar-diorama-post.html">The Dakar in Miniature</a></strong>, <strong><a href="/blog/amalfi-diorama-post.html">The Amalfi Coast in Miniature</a></strong>, <strong><a href="/blog/yosemite-diorama-post.html">Yosemite in Miniature</a></strong> and <strong><a href="/blog/seattle-diorama-post.html">Seattle in Miniature</a></strong> &mdash; the others.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><a href="https://en.wikipedia.org/wiki/Matterhorn" target="_blank" rel="noopener">Wikipedia: Matterhorn</a> &middot; <a href="https://en.wikipedia.org/wiki/First_ascent_of_the_Matterhorn" target="_blank" rel="noopener">Wikipedia: First ascent of the Matterhorn</a> &middot; <a href="https://en.wikipedia.org/wiki/Zermatt" target="_blank" rel="noopener">Wikipedia: Zermatt</a></p>
+      <p><a href="https://en.wikipedia.org/wiki/Gornergrat_Railway" target="_blank" rel="noopener">Wikipedia: Gornergrat Railway</a> &middot; <a href="https://en.wikipedia.org/wiki/Gorner_Glacier" target="_blank" rel="noopener">Wikipedia: Gorner Glacier</a> &middot; <a href="https://en.wikipedia.org/wiki/Monte_Rosa" target="_blank" rel="noopener">Wikipedia: Monte Rosa</a></p>
+      <p><a href="https://en.wikipedia.org/wiki/H%C3%A9rens_cattle" target="_blank" rel="noopener">Wikipedia: Hérens (Eringer) cattle</a> &middot; <a href="https://en.wikipedia.org/wiki/Alphorn" target="_blank" rel="noopener">Wikipedia: Alphorn</a> &middot; <a href="https://en.wikipedia.org/wiki/Pyramidal_peak" target="_blank" rel="noopener">Wikipedia: Pyramidal peak</a></p>
+
+      <div class="sources-head">&#128202; Data &amp; tools</div>
+      <p><a href="https://www.swisstopo.admin.ch/en/height-model-swissalti3d" target="_blank" rel="noopener">swisstopo swissALTI3D</a> &mdash; the ground, &copy; swisstopo. &middot; <a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">Terrain Tiles on AWS</a> &mdash; the Italian side. &middot; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &mdash; lifts, railway, pistes, glaciers, buildings and names, &copy; OpenStreetMap contributors (ODbL). &middot; <a href="https://threejs.org/" target="_blank" rel="noopener">Three.js</a> &middot; <a href="https://github.com/bdgroves/seattle-diorama" target="_blank" rel="noopener">the code</a>.</p>
+    </div>
+
+  </div>
+
+
+  <script>
+    (function () {
+      var v = document.getElementById('zm-video');
+      function big() {
+        if (v.requestFullscreen) v.requestFullscreen();
+        else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
+        else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+      }
+      document.getElementById('zm-fullscreen').addEventListener('click', big);
+      v.addEventListener('dblclick', big);
+      document.getElementById('zm-embed-go').addEventListener('click', function () {
+        document.getElementById('zm-embed').innerHTML = '<iframe src="https://brooksgroves.com/seattle-diorama/?place=zermatt&view=overview" title="Zermatt and the Matterhorn in miniature, live 3D diorama" allow="fullscreen; clipboard-write" loading="eager"></iframe>';
+      });
+    })();
+  </script>
+
+  <div class="reactions-section">
+
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · October 2026</span>
+    <div class="article-footer-nav">
+      <a href="/blog/dakar-diorama-post.html">← The Dakar in Miniature</a>
+      <a href="/maps.html">Maps &amp; films</a>
+      <a href="/blog/index.html">All posts</a>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+<!-- KEEP-READING:START (generated by scripts/keep_reading.py; edit tags.html) -->
+<section class="keep-reading" aria-label="Keep reading">
+  <div class="kr-inner">
+    <div class="kr-head"><h2 class="kr-label">Keep reading</h2><a class="kr-more" href="/topics/earth/">More in 🌋 Volcanoes, Fossils &amp; Ruins &rarr;</a></div>
+    <div class="kr-grid">
+      <a class="kr-card" href="/blog/amalfi-diorama-post.html">
+        <img class="kr-img" src="/img-opt/blog/img/amalfi-diorama/og.jpg.w640.webp" alt="" loading="lazy" decoding="async" srcset="/img-opt/blog/img/amalfi-diorama/og.jpg.w640.webp 640w, /img-opt/blog/img/amalfi-diorama/og.jpg.w1600.webp 1600w" sizes="(max-width: 600px) 92vw, 400px">
+        <span class="kr-meta">Oct 29, 2026</span>
+        <span class="kr-title">🍋 The Amalfi Coast in Miniature: Capri, Ravello and the Road Above the Sea</span>
+        <span class="kr-dek">The little diorama engine crosses the Atlantic: the whole Amalfi Coast from open elevation data and OpenStreetMap, with Capri and the Faraglioni, Positano&#x27;s boats at anchor, lemon terraces, Ravello on its ridge, and a coast road you can ride, plus sidebars on the Bourbon road, the Blue Grotto, Amalfi&#x27;s sea republic and Wagner&#x27;s garden.</span>
+      </a>
+      <a class="kr-card" href="/blog/yosemite-diorama-post.html">
+        <img class="kr-img" src="/img-opt/blog/img/yosemite-diorama/og.jpg.w640.webp" alt="" loading="lazy" decoding="async" srcset="/img-opt/blog/img/yosemite-diorama/og.jpg.w640.webp 640w, /img-opt/blog/img/yosemite-diorama/og.jpg.w1600.webp 1600w" sizes="(max-width: 600px) 92vw, 400px">
+        <span class="kr-meta">Oct 29, 2026</span>
+        <span class="kr-title">🧗 Yosemite in Miniature: Granite, Waterfalls and the Climbers of Camp 4</span>
+        <span class="kr-dek">After Seattle, the little diorama engine went home to the Sierra: Yosemite Valley carved from USGS elevation data, with seven waterfalls traced down their real cliffs, Camp 4&#x27;s tents and lanterns, climbers&#x27; headlamps on El Capitan, and sidebars on the ice, granite and people that made the valley.</span>
+      </a>
+      <a class="kr-card" href="/blog/athabasca-melt-post.html">
+        <img class="kr-img" src="/img-opt/blog/img/athabasca-melt/og.jpg.w640.webp" alt="" loading="lazy" decoding="async">
+        <span class="kr-meta">Oct 17, 2026</span>
+        <span class="kr-title">🧊 The Athabasca Glacier, 1844 to 2100</span>
+        <span class="kr-dek">A 75-second forge3d film from the Icefield Centre lookout on the Icefields Parkway: the Athabasca Glacier from its 1844 Little Ice Age high stand to today, then on to 2100 with OGGM projections under three emissions scenarios, plus the Columbia Icefield, its three oceans and why the ice matters downstream.</span>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- KEEP-READING:END -->
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
+    </div>
+
+    <div class="footer-connect">
+      <div class="fc-label">Connect</div>
+      <div class="social-row">
+          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
+          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
+          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
+          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
+          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
+          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
+          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-pagelinks">
+      <div class="fc-label">More here</div>
+      <div class="pagelink-row">
+        <a href="/blog/index.html">Blog</a>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
+    <p class="footer-bottom">
+      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
+      <a href="#top">&uarr; Back to top</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this handles clicks and keeps the button's label truthful.
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function sync(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Describe what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  sync();
+  btn.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+<!-- Lightbox: click a figure to see it big; arrows step through, Esc closes -->
+<style>
+  .photo-block img{cursor:zoom-in}
+  .lb{position:fixed;inset:0;z-index:2147483000;background:rgba(18,16,13,.97);display:none;flex-direction:column;align-items:center;justify-content:center;padding:2vh 2vw;cursor:zoom-out}
+  .lb.open{display:flex}
+  .lb img{max-width:96vw;max-height:84vh;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.6);background:#111}
+  .lb p{color:#e9e2d4;font-family:'Libre Baskerville',Georgia,serif;font-size:15px;line-height:1.5;max-width:900px;text-align:center;margin:14px auto 0}
+  .lb button{position:absolute;background:rgba(0,0,0,.35);color:#f3ecdf;border:1px solid rgba(255,255,255,.25);border-radius:50%;width:44px;height:44px;font-size:22px;line-height:1;cursor:pointer}
+  .lb .lb-x{top:16px;right:16px}
+  .lb .lb-prev{left:16px;top:50%;margin-top:-22px}
+  .lb .lb-next{right:16px;top:50%;margin-top:-22px}
+  .lb button:hover{background:rgba(0,0,0,.6)}
+  .lb img{cursor:zoom-in}
+  .lb.zoomed{display:block;overflow:auto;padding:0}
+  .lb.zoomed img{max-width:none;max-height:none;cursor:zoom-out;display:block;margin:0 auto}
+  .lb.zoomed p{display:none}
+  .lb.zoomed button{position:fixed}
+</style>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged image">
+  <button class="lb-x" aria-label="Close">&times;</button>
+  <button class="lb-prev" aria-label="Previous image">&#8249;</button>
+  <img alt="">
+  <p></p>
+  <button class="lb-next" aria-label="Next image">&#8250;</button>
+</div>
+<script>
+(function () {
+  const imgs = [...document.querySelectorAll('.photo-block img')];
+  const lb = document.getElementById('lb'), big = lb.querySelector('img'), cap = lb.querySelector('p');
+  let i = 0, opener = null;
+  function show(n) {
+    lb.classList.remove('zoomed');
+    i = (n + imgs.length) % imgs.length;
+    const im = imgs[i], c = im.closest('.photo-block').querySelector('.photo-caption');
+    big.src = im.dataset.full || im.currentSrc || im.src; big.alt = im.alt;
+    cap.textContent = c ? c.textContent : '';
+  }
+  function open(n) { opener = document.activeElement; show(n); lb.classList.add('open'); document.body.style.overflow = 'hidden'; lb.querySelector('.lb-x').focus(); }
+  function close() { lb.classList.remove('open', 'zoomed'); document.body.style.overflow = ''; if (opener) opener.focus(); }
+  imgs.forEach((im, n) => {
+    im.tabIndex = 0; im.setAttribute('role', 'button'); im.title = 'Click to enlarge';
+    im.addEventListener('click', () => open(n));
+    im.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(n); } });
+  });
+  lb.addEventListener('click', e => {
+    if (e.target === big) {                      // click the picture: full size, scroll to look around
+      const r = big.getBoundingClientRect(), fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
+      lb.classList.toggle('zoomed');
+      if (lb.classList.contains('zoomed')) { lb.scrollLeft = fx * big.naturalWidth - innerWidth / 2; lb.scrollTop = fy * big.naturalHeight - innerHeight / 2; }
+      return;
+    }
+    if (e.target.closest('.lb-prev')) show(i - 1);
+    else if (e.target.closest('.lb-next')) show(i + 1);
+    else close();
+  });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(i - 1);
+    if (e.key === 'ArrowRight') show(i + 1);
+  });
+})();
+</script>
+<script src="/js/post.js" defer></script>
+<!-- ANALYTICS:START --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "6735f78105644b35a5b026c6e3c2b72a"}'></script><!-- ANALYTICS:END -->
+</body>
+</html>
