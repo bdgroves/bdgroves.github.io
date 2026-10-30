@@ -4,8 +4,8 @@
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <title>Dakar Rally 2027 — Brooks Groves</title>
- <meta name="description" content="Tracker for the 2027 Dakar Rally in Saudi Arabia, 1-15 January: 13 stages and 5,320 km of specials, out and back from King Abdullah Economic City.">
- <meta property="og:description" content="Tracker for the 2027 Dakar Rally in Saudi Arabia, 1-15 January: 13 stages and 5,320 km of specials, out and back from King Abdullah Economic City.">
+ <meta name="description" content="Tracker for the 2027 Dakar Rally, 9-23 January: a prologue in Portugal's Algarve, then 12 stages and 4,341 km of specials across Morocco to Marrakech.">
+ <meta property="og:description" content="Tracker for the 2027 Dakar Rally, 9-23 January: a prologue in Portugal's Algarve, then 12 stages and 4,341 km of specials across Morocco to Marrakech.">
   <meta property="og:image" content="https://brooksgroves.com/images/features/dakar-2027.jpg">
   <meta name="twitter:card" content="summary_large_image">
  <link rel="canonical" href="https://brooksgroves.com/dakar-2027.html">
@@ -141,6 +141,7 @@
  .stage-table .tba { color:var(--stone); font-style:italic; }
  .stage-table tr.marathon td { background:var(--dune-muted); }
  .stage-table tr.rest td { color:var(--stone); font-style:italic; }
+ .stage-table .stg-note { font-size:0.58rem; color:var(--stone); }
  .table-note { font-family:'DM Mono',monospace; font-size:0.58rem; color:var(--stone); line-height:1.7; margin:0 0 2rem; }
  .prev-win { display:flex; gap:0.7rem; padding:0.5rem 0; border-bottom:1px solid var(--mist); }
  .prev-win:last-of-type { border-bottom:none; }
@@ -166,14 +167,13 @@
     .route-map-wrap { margin:1.5rem 0 0.5rem; border:1px solid var(--mist); border-top:3px solid var(--dune); background:var(--cream); }
     #route-map { height:min(70vh,560px); background:#d9c7a6; }
     .route-map-cap { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.02em; color:var(--stone); padding:0.6rem 0.9rem; line-height:1.6; }
-    .route-pin { width:26px; height:26px; border-radius:50%; background:var(--dune); color:#fff; border:2px solid #fff; display:flex; align-items:center; justify-content:center; font:600 11px/1 'DM Mono',monospace; box-shadow:0 1px 4px rgba(0,0,0,.45); }
-    .route-pin.rest { background:#1c1a16; }
-    .route-pin.loop { background:#fff; color:var(--dune); border-color:var(--dune); }
+    .route-town { width:12px; height:12px; border-radius:50%; background:#f2b35e; border:2px solid #1c1a16; box-shadow:0 0 0 2px rgba(253,250,244,.85); }
+    .route-town.rest { background:#1c1a16; border-color:#f2b35e; }
+    .route-town.approx { background:transparent; border-color:#fdfaf4; border-style:dashed; box-shadow:none; }
+    .route-num { min-width:22px; height:22px; padding:0 4px; border-radius:11px; background:#1c1a16; color:#f2b35e; border:1.5px solid #f2b35e; display:flex; align-items:center; justify-content:center; font:600 10.5px/1 'DM Mono',monospace; box-shadow:0 1px 3px rgba(0,0,0,.5); }
+    .route-num.marathon { background:#8b3a2a; color:#fdfaf4; }
     .route-label { background:rgba(28,26,22,.82); color:#fdfaf4; border:0; box-shadow:none; font:500 11px/1.3 'DM Mono',monospace; padding:2px 6px; }
     .route-label::before { display:none; }
-    .route-order { margin:0.75rem 0 0; padding-left:1.2rem; font-size:0.85rem; color:var(--ink); }
-    .route-order li { margin:0.2rem 0; }
-    .route-order span { color:var(--stone); font-family:'DM Mono',monospace; font-size:0.7rem; }
   </style>
 <script>
   // Set the theme before first paint so there is no light flash on reload.
@@ -308,15 +308,15 @@
 
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-eyebrow">49th Edition &middot; Saudi Arabia</div>
+    <div class="hero-eyebrow">49th Edition &middot; Portugal &amp; Morocco</div>
     <h1 class="hero-title">Dakar Rally <span>2027</span></h1>
-    <p class="hero-sub">1&ndash;15 January 2027 &middot; King Abdullah Economic City, out and back</p>
+    <p class="hero-sub">9&ndash;23 January 2027 &middot; Loul&eacute;/Faro to Marrakech</p>
     <div class="hero-stats">
-      <div><div class="hero-stat-val">5,320</div><div class="hero-stat-label">km of specials</div></div>
-      <div><div class="hero-stat-val">13</div><div class="hero-stat-label">Stages</div></div>
-      <div><div class="hero-stat-val">515</div><div class="hero-stat-label">Longest stage (S10)</div></div>
-      <div><div class="hero-stat-val">2</div><div class="hero-stat-label">Marathon stages</div></div>
-      <div><div class="hero-stat-val">9</div><div class="hero-stat-label">Specials over 400km</div></div>
+      <div><div class="hero-stat-val">4,341</div><div class="hero-stat-label">km of specials</div></div>
+      <div><div class="hero-stat-val">7,824</div><div class="hero-stat-label">km in all</div></div>
+      <div><div class="hero-stat-val">12</div><div class="hero-stat-label">Stages + prologue</div></div>
+      <div><div class="hero-stat-val">500</div><div class="hero-stat-label">Longest special (S7)</div></div>
+      <div><div class="hero-stat-val">1</div><div class="hero-stat-label">Marathon stage</div></div>
     </div>
   </div>
 </div>
@@ -329,42 +329,45 @@
     <div class="section-head">The Route</div>
 
     <p class="intro">
-      The longest Dakar in eighteen years. Since the rally left Africa, only the first
-      South American edition has carried more competitive distance than the 5,320
-      kilometres of special stages waiting in Saudi Arabia this January.
+      The Dakar goes back to Africa. On 25 October ASO and the Saudi Motorsport
+      Company called off the Saudi edition over the instability in the Middle East, and five days later
+      ASO published the replacement: a start in Portugal&rsquo;s Algarve, a ferry
+      across the Mediterranean, and twelve stages across Morocco to Marrakech. It
+      is the first Dakar in Africa since 2007, and the last two African editions
+      started in Portugal too, from Lisbon. Saudi Arabia gets the rally back for
+      its 50th edition in 2028.
     </p>
 
     <p class="intro">
-      It starts and finishes in the same place &mdash; King Abdullah Economic City,
-      on the Red Sea north of Jeddah &mdash; and spends the fortnight in the country's
-      western and central regions rather than pushing east into the Empty Quarter.
-      Nine of the thirteen specials run beyond 400km. Stage 10 is the monster at 515.
+      The prologue runs at the Algarve stadium between Loul&eacute; and Faro on 9
+      January. Stage 1 heads east to the Strait of Gibraltar and an overnight ferry
+      to Nador, and a 590&nbsp;km transfer reaches Bou&acirc;rfa, near the Algerian
+      border, for two loop stages. Stage 4 crosses the Merzouga dunes to Zagora in
+      the Draa valley, and stage 6 runs west to Agadir and the rest day on the
+      Atlantic.
     </p>
 
     <p class="intro">
-      The order of the towns is out. From the Red Sea it heads north up the coast to
-      Yanbu and AlUla, turns inland for two stages around Ha&rsquo;il on the edge of the
-      Nafud, then runs south across the plateau through Al Duwadimi to a remote refuge
-      bivouac for the first marathon. The rest day is in Bisha, with long specials
-      looping out to Wadi Ad-Dawasir and back. The second marathon climbs from Bisha
-      into the Asir highlands at Al Bahah, and a long transfer brings everyone back to
-      the Red Sea.
+      The second week goes south. Stage 7 has the longest special of the rally,
+      500&nbsp;km from Agadir to Smara. From Smara the marathon goes out to a refuge
+      bivouac with no assistance and comes back the next day, and a loop follows.
+      Stage 11 is the longest day, 1,035&nbsp;km north to Marrakech, and a 22&nbsp;km
+      special there finishes it on 23 January. That&rsquo;s 4,341&nbsp;km of specials
+      in 7,824&nbsp;km, against 5,320&nbsp;km of specials in the Saudi plan; most
+      specials run between 350 and 500&nbsp;km.
     </p>
 
     <div class="route-map-wrap">
-      <div id="route-map" role="img" aria-label="Map of Saudi Arabia showing the announced Dakar 2027 bivouac towns in order, joined by a dashed loop from King Abdullah Economic City north to Yanbu, AlUla and Ha'il, south through Al Duwadimi to Bisha and Al Bahah, and back to the Red Sea."></div>
-      <p class="route-map-cap">The announced towns, in order, joined by straight dashed lines. It&rsquo;s a sketch of the loop, not the racing line: Dakar never publishes its tracks in advance, and crews get each day&rsquo;s roadbook the night before. The refuge bivouac&rsquo;s location hasn&rsquo;t been announced. Imagery &copy; Esri, Maxar, Earthstar Geographics.</p>
+      <div id="route-map" role="img" aria-label="Map of Portugal and Morocco showing the Dakar 2027 route: a prologue at Loulé/Faro, stage 1 east to the Strait of Gibraltar, a ferry transfer to Bouârfa, then stages through Zagora, Agadir and Smara, out to a refuge bivouac and back, and north to the finish in Marrakech."></div>
+      <p class="route-map-cap">Stages are numbered and drawn straight from town to town; rings mark loop stages that start and finish in the same town, and the dashed line is the untimed transfer. Each stage&rsquo;s special and liaisons share one line, because ASO publishes the distances but not the tracks, and crews get each day&rsquo;s roadbook the night before. The refuge bivouac and the ferry port haven&rsquo;t been named, so those two points (hollow) are read off ASO&rsquo;s route map. Imagery &copy; Esri, Maxar, Earthstar Geographics.</p>
     </div>
-    <ol class="route-order" id="route-order"></ol>
 
     <div class="note-box">
-      <strong>Still filling in.</strong> ASO announced the route outline in
-      May 2026 &mdash; the distances, the loop from King Abdullah Economic City, the
-      order of the towns, the rest day in Bisha and the two marathon stages. The
-      stage-by-stage breakdown, with each night&rsquo;s bivouac and each special&rsquo;s
-      length, is usually published in November or December. Everything below marked
-      <em>TBA</em> fills in then, and the stage table becomes a live tracker
-      once the rally starts.
+      <strong>Route published 30 October 2026.</strong> The stage towns and
+      distances below come from ASO&rsquo;s announcement, as reported by the FIA and
+      the press. The dates still need final approval from the FIA World Motor Sport
+      Council. Liaison distances are each stage&rsquo;s total minus its special. The
+      table becomes a live tracker once the rally starts.
     </div>
 
     <!-- ============ STAGES ============ -->
@@ -372,66 +375,76 @@
 
     <table class="stage-table">
       <thead>
-        <tr><th>#</th><th>Date</th><th>Special</th><th>Notes</th></tr>
+        <tr><th>#</th><th>Date</th><th>Route</th><th>Special</th><th>Total</th></tr>
       </thead>
       <tbody>
-        <tr><td class="stg-num">P</td><td>Thu 1 Jan</td><td>30 km</td><td>Prologue &mdash; sets the running order</td></tr>
-        <tr><td class="stg-num">1</td><td>Fri 2 Jan</td><td class="tba">TBA</td><td>Heads north up the Red Sea coast</td></tr>
-        <tr><td class="stg-num">2</td><td>Sat 3 Jan</td><td class="tba">TBA</td><td></td></tr>
-        <tr><td class="stg-num">3</td><td>Sun 4 Jan</td><td class="tba">TBA</td><td></td></tr>
-        <tr><td class="stg-num">4</td><td>Mon 5 Jan</td><td class="tba">TBA</td><td></td></tr>
-        <tr><td class="stg-num">5</td><td>Tue 6 Jan</td><td class="tba">TBA</td><td></td></tr>
-        <tr class="marathon"><td class="stg-num">6</td><td>Wed 7 Jan</td><td class="tba">TBA</td><td><strong>Marathon stage</strong> &mdash; no team assistance overnight</td></tr>
-        <tr class="marathon"><td class="stg-num">7</td><td>Thu 8 Jan</td><td class="tba">TBA</td><td>Marathon continues</td></tr>
-        <tr class="rest"><td class="stg-num">&mdash;</td><td>Fri 9 Jan</td><td>Rest day</td><td>Bisha</td></tr>
-        <tr><td class="stg-num">8</td><td>Sat 10 Jan</td><td class="tba">TBA</td><td></td></tr>
-        <tr><td class="stg-num">9</td><td>Sun 11 Jan</td><td class="tba">TBA</td><td></td></tr>
-        <tr><td class="stg-num">10</td><td>Mon 12 Jan</td><td><strong>515 km</strong></td><td>Longest special of the rally &middot; returns to Bisha</td></tr>
-        <tr class="marathon"><td class="stg-num">11</td><td>Tue 13 Jan</td><td class="tba">TBA</td><td><strong>Second marathon</strong> &mdash; leaves from Bisha</td></tr>
-        <tr class="marathon"><td class="stg-num">12</td><td>Wed 14 Jan</td><td class="tba">TBA</td><td>Marathon continues</td></tr>
-        <tr><td class="stg-num">13</td><td>Fri 15 Jan</td><td>50 km</td><td>Short final special into the finish</td></tr>
+        <tr><td class="stg-num">P</td><td>Sat 9 Jan</td><td>Loul&eacute;/Faro loop<br><span class="stg-note">Prologue, sets the starting order</span></td><td>29 km</td><td>129 km</td></tr>
+        <tr><td class="stg-num">1</td><td>Sun 10 Jan</td><td>Loul&eacute;/Faro &rarr; Strait of Gibraltar<br><span class="stg-note">Then the overnight ferry to Nador</span></td><td>100 km</td><td>300 km</td></tr>
+        <tr class="rest"><td class="stg-num">&mdash;</td><td>Mon 11 Jan</td><td>Strait of Gibraltar &rarr; Bou&acirc;rfa<br><span class="stg-note">Transfer: ferry to Nador and the road to Bou&acirc;rfa, not timed</span></td><td>&mdash;</td><td>590 km</td></tr>
+        <tr><td class="stg-num">2</td><td>Tue 12 Jan</td><td>Bou&acirc;rfa loop</td><td>390 km</td><td>490 km</td></tr>
+        <tr><td class="stg-num">3</td><td>Wed 13 Jan</td><td>Bou&acirc;rfa loop</td><td>410 km</td><td>490 km</td></tr>
+        <tr><td class="stg-num">4</td><td>Thu 14 Jan</td><td>Bou&acirc;rfa &rarr; Zagora<br><span class="stg-note">Through the Merzouga dunes</span></td><td>490 km</td><td>750 km</td></tr>
+        <tr><td class="stg-num">5</td><td>Fri 15 Jan</td><td>Zagora loop</td><td>365 km</td><td>540 km</td></tr>
+        <tr><td class="stg-num">6</td><td>Sat 16 Jan</td><td>Zagora &rarr; Agadir</td><td>365 km</td><td>760 km</td></tr>
+        <tr class="rest"><td class="stg-num">&mdash;</td><td>Sun 17 Jan</td><td>Rest day &middot; Agadir</td><td></td><td></td></tr>
+        <tr><td class="stg-num">7</td><td>Mon 18 Jan</td><td>Agadir &rarr; Smara<br><span class="stg-note">Longest special of the rally</span></td><td><strong>500 km</strong></td><td>790 km</td></tr>
+        <tr class="marathon"><td class="stg-num">8</td><td>Tue 19 Jan</td><td>Smara &rarr; Refuge bivouac<br><span class="stg-note">Marathon: the night at the refuge, no assistance</span></td><td>355 km</td><td>525 km</td></tr>
+        <tr class="marathon"><td class="stg-num">9</td><td>Wed 20 Jan</td><td>Refuge bivouac &rarr; Smara<br><span class="stg-note">Back to Smara and the mechanics</span></td><td>390 km</td><td>625 km</td></tr>
+        <tr><td class="stg-num">10</td><td>Thu 21 Jan</td><td>Smara loop</td><td>470 km</td><td>560 km</td></tr>
+        <tr><td class="stg-num">11</td><td>Fri 22 Jan</td><td>Smara &rarr; Marrakech<br><span class="stg-note">Longest day: 1,035 km</span></td><td>455 km</td><td><strong>1,035 km</strong></td></tr>
+        <tr><td class="stg-num">12</td><td>Sat 23 Jan</td><td>Marrakech loop<br><span class="stg-note">Short final special and the finish</span></td><td>22 km</td><td>240 km</td></tr>
       </tbody>
     </table>
 
     <p class="table-note">
-      Dates are laid out from the announced 1&ndash;15 January window and the
-      published stage count. Which stage ends in which town, and the exact
-      marathon pairings, will be confirmed with the detailed route.
+      Shaded rows are the marathon: stage 8 ends at the refuge bivouac and teams can&rsquo;t
+      help their crews until stage 9 is back in Smara. Totals add the liaisons, the road
+      sections to and from each special. All of it adds up to 4,341&nbsp;km of specials
+      and 7,824&nbsp;km in all, the figures ASO published.
     </p>
 
     <!-- ============ WATCH ============ -->
     <div class="section-head">Stages to Watch</div>
 
     <div class="key-stage">
-      <div class="key-stage-label">Stage 10 &middot; Monday 12 January</div>
-      <div class="key-stage-name">515 kilometres</div>
+      <div class="key-stage-label">Stage 4 &middot; Thursday 14 January</div>
+      <div class="key-stage-name">Bou&acirc;rfa to Zagora, through Merzouga</div>
       <div class="key-stage-desc">
-        The longest special of the rally, and the one that will decide it. Half a
-        thousand kilometres of navigation on the eleventh day, when everything is
-        already broken or nearly. It finishes back at Bisha, which then launches
-        the second marathon the following morning &mdash; so there is no recovery
-        built in behind it.
+        The first big day of sand: 490&nbsp;km of special that crosses the Merzouga
+        dunes, the Erg Chebbi, on the way to the Draa valley. It&rsquo;s the first
+        real test of the trucks.
       </div>
     </div>
 
     <div class="key-stage">
-      <div class="key-stage-label">The two marathons</div>
-      <div class="key-stage-name">No assistance, no mechanics, no spare parts</div>
+      <div class="key-stage-label">Stage 7 &middot; Monday 18 January</div>
+      <div class="key-stage-name">500 kilometres, straight after the rest day</div>
       <div class="key-stage-desc">
-        Marathon stages take the teams away overnight. Whatever breaks, the crew
-        fixes with what is on the vehicle, in a closed bivouac, before starting
-        again at dawn. Two of them in one rally is unusual, and the second one
-        lands in the last three days.
+        The longest special of the rally runs south from Agadir to Smara, the
+        morning after the rest day. Whatever the mechanics rebuilt in Agadir gets
+        tested here.
       </div>
     </div>
 
     <div class="key-stage">
-      <div class="key-stage-label">Stage 13 &middot; Friday 15 January</div>
-      <div class="key-stage-name">Fifty kilometres to the finish</div>
+      <div class="key-stage-label">Stages 8&ndash;9 &middot; 19&ndash;20 January</div>
+      <div class="key-stage-name">The refuge: no assistance, no mechanics</div>
       <div class="key-stage-desc">
-        A short final special, which sounds like a formality and is not. Last
-        January the bike title came down to <strong>two seconds</strong> after
-        two weeks of racing. A 50km stage is exactly long enough to lose one.
+        The rally&rsquo;s one marathon. Stage 8 ends at a refuge bivouac away from the
+        teams, and whatever breaks, the crew fixes with what&rsquo;s on the vehicle
+        before setting off again at dawn. Help is waiting back in Smara at the end
+        of stage 9, 745&nbsp;km of special later.
+      </div>
+    </div>
+
+    <div class="key-stage">
+      <div class="key-stage-label">Stage 11 &middot; Friday 22 January</div>
+      <div class="key-stage-name">1,035 kilometres to Marrakech</div>
+      <div class="key-stage-desc">
+        The longest day of the rally: a 455&nbsp;km special and 580&nbsp;km of road
+        from Smara north to Marrakech, the day before the finish. The last special
+        is only 22&nbsp;km, but last January the bike title came down to
+        <strong>two seconds</strong>, so even that one counts.
       </div>
     </div>
 
@@ -528,7 +541,8 @@
       <p class="hist">
         It ran to Senegal until 2007, moved to South America in 2009 after the
         Dakar route was cancelled over security, and has been in Saudi Arabia
-        since 2020.
+        since 2020. For 2027 it moves again, to Portugal and Morocco, before
+        going back to Saudi Arabia for the 50th edition in 2028.
       </p>
     </div>
 
@@ -593,37 +607,78 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-// The route map reads route_outline from /dakar.json: the announced towns in order.
-// When the detailed route comes out, add per-stage start/finish there and this draws them.
+// The route map reads `route` from /dakar.json: the stage towns, and each stage's
+// start and finish. ASO publishes towns and distances, not tracks, so stages are
+// drawn straight from town to town; a stage that starts and finishes in the same
+// town is a ring round it, and the untimed transfer is dashed.
 (function(){
   var el = document.getElementById('route-map');
   if (!el || !window.L) return;
   fetch('/dakar.json').then(function(r){ return r.json(); }).then(function(d){
-    var pts = (d.route_outline || {}).points || [];
+    var R = d.route || {}, towns = R.towns || {}, stages = R.stages || [];
     var map = L.map(el, { scrollWheelZoom:false, zoomSnap:0.25 });
     L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       maxZoom: 12, attribution: 'Imagery &copy; Esri, Maxar, Earthstar Geographics'
     }).addTo(map);
-    var main = [], loop = [], n = 0, bisha = null, list = document.getElementById('route-order');
-    pts.forEach(function(p){
-      var li = document.createElement('li');
-      li.innerHTML = p.name.replace(/'/g,'&rsquo;') + (p.note ? ' <span>&middot; ' + p.note.replace(/'/g,'&rsquo;') + '</span>' : '');
-      if (list) list.appendChild(li);
-      if (p.lat == null) return;
-      var ll = [p.lat, p.lon];
-      if (p.role === 'loop') { loop = [bisha, ll, bisha]; }
-      else { main.push(ll); if (p.name === 'Bisha') bisha = ll; }
-      if (p.role === 'finish') return;   // same place as the start
-      if (p.role !== 'loop') n += 1;
-      var cls = 'route-pin' + (p.role === 'rest' ? ' rest' : p.role === 'loop' ? ' loop' : '');
-      var label = p.role === 'start' ? 'S' : p.role === 'loop' ? '&#8635;' : String(n - 1);
-      L.marker(ll, { icon: L.divIcon({ className:'', html:'<div class="' + cls + '">' + label + '</div>', iconSize:[26,26], iconAnchor:[13,13] }) })
-        .bindTooltip(p.name + (p.role === 'start' ? ' (start & finish)' : p.role === 'rest' ? ' (rest day)' : ''), { permanent:true, direction:(p.label || 'right'), offset:[(p.label === 'left' ? -14 : 14),0], className:'route-label' })
+    var GOLD = '#f2b35e', INK = '#1c1a16', RING_M = 38000;
+    var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function day(iso){ var p = String(iso).split('-'); return (+p[2]) + ' ' + MON[+p[1] - 1]; }   // no Date(): a date-only string is UTC midnight
+    function ll(k){ var t = towns[k]; return [t.lat, t.lon]; }
+    function km(n){ return Number(n).toLocaleString('en-US') + ' km'; }
+    function badge(at, text, cls, tip){
+      L.marker(at, { icon: L.divIcon({ className:'', html:'<div class="route-num' + (cls ? ' ' + cls : '') + '">' + text + '</div>', iconSize:[24,22], iconAnchor:[12,11] }), zIndexOffset:500 })
+        .bindTooltip(tip, { direction:'top', offset:[0,-10], className:'route-label' }).addTo(map);
+    }
+    function line(a, b, dashed){
+      L.polyline([a, b], { color:INK, weight:6, opacity:0.45 }).addTo(map);
+      return L.polyline([a, b], { color:GOLD, weight:3, opacity:0.95, dashArray: dashed ? '8 7' : null }).addTo(map);
+    }
+    function tip(s){
+      var a = towns[s.from].name, b = towns[s.to].name;
+      var head = (s.n === 'P' ? 'Prologue' : 'Stage ' + s.n) + ' &middot; ' + day(s.date);
+      var where = s.from === s.to ? a + ' loop' : a + ' &rarr; ' + b;
+      return head + '<br>' + where + '<br>' + km(s.special_km) + ' special &middot; ' + km(s.total_km) + ' in all';
+    }
+
+    // stages between towns; a pair driven more than once (out to the refuge and back) spreads its numbers along the line
+    var pairs = {}, loops = {}, bounds = [];
+    stages.forEach(function(s){
+      if (s.kind === 'rest' || !towns[s.from] || !towns[s.to]) return;
+      if (s.from === s.to) { (loops[s.from] = loops[s.from] || []).push(s); return; }
+      var key = [s.from, s.to].sort().join('|');
+      (pairs[key] = pairs[key] || []).push(s);
+    });
+    Object.keys(pairs).forEach(function(key){
+      var list = pairs[key], a = ll(list[0].from), b = ll(list[0].to);
+      line(a, b, list[0].kind === 'transfer');
+      bounds.push(a, b);
+      list.forEach(function(s, i){
+        if (s.kind === 'transfer') return;
+        var f = (i + 1) / (list.length + 1);       // along the first stage's direction, so out and back don't land on one spot
+        badge([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f], s.n, s.marathon ? 'marathon' : '', tip(s));
+      });
+    });
+    // loop stages: one ring per town, its stage numbers on top
+    Object.keys(loops).forEach(function(k){
+      var c = ll(k), list = loops[k];
+      L.circle(c, { radius:RING_M, color:INK, weight:6, opacity:0.45, fill:false }).addTo(map);
+      L.circle(c, { radius:RING_M, color:GOLD, weight:3, opacity:0.95, fill:false }).addTo(map);
+      var top = [c[0] + RING_M / 111320, c[1]];
+      badge(top, list.map(function(s){ return s.n; }).join('&middot;'), '', list.map(tip).join('<br><br>'));
+    });
+    // towns
+    Object.keys(towns).forEach(function(k){
+      var t = towns[k], at = ll(k);
+      bounds.push(at);
+      var cls = 'route-town' + (t.role === 'rest' ? ' rest' : '') + (t.approx ? ' approx' : '');
+      var name = t.name + (t.role === 'rest' ? ' (rest day)' : t.role === 'finish' ? ' (finish)' : k === 'algarve' ? ' (start)' : '');
+      L.marker(at, { icon: L.divIcon({ className:'', html:'<div class="' + cls + '"></div>', iconSize:[12,12], iconAnchor:[6,6] }), zIndexOffset:400 })
+        .bindTooltip(name, { permanent:true, direction:(t.label || 'right'), offset:({ left:[-10,0], top:[0,-8], bottom:[0,8] })[t.label] || [10,0], className:'route-label' })
         .addTo(map);
     });
-    var line = L.polyline(main, { color:'#f2b35e', weight:3, dashArray:'8 7', opacity:0.95 }).addTo(map);
-    if (loop.length && loop[0]) L.polyline(loop, { color:'#fdfaf4', weight:2.5, dashArray:'2 6', opacity:0.95 }).addTo(map);
-    map.fitBounds(line.getBounds().pad(0.12));
+    // room at the sides for the town names
+    var side = Math.round(Math.min(120, el.clientWidth * 0.22));
+    map.fitBounds(L.latLngBounds(bounds), { paddingTopLeft:[side, 34], paddingBottomRight:[side, 16] });
   }).catch(function(){ el.style.display = 'none'; });
 })();
 </script>
