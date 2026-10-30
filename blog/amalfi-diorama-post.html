@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Amalfi Coast in Miniature: Capri, Ravello and the Road Above the Sea — Brooks Groves</title>
+  <link rel="canonical" href="https://brooksgroves.com/blog/amalfi-diorama-post.html">
+  <meta name="description" content="A tilt-and-spin 3D diorama of the Amalfi Coast: Capri, Positano, Amalfi and Ravello from real elevation data and OpenStreetMap, with ferries, boats at anchor, lemon terraces, a coast road you can ride, and the history and science of the coast.">
+  <meta property="og:title" content="The Amalfi Coast in Miniature: Capri, Ravello and the Road Above the Sea">
+  <meta property="og:description" content="Fly a miniature Amalfi Coast: ride the coast road from Positano, take the ferry to Capri, and watch the towns light up at night, from open elevation data and OpenStreetMap.">
+  <meta property="og:image" content="https://brooksgroves.com/blog/img/amalfi-diorama/og.jpg">
+  <meta property="og:url" content="https://brooksgroves.com/blog/amalfi-diorama-post.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@bdgroves">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍋</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1c1a16; --parchment: #f5f0e8; --cream: #ede8dc;
+      --sage: #4a5c45; --rust: #8b3a2a; --stone: #7a7268;
+      --gold: #c8922a; --mist: #d6d0c4; --white: #fdfaf4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--parchment); color: var(--ink); font-family: 'Libre Baskerville', Georgia, serif; font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+    .topline { height: 4px; background: linear-gradient(90deg, var(--rust) 0%, var(--gold) 50%, var(--sage) 100%); }
+
+    header { border-bottom: 2px solid var(--ink); padding: 0 clamp(1.5rem,5vw,4rem); position: sticky; top: 0; background: var(--parchment); z-index: 100; }
+    .masthead-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 1400px; margin: 0 auto; padding: 0.75rem 0; }
+    .site-name { font-family: 'Playfair Display', serif; font-size: clamp(1.1rem,2.5vw,1.5rem); font-weight: 900; text-decoration: none; color: var(--ink); }
+    nav { display: flex; gap: clamp(0.8rem,2.5vw,2rem); align-items: center; flex-wrap: wrap; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    nav a:hover { color: var(--rust); }
+    nav a.github { border: 1px solid var(--mist); padding: 0.3rem 0.7rem; color: var(--ink); }
+    nav a.github:hover { background: var(--ink); color: var(--parchment); }
+
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); display: inline-block; margin-bottom: 2rem; transition: color 0.2s; }
+    .article-back:hover { color: var(--rust); }
+    .article-kicker { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem,5vw,3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .article-meta { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; margin-bottom: 1rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+
+    .article-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; padding-bottom: 2rem; border-bottom: 1px solid var(--mist); margin-bottom: 2.5rem; }
+    .article-tag-pill { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); border: 1px solid var(--mist); padding: 0.3rem 0.7rem; border-radius:4px; transition: background 0.2s, color 0.2s; 
+      text-decoration: none; display: inline-block;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .article-tag-pill:hover { background: var(--ink); color: var(--parchment); border-color: var(--ink); }
+
+    .article-body { font-size: 1.05rem; line-height: 1.85; }
+    .article-body p { margin-bottom: 1.5rem; }
+    .article-body h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; margin: 2.5rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--mist); line-height: 1.2; }
+    .article-body h2 em { font-style: italic; color: var(--rust); }
+    .article-body hr { border: none; border-top: 1px solid var(--mist); margin: 2.5rem 0; }
+    .article-body a { color: var(--rust); text-decoration: underline; text-underline-offset: 3px; }
+    .article-body a:hover { color: var(--ink); }
+    .article-body strong { font-weight: 700; }
+    .article-body em { font-style: italic; }
+    .article-body code { font-family: 'DM Mono', monospace; font-size: 0.85em; background: var(--cream); padding: 0.15em 0.4em; border-radius: 2px; }
+    .article-body pre { background: var(--ink); color: #c8d0cc; padding: 1.25rem 1.5rem; border-radius: 2px; overflow-x: auto; margin: 1.5rem 0 2rem; font-family: 'DM Mono', monospace; font-size: 0.82rem; line-height: 1.65; }
+    .article-body pre code { background: none; padding: 0; font-size: 1em; color: inherit; }
+    .article-body ul { padding-left: 1.5rem; margin-bottom: 1.5rem; }
+    .article-body ul li { margin-bottom: 0.4rem; }
+
+    .photo-block { margin: 2.5rem 0; }
+    .photo-block img { width: 100%; display: block; border: 1px solid var(--mist); }
+    .photo-caption { font-family: 'DM Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em; color: var(--stone); margin-top: 0.6rem; text-align: center; line-height: 1.6; }
+
+    .reactions-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--mist); }
+    .reactions-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; }
+
+    .article-footer { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .article-footer-author { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--stone); letter-spacing: 0.1em; }
+    .article-footer-nav { display: flex; gap: 1.5rem; }
+    .article-footer-nav a { font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .article-footer-nav a:hover { color: var(--rust); }
+
+    footer { background: var(--ink); color: var(--stone); padding: clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top: 4rem; }
+    .footer-inner { max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+    .footer-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+    .footer-tagline { font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--stone); margin-top: 0.2rem; letter-spacing: 0.08em; }
+    .footer-tagline a { color: var(--stone); text-decoration: none; transition: color 0.2s; }
+    .footer-tagline a:hover { color: var(--gold); }
+    .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'DM Mono', monospace; font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; color: var(--stone); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .photo-block video { width: 100%; display: block; border: 1px solid var(--mist); background: #0b1020; cursor: zoom-in; }
+    .video-actions { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.8rem; }
+    .video-actions a, .video-actions button { font-family: 'DM Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink); background: none; border: 1px solid var(--mist); padding: 0.45rem 0.9rem; cursor: pointer; text-decoration: none; transition: border-color 0.2s, color 0.2s; }
+    .video-actions a:hover, .video-actions button:hover { border-color: var(--rust); color: var(--rust); }
+    .step-list { margin: 1.2rem 0 1.5rem 1.2rem; }
+    .step-list li { margin-bottom: 0.7rem; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.8rem; margin: 2rem 0 2.2rem; }
+    .stat { border: 1px solid var(--mist); padding: 0.9rem 1rem 0.8rem; text-align: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 2.1rem; line-height: 1; color: var(--rust); }
+    .stat-label { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--stone); margin-top: 0.45rem; line-height: 1.5; }
+    .photo-block.narrow { max-width: 540px; margin-left: auto; margin-right: auto; }
+      .sources { margin:1.4rem 0 2rem; }
+    .sources a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--sand,#c8b89a);
+      text-underline-offset:3px; transition:color .15s, text-decoration-color .15s; }
+    .sources a:hover { color:var(--rust,#8b3a2a); text-decoration-color:currentColor; }
+    .sources-head {
+      font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--stone);
+      margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist);
+    }
+    .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
+    .sources p {
+      font-size:0.82rem; line-height:1.85; color:var(--stone);
+      margin:0 0 0.9rem; padding-left:1rem; border-left:2px solid var(--mist);
+    }
+    .diorama-embed { position: relative; aspect-ratio: 16 / 10; border: 1px solid var(--mist); background: #e9e2d6; overflow: hidden; }
+    .photo-block .diorama-embed img, .diorama-embed img { position: absolute; inset: 0; width: 100%; height: 100% !important; object-fit: cover; display: block; filter: saturate(0.9) brightness(0.92); border: none; }
+    .diorama-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .diorama-embed button { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--parchment); background: var(--ink); border: none; padding: 0.9rem 1.4rem; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.25); transition: background .2s; }
+    .diorama-embed button:hover { background: var(--rust); }
+    .sidebar { margin: 2.2rem 0 2.4rem; padding: 1.3rem 1.5rem 0.6rem; background: var(--cream); border-left: 3px solid var(--gold); border-radius: 2px; }
+    .sidebar-kicker { font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rust); margin-bottom: 0.35rem !important; }
+    .sidebar h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; margin: 0 0 0.75rem; line-height: 1.25; }
+    .sidebar p, .sidebar li { font-size: 0.92rem; line-height: 1.75; }
+    .sidebar p { margin-bottom: 0.9rem; }
+    .sidebar ul { margin-bottom: 0.9rem; }
+    [data-theme="dark"] .sidebar { background: rgba(255,255,255,0.05); }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav class="site-nav" aria-label="Main">
+      <div class="sn-item"><a href="/work/">Work</a>
+        <div class="sn-drop">
+          <span class="sn-label">By field</span>
+          <a href="/meteorology.html">🌩 Meteorology</a>
+          <a href="/hydrology.html">💧 Hydrology</a>
+          <a href="/geospatial.html">🗺 Geospatial</a>
+          <a href="/volcanology.html">🌋 Volcanology</a>
+          <a href="/paleontology.html">🦕 Paleontology</a>
+          <a href="/ecology.html">🌿 Ecology</a>
+          <a href="/geology.html">🪨 Geology</a>
+          <a href="/archaeology.html">🏺 Archaeology</a>
+          <span class="sn-label">Projects</span>
+          <a href="https://brooksgroves.com/mother-lode/" target="_blank" rel="noopener">⛏️ Mother Lode</a>
+          <a href="https://brooksgroves.com/project-kiva" target="_blank" rel="noopener">🏺 Project Kiva</a>
+          <a href="https://brooksgroves.com/lidar-explore/" target="_blank" rel="noopener">🌲 LiDAR Explore</a>
+          <a href="/hoplove/">🍺 HopLove</a>
+          <a href="https://brooksgroves.com/little-free-pantry" target="_blank" rel="noopener">🏠 Little Free Pantry</a>
+          <span class="sn-label">Bots</span>
+          <a href="/blog/bdgrovesbot.html">🔥 BdgrovesBot (parked)</a>
+          <a href="/blog/alert-bots-revisited-post.html">🌙 The weather bots (on standby)</a>
+          <a href="https://github.com/bdgroves" target="_blank" rel="noopener">The code, on GitHub ↗</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/writing/" aria-current="page">Writing</a>
+        <div class="sn-drop">
+          <a href="/blog/">📝 Blog</a>
+          <a href="/writing/">📖 All writing</a>
+          <a href="/tags.html">🏷️ Posts by topic</a>
+          <span class="sn-label">Learning</span>
+          <a href="/learning/">📚 All curricula</a>
+          <a href="/learning/quantum-physics/">⚛️ Quantum Physics</a>
+          <a href="/learning/volcanology/">🌋 Volcanology</a>
+          <a href="/learning/desert-montane-ecosystems/">🌵 Desert &amp; Montane Ecosystems</a>
+          <a href="/learning/ecogeomorphology/">🌊 Ecogeomorphology</a>
+          <a href="/learning/grunge/">🎸 Grunge</a>
+          <a href="/learning/reggae/">🎵 Reggae</a>
+          <a href="/learning/afropop/">🌍 Afropop</a>
+          <a href="/learning/punk/">🎸 Punk Rock</a>
+          <a href="/learning/newwave/">🎹 New Wave</a>
+          <span class="sn-label">Stories 🔒</span>
+          <a href="https://memoir.brooksgroves.com">📜 Memoir</a>
+          <a href="https://westin.brooksgroves.com">🏨 Westin Stories</a>
+          <a href="https://journal.brooksgroves.com">✈️ Journal</a>
+          <a href="https://y2k.brooksgroves.com" target="_blank" rel="noopener">💾 Y2K Archive</a>
+          <a href="/recipes.html">🍳 Recipes</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/maps.html">Maps &amp; films</a>
+        <div class="sn-drop">
+          <a href="/maps.html">🧭 All the maps</a>
+          <a href="https://brooksgroves.com/30DayMapChallenge/2026/" target="_blank" rel="noopener">🗺️ #30DayMapChallenge 2026</a>
+          <span class="sn-label">Flyover films</span>
+          <a href="/blog/seattle-diorama-post.html">🏙️ Seattle in Miniature</a>
+          <a href="/blog/amalfi-diorama-post.html">🍋 The Amalfi Coast in Miniature</a>
+          <a href="/blog/yosemite-diorama-post.html">🧗 Yosemite in Miniature</a>
+          <a href="/blog/athabasca-melt-post.html">🧊 The Athabasca Glacier, 1844 to 2100</a>
+          <a href="/blog/icefields-flyover-post.html">🏔️ The Icefields Parkway</a>
+          <a href="/blog/ruby-flyover-post.html">💎 The Ruby Mountains</a>
+          <a href="/blog/mono-flyover-post.html">🌋 Mono Basin</a>
+          <a href="/blog/yosemite-flyover-post.html">🧗 Yosemite</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/live/">Live data</a>
+        <div class="sn-drop">
+          <span class="sn-label">Updating on their own</span>
+          <a href="/secchi/">🔵 secchi: Lake Tahoe</a>
+          <a href="https://brooksgroves.com/rainier-snowpack" target="_blank" rel="noopener">❄️ Rainier Snowpack</a>
+          <a href="https://brooksgroves.com/PELE" target="_blank" rel="noopener">🌋 PELE: Kīlauea</a>
+          <a href="https://brooksgroves.com/lahar-watch" target="_blank" rel="noopener">🌋 lahar-watch</a>
+          <a href="https://brooksgroves.com/aftershock" target="_blank" rel="noopener">🌍 AFTERSHOCK</a>
+          <a href="https://brooksgroves.com/sierra-streamflow" target="_blank" rel="noopener">💧 Sierra Streamflow</a>
+          <a href="https://brooksgroves.com/puget-tides/" target="_blank" rel="noopener">🌊 PUGET-TIDES</a>
+          <a href="https://brooksgroves.com/fog-watch/" target="_blank" rel="noopener">🌫️ FOG-WATCH</a>
+          <a href="https://brooksgroves.com/solstice" target="_blank" rel="noopener">☀️ SOLSTICE</a>
+          <a href="https://brooksgroves.com/weather-station" target="_blank" rel="noopener">🌡️ Weather Station</a>
+          <a href="https://brooksgroves.com/Alpine-watch/" target="_blank" rel="noopener">🏔️ ALPINE-WATCH</a>
+          <a href="https://brooksgroves.com/cypress-dome-watch/" target="_blank" rel="noopener">🌳 Cypress Domes</a>
+          <a href="https://brooksgroves.com/sentinel-stockpile/" target="_blank" rel="noopener">🛰️ Sentinel Stockpile</a>
+          <a href="https://brooksgroves.com/EDGAR" target="_blank" rel="noopener">⚾ EDGAR</a>
+        </div>
+      </div>
+      <div class="sn-item sn-end"><a href="/outside.html">Outside</a>
+        <div class="sn-drop">
+          <a href="/outside.html">🏔 Outside</a>
+          <a href="/concerts.html">🎫 Concerts</a>
+          <a href="/games.html">🎲 Games</a>
+          <a href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener">📕 Reading</a>
+        </div>
+      </div>
+      <div class="sn-item sn-end"><a href="/about.html">About</a>
+        <div class="sn-drop">
+          <a href="/about.html">👤 About me</a>
+          <span class="sn-label">Connect</span>
+          <a href="mailto:contact@brooksgroves.com" class="sn-contact">✉︎ contact@brooksgroves.com</a>
+          <a href="https://github.com/bdgroves" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="https://x.com/bdgroves" target="_blank" rel="noopener">X / Twitter ↗</a>
+          <a href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener">Bluesky ↗</a>
+          <a href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener">Strava ↗</a>
+          <a href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener">Untappd ↗</a>
+          <a href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener">Goodreads ↗</a>
+        </div>
+      </div>
+      <form class="nav-search" action="/search/" role="search"><input type="search" name="q" placeholder="Search" aria-label="Search brooksgroves.com" autocomplete="off"><button type="submit" aria-label="Search">⌕</button></form>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+
+  <a href="/blog/index.html" class="article-back">&larr; Back to Blog</a>
+
+  <p class="article-kicker">Amalfi Coast · Italy · Capri · Ravello · Three.js · OpenStreetMap</p>
+  <h1 class="article-title">&#127819; The Amalfi Coast in Miniature: Capri, Ravello and the Road Above the Sea</h1>
+  <div class="article-meta">
+    <span>October 29, 2026</span>
+    <span>Brooks Groves</span>
+    <span>12 min read</span>
+  </div>
+
+  <div class="article-tags">
+    <a href="/tags.html#Amalfi%20Coast" class="article-tag-pill">Amalfi Coast</a>
+    <a href="/tags.html#Italy" class="article-tag-pill">Italy</a>
+    <a href="/tags.html#Travel" class="article-tag-pill">Travel</a>
+    <a href="/tags.html#Geology" class="article-tag-pill">Geology</a>
+    <a href="/tags.html#History" class="article-tag-pill">History</a>
+    <a href="/tags.html#3D" class="article-tag-pill">3D</a>
+    <a href="/tags.html#Three.js" class="article-tag-pill">Three.js</a>
+    <a href="/tags.html#OpenStreetMap" class="article-tag-pill">OpenStreetMap</a>
+  </div>
+
+  <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/blog/img/amalfi-diorama/og.jpg.w1600.webp" alt="" decoding="async" fetchpriority="high" srcset="/img-opt/blog/img/amalfi-diorama/og.jpg.w640.webp 640w, /img-opt/blog/img/amalfi-diorama/og.jpg.w1600.webp 1600w" sizes="(max-width: 1140px) 100vw, 1100px"></figure><!-- POST-COVER:END -->
+  <div class="article-body">
+
+    <p>First it was a little tabletop <a href="/blog/seattle-diorama-post.html">Seattle</a>, then <a href="/blog/yosemite-diorama-post.html">Yosemite Valley</a>. Both are home ground for me. For the next one I wanted somewhere I simply love, and two places came to mind straight away: Ravello, up on its ridge above the sea, and the island of Capri. They sit at opposite ends of the same stretch of coast, so the choice made itself. Here is the whole Amalfi Coast, in miniature.</p>
+
+    <p>It runs from Capri and the tip of the Sorrento peninsula in the west, past Positano, Praiano, Furore, Amalfi and Atrani, to Ravello and Minori in the east. The cliffs come out of real elevation data, the sea sparkles, ferries cross to Capri, boats sit at anchor off the little beaches, and you can ride along the coast road itself. It runs in the browser. Spin it, tilt it from high above down to sea level, and watch the towns light up at night.</p>
+
+    <div class="photo-block">
+      <video id="ad-video" autoplay muted loop playsinline controls preload="metadata"
+             poster="/blog/img/amalfi-diorama/poster.jpg"
+             aria-label="A 60-second flight over a miniature Amalfi Coast. It opens wide on the whole coast in morning light, swings past Capri and the Faraglioni, follows a ferry, drops in over Positano and its anchored boats, rides the coast road east past Praiano and Furore, comes to Amalfi and up to Ravello in golden light, and ends at night with the towns and boats lit">
+        <source src="/blog/img/amalfi-diorama/amalfi-diorama.mp4" type="video/mp4">
+      </video>
+      <div class="video-actions">
+        <button type="button" id="ad-fullscreen">&#10530; Full screen</button>
+        <a href="/blog/img/amalfi-diorama/amalfi-diorama-1080.mp4" target="_blank">&#9654; Watch in HD (1080p)</a>
+        <a href="https://brooksgroves.com/seattle-diorama/?place=amalfi" target="_blank" rel="noopener">&#9673; Fly it yourself</a>
+      </div>
+      <p class="photo-caption">The Amalfi Coast, morning to night, in high summer · Terrain Tiles on AWS (SRTM / EU-DEM) · OpenStreetMap · rendered in Three.js on GitHub&rsquo;s free computers</p>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num">37 km</div><div class="stat-label">Of coast road<br>you can ride</div></div>
+      <div class="stat"><div class="stat-num">180+</div><div class="stat-label">Ferries, yachts<br>and sailboats</div></div>
+      <div class="stat"><div class="stat-num">3,600</div><div class="stat-label">Beach umbrellas<br>in high summer</div></div>
+      <div class="stat"><div class="stat-num">45,000</div><div class="stat-label">Buildings, from<br>OpenStreetMap</div></div>
+    </div>
+
+    <h2>Try it first</h2>
+
+    <p>Drag to spin it, scroll to zoom, and tilt it from a map view right down to the water. <em>Fly to</em> takes you to Capri and the Faraglioni, Positano, the Path of the Gods, the Fiordo di Furore, Amalfi and Atrani, Ravello, or the little Li Galli islands. Under <em>Ride along</em>, <em>Drive the Amalfi Coast road</em> puts you behind a car leaving Positano, and <em>Ferry to Capri</em> follows a boat across the water. The <em>High summer</em> switch puts out the beach umbrellas and fills the bays with boats; switch it off for a quiet October, with the chestnut woods turning gold up on the mountains. There&rsquo;s a <em>Rain</em> button too, for a Mediterranean squall.</p>
+
+    <div class="photo-block">
+      <div class="diorama-embed" id="ad-embed">
+        <img src="/img-opt/blog/img/amalfi-diorama/overview.jpg.w1600.webp" alt="" loading="lazy" decoding="async" srcset="/img-opt/blog/img/amalfi-diorama/overview.jpg.w640.webp 640w, /img-opt/blog/img/amalfi-diorama/overview.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+        <button type="button" id="ad-embed-go">&#9654;&nbsp; Explore the live diorama here</button>
+      </div>
+      <p class="photo-caption">Loads the live 3D coast right in this page (about 15 MB of data, so give it a moment) · or <a href="https://brooksgroves.com/seattle-diorama/?place=amalfi" target="_blank" rel="noopener">open it full screen</a></p>
+    </div>
+
+    <h2>Mountains that fall into the sea</h2>
+
+    <p>What strikes you first about the Amalfi Coast is how little flat ground there is. The Lattari Mountains rise straight out of the sea to more than 4,700 feet, and the towns cling to the gaps where a steep valley meets the water. In the diorama the sea is see-through, so you can watch the land keep falling away under the water: pale sand in the shallows, then turquoise, then deep blue.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/amalfi-diorama/overview.jpg.w1600.webp" alt="The whole miniature Amalfi Coast from above the Gulf of Salerno: the green Sorrento peninsula and Lattari Mountains rising out of a deep blue sea, with Capri off its western tip and the layered walls of the slab below" loading="lazy" decoding="async" srcset="/img-opt/blog/img/amalfi-diorama/overview.jpg.w640.webp 640w, /img-opt/blog/img/amalfi-diorama/overview.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">The whole coast, with Capri off the tip of the Sorrento peninsula and the Lattari Mountains running east.</p>
+    </div>
+
+    <aside class="sidebar">
+      <p class="sidebar-kicker">&#129704; The science</p>
+      <h3>A mountain range made in a warm sea</h3>
+      <p><strong>The rock is limestone.</strong> The Lattari Mountains are the backbone of the Sorrento peninsula, the western end of the Campanian Apennines. They are built mostly of limestone and dolomite laid down on the floor of a warm, shallow sea in the age of the dinosaurs, the same kind of rock as a coral island.</p>
+      <p><strong>Then the mountains rose.</strong> As Africa pushed north into Europe and the Apennines were built, those sea-floor layers were lifted thousands of feet and broken by faults. The coast you see is largely a set of fault scarps, which is why the cliffs drop so far, so fast, straight into the sea.</p>
+      <p><strong>Water carves the rest.</strong> Limestone dissolves, slowly, in rainwater, so the coast is full of caves, sea grottos and narrow gorges. The Blue Grotto on Capri and the Grotta dello Smeraldo near Conca dei Marini are both drowned caves.</p>
+      <p><strong>And the name?</strong> &ldquo;Lattari&rdquo; comes from the Latin for milk, after the goats that grazed the high pastures. The cheeses still come from up there.</p>
+    </aside>
+
+    <h2>The road above the sea</h2>
+
+    <p>The coast road, the SS163 Amalfitana, might be the most famous drive in Italy. It&rsquo;s a narrow ribbon cut into the cliffs, all hairpins and sudden views, with the sea a long way down on one side and the mountain on the other. Hop in with <em>Drive the Amalfi Coast road</em> and you set off east from Positano, past Praiano and the gorge at Furore, around the headlands to Amalfi and on toward Minori. In the diorama it&rsquo;s about 37 kilometers of road, pulled straight from OpenStreetMap and stitched into one line.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/amalfi-diorama/path-of-the-gods.jpg.w640.webp" alt="Looking up the miniature coast from above the sea toward Positano, Praiano and Furore in warm afternoon light, the coast road and the roads up to Agerola winding across steep green slopes, with Monte Sant'Angelo a Tre Pizzi above" loading="lazy" decoding="async" srcset="/img-opt/blog/img/amalfi-diorama/path-of-the-gods.jpg.w640.webp 640w, /img-opt/blog/img/amalfi-diorama/path-of-the-gods.jpg.w1600.webp 1600w" sizes="(max-width: 600px) 92vw, 400px">
+      <p class="photo-caption">Positano to Furore from the sea, with the coast road along the cliffs and the high road up to Agerola above.</p>
+    </div>
+
+    <aside class="sidebar">
+      <p class="sidebar-kicker">&#128739;&#65039; History</p>
+      <h3>The Bourbon road</h3>
+      <p>For most of its history the Amalfi Coast was easier to reach by boat than by land. The towns were linked by mule tracks and long flights of stone steps. The road came in the 19th century, under the Bourbon kings of Naples:</p>
+      <ul>
+        <li><strong>1832:</strong> Work began on a carriage road along the cliffs.</li>
+        <li><strong>1835:</strong> King Ferdinand II approved the route, and it was named the Strada Ferdinandea in his honor.</li>
+        <li><strong>1850:</strong> The work was finished.</li>
+        <li><strong>1853:</strong> The road was formally opened on January 12.</li>
+      </ul>
+      <p>Today it runs about 50 kilometers, from Meta near Sorrento to Vietri sul Mare. The buses still squeeze past each other on the bends with a few inches to spare, horns going.</p>
+    </aside>
+
+    <h2>Positano, and the boats</h2>
+
+    <p>Positano tumbles down its hillside to the beach in a stack of pastel houses. John Steinbeck wrote about it for <em>Harper&rsquo;s Bazaar</em> in 1953, and his line has been on postcards ever since: &ldquo;Positano bites deep. It is a dream place that isn&rsquo;t quite real when you are there and becomes beckoningly real after you have gone.&rdquo;</p>
+
+    <p>In the diorama the beach is lined with orange umbrellas in high summer, and the bay is full of boats: yachts and sailboats rocking at anchor, and ferries coming and going from the pier with white wakes behind them. They run the real ferry lines from OpenStreetMap, and stop at the ports before heading back out. Switch the season off and most of the boats and every one of the umbrellas go away.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/amalfi-diorama/positano.jpg.w1600.webp" alt="Close-up of miniature Positano: pastel houses stacked up a green hillside above a beach lined with umbrellas, a white ferry with its wake at the pier, and yachts and sailboats at anchor in the turquoise bay" loading="lazy" decoding="async" srcset="/img-opt/blog/img/amalfi-diorama/positano.jpg.w640.webp 640w, /img-opt/blog/img/amalfi-diorama/positano.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">Positano in high summer: the umbrellas, the ferry at the pier and the boats at anchor.</p>
+    </div>
+
+    <h2>Capri</h2>
+
+    <p>Capri sits off the end of the peninsula, a limestone island with cliffs all the way around. Two high points hold it up, Monte Solaro above Anacapri in the west and the ridge of Villa Jovis in the east, with the town of Capri in the saddle between. Off its south-east corner stand the Faraglioni, three great rock stacks rising out of the sea. Every ferry in the diorama seems to be heading for Marina Grande.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/amalfi-diorama/capri.jpg.w1600.webp" alt="The island of Capri in the miniature sea, its limestone cliffs and green slopes rising to Monte Solaro, with boats at anchor near the Faraglioni and ferries crossing the deep blue water" loading="lazy" decoding="async" srcset="/img-opt/blog/img/amalfi-diorama/capri.jpg.w640.webp 640w, /img-opt/blog/img/amalfi-diorama/capri.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">Capri, with Monte Solaro on the left, Villa Jovis on the far ridge, and boats at anchor by the Faraglioni.</p>
+    </div>
+
+    <aside class="sidebar">
+      <p class="sidebar-kicker">&#127963;&#65039; History</p>
+      <h3>An emperor&rsquo;s island</h3>
+      <p>Capri has been a getaway for a very long time. Augustus took it from Naples in exchange for the bigger island of Ischia, and stayed there often. His successor Tiberius moved there for good in 27 AD and ruled the Roman Empire from the island for the last ten years of his life. He built twelve villas. The grandest, Villa Jovis, sits on the island&rsquo;s eastern cliffs, and its ruins are still there. Roman writers told wild stories about what went on at Villa Jovis, but many historians now think Tiberius lived a fairly quiet, private life.</p>
+    </aside>
+
+    <aside class="sidebar">
+      <p class="sidebar-kicker">&#129704; The science</p>
+      <h3>Why the Blue Grotto glows</h3>
+      <p>The Grotta Azzurra is a sea cave on Capri&rsquo;s north-west coast. The way in is a hole in the cliff only about 2 meters wide and 1 meter high at low tide, so you lie flat in a little rowboat while the boatman pulls you through on a chain.</p>
+      <p>Inside, the water glows an electric blue. That&rsquo;s because most of the daylight doesn&rsquo;t come through the doorway at all. It comes through a much bigger opening below the waterline, and on its way through the seawater the red light is soaked up, leaving the blue. Tiberius is said to have used the cave as a private swimming pool and sea temple. It was famously &ldquo;rediscovered&rdquo; for travelers in 1826 by the German writer August Kopisch and the painter Ernst Fries, guided there by a local fisherman, Angelo Ferraro.</p>
+    </aside>
+
+    <h2>Li Galli, the islands of the Sirens</h2>
+
+    <p>Out in the bay west of Positano are three tiny islands called Li Galli. Legend says they were home to the Sirens, whose songs lured sailors onto the rocks, and Odysseus had himself tied to the mast to sail past them. In more recent times they belonged to dancers: the choreographer L&eacute;onide Massine bought the largest one in 1922, and Rudolf Nureyev bought the islands in 1988 and spent his last years there. Today they&rsquo;re private. You can&rsquo;t land, but boats anchor around them and people swim in the clear water, just as they do in the diorama.</p>
+
+    <h2>The Path of the Gods</h2>
+
+    <p>High above Positano, the Sentiero degli Dei runs along the mountainside from Bomerano, in Agerola, to Nocelle, about 8 kilometers. It&rsquo;s one of the great walks of Europe, with the whole coast and Capri laid out far below. Italo Calvino described it as a road &ldquo;suspended over the magical gulf of the Sirens.&rdquo; In the diorama you can fly to it, then tip the view down and see the coast the way the walkers do.</p>
+
+    <h2>Lemons on the terraces</h2>
+
+    <p>Look closely at the slopes and you&rsquo;ll see they&rsquo;re striped. The farmers here have been building terraces for nearly a thousand years, stair after stair of dry-stone walls holding up little strips of flat ground on mountainsides that are much too steep to farm otherwise. Many of them grow lemons. In the diorama the orchards and garden terraces get those stripes, rows of small round lemon trees, umbrella pines and scrubby maquis lower down, and chestnut and oak woods up on the mountains.</p>
+
+    <aside class="sidebar">
+      <p class="sidebar-kicker">&#127819; Food &amp; farming</p>
+      <h3>The Sfusato Amalfitano</h3>
+      <p>The Amalfi lemon, the <em>Sfusato Amalfitano</em>, is long and pointed, with a thick, fragrant skin and sweet, juicy flesh. It has adapted over centuries to the steep slopes and the sea air.</p>
+      <ul>
+        <li><strong>How it got here:</strong> lemons reached the coast in the early Middle Ages through Arab trade. Sailors carried them against scurvy.</li>
+        <li><strong>How it&rsquo;s grown:</strong> on terraces held up by dry-stone walls 3 to 7 meters high, built without cement. The trees grow under pergolas of chestnut poles cut in the woods above, and the branches are tied to the frame so the heavy fruit doesn&rsquo;t snap them.</li>
+        <li><strong>Recognized:</strong> in August 2025 the UN Food and Agriculture Organization named the Amalfi lemon gardens a Globally Important Agricultural Heritage System.</li>
+      </ul>
+      <p>Most of them end up in limoncello, of course.</p>
+    </aside>
+
+    <h2>Amalfi, the old sea power</h2>
+
+    <p>Amalfi itself is small today, a town of a few thousand people squeezed into one steep valley, with the great striped cathedral of Sant&rsquo;Andrea at the top of its stairs. But a thousand years ago it was one of the great powers of the Mediterranean.</p>
+
+    <aside class="sidebar">
+      <p class="sidebar-kicker">&#9875; History</p>
+      <h3>The Maritime Republic of Amalfi</h3>
+      <ul>
+        <li><strong>839:</strong> Amalfi broke away from Byzantine control. It became an independent sea-trading republic, ruled by its own elected dukes from 958.</li>
+        <li><strong>Around the year 1000:</strong> At its height, the city and its territory had perhaps 70,000 people. Its merchants traded with Constantinople, Egypt and the whole eastern Mediterranean.</li>
+        <li><strong>The Amalfi Tables:</strong> Its code of maritime law, the <em>Tavola Amalfitana</em>, was used by port cities across the Mediterranean and still recognized until 1570.</li>
+        <li><strong>Paper:</strong> Amalfi learned papermaking from the Arabs and was one of the first places in Europe to make it. You can still visit an old paper mill there.</li>
+        <li><strong>The compass:</strong> Tradition says an Amalfitan named Flavio Gioia brought the mariner&rsquo;s compass to Europe. Historians doubt he existed, but his statue stands on the waterfront anyway.</li>
+        <li><strong>1343:</strong> A tsunami destroyed the harbor and the lower town. Amalfi never recovered its old power.</li>
+      </ul>
+      <p>In 1997 the whole Costiera Amalfitana was added to UNESCO&rsquo;s World Heritage list.</p>
+    </aside>
+
+    <h2>Ravello, above it all</h2>
+
+    <p>Ravello is the one I love most. It sits on a ridge about 1,200 feet above Amalfi and Minori, quiet and green, with two famous gardens hanging over the edge. In the diorama it&rsquo;s at its best in golden light, with the shadows filling the valleys on either side.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/amalfi-diorama/ravello.jpg.w1600.webp" alt="Ravello on its green ridge in the miniature coast in warm evening light, with Atrani and Amalfi at the water's edge below on the left, Minori on the right, and the roads winding up the valleys between them" loading="lazy" decoding="async" srcset="/img-opt/blog/img/amalfi-diorama/ravello.jpg.w640.webp 640w, /img-opt/blog/img/amalfi-diorama/ravello.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">Ravello on its ridge, with Amalfi and Atrani down at the sea on the left and Minori on the right.</p>
+    </div>
+
+    <aside class="sidebar">
+      <p class="sidebar-kicker">&#127932; Music &amp; gardens</p>
+      <h3>Villa Rufolo and Villa Cimbrone</h3>
+      <p><strong>Villa Rufolo</strong> dates back to the 13th century and the Rufolo family, rich merchants who even turn up in Boccaccio&rsquo;s <em>Decameron</em>. In 1880 Richard Wagner visited, and was so taken with the gardens that he saw in them the magic garden of Klingsor for his opera <em>Parsifal</em>. Concerts are still held on a stage hung out over the cliff, every summer, in his honor.</p>
+      <p><strong>Villa Cimbrone</strong>, at the far end of the ridge, was remade in the early 1900s by an Englishman, Ernest Beckett, Lord Grimthorpe. Its gardens end at the Terrace of Infinity, a row of marble busts along a balcony with nothing in front of it but sea and sky. Greta Garbo hid out there in 1938. Gore Vidal, who lived just below at La Rondinaia from 1972 to 2004, called the view from that terrace the most beautiful he had seen in all his travels.</p>
+    </aside>
+
+    <h2>Night on the coast</h2>
+
+    <p>My favorite moment is the end of the day. Slide the clock to <em>Night</em> and the windows light up in Positano, Amalfi and up on the ridge at Ravello, the ferries run lit across the bay, and every boat at anchor shows its little white light on the dark water.</p>
+
+    <div class="photo-block">
+      <img src="/img-opt/blog/img/amalfi-diorama/positano-night.jpg.w1600.webp" alt="Positano at night in the miniature coast: the town's windows glowing on the dark hillside, a lit ferry leaving the pier, and small white anchor lights scattered across the dark blue bay" loading="lazy" decoding="async" srcset="/img-opt/blog/img/amalfi-diorama/positano-night.jpg.w640.webp 640w, /img-opt/blog/img/amalfi-diorama/positano-night.jpg.w1600.webp 1600w" sizes="(max-width: 760px) 100vw, 760px">
+      <p class="photo-caption">Positano after dark, with anchor lights across the bay.</p>
+    </div>
+
+    <h2>How it&rsquo;s made</h2>
+
+    <p>It&rsquo;s the same little engine as my Seattle and Yosemite dioramas, with one big new thing in it: the sea. The U.S. Geological Survey data I used for Yosemite stops at the border, so for Italy the land comes from <a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">Terrain Tiles on AWS</a>, which stitch together SRTM and EU-DEM elevation, on a 35-meter grid. The coastline comes from OpenStreetMap, and the script uses it to split land from sea cell by cell.</p>
+
+    <p>The seabed takes a little make-believe. At this level of detail the elevation tiles are flat at sea level over the water, so I shaped the seabed from each spot&rsquo;s distance to shore, shelving off steeply the way the real coast does. It looks right, but it isn&rsquo;t surveyed. The rest comes from OpenStreetMap too: about 45,000 buildings, the roads and paths, the beaches (where the umbrellas go), the orchards (where the lemons go), the ferry lines and the names.</p>
+
+    <p>The browser does the drawing in Three.js: the terrain, the layered rock of the slab, the water with its ripples, the boats and their wakes, the cars, and Vesuvius standing on the horizon to the north, with Ischia off to the west. GitHub Actions builds and publishes it all, and the film was rendered there too, split across 20 free computers. As before I built it with Claude: I brought the places and the love for them, and Claude wrote the code. The code is on <a href="https://github.com/bdgroves/seattle-diorama" target="_blank" rel="noopener">GitHub</a>.</p>
+
+    <hr>
+
+    <h2>Go deeper</h2>
+
+    <div class="sources">
+      <div class="sources-head">&#128073; Start here</div>
+      <p><strong><a href="https://brooksgroves.com/seattle-diorama/?place=amalfi" target="_blank" rel="noopener">The live diorama</a></strong> &mdash; ride the coast road, take the ferry to Capri, flip the season. Seattle, Yosemite, Tuolumne Meadows and Mono Lake are in the place picker too.</p>
+      <p><strong><a href="/blog/yosemite-diorama-post.html">Yosemite in Miniature</a></strong> and <strong><a href="/blog/seattle-diorama-post.html">Seattle in Miniature</a></strong> &mdash; the first two.</p>
+
+      <div class="sources-head">&#128196; Read</div>
+      <p><a href="https://en.wikipedia.org/wiki/Monti_Lattari" target="_blank" rel="noopener">Wikipedia: Monti Lattari</a> &middot; <a href="https://it.wikipedia.org/wiki/Strada_statale_163_Amalfitana" target="_blank" rel="noopener">Wikipedia (Italian): the SS163 Amalfitana</a> &middot; <a href="https://positano.discovercampania.it/en/to-visit/agerola-positano-il-sentiero-degli-dei" target="_blank" rel="noopener">Discover Campania: the Path of the Gods</a></p>
+      <p><a href="https://en.wikipedia.org/wiki/History_of_Capri" target="_blank" rel="noopener">Wikipedia: History of Capri</a> &middot; <a href="https://en.wikipedia.org/wiki/Blue_Grotto_(Capri)" target="_blank" rel="noopener">Wikipedia: Blue Grotto</a> &middot; <a href="https://en.wikipedia.org/wiki/Il_Gallo_Lungo" target="_blank" rel="noopener">Wikipedia: Il Gallo Lungo (Li Galli)</a></p>
+      <p><a href="https://www.fao.org/newsroom/story/the-amalfi-lemon-and-its-layered-resilient-landscape/en" target="_blank" rel="noopener">FAO: The Amalfi lemon and its layered, resilient landscape</a> &middot; <a href="https://en.wikipedia.org/wiki/Amalfi" target="_blank" rel="noopener">Wikipedia: Amalfi</a> &middot; <a href="https://whc.unesco.org/en/list/830/" target="_blank" rel="noopener">UNESCO: Costiera Amalfitana</a></p>
+      <p><a href="https://en.wikipedia.org/wiki/Villa_Rufolo" target="_blank" rel="noopener">Wikipedia: Villa Rufolo</a> &middot; <a href="https://en.wikipedia.org/wiki/Villa_Cimbrone" target="_blank" rel="noopener">Wikipedia: Villa Cimbrone</a> &middot; <a href="https://en.wikipedia.org/wiki/La_Rondinaia" target="_blank" rel="noopener">Wikipedia: La Rondinaia</a></p>
+
+      <div class="sources-head">&#128202; Data &amp; tools</div>
+      <p><a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener">Terrain Tiles on AWS</a> &mdash; the land (SRTM, EU-DEM). &middot; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &mdash; coastline, buildings, roads, beaches, ferry lines and names, &copy; OpenStreetMap contributors (ODbL). &middot; <a href="https://threejs.org/" target="_blank" rel="noopener">Three.js</a> &middot; <a href="https://github.com/bdgroves/seattle-diorama" target="_blank" rel="noopener">the code</a>.</p>
+    </div>
+
+  </div>
+
+  <script>
+    (function () {
+      var v = document.getElementById('ad-video');
+      function big() {
+        if (v.requestFullscreen) v.requestFullscreen();
+        else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
+        else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();
+      }
+      document.getElementById('ad-fullscreen').addEventListener('click', big);
+      v.addEventListener('dblclick', big);
+      document.getElementById('ad-embed-go').addEventListener('click', function () {
+        document.getElementById('ad-embed').innerHTML = '<iframe src="https://brooksgroves.com/seattle-diorama/?place=amalfi&view=overview" title="The Amalfi Coast in miniature, live 3D diorama" allow="fullscreen; clipboard-write" loading="eager"></iframe>';
+      });
+    })();
+  </script>
+
+  <div class="reactions-section">
+
+    <p class="reactions-label">Reactions</p>
+    <script src="https://giscus.app/client.js"
+      data-repo="bdgroves/bdgroves.github.io"
+      data-repo-id="R_kgDONOdl8w"
+      data-category="Announcements"
+      data-category-id="DIC_kwDONOdl884C5uM2"
+      data-mapping="pathname"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="en"
+      crossorigin="anonymous"
+      async>
+    </script>
+  </div>
+
+  <div class="article-footer">
+    <span class="article-footer-author">Brooks Groves · October 2026</span>
+    <div class="article-footer-nav">
+      <a href="/blog/yosemite-diorama-post.html">← Yosemite in Miniature</a>
+      <a href="/maps.html">Maps &amp; films</a>
+      <a href="/blog/index.html">All posts</a>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+<!-- KEEP-READING:START (generated by scripts/keep_reading.py; edit tags.html) -->
+<section class="keep-reading" aria-label="Keep reading">
+  <div class="kr-inner">
+    <div class="kr-head"><h2 class="kr-label">Keep reading</h2><a class="kr-more" href="/topics/earth/">More in 🌋 Volcanoes, Fossils &amp; Ruins &rarr;</a></div>
+    <div class="kr-grid">
+      <a class="kr-card" href="/blog/yosemite-diorama-post.html">
+        <img class="kr-img" src="/img-opt/blog/img/yosemite-diorama/og.jpg.w640.webp" alt="" loading="lazy" decoding="async" srcset="/img-opt/blog/img/yosemite-diorama/og.jpg.w640.webp 640w, /img-opt/blog/img/yosemite-diorama/og.jpg.w1600.webp 1600w" sizes="(max-width: 600px) 92vw, 400px">
+        <span class="kr-meta">Oct 29, 2026</span>
+        <span class="kr-title">🧗 Yosemite in Miniature: Granite, Waterfalls and the Climbers of Camp 4</span>
+        <span class="kr-dek">After Seattle, the little diorama engine went home to the Sierra: Yosemite Valley carved from USGS elevation data, with seven waterfalls traced down their real cliffs, Camp 4&#x27;s tents and lanterns, climbers&#x27; headlamps on El Capitan, and sidebars on the ice, granite and people that made the valley.</span>
+      </a>
+      <a class="kr-card" href="/blog/athabasca-melt-post.html">
+        <img class="kr-img" src="/img-opt/blog/img/athabasca-melt/og.jpg.w640.webp" alt="" loading="lazy" decoding="async">
+        <span class="kr-meta">Oct 17, 2026</span>
+        <span class="kr-title">🧊 The Athabasca Glacier, 1844 to 2100</span>
+        <span class="kr-dek">A 75-second forge3d film from the Icefield Centre lookout on the Icefields Parkway: the Athabasca Glacier from its 1844 Little Ice Age high stand to today, then on to 2100 with OGGM projections under three emissions scenarios, plus the Columbia Icefield, its three oceans and why the ice matters downstream.</span>
+      </a>
+      <a class="kr-card" href="/blog/mother-lode-post.html">
+        <img class="kr-img" src="/img-opt/images/features/mother-lode-hero.jpg.w640.webp" alt="" loading="lazy" decoding="async" srcset="/img-opt/images/features/mother-lode-hero.jpg.w640.webp 640w, /img-opt/images/features/mother-lode-hero.jpg.w1600.webp 1600w" sizes="(max-width: 600px) 92vw, 400px">
+        <span class="kr-meta">Oct 6, 2026</span>
+        <span class="kr-title">⛏️ Mother Lode: The Holes in the Hills Where I Grew Up</span>
+        <span class="kr-dek">I grew up in Groveland, in a county where the hills are full of holes. So I counted them: 1,040 shafts, adits and prospect pits from the old USGS topo maps, laid over bare-earth lidar. Columbia’s limestone rock gardens, the flooded Harvard pit, and old tailings that now sit out on Don Pedro Reservoir.</span>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- KEEP-READING:END -->
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
+    </div>
+
+    <div class="footer-connect">
+      <div class="fc-label">Connect</div>
+      <div class="social-row">
+          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
+          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
+          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
+          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
+          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
+          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
+          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-pagelinks">
+      <div class="fc-label">More here</div>
+      <div class="pagelink-row">
+        <a href="/blog/index.html">Blog</a>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
+    <p class="footer-bottom">
+      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
+      <a href="#top">&uarr; Back to top</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this handles clicks and keeps the button's label truthful.
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function sync(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Describe what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  sync();
+  btn.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+<!-- Lightbox: click a figure to see it big; arrows step through, Esc closes -->
+<style>
+  .photo-block img{cursor:zoom-in}
+  .lb{position:fixed;inset:0;z-index:2147483000;background:rgba(18,16,13,.97);display:none;flex-direction:column;align-items:center;justify-content:center;padding:2vh 2vw;cursor:zoom-out}
+  .lb.open{display:flex}
+  .lb img{max-width:96vw;max-height:84vh;object-fit:contain;box-shadow:0 8px 40px rgba(0,0,0,.6);background:#111}
+  .lb p{color:#e9e2d4;font-family:'Libre Baskerville',Georgia,serif;font-size:15px;line-height:1.5;max-width:900px;text-align:center;margin:14px auto 0}
+  .lb button{position:absolute;background:rgba(0,0,0,.35);color:#f3ecdf;border:1px solid rgba(255,255,255,.25);border-radius:50%;width:44px;height:44px;font-size:22px;line-height:1;cursor:pointer}
+  .lb .lb-x{top:16px;right:16px}
+  .lb .lb-prev{left:16px;top:50%;margin-top:-22px}
+  .lb .lb-next{right:16px;top:50%;margin-top:-22px}
+  .lb button:hover{background:rgba(0,0,0,.6)}
+  .lb img{cursor:zoom-in}
+  .lb.zoomed{display:block;overflow:auto;padding:0}
+  .lb.zoomed img{max-width:none;max-height:none;cursor:zoom-out;display:block;margin:0 auto}
+  .lb.zoomed p{display:none}
+  .lb.zoomed button{position:fixed}
+</style>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Enlarged image">
+  <button class="lb-x" aria-label="Close">&times;</button>
+  <button class="lb-prev" aria-label="Previous image">&#8249;</button>
+  <img alt="">
+  <p></p>
+  <button class="lb-next" aria-label="Next image">&#8250;</button>
+</div>
+<script>
+(function () {
+  const imgs = [...document.querySelectorAll('.photo-block img')];
+  const lb = document.getElementById('lb'), big = lb.querySelector('img'), cap = lb.querySelector('p');
+  let i = 0, opener = null;
+  function show(n) {
+    lb.classList.remove('zoomed');
+    i = (n + imgs.length) % imgs.length;
+    const im = imgs[i], c = im.closest('.photo-block').querySelector('.photo-caption');
+    big.src = im.dataset.full || im.currentSrc || im.src; big.alt = im.alt;
+    cap.textContent = c ? c.textContent : '';
+  }
+  function open(n) { opener = document.activeElement; show(n); lb.classList.add('open'); document.body.style.overflow = 'hidden'; lb.querySelector('.lb-x').focus(); }
+  function close() { lb.classList.remove('open', 'zoomed'); document.body.style.overflow = ''; if (opener) opener.focus(); }
+  imgs.forEach((im, n) => {
+    im.tabIndex = 0; im.setAttribute('role', 'button'); im.title = 'Click to enlarge';
+    im.addEventListener('click', () => open(n));
+    im.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(n); } });
+  });
+  lb.addEventListener('click', e => {
+    if (e.target === big) {                      // click the picture: full size, scroll to look around
+      const r = big.getBoundingClientRect(), fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height;
+      lb.classList.toggle('zoomed');
+      if (lb.classList.contains('zoomed')) { lb.scrollLeft = fx * big.naturalWidth - innerWidth / 2; lb.scrollTop = fy * big.naturalHeight - innerHeight / 2; }
+      return;
+    }
+    if (e.target.closest('.lb-prev')) show(i - 1);
+    else if (e.target.closest('.lb-next')) show(i + 1);
+    else close();
+  });
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(i - 1);
+    if (e.key === 'ArrowRight') show(i + 1);
+  });
+})();
+</script>
+<script src="/js/post.js" defer></script>
+<!-- ANALYTICS:START --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "6735f78105644b35a5b026c6e3c2b72a"}'></script><!-- ANALYTICS:END -->
+</body>
+</html>
