@@ -46,6 +46,7 @@ SIBLING_REPOS = ("hoplove/", "secchi/", "PELE/", "aftershock/", "solstice/", "pr
                  "mother-lode/", "fog-watch/", "rainier-snowpack/", "ridgeline/")
 # Hand-picked card images, by site path; these win over og:image.
 IMAGE_OVERRIDES = {
+    "/blog/dakar-diorama-post.html": "/blog/img/dakar-diorama/og.jpg",
     "/blog/amalfi-diorama-post.html": "/blog/img/amalfi-diorama/og.jpg",
     "/blog/yosemite-diorama-post.html": "/blog/img/yosemite-diorama/og.jpg",
     "/blog/seattle-diorama-post.html": "/blog/img/seattle-diorama/og.jpg",
