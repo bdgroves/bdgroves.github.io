@@ -60,7 +60,7 @@ def variants(src: str):
             mode = "RGBA" if alpha else "RGB"
             base = im.convert(mode)
             for W in WIDTHS:
-                if W > w and out:
+                if out and max(out) >= w:              # already have it at full size
                     break
                 tw = min(W, w)
                 dst = OUT / (src.lstrip("/") + f".w{W}.webp")
@@ -119,6 +119,8 @@ def rewrite(page: Path, s: str) -> str:
         if len(ws) > 1:
             tag = set_attr(tag, "srcset", ", ".join(f"{v[w]} {w}w" for w in ws))
             tag = set_attr(tag, "sizes", SIZES[kind])
+        else:                                      # one size only: drop any stale srcset pointing at files that don't exist
+            tag = re.sub(r'\s(?:srcset|sizes)="[^"]*"', "", tag)
         if "loading=" not in tag and "fetchpriority" not in tag:
             tag = set_attr(tag, "loading", "lazy")
         if "decoding=" not in tag:
