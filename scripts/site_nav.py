@@ -58,7 +58,7 @@ def door_for(rel: str) -> str | None:
         return "Writing"
     if rel.startswith("topics/"):
         return "Writing"
-    if rel.startswith(("work/", "radio/")):
+    if rel.startswith(("work/", "radio/", "outpost/")):
         return "Work"
     if rel.startswith("live/"):
         return "Live data"
