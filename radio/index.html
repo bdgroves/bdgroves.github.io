@@ -3,31 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>South Sound Channel Plan — Brooks Groves</title>
-  <meta name="description" content="Pick the ham radio repeaters you can reach around Tacoma and Lakewood on a range scope, then download a free CHIRP file that programs almost any radio.">
-  <meta property="og:title" content="South Sound Channel Plan">
-  <meta property="og:description" content="South Sound ham repeaters on a range scope, exported as a free CHIRP file that programs almost any radio.">
+  <title>On the Air: Ham Radio — Brooks Groves</title>
+  <meta name="description" content="Ham radio from Lakewood, WA: the path to a General license, a live grey-line map with the ISS, beam headings to anywhere, ISS pass times, and the HF bands General opens up.">
+  <meta property="og:title" content="On the Air: Ham Radio">
+  <meta property="og:description" content="The path to a General license, a live grey-line map with the ISS, beam headings to anywhere, and ISS passes over Lakewood.">
   <meta property="og:url" content="https://brooksgroves.com/radio/">
   <meta property="og:image" content="https://brooksgroves.com/images/features/site-og.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://brooksgroves.com/radio/">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📻</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600;1,900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
     :root {
       --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
       --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
       --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sky:#2a4a6b;
-      /* one colour per band, drawn from the almanac palette */
-      --band-6:#6b4a7a; --band-2:var(--sage); --band-125:#9a6d14; --band-70:var(--sky); --band-wx:var(--rust); --band-sx:var(--stone);
+      /* the night band at the top stays dark in both themes, like a map of the sky side of the planet */
+      --night:#0e1317; --night-2:#161d22; --night-line:#2a3238; --night-ink:#f1ebdf; --night-dim:#a69d8e; --ember:#e8805f; --lamp:#d9a63f;
+      --cw:#2a4a6b; --ph:#4a5c45; --ex:#d6d0c4;
     }
     [data-theme="dark"] {
       --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
       --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
       --white:#12100d; --rust:#cf6b52; --sage:#83a077; --sky:#6fa0cc;
-      --band-6:#b38fc4; --band-125:#d9a63f;
+      --night:#0b0f12; --night-2:#12181c; --night-line:#252c31;
+      --cw:#6fa0cc; --ph:#83a077; --ex:#3a352d;
       color-scheme:dark;
     }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
@@ -36,8 +38,6 @@
     a { color:var(--rust); }
     :focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
     .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
-
-    /* HEADER (same as the other pages; the menu itself is styled in site-footer.css) */
     header { border-bottom:2px solid var(--ink); padding:0 clamp(1rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
     .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1100px; margin:0 auto; padding:0.75rem 0; }
     .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
@@ -47,69 +47,153 @@
     .theme-toggle { background:none; border:none; cursor:pointer; font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--stone); line-height:1; padding:4px; }
     .theme-toggle:hover { color:var(--gold); }
 
-    /* PAGE HEADER */
-    .page-header { max-width:1100px; margin:0 auto; padding:clamp(2.5rem,6vw,4.5rem) clamp(1rem,5vw,4rem) 1.75rem; border-bottom:1px solid var(--mist); }
-    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
-    .page-eyebrow a { color:var(--stone); text-decoration:none; }
-    .page-eyebrow a:hover { color:var(--rust); }
-    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.3rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; text-wrap:balance; }
-    .page-title em { font-style:italic; color:var(--rust); }
-    .page-sub { font-size:0.975rem; color:var(--stone); max-width:680px; line-height:1.8; }
+    .oa-mono, .oa-k, .oa-s { font-family:'DM Mono',monospace; }
+    .oa-k { font-size:0.6rem; letter-spacing:0.14em; text-transform:uppercase; }
 
-    /* THE TOOL */
-    .rp-wrap { max-width:1100px; margin:0 auto; padding:1.75rem clamp(1rem,5vw,4rem) 3rem; display:grid; gap:1.25rem; }
-    .rp-console { border:1px solid var(--mist); background:var(--cream); }
-    .rp-status { display:flex; flex-wrap:wrap; gap:6px 22px; padding:10px 18px; border-bottom:1px solid var(--mist); font-family:'DM Mono',monospace; font-size:0.66rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone); }
-    .rp-status b { color:var(--rust); font-weight:400; }
-    .rp-controls { display:flex; flex-wrap:wrap; gap:14px 26px; align-items:end; padding:14px 18px 16px; }
-    .rp-export .rp-controls { padding:0; }
-    .rp-ctl { display:grid; gap:6px; min-width:0; }
-    .rp-lbl { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); }
-    .rp-wrap select, .rp-wrap input[type=number] { font-family:'Libre Baskerville',Georgia,serif; font-size:0.85rem; background:var(--white); color:var(--ink); border:1px solid var(--mist); padding:7px 9px; max-width:100%; }
-    .rp-wrap input[type=number] { width:90px; }
-    .rp-wrap input[type=range] { accent-color:var(--rust); width:190px; max-width:100%; }
-    .rp-chips { display:flex; flex-wrap:wrap; gap:6px; }
-    .rp-chip { font-family:'DM Mono',monospace; font-size:0.64rem; letter-spacing:0.04em; border:1px solid var(--c); color:var(--c); background:var(--white); padding:4px 10px; cursor:pointer; }
-    .rp-chip[aria-pressed="true"] { background:var(--c); color:var(--white); }
-    .rp-bench { display:grid; grid-template-columns:minmax(0,360px) minmax(0,1fr); gap:1.25rem; align-items:start; }
-    @media (max-width:900px) { .rp-bench { grid-template-columns:minmax(0,1fr); } }
-    .rp-card { border:1px solid var(--mist); background:var(--white); padding:16px 18px; min-width:0; }
-    .rp-h2 { font-family:'Playfair Display',serif; font-weight:700; font-size:1.3rem; line-height:1.25; text-wrap:balance; }
-    .rp-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:6px 12px; margin-bottom:10px; }
-    .rp-count { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); }
-    .rp-scope .rp-h2 { margin-bottom:6px; }
-    .rp-scope svg { width:100%; height:auto; display:block; }
-    .rp-pin { cursor:pointer; }
-    .rp-pin:focus { outline:none; } .rp-pin:focus-visible circle { stroke:var(--gold); stroke-width:3; }
-    .rp-legend { display:flex; flex-wrap:wrap; gap:4px 14px; font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.04em; color:var(--stone); margin-top:8px; }
-    .rp-legend i { display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--c); margin-right:5px; }
-    .rp-cap { font-size:0.78rem; color:var(--stone); line-height:1.6; margin-top:8px; }
-    .rp-tbl { overflow-x:auto; border-top:1px solid var(--mist); }
-    .rp-tbl table { border-collapse:collapse; width:100%; min-width:640px; font-size:0.82rem; }
-    .rp-tbl th { font-family:'DM Mono',monospace; font-weight:400; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:9px 8px; border-bottom:1px solid var(--mist); white-space:nowrap; }
-    .rp-tbl td { padding:7px 8px; border-bottom:1px solid var(--mist); vertical-align:top; line-height:1.45; }
-    .rp-num { font-family:'DM Mono',monospace; font-size:0.78rem; font-variant-numeric:tabular-nums; white-space:nowrap; }
-    .rp-tbl tr.off td { opacity:.42; }
-    .rp-tbl tr.hot td { background:var(--cream); }
-    .rp-tbl input[type=checkbox] { accent-color:var(--rust); width:16px; height:16px; }
-    .rp-band { display:inline-block; font-family:'DM Mono',monospace; font-size:0.6rem; color:var(--c); border:1px solid var(--c); padding:0 5px; white-space:nowrap; }
-    .rp-note { color:var(--stone); font-size:0.72rem; font-style:italic; }
-    .rp-export { display:grid; gap:14px; }
-    .rp-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
-    .rp-btn { background:var(--rust); color:var(--white); border:1px solid var(--rust); padding:10px 20px; font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; cursor:pointer; }
-    .rp-btn:hover { background:var(--ink); border-color:var(--ink); }
-    .rp-btn.ghost { background:var(--white); color:var(--ink); border-color:var(--mist); }
-    .rp-btn.ghost:hover { border-color:var(--ink); background:var(--white); }
-    .rp-msg { font-family:'DM Mono',monospace; font-size:0.66rem; color:var(--sage); letter-spacing:0.04em; }
-    .rp-export textarea { width:100%; min-height:140px; font-family:'DM Mono',monospace; font-size:0.7rem; line-height:1.5; background:var(--parchment); color:var(--ink); border:1px solid var(--mist); padding:10px; resize:vertical; }
-    .rp-steps { list-style:none; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; counter-reset:s; border-top:1px solid var(--mist); padding-top:14px; }
-    .rp-steps li { counter-increment:s; display:grid; gap:2px; font-size:0.84rem; color:var(--stone); line-height:1.6; }
-    .rp-steps li::before { content:"Step " counter(s); font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--rust); }
-    .rp-steps b { color:var(--ink); font-family:'Playfair Display',serif; font-size:1rem; }
-    .rp-why { border-top:3px solid var(--gold); padding-top:1rem; max-width:760px; }
-    .rp-why p { margin-top:0.5rem; font-size:0.92rem; line-height:1.85; }
-    .rp-foot { font-size:0.78rem; color:var(--stone); line-height:1.7; max-width:820px; }
-    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+    /* ---------- HERO: the night band ---------- */
+    .oa-hero { background:var(--night); color:var(--night-ink); border-bottom:3px solid var(--lamp); }
+    .oa-hero-inner { max-width:1180px; margin:0 auto; padding:clamp(2.2rem,5vw,3.6rem) clamp(1rem,4vw,3rem) 2rem; display:grid; gap:1.25rem; }
+    .oa-eyebrow { font-family:'DM Mono',monospace; font-size:0.66rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--night-dim); }
+    .oa-eyebrow a { color:var(--night-dim); text-decoration:none; } .oa-eyebrow a:hover { color:var(--lamp); }
+    .oa-title { font-family:'Playfair Display',serif; font-weight:900; font-size:clamp(3rem,9vw,6.4rem); line-height:0.92; letter-spacing:-0.03em; }
+    .oa-title em { font-style:italic; color:var(--lamp); }
+    .oa-dek { max-width:700px; color:#cfc6b6; font-size:0.98rem; line-height:1.8; }
+    .oa-readouts { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); border:1px solid var(--night-line); background:var(--night-2); }
+    .oa-ro { display:grid; gap:2px; padding:12px 16px; border-right:1px solid var(--night-line); min-width:0; }
+    .oa-ro:last-child { border-right:none; }
+    .oa-ro .oa-k { color:var(--night-dim); }
+    .oa-v { font-family:'Playfair Display',serif; font-weight:700; font-size:1.35rem; line-height:1.2; color:var(--night-ink); overflow-wrap:anywhere; }
+    #ro-utc { font-family:'DM Mono',monospace; font-weight:400; letter-spacing:0.02em; color:var(--lamp); font-variant-numeric:tabular-nums; }
+    .oa-s { font-size:0.66rem; color:var(--night-dim); line-height:1.5; overflow-wrap:anywhere; }
+    .oa-s a { color:var(--lamp); }
+    @media (max-width:820px) { .oa-readouts { grid-template-columns:repeat(2,minmax(0,1fr)); } .oa-ro:nth-child(2) { border-right:none; } .oa-ro:nth-child(-n+2) { border-bottom:1px solid var(--night-line); } }
+    .oa-mapwrap { border:1px solid var(--night-line); background:#122029; }
+    #map { display:block; width:100%; height:auto; max-width:100%; aspect-ratio:2/1; cursor:crosshair; }
+    .oa-maplegend { display:flex; flex-wrap:wrap; gap:6px 18px; padding:8px 12px; border-top:1px solid var(--night-line); background:var(--night-2); font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--night-dim); letter-spacing:0.04em; }
+    .oa-maplegend i { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:-1px; }
+    .lg-home { background:#f5f0e8; } .lg-iss { background:var(--ember); } .lg-grey { background:var(--lamp); border-radius:2px!important; height:4px!important; vertical-align:2px!important; width:16px!important; } .lg-path { background:transparent; border:2px solid var(--lamp); }
+    .oa-aim { border:1px solid var(--night-line); background:var(--night-2); }
+    .oa-aim-head { display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; padding:10px 14px; border-bottom:1px solid var(--night-line); }
+    .oa-aim-head .oa-k { color:var(--night-dim); }
+    .oa-chips { display:flex; flex-wrap:wrap; gap:6px; }
+    .oa-chip { font-family:'DM Mono',monospace; font-size:0.66rem; letter-spacing:0.04em; background:transparent; color:var(--night-ink); border:1px solid var(--night-line); padding:5px 10px; cursor:pointer; }
+    .oa-chip:hover { border-color:var(--lamp); color:var(--lamp); }
+    .oa-chip[aria-pressed="true"] { background:var(--lamp); border-color:var(--lamp); color:#14100a; }
+    .oa-aim-out { padding:14px 16px; }
+    .oa-aim-empty { color:var(--night-dim); font-size:0.88rem; font-style:italic; }
+    .oa-aim-name { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 14px; margin-bottom:10px; }
+    .oa-aim-name b { font-family:'Playfair Display',serif; font-size:1.35rem; }
+    .oa-aim-name span { font-family:'DM Mono',monospace; font-size:0.66rem; color:var(--night-dim); }
+    .oa-aim-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; }
+    .oa-aim-grid > div { display:grid; gap:2px; border-left:2px solid var(--lamp); padding-left:10px; min-width:0; }
+    .oa-aim-grid .oa-k { color:var(--night-dim); }
+    .oa-big { font-family:'Playfair Display',serif; font-weight:900; font-size:1.6rem; line-height:1.15; color:var(--night-ink); }
+
+    /* ---------- BODY ---------- */
+    .oa-wrap { max-width:1100px; margin:0 auto; padding:0 clamp(1rem,5vw,4rem) 3.5rem; }
+    .oa-toc { display:flex; flex-wrap:wrap; gap:6px 20px; padding:16px 0; border-bottom:1px solid var(--mist); }
+    .oa-toc a { font-family:'DM Mono',monospace; font-size:0.66rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .oa-toc a:hover { color:var(--rust); }
+    .oa-sec { padding:3rem 0 0.5rem; display:grid; gap:1.25rem; scroll-margin-top:80px; }
+    .oa-num { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--rust); }
+    .oa-h2 { font-family:'Playfair Display',serif; font-weight:900; font-size:clamp(1.9rem,4.4vw,2.9rem); line-height:1.05; letter-spacing:-0.02em; text-wrap:balance; margin-top:-0.6rem; }
+    .oa-h2 em { font-style:italic; color:var(--rust); }
+    .oa-h3 { font-family:'Playfair Display',serif; font-weight:700; font-size:1.2rem; line-height:1.3; }
+    .oa-lede { max-width:720px; font-size:0.96rem; line-height:1.85; color:var(--ink); }
+    .oa-fine { font-size:0.76rem; color:var(--stone); line-height:1.65; }
+
+    .oa-ladder { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; border:1px solid var(--mist); }
+    @media (max-width:820px) { .oa-ladder { grid-template-columns:minmax(0,1fr); } .oa-rung { border-right:none!important; border-bottom:1px solid var(--mist); } }
+    .oa-rung { padding:18px 20px; border-right:1px solid var(--mist); background:var(--white); display:grid; gap:6px; align-content:start; position:relative; }
+    .oa-rung:last-child { border-right:none; }
+    .oa-rung h3 { font-family:'Playfair Display',serif; font-weight:900; font-size:1.6rem; line-height:1.1; }
+    .oa-rung p { font-size:0.86rem; line-height:1.7; }
+    .oa-rung-k { font-family:'DM Mono',monospace; font-size:0.58rem!important; letter-spacing:0.16em; text-transform:uppercase; color:var(--stone); }
+    .oa-rung-facts { font-family:'DM Mono',monospace; font-size:0.72rem!important; color:var(--stone); }
+    .oa-rung-facts b { font-family:'Playfair Display',serif; font-size:1.15rem; color:var(--ink); }
+    .oa-rung-goal { background:var(--cream); box-shadow:inset 0 4px 0 var(--rust); }
+    .oa-rung-goal h3 { color:var(--rust); }
+    .oa-pool { font-family:'DM Mono',monospace; font-size:0.62rem!important; color:var(--stone); border-top:1px dashed var(--mist); padding-top:8px; margin-top:4px; }
+
+    .oa-two { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
+    .oa-panel { border:1px solid var(--mist); background:var(--white); padding:18px 20px; display:grid; gap:10px; align-content:start; min-width:0; }
+    .oa-list { list-style:none; display:grid; gap:8px; }
+    .oa-list li { font-size:0.86rem; line-height:1.65; padding-left:16px; position:relative; }
+    .oa-list li::before { content:""; position:absolute; left:0; top:0.62em; width:7px; height:7px; background:var(--gold); }
+
+    .oa-log { border:1px solid var(--ink); background:var(--white); padding:18px 20px; display:grid; gap:12px; }
+    .oa-log-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:8px; }
+    .oa-log-pct { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--rust); letter-spacing:0.08em; text-transform:uppercase; }
+    .oa-meter { height:6px; background:var(--cream); border:1px solid var(--mist); }
+    .oa-meter span { display:block; height:100%; width:0; background:linear-gradient(90deg,var(--rust),var(--gold)); transition:width .3s; }
+    .oa-checks { list-style:none; display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:4px 22px; counter-reset:c; }
+    .oa-checks li { counter-increment:c; }
+    .oa-checks label { display:grid; grid-template-columns:auto 1fr; gap:10px; align-items:start; font-size:0.84rem; line-height:1.55; padding:6px 0; border-bottom:1px dotted var(--mist); cursor:pointer; }
+    .oa-checks input { accent-color:var(--rust); width:17px; height:17px; margin-top:2px; }
+    .oa-checks input:checked + span { color:var(--stone); text-decoration:line-through; text-decoration-color:var(--gold); }
+
+    .oa-bandctl { display:flex; gap:0; }
+    .oa-seg { font-family:'DM Mono',monospace; font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; padding:8px 16px; border:1px solid var(--mist); background:var(--white); color:var(--stone); cursor:pointer; }
+    .oa-seg + .oa-seg { border-left:none; }
+    .oa-seg[aria-pressed="true"] { background:var(--ink); color:var(--parchment); border-color:var(--ink); }
+    .oa-bands { display:grid; gap:2px; border:1px solid var(--mist); background:var(--white); padding:8px 14px; }
+    .oa-band { display:grid; grid-template-columns:64px minmax(0,1.3fr) minmax(0,1fr); gap:6px 16px; align-items:center; padding:9px 0; border-bottom:1px dotted var(--mist); }
+    .oa-band:last-child { border-bottom:none; }
+    .oa-band-name { font-family:'Playfair Display',serif; font-weight:700; font-size:1.05rem; }
+    .oa-band-bar { position:relative; height:24px; background:repeating-linear-gradient(135deg,var(--ex) 0 4px,transparent 4px 8px); border:1px solid var(--mist); }
+    .oa-band-bar[data-empty] { opacity:.55; }
+    .oa-band-bar span { position:absolute; top:0; bottom:0; }
+    .oa-seg-cw { background:var(--cw); } .oa-seg-ph { background:var(--ph); }
+    .oa-seg-all { background:linear-gradient(180deg,var(--cw) 50%,var(--ph) 50%); }
+    .oa-ft8 { width:3px; top:-5px!important; bottom:-5px!important; background:var(--gold); margin-left:-1px; box-shadow:0 0 0 1px var(--white); }
+    .oa-band-info { display:grid; gap:1px; font-size:0.74rem; color:var(--stone); line-height:1.45; min-width:0; }
+    .oa-band-info .oa-mono { font-size:0.68rem; color:var(--ink); }
+    @media (max-width:640px) { .oa-band { grid-template-columns:52px minmax(0,1fr); } .oa-band-info { grid-column:1 / -1; } }
+    .oa-bandkey { display:flex; flex-wrap:wrap; gap:6px 18px; font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); }
+    .oa-bandkey i { display:inline-block; width:14px; height:10px; margin-right:6px; vertical-align:-1px; border:1px solid var(--mist); }
+    .k-cw { background:var(--cw); } .k-ph { background:var(--ph); } .k-ex { background:repeating-linear-gradient(135deg,var(--ex) 0 3px,transparent 3px 6px); } .k-ft8 { background:var(--gold); width:4px!important; }
+
+    .oa-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
+    .oa-card { border:1px solid var(--mist); border-top:3px solid var(--gold); background:var(--white); padding:16px 18px; display:grid; gap:6px; align-content:start; color:var(--ink); text-decoration:none; }
+    .oa-card h3 { font-family:'Playfair Display',serif; font-weight:700; font-size:1.2rem; line-height:1.25; }
+    .oa-card p { font-size:0.84rem; line-height:1.7; }
+    .oa-card-k, .oa-card p.oa-card-k { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); }
+    .oa-card-link { border-top-color:var(--rust); background:var(--cream); }
+    .oa-card-link:hover { border-color:var(--ink); border-top-color:var(--rust); }
+    .oa-go { font-family:'DM Mono',monospace; font-size:0.66rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--rust); margin-top:4px; }
+
+    .oa-passes { border:1px solid var(--ink); background:var(--white); padding:16px 18px; display:grid; gap:10px; }
+    .oa-passes-head { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:6px 14px; }
+    .oa-tbl { overflow-x:auto; }
+    .oa-tbl table { border-collapse:collapse; width:100%; min-width:600px; font-size:0.84rem; }
+    .oa-tbl th { font-family:'DM Mono',monospace; font-weight:400; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:8px; border-bottom:1px solid var(--mist); white-space:nowrap; }
+    .oa-tbl td { padding:8px; border-bottom:1px dotted var(--mist); white-space:nowrap; }
+    .oa-tbl td.oa-mono { font-size:0.78rem; font-variant-numeric:tabular-nums; }
+    .oa-q { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.04em; padding:2px 8px; border:1px solid currentColor; }
+    .q-hi { color:var(--sage); } .q-ok { color:var(--sky); } .q-lo { color:var(--gold); } .q-no { color:var(--stone); }
+
+    .oa-freqs { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem; }
+    .oa-freq { border:1px solid var(--mist); background:var(--white); padding:16px 18px; display:grid; gap:8px; align-content:start; }
+    .oa-freq h3 { font-family:'Playfair Display',serif; font-weight:700; font-size:1.2rem; }
+    .oa-freq p { font-size:0.82rem; line-height:1.7; }
+    .oa-freq dl { display:grid; grid-template-columns:auto 1fr; gap:2px 12px; background:var(--cream); padding:8px 10px; border-left:3px solid var(--ember); }
+    .oa-freq dt { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); align-self:center; }
+    .oa-freq dd { font-family:'DM Mono',monospace; font-size:0.86rem; color:var(--ink); }
+
+    .oa-talk { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1rem; }
+    .oa-talk input[type=text] { font-family:'DM Mono',monospace; font-size:1.2rem; letter-spacing:0.12em; text-transform:uppercase; background:var(--parchment); color:var(--ink); border:1px solid var(--mist); padding:8px 12px; width:100%; }
+    .oa-talk .oa-k { color:var(--stone); }
+    .oa-spell { font-family:'Playfair Display',serif; font-style:italic; font-size:1.25rem; color:var(--rust); line-height:1.4; min-height:1.8em; }
+    .oa-nato { display:grid; grid-template-columns:repeat(auto-fill,minmax(92px,1fr)); gap:4px 10px; border-top:1px solid var(--mist); padding-top:10px; }
+    .oa-nato span { font-size:0.78rem; color:var(--stone); }
+    .oa-nato b { font-family:'DM Mono',monospace; color:var(--ink); margin-right:6px; }
+    .oa-q { }
+    dl.oa-q { display:grid; grid-template-columns:auto 1fr; gap:6px 14px; border:none; padding:0; }
+    dl.oa-q dt { font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--rust); white-space:nowrap; }
+    dl.oa-q dd { font-size:0.84rem; line-height:1.5; }
+
+    .oa-sources { margin-top:3rem; padding-top:1.25rem; border-top:1px solid var(--mist); font-size:0.76rem; color:var(--stone); line-height:1.75; max-width:860px; }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .oa-meter span { transition:none; } }
   </style>
   <link rel="stylesheet" href="/css/site-footer.css">
 <script>
@@ -147,7 +231,7 @@
           <a href="https://brooksgroves.com/lidar-explore/" target="_blank" rel="noopener">🌲 LiDAR Explore</a>
           <a href="/hoplove/">🍺 HopLove</a>
           <a href="https://brooksgroves.com/little-free-pantry" target="_blank" rel="noopener">🏠 Little Free Pantry</a>
-          <a href="/radio/">📻 South Sound Channel Plan</a>
+          <a href="/radio/">📡 Ham radio: On the Air</a>
           <span class="sn-label">Bots</span>
           <a href="/blog/bdgrovesbot.html">🔥 BdgrovesBot (parked)</a>
           <a href="/blog/alert-bots-revisited-post.html">🌙 The weather bots (on standby)</a>
@@ -243,86 +327,237 @@
   </div>
 </header>
 
+<section class="oa-hero" aria-label="Live map">
+  <div class="oa-hero-inner">
+    <p class="oa-eyebrow"><a href="/">Brooks Groves</a> · <a href="/work/">Work</a> · Ham radio · Lakewood, WA</p>
+    <h1 class="oa-title">On the <em>Air</em></h1>
+    <p class="oa-dek">Getting licensed, reaching the far side of the planet, and talking through the space station, from a kitchen table in Lakewood. The map is live: the sun's shadow, the grey line where long-distance radio comes alive, and the ISS overhead right now. Tap anywhere on it to aim.</p>
 
-<div class="page-header">
-  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/work/">Work</a> · Ham Radio</p>
-  <h1 class="page-title">📻 South Sound <em>Channel Plan</em></h1>
-  <p class="page-sub">Pick the repeaters you can actually reach from home, then download one file that programs almost any ham radio through the free CHIRP software. It does the same job as the paid per-radio programmers in the back of the magazines, with a range scope so you can see what's in reach.</p>
-</div>
-
-<div class="rp-wrap">
-
-  <div class="rp-console">
-    <div class="rp-status" aria-live="polite">
-      <span>Memories <b id="ro-n">00</b></span>
-      <span>Home <b id="ro-home">Lakewood</b></span>
-      <span>Range <b id="ro-r">50 mi</b></span>
-      <span>Format <b>CHIRP CSV</b></span>
+    <div class="oa-readouts" aria-live="polite">
+      <div class="oa-ro"><span class="oa-k">UTC (Zulu)</span><span class="oa-v" id="ro-utc">--:--:--</span><span class="oa-s" id="ro-local">Lakewood --:--</span></div>
+      <div class="oa-ro"><span class="oa-k">The ISS is over</span><span class="oa-v" id="ro-iss">Finding it…</span><span class="oa-s" id="ro-iss2">&nbsp;</span></div>
+      <div class="oa-ro"><span class="oa-k">Next ISS pass here</span><span class="oa-v" id="ro-pass">Working it out…</span><span class="oa-s" id="ro-pass2">&nbsp;</span></div>
+      <div class="oa-ro"><span class="oa-k">Sun at Lakewood</span><span class="oa-v" id="ro-sun">--</span><span class="oa-s" id="ro-sun2">&nbsp;</span></div>
     </div>
-    <div class="rp-controls">
-      <div class="rp-ctl"><label class="rp-lbl" for="home">Home</label>
-        <select id="home"></select></div>
-      <div class="rp-ctl"><label class="rp-lbl" for="radio">Your radio covers</label>
-        <select id="radio">
-          <option value="2,70">2 m + 70 cm (most handhelds)</option>
-          <option value="2">2 m only</option>
-          <option value="2,125,70">2 m + 1.25 m + 70 cm</option>
-          <option value="6,2,125,70">Everything, 6 m included</option>
-        </select></div>
-      <div class="rp-ctl"><label class="rp-lbl" for="range">Max distance <span id="rangeVal">50</span> mi</label>
-        <input id="range" type="range" min="10" max="90" step="5" value="50"></div>
-      <div class="rp-ctl rp-wide"><span class="rp-lbl">Extras</span>
-        <div class="rp-chips" id="extras"></div></div>
+
+    <div class="oa-mapwrap">
+      <canvas id="map" width="1440" height="720" role="img" aria-label="World map with night shading, the grey line, the ISS and its radio footprint, and Lakewood, Washington"></canvas>
+      <div class="oa-maplegend">
+        <span><i class="lg-home"></i>Lakewood</span>
+        <span><i class="lg-iss"></i>ISS and the circle it can hear</span>
+        <span><i class="lg-grey"></i>Grey line</span>
+        <span><i class="lg-path"></i>Your aim</span>
+      </div>
+    </div>
+
+    <div class="oa-aim">
+      <div class="oa-aim-head">
+        <span class="oa-k">Aim at</span>
+        <div class="oa-chips" id="targets"></div>
+      </div>
+      <div class="oa-aim-out" id="aim">
+        <p class="oa-aim-empty">Tap the map or pick a place. You'll get the beam heading to point an antenna, the distance, roughly how many skips off the ionosphere it takes, and whether it's day or night there.</p>
+      </div>
     </div>
   </div>
+</section>
 
-  <div class="rp-bench">
-    <section class="rp-card rp-scope" aria-label="Range scope">
-      <h2 class="rp-h2">Range scope</h2>
-      <svg id="scope" viewBox="0 0 360 360" role="img" aria-label="Repeater sites by bearing and distance from home"></svg>
-      <div class="rp-legend" id="legend"></div>
-      <p class="rp-cap">North is up. Rings are quarter steps of your max distance. Tap a pin to include or skip that repeater. Pins sit at the named site, so distances are close, not exact.</p>
-    </section>
+<div class="oa-wrap">
 
-    <section class="rp-card" aria-label="Channel sheet">
-      <div class="rp-head"><h2 class="rp-h2">Channel sheet</h2><span class="rp-count" id="count"></span></div>
-      <div class="rp-tbl"><table>
-        <thead><tr><th>Use</th><th>Mem</th><th>Band</th><th>Output</th><th>Shift</th><th>Tone</th><th>Call</th><th>Site</th><th>Dist</th></tr></thead>
-        <tbody id="rows"></tbody>
+  <nav class="oa-toc" aria-label="On this page">
+    <a href="#license">The license</a>
+    <a href="#bands">What General opens up</a>
+    <a href="#far">Reaching far</a>
+    <a href="#space">Talking to space</a>
+    <a href="#talk">Shack talk</a>
+    <a href="#local">Around Tacoma</a>
+  </nav>
+
+  <!-- ============ LICENSE ============ -->
+  <section class="oa-sec" id="license">
+    <p class="oa-num">Part one</p>
+    <h2 class="oa-h2">The license, <em>step by step</em></h2>
+    <p class="oa-lede">There are three US license classes, and each one builds on the last. General is the one that opens the long-distance HF bands, but you can't skip to it: you need a Technician license first. The good news is that most exam teams will let you take the Technician and General exams back to back at the same sitting, so you can walk in with nothing and walk out a General.</p>
+
+    <div class="oa-ladder">
+      <article class="oa-rung">
+        <p class="oa-rung-k">Element 2</p>
+        <h3>Technician</h3>
+        <p class="oa-rung-facts"><b>35</b> questions · pass with <b>26</b></p>
+        <p>Radio rules, safety, and how repeaters and antennas work. Opens all of VHF and UHF (local repeaters, the ISS, FM satellites) plus a little HF: Morse and data on 80, 40 and 15 m, and voice on 10 m.</p>
+        <p class="oa-pool">Question pool: 2026–2030, in use since July 1, 2026</p>
+      </article>
+      <article class="oa-rung oa-rung-goal">
+        <p class="oa-rung-k">Element 3 · the goal</p>
+        <h3>General</h3>
+        <p class="oa-rung-facts"><b>35</b> questions · pass with <b>26</b></p>
+        <p>Propagation, HF operating, station setup and a bit more electronics. Opens most of every HF band, which is how you talk across oceans with a modest antenna.</p>
+        <p class="oa-pool">Question pool: 2023–2027, good through June 30, 2027</p>
+      </article>
+      <article class="oa-rung">
+        <p class="oa-rung-k">Element 4</p>
+        <h3>Amateur Extra</h3>
+        <p class="oa-rung-facts"><b>50</b> questions · pass with <b>37</b></p>
+        <p>The full band edges, where much of the rare-country hunting happens, and a lot more theory. A goal for later.</p>
+        <p class="oa-pool">Needs General first</p>
+      </article>
+    </div>
+
+    <div class="oa-two">
+      <div class="oa-panel">
+        <h3 class="oa-h3">What it costs</h3>
+        <ul class="oa-list">
+          <li><b>$35</b> FCC fee for a new license, paid online after you pass. It covers you for ten years.</li>
+          <li><b>$0–15</b> for the exam session, depending on the volunteer team. Some are free.</li>
+          <li>Upgrading from Technician to General doesn't carry a new FCC fee.</li>
+          <li>Study materials can be free. HamStudy.org and the KB6NU No-Nonsense guides cost nothing.</li>
+        </ul>
+      </div>
+      <div class="oa-panel">
+        <h3 class="oa-h3">How to study</h3>
+        <ul class="oa-list">
+          <li><a href="https://hamstudy.org" target="_blank" rel="noopener">HamStudy.org</a>: flashcards through the real question pool, then practice exams. When you score 85% or better three times running, book the exam.</li>
+          <li><a href="https://www.kb6nu.com/" target="_blank" rel="noopener">KB6NU's No-Nonsense study guides</a>: short, plain-English explanations of every question.</li>
+          <li>The <a href="https://www.arrl.org/general-class-license-manual" target="_blank" rel="noopener">ARRL General Class License Manual</a> if you'd rather learn the why, not just the answers.</li>
+          <li>The Radio Club of Tacoma runs <a href="https://www.w7dk.org/license/license-upgrade-classes" target="_blank" rel="noopener">General classes</a> and <a href="https://www.w7dk.org/license/license-exam" target="_blank" rel="noopener">exam sessions</a>, or search sessions at <a href="https://hamstudy.org/sessions" target="_blank" rel="noopener">hamstudy.org/sessions</a>.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="oa-log">
+      <div class="oa-log-head">
+        <h3 class="oa-h3">My logbook to General and beyond</h3>
+        <span class="oa-log-pct" id="logPct">0 of 0</span>
+      </div>
+      <div class="oa-meter" aria-hidden="true"><span id="logBar"></span></div>
+      <ol class="oa-checks" id="checks"></ol>
+      <p class="oa-fine">Ticks are saved in this browser only.</p>
+    </div>
+  </section>
+
+  <!-- ============ BANDS ============ -->
+  <section class="oa-sec" id="bands">
+    <p class="oa-num">Part two</p>
+    <h2 class="oa-h2">What General <em>opens up</em></h2>
+    <p class="oa-lede">HF, the shortwave bands, is where signals bounce off the ionosphere and come down a continent away. Each bar is one band, drawn to its own scale. Filled parts are yours with a General license; the hatched parts are kept for Extra class. Flip to Technician to see how much General adds.</p>
+    <div class="oa-bandctl" role="group" aria-label="License class">
+      <button type="button" class="oa-seg" id="showG" aria-pressed="true">General</button>
+      <button type="button" class="oa-seg" id="showT" aria-pressed="false">Technician</button>
+    </div>
+    <div class="oa-bands" id="bandchart"></div>
+    <div class="oa-bandkey">
+      <span><i class="k-cw"></i>Morse and data (FT8, digital)</span>
+      <span><i class="k-ph"></i>Voice and image</span>
+      <span><i class="k-ex"></i><span id="exKey">Extra only</span></span>
+      <span><i class="k-ft8"></i>Where FT8 lives: listen here first</span>
+    </div>
+    <p class="oa-fine">General also gets the five 60 m channels and everything from 6 m up. Band edges from the FCC Part 97 limits for ITU Region 2. Power and mode limits have more detail than a chart can show; check the <a href="https://www.arrl.org/band-plan" target="_blank" rel="noopener">ARRL band plan</a> before you transmit.</p>
+  </section>
+
+  <!-- ============ FAR ============ -->
+  <section class="oa-sec" id="far">
+    <p class="oa-num">Part three</p>
+    <h2 class="oa-h2">Reaching <em>far away</em></h2>
+    <p class="oa-lede">Pinging the far side of the world is real and it's easier than it sounds. A few watts and a wire antenna can be heard in Japan, and some of the tools will show you exactly where you landed.</p>
+    <div class="oa-cards">
+      <article class="oa-card"><p class="oa-card-k">See who heard you</p><h3>FT8 + PSK Reporter</h3><p>FT8 is a digital mode that pulls signals out of the noise. Call CQ for fifteen seconds and, a minute later, <a href="https://pskreporter.info/pskmap.html" target="_blank" rel="noopener">PSK Reporter</a> puts a dot on a map for every station that decoded you. It's the closest thing ham radio has to a ping.</p></article>
+      <article class="oa-card"><p class="oa-card-k">A beacon that maps the sky</p><h3>WSPR</h3><p>WSPR ("whisper") sends a tiny beacon, a fraction of a watt, and listeners worldwide report it to <a href="https://www.wsprnet.org" target="_blank" rel="noopener">WSPRnet</a>. Leave it running overnight and you get a map of where the bands opened and when.</p></article>
+      <article class="oa-card"><p class="oa-card-k">Ride the terminator</p><h3>The grey line</h3><p>Around sunrise and sunset the ionosphere's lower, signal-eating layer fades before the upper, reflecting layer does. Paths that run along the grey line on the map above can reach places that are silent the rest of the day.</p></article>
+      <article class="oa-card"><p class="oa-card-k">Radio outdoors</p><h3>Parks on the Air</h3><p><a href="https://pota.app" target="_blank" rel="noopener">POTA</a> is operating from parks with a portable station. It mixes hiking with radio, and the Radio Club of Tacoma runs a monthly club activation you can tag along on.</p></article>
+      <article class="oa-card"><p class="oa-card-k">Keep score</p><h3>QSLs and DXCC</h3><p>Contacts are confirmed through ARRL's <a href="https://lotw.arrl.org" target="_blank" rel="noopener">Logbook of the World</a>. Confirm 100 countries and you earn DXCC, the long-standing badge of a long-distance operator.</p></article>
+      <article class="oa-card"><p class="oa-card-k">Why it changes</p><h3>The sun's cycle</h3><p>Sunspots make the ionosphere a better mirror. Solar Cycle 25 peaked around 2024–25, so 10 and 15 m are still lively and 20 m is the dependable workhorse. 40 and 80 m come alive at night.</p></article>
+    </div>
+  </section>
+
+  <!-- ============ SPACE ============ -->
+  <section class="oa-sec" id="space">
+    <p class="oa-num">Part four</p>
+    <h2 class="oa-h2">Talking to <em>space</em></h2>
+    <p class="oa-lede">This is the part a Technician license already covers. The ISS carries ham radios, and a dual-band handheld with a small handheld antenna is enough to work them as the station passes over. Each pass lasts about ten minutes.</p>
+
+    <div class="oa-passes">
+      <div class="oa-passes-head"><h3 class="oa-h3">Next ISS passes over Lakewood</h3><span class="oa-fine" id="passNote">Times are local. Elevation is the highest point in the sky.</span></div>
+      <div class="oa-tbl"><table>
+        <thead><tr><th>Day</th><th>Rises</th><th>Highest</th><th>Sets</th><th>From → to</th><th>Max elev.</th><th>Quality</th></tr></thead>
+        <tbody id="passRows"><tr><td colspan="7" class="oa-fine">Working out the orbit…</td></tr></tbody>
       </table></div>
-    </section>
-  </div>
+    </div>
 
-  <section class="rp-card rp-export" aria-label="Export for CHIRP">
-    <div class="rp-head"><h2 class="rp-h2">Export for CHIRP</h2><span class="rp-count" id="exCount"></span></div>
-    <div class="rp-controls">
-      <div class="rp-ctl"><label class="rp-lbl" for="namelen">Channel name length</label>
-        <select id="namelen"><option value="6">6 characters</option><option value="8" selected>8 characters</option></select></div>
-      <div class="rp-ctl"><label class="rp-lbl" for="start">First memory</label>
-        <input id="start" type="number" min="0" max="999" value="1"></div>
-      <div class="rp-ctl"><label class="rp-lbl" for="tsql">Tone mode</label>
-        <select id="tsql"><option value="tone">Send tone only (works everywhere)</option><option value="tsql">Tone squelch where the repeater sends one</option></select></div>
+    <div class="oa-freqs">
+      <article class="oa-freq">
+        <p class="oa-card-k">ISS · NA1SS · Technician</p>
+        <h3>Voice repeater</h3>
+        <dl><dt>Uplink</dt><dd>145.990 MHz, tone 67.0</dd><dt>Downlink</dt><dd>437.800 MHz</dd></dl>
+        <p>Talk up on 2 m, listen on 70 cm. Say your call sign and grid, keep it short, and let others in. On the downlink, tune 437.810 at rise, 437.800 overhead and 437.790 as it sets to follow the Doppler shift.</p>
+      </article>
+      <article class="oa-freq">
+        <p class="oa-card-k">ISS · RS0ISS · Technician</p>
+        <h3>APRS packet</h3>
+        <dl><dt>Frequency</dt><dd>437.825 MHz</dd></dl>
+        <p>Send a short text packet with your position and see it relayed from orbit on <a href="https://www.ariss.org/current-status-of-iss-stations" target="_blank" rel="noopener">ARISS</a> trackers. ARISS lists it as active but still being tested.</p>
+      </article>
+      <article class="oa-freq">
+        <p class="oa-card-k">ISS · anyone can listen</p>
+        <h3>SSTV pictures</h3>
+        <dl><dt>Frequency</dt><dd>145.800 MHz (events only)</dd></dl>
+        <p>A few times a year the ISS sends slow-scan TV images. Any radio that hears 145.800 and a phone app decodes them, no license needed. Watch the ARISS status page for event dates.</p>
+      </article>
+      <article class="oa-freq">
+        <p class="oa-card-k">Satellite · SO-50 · Technician</p>
+        <h3>FM satellite</h3>
+        <dl><dt>Uplink</dt><dd>145.850 MHz, tone 67.0</dd><dt>Downlink</dt><dd>436.795 MHz</dd></dl>
+        <p>One of the longest-running FM birds and a good first satellite. Check <a href="https://www.amsat.org/status/" target="_blank" rel="noopener">AMSAT's live status</a> before a pass; small satellites come and go.</p>
+      </article>
     </div>
-    <div class="rp-actions">
-      <button class="rp-btn" id="dl" type="button">Download CSV</button>
-      <button class="rp-btn ghost" id="copy" type="button">Copy CSV</button>
-      <span class="rp-msg" id="status" role="status"></span>
-    </div>
-    <textarea id="csv" readonly aria-label="CHIRP CSV preview"></textarea>
-    <ol class="rp-steps">
-      <li><b>Get CHIRP</b>It's free and open source, at <a href="https://chirpmyradio.com" target="_blank" rel="noopener">chirpmyradio.com</a>. You'll also need your radio's USB programming cable.</li>
-      <li><b>Back up first</b>Radio › Download From Radio, then save that file before you change anything.</li>
-      <li><b>Import this file</b>File › Import, pick the CSV, and drop the channels into your radio's memory grid.</li>
-      <li><b>Send it</b>Radio › Upload To Radio. Try one repeater by ear before you count on it.</li>
-    </ol>
+    <p class="oa-fine">The ISS radios go quiet for spacewalks, dockings and crew schedules. ARISS posts what's on at <a href="https://www.ariss.org/current-status-of-iss-stations" target="_blank" rel="noopener">its status page</a> (last checked October 31, 2026, when the voice repeater was in service). ARISS also sets up scheduled school contacts with the crew, which clubs help run.</p>
   </section>
 
-  <section class="rp-why">
-    <h2 class="rp-h2">Why bother programming a radio this way?</h2>
-    <p>A ham radio holds hundreds of memory channels, and each repeater needs four things set right: the output frequency, which way the transmit shift goes, how far, and the sub-audible tone that opens it. Punching that into a handheld's keypad is slow and easy to get wrong. Programming software turns it into a spreadsheet you can save, back up and load into the next radio. Companies like RT Systems sell one programmer per radio model. CHIRP does the same for hundreds of radios at no cost, and this page fills it with the repeaters around the South Sound, plus NOAA weather, so the radio is useful the day it comes out of the box, and when the cell network isn't.</p>
+  <!-- ============ TALK ============ -->
+  <section class="oa-sec" id="talk">
+    <p class="oa-num">Part five</p>
+    <h2 class="oa-h2">Shack <em>talk</em></h2>
+    <p class="oa-lede">The phonetic alphabet, the Q codes everyone uses, and the shorthand you'll hear on the air the first night.</p>
+    <div class="oa-talk">
+      <div class="oa-panel">
+        <h3 class="oa-h3">Spell your call</h3>
+        <label class="oa-k" for="spellIn">Type a call sign or word</label>
+        <input id="spellIn" type="text" maxlength="24" value="W7DK" autocomplete="off" spellcheck="false">
+        <p class="oa-spell" id="spellOut" aria-live="polite"></p>
+        <div class="oa-nato" id="nato"></div>
+      </div>
+      <div class="oa-panel">
+        <h3 class="oa-h3">Q codes and shorthand</h3>
+        <dl class="oa-q">
+          <dt>CQ</dt><dd>Calling anyone who hears me</dd>
+          <dt>QTH</dt><dd>My location</dd>
+          <dt>QSO</dt><dd>A contact, a conversation</dd>
+          <dt>QSL</dt><dd>I confirm; also the card that proves a contact</dd>
+          <dt>QRZ?</dt><dd>Who is calling me?</dd>
+          <dt>QRM / QRN</dt><dd>Interference from people / from nature</dd>
+          <dt>QSY</dt><dd>Change frequency</dd>
+          <dt>QRP</dt><dd>Low power, 5 watts or less</dd>
+          <dt>DX</dt><dd>Distance; a far-off station</dd>
+          <dt>59</dt><dd>Signal report: perfectly readable, very strong</dd>
+          <dt>Zulu</dt><dd>UTC, the time every logbook uses</dd>
+          <dt>Grid</dt><dd>Your Maidenhead square. Lakewood is <b>CN87</b></dd>
+          <dt>73</dt><dd>Best regards; how a contact ends</dd>
+        </dl>
+      </div>
+    </div>
   </section>
 
-  <p class="rp-foot">Repeaters from the Radio Club of Tacoma's <a href="https://www.w7dk.org/nets-repeaters/club-area-repeaters" target="_blank" rel="noopener">club and area list</a> (checked October 31, 2026) and the <a href="https://www.repeaterbook.com/repeaters/details.php?ID=11180&amp;state_id=53" target="_blank" rel="noopener">RepeaterBook record</a> for WW7CH at Paradise. The W7DK 147.280 repeater carries the club net Tuesdays at 7:30 pm. NOAA channels are for listening only. Transmitting on amateur frequencies needs an FCC amateur license. Repeaters change, so check RepeaterBook before a trip.</p>
+  <!-- ============ LOCAL ============ -->
+  <section class="oa-sec" id="local">
+    <p class="oa-num">Part six</p>
+    <h2 class="oa-h2">Around <em>Tacoma</em></h2>
+    <div class="oa-cards">
+      <a class="oa-card oa-card-link" href="/radio/channels/"><p class="oa-card-k">Tool</p><h3>📻 South Sound Channel Plan</h3><p>The repeaters you can reach from home on a range scope, downloaded as one CHIRP file that programs almost any radio.</p><span class="oa-go">Open the channel plan →</span></a>
+      <article class="oa-card"><p class="oa-card-k">Every Tuesday, 7:30 pm</p><h3>The club net</h3><p>The Radio Club of Tacoma's net runs on the W7DK repeater, 147.280 MHz (+0.6, tone 103.5). Listening in is the best way to learn how a net sounds before you check in.</p></article>
+      <article class="oa-card"><p class="oa-card-k">Saturdays, 10 am–2 pm</p><h3>The clubhouse</h3><p>The <a href="https://www.w7dk.org/" target="_blank" rel="noopener">Radio Club of Tacoma</a> opens its clubhouse at 1249 S. Washington St. every Saturday, with operating positions, a library and an antique radio museum. Classes and exam sessions are on its calendar.</p></article>
+    </div>
+  </section>
+
+  <p class="oa-sources">Sources: exam pools and dates from the <a href="https://www.arrl.org/news/new-technician-class-question-pool-released-effective-july-1-2026" target="_blank" rel="noopener">ARRL</a> and <a href="https://ncvec.org/" target="_blank" rel="noopener">NCVEC</a>; ISS frequencies and status from <a href="https://www.ariss.org/current-status-of-iss-stations" target="_blank" rel="noopener">ARISS</a> (October 27, 2026 update); ISS orbit from <a href="https://celestrak.org" target="_blank" rel="noopener">CelesTrak</a>, refreshed twice a day; local nets and clubhouse hours from <a href="https://www.w7dk.org/" target="_blank" rel="noopener">W7DK</a>. Coastlines from Natural Earth. Pass times are predictions; the ISS adjusts its orbit now and then.</p>
 </div>
 
 <footer>
@@ -350,8 +585,8 @@
     <div class="footer-pagelinks">
       <div class="fc-label">More here</div>
       <div class="pagelink-row">
+        <a href="/radio/channels/">Channel plan</a>
         <a href="/work/">Work</a>
-        <a href="/meteorology.html">Meteorology</a>
         <a href="https://github.com/bdgroves/bdgroves.github.io/tree/main/radio" target="_blank" rel="noopener">The code</a>
       </div>
     </div>
@@ -382,8 +617,11 @@
   </div>
 </footer>
 
-
-<script src="radio.js?v=20261031a"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-array@3.2.4/dist/d3-array.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-geo@3.1.1/dist/d3-geo.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/satellite.js@5.0.0/dist/satellite.min.js"></script>
+<script src="hub.js?v=20261031a"></script>
 <script>
 // Dark mode toggle. The no-flash script in <head> sets the initial state;
 // this handles clicks and keeps the button's label truthful.
