@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Math Garden — Brooks Groves</title>
-  <meta name="description" content="Six live gardens of math art: sine waves from circles, Lissajous curves and harmonographs, equation line art, a strange attractor, and the Mandelbrot and Julia sets, each with its equation, sliders and things to try.">
+  <meta name="description" content="Ten live gardens of math art: sine waves from circles, Lissajous curves, the spirograph, equation line art, the golden angle, the chaos game, two strange attractors, and the Mandelbrot and Julia sets, each with its equation, sliders, and a button to save a picture or video to post.">
   <meta property="og:title" content="The Math Garden">
   <meta property="og:description" content="Make your own math art: circles to waves, Lissajous curves, equation line art, strange attractors, and the Mandelbrot and Julia sets, live in your browser.">
   <meta property="og:url" content="https://brooksgroves.com/learning/math-garden/">
@@ -67,6 +67,11 @@
     .sources-head { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin:1.6rem 0 0.7rem; padding-top:0.9rem; border-top:1px solid var(--mist); }
     .sources-head:first-child { margin-top:0; padding-top:0; border-top:none; }
     .sources p { font-size:0.85rem; line-height:1.8; color:var(--stone); margin:0 0 0.8rem; padding-left:1rem; border-left:2px solid var(--mist); }
+    .sharebar { display:flex; flex-wrap:wrap; gap:0.4rem; align-items:center; margin:0 0 0.9rem; }
+    .sb-label { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); margin-right:0.3rem; }
+    .sb { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.06em; background:var(--white); color:var(--ink); border:1px solid var(--mist); padding:5px 10px; cursor:pointer; text-decoration:none; }
+    .sb:hover { border-color:var(--rust); color:var(--rust); }
+    .sb:disabled { color:var(--rust); border-color:var(--rust); cursor:wait; }
     @media (max-width:640px) {
       .julia-row { grid-template-columns:1fr; }
       .julia-row .stage.mini { max-width:320px; }
@@ -212,19 +217,23 @@
   <section class="mg-hero">
     <p class="mg-kicker">Learning · A Math Garden</p>
     <h1>The Math Garden</h1>
-    <p class="mg-lede">Those hypnotic pictures and videos made from equations aren't magic, and they aren't hard. Most of them come from two ideas: <b>a point going round a circle</b> (sine and cosine) and <b>doing something simple over and over</b> (iteration). Six little gardens, in order, each with its equation, sliders to play with, and a few things to try. Everything runs live in your browser.</p>
+    <p class="mg-lede">Those hypnotic pictures and videos made from equations aren't magic, and they aren't hard. Most of them come from two ideas: <b>a point going round a circle</b> (sine and cosine) and <b>doing something simple over and over</b> (iteration). Ten little gardens, in order, each with its equation, sliders to play with, and a few things to try. Everything runs live in your browser, and every garden can save a picture or record a short video to post.</p>
     <ol class="mg-path">
       <li><a href="#circles">Circles make waves</a></li>
       <li><a href="#lissajous">Two waves make a curve</a></li>
+      <li><a href="#spirograph">The spirograph</a></li>
       <li><a href="#lines">Equations that draw with lines</a></li>
+      <li><a href="#golden">The golden angle</a></li>
+      <li><a href="#chaos">The chaos game</a></li>
       <li><a href="#attractor">A strange attractor</a></li>
+      <li><a href="#lorenz">The Lorenz butterfly</a></li>
       <li><a href="#mandelbrot">The Mandelbrot set</a></li>
       <li><a href="#julia">Julia sets</a></li>
     </ol>
   </section>
 
   <!-- 1 -->
-  <section class="plot" id="circles">
+  <section class="plot" id="circles" data-share="Every wave is circles riding on circles. Add a few and a sine wave turns into a square.">
     <p class="plot-num">1 · sin and cos</p>
     <h2>Circles make waves</h2>
     <p>Walk a point around a circle. Its height, plotted against time, is a <b>sine wave</b>; its left-right position is <b>cosine</b>. That's all sin and cos are. Stack a few circles riding on each other, each spinning at its own speed, and you can build almost any wave shape. That trick is called a Fourier series, and it's how your phone stores sound.</p>
@@ -238,7 +247,7 @@
   </section>
 
   <!-- 2 -->
-  <section class="plot" id="lissajous">
+  <section class="plot" id="lissajous" data-share="Two waves, one across and one up and down, draw a curve. Add friction and it's a Victorian harmonograph.">
     <p class="plot-num">2 · two waves at once</p>
     <h2>Two waves make a curve</h2>
     <p>Now let one wave drive a pen left and right while another drives it up and down. When the two speeds make a simple ratio, 3 to 2 say, you get a <b>Lissajous figure</b>, the shape on old oscilloscopes and the ABC logo. Add a little friction so the swings die away, and you have a <b>harmonograph</b>, the pendulum drawing machine of the 1800s.</p>
@@ -254,9 +263,24 @@
     <p class="try"><b>Try this:</b> a = 3, b = 2 is a pretzel. Nudge a to 3.01 and turn the friction up a little: the curve slowly drifts and spirals in, and that's a harmonograph. Whole-number ratios close up into loops; messy ones never repeat.</p>
   </section>
 
-  <!-- 3 -->
-  <section class="plot" id="lines">
-    <p class="plot-num">3 · equation art</p>
+  <!-- 3 spiro -->
+  <section class="plot" id="spirograph" data-share="A spirograph is a little wheel rolling inside a big one, with a pen poked through it. One formula, endless roses.">
+    <p class="plot-num">3 · wheels in wheels</p>
+    <h2>The spirograph</h2>
+    <p>Remember the toy? A small gear rolls around inside a big ring, and a pen through a hole in the gear draws loops. It's garden 1 again, one circle riding on another, but now the pen leaves a trail. The curve is called a <b>hypotrochoid</b>. When the two wheel sizes make a simple fraction the drawing closes into a flower; otherwise it keeps going, slowly filling the ring.</p>
+    <div class="eq">x = (R−r)·cos t + d·cos((R−r)/r · t) &nbsp;&nbsp; y = (R−r)·sin t − d·sin((R−r)/r · t)</div>
+    <div class="stage square"><canvas id="c-spiro" width="800" height="800" aria-label="A small wheel rolling inside a large ring, its pen drawing a looping flower"></canvas></div>
+    <div class="controls">
+      <label>small wheel r <input type="range" id="sp-r" min="0.05" max="0.95" step="0.01" value="0.37"><output id="sp-r-o">0.37</output></label>
+      <label>pen d <input type="range" id="sp-d" min="0.05" max="1" step="0.01" value="0.62"><output id="sp-d-o">0.62</output></label>
+      <button class="pill" id="sp-go">Draw it</button>
+    </div>
+    <p class="try"><b>Try this:</b> r = 0.25 makes a clean four-lobed star; r = 0.37 takes a long time to close. Push the pen past the wheel's edge (d above r) and the loops get little curls.</p>
+  </section>
+
+  <!-- 4 -->
+  <section class="plot" id="lines" data-share="2,000 straight lines whose ends follow sin and cos. Not one curve was drawn.">
+    <p class="plot-num">4 · equation art</p>
     <h2>Equations that draw with lines</h2>
     <p>Many of the equation pictures on Instagram are made like this. Draw 2,000 straight lines. Line number <i>k</i> starts at one point and ends at another, and both points come from sin and cos of <i>k</i>. No single line is interesting. Together they weave curved shapes nobody drew, made only of straight lines, the way string art works. Mathematician and artist Hamid Naderi Yeganeh is known for drawing birds, boats and flowers this way.</p>
     <div class="eq">line k: from (sin³(m·θ), cos(n·θ)) to (r·sin(p·θ), r·cos³(q·θ)), &nbsp; θ = 2πk / 2000</div>
@@ -272,9 +296,37 @@
     <p class="try"><b>Try this:</b> set all four to 1 and you get a simple loop. Small whole numbers (1 to 4) give clean, symmetrical flowers and butterflies; bigger ones fill the canvas with lace.</p>
   </section>
 
-  <!-- 4 -->
-  <section class="plot" id="attractor">
-    <p class="plot-num">4 · iteration</p>
+  <!-- 5, 6 -->
+  <section class="plot" id="golden" data-share="Every seed in a sunflower is turned 137.5° from the last one, the golden angle. Change it by half a degree and the pattern falls apart.">
+    <p class="plot-num">5 · nature's favorite angle</p>
+    <h2>The golden angle</h2>
+    <p>Plant seed number <i>n</i> a little farther out than the last, and turn by the same angle each time. At most angles you get boring straight spokes, with gaps between them. At <b>137.5°</b>, the golden angle, the seeds pack perfectly with no gaps, and two sets of spirals appear, running opposite ways. Count them and you'll get neighboring Fibonacci numbers, like 21 and 34. That's how sunflowers, pinecones and daisies do it.</p>
+    <div class="eq">seed n: angle = n × 137.508°, &nbsp; distance = √n</div>
+    <div class="stage square"><canvas id="c-golden" width="800" height="800" aria-label="Hundreds of seeds placed by turning the same angle each time, forming sunflower spirals"></canvas></div>
+    <div class="controls">
+      <label>angle <input type="range" id="go-a" min="130" max="145" step="0.01" value="137.51"><output id="go-a-o">137.51°</output></label>
+      <label>seeds <input type="range" id="go-n" min="100" max="3000" step="50" value="1200"><output id="go-n-o">1200</output></label>
+      <button class="pill" id="go-reset">Back to 137.51°</button>
+    </div>
+    <p class="try"><b>Try this:</b> drag the angle slowly away from 137.51°. Even a tenth of a degree off, the spirals turn into spokes with gaps. At 137.51° there's never a gap, however many seeds you add.</p>
+  </section>
+
+  <section class="plot" id="chaos" data-share="Jump halfway to a random corner, and again, thousands of times. Out of pure chance, a perfect fractal appears.">
+    <p class="plot-num">6 · order from chance</p>
+    <h2>The chaos game</h2>
+    <p>Pick three corners of a triangle and a starting dot. Roll a die, jump <b>halfway</b> toward the corner it picks, mark the spot, and repeat. Pure chance, and yet out comes the Sierpiński triangle, holes within holes forever. Swap the rule for four little stretch-and-turn moves, chosen with the right odds, and the same game grows Michael Barnsley's fern, every frond a copy of the whole.</p>
+    <div class="eq">triangle: next = (point + random corner) ÷ 2 &nbsp;&nbsp; fern: next = one of four moves, picked 1%, 85%, 7%, 7% of the time</div>
+    <div class="stage square dark"><canvas id="c-chaos" width="800" height="800" aria-label="Dots placed by random jumps building up a fractal, a triangle or a fern"></canvas></div>
+    <div class="controls">
+      <label>Shape <select id="ch-shape"><option value="fern">Barnsley fern</option><option value="tri">Sierpiński triangle</option><option value="hex">Six corners, jump 2/3</option></select></label>
+      <button class="pill" id="ch-go">Play again</button>
+    </div>
+    <p class="try"><b>Try this:</b> watch the first few hundred dots: they look like noise. By a few thousand the shape is unmistakable, and nothing in the rules ever mentions a fern.</p>
+  </section>
+
+  <!-- 7 -->
+  <section class="plot" id="attractor" data-share="One point, pushed through x′ = sin(a·y) + c·cos(a·x), y′ = sin(b·x) + d·cos(b·y), a million times.">
+    <p class="plot-num">7 · iteration</p>
     <h2>A strange attractor</h2>
     <p>Now the other big idea: take a point, push it through a formula, and feed the answer back in. Again, and again, a million times. These formulas are credited to the writer and mathematician Clifford Pickover. The point jumps around chaotically, never exactly repeating, but it always lands somewhere on the same ghostly ribbon. The glow is just where the points pile up. Change four numbers and you get a completely different creature.</p>
     <div class="eq">x′ = sin(a·y) + c·cos(a·x) &nbsp;&nbsp; y′ = sin(b·x) + d·cos(b·y)</div>
@@ -290,9 +342,23 @@
     <p class="try"><b>Try this:</b> slide one number slowly and watch the ribbon morph. Some settings collapse into a few dots: the point has found a loop and gives up the chaos. "Surprise me" keeps rolling until it finds one that doesn't.</p>
   </section>
 
-  <!-- 5 -->
-  <section class="plot" id="mandelbrot">
-    <p class="plot-num">5 · complex numbers</p>
+  <!-- 8 -->
+  <section class="plot" id="lorenz" data-share="The Lorenz attractor: three equations from a 1963 weather model. Two starting points a millionth apart end up completely different, the butterfly effect.">
+    <p class="plot-num">8 · the butterfly effect</p>
+    <h2>The Lorenz butterfly</h2>
+    <p>In 1963 the meteorologist Edward Lorenz boiled the weather down to three equations and found something unsettling: two runs that start almost exactly the same soon go completely different ways. Here two points start <b>one millionth apart</b>, one rust and one blue. For a while they move as one. Then they split, each looping around the two wings of the "butterfly" on its own schedule. That's why no forecast can see more than a couple of weeks ahead.</p>
+    <div class="eq">dx/dt = σ(y − x) &nbsp;&nbsp; dy/dt = x(ρ − z) − y &nbsp;&nbsp; dz/dt = xy − βz &nbsp;&nbsp; (σ = 10, β = 8/3)</div>
+    <div class="stage square dark"><canvas id="c-lorenz" width="800" height="800" aria-label="Two points tracing the Lorenz attractor's butterfly wings in 3D, slowly turning"></canvas><div class="hud" id="lz-hud"></div></div>
+    <div class="controls">
+      <label>ρ <input type="range" id="lz-r" min="10" max="60" step="0.1" value="28"><output id="lz-r-o">28</output></label>
+      <button class="pill" id="lz-go">Start over</button>
+    </div>
+    <p class="try"><b>Try this:</b> watch the distance in the corner. It grows and grows until the two points have nothing to do with each other. Then turn ρ down below about 24: the chaos stops, and both points settle onto a wing and stay there.</p>
+  </section>
+
+  <!-- 9 -->
+  <section class="plot" id="mandelbrot" data-share="The Mandelbrot set: just z → z² + c, repeated. Zoom in forever.">
+    <p class="plot-num">9 · complex numbers</p>
     <h2>The Mandelbrot set</h2>
     <p>The most famous picture in math, from the shortest formula. Every point on this map is a number <i>c</i>. Start with z = 0 and repeat <b>z → z² + c</b>. For some <i>c</i> the numbers stay small forever: those points are black, the set. For the rest the numbers run away to infinity, and the color says how fast. The edge between the two is endlessly detailed. Click to zoom in, and you'll keep finding spirals, seahorses and tiny copies of the whole set.</p>
     <div class="eq">z<sub>n+1</sub> = z<sub>n</sub>² + c, &nbsp; z<sub>0</sub> = 0</div>
@@ -307,8 +373,8 @@
   </section>
 
   <!-- 6 -->
-  <section class="plot" id="julia">
-    <p class="plot-num">6 · the other half</p>
+  <section class="plot" id="julia" data-share="Julia sets: same formula as the Mandelbrot set, roles swapped. Every point of the Mandelbrot set has its own.">
+    <p class="plot-num">10 · the other half</p>
     <h2>Julia sets</h2>
     <p>Same formula, z → z² + c, with the roles swapped: now <i>c</i> stays fixed and each point on the map is the starting z. Every point of the Mandelbrot set has its own Julia set. Pick <i>c</i> from inside the black and the Julia set is one connected piece; pick it from outside and it shatters into dust. Move over the little Mandelbrot map to choose <i>c</i>.</p>
     <div class="eq">z<sub>n+1</sub> = z<sub>n</sub>² + c, &nbsp; c fixed, z<sub>0</sub> = the point</div>
@@ -323,14 +389,14 @@
     <h2>Go deeper</h2>
     <div class="sources">
       <div class="sources-head">&#127909; Watch</div>
-      <p><a href="https://www.3blue1brown.com" target="_blank" rel="noopener">3Blue1Brown</a> &mdash; Grant Sanderson's animated math videos. His Fourier series and complex numbers videos are the best way into gardens 1 and 5.</p>
+      <p><a href="https://www.3blue1brown.com" target="_blank" rel="noopener">3Blue1Brown</a> &mdash; Grant Sanderson's animated math videos. His Fourier series and complex numbers videos are the best way into gardens 1 and 9.</p>
       <p><a href="https://www.youtube.com/@numberphile" target="_blank" rel="noopener">Numberphile</a> &mdash; mathematicians with brown paper and markers, including several on the Mandelbrot set.</p>
       <p><a href="https://thecodingtrain.com" target="_blank" rel="noopener">The Coding Train</a> &mdash; Daniel Shiffman codes these live, from the Mandelbrot set to Fourier drawings, explaining every line.</p>
       <div class="sources-head">&#128196; Read</div>
-      <p><a href="https://paulbourke.net/fractals/clifford/" target="_blank" rel="noopener">Paul Bourke: Clifford attractors</a> &mdash; the attractor in garden 4, with dozens of beautiful settings to try.</p>
+      <p><a href="https://paulbourke.net/fractals/clifford/" target="_blank" rel="noopener">Paul Bourke: Clifford attractors</a> &mdash; the attractor in garden 7, with dozens of beautiful settings to try.</p>
       <p><a href="https://iquilezles.org" target="_blank" rel="noopener">Inigo Quilez</a> &mdash; the master of drawing with formulas in shaders, the same trick the Mandelbrot here uses.</p>
       <div class="sources-head">&#128202; Made with</div>
-      <p>Plain JavaScript, a 2D canvas for gardens 1 to 4 and a WebGL shader for 5 and 6. Every pixel is computed in your browser; nothing is downloaded. View source to see each equation in code.</p>
+      <p>Plain JavaScript, a 2D canvas for gardens 1 to 8 and a WebGL shader for 9 and 10. Every pixel is computed in your browser; nothing is downloaded. View source to see each equation in code.</p>
     </div>
   </section>
 
@@ -416,7 +482,8 @@
   });
 })();
 </script>
-<script src="garden.js?v=1"></script>
+<script src="garden.js?v=2"></script>
+<script src="garden2.js?v=2"></script>
 <!-- ANALYTICS:START --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "6735f78105644b35a5b026c6e3c2b72a"}'></script><!-- ANALYTICS:END -->
 </body>
 </html>

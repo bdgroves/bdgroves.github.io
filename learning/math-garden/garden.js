@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   const $ = (id) => document.getElementById(id);
+  const MG = (window.MG = window.MG || {});   // gardens register here for the share bar (garden2.js)
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
   const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   function bind(id, fn, fmt) {
@@ -55,6 +56,7 @@
     }
     onScreen(cv, (v) => { visible = v; });
     requestAnimationFrame(frame);
+    MG.circles = { canvas: cv, play() { wave = []; } };
   })();
 
   // ---------------------------------------------------------------- 2 lissajous
@@ -85,11 +87,14 @@
     const redraw = () => { if (anim) { cancelAnimationFrame(anim); anim = null; } draw(); };
     const f2 = (v) => (Math.abs(v - Math.round(v)) < 0.0005 ? String(Math.round(v)) : v.toFixed(3));
     bind('li-a', redraw, f2); bind('li-b', redraw, f2); bind('li-p', redraw, (v) => v.toFixed(2)); bind('li-d', redraw, (v) => v.toFixed(4));
-    $('li-draw').addEventListener('click', () => {
+    function slow(seconds) {
       if (anim) cancelAnimationFrame(anim);
-      let k = 0; const step = () => { k += 120; draw(k); if (k < 20000) anim = requestAnimationFrame(step); else anim = null; };
+      const per = 20000 / (seconds * 60);
+      let k = 0; const step = () => { k += per; draw(Math.round(k)); if (k < 20000) anim = requestAnimationFrame(step); else anim = null; };
       step();
-    });
+    }
+    $('li-draw').addEventListener('click', () => slow(3));
+    MG.lissajous = { canvas: cv, play: (s) => slow(s) };
     draw();
     new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   })();
@@ -120,6 +125,11 @@
     });
     draw();
     new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    MG.lines = { canvas: cv, play(seconds) {      // breathe the inner ring in and out
+      const frames = Math.round(seconds * 30); let f = 0;
+      const step = () => { const r = 0.6 + 0.38 * Math.sin((f / frames) * Math.PI * 2); $('ln-r').value = r; $('ln-r-o').textContent = r.toFixed(2); draw(); if (++f <= frames) requestAnimationFrame(step); };
+      step();
+    } };
   })();
 
   // ---------------------------------------------------------------- 4 attractor
@@ -177,6 +187,12 @@
     });
     let started = false;
     onScreen(cv, (vis) => { if (vis && !started) { started = true; render(false); } });
+    MG.attractor = { canvas: cv, play(seconds) {  // slide a slowly and watch the creature morph
+      const a0 = v('at-a'), frames = Math.round(seconds * 24); let f = 0;
+      const step = () => { const a = a0 + 0.3 * Math.sin((f / frames) * Math.PI * 2); $('at-a').value = a; $('at-a-o').textContent = a.toFixed(2);
+        paint(compute(a, v('at-b'), v('at-c'), v('at-d'), 400000)); if (++f <= frames) requestAnimationFrame(step); else render(false); };
+      step();
+    } };
   })();
 
   // ---------------------------------------------------------------- 5 + 6 mandelbrot / julia (WebGL)
@@ -268,6 +284,13 @@
     $('m-go').addEventListener('change', (e) => { if (!e.target.value) return; const [x, y, s] = e.target.value.split(',').map(Number); flyTo(x, y, s); e.target.value = ''; });
     bind('m-it', () => { st.it = +$('m-it').value; r(); });
     r();
+    MG.mandelbrot = { canvas: cv, play(seconds) {   // a smooth dive: into Seahorse Valley from the top, or deeper from wherever you are
+      cancelAnimationFrame(anim);
+      if (st.span > 1) { st.cx = -0.7435669; st.cy = 0.1314023; }
+      const s0 = st.span, s1 = s0 / 400, frames = Math.round(seconds * 30); let f = 0;
+      const step = () => { const t = f / frames; st.span = Math.exp(Math.log(s0) + (Math.log(s1) - Math.log(s0)) * t); r(); if (++f <= frames) anim = requestAnimationFrame(step); };
+      step();
+    } };
   })();
 
   // 6 julia
@@ -297,5 +320,10 @@
     pk.addEventListener('touchmove', (e) => { e.preventDefault(); pick(e); }, { passive: false });
     pk.addEventListener('click', pick);
     r();
+    MG.julia = { canvas: cv, play(seconds) {          // walk c around a circle that hugs the Mandelbrot edge
+      const frames = Math.round(seconds * 30); let f = 0;
+      const step = () => { const th = (f / frames) * Math.PI * 2; jx = 0.7885 * Math.cos(th); jy = 0.7885 * Math.sin(th); r(); if (++f <= frames) requestAnimationFrame(step); };
+      step();
+    } };
   })();
 })();
