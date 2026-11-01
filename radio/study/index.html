@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ham License Cheat Sheet — Brooks Groves</title>
+  <meta name="description" content="A condensed study sheet for the ham radio Technician and General exams: rules, band privileges, propagation, formulas, antennas and safety, with the traps to watch.">
+  <meta property="og:title" content="Ham License Cheat Sheet">
+  <meta property="og:description" content="A condensed study sheet for the ham radio Technician and General exams: rules, band privileges, propagation, formulas, antennas and safety.">
+  <meta property="og:url" content="https://brooksgroves.com/radio/study/">
+  <meta property="og:image" content="https://brooksgroves.com/images/features/site-og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://brooksgroves.com/radio/study/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --sage:#4a5c45; --rust:#8b3a2a; --stone:#7a7268;
+      --gold:#c8922a; --mist:#d6d0c4; --white:#fdfaf4; --sky:#5a7a8a;
+      --fire:#c0392b;
+      /* badge backgrounds tuned to parchment palette */
+      --green-bg:#e8efe2; --green-ink:#3d5a30;
+      --amber-bg:#f5ead0; --amber-ink:#7a5a14;
+      --rust-bg:#f2dcd2; --rust-ink:#7a2e20;
+      --slate-bg:#dde3e8; --slate-ink:#3d4a5c;
+    }
+    [data-theme="dark"] {
+      --ink:#ece6da; --parchment:#17150f; --cream:#211e17;
+      --stone:#a2988a; --gold:#d9a63f; --mist:#3a352d;
+      --white:#12100d; --rust:#cf6b52; --sage:#83a077; --sky:#6fa0cc;
+      --green-bg:#1f2a1b; --green-ink:#a3c294;
+      --amber-bg:#2c2412; --amber-ink:#e0b75a;
+      --rust-bg:#331c16; --rust-ink:#e39a85;
+      --slate-bg:#1c232b; --slate-ink:#a9bccf;
+      color-scheme:dark;
+    }
+    [data-theme="dark"] .rule-block { background:#231d10; }
+    summary .badge { margin-left:0.25rem; font-family:'DM Mono',monospace; }
+    .page-content a { color:var(--rust); }
+    .section-body { overflow-x:auto; }
+    @media (max-width:600px) { .cs-table td.mono { white-space:normal; } .meta-strip { gap:1rem; } }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--rust) 0%,var(--gold) 50%,var(--sage) 100%); }
+
+    /* HEADER */
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1100px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    nav a:hover { color:var(--rust); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    /* PAGE HEADER */
+    .page-header { max-width:1100px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,4rem) 2rem; border-bottom:1px solid var(--mist); }
+    .page-eyebrow { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--stone); margin-bottom:0.75rem; }
+    .page-eyebrow a { color:var(--stone); text-decoration:none; }
+    .page-eyebrow a:hover { color:var(--rust); }
+    .page-title { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-weight:900; line-height:1.05; letter-spacing:-0.02em; margin-bottom:0.75rem; }
+    .page-title em { font-style:italic; color:var(--rust); }
+    .page-sub { font-size:0.975rem; color:var(--stone); max-width:640px; line-height:1.8; }
+
+    /* META STRIP */
+    .meta-strip { max-width:1100px; margin:0 auto; padding:1.25rem clamp(1.5rem,5vw,4rem); border-bottom:1px solid var(--mist); display:flex; gap:2rem; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+    .meta-stat { display:flex; flex-direction:column; gap:0.15rem; }
+    .meta-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--stone); }
+    .meta-value { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--ink); }
+    .meta-value.target { color:var(--sage); }
+    .meta-controls { display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .ctrl-btn { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; padding:0.5rem 0.9rem; background:transparent; border:1px solid var(--mist); color:var(--stone); cursor:pointer; transition:background 0.2s, color 0.2s, border-color 0.2s; }
+    .ctrl-btn:hover { background:var(--ink); color:var(--parchment); border-color:var(--ink); }
+
+    /* MAIN */
+    .page-content { max-width:1100px; margin:0 auto; padding:clamp(2rem,5vw,4rem) clamp(1.5rem,5vw,4rem); }
+
+    /* DETAILS / COLLAPSIBLES */
+    details { border:1px solid var(--mist); margin-bottom:1rem; background:var(--white); }
+    details[open] { border-color:var(--ink); }
+    summary {
+      list-style:none;
+      cursor:pointer;
+      padding:1rem 1.25rem;
+      font-family:'Playfair Display',serif;
+      font-size:1.1rem;
+      font-weight:700;
+      color:var(--ink);
+      display:flex;
+      align-items:center;
+      gap:0.75rem;
+      transition:background 0.15s;
+    }
+    summary::-webkit-details-marker { display:none; }
+    summary:hover { background:var(--cream); }
+    summary::after {
+      content:'+';
+      margin-left:auto;
+      font-family:'DM Mono',monospace;
+      font-weight:400;
+      font-size:1.2rem;
+      color:var(--stone);
+      transition:transform 0.2s;
+    }
+    details[open] summary::after { content:'−'; }
+    .summary-emoji { font-size:1.1rem; line-height:1; }
+    .section-body { padding:0 1.25rem 1.25rem; border-top:1px solid var(--mist); padding-top:1.25rem; }
+
+    /* TABLES */
+    .cs-table { width:100%; border-collapse:collapse; margin-bottom:1rem; font-size:0.85rem; }
+    .cs-table th { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); padding:0.6rem 0.75rem; border-bottom:2px solid var(--ink); text-align:left; background:var(--parchment); }
+    .cs-table td { padding:0.7rem 0.75rem; border-bottom:1px solid var(--mist); color:var(--ink); vertical-align:top; line-height:1.6; }
+    .cs-table tr:hover td { background:var(--cream); }
+    .cs-table td.mono { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--rust); white-space:nowrap; }
+    .cs-table td.mono-wrap { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--rust); }
+
+    /* BADGES */
+    .badge { display:inline-block; font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.2rem 0.5rem; border-radius:2px; border:1px solid; }
+    .badge-slate  { background:var(--slate-bg); color:var(--slate-ink); border-color:var(--slate-ink); }
+    .badge-green  { background:var(--green-bg); color:var(--green-ink); border-color:var(--green-ink); }
+    .badge-amber  { background:var(--amber-bg); color:var(--amber-ink); border-color:var(--amber-ink); }
+
+    /* CALLOUTS */
+    .callout { border-left:3px solid var(--rust); background:var(--cream); padding:0.85rem 1rem; margin-top:0.75rem; font-size:0.875rem; line-height:1.7; }
+    .callout-title { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--rust); margin-bottom:0.4rem; }
+    .callout strong { color:var(--ink); }
+
+    .rule-block { border:1px solid var(--gold); background:#faf3e0; padding:0.85rem 1rem; margin-top:0.75rem; font-size:0.875rem; line-height:1.7; }
+    .rule-title { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:0.4rem; }
+    .rule-block strong { color:var(--ink); }
+
+    /* GRID CARDS (raster ops, datums) */
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.5rem; }
+    @media(max-width:600px) { .grid-2 { grid-template-columns:1fr; } }
+    .grid-card { border:1px solid var(--mist); padding:0.85rem 1rem; background:var(--parchment); }
+    .grid-card-title { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--rust); margin-bottom:0.4rem; }
+    .grid-card p { font-size:0.85rem; line-height:1.65; color:var(--ink); }
+    .grid-card p + p { margin-top:0.5rem; color:var(--stone); font-size:0.78rem; }
+
+    /* PROGRESS NOTE (top of page) */
+    .progress-note { background:var(--cream); border:1px solid var(--mist); border-left:3px solid var(--sage); padding:1rem 1.25rem; margin-bottom:2rem; font-size:0.875rem; line-height:1.75; color:var(--ink); }
+    .progress-note .progress-label { font-family:'DM Mono',monospace; font-size:0.55rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--sage); margin-bottom:0.4rem; }
+    .progress-note strong { color:var(--ink); }
+
+    /* SECTION DIVIDERS in main flow */
+    .section-label { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--stone); padding-bottom:0.75rem; border-bottom:2px solid var(--ink); margin-bottom:1.5rem; margin-top:2rem; display:flex; justify-content:space-between; align-items:center; }
+    .section-label:first-child { margin-top:0; }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:2rem; }
+    .footer-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; letter-spacing:0.08em; }
+    .footer-tagline a { color:var(--stone); text-decoration:none; transition:color 0.2s; }
+    .footer-tagline a:hover { color:var(--gold); }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; color:var(--stone); transition:color 0.2s; }
+    .footer-links a:hover { color:var(--gold); }
+    .footer-copy { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); }
+
+    /* PRINT — simple, content-only, no chrome */
+    @media print {
+      body::before, header, .meta-controls, footer, nav { display:none !important; }
+      details { break-inside:avoid; border-color:#999; }
+      details[open] summary { background:#eee; }
+      summary::after { display:none; }
+      details:not([open]) { display:none; }
+      .callout, .rule-block { break-inside:avoid; }
+    }
+  </style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
+</head>
+<body id="top">
+
+<div class="topline"></div>
+
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav class="site-nav" aria-label="Main">
+      <div class="sn-item"><a href="/work/" aria-current="page">Work</a>
+        <div class="sn-drop">
+          <span class="sn-label">By field</span>
+          <a href="/meteorology.html">🌩 Meteorology</a>
+          <a href="/hydrology.html">💧 Hydrology</a>
+          <a href="/geospatial.html">🗺 Geospatial</a>
+          <a href="/volcanology.html">🌋 Volcanology</a>
+          <a href="/paleontology.html">🦕 Paleontology</a>
+          <a href="/ecology.html">🌿 Ecology</a>
+          <a href="/geology.html">🪨 Geology</a>
+          <a href="/archaeology.html">🏺 Archaeology</a>
+          <span class="sn-label">Projects</span>
+          <a href="https://brooksgroves.com/mother-lode/" target="_blank" rel="noopener">⛏️ Mother Lode</a>
+          <a href="https://brooksgroves.com/project-kiva" target="_blank" rel="noopener">🏺 Project Kiva</a>
+          <a href="https://brooksgroves.com/lidar-explore/" target="_blank" rel="noopener">🌲 LiDAR Explore</a>
+          <a href="/hoplove/">🍺 HopLove</a>
+          <a href="https://brooksgroves.com/little-free-pantry" target="_blank" rel="noopener">🏠 Little Free Pantry</a>
+          <a href="/radio/">📡 Ham radio: On the Air</a>
+          <span class="sn-label">Bots</span>
+          <a href="/blog/bdgrovesbot.html">🔥 BdgrovesBot (parked)</a>
+          <a href="/blog/alert-bots-revisited-post.html">🌙 The weather bots (on standby)</a>
+          <a href="https://github.com/bdgroves" target="_blank" rel="noopener">The code, on GitHub ↗</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/writing/">Writing</a>
+        <div class="sn-drop">
+          <a href="/blog/">📝 Blog</a>
+          <a href="/writing/">📖 All writing</a>
+          <a href="/tags.html">🏷️ Posts by topic</a>
+          <span class="sn-label">Learning</span>
+          <a href="/learning/">📚 All curricula</a>
+          <a href="/learning/math-garden/">🌀 The Math Garden</a>
+          <a href="/learning/quantum-physics/">⚛️ Quantum Physics</a>
+          <a href="/learning/volcanology/">🌋 Volcanology</a>
+          <a href="/learning/desert-montane-ecosystems/">🌵 Desert &amp; Montane Ecosystems</a>
+          <a href="/learning/ecogeomorphology/">🌊 Ecogeomorphology</a>
+          <a href="/learning/grunge/">🎸 Grunge</a>
+          <a href="/learning/reggae/">🎵 Reggae</a>
+          <a href="/learning/afropop/">🌍 Afropop</a>
+          <a href="/learning/punk/">🎸 Punk Rock</a>
+          <a href="/learning/newwave/">🎹 New Wave</a>
+          <span class="sn-label">Stories 🔒</span>
+          <a href="https://memoir.brooksgroves.com">📜 Memoir</a>
+          <a href="https://westin.brooksgroves.com">🏨 Westin Stories</a>
+          <a href="https://journal.brooksgroves.com">✈️ Journal</a>
+          <a href="https://y2k.brooksgroves.com" target="_blank" rel="noopener">💾 Y2K Archive</a>
+          <a href="/recipes.html">🍳 Recipes</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/maps.html">Maps &amp; films</a>
+        <div class="sn-drop">
+          <a href="/maps.html">🧭 All the maps</a>
+          <a href="https://brooksgroves.com/30DayMapChallenge/2026/" target="_blank" rel="noopener">🗺️ #30DayMapChallenge 2026</a>
+          <span class="sn-label">Flyover films</span>
+          <a href="/blog/seattle-diorama-post.html">🏙️ Seattle in Miniature</a>
+          <a href="/blog/zermatt-diorama-post.html">🐄 Zermatt in Miniature</a>
+          <a href="/blog/dakar-diorama-post.html">🏁 The Dakar in Miniature</a>
+          <a href="/blog/amalfi-diorama-post.html">🍋 The Amalfi Coast in Miniature</a>
+          <a href="/blog/yosemite-diorama-post.html">🧗 Yosemite in Miniature</a>
+          <a href="/blog/athabasca-melt-post.html">🧊 The Athabasca Glacier, 1844 to 2100</a>
+          <a href="/blog/icefields-flyover-post.html">🏔️ The Icefields Parkway</a>
+          <a href="/blog/ruby-flyover-post.html">💎 The Ruby Mountains</a>
+          <a href="/blog/mono-flyover-post.html">🌋 Mono Basin</a>
+          <a href="/blog/yosemite-flyover-post.html">🧗 Yosemite</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/live/">Live data</a>
+        <div class="sn-drop">
+          <span class="sn-label">Updating on their own</span>
+          <a href="/secchi/">🔵 secchi: Lake Tahoe</a>
+          <a href="https://brooksgroves.com/rainier-snowpack" target="_blank" rel="noopener">❄️ Rainier Snowpack</a>
+          <a href="https://brooksgroves.com/PELE" target="_blank" rel="noopener">🌋 PELE: Kīlauea</a>
+          <a href="https://brooksgroves.com/lahar-watch" target="_blank" rel="noopener">🌋 lahar-watch</a>
+          <a href="https://brooksgroves.com/aftershock" target="_blank" rel="noopener">🌍 AFTERSHOCK</a>
+          <a href="https://brooksgroves.com/sierra-streamflow" target="_blank" rel="noopener">💧 Sierra Streamflow</a>
+          <a href="https://brooksgroves.com/puget-tides/" target="_blank" rel="noopener">🌊 PUGET-TIDES</a>
+          <a href="https://brooksgroves.com/fog-watch/" target="_blank" rel="noopener">🌫️ FOG-WATCH</a>
+          <a href="https://brooksgroves.com/solstice" target="_blank" rel="noopener">☀️ SOLSTICE</a>
+          <a href="https://brooksgroves.com/weather-station" target="_blank" rel="noopener">🌡️ Weather Station</a>
+          <a href="https://brooksgroves.com/Alpine-watch/" target="_blank" rel="noopener">🏔️ ALPINE-WATCH</a>
+          <a href="https://brooksgroves.com/cypress-dome-watch/" target="_blank" rel="noopener">🌳 Cypress Domes</a>
+          <a href="https://brooksgroves.com/sentinel-stockpile/" target="_blank" rel="noopener">🛰️ Sentinel Stockpile</a>
+          <a href="https://brooksgroves.com/EDGAR" target="_blank" rel="noopener">⚾ EDGAR</a>
+        </div>
+      </div>
+      <div class="sn-item sn-end"><a href="/outside.html">Outside</a>
+        <div class="sn-drop">
+          <a href="/outside.html">🏔 Outside</a>
+          <a href="/concerts.html">🎫 Concerts</a>
+          <a href="/games.html">🎲 Games</a>
+          <a href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener">📕 Reading</a>
+        </div>
+      </div>
+      <div class="sn-item sn-end"><a href="/about.html">About</a>
+        <div class="sn-drop">
+          <a href="/about.html">👤 About me</a>
+          <span class="sn-label">Connect</span>
+          <a href="mailto:contact@brooksgroves.com" class="sn-contact">✉︎ contact@brooksgroves.com</a>
+          <a href="https://github.com/bdgroves" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="https://x.com/bdgroves" target="_blank" rel="noopener">X / Twitter ↗</a>
+          <a href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener">Bluesky ↗</a>
+          <a href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener">Strava ↗</a>
+          <a href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener">Untappd ↗</a>
+          <a href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener">Goodreads ↗</a>
+        </div>
+      </div>
+      <form class="nav-search" action="/search/" role="search"><input type="search" name="q" placeholder="Search" aria-label="Search brooksgroves.com" autocomplete="off"><button type="submit" aria-label="Search">⌕</button></form>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button>
+    </nav>
+  </div>
+</header>
+
+<div class="page-header">
+  <p class="page-eyebrow"><a href="/">Brooks Groves</a> · <a href="/radio/">Ham radio</a> · Study Reference</p>
+  <h1 class="page-title">📡 Ham License <em>Cheat Sheet</em></h1>
+  <p class="page-sub">A condensed study sheet for the Technician (Element 2) and General (Element 3) exams: the rules, the numbers and the formulas that show up again and again, plus the traps. Plan: pass both at the same sitting.</p>
+</div>
+
+<div class="meta-strip">
+  <div class="meta-stat">
+    <div class="meta-label">Technician</div>
+    <div class="meta-value">35 Q · pass 26</div>
+  </div>
+  <div class="meta-stat">
+    <div class="meta-label">General</div>
+    <div class="meta-value target">35 Q · pass 26</div>
+  </div>
+  <div class="meta-stat">
+    <div class="meta-label">Pools in use</div>
+    <div class="meta-value">Tech 2026–30 · Gen 2023–27</div>
+  </div>
+  <div class="meta-controls">
+    <button class="ctrl-btn" type="button" data-expand="1">▼ Expand All</button>
+    <button class="ctrl-btn" type="button" data-expand="0">▶ Collapse All</button>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <div class="progress-note">
+    <div class="progress-label">How to use this</div>
+    Read a section, then drill those questions on <a href="https://hamstudy.org" target="_blank" rel="noopener">HamStudy.org</a>. Book the exam once you score <strong>85% or better three times in a row</strong> on each element. Both exams draw one question from each of 35 topic groups, so no single topic can sink you. Press <strong>e</strong> to expand every section, <strong>c</strong> to collapse.
+  </div>
+
+  <div class="section-label"><span>Both exams · the formulas and numbers</span><a href="/radio/">← On the Air</a></div>
+
+  <!-- FORMULAS -->
+  <details open>
+    <summary><span class="summary-emoji">🧮</span> Formulas to memorize</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Formula</th><th>What it gives you</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">E = I × R</td><td>Ohm's law: volts = amps × ohms</td><td>2 A through 50 Ω → 100 V</td></tr>
+          <tr><td class="mono">P = E × I</td><td>Power in watts</td><td>13.8 V × 10 A → 138 W</td></tr>
+          <tr><td class="mono">P = E² / R</td><td>Power when you know volts and resistance</td><td>100 V into 50 Ω → 200 W</td></tr>
+          <tr><td class="mono">λ (m) = 300 / f (MHz)</td><td>Wavelength</td><td>146 MHz → about 2 m</td></tr>
+          <tr><td class="mono">468 / f (MHz)</td><td>Half-wave dipole length in feet</td><td>14.2 MHz → about 33 ft</td></tr>
+          <tr><td class="mono">234 / f (MHz)</td><td>Quarter-wave vertical in feet</td><td>146 MHz → about 19 in</td></tr>
+          <tr><td class="mono">X<sub>L</sub> = 2πfL</td><td>Inductive reactance (rises with frequency)</td><td>General</td></tr>
+          <tr><td class="mono">X<sub>C</sub> = 1 / (2πfC)</td><td>Capacitive reactance (falls with frequency)</td><td>General</td></tr>
+          <tr><td class="mono">f = 1 / (2π√LC)</td><td>Resonant frequency, where X<sub>L</sub> = X<sub>C</sub></td><td>General</td></tr>
+          <tr><td class="mono">RMS = peak × 0.707</td><td>Peak = RMS × 1.414; peak-to-peak = 2 × peak</td><td>120 V RMS → 170 V peak</td></tr>
+          <tr><td class="mono">PEP = (V<sub>p-p</sub> ÷ 2 × 0.707)² / R</td><td>Peak envelope power from a scope reading</td><td>200 V p-p into 50 Ω → 100 W</td></tr>
+          <tr><td class="mono">Vs / Vp = Ns / Np</td><td>Transformer voltage follows the turns ratio; impedance ratio is the turns ratio squared</td><td>General</td></tr>
+          <tr><td class="mono">SWR = Z<sub>big</sub> / Z<sub>small</sub></td><td>SWR from a mismatch (always ≥ 1)</td><td>200 Ω load on 50 Ω line → 4:1</td></tr>
+          <tr><td class="mono">dBi = dBd + 2.15</td><td>Gain over isotropic vs. over a dipole</td><td>General</td></tr>
+        </tbody>
+      </table>
+      <div class="rule-block">
+        <div class="rule-title">Decibels in your head</div>
+        <strong>3 dB</strong> = 2× power · <strong>6 dB</strong> = 4× · <strong>10 dB</strong> = 10× · <strong>20 dB</strong> = 100× · a loss of 3 dB = half the power · one <strong>S-unit</strong> on a meter ≈ 6 dB
+      </div>
+      <div class="rule-block">
+        <div class="rule-title">Prefixes</div>
+        pico 10<sup>−12</sup> · nano 10<sup>−9</sup> · micro 10<sup>−6</sup> · milli 10<sup>−3</sup> · kilo 10<sup>3</sup> · mega 10<sup>6</sup> · giga 10<sup>9</sup> &nbsp;|&nbsp; 1,500 kHz = 1.5 MHz · 500 mA = 0.5 A · 0.001 µF = 1,000 pF
+      </div>
+      <div class="callout">
+        <div class="callout-title">Series and parallel</div>
+        Resistors and inductors <strong>add in series</strong>; in parallel use 1/R = 1/R₁ + 1/R₂ (two equal ones = half). <strong>Capacitors are the opposite</strong>: they add in parallel and combine like resistors in series. Series: same current everywhere. Parallel: same voltage across each.
+      </div>
+    </div>
+  </details>
+
+  <div class="section-label"><span>Technician · Element 2 · 35 questions · pass 26</span><span>Pool 2026–2030</span></div>
+
+  <!-- T1 RULES -->
+  <details>
+    <summary><span class="summary-emoji">📜</span> T1 · FCC rules</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Rule</th><th>The answer they want</th></tr></thead>
+        <tbody>
+          <tr><td>Which rules govern hams</td><td>FCC <strong>Part 97</strong>. The FCC licenses; the ITU sets international allocations.</td></tr>
+          <tr><td>License term</td><td><span class="badge badge-slate">10 years</span> · renew within 90 days before it expires · <strong>2-year grace</strong> to renew after, but no transmitting in the grace period</td></tr>
+          <tr><td>When can I transmit?</td><td>As soon as the call sign shows up in the FCC's ULS database (the FCC emails a link to the license)</td></tr>
+          <tr><td>Station ID</td><td>Your call sign <strong>every 10 minutes</strong> during a contact and <strong>at the end</strong>, in English or Morse</td></tr>
+          <tr><td>Control operator</td><td>Any licensed ham the station licensee designates; privileges are the <strong>control operator's</strong>. Licensee and control operator are both responsible.</td></tr>
+          <tr><td>Maximum power</td><td><span class="badge badge-slate">1,500 W PEP</span> · Techs on HF CW segments: <strong>200 W PEP</strong> · always the <strong>minimum power necessary</strong></td></tr>
+          <tr><td>Not allowed</td><td>Music, obscene or indecent language, codes meant to hide meaning, broadcasting to the public, and getting paid (business on behalf of an employer)</td></tr>
+          <tr><td>Exceptions</td><td>Encryption is allowed for <strong>controlling a space station or a model craft</strong>; retransmitting NASA/space-station audio is allowed</td></tr>
+          <tr><td>Third-party traffic</td><td>Letting an unlicensed person talk: OK with the control operator present, and only to countries with a third-party agreement</td></tr>
+          <tr><td>Emergencies</td><td>When life or property is in immediate danger, use <strong>any means necessary</strong> to get help</td></tr>
+          <tr><td>Secondary allocations</td><td>Hams must not interfere with, and must accept interference from, the primary users (e.g. parts of 70 cm)</td></tr>
+        </tbody>
+      </table>
+      <table class="cs-table">
+        <thead><tr><th>Band</th><th>Technician privileges</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">80 / 40 / 15 m</td><td>3.525–3.600 · 7.025–7.125 · 21.025–21.200 MHz, <strong>CW only</strong>, 200 W</td></tr>
+          <tr><td class="mono">10 m</td><td>28.000–28.300 CW, RTTY and data (FT8 lives at 28.074) · 28.300–28.500 <strong>CW and SSB voice</strong> · beacons sit at 28.200–28.300</td></tr>
+          <tr><td class="mono">6 m</td><td>50–54 MHz (50.0–50.1 CW only)</td></tr>
+          <tr><td class="mono">2 m</td><td>144–148 MHz (144.0–144.1 CW only)</td></tr>
+          <tr><td class="mono">1.25 m</td><td>222–225 MHz</td></tr>
+          <tr><td class="mono">70 cm</td><td>420–450 MHz</td></tr>
+          <tr><td class="mono">33 / 23 cm</td><td>902–928 MHz · 1240–1300 MHz</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">Trap to watch</div>
+        "Which band is 146.52 MHz in?" → 2 m. Match frequency to wavelength with <strong>300 / f</strong>: 50 MHz → 6 m, 223 MHz → 1.25 m, 440 MHz → 70 cm.
+      </div>
+    </div>
+  </details>
+
+  <!-- T2 OPERATING -->
+  <details>
+    <summary><span class="summary-emoji">🎙️</span> T2 · Operating procedures</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Topic</th><th>Remember</th></tr></thead>
+        <tbody>
+          <tr><td>Repeater offsets</td><td>2 m <strong>±600 kHz</strong> · 1.25 m <strong>−1.6 MHz</strong> · 70 cm <strong>±5 MHz</strong></td></tr>
+          <tr><td>Can't open a repeater?</td><td>Usually a missing or wrong <strong>CTCSS (PL) tone</strong>; also check the offset</td></tr>
+          <tr><td>National FM simplex calling</td><td><span class="badge badge-slate">146.520 MHz</span> (70 cm: 446.000)</td></tr>
+          <tr><td>Calling on a repeater</td><td>Just say your call sign; "CQ" is for open calls on HF/simplex</td></tr>
+          <tr><td>Band plans</td><td>Voluntary agreements (e.g. which part is for FM or weak-signal) beyond what the FCC requires</td></tr>
+          <tr><td>ARES / RACES</td><td><strong>ARES</strong>: ARRL volunteers serving agencies · <strong>RACES</strong>: government civil-defense communications</td></tr>
+          <tr><td>Nets</td><td>A net control station runs it; emergency traffic always goes first</td></tr>
+          <tr><td>Messages</td><td>Pass them <strong>exactly as received</strong>; the "check" is the word count of the text</td></tr>
+        </tbody>
+      </table>
+      <div class="rule-block">
+        <div class="rule-title">Q signals they ask about</div>
+        <strong>QRM</strong> man-made interference · <strong>QRN</strong> static/noise · <strong>QSY</strong> change frequency · <strong>QSL</strong> I acknowledge · <strong>QTH</strong> location · <strong>QRP</strong> low power · <strong>QRZ?</strong> who's calling? · <strong>CQ</strong> calling anyone · <strong>73</strong> best regards
+      </div>
+    </div>
+  </details>
+
+  <!-- T3 PROPAGATION -->
+  <details>
+    <summary><span class="summary-emoji">🌐</span> T3 · Radio waves and propagation</summary>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="grid-card"><div class="grid-card-title">VHF / UHF</div><p>Mostly <strong>line of sight</strong>; the radio horizon is a bit farther than the visual one because the atmosphere bends signals. UHF gets into buildings better (shorter wavelength).</p><p>Polarization: vertical for FM and repeaters, horizontal for SSB/CW weak-signal work. Mismatched polarization costs a lot of signal.</p></div>
+        <div class="grid-card"><div class="grid-card-title">The ionosphere</div><p>The <strong>D layer</strong> absorbs lower HF in daytime. The <strong>F layer (F2)</strong> reflects signals for long-distance contacts. Higher sunspots support higher frequencies.</p><p>The 2026 pool says signals "reflect" off the ionosphere.</p></div>
+        <div class="grid-card"><div class="grid-card-title">Unusual VHF paths</div><p><strong>Sporadic E</strong>: 6 m and 10 m openings, often in summer. <strong>Meteor scatter</strong>: best on 6 m. <strong>Tropospheric ducting</strong>: VHF/UHF hundreds of miles along weather fronts.</p><p><strong>Aurora</strong>: signals sound raspy. <strong>Knife-edge diffraction</strong>: signals bend around a sharp ridge or building edge.</p></div>
+        <div class="grid-card"><div class="grid-card-title">Fading</div><p><strong>Picket fencing</strong>: rapid fluttering of a mobile FM signal from multipath. Moving the antenna a few feet can fix multipath dropouts.</p><p>Frequency × wavelength = speed of light: higher frequency, shorter wavelength.</p></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- T5 / T6 ELECTRICAL & COMPONENTS -->
+  <details>
+    <summary><span class="summary-emoji">🔌</span> T5–T6 · Electrical principles and components</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Quantity</th><th>Unit</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Voltage (EMF)</td><td class="mono">volt</td><td>Measured <strong>in parallel</strong> with a voltmeter</td></tr>
+          <tr><td>Current</td><td class="mono">ampere</td><td>Measured <strong>in series</strong> with an ammeter</td></tr>
+          <tr><td>Resistance</td><td class="mono">ohm</td><td>Measure with the circuit <strong>powered off</strong></td></tr>
+          <tr><td>Power</td><td class="mono">watt</td><td>Rate of using energy</td></tr>
+          <tr><td>Capacitance</td><td class="mono">farad</td><td>Stores energy in an <strong>electric field</strong></td></tr>
+          <tr><td>Inductance</td><td class="mono">henry</td><td>Stores energy in a <strong>magnetic field</strong></td></tr>
+          <tr><td>Frequency</td><td class="mono">hertz</td><td>Cycles per second</td></tr>
+        </tbody>
+      </table>
+      <div class="grid-2">
+        <div class="grid-card"><div class="grid-card-title">Parts and what they do</div><p><strong>Diode</strong>: current one way (rectifier) · <strong>LED</strong>: lights when forward-biased · <strong>Transistor</strong>: amplifier or switch · <strong>Relay</strong>: switch worked by an electromagnet · <strong>Fuse</strong>: opens on overload · <strong>Potentiometer</strong>: variable resistor (volume) · <strong>Transformer</strong>: changes AC voltage</p></div>
+        <div class="grid-card"><div class="grid-card-title">Circuits</div><p>Conductors (copper) vs insulators (glass, plastic). A <strong>short</strong> blows the fuse; an <strong>open</strong> stops current. A <strong>tuned circuit</strong> (inductor + capacitor) picks one frequency.</p><p>Schematic symbols show up: learn resistor, capacitor, inductor, diode, transistor, battery, ground.</p></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- T4 / T7 STATION -->
+  <details>
+    <summary><span class="summary-emoji">🛠️</span> T4 / T7 · Station setup and equipment</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Gear</th><th>Remember</th></tr></thead>
+        <tbody>
+          <tr><td>SWR meter</td><td>Shows how well the antenna matches the feed line; 1:1 is perfect, under 2:1 is fine</td></tr>
+          <tr><td>Dummy load</td><td>A non-radiating <strong>50 Ω</strong> resistor for testing without putting a signal on the air</td></tr>
+          <tr><td>Antenna analyzer</td><td>Measures SWR and impedance across frequencies without transmitting</td></tr>
+          <tr><td>Multimeter</td><td>Voltmeter in parallel, ammeter in series, ohmmeter with the power off</td></tr>
+          <tr><td>VFO</td><td>Variable-frequency oscillator: the tuning knob's oscillator</td></tr>
+          <tr><td>Transceiver</td><td>Transmitter + receiver in one box; mobile radios wire straight to the battery, with fuses in both leads</td></tr>
+          <tr><td>RF interference</td><td>Fix with filters, ferrite chokes and good grounding; check your own station first</td></tr>
+          <tr><td>Overdeviation</td><td>FM audio too loud: back off the mic or talk farther from it</td></tr>
+          <tr><td>Distorted signal reports</td><td>Low battery, RF feedback, or too much mic gain</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- T8 MODES -->
+  <details>
+    <summary><span class="summary-emoji">🛰️</span> T8 · Modes, digital and satellites</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Mode</th><th>Bandwidth / use</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">CW</td><td>Narrowest, about <strong>150 Hz</strong></td></tr>
+          <tr><td class="mono">SSB voice</td><td>About <strong>3 kHz</strong>; weak-signal VHF and HF. Upper sideband on VHF/UHF and 10 m.</td></tr>
+          <tr><td class="mono">FM voice</td><td>About <strong>10–15 kHz</strong>; repeaters</td></tr>
+          <tr><td class="mono">FT8</td><td>Weak-signal digital in 15-second slots; Techs can use it on 10 m and VHF</td></tr>
+          <tr><td class="mono">DMR</td><td>Digital voice with talkgroups, a <strong>color code</strong> to reach a repeater, and a <strong>code plug</strong> file to program the radio</td></tr>
+          <tr><td class="mono">D-STAR / Fusion</td><td>Other digital voice systems</td></tr>
+          <tr><td class="mono">APRS</td><td>Position and short messages by packet; <strong>144.390 MHz</strong> in the US</td></tr>
+          <tr><td class="mono">Winlink</td><td>Email over radio, useful in emergencies</td></tr>
+        </tbody>
+      </table>
+      <div class="rule-block">
+        <div class="rule-title">Satellites</div>
+        <strong>Uplink</strong> = you to the satellite · <strong>Downlink</strong> = the satellite to you · Any Technician can work them · <strong>Doppler shift</strong> moves the frequency as it passes · <strong>LEO</strong> = low Earth orbit · <strong>Spin fading</strong> = rhythmic fading as it rotates · Mode <strong>U/V</strong> = uplink UHF, downlink VHF · Use the minimum power needed · Track passes with software and the satellite's <strong>Keplerian elements</strong>
+      </div>
+    </div>
+  </details>
+
+  <!-- T9 ANTENNAS -->
+  <details>
+    <summary><span class="summary-emoji">🗼</span> T9 · Antennas and feed lines</summary>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="grid-card"><div class="grid-card-title">Antennas</div><p>A <strong>dipole</strong> radiates broadside to its wire. A <strong>quarter-wave vertical</strong> is omnidirectional. A <strong>Yagi</strong> beams in one direction for gain. A <strong>5/8-wave</strong> vertical has more gain than a 1/4-wave.</p><p>The "<strong>rubber duck</strong>" on a handheld is short and inefficient; an outside antenna helps a lot. To make an antenna resonate lower, make it longer.</p></div>
+        <div class="grid-card"><div class="grid-card-title">Feed lines</div><p>Coax is usually <strong>50 Ω</strong>. Loss goes <strong>up with frequency</strong> and with length; air or foam dielectric loses less than solid. Water in the coax is the classic cause of rising loss.</p><p>Connectors: <strong>PL-259/SO-239</strong> for HF, <strong>Type N</strong> for UHF and microwaves.</p></div>
+      </div>
+      <div class="callout">
+        <div class="callout-title">Quick test</div>
+        High SWR means the antenna system isn't matched; the fix is at the antenna, though a tuner can make the radio happy.
+      </div>
+    </div>
+  </details>
+
+  <!-- T0 SAFETY -->
+  <details>
+    <summary><span class="summary-emoji">⚠️</span> T0 · Electrical and RF safety</summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Topic</th><th>Remember</th></tr></thead>
+        <tbody>
+          <tr><td>RF exposure</td><td><strong>Non-ionizing</strong>; it heats body tissue. Exposure limits (MPE) are <strong>lowest around 30–300 MHz</strong>, where the body absorbs most.</td></tr>
+          <tr><td>What affects exposure</td><td>Power, distance, frequency, antenna pattern and <strong>duty cycle</strong></td></tr>
+          <tr><td>Station evaluation</td><td>Required to confirm you meet the RF exposure rules; move the antenna or cut power to fix</td></tr>
+          <tr><td>Household current</td><td>As little as 0.1 A through the body can be fatal; use a <strong>GFCI</strong>, correctly sized fuses, and never a bigger fuse than specified</td></tr>
+          <tr><td>Lightning</td><td>Ground all antenna systems to a common point; disconnect in storms</td></tr>
+          <tr><td>Towers</td><td>Wear a harness and hard hat, have a buddy, and never climb with power on the antennas</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <div class="section-label"><span>General · Element 3 · 35 questions · pass 26</span><span>Pool 2023–2027 · through June 30, 2027</span></div>
+
+  <div class="progress-note">
+    <div class="progress-label">Where the 35 questions come from</div>
+    <strong>G1</strong> Rules 5 · <strong>G2</strong> Operating 5 · <strong>G3</strong> Propagation 3 · <strong>G4</strong> Amateur practices 5 · <strong>G5</strong> Electrical principles 3 · <strong>G6</strong> Components 2 · <strong>G7</strong> Practical circuits 3 · <strong>G8</strong> Signals and emissions 3 · <strong>G9</strong> Antennas 4 · <strong>G0</strong> Safety 2. Rules, operating and practices make up 15 of the 35, so they're the cheapest points.
+  </div>
+
+  <!-- G1 RULES -->
+  <details>
+    <summary><span class="summary-emoji">📜</span> G1 · Commission's rules <span class="badge badge-amber">5 questions</span></summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Band</th><th>CW / data</th><th>Phone / image</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">160 m</td><td colspan="2">1.800–2.000 MHz, all modes</td></tr>
+          <tr><td class="mono">80 m</td><td>3.525–3.600</td><td>3.800–4.000</td></tr>
+          <tr><td class="mono">40 m</td><td>7.025–7.125</td><td>7.175–7.300</td></tr>
+          <tr><td class="mono">30 m</td><td>10.100–10.150 (200 W PEP max)</td><td>No phone</td></tr>
+          <tr><td class="mono">20 m</td><td>14.025–14.150</td><td>14.225–14.350</td></tr>
+          <tr><td class="mono">17 m</td><td>18.068–18.110</td><td>18.110–18.168</td></tr>
+          <tr><td class="mono">15 m</td><td>21.025–21.200</td><td>21.275–21.450</td></tr>
+          <tr><td class="mono">12 m</td><td>24.890–24.930</td><td>24.930–24.990</td></tr>
+          <tr><td class="mono">10 m</td><td>28.000–28.300</td><td>28.300–29.700</td></tr>
+        </tbody>
+      </table>
+      <div class="rule-block">
+        <div class="rule-title">The 60 m channels</div>
+        Five channels · upper sideband · transmit on the <strong>channel center</strong> · <strong>100 W ERP</strong> relative to a dipole · hams are secondary there
+      </div>
+      <table class="cs-table">
+        <thead><tr><th>Rule</th><th>The answer they want</th></tr></thead>
+        <tbody>
+          <tr><td>Just upgraded, not in the database yet</td><td>Add <strong>"/AG"</strong> after your call when using General privileges</td></tr>
+          <tr><td>CSCE (exam certificate)</td><td>Good for <strong>365 days</strong></td></tr>
+          <tr><td>Volunteer Examiners</td><td><strong>Three</strong> VEs per session; a General can be a VE for <strong>Technician</strong> exams only</td></tr>
+          <tr><td>Beacons</td><td>Max <strong>100 W</strong> output</td></tr>
+          <tr><td>Staying inside the band</td><td>Your <strong>sidebands</strong> must stay inside: LSB on 7.178 occupies about 7.175–7.178, so don't go lower. Keep about 3 kHz from any edge.</td></tr>
+          <tr><td>Spurious emissions</td><td>Must be kept low enough not to cause interference; you must fix them</td></tr>
+          <tr><td>Automatic control</td><td>Repeaters and auxiliary stations can run without an operator present; HF automatic digital stations have their own segments</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">Trap to watch</div>
+        The bands with <strong>no Extra-only segment</strong> are 160, 30, 17, 12 and 10 m (plus the 60 m channels). On 80, 40, 20 and 15 m the bottom edge and the start of the phone segment belong to Extras.
+      </div>
+    </div>
+  </details>
+
+  <!-- G2 OPERATING -->
+  <details>
+    <summary><span class="summary-emoji">🎙️</span> G2 · Operating procedures <span class="badge badge-amber">5 questions</span></summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Topic</th><th>Remember</th></tr></thead>
+        <tbody>
+          <tr><td>Which sideband</td><td><strong>LSB below 10 MHz</strong> (160, 80, 40 m) · <strong>USB above</strong> (20 m and up) · <strong>60 m is USB</strong> even though it's low</td></tr>
+          <tr><td>Before calling CQ</td><td>Listen, then ask "Is this frequency in use?" (on CW: <strong>QRL?</strong>)</td></tr>
+          <tr><td>CW</td><td><strong>Zero beat</strong> = match the other station's frequency · <strong>full break-in (QSK)</strong> = hear between your own dots and dashes · <strong>QRS</strong> = send slower</td></tr>
+          <tr><td>Signal reports</td><td><strong>RST</strong>: Readability 1–5, Strength 1–9, Tone 1–9 (CW only). "59" is a typical phone report.</td></tr>
+          <tr><td>DX etiquette</td><td>A rare station working <strong>split</strong> listens on a different frequency; call where they say, not on top of them</td></tr>
+          <tr><td>RTTY</td><td><strong>170 Hz</strong> shift, 45 baud, usually on LSB settings</td></tr>
+          <tr><td>Digital segments</td><td>FT8 and other data cluster near the bottom of each band, e.g. 14.070–14.095 MHz</td></tr>
+          <tr><td>Nets and emergencies</td><td>In an emergency, normal privileges can be exceeded to save life or property; nets give emergency traffic priority</td></tr>
+          <tr><td>QRP</td><td>5 W or less</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- G3 PROPAGATION -->
+  <details>
+    <summary><span class="summary-emoji">☀️</span> G3 · Radio wave propagation <span class="badge badge-amber">3 questions</span></summary>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="grid-card"><div class="grid-card-title">The sun</div><p>Sunspot cycle ≈ <strong>11 years</strong>. More sunspots → higher <strong>MUF</strong> → 10–15 m open up. The <strong>solar flux index</strong> (10.7 cm radio noise) tracks it; higher is better.</p><p>A <strong>flare</strong>'s UV and X-rays arrive in about <strong>8 minutes</strong> and can black out HF on the sunlit side. Charged particles from a <strong>CME</strong> arrive in <strong>20–40 hours</strong> and bring geomagnetic storms and aurora.</p></div>
+        <div class="grid-card"><div class="grid-card-title">The indices</div><p><strong>K index</strong>: geomagnetic activity over 3 hours, 0–9. <strong>A index</strong>: the daily average. <strong>Low K and A = good HF conditions</strong>.</p><p><strong>MUF</strong>: highest frequency that comes back to Earth on a path. <strong>LUF</strong>: lowest usable before absorption wins. Operate just under the MUF.</p></div>
+        <div class="grid-card"><div class="grid-card-title">The layers</div><p><strong>D layer</strong>: daytime absorption of 160–40 m, gone at night. <strong>E layer</strong>: single hop up to about <strong>1,200 mi</strong>. <strong>F2 layer</strong>: highest, single hop up to about <strong>2,500 mi</strong>.</p><p><strong>Critical angle</strong>: launch any steeper and the signal goes into space.</p></div>
+        <div class="grid-card"><div class="grid-card-title">Paths</div><p><strong>NVIS</strong>: low antenna, high angle, 40/80 m, fills in 0–300 mi around you. <strong>Grey line</strong>: enhanced along the day/night boundary. <strong>Long path</strong>: the other way around the planet; the beam heading is 180° off.</p><p><strong>Skip zone</strong>: too far for ground wave, too close for the first hop.</p></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- G4 PRACTICES -->
+  <details>
+    <summary><span class="summary-emoji">🎛️</span> G4 · Amateur radio practices <span class="badge badge-amber">5 questions</span></summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Control or test</th><th>What it does</th></tr></thead>
+        <tbody>
+          <tr><td>ALC</td><td>Automatic level control: keeps the amplifier from being overdriven; too much ALC means splatter</td></tr>
+          <tr><td>Speech processor</td><td>Raises <strong>average</strong> power on SSB, not peak; too much distorts</td></tr>
+          <tr><td>Two-tone test</td><td>Two non-harmonic audio tones to check an SSB transmitter's <strong>linearity</strong></td></tr>
+          <tr><td>RIT</td><td>Receive incremental tuning: shifts only the receiver a little</td></tr>
+          <tr><td>Noise blanker</td><td>Cuts impulse noise (ignitions, power lines)</td></tr>
+          <tr><td>Notch filter</td><td>Removes a single interfering carrier or tone</td></tr>
+          <tr><td>IF shift</td><td>Slides the passband to dodge nearby interference</td></tr>
+          <tr><td>Tube amplifier tuning</td><td>Tune for a <strong>dip in plate current</strong>; watch grid current so you don't overdrive</td></tr>
+          <tr><td>Oscilloscope</td><td>Best for looking at a transmitted waveform</td></tr>
+          <tr><td>S-meter</td><td>Relative signal strength; each S-unit ≈ 6 dB, so going up one S-unit takes about 4× the power</td></tr>
+          <tr><td>Hum or RF on audio</td><td>Ground loops or RF feedback; fix with a single-point ground and ferrite chokes</td></tr>
+          <tr><td>Mobile HF</td><td>The antenna is the weak link; wire power straight to the battery</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- G5 ELECTRICAL -->
+  <details>
+    <summary><span class="summary-emoji">⚡</span> G5 · Electrical principles <span class="badge badge-amber">3 questions</span></summary>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="grid-card"><div class="grid-card-title">Reactance and impedance</div><p><strong>Reactance</strong> is opposition to AC from L and C. Inductors resist more as frequency rises; capacitors resist less. <strong>Impedance</strong> = resistance + reactance; matching it transfers the most power.</p><p>At <strong>resonance</strong>, X<sub>L</sub> = X<sub>C</sub>.</p></div>
+        <div class="grid-card"><div class="grid-card-title">Power and AC</div><p><strong>RMS</strong> is the heating-equivalent DC voltage. <strong>PEP</strong> is the average power over one RF cycle at the highest peak of the envelope. For an unmodulated carrier, PEP = average.</p><p>A transformer's impedance ratio is the square of its turns ratio.</p></div>
+      </div>
+      <div class="callout">
+        <div class="callout-title">Common calculations</div>
+        Three 100 Ω resistors in parallel → 33.3 Ω · Two 10 µF capacitors in series → 5 µF · 120 V RMS → 339 V peak-to-peak · A 2,250-turn primary on 120 V with 500 turns secondary → about 26.7 V
+      </div>
+    </div>
+  </details>
+
+  <!-- G6 / G7 COMPONENTS & CIRCUITS -->
+  <details>
+    <summary><span class="summary-emoji">🧩</span> G6 / G7 · Components and practical circuits <span class="badge badge-amber">5 questions</span></summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Part or circuit</th><th>Remember</th></tr></thead>
+        <tbody>
+          <tr><td>Electrolytic capacitor</td><td>Big capacitance in a small package; <strong>polarized</strong></td></tr>
+          <tr><td>Ceramic capacitor</td><td>Small, cheap, good at RF</td></tr>
+          <tr><td>Schottky diode</td><td>Low forward voltage drop</td></tr>
+          <tr><td>Zener diode</td><td>Holds a constant voltage (regulation)</td></tr>
+          <tr><td>MOSFET</td><td>Gate is insulated: very high input impedance</td></tr>
+          <tr><td>Ferrite / toroid</td><td>Chokes RF on cables; toroids keep the magnetic field inside the core</td></tr>
+          <tr><td>Power supply</td><td><strong>Full-wave</strong> rectifier output is 120 Hz pulses on 60 Hz mains; a filter capacitor smooths it; a <strong>bleeder resistor</strong> discharges the caps when off</td></tr>
+          <tr><td>Superheterodyne</td><td>A <strong>mixer</strong> makes sum and difference frequencies to land the signal on a fixed IF</td></tr>
+          <tr><td>Oscillator</td><td>An amplifier with <strong>positive feedback</strong></td></tr>
+          <tr><td>Amplifier classes</td><td>Class A most linear, least efficient · AB for SSB · <strong>Class C</strong> most efficient but only for CW and FM</td></tr>
+          <tr><td>Logic</td><td>AND: all inputs high · OR: any input high · NAND: output low only when all inputs are high · a flip-flop stores one bit</td></tr>
+          <tr><td>DSP</td><td>Filtering and demodulation done in software after digitizing the signal</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <!-- G8 SIGNALS -->
+  <details>
+    <summary><span class="summary-emoji">〰️</span> G8 · Signals and emissions <span class="badge badge-amber">3 questions</span></summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Mode</th><th>About this wide</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">FT8</td><td>50 Hz</td><td>15-second transmit periods</td></tr>
+          <tr><td class="mono">PSK31</td><td>~31 Hz</td><td>Keyboard chat, very narrow</td></tr>
+          <tr><td class="mono">CW</td><td>~150 Hz</td><td></td></tr>
+          <tr><td class="mono">RTTY</td><td>~250 Hz</td><td>170 Hz shift</td></tr>
+          <tr><td class="mono">SSB</td><td>~3 kHz</td><td>One sideband, no carrier: the most efficient voice mode</td></tr>
+          <tr><td class="mono">AM</td><td>~6 kHz</td><td>Carrier plus both sidebands</td></tr>
+          <tr><td class="mono">FM</td><td>10–15 kHz</td><td>Only above 29 MHz on HF (the top of 10 m)</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <div class="callout-title">Trap to watch</div>
+        <strong>Splatter</strong> = overmodulation spreading the signal wide. <strong>Intermodulation</strong> = two signals mixing into new frequencies in a non-linear stage. A frequency <strong>multiplier</strong> multiplies an FM signal's deviation too.
+      </div>
+    </div>
+  </details>
+
+  <!-- G9 ANTENNAS -->
+  <details>
+    <summary><span class="summary-emoji">🗼</span> G9 · Antennas and feed lines <span class="badge badge-amber">4 questions</span></summary>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="grid-card"><div class="grid-card-title">Dipoles and verticals</div><p>Half-wave dipole ≈ <strong>468 / f</strong> ft; feed-point impedance about <strong>72 Ω</strong> in free space, changing with height. Quarter-wave ground-mounted vertical ≈ <strong>36 Ω</strong>; sloping its radials down raises it toward 50 Ω.</p><p>A <strong>trap dipole</strong> works several bands. A <strong>loading coil</strong> makes a short antenna resonate. An <strong>end-fed half-wave</strong> has a very high feed impedance and needs a matching transformer.</p></div>
+        <div class="grid-card"><div class="grid-card-title">Yagis</div><p>The <strong>reflector</strong> is longer than the driven element; <strong>directors</strong> are shorter. A longer boom with more directors means more gain and a narrower beam.</p><p><strong>Front-to-back ratio</strong>: forward signal vs. the back. Gain in <strong>dBi = dBd + 2.15</strong>.</p></div>
+        <div class="grid-card"><div class="grid-card-title">Feed lines</div><p><strong>Ladder line</strong> (window line) has much less loss than coax, even at high SWR. Coax loss grows with frequency and length. High SWR adds loss in the line as heat.</p><p>An <strong>antenna tuner</strong> at the radio doesn't fix the SWR on the line; it only makes the radio see 50 Ω.</p></div>
+        <div class="grid-card"><div class="grid-card-title">Patterns</div><p>A dipole's pattern is a figure eight, strongest broadside. A low horizontal antenna sends energy straight up (good for NVIS). Raising it lowers the radiation angle for DX.</p><p>A <strong>log-periodic</strong> covers a wide frequency range with fairly flat gain.</p></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- G0 SAFETY -->
+  <details>
+    <summary><span class="summary-emoji">⚠️</span> G0 · Electrical and RF safety <span class="badge badge-amber">2 questions</span></summary>
+    <div class="section-body">
+      <table class="cs-table">
+        <thead><tr><th>Topic</th><th>Remember</th></tr></thead>
+        <tbody>
+          <tr><td>Duty cycle in exposure math</td><td>FM and data ≈ <strong>100%</strong> · CW ≈ 40% · SSB voice ≈ 20%: a lower duty cycle allows more power for the same exposure</td></tr>
+          <tr><td>Averaging time</td><td>Exposure is averaged over <strong>6 minutes</strong> (controlled, i.e. you and your family) or <strong>30 minutes</strong> (uncontrolled, i.e. neighbors and the public)</td></tr>
+          <tr><td>Doing the evaluation</td><td>Calculate with the FCC's OET Bulletin 65 tables or software, or measure with a calibrated field-strength meter</td></tr>
+          <tr><td>Generators</td><td>Run outdoors, away from windows: <strong>carbon monoxide</strong></td></tr>
+          <tr><td>Grounding</td><td>Bond everything to a single-point ground; put lightning arrestors where cables enter the house</td></tr>
+          <tr><td>Wiring</td><td>Three-wire cords with the green ground; GFCI near water; fuses in the hot lead</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <div class="section-label" style="margin-top:3rem;"><span>Exam day</span></div>
+
+  <details open>
+    <summary><span class="summary-emoji">📝</span> What to bring and how to play it</summary>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="grid-card"><div class="grid-card-title">Bring</div><p>Photo ID · your <strong>FRN</strong> from the FCC's CORES system · the session fee if any · pencils · a calculator (the team may ask to see its memory cleared)</p><p>Check the session listing: some teams want you to register ahead.</p></div>
+        <div class="grid-card"><div class="grid-card-title">Play it</div><p>No penalty for wrong answers, so <strong>answer every question</strong>. Skip the math on the first pass and come back. "Always" and "never" answers are usually wrong.</p><p>Pass Technician, then ask to sit General right away. After the session, pay the <strong>$35</strong> FCC fee within 10 days of the email.</p></div>
+      </div>
+    </div>
+  </details>
+
+  <div class="section-label" style="margin-top:3rem;">
+    <span>Technician 35 Q · General 35 Q · pass 26 each</span>
+    <a href="/radio/">← On the Air</a>
+  </div>
+
+</div>
+
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
+    </div>
+
+    <div class="footer-connect">
+      <div class="fc-label">Connect</div>
+      <div class="social-row">
+          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
+          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
+          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
+          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
+          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
+          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
+          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-pagelinks">
+      <div class="fc-label">More here</div>
+      <div class="pagelink-row">
+        <a href="/radio/">On the Air</a>
+        <a href="/radio/channels/">Channel plan</a>
+        <a href="/gisp-cheat-sheet.html">GISP cheat sheet</a>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
+    <p class="footer-bottom">
+      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
+      <a href="#top">&uarr; Back to top</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('[data-expand]').forEach(function(b){
+    b.addEventListener('click', function(){ var o=b.dataset.expand==='1'; document.querySelectorAll('details').forEach(function(d){ d.open=o; }); });
+  });
+</script>
+<script>
+  // Keyboard shortcuts: 'e' expand all, 'c' collapse all
+  document.addEventListener('keydown', e => {
+    // Ignore when typing in inputs
+    const t = e.target.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (e.key === 'e' || e.key === 'E') document.querySelectorAll('details').forEach(d => d.open = true);
+    if (e.key === 'c' || e.key === 'C') document.querySelectorAll('details').forEach(d => d.open = false);
+  });
+</script>
+
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this handles clicks and keeps the button's label truthful.
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function sync(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Describe what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  sync();
+  btn.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+<!-- ANALYTICS:START --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "6735f78105644b35a5b026c6e3c2b72a"}'></script><!-- ANALYTICS:END -->
+</body>
+</html>
