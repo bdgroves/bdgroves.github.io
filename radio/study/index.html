@@ -41,6 +41,25 @@
     summary .badge { margin-left:0.25rem; font-family:'DM Mono',monospace; }
     .page-content a { color:var(--rust); }
     .section-body { overflow-x:auto; }
+    /* WHY EXPLAINERS */
+    .f-link { color:var(--rust); text-decoration:none; border-bottom:1px dotted var(--rust); }
+    .why-link { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; white-space:nowrap; text-decoration:none; color:var(--sky); }
+    .why-link:hover, .f-link:hover { color:var(--ink); }
+    .why-intro { font-size:0.9rem; line-height:1.8; max-width:720px; margin-bottom:1rem; }
+    .why { border:1px solid var(--mist); border-left:3px solid var(--sky); background:var(--parchment); padding:1rem 1.15rem; margin-bottom:0.9rem; display:grid; gap:0.55rem; scroll-margin-top:90px; }
+    .why:target { border-color:var(--gold); border-left-color:var(--gold); box-shadow:0 0 0 3px rgba(200,146,42,0.18); }
+    .why-head { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 14px; }
+    .why-head h3 { font-family:'Playfair Display',serif; font-size:1.2rem; font-weight:700; }
+    .why-f { font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--rust); background:var(--white); border:1px solid var(--mist); padding:2px 8px; }
+    .why p { font-size:0.88rem; line-height:1.75; max-width:780px; }
+    .why p strong { font-family:'DM Mono',monospace; font-weight:400; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); margin-right:4px; }
+    .why-calc { display:flex; flex-wrap:wrap; gap:8px 14px; align-items:end; background:var(--white); border:1px dashed var(--gold); padding:10px 12px; }
+    .why-calc-k { width:100%; font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); }
+    .why-calc label { display:grid; gap:3px; font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); }
+    .why-calc input { width:120px; font-family:'DM Mono',monospace; font-size:0.9rem; padding:5px 8px; background:var(--parchment); color:var(--ink); border:1px solid var(--mist); }
+    .why-calc output { flex:1 1 220px; font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--ink); line-height:1.45; }
+    .why-more { font-family:'DM Mono',monospace; font-size:0.66rem; letter-spacing:0.06em; color:var(--rust); justify-self:start; }
+    .why-back { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone); text-decoration:none; justify-self:start; }
     @media (max-width:600px) { .cs-table td.mono { white-space:normal; } .meta-strip { gap:1rem; } }
     *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     html { scroll-behavior:smooth; }
@@ -345,30 +364,30 @@
   <div class="section-label"><span>Both exams · the formulas and numbers</span><a href="/radio/">← On the Air</a></div>
 
   <!-- FORMULAS -->
-  <details open>
+  <details open id="formulas">
     <summary><span class="summary-emoji">🧮</span> Formulas to memorize</summary>
     <div class="section-body">
       <table class="cs-table">
-        <thead><tr><th>Formula</th><th>What it gives you</th><th>Example</th></tr></thead>
+        <thead><tr><th>Formula</th><th>What it gives you</th><th>Example</th><th>Why?</th></tr></thead>
         <tbody>
-          <tr><td class="mono">E = I × R</td><td>Ohm's law: volts = amps × ohms</td><td>2 A through 50 Ω → 100 V</td></tr>
-          <tr><td class="mono">P = E × I</td><td>Power in watts</td><td>13.8 V × 10 A → 138 W</td></tr>
-          <tr><td class="mono">P = E² / R</td><td>Power when you know volts and resistance</td><td>100 V into 50 Ω → 200 W</td></tr>
-          <tr><td class="mono">λ (m) = 300 / f (MHz)</td><td>Wavelength</td><td>146 MHz → about 2 m</td></tr>
-          <tr><td class="mono">468 / f (MHz)</td><td>Half-wave dipole length in feet</td><td>14.2 MHz → about 33 ft</td></tr>
-          <tr><td class="mono">234 / f (MHz)</td><td>Quarter-wave vertical in feet</td><td>146 MHz → about 19 in</td></tr>
-          <tr><td class="mono">X<sub>L</sub> = 2πfL</td><td>Inductive reactance (rises with frequency)</td><td>General</td></tr>
-          <tr><td class="mono">X<sub>C</sub> = 1 / (2πfC)</td><td>Capacitive reactance (falls with frequency)</td><td>General</td></tr>
-          <tr><td class="mono">f = 1 / (2π√LC)</td><td>Resonant frequency, where X<sub>L</sub> = X<sub>C</sub></td><td>General</td></tr>
-          <tr><td class="mono">RMS = peak × 0.707</td><td>Peak = RMS × 1.414; peak-to-peak = 2 × peak</td><td>120 V RMS → 170 V peak</td></tr>
-          <tr><td class="mono">PEP = (V<sub>p-p</sub> ÷ 2 × 0.707)² / R</td><td>Peak envelope power from a scope reading</td><td>200 V p-p into 50 Ω → 100 W</td></tr>
-          <tr><td class="mono">Vs / Vp = Ns / Np</td><td>Transformer voltage follows the turns ratio; impedance ratio is the turns ratio squared</td><td>General</td></tr>
-          <tr><td class="mono">SWR = Z<sub>big</sub> / Z<sub>small</sub></td><td>SWR from a mismatch (always ≥ 1)</td><td>200 Ω load on 50 Ω line → 4:1</td></tr>
-          <tr><td class="mono">dBi = dBd + 2.15</td><td>Gain over isotropic vs. over a dipole</td><td>General</td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-ohm">E = I × R</a></td><td>Ohm's law: volts = amps × ohms</td><td>2 A through 50 Ω → 100 V</td><td><a class="why-link" href="#why-ohm">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-power">P = E × I</a></td><td>Power in watts</td><td>13.8 V × 10 A → 138 W</td><td><a class="why-link" href="#why-power">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-power">P = E² / R</a></td><td>Power when you know volts and resistance</td><td>100 V into 50 Ω → 200 W</td><td><a class="why-link" href="#why-power">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-wave">λ (m) = 300 / f (MHz)</a></td><td>Wavelength</td><td>146 MHz → about 2 m</td><td><a class="why-link" href="#why-wave">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-dipole">468 / f (MHz)</a></td><td>Half-wave dipole length in feet</td><td>14.2 MHz → about 33 ft</td><td><a class="why-link" href="#why-dipole">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-quarter">234 / f (MHz)</a></td><td>Quarter-wave vertical in feet</td><td>146 MHz → about 19 in</td><td><a class="why-link" href="#why-quarter">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-react">X<sub>L</sub> = 2πfL</a></td><td>Inductive reactance (rises with frequency)</td><td>General</td><td><a class="why-link" href="#why-react">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-react">X<sub>C</sub> = 1 / (2πfC)</a></td><td>Capacitive reactance (falls with frequency)</td><td>General</td><td><a class="why-link" href="#why-react">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-res">f = 1 / (2π√LC)</a></td><td>Resonant frequency, where X<sub>L</sub> = X<sub>C</sub></td><td>General</td><td><a class="why-link" href="#why-res">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-rms">RMS = peak × 0.707</a></td><td>Peak = RMS × 1.414; peak-to-peak = 2 × peak</td><td>120 V RMS → 170 V peak</td><td><a class="why-link" href="#why-rms">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-pep">PEP = (V<sub>p-p</sub> ÷ 2 × 0.707)² / R</a></td><td>Peak envelope power from a scope reading</td><td>200 V p-p into 50 Ω → 100 W</td><td><a class="why-link" href="#why-pep">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-xfmr">Vs / Vp = Ns / Np</a></td><td>Transformer voltage follows the turns ratio; impedance ratio is the turns ratio squared</td><td>General</td><td><a class="why-link" href="#why-xfmr">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-swr">SWR = Z<sub>big</sub> / Z<sub>small</sub></a></td><td>SWR from a mismatch (always ≥ 1)</td><td>200 Ω load on 50 Ω line → 4:1</td><td><a class="why-link" href="#why-swr">Why it matters →</a></td></tr>
+          <tr><td class="mono"><a class="f-link" href="#why-dbi">dBi = dBd + 2.15</a></td><td>Gain over isotropic vs. over a dipole</td><td>General</td><td><a class="why-link" href="#why-dbi">Why it matters →</a></td></tr>
         </tbody>
       </table>
       <div class="rule-block">
-        <div class="rule-title">Decibels in your head</div>
+        <div class="rule-title">Decibels in your head · <a class="why-link" href="#why-db">why it matters →</a></div>
         <strong>3 dB</strong> = 2× power · <strong>6 dB</strong> = 4× · <strong>10 dB</strong> = 10× · <strong>20 dB</strong> = 100× · a loss of 3 dB = half the power · one <strong>S-unit</strong> on a meter ≈ 6 dB
       </div>
       <div class="rule-block">
@@ -381,6 +400,161 @@
       </div>
     </div>
   </details>
+
+  <!-- WHY THE FORMULAS MATTER -->
+  <details id="why">
+    <summary><span class="summary-emoji">🧠</span> Why the formulas matter: plain-English explainers <span class="badge badge-green">for learning</span></summary>
+    <div class="section-body">
+      <p class="why-intro">Each formula above links here. Every explainer says what the formula really means, where you'd actually use it with a radio in your hand, and how the exam tends to ask about it. A few have a little calculator so you can poke at the numbers.</p>
+
+      <article class="why" id="why-ohm">
+        <div class="why-head"><span class="why-f">E = I × R</span><h3>Ohm's law</h3></div>
+        <p><strong>What it means.</strong> Think of water in a hose. Voltage (E) is the pressure, current (I) is how much water flows, and resistance (R) is how narrow the hose is. Push harder or widen the hose and more flows. Know any two and the third falls out.</p>
+        <p><strong>On the air.</strong> It's why a long, thin power cable to a mobile radio is a problem: at 20 amps, even a tenth of an ohm in the wire drops 2 volts, and the radio sags, distorts or shuts off. It also tells you what resistor an LED needs and why a fuse is rated in amps.</p>
+        <p><strong>On the exam.</strong> Straight arithmetic: "What is the current through a 10 Ω resistor with 120 V across it?" (12 A). Cover the letter you want in the E-over-I×R triangle and the other two show the answer.</p>
+        <div class="why-calc" data-calc="ohm">
+          <span class="why-calc-k">Try it · fill in any two</span>
+          <label>Volts <input type="number" step="any" id="ohmE" value="13.8"></label>
+          <label>Amps <input type="number" step="any" id="ohmI" value=""></label>
+          <label>Ohms <input type="number" step="any" id="ohmR" value="0.69"></label>
+          <output id="ohmOut"></output>
+        </div>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Ohm%27s_law" target="_blank" rel="noopener">Read more: Ohm's law ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-power">
+        <div class="why-head"><span class="why-f">P = E × I &nbsp;·&nbsp; P = E² / R</span><h3>Power</h3></div>
+        <p><strong>What it means.</strong> Watts are how hard the circuit is working: pressure times flow. The second version is the same idea when you know voltage and resistance instead of current.</p>
+        <p><strong>On the air.</strong> This is how you size a power supply. A "100-watt" HF radio is only around 35–40% efficient, so it pulls close to 20 amps from a 13.8 V supply while transmitting: buy a supply rated 25–30 A, not 10. The E²/R version is how a voltmeter across a 50 Ω dummy load tells you real output power.</p>
+        <p><strong>On the exam.</strong> "How much power does a 13.8 V radio drawing 10 A use?" (138 W), and the dummy-load style: "What power is 100 V RMS into 50 Ω?" (200 W).</p>
+        <div class="why-calc" data-calc="psu">
+          <span class="why-calc-k">Try it · what power supply do I need?</span>
+          <label>Radio output (W) <input type="number" step="any" id="psuW" value="100"></label>
+          <label>Supply volts <input type="number" step="any" id="psuV" value="13.8"></label>
+          <output id="psuOut"></output>
+        </div>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Electric_power" target="_blank" rel="noopener">Read more: electric power ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-wave">
+        <div class="why-head"><span class="why-f">λ (m) = 300 / f (MHz)</span><h3>Wavelength</h3></div>
+        <p><strong>What it means.</strong> Radio waves travel at the speed of light, 300 million meters a second. Divide that by how many waves pass each second (the frequency) and you get the length of one wave. With frequency in megahertz the millions cancel, leaving 300 / f.</p>
+        <p><strong>On the air.</strong> The band names <em>are</em> wavelengths: 146 MHz is "2 meters," 7 MHz is "40 meters." And antennas scale with the wave, which is why a 2 m antenna fits on a handheld while a 160 m antenna needs a big backyard.</p>
+        <p><strong>On the exam.</strong> "Which band is 446 MHz in?" (70 cm), or "What is the wavelength of a 50 MHz signal?" (6 m). Higher frequency always means shorter wavelength.</p>
+        <div class="why-calc" data-calc="wave">
+          <span class="why-calc-k">Try it · from frequency to antenna</span>
+          <label>Frequency (MHz) <input type="number" step="any" id="waveF" value="146.52"></label>
+          <output id="waveOut"></output>
+        </div>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Wavelength" target="_blank" rel="noopener">Read more: wavelength ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-dipole">
+        <div class="why-head"><span class="why-f">468 / f (MHz) feet</span><h3>Half-wave dipole length</h3></div>
+        <p><strong>What it means.</strong> Half a wavelength in feet is 492 / f. A real wire antenna works best about 5% shorter than that, because of how current behaves at the wire's ends, so the rule of thumb is 468 / f for the whole dipole, half on each side of the center feed.</p>
+        <p><strong>On the air.</strong> It's the first antenna most people build for HF. Cut it a little long, check the SWR, and trim both ends a bit at a time until the lowest SWR lands where you want to operate. Too long tunes it low in frequency; too short tunes it high.</p>
+        <p><strong>On the exam.</strong> "About how long is a half-wave dipole for 14.250 MHz?" (about 33 feet).</p>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Dipole_antenna" target="_blank" rel="noopener">Read more: dipole antenna ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-quarter">
+        <div class="why-head"><span class="why-f">234 / f (MHz) feet</span><h3>Quarter-wave vertical</h3></div>
+        <p><strong>What it means.</strong> Half of the dipole number. A vertical is half a dipole standing up: the ground, a car roof or a set of radial wires acts as a mirror and supplies the missing half.</p>
+        <p><strong>On the air.</strong> The classic 2 m mag-mount on a car roof is about 19 inches, and the roof is its other half. That's also why a handheld's antenna works better when you hold the radio, since your hand and body become part of the ground side.</p>
+        <p><strong>On the exam.</strong> "How long is a quarter-wave vertical for 146 MHz?" (about 19 inches).</p>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Monopole_antenna" target="_blank" rel="noopener">Read more: monopole antenna ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-react">
+        <div class="why-head"><span class="why-f">X<sub>L</sub> = 2πfL &nbsp;·&nbsp; X<sub>C</sub> = 1 / (2πfC)</span><h3>Reactance</h3></div>
+        <p><strong>What it means.</strong> Coils and capacitors push back against AC, and how hard depends on frequency. A coil (inductor) resists <em>more</em> as frequency rises; a capacitor resists <em>less</em>. Unlike a resistor, they store energy rather than turning it into heat.</p>
+        <p><strong>On the air.</strong> This is how filters work. A ferrite choke on a cable is an inductor that blocks RF but lets audio and DC through, which cures hum and RF in your microphone. A loading coil on a short mobile whip adds inductance so the stubby antenna acts like a full-size one, and an antenna tuner is just adjustable coils and capacitors.</p>
+        <p><strong>On the exam.</strong> General asks which way reactance moves with frequency, and occasionally a calculation. Remember: inductors like low frequencies, capacitors like high ones.</p>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Electrical_reactance" target="_blank" rel="noopener">Read more: reactance ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-res">
+        <div class="why-head"><span class="why-f">f = 1 / (2π√LC)</span><h3>Resonance</h3></div>
+        <p><strong>What it means.</strong> Put a coil and a capacitor together and at one frequency their reactances are exactly equal and opposite, so they cancel. The circuit "rings" there like a bell, passing or blocking that one frequency far more than any other.</p>
+        <p><strong>On the air.</strong> Resonance is how a receiver picks one station out of thousands, how the traps on a multiband trap dipole switch the antenna's length per band, and what "a resonant antenna" means: one whose own L and C cancel at the frequency you're using.</p>
+        <p><strong>On the exam.</strong> "What happens at resonance?" (X<sub>L</sub> = X<sub>C</sub>), and sometimes a resonant-frequency calculation. More L or more C means a lower resonant frequency.</p>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/LC_circuit" target="_blank" rel="noopener">Read more: LC circuits ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-rms">
+        <div class="why-head"><span class="why-f">RMS = peak × 0.707</span><h3>RMS, peak and peak-to-peak</h3></div>
+        <p><strong>What it means.</strong> AC voltage swings up and down, so "how many volts" needs a definition. <strong>Peak</strong> is the top of the swing; <strong>peak-to-peak</strong> is top to bottom; <strong>RMS</strong> is the DC voltage that would heat a resistor the same amount. Your wall outlet's 120 V is RMS; it actually peaks near 170 V.</p>
+        <p><strong>On the air.</strong> Parts have to survive the peaks, not the average, so capacitors in tuners and amplifiers are rated well above the RMS voltage. An oscilloscope shows peak-to-peak, so you convert to RMS before working out power.</p>
+        <p><strong>On the exam.</strong> "What is the peak voltage of 120 V RMS?" (about 170 V) and "peak-to-peak?" (about 339 V).</p>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Root_mean_square" target="_blank" rel="noopener">Read more: root mean square ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-pep">
+        <div class="why-head"><span class="why-f">PEP = (V<sub>p-p</sub> ÷ 2 × 0.707)² / R</span><h3>Peak envelope power</h3></div>
+        <p><strong>What it means.</strong> A voice signal on SSB has no steady carrier; it rises and falls as you talk. PEP is the power at the loudest instant, the top of the signal's envelope. The formula turns a scope reading into watts: halve peak-to-peak to get peak, multiply by 0.707 for RMS, then square and divide by the load.</p>
+        <p><strong>On the air.</strong> The legal power limits (1,500 W, or 200 W on 30 m and for Technicians on HF) are measured as PEP. It's also why a speech processor makes you sound louder without raising PEP: it lifts the average, not the peak.</p>
+        <p><strong>On the exam.</strong> "200 V peak-to-peak across 50 Ω, what is the PEP?" (100 W). For a steady carrier, PEP equals average power.</p>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Peak_envelope_power" target="_blank" rel="noopener">Read more: peak envelope power ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-xfmr">
+        <div class="why-head"><span class="why-f">Vs / Vp = Ns / Np</span><h3>Transformers</h3></div>
+        <p><strong>What it means.</strong> Two coils sharing a core. Voltage changes by the ratio of their turns: fewer turns on the secondary steps the voltage down. Impedance changes by the turns ratio <em>squared</em>.</p>
+        <p><strong>On the air.</strong> A power supply's transformer steps 120 V down toward 13.8 V. The same idea matches antennas: an end-fed half-wave has a feed impedance in the thousands of ohms, and a 49:1 transformer (7:1 turns, since 7² = 49) brings it close to the 50 Ω the radio wants. Baluns and ununs are transformers too.</p>
+        <p><strong>On the exam.</strong> "120 V on a 2,250-turn primary, 500-turn secondary: what comes out?" (about 26.7 V), and turns-ratio-for-impedance questions.</p>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Transformer" target="_blank" rel="noopener">Read more: transformers ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-swr">
+        <div class="why-head"><span class="why-f">SWR = Z<sub>big</sub> / Z<sub>small</sub></span><h3>Standing wave ratio</h3></div>
+        <p><strong>What it means.</strong> When the antenna's impedance doesn't match the 50 Ω coax, some power bounces back down the line toward the radio. SWR measures how bad the mismatch is: 1:1 is perfect, and a quick estimate is simply the bigger impedance over the smaller one.</p>
+        <p><strong>On the air.</strong> It's the number you watch while trimming an antenna. Modern radios cut their power to protect themselves when SWR climbs much past 2:1, and reflected power also means more loss in the coax. At 2:1 only about 11% is reflected, which is why 2:1 is the usual "good enough" line.</p>
+        <p><strong>On the exam.</strong> "What SWR does a 200 Ω load on 50 Ω line give?" (4:1), "25 Ω?" (2:1), and what high SWR tells you about the antenna system.</p>
+        <div class="why-calc" data-calc="swr">
+          <span class="why-calc-k">Try it · on 50 Ω coax</span>
+          <label>Antenna impedance (Ω) <input type="number" step="any" id="swrZ" value="100"></label>
+          <output id="swrOut"></output>
+        </div>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Standing_wave_ratio" target="_blank" rel="noopener">Read more: standing wave ratio ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-dbi">
+        <div class="why-head"><span class="why-f">dBi = dBd + 2.15</span><h3>Antenna gain: dBi and dBd</h3></div>
+        <p><strong>What it means.</strong> Antennas don't make power; they aim it. Gain says how much stronger the antenna's best direction is than a reference. <strong>dBi</strong> compares against an imaginary antenna that radiates equally in every direction; <strong>dBd</strong> compares against a real dipole, which already has 2.15 dB of gain over that.</p>
+        <p><strong>On the air.</strong> Ads love dBi because the number is bigger. A "5 dBi" antenna and a "2.85 dBd" antenna are the same. Convert before you compare, or you'll pay for 2 dB that doesn't exist.</p>
+        <p><strong>On the exam.</strong> Converting between the two, and what gain means for a Yagi's pattern.</p>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Antenna_gain" target="_blank" rel="noopener">Read more: antenna gain ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+
+      <article class="why" id="why-db">
+        <div class="why-head"><span class="why-f">3 dB = 2× · 10 dB = 10×</span><h3>Decibels</h3></div>
+        <p><strong>What it means.</strong> Decibels compare two powers on a log scale, which matches how our ears and radios actually perceive strength. Doubling the power is only +3 dB; ten times the power is +10 dB.</p>
+        <p><strong>On the air.</strong> This is the most useful idea on the sheet. Going from 100 W to 400 W with an amplifier is just 6 dB, about one S-unit on the other station's meter. A better antenna that adds 6 dB does the same thing for both transmitting <em>and</em> receiving, which is why hams say "spend on the antenna first."</p>
+        <p><strong>On the exam.</strong> "A 3 dB loss leaves what fraction of the power?" (half), "How many dB is a power increase from 5 W to 50 W?" (10 dB), and S-units.</p>
+        <div class="why-calc" data-calc="db">
+          <span class="why-calc-k">Try it · compare two powers</span>
+          <label>From (W) <input type="number" step="any" id="dbA" value="100"></label>
+          <label>To (W) <input type="number" step="any" id="dbB" value="400"></label>
+          <output id="dbOut"></output>
+        </div>
+        <a class="why-more" href="https://en.wikipedia.org/wiki/Decibel" target="_blank" rel="noopener">Read more: decibels ↗</a>
+        <a class="why-back" href="#formulas">↑ back to the formulas</a>
+      </article>
+    </div>
+  </details>
+
 
   <div class="section-label"><span>Technician · Element 2 · 35 questions · pass 26</span><span>Pool 2026–2030</span></div>
 
@@ -837,6 +1011,61 @@
   </div>
 </footer>
 
+<script>
+  // Formula links open the explainers (inside a collapsed <details>) and jump to the right one.
+  (function(){
+    function go(hash, smooth){
+      var t = hash && document.getElementById(hash.slice(1)); if (!t) return;
+      var d = t.closest('details'); if (d && !d.open) d.open = true;
+      t.scrollIntoView({behavior: smooth ? 'smooth' : 'auto', block:'start'});
+    }
+    document.addEventListener('click', function(e){
+      var a = e.target.closest('a[href^="#"]'); if (!a) return;
+      var h = a.getAttribute('href'); if (h.length < 2 || !document.getElementById(h.slice(1))) return;
+      e.preventDefault(); history.replaceState(null,'',h); go(h, true);
+    });
+    if (location.hash) go(location.hash, false);
+    window.addEventListener('hashchange', function(){ go(location.hash, true); });
+
+    function $(id){ return document.getElementById(id); }
+    function n(id){ var v = parseFloat($(id).value); return isFinite(v) ? v : null; }
+    function f(x, d){ return Number(x).toLocaleString('en-US', {maximumFractionDigits: d === undefined ? 2 : d}); }
+    function ohm(){
+      var E=n('ohmE'), I=n('ohmI'), R=n('ohmR'), o=$('ohmOut');
+      if (E!==null && I!==null && R===null) o.textContent = f(E)+' V ÷ '+f(I)+' A = '+f(E/I)+' Ω';
+      else if (E!==null && R!==null && I===null) o.textContent = f(E)+' V ÷ '+f(R)+' Ω = '+f(E/R)+' A';
+      else if (I!==null && R!==null && E===null) o.textContent = f(I)+' A × '+f(R)+' Ω = '+f(I*R)+' V';
+      else o.textContent = 'Leave exactly one box empty and it fills in.';
+    }
+    function psu(){
+      var W=n('psuW'), V=n('psuV'), o=$('psuOut'); if (!W || !V) { o.textContent=''; return; }
+      var amps = W/0.38/V;
+      o.textContent = 'At a typical 35–40% efficiency it draws ≈ '+f(amps,1)+' A on transmit. Get a supply rated '+Math.ceil(amps*1.25/5)*5+' A or more.';
+    }
+    function wave(){
+      var F=n('waveF'), o=$('waveOut'); if (!F || F<=0) { o.textContent=''; return; }
+      var lam=300/F, dip=468/F, q=234/F;
+      function ftin(x){ return x < 3 ? f(x*12,1)+' in' : f(x,1)+' ft'; }
+      var band = F<2?'160 m':F<4?'80 m':F<5.5?'60 m':F<7.4?'40 m':F<10.2?'30 m':F<14.4?'20 m':F<18.2?'17 m':F<21.5?'15 m':F<25?'12 m':F<30?'10 m':F<54?'6 m':F<148?'2 m':F<225?'1.25 m':F<450?'70 cm':'';
+      o.innerHTML = 'Wavelength '+f(lam,2)+' m'+(band?' (the '+band+' band)':'')+' · dipole '+ftin(dip)+' · quarter-wave vertical '+ftin(q);
+    }
+    function swr(){
+      var Z=n('swrZ'), o=$('swrOut'); if (!Z || Z<=0) { o.textContent=''; return; }
+      var s = Z>50 ? Z/50 : 50/Z, g=(Z-50)/(Z+50), refl=g*g*100;
+      o.textContent = 'SWR '+f(s,2)+':1 · about '+f(refl,1)+'% of the power reflected'+(s<=1.5?' · excellent':s<=2?' · fine':s<=3?' · tune or trim it':' · fix the antenna');
+    }
+    function db(){
+      var A=n('dbA'), B=n('dbB'), o=$('dbOut'); if (!A || !B || A<=0 || B<=0) { o.textContent=''; return; }
+      var d=10*Math.log10(B/A);
+      o.textContent = (d>=0?'+':'')+f(d,1)+' dB · '+f(B/A,2)+'× the power · about '+f(Math.abs(d)/6,1)+' S-unit'+(Math.abs(d)/6>=1.05?'s':'');
+    }
+    ['ohmE','ohmI','ohmR'].forEach(function(i){ $(i).addEventListener('input', ohm); });
+    ['psuW','psuV'].forEach(function(i){ $(i).addEventListener('input', psu); });
+    $('waveF').addEventListener('input', wave); $('swrZ').addEventListener('input', swr);
+    ['dbA','dbB'].forEach(function(i){ $(i).addEventListener('input', db); });
+    ohm(); psu(); wave(); swr(); db();
+  })();
+</script>
 <script>
   document.querySelectorAll('[data-expand]').forEach(function(b){
     b.addEventListener('click', function(){ var o=b.dataset.expand==='1'; document.querySelectorAll('details').forEach(function(d){ d.open=o; }); });
