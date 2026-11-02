@@ -58,27 +58,31 @@ def read_zip(url, **kw):
 
 
 def acs(state, counties):
-    cols = [f"B01001_{i:03d}E" for i in list(range(3, 26)) + list(range(27, 50))]
+    """ACS 5-year table B01001 from the Census bulk "table-based summary file"
+    (no API key needed)."""
     for year in (2024, 2023):
-        url = (f"https://api.census.gov/data/{year}/acs/acs5?get=NAME,B01001_001E,{','.join(cols)}"
-               f"&for=tract:*&in=state:{state}+county:{','.join(counties)}")
-        body = b""
+        url = (f"https://www2.census.gov/programs-surveys/acs/summary_file/{year}/"
+               f"table-based-SF/data/5YRData/acsdt5y{year}-b01001.dat")
         try:
-            body = get(url)
-            rows = json.loads(body)
+            raw = pd.read_csv(io.BytesIO(get(url)), sep="|", dtype=str)
             break
         except Exception as e:
-            print("ACS", year, "failed:", e, body[:300])
+            print("ACS", year, "failed:", e)
     else:
         sys.exit("no ACS data")
-    df = pd.DataFrame(rows[1:], columns=rows[0])
-    df["GEOID"] = df.state + df.county + df.tract
+    raw.columns = [c.strip().upper() for c in raw.columns]
+    prefixes = tuple(f"1400000US{state}{c}" for c in counties)
+    df = raw[raw.GEO_ID.str.startswith(prefixes)].copy()
+    df["GEOID"] = df.GEO_ID.str[9:]
     for g in GENS:
         df[g] = 0
-    for k, c in enumerate(cols):
-        df[GEN_OF_GROUP[k % 23]] += pd.to_numeric(df[c]).clip(lower=0)
-    df["total"] = pd.to_numeric(df.B01001_001E)
+    rows = list(range(3, 26)) + list(range(27, 50))
+    for k, i in enumerate(rows):
+        df[GEN_OF_GROUP[k]] += pd.to_numeric(df[f"B01001_E{i:03d}"], errors="coerce").fillna(0).clip(lower=0)
+    df["total"] = pd.to_numeric(df["B01001_E001"], errors="coerce").fillna(0)
     df["acs_year"] = year
+    df["NAME"] = df.GEOID
+    print("ACS", year, len(df), "tracts", flush=True)
     return df[["GEOID", "NAME", "total", "acs_year"] + GENS]
 
 
