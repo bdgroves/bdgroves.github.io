@@ -61,12 +61,14 @@ def acs(state, counties):
     cols = [f"B01001_{i:03d}E" for i in list(range(3, 26)) + list(range(27, 50))]
     for year in (2024, 2023):
         url = (f"https://api.census.gov/data/{year}/acs/acs5?get=NAME,B01001_001E,{','.join(cols)}"
-               f"&for=tract:*&in=state:{state}&in=county:{','.join(counties)}")
+               f"&for=tract:*&in=state:{state}+county:{','.join(counties)}")
+        body = b""
         try:
-            rows = json.loads(get(url))
+            body = get(url)
+            rows = json.loads(body)
             break
         except Exception as e:
-            print("ACS", year, "failed:", e)
+            print("ACS", year, "failed:", e, body[:300])
     else:
         sys.exit("no ACS data")
     df = pd.DataFrame(rows[1:], columns=rows[0])
