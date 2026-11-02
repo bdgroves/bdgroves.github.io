@@ -78,7 +78,7 @@ def acs(state, counties):
         df[g] = 0
     rows = list(range(3, 26)) + list(range(27, 50))
     for k, i in enumerate(rows):
-        df[GEN_OF_GROUP[k]] += pd.to_numeric(df[f"B01001_E{i:03d}"], errors="coerce").fillna(0).clip(lower=0)
+        df[GEN_OF_GROUP[k % 23]] += pd.to_numeric(df[f"B01001_E{i:03d}"], errors="coerce").fillna(0).clip(lower=0)
     df["total"] = pd.to_numeric(df["B01001_E001"], errors="coerce").fillna(0)
     df["acs_year"] = year
     df["NAME"] = df.GEOID
