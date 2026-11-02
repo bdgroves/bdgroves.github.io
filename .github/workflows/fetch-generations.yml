@@ -1,0 +1,27 @@
+name: Fetch generations map data
+
+# Manual only. Pulls ACS age data and TIGER shapes for the
+# "largest generation per census tract" maps (Seattle metro, Tuolumne County)
+# and uploads them as an artifact. Nothing is committed.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install geopandas pyogrio pyarrow
+      - run: python scripts/generations_data.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: generations-data
+          path: generations-out/
+          retention-days: 14
