@@ -2,12 +2,13 @@ name: Fetch generations map data
 
 # Manual only. Pulls ACS age data and TIGER shapes for the
 # "largest generation per census tract" maps (Seattle metro, Tuolumne County)
-# and uploads them as an artifact. Nothing is committed.
+# and force-pushes them to the separate "generations-data" branch
+# (never main, so the site is untouched).
 on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   fetch:
@@ -20,8 +21,10 @@ jobs:
           python-version: "3.12"
       - run: pip install geopandas pyogrio pyarrow
       - run: python scripts/generations_data.py
-      - uses: actions/upload-artifact@v4
-        with:
-          name: generations-data
-          path: generations-out/
-          retention-days: 14
+      - name: Push data to the generations-data branch
+        run: |
+          cd generations-out
+          git init -q -b generations-data
+          git add .
+          git -c user.name="github-actions" -c user.email="github-actions@users.noreply.github.com" commit -q -m "Generations map data"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" generations-data
