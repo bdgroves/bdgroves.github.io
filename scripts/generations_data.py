@@ -81,9 +81,8 @@ def acs(state, counties):
         df[GEN_OF_GROUP[k % 23]] += pd.to_numeric(df[f"B01001_E{i:03d}"], errors="coerce").fillna(0).clip(lower=0)
     df["total"] = pd.to_numeric(df["B01001_E001"], errors="coerce").fillna(0)
     df["acs_year"] = year
-    df["NAME"] = df.GEOID
     print("ACS", year, len(df), "tracts", flush=True)
-    return df[["GEOID", "NAME", "total", "acs_year"] + GENS]
+    return df[["GEOID", "total", "acs_year"] + GENS]
 
 
 year_tiger = "2024"
@@ -102,7 +101,7 @@ for name, a in AREAS.items():
         tr.drop(columns="geometry"),
         geometry=gpd.points_from_xy(tr.INTPTLON.astype(float), tr.INTPTLAT.astype(float)),
         crs="EPSG:4269")
-    pts = pts[["GEOID", "COUNTYFP", "NAME", "ALAND", "total", "acs_year"] + GENS + ["geometry"]]
+    pts = pts[["GEOID", "COUNTYFP", "NAMELSAD", "ALAND", "total", "acs_year"] + GENS + ["geometry"]]
     pts.to_file(path, layer="tracts", driver="GPKG")
     print(name, len(pts), "tracts, ACS", df.acs_year.iloc[0])
 
