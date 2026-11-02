@@ -116,3 +116,30 @@ CONSTRAINTS:
 - 16:9, wide.
 - Generate the image directly without asking follow-up questions.
 ```
+
+## Torres del Paine
+
+```
+Create a wide, warm, photorealistic illustration of a hand-made miniature of Torres del Paine in Chilean Patagonia sitting on a wooden table by a window at sunrise, like a tilt-shift photograph of a beautiful scale model.
+
+THE MODEL:
+- The three granite Torres at the back, tall pale spires glowing orange and pink in the first sun, with a little turquoise glacial lake at their feet.
+- Just in front, the Cuernos: pale granite peaks with dark chocolate-brown tops, and the big snowy bulk of Paine Grande beside them.
+- Turquoise lakes below, one milky grey-green lake with a white glacier pouring into it at the far end and small pale-blue icebergs floating on the water.
+- Golden steppe grass and patches of dark green lenga beech forest on the lower slopes, a few trees already turning red.
+- A thread of trail with three or four tiny hikers in bright red, yellow and blue jackets and big backpacks, and a little wooden refugio with a warm light in the window.
+- Two Andean condors, big black wings with white patches, circling above the peaks, a small herd of tan guanacos on the steppe, and a stack of smooth lens-shaped clouds over the towers.
+- The base of the model cut away to show layers: pale granite under a dark rock band.
+
+THE TABLE:
+Soft early window light, a steaming mug of yerba mate with a metal straw, a small bowl of dark calafate berries and a folded trekking map beside the model, a wool beanie tossed nearby, soft depth of field, so it reads clearly as a crafted object.
+
+MOOD:
+Wild, windswept and wondrous, but cozy on the table: the end of the world made small enough to hold. Granite pinks and oranges, turquoise, glacier white, golden grass and deep green.
+
+CONSTRAINTS:
+- No words, labels, logos, signs, numbers or watermarks.
+- No people's faces in detail; figures are tiny.
+- 16:9, wide.
+- Generate the image directly without asking follow-up questions.
+```
