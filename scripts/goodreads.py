@@ -122,6 +122,9 @@ def from_profile() -> list[dict]:
     """Currently reading, from the public profile page's 'currently reading' block."""
     page = profile()
     i = page.find('id="currentlyReadingReviews"')
+    if i < 0 and re.search(r'shelf=currently-reading">\s*currently-reading(?:&lrm;|\u200e)?\s*\(0\)', page):
+        print("  profile: currently-reading shelf is empty (0)")
+        return []
     if i < 0:
         # leave clues in the run log for the next layout fix
         for k in ("urrently", "currently-reading", "currentlyReading", "bookTitle"):
