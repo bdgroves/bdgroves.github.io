@@ -100,6 +100,9 @@ def from_updates() -> list[dict]:
         t = re.search(r'<a class="bookTitle" href="([^"]+)">(.*?)</a>', row, re.S)
         if not t:
             continue
+        if not strip(t.group(2)):
+            ctx = re.sub(r"\s+", " ", row[:1500])
+            print(f"  clue [blank title]: {ctx}")
         a = re.search(r'class="authorName"[^>]*>(.*?)</a>', row, re.S)
         img = re.search(r'<img[^>]+src="([^"]+)"', row)
         stars = sum(int(x) for x in re.findall(r'staticStar p(\d+)', row)) / 10
@@ -120,6 +123,11 @@ def from_profile() -> list[dict]:
     page = profile()
     i = page.find('id="currentlyReadingReviews"')
     if i < 0:
+        # leave clues in the run log for the next layout fix
+        for k in ("urrently", "currently-reading", "currentlyReading", "bookTitle"):
+            for m in list(re.finditer(k, page))[:3]:
+                ctx = re.sub(r"\s+", " ", page[max(0, m.start() - 300):m.start() + 500])
+                print(f"  clue [{k}] @{m.start()}: {ctx}")
         raise RuntimeError(f"no currently-reading block (page {len(page):,} chars; "
                            f"{'sign-in page' if 'sign_in' in page[:5000] else 'layout changed?'})")
     block = page[i:i + 20000]
@@ -193,6 +201,7 @@ def main() -> None:
             print(f"currently-reading profile: {e2}; keeping the last {len(out['currently_reading'])}")
 
     # 1 + 3: finished
+    fresh_finished = []
     try:
         books = from_rss("read", SHELF_SIZE)
         if books:
@@ -209,6 +218,7 @@ def main() -> None:
         except Exception as e2:
             fresh = []
             print(f"read updates: {e2}")
+        fresh_finished = [b for b in fresh if b["title"].strip()]
         if fresh:
             key = lambda b: b.get("link") or b["title"].lower()
             have = {key(b) for b in fresh}
@@ -218,9 +228,17 @@ def main() -> None:
         elif not EXPORT.exists():
             print(f"read: keeping the last {len(out['recently_read'])}")
 
-    # a book being read isn't also shown as finished
+    # a book you just finished comes off "currently reading", even when that list is the
+    # last good copy because the profile couldn't be read; otherwise a book being read
+    # isn't also shown as finished
+    def key(b):
+        return (b.get("link") or "").split("-")[0] or b["title"].lower()
+    done_now = {key(b) for b in fresh_finished} | {b["title"].lower() for b in fresh_finished}
+    out["currently_reading"] = [b for b in out["currently_reading"]
+                                if key(b) not in done_now and b["title"].lower() not in done_now]
     reading = {b["title"].lower() for b in out["currently_reading"]}
     out["recently_read"] = [b for b in out["recently_read"] if b["title"].lower() not in reading]
+    out["recently_read"] = [b for b in out["recently_read"] if b["title"].strip()]
     OUT.write_text(json.dumps(out, indent=2))
 
 
