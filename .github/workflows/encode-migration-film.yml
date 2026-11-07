@@ -1,0 +1,42 @@
+name: Encode migration film from saved frames
+
+# Manual only. Re-encodes the orbit film from the frame artifacts of an earlier
+# "Render migration orbit film" run (no re-render) and pushes it to "migration-film".
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Run id of the render whose frames to use"
+        required: true
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  film:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frames-*
+          path: frames
+          merge-multiple: true
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: Encode
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+          ls frames | wc -l
+          mkdir -p out
+          ffmpeg -loglevel error -framerate 24 -i frames/f%04d.jpg -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart out/tuolumne-migration-orbit.mp4
+          ffmpeg -loglevel error -framerate 24 -i frames/f%04d.jpg -vf scale=960:-2 -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p -movflags +faststart out/tuolumne-migration-orbit-960.mp4
+          cp frames/f0072.jpg out/still-rising.jpg; cp frames/f0250.jpg out/still-labels.jpg; cp frames/f0335.jpg out/still-end.jpg
+          ls -la out
+      - name: Push to the migration-film branch
+        run: |
+          cd out
+          git init -q -b migration-film
+          git add .
+          git -c user.name="github-actions" -c user.email="github-actions@users.noreply.github.com" commit -q -m "Migration orbit film"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" migration-film

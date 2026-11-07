@@ -46,6 +46,7 @@ jobs:
         with: { pattern: frames-*, path: frames, merge-multiple: true }
       - name: Encode
         run: |
+          sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
           ls frames | wc -l
           mkdir -p out
           ffmpeg -loglevel error -framerate 24 -i frames/f%04d.jpg -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart out/tuolumne-migration-orbit.mp4
