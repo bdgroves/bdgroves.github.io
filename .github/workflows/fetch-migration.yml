@@ -1,0 +1,30 @@
+name: Fetch migration map data
+
+# Manual only. Pulls Census and IRS county-to-county migration flows for
+# Tuolumne County, county points/outlines and elevation for the forge3d
+# migration-arcs map, and force-pushes them to the separate "migration-data"
+# branch (never main, so the site is untouched).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install geopandas pyogrio pillow numpy
+      - run: python scripts/migration_data.py
+      - name: Push data to the migration-data branch
+        run: |
+          cd migration-out
+          git init -q -b migration-data
+          git add .
+          git -c user.name="github-actions" -c user.email="github-actions@users.noreply.github.com" commit -q -m "Migration map data"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" migration-data
