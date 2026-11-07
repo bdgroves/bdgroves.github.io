@@ -53,6 +53,9 @@ hx, hz = Ter.world_xz(home.x, home.y)
 hp = np.array([[hx, float(Ter.ground_y(hx, hz)), hz]])
 px, py, _, _ = project(hp, cam, W, H)
 img = dot(img, (px[0], py[0]), 7 * W / 1600, (255, 255, 255))
+if "--notext" in sys.argv:
+    img.convert("RGB").save(f"ca_arcs_{QUALITY}_notext.png")
+    sys.exit(0)
 img = labels_and_title(img, arcs, cam, depth, Ter, pts, home, O, I, W, H, GOLD, BLUE, yrs)
 img.convert("RGB").save(f"ca_arcs_{QUALITY}.png")
 json.dump({"years": yrs, "out": {k: int(v) for k, v in O.sort_values(ascending=False).items()},

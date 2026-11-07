@@ -27,6 +27,9 @@ st = gpd.read_file("data/counties.gpkg", layer="states")
 in_ca = Ter.grid_pixels(st[st.STUSPS == "CA"].geometry)
 in_us = Ter.grid_pixels(st[~st.STUSPS.isin(["AK", "HI", "PR", "GU", "VI", "MP", "AS"])].geometry)
 alb = colors.albedo_us(Ter, lon, lat, in_ca, in_us)
+sl = Ter.grid_lines(st[~st.STUSPS.isin(["AK", "HI", "PR", "GU", "VI", "MP", "AS"])].geometry, width=1.0)
+ws = (sl * 0.55 * (~Ter.ocean))[..., None]
+alb = alb * (1 - ws) + np.array([0.95, 0.92, 0.85], np.float32) * ws
 Ter.alb = np.concatenate([alb, np.ones(alb.shape[:2] + (1,), np.float32)], -1)
 print("grid", Ter.H, Ter.W, "cell km", round(Ter.px / 1000, 2))
 

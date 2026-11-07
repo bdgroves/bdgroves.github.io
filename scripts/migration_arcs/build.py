@@ -15,6 +15,21 @@ def build(exag=6.0, step=2, pad=(260, 220)):
     st = gpd.read_file("data/counties.gpkg", layer="states")
     in_ca = T.grid_pixels(st[st.STUSPS == "CA"].geometry)
     alb = colors.albedo(T, lon, lat, in_ca)
+    T.in_ca = in_ca
+    # county lines (California and neighbours) and state lines, baked into the albedo
+    co = gpd.read_file("data/counties.gpkg", layer="counties")
+    co = co[co.STATEFP.isin(["06", "32", "41", "04"])]
+    cl = T.grid_lines(co.geometry, width=0.9)
+    sl = T.grid_lines(st[st.STUSPS.isin(["CA", "NV", "OR", "AZ"])].geometry, width=1.6)
+    land = ~T.ocean
+    cream = np.array([0.93, 0.90, 0.82], np.float32)
+    wc = (cl * np.where(T.in_ca, 0.72, 0.35) * land)[..., None]
+    alb = alb * (1 - wc) + cream * wc
+    ws = (sl * 0.85 * land)[..., None]
+    alb = alb * (1 - ws) + np.array([0.98, 0.96, 0.9], np.float32) * ws
+    tl = T.grid_lines(co[co.GEOID == "06109"].geometry, width=1.8)
+    wt = (tl * 0.95 * land)[..., None]
+    alb = alb * (1 - wt) + np.array([1.0, 0.97, 0.88], np.float32) * wt
     T.alb = np.concatenate([alb, np.ones(alb.shape[:2] + (1,), np.float32)], axis=-1)
     T.in_ca = in_ca
     return T

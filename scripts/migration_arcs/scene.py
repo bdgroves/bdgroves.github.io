@@ -3,7 +3,7 @@ import math
 import numpy as np
 import geopandas as gpd
 from shapely.geometry import Point
-from rasterio_free_raster import rasterize_polys
+from rasterio_free_raster import rasterize_polys, rasterize_lines
 
 R = 6378137.0
 
@@ -55,3 +55,9 @@ class Terrain:
             mx, my = lonlat_to_3857(np.asarray(lon), np.asarray(lat))
             return (mx - self.left) / self.px, (self.top - my) / self.px
         return rasterize_polys(geoms_lonlat, to_grid, self.H, self.W)
+
+    def grid_lines(self, geoms_lonlat, width=1):
+        def to_grid(lon, lat):
+            mx, my = lonlat_to_3857(np.asarray(lon), np.asarray(lat))
+            return (mx - self.left) / self.px, (self.top - my) / self.px
+        return rasterize_lines(geoms_lonlat, to_grid, self.H, self.W, width=width)
