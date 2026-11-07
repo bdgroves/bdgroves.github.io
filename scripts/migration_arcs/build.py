@@ -62,3 +62,17 @@ def render(T, cam, W, H, quality="draft", sun=(250.0, 30.0)):
                                           variance_threshold=10.0)["depth"]
     print(f"render {W}x{H} {quality}: {time.time() - t:.0f}s", flush=True)
     return rgba, d
+
+
+# Census internal points that fall in the water: pin them to the city instead.
+# San Francisco County's official internal point is out by the Farallon Islands.
+POINT_FIX = {"06075": (-122.4193, 37.7793)}      # SF City Hall
+
+
+def county_points(path="data/counties.gpkg"):
+    from shapely.geometry import Point
+    pts = gpd.read_file(path, layer="county_points").set_index("GEOID")
+    for g, (lon, lat) in POINT_FIX.items():
+        if g in pts.index:
+            pts.loc[g, "geometry"] = Point(lon, lat)
+    return pts

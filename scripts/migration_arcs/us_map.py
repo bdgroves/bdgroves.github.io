@@ -3,7 +3,7 @@ import sys, os, numpy as np, pandas as pd, geopandas as gpd
 from PIL import Image
 from scene import Terrain
 import colors
-from build import camera, render
+from build import camera, render, county_points
 from arcs import arc_points, draw_arcs, dot, visible_mask
 from camproj import project
 from poster import sky, km, font, text_halo
@@ -15,7 +15,7 @@ CAM = [float(x) for x in os.environ.get("CAM", "-104,37.5,62,36,3600e3,34").spli
 
 exec(open("census_flows.py").read())        # -> c
 out = c[c.us & (c.out_est > 0)].copy()
-pts = gpd.read_file("data/counties.gpkg", layer="county_points").set_index("GEOID")
+pts = county_points()
 home = pts.loc["06109"].geometry
 
 Ter = Terrain("data/dem_us_z6.npz", (-126.0, 23.6, -66.5, 50.4), step=1, exag=10.0, pad=(120, 90))

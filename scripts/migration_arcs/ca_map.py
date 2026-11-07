@@ -1,7 +1,7 @@
 """California view: IRS flows out of (gold) and into (blue) Tuolumne County, 2018-19 to 2022-23."""
 import sys, json, numpy as np, pandas as pd, geopandas as gpd
 from PIL import Image
-from build import build, camera, render
+from build import build, camera, render, county_points
 from arcs import arc_points, draw_arcs, dot, visible_mask
 from camproj import project
 from poster import sky, labels_and_title, km
@@ -15,7 +15,7 @@ yrs = sorted(df.years.unique())[-5:]
 O = real(out, "d"); O = O[O.years.isin(yrs)].groupby("d").people.sum()
 I = real(inn, "o"); I = I[I.years.isin(yrs)].groupby("o").people.sum()
 
-pts = gpd.read_file("data/counties.gpkg", layer="county_points").set_index("GEOID")
+pts = county_points()
 home = pts.loc["06109"].geometry
 Ter = build()
 cam = camera(Ter, -120.6, 36.9, 5, 48, 1560e3, fov=36, aspect=W / H, exposure=1.75)

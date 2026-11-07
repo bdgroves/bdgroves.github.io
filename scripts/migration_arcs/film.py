@@ -7,7 +7,7 @@ Arcs: IRS county-to-county flows 2018-19 to 2022-23 (gold = leaving, blue = arri
 """
 import os, sys, math, argparse, numpy as np, geopandas as gpd
 from PIL import Image, ImageDraw
-from build import build, camera, render
+from build import build, camera, render, county_points
 from arcs import arc_points, draw_arcs, dot, visible_mask
 from camproj import project
 from poster import sky, km, font, text_halo
@@ -29,7 +29,7 @@ real = lambda x, col: x[(x[col].str[:2].astype(int) <= 56) & (x[col].str[2:] != 
 yrs = sorted(df.years.unique())[-5:]
 O = real(out, "d"); O = O[O.years.isin(yrs)].groupby("d").people.sum()
 I = real(inn, "o"); I = I[I.years.isin(yrs)].groupby("o").people.sum()
-pts = gpd.read_file("data/counties.gpkg", layer="county_points").set_index("GEOID")
+pts = county_points()
 names = pts["NAME"].to_dict()
 home = pts.loc["06109"].geometry
 Ter = build()
