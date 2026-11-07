@@ -117,7 +117,7 @@ def frame(f):
             text_halo(d, (px[0] + 10 * k, py[0] - 8 * k), nm, fm, (240, 236, 226, al), halo=(8, 18, 36, al), w=int(3 * k), anchor="lm")
             o, i_ = int(O.get(g, 0)), int(I.get(g, 0))
             X2 = px[0] + 10 * k
-            for s_, col in ((f"out {o:,}", GOLD), (f"in {i_:,}", BLUE)):
+            for s_, col in [x for x in ((f"out {o:,}", GOLD, o), (f"in {i_:,}", BLUE, i_)) if x[2]] and [(x[0], x[1]) for x in ((f"out {o:,}", GOLD, o), (f"in {i_:,}", BLUE, i_)) if x[2]]:
                 text_halo(d, (X2, py[0] + 9 * k), s_, fs, col + (al,), halo=(8, 18, 36, al), w=int(3 * k), anchor="lm")
                 X2 += d.textlength(s_, font=fs) + 10 * k
         text_halo(d, (hpx[0] + 14 * k, hpy[0] - 6 * k), "SONORA", font("DMMono-Medium", 15 * k),
