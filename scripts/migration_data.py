@@ -63,16 +63,21 @@ print("\n".join(listing))
 # ---------- Census ACS flows: Tuolumne rows from the newest national workbook ----------
 try:
     import pandas as pd
-    folder = BASE + latest
-    html = get(folder).decode("latin-1")
-    open(f"{OUT}/census_folder.html", "w").write(html)
-    links = sorted(set(re.findall(r'href="([^"]+?\.xlsx?)"', html, flags=re.I)))
+    links = []
+    queue = [BASE + latest]
+    while queue and len(links) == 0 or queue and len(queue) < 8:
+        folder = queue.pop(0)
+        html = get(folder).decode("latin-1")
+        found = sorted(set(re.findall(r'href="([^"]+?\.xlsx?)"', html, flags=re.I)))
+        links += [folder + x if not x.startswith("http") else x for x in found]
+        queue += [folder + d for d in re.findall(r'href="([A-Za-z0-9][^"?/]*/)"', html)]
+        if links:
+            break
     print("census workbooks:", links, flush=True)
-    for f in links:
-        name = f.split("/")[-1]
+    for url in links:
+        name = url.split("/")[-1]
         if "metro" in name.lower() or "puerto" in name.lower():
             continue
-        url = f if f.startswith("http") else (BASE + latest + name)
         data = get(url, timeout=900)
         print("  ", name, len(data) // 1024, "KB", flush=True)
         sheets = pd.read_excel(io.BytesIO(data), sheet_name=None, header=None, dtype=str)
