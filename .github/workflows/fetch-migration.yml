@@ -6,6 +6,11 @@ name: Fetch migration map data
 # branch (never main, so the site is untouched).
 on:
   workflow_dispatch:
+    inputs:
+      only:
+        description: 'census = only refresh the Census rows (keeps the rest of the branch)'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -19,8 +24,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install geopandas pyogrio pillow numpy
+      - run: pip install geopandas pyogrio pillow numpy openpyxl xlrd
+      - name: Start from the existing data branch when refreshing only part of it
+        if: inputs.only != ''
+        run: |
+          git fetch -q --depth 1 origin migration-data && mkdir -p migration-out && git --work-tree=migration-out checkout origin/migration-data -- . && git reset -q
       - run: python scripts/migration_data.py
+        env:
+          ONLY: ${{ inputs.only }}
       - name: Push data to the migration-data branch
         run: |
           cd migration-out

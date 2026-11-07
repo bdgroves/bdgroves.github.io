@@ -41,7 +41,7 @@ try:
         files = re.findall(r'href="([^"?/][^"]*\.(?:xlsx|xls|csv|zip|txt))"', html)
         listing.append("latest: " + latest)
         listing += ["  " + f for f in files]
-        for f in files:
+        for f in []:
             low = f.lower()
             # the "current residence" and "ins/outs" sorts are national; grab the national file(s)
             # and anything specific to California, skipping per-state files for other states
@@ -59,6 +59,37 @@ except Exception as e:
     listing.append(f"census crawl failed: {e}")
 open(f"{OUT}/census_listing.txt", "w").write("\n".join(listing))
 print("\n".join(listing))
+
+# ---------- Census ACS flows: Tuolumne rows from the newest national workbook ----------
+try:
+    import pandas as pd
+    folder = BASE + latest
+    html = get(folder).decode("latin-1")
+    open(f"{OUT}/census_folder.html", "w").write(html)
+    links = sorted(set(re.findall(r'href="([^"]+?\.xlsx?)"', html, flags=re.I)))
+    print("census workbooks:", links, flush=True)
+    for f in links:
+        name = f.split("/")[-1]
+        if "metro" in name.lower() or "puerto" in name.lower():
+            continue
+        url = f if f.startswith("http") else (BASE + latest + name)
+        data = get(url, timeout=900)
+        print("  ", name, len(data) // 1024, "KB", flush=True)
+        sheets = pd.read_excel(io.BytesIO(data), sheet_name=None, header=None, dtype=str)
+        keep = []
+        for sh, d in sheets.items():
+            m = d.apply(lambda r: r.astype(str).str.contains("Tuolumne County", na=False).any(), axis=1)
+            if m.any():
+                head = d.head(4)
+                keep.append(pd.concat([head, d[m]]).assign(sheet=sh))
+        if keep:
+            pd.concat(keep).to_csv(f"{OUT}/census/{name.rsplit('.', 1)[0]}_tuolumne.csv", index=False)
+            print("   saved Tuolumne rows", sum(len(k) for k in keep), flush=True)
+except Exception as e:
+    print("census workbook step failed:", e)
+
+if os.environ.get("ONLY") == "census":
+    sys.exit(0)
 
 # ---------- IRS SOI county-to-county ----------
 rows = []
