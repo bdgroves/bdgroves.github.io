@@ -4,7 +4,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from camproj import project
 from arcs import visible_mask
 
-FONTS = "/home/claude/30daymapchallenge/2026/toolkit/fonts/"
+import os
+FONTS = os.environ.get("FONTS", os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts")) + "/"
 def font(name, size):
     import glob
     cand = sorted(glob.glob(FONTS + name + "*.ttf"))

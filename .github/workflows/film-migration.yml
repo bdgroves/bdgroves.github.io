@@ -1,0 +1,60 @@
+name: Render migration orbit film
+
+# Manual only. Renders the Tuolumne County migration-arcs orbit film with forge3d
+# (software GL on the runners), split across 20 jobs, then stitches the frames into an MP4
+# and force-pushes it to the separate "migration-film" branch (never main).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  frames:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        part: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+        with: { sparse-checkout: scripts/migration_arcs }
+      - run: sudo apt-get update -q && sudo apt-get install -y -q libegl1 libgl1-mesa-dri libegl-mesa0 mesa-vulkan-drivers
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -q forge3d geopandas pyogrio pillow numpy pandas
+      - name: Data
+        run: |
+          git fetch -q --depth 1 origin migration-data
+          mkdir -p scripts/migration_arcs/data
+          git --work-tree=scripts/migration_arcs/data checkout origin/migration-data -- counties.gpkg dem_ca_z8.npz irs_tuolumne.csv
+      - name: Frames
+        working-directory: scripts/migration_arcs
+        run: python film.py --part ${{ matrix.part }} --parts 20
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frames-${{ matrix.part }}
+          path: scripts/migration_arcs/frames/
+          retention-days: 3
+
+  film:
+    needs: frames
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { pattern: frames-*, path: frames, merge-multiple: true }
+      - name: Encode
+        run: |
+          ls frames | wc -l
+          mkdir -p out
+          ffmpeg -loglevel error -framerate 24 -i frames/f%04d.jpg -c:v libx264 -preset slow -crf 18 -pix_fmt yuv420p -movflags +faststart out/tuolumne-migration-orbit.mp4
+          cp frames/f0072.jpg out/still-rising.jpg; cp frames/f0250.jpg out/still-labels.jpg
+          ls -la out
+      - name: Push to the migration-film branch
+        run: |
+          cd out
+          git init -q -b migration-film
+          git add .
+          git -c user.name="github-actions" -c user.email="github-actions@users.noreply.github.com" commit -q -m "Migration orbit film"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" migration-film

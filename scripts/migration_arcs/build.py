@@ -36,6 +36,8 @@ def render(T, cam, W, H, quality="draft", sun=(250.0, 30.0)):
               sun_azimuth_deg=sun[0], sun_elevation_deg=sun[1], sun_intensity=3.2, env_intensity=0.5)
     if quality == "draft":
         kw.update(min_frames=8, max_frames=32, variance_threshold=1.0)
+    elif quality == "film":
+        kw.update(min_frames=20, max_frames=64, variance_threshold=0.15)
     else:
         kw.update(min_frames=32, max_frames=160, variance_threshold=0.02)
     t = time.time()
