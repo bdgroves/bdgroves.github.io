@@ -289,7 +289,7 @@
 
     <p>Early every morning, the page downloads the year&rsquo;s fire perimeters from the National Interagency Fire Center for the three West Coast states. Once a month it pulls every fire station mapped in OpenStreetMap. Then, for each fire, it measures the straight-line distance from the edge of the burn to the closest station.</p>
 
-    <p>So far this year that&rsquo;s <strong>1,320 fire perimeters</strong> and about <strong>3.66 million acres</strong>. The typical fire was just <strong>10.9 km</strong> from a mapped station, closer than you might guess. Most fires start near people, roads and towns, and that&rsquo;s where the stations are.</p>
+    <p>So far this year that&rsquo;s <strong>1,320 fire perimeters</strong> and about <strong>3.66 million acres</strong>. The typical fire was only <strong>10.9 km</strong> from a mapped station, closer than you might guess. Most fires start near people, roads and towns, and that&rsquo;s where the stations are.</p>
 
     <p>But the states don&rsquo;t look alike:</p>
 
@@ -313,7 +313,7 @@
 
     <p><strong>111 of 113, counted by county. That&rsquo;s 98%.</strong> (More on the &ldquo;by county&rdquo; part below.)</p>
 
-    <p>The &ldquo;gap&rdquo; on the traditional map isn&rsquo;t empty. It&rsquo;s the line between two different ways of protecting the land: fire districts where the towns are, and ranchers&rsquo; associations where the range is.</p>
+    <p>So the &ldquo;gap&rdquo; on the traditional map has people in it. It marks the line between two ways of protecting the land: fire districts where the towns are, and ranchers&rsquo; associations where the range is.</p>
 
     <h2>Where the fires find the stations</h2>
 
@@ -333,18 +333,18 @@
 
     <ul>
       <li><strong>RFPA ground is drawn by county, and generously.</strong> Real RFPA boundaries follow land ownership and often cover only part of a county. The map shades 15 counties from older program lists, while the Oregon Department of Forestry&rsquo;s June 2026 report puts today&rsquo;s RFPAs across nine. So the true share is lower than 98%, and I&rsquo;d like to redraw the map from the actual RFPA boundaries. The pattern is clear either way: Oregon&rsquo;s far-from-a-station fires are out on the open range, the country these associations were made for.</li>
-      <li><strong>OpenStreetMap misses rural stations.</strong> Federal guard stations and small volunteer departments are often mapped differently or not at all. That makes the far-away count bigger than it really is. Eastern Oregon&rsquo;s stations really are fewer and farther between; the gap is just smaller than the map shows.</li>
+      <li><strong>OpenStreetMap misses rural stations.</strong> Federal guard stations and small volunteer departments are often mapped differently or not at all. That makes the far-away count bigger than it really is. Eastern Oregon&rsquo;s stations are fewer and farther between, but the gap is smaller than the map shows.</li>
       <li><strong>Distances are straight lines.</strong> Real response time runs on roads, and out there many roads are gravel. Every distance on the map is the best case.</li>
-      <li><strong>It counts perimeters, not ignitions.</strong> One fire can show up as more than one perimeter. And &ldquo;active&rdquo; just means the containment field is blank or under 100%, which for a lot of small fires never gets updated, so I don&rsquo;t lean on that count.</li>
+      <li><strong>It counts perimeters, not ignitions.</strong> One fire can show up as more than one perimeter. And &ldquo;active&rdquo; only means the containment field is blank or under 100%, which for a lot of small fires never gets updated, so I don&rsquo;t lean on that count.</li>
     </ul>
 
     <div class="note-box">
       <strong>Under the hood:</strong> four Python scripts and two small GitHub Actions workflows, one daily and one monthly. Perimeters come from the NIFC WFIGS year-to-date service, stations from the OpenStreetMap Overpass API, and county lines from the Census Bureau. Distances are measured in an equal-area projection (Albers, EPSG:5070) so distances stay close to true across all three states. The interactive map is Leaflet; the summary map above is matplotlib, redrawn every morning.
     </div>
 
-    <h2>The point</h2>
+    <h2>Reading the blank spaces</h2>
 
-    <p>I grew up in the Sierra foothills, where fire season is just part of the year, and I&rsquo;ve spent a lot of evenings with fire perimeter maps since. This project changed how I read them. A blank space on a map of fire stations doesn&rsquo;t always mean nobody&rsquo;s coming. Sometimes it means the help lives down the road and keeps a water tank in the truck.</p>
+    <p>I grew up in the Sierra foothills, where fire season comes around like any other season, and I&rsquo;ve spent a lot of evenings with fire perimeter maps since. This project changed how I read them. A blank space on a map of fire stations doesn&rsquo;t always mean nobody&rsquo;s coming. Sometimes it means the help lives down the road and keeps a water tank in the truck.</p>
 
     <p>Idaho and Nevada now have rangeland associations of their own, modelled on Oregon&rsquo;s. If you&rsquo;re one of those volunteers: thank you.</p>
 
