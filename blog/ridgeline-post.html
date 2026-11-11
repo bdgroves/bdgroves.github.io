@@ -318,7 +318,7 @@
 
     <p>Ridgeline started as a Phoenix project. Phoenix is built right up against its mountains: Camelback, Piestewa Peak and South Mountain are all inside city limits, and the trailheads are basically neighborhood parking lots. The fire department publishes every call it gets, so I pulled seven years of them, picked out the rescues, and mapped them.</p>
 
-    <p>The page had a nice headline. The biggest category of calls at the wildland edge wasn't mountain rescue at all. It was <strong>behavioral-health crisis calls</strong>, 1,120 of them, clustered along the preserve edges. It was surprising and a little sad, and it made a good story.</p>
+    <p>The page had a nice headline. The biggest category of calls at the wildland edge wasn't mountain rescue at all. It was <strong>behavioral-health crisis calls</strong>, 1,120 of them, clustered along the preserve edges. Surprising, a little sad, and a good story.</p>
 
     <p>Then a researcher studying Phoenix's trail heat closures wrote to me. She'd noticed that the raw data has <strong>1,619</strong> mountain rescues, but my site showed only <strong>480</strong>. What filter explained the difference?</p>
 
@@ -330,7 +330,7 @@
 
     <p><strong>Camelback Road</strong> runs across the whole city. So does <strong>McDowell Road</strong>. <strong>South Mountain Avenue</strong> runs along the bottom of town. Every call on those streets matched a preserve name. A crisis call at an apartment on McDowell Road in central Phoenix got drawn in the McDowell Sonoran Preserve, 20 miles northeast.</p>
 
-    <p>When I counted, <strong>about 1,560 of my 2,263 map points were sitting on just four spots</strong>, the representative points I'd picked for four preserves. The crisis-care cluster "along the preserve edges" wasn't a pattern in the world. It was a pattern in my code. The wildland-fire cluster came from the same bug.</p>
+    <p>When I counted, <strong>about 1,560 of my 2,263 map points were sitting on just four spots</strong>, the representative points I'd picked for four preserves. The crisis-care cluster "along the preserve edges" was a pattern in my code, not in the world. The wildland-fire cluster came from the same bug.</p>
 
     <p>The fix is to match places, not words. "Echo Canyon," "Piestewa Peak" and "McDowell Sonoran" mean the preserve. "McDowell Rd" means a road. The fallback also runs only after the real geocoder has had its chance.</p>
 
@@ -338,7 +338,7 @@
 
     <p>That explained the bad points. It didn't explain the missing ones. Why did only 480 of 1,619 rescues make the map?</p>
 
-    <p>Phoenix blurs its published addresses for privacy. You get <code>49XX E MCDONALD DR</code>, not a house number, and intersections come through as <code>N 7TH ST/E DUNLAP AV</code>. The county geocoder had no idea what to do with "49XX" or a slash, so it quietly gave up on most of them. Nothing crashed and no error showed up in the logs. The rescues just weren't there.</p>
+    <p>Phoenix blurs its published addresses for privacy. You get <code>49XX E MCDONALD DR</code>, not a house number, and intersections come through as <code>N 7TH ST/E DUNLAP AV</code>. The county geocoder had no idea what to do with "49XX" or a slash, so it quietly gave up on most of them. Nothing crashed. No error showed up in the logs. The rescues just weren't there.</p>
 
     <p>The fixes, in order:</p>
 
@@ -355,7 +355,7 @@
 
     <h2>What the fixed data says</h2>
 
-    <p>Once the map was honest, it told a better story than the one I'd had.</p>
+    <p>Once the map was honest, it had a better story to tell.</p>
 
     <p><strong>It's mostly one trailhead.</strong> Echo Canyon on Camelback, <code>49XX E MCDONALD DR</code> in dispatch-speak, accounts for 310 of Phoenix's 1,489 located mountain rescues. That's about one in five. Add Piestewa Peak, the Cholla trailhead and Pima Canyon on South Mountain, and you have most of the city.</p>
 
@@ -367,7 +367,7 @@
 
     <p>I wanted comparisons. Santa Barbara was first on the list, but neither the city nor the county publishes incident-level fire calls. San Diego does, but its "RESCUE" category comes with nothing better than a ZIP code, which is too coarse to map.</p>
 
-    <p>Two cities worked beautifully:</p>
+    <p>Two cities worked:</p>
 
     <ul>
       <li><strong>Scottsdale</strong> has its own mountain-rescue code, <code>MTNRES</code>, and publishes full street addresses. It goes through the same county geocoder as Phoenix. It covers the McDowell Sonoran Preserve, Tom's Thumb, Pinnacle Peak, and a fair number of assists into Phoenix, including Echo Canyon.</li>
@@ -414,10 +414,10 @@
     <ul>
       <li><strong>Heat roughly triples the risk per hiker.</strong> I'd written that rescues don't rise with the thermometer. Per day, they don't. But the counters drop from about 2,170 passes a day below 80°F to about 740 above 105°F, so per 100,000 passes rescues go from about 9 to 26. Fewer people go out in the heat, and the ones who do get in trouble three times as often.</li>
       <li><strong>Closure days are safer per hiker than ordinary days.</strong> Before the program, a hot day ran 50 rescues per 100,000 passes, more than twice an ordinary summer day. On closure days since, it's about 10, even though about 600 passes a day still get counted outside the closed hours. That's only 8 rescues, but it's the strongest sign yet that closing the trails works.</li>
-      <li><strong>The long decline isn't fewer hikers.</strong> Echo Canyon and Piestewa were about as busy in 2024 as in 2019, winter included, but rescues per pass fell by about a third. I checked whether the calls were just being logged as something else: every other call type at those trailheads, including the ones the city doesn't label, stayed flat. Each hike simply got safer. Why is the next question.</li>
+      <li><strong>The long decline isn't fewer hikers.</strong> Echo Canyon and Piestewa were about as busy in 2024 as in 2019, winter included, but rescues per pass fell by about a third. I checked whether the calls were just being logged as something else: every other call type at those trailheads, including the ones the city doesn't label, stayed flat. Each hike got safer. Why is the next question.</li>
     </ul>
 
-    <p>And what about COVID? We all remember staying in, so it's the obvious suspect. It turns out Phoenix did the opposite: the city's trail counters ran about 19% busier in 2020 and 12% in 2021 than in 2019, then fell back below 2019 by 2022. The decline I'm measuring runs from 2019, before the pandemic, to 2023–25, after it, so COVID can't be what brought it down. It did leave fingerprints, though. Echo Canyon's counter reads zero in June and July 2020, so that trail was effectively shut for the summer, which is most of why 2020 looks so quiet. Leaving 2020 out of the closure comparison makes the effect slightly stronger, not weaker.</p>
+    <p>COVID is the obvious suspect, since we all remember staying in. Phoenix did the opposite: the city's trail counters ran about 19% busier in 2020 and 12% in 2021 than in 2019, then fell back below 2019 by 2022. The decline I'm measuring runs from 2019, before the pandemic, to 2023–25, after it, so COVID can't be what brought it down. It did leave fingerprints, though. Echo Canyon's counter reads zero in June and July 2020, so that trail was effectively shut for the summer, which is most of why 2020 looks so quiet. Leaving 2020 out of the closure comparison makes the effect slightly stronger, not weaker.</p>
 
     <p>The honest summary: the closures seem to do what they're meant to on the days they're in force, but the bigger story is that hiking these mountains got safer, in winter as much as summer, and nobody has explained that yet. The <a href="https://brooksgroves.com/ridgeline/#heat">heat section on the site</a> has the timeline, the per-hiker tables, the charts and the 17 rescues that happened on closed trails during closed hours anyway.</p>
 
@@ -427,7 +427,7 @@
 
     <p>There's a catch. Each record gives the park, the date and the kind of incident, but not where in the park it happened. So there are no dots on Half Dome. Instead the site draws every park's boundary on one national map, puts a circle on each park sized by its rescue count, and gives each park its own calendar. Click a park and it lights up, zoom in and the outline sharpens.</p>
 
-    <p>The data needed the same kind of checking as the cities. The file labelled 2019–2020 actually runs into August 2021. 420 rows have no date at all. And the early years are thin: Yosemite logged 9 incidents in 2013 and 372 in 2016. That isn't a sudden rush of reckless hikers. It's the reporting system coming into use. So every comparison uses the five complete years, 2016 to 2020.</p>
+    <p>The data needed the same kind of checking as the cities. The file labelled 2019–2020 actually runs into August 2021. 420 rows have no date at all. And the early years are thin: Yosemite logged 9 incidents in 2013 and 372 in 2016. That's the reporting system coming into use, not a sudden rush of reckless hikers. So every comparison uses the five complete years, 2016 to 2020.</p>
 
     <p>What those years show:</p>
 
@@ -465,7 +465,7 @@
 
     <p>I've hiked Camelback. Everybody who visits Phoenix does, usually by Echo Canyon, usually in the middle of the day, usually with less water than they should have. I never once thought about the fact that the parking lot I started from was the single busiest mountain-rescue address in a city of 1.6 million people.</p>
 
-    <p>That's what I like about this kind of project. The data is just dispatch logs: a time, a code, a blurred address. Get the addresses right and they turn into something you recognize: a trailhead, a season, a Saturday morning when somebody's day went wrong. Get them wrong and you tell a confident story about the wrong thing. I did both this month, and the second version is better.</p>
+    <p>The data is only dispatch logs: a time, a code, a blurred address. Get the addresses right and they turn into things you recognize, like a trailhead or a Saturday morning when somebody's day went wrong. Get them wrong and you tell a confident story about the wrong thing. I did both this month. The second version is the one on the site now.</p>
 
     <hr>
 

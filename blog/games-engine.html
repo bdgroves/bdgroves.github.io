@@ -261,7 +261,7 @@
   <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/blog/img/games-engine/og.jpg.w1600.webp" alt="" decoding="async" fetchpriority="high" srcset="/img-opt/blog/img/games-engine/og.jpg.w640.webp 640w, /img-opt/blog/img/games-engine/og.jpg.w1600.webp 1600w" sizes="(max-width: 1140px) 100vw, 1100px"></figure><!-- POST-COVER:END -->
   <div class="article-body">
 
-    <p>It started with a photo on Instagram. Somebody posted the 1983 <em>Star Frontiers</em> Referee&rsquo;s Screen &mdash; that beautiful Elmore-adjacent cover with the aliens in the bar, the one where a Dralasite is holding a drink with an arm it grew for the occasion. And I thought: I was too young for this game when it came out, I don&rsquo;t own it anymore, and I would very much like to roll some percentile dice.</p>
+    <p>It started with a photo on Instagram. Somebody posted the 1983 <em>Star Frontiers</em> Referee&rsquo;s Screen, that beautiful Elmore-adjacent cover with the aliens in the bar, the one where a Dralasite is holding a drink with an arm it grew for the occasion. And I thought: I was too young for this game when it came out, I don&rsquo;t own it anymore, and I would very much like to roll some percentile dice.</p>
 
     <p>Four games and about two thousand lines of JavaScript later, here we are.</p>
 
@@ -269,19 +269,19 @@
 
     <p>Four playable things, all living at <a href="/games.html">/games</a>, all built on one shared engine.</p>
 
-    <p><strong>&#128640; <a href="/games/kellaths-drift.html">Kellath&rsquo;s Drift</a></strong> &mdash; a percentile roll-under adventure in the spirit of the old TSR games. You&rsquo;re a scout, your survey skiff is a smoking wedge in red scrub, and there&rsquo;s a relay tower eleven kilometres north. Roll 2d10, try to roll <em>under</em> your target. That&rsquo;s the whole system and it&rsquo;s beautiful.</p>
+    <p><strong>&#128640; <a href="/games/kellaths-drift.html">Kellath&rsquo;s Drift</a></strong>: a percentile roll-under adventure in the spirit of the old TSR games. You&rsquo;re a scout, your survey skiff is a smoking wedge in red scrub, and there&rsquo;s a relay tower eleven kilometres north. Roll 2d10, try to roll <em>under</em> your target. That&rsquo;s the whole system and it&rsquo;s beautiful.</p>
 
-    <p><strong>&#128760;&#65039; <a href="/games/offline-protocol.html">Offline Protocol</a></strong> &mdash; Murderbot, essentially. You&rsquo;re a security construct escorting a survey crew to a decommissioned mining rig, and you quietly disabled your own governor module a while back. Seven acts, five crew members who can genuinely die, an old guard construct you can fight <em>or talk down</em>, and a sarcastic transport intelligence called Latitude who works out your secret in the first hour and then spends the rest of the contract deciding whether to make you say it out loud.</p>
+    <p><strong>&#128760;&#65039; <a href="/games/offline-protocol.html">Offline Protocol</a></strong> is Murderbot, more or less. You&rsquo;re a security construct escorting a survey crew to a decommissioned mining rig, and you quietly disabled your own governor module a while back. Seven acts, five crew members who can die for real, an old guard construct you can fight <em>or talk down</em>, and a sarcastic transport intelligence called Latitude who works out your secret in the first hour and then spends the rest of the contract deciding whether to make you say it out loud.</p>
 
     <p>Latitude also remembers you between playthroughs. Come back after a run where you lost people and it opens with: <em>&ldquo;We do not have to talk about Nadia Okonkwo and Teodor Ruiz. I am saying that so you know I remember, not so you have to answer.&rdquo;</em></p>
 
-    <p><strong>&#128451;&#65039; <a href="/games/adjusters-report.html">Adjuster&rsquo;s Report</a></strong> &mdash; no combat at all. You&rsquo;re an insurance loss adjuster on a station where a death has already been ruled accidental, and the policy pays eleven million dollars if it stays that way. Five pieces of evidence, three suspects with real motives, and one of them is lying. The culprit is redrawn every single run, so you can&rsquo;t solve it once and replay from memory.</p>
+    <p><strong>&#128451;&#65039; <a href="/games/adjusters-report.html">Adjuster&rsquo;s Report</a></strong> has no combat at all. You&rsquo;re an insurance loss adjuster on a station where a death has already been ruled accidental, and the policy pays eleven million dollars if it stays that way. Five pieces of evidence, three suspects with real motives, and one of them is lying. The culprit is redrawn every run, so you can&rsquo;t solve it once and replay from memory.</p>
 
-    <p><strong>&#127964; <a href="/games/stay-with-the-vehicle.html">Railroad Valley: Nine Litres</a></strong> &mdash; the big one. More on this in a minute.</p>
+    <p><strong>&#127964; <a href="/games/stay-with-the-vehicle.html">Railroad Valley: Nine Litres</a></strong>. The big one. More on this in a minute.</p>
 
-    <h2>The engine, and why extracting it was the best decision</h2>
+    <h2>Pulling out the engine</h2>
 
-    <p>The first two games were self-contained HTML files, which meant the dice code, the audio, the navigation, the character sheet &mdash; all of it &mdash; existed twice. Fix a bug, fix it twice. Add a feature, add it twice.</p>
+    <p>The first two games were self-contained HTML files, which meant the dice code, the audio, the navigation and the character sheet all existed twice. Fix a bug, fix it twice. Add a feature, add it twice.</p>
 
     <p>So I pulled it all out into <code>/games/engine.js</code> and <code>/games/engine.css</code>. Now a module is content plus a config object:</p>
 
@@ -308,15 +308,15 @@
   };
 }</code></pre>
 
-    <p><code>Engine.check</code> handles everything visible &mdash; spawning the dice panel, tumbling the faces, playing the sounds, showing the verdict, waiting for you to click Continue &mdash; then hands back true or false. You never touch a timer.</p>
+    <p><code>Engine.check</code> handles everything you see (it spawns the dice panel, tumbles the faces, plays the sounds, shows the verdict and waits for you to click Continue), then hands back true or false. You never touch a timer.</p>
 
-    <p>The real test came when I wrote the third game entirely as content, with <strong>zero engine changes</strong>. New stats, new dice mapping, a custom evidence list in the sheet, a countdown clock in the status bar, six endings &mdash; all through the existing API. That&rsquo;s when I believed the abstraction was drawn in the right place.</p>
+    <p>The real test came when I wrote the third game entirely as content, with <strong>zero engine changes</strong>. New stats, new dice mapping, a custom evidence list in the sheet, a countdown clock in the status bar, six endings, all through the existing API. That&rsquo;s when I believed the abstraction was drawn in the right place.</p>
 
-    <p>The fourth game broke it, but usefully: a Leaflet map can&rsquo;t survive <code>Engine.render()</code> wiping the DOM every scene. So the engine grew <strong>persistent panels</strong> &mdash; a module-owned region that gets built once and never torn down. Thirty lines, and now every future module has it.</p>
+    <p>The fourth game broke it, but usefully: a Leaflet map can&rsquo;t survive <code>Engine.render()</code> wiping the DOM every scene. So the engine grew <strong>persistent panels</strong>: a module-owned region that gets built once and never torn down. Thirty lines, and now every future module has it.</p>
 
     <h2>The dice look like dice</h2>
 
-    <p>Small thing, big payoff. Each die type gets its own silhouette via CSS <code>clip-path</code> &mdash; a d4 is a triangle, a d8 a rhombus, a d10 the classic kite, a d20 the hexagonal profile &mdash; with faint interior facet lines drawn in SVG so it reads as a solid object rather than a badge with a number on it.</p>
+    <p>Small thing, big payoff. Each die type gets its own silhouette via CSS <code>clip-path</code> (a d4 is a triangle, a d8 a rhombus, a d10 the classic kite, a d20 the hexagonal profile), with faint interior facet lines drawn in SVG so it reads as a solid object instead of a badge with a number on it.</p>
 
     <p>And all the audio is synthesized in Web Audio. No files to host. A dice tick is a filtered noise burst with a randomized bandpass so it doesn&rsquo;t sound like a loop; a landing die adds a low triangle sweep; success is a rising two-note chime; failure is a falling sawtooth through a lowpass. About a hundred lines total.</p>
 
@@ -328,22 +328,22 @@
 
     <p>Every distance is real. Every walking time is computed from terrain pace plus a Naismith climb penalty. <strong>US-6 is 44 kilometres away</strong>, which on foot in that country is a two-to-three-day walk, which is a death sentence, which is the point.</p>
 
-    <p>There&rsquo;s a real day-night cycle &mdash; 14&deg;C at 4 a.m., 38&deg;C at 4 p.m. &mdash; and everything hangs off it:</p>
+    <p>There&rsquo;s a real day-night cycle, 14&deg;C at 4 a.m. and 38&deg;C at 4 p.m., and everything hangs off it:</p>
 
 <pre><code>Walking:   0.40 + (T − 20) × 0.055  L/hour
 In shade:  0.10 + (T − 20) × 0.016  L/hour</code></pre>
 
     <p>At 38&deg;C that&rsquo;s <strong>1.33 litres an hour walking</strong> and <strong>0.39 in shade</strong>. You have nine. The entire game is that ratio.</p>
 
-    <p>Heat strain builds when you work in high sun and sheds at night. Your feet wear with distance and get worse when you&rsquo;re dehydrated, which slows you down, which costs more water. Rattlesnakes are a hazard check on warm ground at dusk, not a fight. There&rsquo;s no hunting &mdash; and that&rsquo;s not squeamishness, it&rsquo;s accuracy. In a desert you die of heat in days and of hunger in weeks. Food is nearly irrelevant.</p>
+    <p>Heat strain builds when you work in high sun and sheds at night. Your feet wear with distance and get worse when you&rsquo;re dehydrated, which slows you down, which costs more water. Rattlesnakes are a hazard check on warm ground at dusk, not a fight. There&rsquo;s no hunting either, for accuracy&rsquo;s sake: in a desert you die of heat in days and of hunger in weeks. Food is nearly irrelevant.</p>
 
-    <h2>The lesson the game is actually about</h2>
+    <h2>What the game is about</h2>
 
     <p>Search and rescue finds <em>vehicles</em>. It does not find people. Most desert deaths in Nevada are somebody who walked away from a working shade structure with water still in the back.</p>
 
-    <p>So the game was originally called <em>Stay With the Vehicle</em> &mdash; and that was a mistake, because the title answered its own question before you pressed a button. My friend playing it put it perfectly: <em>&ldquo;the title says stay with the jeep, so what&rsquo;s the motivation to leave?&rdquo;</em></p>
+    <p>So the game was originally called <em>Stay With the Vehicle</em>. That was a mistake, because the title answered its own question before you pressed a button. A friend who played it put it best: <em>&ldquo;the title says stay with the jeep, so what&rsquo;s the motivation to leave?&rdquo;</em></p>
 
-    <p>He was right, and the fix taught me something. The real advice isn&rsquo;t &ldquo;stay with the vehicle.&rdquo; It&rsquo;s <strong>&ldquo;stay with the vehicle <em>if somebody knows where you went</em>.&rdquo;</strong> A search assumes somebody noticed. That&rsquo;s the part nobody puts on the poster.</p>
+    <p>He was right, and the fix taught me something. The real advice is longer: <strong>&ldquo;stay with the vehicle <em>if somebody knows where you went</em>.&rdquo;</strong> A search assumes somebody noticed. That&rsquo;s the part nobody puts on the poster.</p>
 
     <p>Now every trip rolls one of three states, and tells you at the start:</p>
 
@@ -395,7 +395,7 @@ to be a day trip, and because it always has been before.
 
     <p>This is my favourite part.</p>
 
-    <p>There&rsquo;s a geocache out there &mdash; a .30 cal ammo can under a cairn, gasket still good, with a logbook in a freezer bag. Forty-one entries. The first is dated 2001. <strong>The last is dated 2004.</strong></p>
+    <p>There&rsquo;s a geocache out there: a .30 cal ammo can under a cairn, gasket still good, with a logbook in a freezer bag. Forty-one entries. The first is dated 2001. <strong>The last is dated 2004.</strong></p>
 
     <p>Twenty-six of those entries are the same handwriting, getting smaller over four years. A man called R.H. He brought his daughter once and she found it before he did and wouldn&rsquo;t let it go. Then the entries stop being about the cache:</p>
 
@@ -416,7 +416,7 @@ to be a day trip, and because it always has been before.
 
     <p>The book stops in August.</p>
 
-    <p><strong>And the radio is real.</strong> At night, AM skywave propagation drags in clear-channel stations from six hundred miles out. KFI 640 out of Los Angeles giving you a 405 traffic report at 2 a.m. while you&rsquo;re lying in a broken Jeep with a litre and a half of water. Mattress ads from Torrance, delivered with tremendous urgency, to you, here. KSL 1160 with a forecast that might actually matter. Somebody on 1200 taking calls about lights over Nye County &mdash; describing a ridge you happen to be looking at.</p>
+    <p><strong>And the radio is real.</strong> At night, AM skywave propagation drags in clear-channel stations from six hundred miles out. KFI 640 out of Los Angeles giving you a 405 traffic report at 2 a.m. while you&rsquo;re lying in a broken Jeep with a litre and a half of water. Mattress ads from Torrance, delivered with tremendous urgency, to you, here. KSL 1160 with a forecast that might actually matter. Somebody on 1200 taking calls about lights over Nye County, describing a ridge you happen to be looking at.</p>
 
     <p>And 1530, which is a transmitter that&rsquo;s switched on with nobody talking into it. Sit with it long enough and it starts dropping out for eleven seconds every four minutes. Machines keep time like that. Nothing else does.</p>
 
@@ -438,15 +438,15 @@ to be a day trip, and because it always has been before.
 
     <p>Nothing supernatural is ever confirmed or denied. Everything has an ordinary explanation available. You just stop being someone whose account would hold up.</p>
 
-    <p><strong>The entire supernatural mechanic is made of dehydration</strong>, and I&rsquo;m quite pleased about that.</p>
+    <p><strong>The entire supernatural mechanic is made of dehydration</strong>, and I&rsquo;m pleased with that.</p>
 
     <h2>Three things I got wrong, in public, repeatedly</h2>
 
-    <p><strong>1. Impossible dice.</strong> Three separate times I shipped a check that could never succeed. The disable option in Offline Protocol was DC 16 on a d10 &mdash; maximum possible total, 14. The parley was DC 15 on a d8. Buttons that sat there, inviting, and could not work.</p>
+    <p><strong>1. Impossible dice.</strong> Three separate times I shipped a check that could never succeed. The disable option in Offline Protocol was DC 16 on a d10, where the highest possible total was 14. The parley was DC 15 on a d8. Buttons that sat there, inviting, and could not work.</p>
 
     <p>I kept fixing the DC. The DC wasn&rsquo;t the problem. <strong>The problem was that the modifier spread was wider than the die.</strong> If one character build sits at &minus;2 on a stat and another sits at +5, that&rsquo;s a range of seven on an eight-sided die, and some difficulty will inevitably land outside what the die can express.</p>
 
-    <p>So I wrote a standing audit &mdash; <code>tools/audit-dice.js</code>. It boots every game headlessly with jsdom, enumerates every character build, resolves every DC including per-run jitter, and flags four conditions:</p>
+    <p>So I wrote a standing audit, <code>tools/audit-dice.js</code>. It boots every game headlessly with jsdom, enumerates every character build, resolves every DC including per-run jitter, and flags four conditions:</p>
 
 <pre><code>── dice audit ──
 4 module(s), 26 distinct check(s)
@@ -459,7 +459,7 @@ to be a day trip, and because it always has been before.
 
     <p><code>IMPOSSIBLE</code> and <code>AUTOPASS</code> are bugs and it exits non-zero on them. <code>BRUTAL</code> and <code>CERTAIN</code> are judgement calls it just tells you about. It has caught five real bugs so far, two of which were already live on the site, and it found one <em>in the same session I wrote it</em>.</p>
 
-    <p><strong>2. Atmosphere where information was needed.</strong> I wrote &ldquo;a carrier&rdquo; about forty times without ever defining it. My friend &mdash; who is <em>studying for his ham licence</em> &mdash; said: <em>&ldquo;how we know what a carrier even is, it&rsquo;s confusing... I never knew what to do with the frequency, or any numbers, or how it connected to the cairn.&rdquo;</em></p>
+    <p><strong>2. Atmosphere where information was needed.</strong> I wrote &ldquo;a carrier&rdquo; about forty times without ever defining it. My friend, who is <em>studying for his ham licence</em>, said: <em>&ldquo;how we know what a carrier even is, it&rsquo;s confusing... I never knew what to do with the frequency, or any numbers, or how it connected to the cairn.&rdquo;</em></p>
 
     <p>Devastating and completely correct. I&rsquo;d written mood and forgotten to write meaning.</p>
 
@@ -467,7 +467,7 @@ to be a day trip, and because it always has been before.
 
     <p>The rule I now believe: <strong>atmosphere is only for things the player already understands. Anything they have to act on gets said plainly, at least once.</strong></p>
 
-    <p><strong>3. Invisible death clocks.</strong> Running out of water doesn&rsquo;t kill you instantly &mdash; you get roughly nine effective hours, spent faster in heat and faster while working. Correct physiology. But there was no way to <em>see</em> that, so dying felt arbitrary rather than earned.</p>
+    <p><strong>3. Invisible death clocks.</strong> Running out of water doesn&rsquo;t kill you instantly. You get roughly nine effective hours, spent faster in heat and faster while working. Correct physiology. But there was no way to <em>see</em> that, so dying felt arbitrary instead of earned.</p>
 
     <p>Now the status bar switches from litres to a countdown the moment you go dry: <code>NO WATER — about 4 h left</code>. And the repair button tells you the arithmetic rather than letting you spend yourself into a hole:</p>
 
@@ -490,27 +490,27 @@ you 6 hours and about 3.6 litres.</code></pre>
 
     <h2>Where this goes</h2>
 
-    <p>Honestly? It&rsquo;s not finished, and I like that.</p>
+    <p>It isn&rsquo;t finished, and I like that.</p>
 
     <p><strong>The immediate list:</strong> the bottle chamber in the mine and the underground gallery are each one paragraph, and they should be <em>places you move through</em>.</p>
 
-    <p><strong>The open question I can&rsquo;t answer without more play:</strong> you can now reach the bottom of the mystery and still die on the walk home. Is that the right ending &mdash; you found it, nobody will ever know, your notebook ends up next to his &mdash; or is it a punishment for engaging? I genuinely don&rsquo;t know.</p>
+    <p><strong>The open question I can&rsquo;t answer without more play:</strong> you can now reach the bottom of the mystery and still die on the walk home. Is that the right ending &mdash; you found it, nobody will ever know, your notebook ends up next to his &mdash; or is it a punishment for engaging? I don&rsquo;t know yet.</p>
 
     <p><strong>The bigger idea:</strong> the engine now makes a new game mostly a writing job. That&rsquo;s dangerous. I have a physical <em>Nevada Trivia</em> board game that wants digitizing. I have opinions about Great Basin ungulate migration that could probably be a game. The barrier has moved from &ldquo;can I build this&rdquo; to &ldquo;what&rsquo;s worth building,&rdquo; which is a much better problem.</p>
 
-    <h2>The takeaway, if there is one</h2>
+    <h2>What the players caught</h2>
 
-    <p>The thing I keep coming back to: <strong>almost every good decision in this project came from someone playing it and telling me something I couldn&rsquo;t see from inside.</strong></p>
+    <p>I keep coming back to this: <strong>almost every good decision in this project came from someone playing it and telling me something I couldn&rsquo;t see from inside.</strong></p>
 
-    <p>The title that answered its own question. The story that never connected. The jargon nobody outside ham radio would parse. The death clock you couldn&rsquo;t see. I tested all of this extensively &mdash; headless playthroughs, hundreds of automated runs, statistical outcome matrices &mdash; and my tests never once had to <em>understand</em> anything. They just clicked buttons and checked that numbers went down.</p>
+    <p>The title that answered its own question. The story that never connected. The jargon nobody outside ham radio would parse. The death clock you couldn&rsquo;t see. I tested all of this hard, with headless playthroughs, hundreds of automated runs and statistical outcome matrices, and my tests never once had to <em>understand</em> anything. They just clicked buttons and checked that numbers went down.</p>
 
-    <p><strong>Automated testing catches bugs. It cannot catch confusion.</strong></p>
+    <p><strong>Automated tests catch bugs. They don&rsquo;t catch confusion.</strong></p>
 
     <p>Anyway. Go <a href="/games/stay-with-the-vehicle.html">get stranded in Nevada</a>. There&rsquo;s a lid.</p>
 
     <hr>
 
-    <p style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);line-height:1.8;">&#127794; All four games are original mechanics &mdash; nothing is reproduced from any published rulebook. Coordinates in Railroad Valley are real; the two-track and the breakdown point are fiction. It&rsquo;s a game, not a route guide.</p>
+    <p style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--stone);line-height:1.8;">&#127794; All four games are original mechanics. Nothing is reproduced from any published rulebook. Coordinates in Railroad Valley are real; the two-track and the breakdown point are fiction. It&rsquo;s a game, not a route guide.</p>
 
     <hr>
 

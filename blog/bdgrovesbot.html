@@ -282,9 +282,9 @@
   <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/blog/img/bdgrovesbot/og.jpg.w1600.webp" alt="" decoding="async" fetchpriority="high" srcset="/img-opt/blog/img/bdgrovesbot/og.jpg.w640.webp 640w, /img-opt/blog/img/bdgrovesbot/og.jpg.w1600.webp 1600w" sizes="(max-width: 1140px) 100vw, 1100px"></figure><!-- POST-COVER:END -->
   <div class="article-body">
 
-    <p>There's a particular kind of restlessness that comes with watching fire weather. QGIS open on one monitor, WFIGS on the other, an eye on the Red Flag warnings, and somewhere in the back of your mind you're already doing the math on fuel moisture and wind direction. Most people don't live this way. GIS analysts who also run Wikipedia bots absolutely do.</p>
+    <p>Watching fire weather makes me restless. QGIS is open on one monitor and WFIGS on the other, I've got an eye on the Red Flag warnings, and somewhere in the back of my mind I'm already doing the math on fuel moisture and wind direction. Most people don't live this way. GIS analysts who also run Wikipedia bots do.</p>
 
-    <p>Today I finished something I've wanted to build for a while: a fully automated pipeline that watches for wildfires in Tuolumne County and updates Wikipedia without me touching a thing. It went from zero to live in a single day, and that's worth writing down.</p>
+    <p>Today I finished something I've wanted to build for a while: an automated pipeline that watches for wildfires in Tuolumne County and updates Wikipedia without me touching anything. It went from nothing to live in one day, so I'm writing it down.</p>
 
     <div class="pipeline">
       <span class="pipe-node">WFIGS API</span>
@@ -297,26 +297,26 @@
 
     <h2>The problem</h2>
 
-    <p>I created two Wikipedia pages yesterday — <a href="https://en.wikipedia.org/wiki/2026_Tuolumne_County_wildfires" target="_blank">2026 Tuolumne County wildfires</a> and <em>Wildfires in Tuolumne County, California</em>. The county I work in, the terrain I map, the fires I monitor. These pages needed to exist, and now they do.</p>
+    <p>Yesterday I created two Wikipedia pages, <a href="https://en.wikipedia.org/wiki/2026_Tuolumne_County_wildfires" target="_blank">2026 Tuolumne County wildfires</a> and <em>Wildfires in Tuolumne County, California</em>. It's the county I work in and the terrain I map, and I keep an eye on its fires anyway. I thought those pages should exist, and now they do.</p>
 
     <p><em>Update, October 2026: the second page, <span style="font-style:normal">Wildfires in Tuolumne County, California</span>, has since been deleted. Wikipedia's editors are still cautious about pages built with AI help, which is fair. The 2026 fires page is still up.</em></p>
 
-    <p>But the moment I published them I saw the problem: keeping them current is manual labor. A fire breaks out at 3am, I wake up to a Twitter alert from my own bot (<a href="https://twitter.com/SierraNevadaWX" target="_blank">@SierraNevadaWX</a>), and then I'm supposed to go hand-edit a Wikipedia table while half asleep? That's not a system. That's just being reactive. The fix was obvious: automate it.</p>
+    <p>As soon as I published them I saw the problem. Keeping them current is manual labor. A fire breaks out at 3am, I wake up to a Twitter alert from my own bot (<a href="https://twitter.com/SierraNevadaWX" target="_blank">@SierraNevadaWX</a>), and then I'm supposed to hand-edit a Wikipedia table half asleep? That's no way to run things. So, automate it.</p>
 
     <h2>The build</h2>
 
-    <p>BdgrovesBot was already half-built. It was querying WFIGS — the National Interagency Fire Center's wildland fire geospatial API — and refreshing a GeoJSON layer for my QGIS fire-monitoring setup. The Wikipedia piece existed too, but it only updated acreages for fires already in the table. New fires still meant a manual row entry.</p>
+    <p>BdgrovesBot was already half-built. It was querying WFIGS (the National Interagency Fire Center's wildland fire geospatial API) and refreshing a GeoJSON layer for my QGIS fire-monitoring setup. The Wikipedia piece existed too, but it only updated acreages for fires already in the table. New fires still meant a manual row entry.</p>
 
     <p>So today I rewrote the core logic to handle both cases:</p>
 
     <div class="feature-grid">
       <div class="feature-card">
         <div class="feature-head">Existing fire</div>
-        <div class="feature-body">If a fire already has a row in the Wikipedia table, the bot updates the acreage cell automatically. Every morning, fresh numbers from WFIGS.</div>
+        <div class="feature-body">If a fire already has a row in the Wikipedia table, the bot updates the acreage cell with fresh numbers from WFIGS every morning.</div>
       </div>
       <div class="feature-card">
         <div class="feature-head">New fire · over 10 acres</div>
-        <div class="feature-body">The bot inserts a stub row — name, acreage, start date, coordinates — and drops <code>&lt;!-- bot-stub --&gt;</code> markers in the location and notes cells so I know exactly where to fill in by hand.</div>
+        <div class="feature-body">The bot inserts a stub row (name, acreage, start date, coordinates) and drops <code>&lt;!-- bot-stub --&gt;</code> markers in the location and notes cells so I know exactly where to fill in by hand.</div>
       </div>
       <div class="feature-card">
         <div class="feature-head">The 10-acre threshold</div>
@@ -324,21 +324,21 @@
       </div>
       <div class="feature-card">
         <div class="feature-head">Traceability</div>
-        <div class="feature-body">It logs the WFIGS unique fire identifier in the reference stub, so I can trace any row straight back to the source without hunting.</div>
+        <div class="feature-body">It logs the WFIGS unique fire identifier in the reference stub, so I can trace any row straight back to its source.</div>
       </div>
     </div>
 
     <h2>The authentication rabbit hole</h2>
 
-    <p>Getting Pywikibot to authenticate cleanly for automated runs took longer than it should have. My first test run prompted me for a password interactively — fine for local development, completely broken for a GitHub Actions runner at 7am when no human is watching.</p>
+    <p>Getting Pywikibot to authenticate cleanly for automated runs took longer than it should have. My first test run asked me for a password. That's fine when I'm sitting at my own machine and useless on a GitHub Actions runner at 7am with nobody watching.</p>
 
-    <p>The fix was a Wikipedia bot password through <code>Special:BotPasswords</code>, stored as a GitHub Secret, with the workflow writing a <code>passwords.py</code> file at runtime from that secret. The file never touches the repo. The password never appears in logs. The runner writes it, uses it, and it's gone.</p>
+    <p>The fix was a Wikipedia bot password from <code>Special:BotPasswords</code>, stored as a GitHub Secret. At runtime the workflow writes a <code>passwords.py</code> file from that secret. The file never touches the repo and the password never shows up in the logs; the runner writes it, uses it, and it's gone.</p>
 
-    <blockquote>The moment it worked — <code>Page [[2026 Tuolumne County wildfires]] saved</code> in the GitHub Actions log, with no password prompt — was genuinely satisfying. That's the whole pipeline: WFIGS → Python → Pywikibot → Wikipedia, headless, on a cron job, every morning.</blockquote>
+    <blockquote>When it finally worked, with <code>Page [[2026 Tuolumne County wildfires]] saved</code> in the GitHub Actions log and no password prompt, I was pretty pleased. That's the whole pipeline: WFIGS → Python → Pywikibot → Wikipedia, headless, on a cron job every morning.</blockquote>
 
     <h2>The test insert</h2>
 
-    <p>Before going live I needed to verify the write pipeline end-to-end, which meant actually writing to Wikipedia and confirming it landed. So I added a <code>--test-insert</code> flag that creates a clearly-labelled fake fire called "BdgrovesBot Test" and pushes it to the page.</p>
+    <p>Before going live I had to check the write path end to end, and the only way to do that is to write to Wikipedia and see if it lands. So I added a <code>--test-insert</code> flag that creates a clearly labelled fake fire called "BdgrovesBot Test" and pushes it to the page.</p>
 
     <div class="code-block"><span class="code-comment"># Dry run — safe, no edits, shows what the bot would do</span>
 pixi run dryrun
@@ -346,22 +346,22 @@ pixi run dryrun
 <span class="code-comment"># Verify the full write path with a labelled test row</span>
 pixi run python bot/tuolumne_bot.py --test-insert --no-dry-run</div>
 
-    <p>It worked on the first try. The row appeared exactly as designed — name, coordinates stub, acreage cell, start date, notes stub, reference stub. I deleted it manually a few minutes later. The whole thing took about two minutes.</p>
+    <p>It worked on the first try. The row showed up as designed: name, coordinates stub, acreage cell, start date, notes stub and reference stub. I deleted it by hand a few minutes later. The whole thing took about two minutes.</p>
 
-    <p>That test insert is the kind of thing you can't fake in a dry run. A dry run tells you the <em>code</em> runs. A live test insert tells you the auth works, the table parser works, the row builder works, and the Wikipedia API accepted the edit. All different things.</p>
+    <p>You can't get that from a dry run. A dry run tells you the <em>code</em> runs. A live insert tells you the login works, the table parser and row builder work, and the Wikipedia API took the edit. Those are separate questions.</p>
 
-    <h2>BRFA: doing it by the book</h2>
+    <h2>Doing it by the book</h2>
 
-    <p>Here's the thing about Wikipedia bots: you're supposed to have approval before you run them. The process is a BRFA — Bot Request for Approval. You file a page, join a queue, get reviewed by a member of the Bot Approvals Group, run a supervised trial, then get full approval.</p>
+    <p>Wikipedia bots are supposed to be approved before they run. The process is called a BRFA, a Bot Request for Approval. You file a page and wait in a queue until a member of the Bot Approvals Group reviews it. Then you run a supervised trial, and after that you get full approval.</p>
 
-    <p>I filed today: <a href="https://en.wikipedia.org/wiki/Wikipedia:Bots/Requests_for_approval/BdgrovesBot" target="_blank">Wikipedia:Bots/Requests for approval/BdgrovesBot</a>. The task is non-controversial — data maintenance on pages I created, sourced from a federal government API, no prose editing, no cross-article changes. The dry-run log is attached. The live test insert is documented. The GitHub Actions logs confirm headless authentication.</p>
+    <p>I filed today: <a href="https://en.wikipedia.org/wiki/Wikipedia:Bots/Requests_for_approval/BdgrovesBot" target="_blank">Wikipedia:Bots/Requests for approval/BdgrovesBot</a>. The task is non-controversial: data maintenance on pages I created, sourced from a federal government API, with no prose editing and no changes across other articles. I attached the dry-run log and documented the live test insert, and the GitHub Actions logs show the headless login working.</p>
 
-    <p>Then I switched the workflow back to dry-run mode while the BRFA is pending. The bot still runs every morning at 7am. It still queries WFIGS. It still refreshes the QGIS GeoJSON. It just doesn't write to Wikipedia until BAG signs off. When that happens, <strong>one line in the workflow file flips it live.</strong></p>
+    <p>Then I switched the workflow back to dry-run mode while the BRFA is pending. The bot still runs at 7am every morning, queries WFIGS and refreshes the QGIS GeoJSON. It won't write to Wikipedia until BAG signs off. When that happens, <strong>one line in the workflow file flips it live.</strong></p>
 
     <div class="compliance">
       <div class="compliance-head">Bot compliance</div>
       <ul>
-        <li><code>DRY_RUN=True</code> by default — edits require an explicit <code>--no-dry-run</code></li>
+        <li><code>DRY_RUN=True</code> by default; edits require an explicit <code>--no-dry-run</code></li>
         <li>Edit summaries always cite WFIGS as the data source</li>
         <li>Operated under Wikipedia bot policy · account <code>User:BdgrovesBot</code></li>
         <li>BRFA filed and pending BAG review</li>
@@ -370,23 +370,23 @@ pixi run python bot/tuolumne_bot.py --test-insert --no-dry-run</div>
 
     <h2>The fire situation, while I built this</h2>
 
-    <p>The whole time, I had an eye on the actual map. The <strong>Pocket Fire</strong> in the Coconino National Forest, Arizona had reached 1,467 acres at zero containment — a Type 1 incident, the highest level, 969 personnel on scene, an estimated final cost pushing $20 million. A southeast wind event was forecast for the weekend, and the Tucson and Flagstaff NWS offices had Red Flag Warnings posted through Saturday night.</p>
+    <p>The whole time, I had an eye on the actual map. The <strong>Pocket Fire</strong> in the Coconino National Forest, Arizona had reached 1,467 acres at zero containment. It was a Type 1 incident, the highest level, with 969 personnel on scene and an estimated final cost pushing $20 million. A southeast wind event was forecast for the weekend, and the Tucson and Flagstaff NWS offices had Red Flag Warnings posted through Saturday night.</p>
 
-    <p>My QGIS project pulls the national active-fires layer and the NWS watches-and-warnings layer both live. I could watch the Red Flag polygon sitting right over the Coconino National Forest while I worked — the Pocket Fire flanking, main behavior running along the sides of the perimeter. Not the most aggressive behavior, but with a wind event incoming and zero containment, it's the kind of thing you stay up watching.</p>
+    <p>My QGIS project pulls both the national active-fires layer and the NWS watches-and-warnings layer live. While I worked I could see the Red Flag polygon sitting right over the Coconino National Forest. The Pocket Fire was flanking, with most of the activity along the sides of the perimeter. That's not the most aggressive behavior, but with a wind event coming and zero containment, it's the kind of thing you stay up watching.</p>
 
-    <p>Nothing active in California. Nothing in Tuolumne County. The TuCo monitoring setup was running and quiet — which, when you build tools like this, is the best possible update.</p>
+    <p>Nothing active in California, and nothing in Tuolumne County. The TuCo monitoring setup was running and quiet. When you build tools like this, quiet is the update you want.</p>
 
     <h2>What comes next</h2>
 
-    <p>BRFA review usually takes one to two weeks. If BAG approves a trial — probably 20 edits — I'll run it, post the results, and wait for full approval. After that the bot runs fully autonomously, no human in the loop between WFIGS and Wikipedia unless it flags something.</p>
+    <p>BRFA review usually takes one to two weeks. If BAG approves a trial (probably 20 edits), I'll run it, post the results, and wait for full approval. After that the bot runs on its own, with no human between WFIGS and Wikipedia unless it flags something.</p>
 
-    <p>The longer-term vision is coverage. Nevada fires. California statewide. Maybe a sister page for every county that needs one. The framework is the same every time — WFIGS query, table parser, stub inserter, acreage updater. Honestly, the Wikipedia pages are the hard part. The code is the easy part.</p>
+    <p>Longer term, I'd like more coverage: Nevada fires, California statewide, maybe a sister page for every county that needs one. The framework doesn't change. It's a WFIGS query, a table parser, a stub inserter and an acreage updater. The Wikipedia pages are the hard part. The code is easy.</p>
 
-    <p>For now: one county, one bot, one BRFA in the queue. The fire map is quiet. The workflow is live. The code is clean.</p>
+    <p>For now it's one county, one bot and one BRFA in the queue. The fire map is quiet and the workflow is live.</p>
 
     <p><em>Going to go watch the Pocket Fire radar loop for a while.</em></p>
 
-    <p>Source at <a href="https://github.com/bdgroves/bdgrovesbot" target="_blank">github.com/bdgroves/bdgrovesbot</a>. Built in Tuolumne County territory — if you can see the smoke from your porch, the bot already knows.</p>
+    <p>Source at <a href="https://github.com/bdgroves/bdgrovesbot" target="_blank">github.com/bdgroves/bdgrovesbot</a>. Built for Tuolumne County. If you can see the smoke from your porch, the bot already knows.</p>
 
     <hr>
 

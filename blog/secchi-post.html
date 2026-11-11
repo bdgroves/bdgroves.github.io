@@ -327,7 +327,7 @@
 
     <p>TEON’s website is a friendly map that talks to a backend in the background. There was no published guide to that backend yet, so everything I know about it came from watching what my browser asked for and trying URLs until they answered.</p>
 
-    <p>The naming turned out to have a charming logic of its own. The data addresses don’t use a sensor’s full display name. They use its first idea:</p>
+    <p>The naming has a charming logic of its own. The data addresses don’t use a sensor’s full display name. They use its first idea:</p>
 
 <pre><code>"Air Temperature &amp; Relative Humidity"  →  /sensors/air-temperature
 "Tree stress and growth"               →  /sensors/tree-stress
@@ -335,7 +335,7 @@
 
     <p>All ten sensor types resolved eventually. The last one was the oxygen logger, <code>minidot-sensor</code>, the one spelling my first guesses happened to skip.</p>
 
-    <p>The habit that came out of this turned out to be the most useful thing in the whole project. Don’t write code that assumes a URL. Write a little probe that tries the possibilities against the real server and reports which ones answer. Wherever I did that, I learned fast. Wherever I skipped it, I learned later.</p>
+    <p>The habit I picked up here ended up being the most useful thing in the whole project. Don’t write code that assumes a URL. Write a little probe that tries the possibilities against the real server and reports which ones answer. Wherever I did that, I learned fast. Wherever I skipped it, I learned later.</p>
 
     <h3>Forty-three sensors, thirteen boxes</h3>
 
@@ -343,7 +343,7 @@
 
     <p>At each forest station, the soil, air, tree and stream readings all come from one data logger, a single box on a post with everything wired into it. The giveaway was a column called <code>PTemp_C_Avg</code>: the logger reporting the temperature inside its own enclosure. Put that next to the battery readings and a storage bucket named <code>teon-loggernet-data-storage</code>, and the hardware more or less introduced itself: Campbell Scientific loggers sending their readings to the cloud.</p>
 
-    <p>Count the boxes and forty-three sensors become thirteen physical devices. It’s a small thing, but it matters for anyone comparing sites: thirteen places, each measured many ways.</p>
+    <p>Count the boxes and forty-three sensors become thirteen physical devices. Small thing, but it matters if you’re comparing sites: thirteen places, each measured many ways.</p>
 
     <p>One lesson took me a while. Each slice of a logger’s table shares the same rows but carries different columns, soil fields in one, air fields in another. Early on I fetched one slice and let it stand in for the rest, and quietly lost every air-temperature, humidity and tree reading in the history. Same rows, different columns: ask for each one. They’re all back now.</p>
 
@@ -380,7 +380,7 @@
 
     <p>Every month, by boat and snorkel, to wipe algae off the optical windows before the readings drift. I think about that every time I open the dashboard.</p>
 
-    <p>It changed how I think about monitoring, too. A radio buys you <em>timeliness</em>. A logger someone faithfully visits can buy you a better <em>record</em>. Often the radio’s best gift is simply knowing the station is still out there, alive.</p>
+    <p>It changed how I think about monitoring, too. A radio buys you <em>timeliness</em>. A logger someone faithfully visits can buy you a better <em>record</em>. Often the best thing the radio tells you is that the station is still out there, alive.</p>
 
     <h2>The lake that looked out of breath</h2>
 
@@ -388,7 +388,7 @@
 
     <p>TEON’s big EXO sondes report dissolved-oxygen saturation of about <strong>83 to 86 %</strong>. For a cold, clear, well-mixed mountain lake, that reads like a lake that’s slightly short of breath.</p>
 
-    <p>Here’s the thing about altitude. Tahoe’s surface sits around 6,227 feet, where the air pressure is only about <strong>80 %</strong> of what it is at sea level. How much oxygen water can hold depends on that pressure, so if you measure the percentage against sea-level air, a perfectly healthy lake up here looks about twenty points low.</p>
+    <p>Then there’s altitude. Tahoe’s surface sits around 6,227 feet, where the air pressure is only about <strong>80 %</strong> of what it is at sea level. How much oxygen water can hold depends on that pressure, so if you measure the percentage against sea-level air, a perfectly healthy lake up here looks about twenty points low.</p>
 
     <p>So I recomputed saturation from each sonde’s own oxygen and temperature readings, at the lake’s real pressure:</p>
 
@@ -402,7 +402,7 @@
       </tbody>
     </table>
 
-    <p>I expected both kinds of instrument to show the same offset. They don’t. <strong>The little MiniDOT loggers already account for altitude</strong>, agreeing with my math to within half a point at all six sites across 265,000 readings. It’s the EXO sondes that are referenced to sea level. That turned out to be the most useful part: it points to a settings detail on one model of sonde, and the network’s own MiniDOTs show the altitude-aware way already working beside it.</p>
+    <p>I expected both kinds of instrument to show the same offset. They don’t. <strong>The little MiniDOT loggers already account for altitude</strong>, agreeing with my math to within half a point at all six sites across 265,000 readings. It’s the EXO sondes that are referenced to sea level. That was the most useful part: it points to a settings detail on one model of sonde, and the network’s own MiniDOTs show the altitude-aware way already working beside it.</p>
 
     <p>The lake isn’t short of breath at all. It’s slightly <em>over</em>-saturated, which is normal in summer, when warming water and daytime photosynthesis nudge oxygen a little above equilibrium. The dashboard shows TEON’s number and the altitude-corrected one side by side and never overwrites theirs. Anything I calculate is labeled “computed from…” so nobody mistakes my number for theirs.</p>
 
@@ -483,11 +483,11 @@ Glenbrook 5   (Glenbrook Creek catchment)    689 mm/yr
 
     <p>So a small watcher runs every six hours. It compares TEON’s inventory with what it saw last time and opens a GitHub issue, which lands in my email, when something real changes. It also reads each station’s battery voltage, so when a field crew swaps a battery on a remote ridge, the dashboard notices that too.</p>
 
-    <p>I learned the importance of all this the hard way, once. My first attempt at pulling the full history rewrote the whole store every time it saved, filled up the disk halfway through, and lost about 76,000 readings in the process. Every one of them came back from TEON, and now every save is written safely first and swapped into place. It was a humbling night and a good lesson.</p>
+    <p>I learned the importance of all this the hard way, once. My first attempt at pulling the full history rewrote the whole store every time it saved, filled up the disk halfway through, and lost about 76,000 readings in the process. Every one of them came back from TEON, and now every save is written safely first and swapped into place. It was a humbling night.</p>
 
     <h2>What I learned</h2>
 
-    <p>Here’s what I’d pass along to anyone starting a project like this.</p>
+    <p>A few things I’d pass along to anyone starting a project like this.</p>
 
     <ol class="lessons">
       <li><strong>Count the rows.</strong> Almost every bug I made was the same bug in a different outfit: something that quietly returned nothing and reported success. Zero rows looks exactly like no data, so check the count, not just that it ran.</li>
@@ -507,7 +507,7 @@ Glenbrook 5   (Glenbrook Creek catchment)    689 mm/yr
       <li><strong>More seasons.</strong> Every winter of snowmelt and summer of smoke makes the comparisons here a little more trustworthy.</li>
     </ul>
 
-    <p>To be clear about what this is and isn’t: the researchers at TERC have been lining up decades of clarity drivers against the Secchi record for years, with the instruments, the history and the expertise. This project isn’t new science. It’s a fast, public, reproducible window onto data that’s otherwise spread across several agencies, with its own uncertainties written right on the page. I think that has real value. It’s just a different kind of value.</p>
+    <p>To be clear about what this is and isn’t: the researchers at TERC have been lining up decades of clarity drivers against the Secchi record for years, with the instruments, the history and the expertise. This project is a fast, public, reproducible window onto data that’s otherwise spread across several agencies, with its own uncertainties written right on the page. That’s worth having, even though it isn’t new science.</p>
 
     <h2>The personal bit</h2>
 

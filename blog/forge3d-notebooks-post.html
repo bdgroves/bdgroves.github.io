@@ -275,7 +275,7 @@
   <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/blog/img/forge3d-notebooks/og.jpg.w1600.webp" alt="" decoding="async" fetchpriority="high" srcset="/img-opt/blog/img/forge3d-notebooks/og.jpg.w640.webp 640w, /img-opt/blog/img/forge3d-notebooks/og.jpg.w1600.webp 1200w" sizes="(max-width: 1140px) 100vw, 1100px"></figure><!-- POST-COVER:END -->
   <div class="article-body">
     <p>Today <a href="https://x.com/AaronJBecker" target="_blank">Aaron Becker</a> asked a fun question on X, under my Serpent Mound post, addressed to me and to <a href="https://x.com/milos_gis" target="_blank">Milos Popovic</a>, who makes forge3d: <a href="https://x.com/AaronJBecker/status/2107549206541930833" target="_blank">are we using forge3d from inside notebooks, or mostly through agents?</a></p>
-    <p>My honest answer was <em>agents</em>. I describe the scene, Claude writes the forge3d script, and the heavy renders run on GitHub Actions, because my Windows laptop&rsquo;s security settings won&rsquo;t let freshly installed Python libraries load. It works really well. But it does mean the &ldquo;how&rdquo; lives in scripts and commit messages, not somewhere you can just sit and read.</p>
+    <p>My honest answer was <em>agents</em>. I describe the scene, Claude writes the forge3d script, and the heavy renders run on GitHub Actions, because my Windows laptop&rsquo;s security settings won&rsquo;t let freshly installed Python libraries load. It works well. But it means the &ldquo;how&rdquo; lives in scripts and commit messages, where nobody can sit down and read it.</p>
     <p>So today I fixed that. Nine of my forge3d projects now have a walkthrough notebook.</p>
 
     <div class="photo-block">
@@ -298,7 +298,7 @@
     </ul>
 
     <h2>Things I Noticed Along the Way</h2>
-    <p>Writing a notebook is a bit like explaining a recipe to a friend: you find out which steps you&rsquo;d been doing on autopilot. A few of my favourites:</p>
+    <p>Writing a notebook is like explaining a recipe to a friend: you find out which steps you&rsquo;d been doing on autopilot. A few of my favourites:</p>
     <p><strong>The viewer&rsquo;s mesh is square.</strong> forge3d&rsquo;s terrain viewer builds its mesh at most 2,048 points on a side, and it reports the size in its log. My Yosemite DEM is 7,680 &times; 4,200 cells at 3 m, so in the film the terrain is really a point every 11 m east&ndash;west and every 6 m north&ndash;south. It&rsquo;s also why SOLSTICE draws each frame in nested layers: that&rsquo;s how its close-up gets true half-metre lidar.</p>
     <p><strong>Smoke hides in a colour ratio.</strong> Lighting changes how bright the smoke is, so the smoke project renders it twice: once as land, once as a pure red-for-smoke, blue-for-clear code. Shading scales red and blue together, so their ratio still tells you how thick the smoke was, and the finishing pass turns it back into haze.</p>
     <p><strong>The ocean is a green screen.</strong> Flat water comes out grey under the viewer&rsquo;s lighting, so the Washington maps paint it a key green that no data colour uses, and swap it for deep Pacific blue afterwards.</p>
@@ -309,7 +309,7 @@
     <p>Each project&rsquo;s README says which data to download first; most of it is one <a href="/blog/pixi-post.html">pixi</a> command. The charts and maps need nothing special. The renders need forge3d&rsquo;s viewer, which wants a graphics card, or on Linux, Mesa&rsquo;s software Vulkan driver under a virtual display. That&rsquo;s how every frame in this post was made: a cloud computer with no GPU, a couple of minutes per notebook. SOLSTICE and Project Kiva also have a <strong>Run notebooks</strong> button in GitHub Actions that re-runs them and saves the results.</p>
 
     <h2>Thanks for Asking</h2>
-    <p>forge3d keeps turning into one of my favourite tools, thanks to Milos, and Aaron&rsquo;s question was the push I needed to show my work. If you&rsquo;ve been curious about any of these flights, now you can open the hood.</p>
+    <p>Thanks to Milos, forge3d keeps turning into one of my favourite tools, and Aaron&rsquo;s question was the push I needed to show my work. If you&rsquo;ve been curious about any of these flights, now you can open the hood.</p>
     <p class="photo-caption">Rendering: <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a> by Milos Popovic. Data: USGS 3DEP and The National Map, USDA NAIP, Copernicus GLO-30 and Sentinel-2, ERA5-Land via Open-Meteo, NOAA HRRR and HRRR-Smoke, NASA FIRMS, NIFC, USGS Water Services, HydroRIVERS, Natural Earth.</p>
 
     <hr>

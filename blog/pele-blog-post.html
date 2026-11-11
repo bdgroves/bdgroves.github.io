@@ -273,13 +273,13 @@
 
     <div style="margin-bottom:1.5rem;font-family:'DM Mono',monospace;font-size:0.72rem;line-height:1.6;background:var(--cream);border-left:3px solid var(--gold);padding:0.8rem 1rem;">October 2026 update: the volcano broke its rhythm, and so did parts of this dashboard. <a href="/blog/pele-revisited-post.html">PELE, Revisited</a> covers what changed.</div>
 
-    <p>I'm going to Hawai'i Volcanoes National Park in May for my birthday. Kīlauea is actively erupting — has been since December 23, 2024, in an episodic lava fountaining pattern not seen at the summit since the 1980s. By the time I booked the trip, the volcano had already produced 43 episodes of spectacular lava fountains, one of which sent a plume 1,000 feet into the air visible from restaurants in Hilo. The USGS Hawaiian Volcano Observatory was forecasting Episode 44 for the window of April 6–14. I had two weeks before my trip and a working knowledge of the USGS public API ecosystem. The obvious thing to do was build a dashboard.</p>
+    <p>I'm going to Hawai'i Volcanoes National Park in May for my birthday. Kīlauea is erupting, and has been since December 23, 2024, in an episodic lava fountaining pattern the summit hadn't seen since the 1980s. By the time I booked the trip, the volcano had already put on 43 episodes of lava fountains, one of which sent a plume 1,000 feet into the air visible from restaurants in Hilo. The USGS Hawaiian Volcano Observatory was forecasting Episode 44 for the window of April 6–14. I had two weeks before my trip and a working knowledge of the USGS public API ecosystem. The obvious thing to do was build a dashboard.</p>
 
-    <p>PELE is a live monitoring dashboard for the six volcanoes of Hawai'i — Kīlauea, Mauna Loa, Hualālai, Mauna Kea, Haleakalā, and Kama'ehuakanaloa (the submarine seamount that will eventually become Hawai'i's next island). It pulls real-time data from USGS APIs every six hours via GitHub Actions, embeds live HVO webcam feeds, and tracks the ongoing eruption episode by episode.</p>
+    <p>PELE is a live monitoring dashboard for the six volcanoes of Hawai'i: Kīlauea, Mauna Loa, Hualālai, Mauna Kea, Haleakalā, and Kama'ehuakanaloa (the submarine seamount that will eventually become Hawai'i's next island). It pulls real-time data from USGS APIs every six hours via GitHub Actions, embeds live HVO webcam feeds, and tracks the ongoing eruption episode by episode.</p>
 
     <h2>The Data Sources</h2>
 
-    <p>The USGS runs a genuinely excellent public API ecosystem. Everything PELE needs is free, unauthenticated, and well-documented:</p>
+    <p>The USGS public APIs are excellent. Everything PELE needs is free and well documented, and none of it needs a login:</p>
 
     <table class="spec-table">
       <tr><th>Source</th><th>What It Provides</th><th>Refresh</th></tr>
@@ -290,11 +290,11 @@
       <tr><td>USGS YouTube Livestreams</td><td>24/7 live video from three crater webcams</td><td>Continuous</td></tr>
     </table>
 
-    <p>The earthquake endpoint is particularly useful. A standard FDSN query gets you every seismic event within 100km of the Kīlauea summit over the past 7 days — magnitude, depth, location, timestamp. Filter for M2.0+ and you have a real-time picture of what the volcano's plumbing is doing.</p>
+    <p>The earthquake endpoint is the handiest. A standard FDSN query gets you every seismic event within 100km of the Kīlauea summit over the past 7 days, with magnitude, depth, location and timestamp. Filter for M2.0+ and you have a real-time picture of what the volcano's plumbing is doing.</p>
 
     <h2>The Architecture</h2>
 
-    <p>Same pattern as everything else in this collection — Sierra Streamflow, EDGAR, brooksgroves.com itself. GitHub Actions runs <em>fetch.py</em> on a cron schedule, pulls from USGS APIs, writes static JSON to <em>data/</em>. The frontend reads those JSON files on page load. No server. No backend. No build step. Just files on GitHub Pages.</p>
+    <p>It's the same pattern as everything else in this collection (Sierra Streamflow, EDGAR, brooksgroves.com itself). GitHub Actions runs <em>fetch.py</em> on a cron schedule, pulls from the USGS APIs and writes static JSON to <em>data/</em>. The frontend reads those JSON files on page load. There's no server, no backend and no build step, just files on GitHub Pages.</p>
 
     <div class="code-block"><span class="code-comment"># .github/workflows/fetch.yml</span>
 <span class="code-key">on:</span>
@@ -302,17 +302,17 @@
     - <span class="code-key">cron:</span> <span class="code-val">'0 */6 * * *'</span>   <span class="code-comment"># every 6 hours</span>
   <span class="code-key">workflow_dispatch:</span>       <span class="code-comment"># manual trigger</span></div>
 
-    <p>The dual data source approach came from a lesson learned on Sierra Streamflow — if the Actions job fails, the page shouldn't go dark. So earthquake data loads both from the Actions-generated JSON cache <em>and</em> directly from the USGS FDSN API client-side. Whichever responds first wins. Belt and suspenders.</p>
+    <p>The dual data source approach came from a lesson I learned on Sierra Streamflow: if the Actions job fails, the page shouldn't go dark. So earthquake data loads both from the Actions-generated JSON cache <em>and</em> directly from the USGS FDSN API client-side. Whichever responds first wins. Belt and suspenders.</p>
 
     <h2>The YouTube Problem</h2>
 
-    <p>HVO runs three live webcam streams on the USGS YouTube channel — V1cam, V2cam, V3cam — but the video IDs change every time a stream starts. You can't hardcode them. The solution: on every page load, a JavaScript call hits the YouTube Data API, searches for currently-live streams on the USGS channel, matches them to V1/V2/V3 by title keyword, and embeds them as iframes. If the API call fails or the streams are offline, the page falls back to the static webcam snapshot images from the USGS servers, which update every few minutes anyway.</p>
+    <p>HVO runs three live webcam streams on the USGS YouTube channel (V1cam, V2cam and V3cam), but the video IDs change every time a stream starts, so you can't hardcode them. Instead, on every page load, a JavaScript call hits the YouTube Data API, searches for currently-live streams on the USGS channel, matches them to V1/V2/V3 by title keyword, and embeds them as iframes. If the API call fails or the streams are offline, the page falls back to the static webcam snapshot images from the USGS servers, which update every few minutes anyway.</p>
 
-    <p>The V3cam has its own backstory. During Episode 38 in December 2025, a broad arcing fountain extended over 600 meters from the south vent and buried the camera under 10 meters of tephra — volcanic glass and debris. HVO had a replacement deployed within two weeks. The new V3cam is positioned at a safer angle. PELE tracks which camera feeds are live and which are offline, and degrades gracefully when a webcam goes dark.</p>
+    <p>The V3cam has its own backstory. During Episode 38 in December 2025, a broad arcing fountain extended over 600 meters from the south vent and buried the camera under 10 meters of tephra (volcanic glass and debris). HVO had a replacement deployed within two weeks. The new V3cam is positioned at a safer angle. PELE tracks which camera feeds are live and which are offline, and degrades gracefully when a webcam goes dark.</p>
 
     <h2>The Eruption Log</h2>
 
-    <p>One of the most useful features is the episode tracker — a manually-maintained timeline of all 43 fountaining episodes since December 23, 2024, with dates, durations, peak heights, and notes. Episode 42's north vent fountain reached approximately 300 meters. Episode 38 buried V3cam. Episode 1 lasted about 8 hours. The pattern has settled into a recognizable inflate-pause-overflow-fountain rhythm that HVO has calibrated well enough to forecast the next episode within a week-long window.</p>
+    <p>One of the most useful features is the episode tracker, a hand-kept timeline of all 43 fountaining episodes since December 23, 2024, with dates, durations, peak heights, and notes. Episode 42's north vent fountain reached approximately 300 meters. Episode 38 buried V3cam. Episode 1 lasted about 8 hours. The pattern has settled into a recognizable inflate-pause-overflow-fountain rhythm that HVO has calibrated well enough to forecast the next episode within a week-long window.</p>
 
     <blockquote>"They've watched 43 episodes of this eruption cycle unfold since December 2024. They've calibrated their tiltmeters. They know exactly how much microradian tilt means tomorrow versus next week."</blockquote>
 
@@ -320,13 +320,13 @@
 
     <p>Episode 44 is forecast for April 6–14. The south vent started precursory overflows on April 3. The NWS issued a Special Weather Statement about potential tephra fall in downwind communities. I built this dashboard while watching the tiltmeter data tick upward in real time, knowing the next episode was days away.</p>
 
-    <p>I'll be in the park in May. If Episode 44 happens on schedule — and 43 episodes of data says it will — I'll be standing on the rim of Kīlauea while Episode 45 or 46 is probably building. The dashboard will be on my phone. The tiltmeters will be running. The V1cam will be streaming.</p>
+    <p>I'll be in the park in May. If Episode 44 happens on schedule — and 43 episodes of data says it will — I'll be standing on the rim of Kīlauea while Episode 45 or 46 is probably building. The dashboard will be on my phone, with the tiltmeters running and the V1cam streaming.</p>
 
-    <p>Real data. Real APIs. Real science. Served six times a day by a cron job. Built for a birthday trip.</p>
+    <p>It's real data from real APIs, served six times a day by a cron job, all for a birthday trip.</p>
 
     <hr>
 
-    <p>PELE is open source at <a href="https://github.com/bdgroves/PELE" target="_blank">github.com/bdgroves/PELE</a>. Live dashboard at <a href="https://brooksgroves.com/PELE" target="_blank">brooksgroves.com/PELE</a>. The volcano is ready. The question is whether we are.</p>
+    <p>PELE is open source at <a href="https://github.com/bdgroves/PELE" target="_blank">github.com/bdgroves/PELE</a>. Live dashboard at <a href="https://brooksgroves.com/PELE" target="_blank">brooksgroves.com/PELE</a>. The volcano's ready. I'll see it in May.</p>
 
     <hr>
 

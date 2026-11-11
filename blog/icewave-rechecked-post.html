@@ -288,7 +288,7 @@
 
     <h2>The mammoth was 69 kilometres away</h2>
 
-    <p>Start with the claim I was proudest of. E02 sits at 46.30&deg;N, 120.13&deg;W, in the Yakima Valley. The Coyote Canyon Mammoth Site is south of Kennewick, <strong>69&nbsp;km</strong> to the south-east. That&rsquo;s not &ldquo;the predicted pixel.&rdquo; It wasn&rsquo;t blind either: quarry workers found the bones in 1999 and the McBones Research Center has been digging there since 2008. And when I went looking for where the word &ldquo;VALIDATED&rdquo; came from in my notebook, I found a line of code that printed it beside whichever target happened to be first in the list. Ouch.</p>
+    <p>Start with the claim I was proudest of. E02 sits at 46.30&deg;N, 120.13&deg;W, in the Yakima Valley. The Coyote Canyon Mammoth Site is south of Kennewick, <strong>69&nbsp;km</strong> to the south-east. That&rsquo;s a long way from &ldquo;the predicted pixel.&rdquo; It wasn&rsquo;t blind either: quarry workers found the bones in 1999 and the McBones Research Center has been digging there since 2008. And when I went looking for where the word &ldquo;VALIDATED&rdquo; came from in my notebook, I found a line of code that printed it beside whichever target happened to be first in the list. Ouch.</p>
 
     <div class="photo-block">
       <img src="/img-opt/blog/img/icewave/e02.jpg.w1600.webp" alt="Three terrain panels for target E02: a hillshade, a topographic position map and a slope map; the target star sits on a smooth, featureless strip" loading="lazy" decoding="async" srcset="/img-opt/blog/img/icewave/e02.jpg.w640.webp 640w, /img-opt/blog/img/icewave/e02.jpg.w1600.webp 1400w" sizes="(max-width: 760px) 100vw, 760px">
@@ -306,7 +306,7 @@
       <p class="photo-caption">E21, which my old README called &ldquo;the most extreme basin in the dataset.&rdquo; It&rsquo;s Waptus Lake, in the Alpine Lakes Wilderness. Lovely place for a swim; no Missoula flood ever reached it.</p>
     </div>
 
-    <h2>A label, not geology</h2>
+    <h2>The rock score was a label</h2>
 
     <p>What about 36 out of 40? The final model added a rock score from the geologic map: sand and silt scored high, basalt low. For the fossil records I looked the rock up. For the random background points I didn&rsquo;t; every one of them got a default of 0.5. None of the forty fossil records happens to score 0.5, so &ldquo;not 0.5&rdquo; meant &ldquo;fossil,&rdquo; perfectly. The model&rsquo;s own feature-importance chart gave the rock score 58% of the weight; I&rsquo;d read that as geology mattering. The re-check reproduces the 36 of 40 (37, with today&rsquo;s version of scikit-learn). Take the rock score out and test the honest way, leaving out whole places rather than single records, and the model can only find ten of the 28 places it hadn&rsquo;t seen by also flagging 18% of random ground. Its AUC is 0.65, where a coin toss is 0.5. The west model had the same shortcut, and on terrain alone it manages 0.63.</p>
 
@@ -325,9 +325,9 @@
 
     <h2>What&rsquo;s next</h2>
 
-    <p>IceWave needs rebuilding, not tuning. Measure every input the same way at fossil sites and at background points. Mask out water before scoring anything. Train on the animals I actually want to find. Test by leaving out whole places. Then score the whole landscape and see where places the model has never seen, like Coyote Canyon, land on it. That&rsquo;s a winter project.</p>
+    <p>Tuning won&rsquo;t fix IceWave; it needs rebuilding. Measure every input the same way at fossil sites and at background points. Mask out water before scoring anything. Train on the animals I actually want to find. Test by leaving out whole places. Then score the whole landscape and see where places the model has never seen, like Coyote Canyon, land on it. That&rsquo;s a winter project.</p>
 
-    <p>I&rsquo;ll be honest: writing &ldquo;none of it survives&rdquo; about my own work stung a bit. But the version of IceWave that knows it found rivers is worth more than the one that thought it had found a mammoth. And now I know exactly what to fix.</p>
+    <p>Writing &ldquo;none of it survives&rdquo; about my own work stung. Still, I&rsquo;d rather have the IceWave that knows it found rivers than the one that thought it had found a mammoth, and now I know what to fix.</p>
 
     <div class="note-box"><strong>Update, later the same day: where to look instead.</strong> One more correction first: six of the west model&rsquo;s 31 &ldquo;fossil&rdquo; records turned out to be modern museum specimens, including a horse, bison and elk from Seattle&rsquo;s Woodland Park Zoo. Then the better news. Every famous Ice Age find in Washington came out of someone&rsquo;s dig: Coyote Canyon from a rock pit, the Sequim mastodon from a backhoe pond, the Wenas Creek mammoth from a road crew, a Seattle tusk from an apartment excavation. So IceWave now maps all 859 active pits in the state by the ground they cut, and 478 of them are in Ice Age ground: flood deposits, loess, lake beds and glacial gravels. The Coyote Canyon pit is one of them. Every Monday the page checks for new permits. <a href="https://brooksgroves.com/project-ice-wave/#pits" target="_blank">See the pits</a>.</div>
 

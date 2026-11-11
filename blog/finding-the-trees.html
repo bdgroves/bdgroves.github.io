@@ -430,28 +430,28 @@ footer.end a:hover{color:var(--rust)}
 <div class="wrap">
   <p class="lede">Fly a laser over a forest and it comes back with a few million points,
   each one an elevation where the beam hit something. Subtract the ground and what is left is
-  the canopy &mdash; a raster of how tall the trees are. Tree tops are the high points on that
+  the canopy, a raster of how tall the trees are. Tree tops are the high points on that
   surface. So you smooth it a little, look for pixels taller than everything around them, and
   there are your trees.</p>
 
-  <p>That is the whole idea. It is about forty lines of Python, it is what everybody does,
+  <p>That's the whole idea. It's about forty lines of Python, everybody does it this way,
   and on my first real test it handed me numbers I wrote down immediately: <strong>78.4%
-  recall, 98.6% precision, height error of 0.44 meters</strong> &mdash; scored against 450
+  recall, 98.6% precision, height error of 0.44 meters</strong>. Those were scored against 450
   trees whose exact positions I knew, because I had put them there myself.</p>
 
   <p>Good afternoon&rsquo;s work. I was pleased. I should not have been.</p>
 
   <p>Some background on why I was doing this at all. I have spent years in GIS working with
-  rasters and vectors and things that arrive already tidy. Point clouds were the gap &mdash; a
-  whole discipline sitting one step upstream of everything I already knew, and I had never
-  properly gone there. So this was a stretch project: pick something genuinely unfamiliar,
-  build the whole chain end to end, and find out where I was wrong. It turns out I was wrong
-  in more interesting ways than I expected, which is the best possible outcome and does not
+  rasters and vectors and things that arrive already tidy. Point clouds were the gap: a
+  whole discipline sitting one step upstream of everything I knew, and I had never
+  properly gone there. So this was a stretch project. Pick something unfamiliar,
+  build the chain end to end, find out where I was wrong. I was wrong
+  in more interesting ways than I expected, which is the best possible outcome and doesn't
   feel like it at the time.</p>
 
   <p>What follows is the week I spent taking those numbers apart. Three of them turned out to
-  mean something other than what they looked like. The fourth &mdash; the one I had barely
-  glanced at, sitting in a column off to the right &mdash; was the only one telling the truth
+  mean something other than what they looked like. The fourth, the one I had barely
+  glanced at in a column off to the right, was the only one telling the truth
   the whole time.</p>
 </div>
 
@@ -475,7 +475,7 @@ footer.end a:hover{color:var(--rust)}
     </div>
     <div>
       <h4>rasterio · scipy</h4>
-      <p>Raster IO and the detection itself — Gaussian smoothing plus a variable-width
+      <p>Raster IO and the detection itself: Gaussian smoothing plus a variable-width
       <code>maximum_filter</code> that scales with canopy height.</p>
     </div>
     <div>
@@ -485,7 +485,7 @@ footer.end a:hover{color:var(--rust)}
     </div>
     <div>
       <h4>Snowflake</h4>
-      <p>Detections loaded as <code>GEOGRAPHY</code>, key-pair auth, spatial SQL —
+      <p>Detections loaded as <code>GEOGRAPHY</code>, key-pair auth, and spatial SQL:
       <code>ST_DWITHIN</code> self-joins for crown crowding, equal-area grid density.</p>
     </div>
     <div>
@@ -501,11 +501,11 @@ footer.end a:hover{color:var(--rust)}
   <h2><span class="num">Act One</span>A forest I made up</h2>
 
   <p>Here is the catch with measuring a tree detector: you need to already know where the
-  trees are. Nobody hands you that for real forest &mdash; going out and surveying every stem
+  trees are. Nobody hands you that for real forest. Going out and surveying every stem
   across four hectares is somebody&rsquo;s entire summer. So I built a forest instead: a
   boreal stand modelled on Haukkalampi in Nuuksio National Park, north-west of Helsinki. Just over a million points
-  across 405 by 403 meters — 6.34 points per square meter — with 450 trees of known position,
-  height and species. 186 spruce, 182 pine, 82 birch. Fixed seed, fully reproducible.</p>
+  across 405 by 403 meters (6.34 points per square meter), with 450 trees of known position,
+  height and species: 186 spruce, 182 pine, 82 birch. Fixed seed, so it's reproducible.</p>
 
   <p>The pipeline ran clean. PDAL separated ground from canopy, produced a bare-earth DEM and
   a canopy height model, and the detector went to work.</p>
@@ -523,17 +523,17 @@ footer.end a:hover{color:var(--rust)}
   <figure class="bleed">
     <img loading="lazy" decoding="async" src="img/lidar-explore/nuuksio_detection.jpg" alt="Two panels comparing detections against ground truth. Blue dots mark correct detections, red crosses mark false positives, orange circles mark missed trees.">
     <figcaption><b>First result.</b> 353 correct detections, 5 false positives, 97 missed.
-    The misses cluster where crowns overlap — the classic failure mode of local-maximum
-    detection.</figcaption>
+    The misses cluster where crowns overlap, which is the classic way local-maximum
+    detection fails.</figcaption>
   </figure>
 </div>
 
 <div class="wrap">
-  <p>Recall by species came out in exactly the order the literature predicts. Spruce at 88.2%
-  — tall narrow cones, easy targets. Pine at 73.1%. Birch at 68.3%, because a wide flat birch
+  <p>Recall by species came out in exactly the order the literature predicts. Spruce at 88.2%,
+  since tall narrow cones are easy targets. Pine at 73.1%. Birch at 68.3%, because a wide flat birch
   crown looks less like a peak and more like a plateau.</p>
 
-  <p>It was a good afternoon. I loaded the detections into Snowflake as
+  <p>Good afternoon. I loaded the detections into Snowflake as
   <code>GEOGRAPHY</code> points, ran some spatial SQL, and got a small satisfying
   confirmation that the plumbing was sound:</p>
 
@@ -542,8 +542,8 @@ footer.end a:hover{color:var(--rust)}
 <span class="hi">densest cell:</span>    56 stems/ha</pre>
 
   <p>Sixty-two occupied cells. A 400-meter plot on a 50-meter grid is exactly 64 cells, and
-  two came back empty — the lake. The SQL had independently found the water body. Small thing,
-  but it is the kind of thing that tells you the coordinates survived the round trip.</p>
+  two came back empty. That's the lake. The SQL had found the water on its own. Small thing,
+  but it's the kind of thing that tells you the coordinates survived the round trip.</p>
 </div>
 
 <!-- ===================================================== -->
@@ -552,12 +552,12 @@ footer.end a:hover{color:var(--rust)}
 
   <p>Then I went looking for trouble on purpose.</p>
 
-  <p>The question I actually wanted answered was how much LiDAR you really need. Finland
-  publishes free canopy data at 0.5 points per square meter. My sample was 6.34 &mdash;
-  thirteen times denser. Real-world data is going to be thinner than my sandbox. So how badly
+  <p>What I wanted to know was how much LiDAR you need. Finland
+  publishes free canopy data at 0.5 points per square meter. My sample was 6.34,
+  thirteen times denser. Real-world data is going to be thinner than my sandbox, so how badly
   does this fall apart as the points run out?</p>
 
-  <p>Because I had ground truth, I could measure it directly rather than guess. Decimate the
+  <p>Since I had ground truth, I could measure that instead of guessing. Decimate the
   cloud to 0.5, 1, 2 and 4 points per square meter. Rebuild the canopy model at each. Re-score
   against the same 450 trees. Hold the forest constant, vary only density.</p>
 
@@ -568,7 +568,7 @@ footer.end a:hover{color:var(--rust)}
   <figure class="bleed">
     <img loading="lazy" decoding="async" src="img/lidar-explore/fig3_density.png" alt="Three panels. Recall stays flat and rises slightly as density falls. Height RMSE climbs steeply from 0.44 m to 1.63 m as density falls. A 2 m canopy model scores below 1 m at every density.">
     <figcaption><b>Error versus point density, synthetic forest.</b> Recall barely moves and
-    rises as data thins. Height RMSE degrades cleanly — that is the honest metric. And a
+    rises as data thins. Height RMSE degrades cleanly, so that's the honest metric. And a
     coarser 2 m raster loses at every density tested.</figcaption>
   </figure>
 </div>
@@ -602,7 +602,7 @@ footer.end a:hover{color:var(--rust)}
 
   <p>A second result fell out of the same experiment, and it surprised me more: the 2-meter
   canopy model lost to the 1-meter model at <em>every</em> density, with birch degrading
-  worst. Resolution was the binding constraint, not point count. Coarse max-aggregation
+  worst. Resolution was the binding constraint. Point count wasn't. Coarse max-aggregation
   merges adjacent crowns, and wide flat crowns are exactly what gets merged.</p>
 </div>
 
@@ -611,24 +611,24 @@ footer.end a:hover{color:var(--rust)}
   <h2><span class="num">Act Three</span>Getting out of the sandbox</h2>
 
   <p>Synthetic data has a ceiling, and I had hit it. My invented stand worked out at roughly
-  28 stems per hectare &mdash; crowns barely touching, every tree standing in its own
+  28 stems per hectare. Crowns barely touched; every tree stood in its own
   personal clearing. I had built the easy case and then congratulated myself for solving it.
   Time to go find forest that did not care about my feelings.</p>
 
   <p>Finland turned out to be the right answer, though not for the reason I expected.</p>
 
   <p>The famous Finnish 5-point LiDAR is not free. It requires payment and Finnish strong
-  authentication — bank credentials or a national mobile certificate — which as an American I
-  cannot obtain at any price. The genuinely open product is thinned to 0.5 points per square
-  meter, which my own density study had just shown is where height error goes bad.</p>
+  authentication (bank credentials or a national mobile certificate), which as an American I
+  can't get at any price. The open product is thinned to 0.5 points per square
+  meter, and my own density study had just shown that's where height error goes bad.</p>
 
   <p>But the Finnish Forest Centre publishes something better for my purposes: finished
   canopy height models <em>derived</em> from that licensed data, at one meter, openly licensed,
-  no registration. And alongside them, the actual forest inventory — 1,840 stand polygons for
+  no registration. Alongside them sits the actual forest inventory: 1,840 stand polygons for
   my map sheet, with inventory heights, basal areas, species composition, and a
   management plan listing which stands are proposed for cutting between 2026 and 2035.</p>
 
-  <p>Real ground truth. Not mine. And a published index with direct download URLs and
+  <p>Real ground truth, and not mine. There's also a published index with direct download URLs and
   per-tile statistics, so fetching became a database query rather than a scraping exercise:</p>
 
 <pre>python fetch_metsakeskus.py --sheet L4132D --year all --list
@@ -647,7 +647,7 @@ footer.end a:hover{color:var(--rust)}
   <figure class="bleed">
     <img loading="lazy" decoding="async" src="img/lidar-explore/map_nuuksio_story.jpg" alt="Three-panel cartographic layout: canopy and ownership, twelve years of change, and harvest eligibility, for map sheet L4132D near Nuuksio.">
     <figcaption><b>Sheet L4132D.</b> Private forest covers 2,165 of the sheet's 3,600 hectares.
-    The rest — state land, protection, water, built-up — simply is not in the inventory, which
+    The rest (state land, protection, water, built-up) isn't in the inventory, which
     turned out to matter more than I expected. <i>Data: Suomen metsäkeskus, CC BY 4.0.</i></figcaption>
   </figure>
 </div>
@@ -661,12 +661,12 @@ footer.end a:hover{color:var(--rust)}
 
   <p>Two and a half meters of growth in seven years, then twelve centimeters in five.</p>
 
-  <p>Boreal forest does not do that. Boreal forest does not do anything that dramatic; it is
+  <p>Boreal forest doesn't do that. Boreal forest doesn't do anything that dramatic; it's
   famously, gloriously slow. Something in my data was wrong, and it took me most of a day to
-  work out that the something was not the forest.</p>
+  work out that the something wasn't the forest.</p>
 
   <p>My first thought was harvest, but harvest in the second period was 3.6% of the sheet
-  against 2.6% in the first — nowhere near enough to cancel growth. My second thought was
+  against 2.6% in the first. Nowhere near enough to cancel growth. My second thought was
   calibration, so I wrote a check: find pixels that were bare ground in the earlier epoch and
   compare them across flights. Ground is ground. It should read zero in any survey, and any
   systematic difference is the instrument, not the trees.</p>
@@ -681,7 +681,7 @@ footer.end a:hover{color:var(--rust)}
   the one I was asking it.</p>
 
   <p>What worked was stratifying the change by tree size. Real height growth falls off steeply
-  as trees get big — a young stand adds half a meter a year, a thirty-meter spruce adds
+  as trees get big. A young stand adds half a meter a year; a thirty-meter spruce adds
   perhaps a tenth. So bin pixels by starting height, and if the growth rate does not decline
   across those bins, something is wrong.</p>
 
@@ -703,7 +703,7 @@ footer.end a:hover{color:var(--rust)}
   <span class="hi">28-60 m    +0.308   ← should be near zero</span></pre>
 
   <p>Flat. Trees thirty meters tall apparently growing as fast as trees eight meters tall,
-  which does not happen. A constant gain independent of tree size is not growth — it is an
+  which doesn't happen. A constant gain that ignores tree size is an
   additive offset. The 2008 flight measured <strong>canopy</strong> low while measuring
   <strong>ground</strong> correctly.</p>
 
@@ -719,15 +719,15 @@ footer.end a:hover{color:var(--rust)}
     <span class="tag">Finding 02</span>
     <p><strong>Neither epoch pair supports an absolute growth rate.</strong> An additive bias
     preserves <em>ordering</em>, so I can still say which stands grew more than others. I
-    cannot say how much. That felt like failure for about an hour. It is not — knowing which
-    claim your data cannot support is the job.</p>
+    can't say how much. That felt like failure for about an hour. Knowing which
+    claim your data can't support is part of the job.</p>
   </div>
 </div>
 
 <div class="wide">
   <figure class="bleed">
     <img loading="lazy" decoding="async" src="img/lidar-explore/fig4_change.jpg" alt="Canopy height in 2008 and 2020 side by side, with a difference raster showing gains in blue and losses in red.">
-    <figcaption><b>Twelve years of change.</b> The spatial pattern is trustworthy — clearcuts
+    <figcaption><b>Twelve years of change.</b> The spatial pattern holds up: clearcuts
     appear as sharp-edged blocks, regrowth as broad areas of gain. The magnitude is not.</figcaption>
   </figure>
 </div>
@@ -752,7 +752,7 @@ footer.end a:hover{color:var(--rust)}
   </table>
 
   <p>That fourth row cost the most and paid the most. Filtering to stands measured within six
-  years of the canopy scan dropped 219 of 1,779 stands — and raised my height correlation from
+  years of the canopy scan dropped 219 of 1,779 stands and raised my height correlation from
   0.907 to <strong>0.962</strong>. Twenty minutes of date filtering bought more accuracy than
   any tuning I did to the detector.</p>
 
@@ -768,7 +768,7 @@ footer.end a:hover{color:var(--rust)}
   <figure class="bleed">
     <img loading="lazy" decoding="async" src="img/lidar-explore/fig2_validation.png" alt="Three panels: detected versus inventory stem density falling well below the 1:1 line; height comparison showing detected stems above and whole-pixel means below the truth; and recovery rate rising across development classes.">
     <figcaption><b>Detection against 1,295 real stands.</b> Stem recovery sits near 16%, but
-    height agreement is strong — and which side of the truth you land on depends entirely on
+    height agreement is strong, and which side of the truth you land on depends on
     which average you compute. <i>Data: Suomen metsäkeskus, CC BY 4.0.</i></figcaption>
   </figure>
 </div>
@@ -784,11 +784,11 @@ footer.end a:hover{color:var(--rust)}
   </table>
 
   <p>Monotonic with maturity. As stands age and thin, crowns get bigger and further apart, and
-  more of them resolve. That is not noise — that is the physics of the method showing up across
+  more of them resolve. That's the physics of the method showing up across
   1,295 real stands. A canopy model sees the overstory. Everything suppressed beneath it is
   invisible, and no cleverness in the peak-finder changes that.</p>
 
-  <p>And then the result I actually care about. I compared canopy heights two ways without
+  <p>Then came the result I care about most. I compared canopy heights two ways without
   thinking much about it, and got opposite answers:</p>
 
 <pre>detected stems only    <span class="hi">20.83 m   (+1.19 above inventory)   r = 0.962</span>
@@ -797,7 +797,7 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
 
   <p>They bracket the truth. Which makes sense once you see it: detected stems are crown
   <em>apexes</em>, so they sit above a stem-weighted mean that includes shorter trees. The
-  whole-pixel average sits below because it includes canopy gaps — about one pixel in ten is
+  whole-pixel average sits below because it includes canopy gaps. About one pixel in ten is
   a hole.</p>
 
   <p class="pullquote">Same raster. Same forest. Two reasonable definitions of “mean canopy
@@ -807,7 +807,7 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
     <span class="tag">Finding 03</span>
     <p><strong>A canopy height model measures dominant tree height to within about 1.2 meters
     of a national forest inventory, at r = 0.96, while counting roughly one stem in six.</strong>
-    Good at height. Bad at counting. And which of those you get depends entirely on which
+    Good at height, bad at counting. Which side of the truth the height lands on depends on which
     average you compute.</p>
   </div>
 </div>
@@ -816,17 +816,17 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
 <div class="wrap">
   <h2><span class="num">Act Six</span>The result I nearly didn't report</h2>
 
-  <p>Last piece. The inventory includes a real management plan — 5,059 operations proposed for
-  2026 to 2035 — so I could score my harvest ranking against the plan's own proposals. This was going to be the payoff: <em>my algorithm agrees with the
+  <p>Last piece. The inventory includes a real management plan, with 5,059 operations proposed for
+  2026 to 2035, so I could score my harvest ranking against the plan's own proposals. This was going to be the payoff: <em>my algorithm agrees with the
   plan.</em></p>
 
   <p>It did. Fifteen out of fifteen. Precision 100%.</p>
 
   <p>And it means nothing.</p>
 
-  <p>Because once you filter stands to development class 04 — <em>uudistuskypsä</em>,
+  <p>Once you filter stands to development class 04 (<em>uudistuskypsä</em>,
   literally “regeneration-ripe”, the inventory's call that a stand has reached rotation
-  age — <strong>471 of 472 eligible stands were already on the cutting list</strong>. The base
+  age), <strong>471 of 472 eligible stands were already on the cutting list</strong>. The base
   rate in my candidate pool was 100%. Lift over random: 1.00×.</p>
 
   <p>I could not have been wrong. The classification did all the work; the expensive remote
@@ -858,15 +858,15 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
     flattering number.</p>
   </div>
 
-  <p>There is a version of this project where I skip that check, publish the 100%, and it
+  <p>There's a version of this project where I skip that check, publish the 100%, and it
   sounds tremendous. The check took twenty minutes and turned a headline into a caveat.</p>
 </div>
 
 <div class="wide">
   <figure class="bleed">
     <img loading="lazy" decoding="async" src="img/lidar-explore/fig1_overview.jpg" alt="Canopy height model with private forest stand boundaries overlaid, and a third panel showing regeneration-mature stands in orange with eligible stands outlined in red.">
-    <figcaption><b>Eligibility.</b> Stand boundaries track visible structure in the canopy —
-    they are delineated partly on it. The grey corridor is land outside the private forest
+    <figcaption><b>Eligibility.</b> Stand boundaries track visible structure in the canopy,
+    since they're partly drawn from it. The grey corridor is land outside the private forest
     inventory, and therefore outside consideration entirely. <i>Data: Suomen metsäkeskus,
     CC BY 4.0.</i></figcaption>
   </figure>
@@ -874,16 +874,16 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
 
 <div class="wrap">
   <p>That whitelist deserves a note of its own. The inventory covers private forest.
-  State land — including Nuuksio National Park — is administered separately and simply is not
+  State land, Nuuksio National Park included, is administered separately and isn't
   in the file. So I inverted the safeguard: rather than excluding stands that intersect
   protected polygons, only stands <em>present</em> in the inventory are eligible. Absence
   blocks rather than permits.</p>
 
   <p>This matters because of something the algorithm did on its own. Ranking by maturity and
-  slow growth, it walked steadily north across the sheet — toward the national park. Of course
-  it did. Protection is what leaves forest mature and slow-growing, which are precisely the
-  properties it was rewarding. An unconstrained targeting system does not merely risk hitting
-  protected land; it is <em>drawn</em> to it.</p>
+  slow growth, it walked steadily north across the sheet toward the national park. Of course
+  it did. Protection is what leaves forest mature and slow-growing, and those were exactly the
+  properties it was rewarding. Left unconstrained, a targeting system like this is
+  <em>drawn</em> to protected land.</p>
 </div>
 
 <!-- ===================================================== -->
@@ -895,7 +895,7 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
 
   <p>The values were shifted by two columns. <code>det_stems_ha</code> was returning
   <code>chm_mean_h</code>. <code>eligible</code> was returning <code>obs_gap</code>. A known
-  quirk when you restrict a join to a subset of fields — and utterly invisible unless you
+  quirk when you restrict a join to a subset of fields, and invisible unless you
   happen to check a value you already know.</p>
 
   <p>I caught it because I spot-checked one stand against the CSV row I had been staring at all
@@ -911,8 +911,8 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
 
   <ol class="lessons">
     <li><b>Report the metric that degrades honestly.</b>
-    Recall improved as my data got worse. If a metric can be gamed by noise, it is not
-    measuring data quality — it is measuring how much noise you have.</li>
+    Recall improved as my data got worse. If noise can push a metric up, it's
+    measuring how much noise you have, not data quality.</li>
 
     <li><b>Check calibration on the thing you are measuring.</b>
     Perfect ground agreement told me nothing about canopy and nearly reassured me into a wrong
@@ -927,7 +927,7 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
     opposite sides of the truth.</li>
 
     <li><b>Score against the pool you actually chose from.</b>
-    Almost every inflated accuracy claim I have seen — my own included — comes from a
+    Almost every inflated accuracy claim I've seen, my own included, comes from a
     denominator that quietly includes cases the method never had to discriminate.</li>
 
     <li><b>Check the vintage of your reference data.</b>
@@ -947,38 +947,38 @@ all CHM pixels          15.69 m   (−3.95 below inventory)   r = 0.901</pre>
 <div class="wrap">
   <h2><span class="num">What it means</span>The part that transfers</h2>
 
-  <p>Commercial forestry is investing heavily in exactly this: tree-level inventory from remote
+  <p>Commercial forestry is putting a lot of money into exactly this: tree-level inventory from remote
   sensing, feeding harvest planning and yield forecasting. The pitch is a database with a row
   for every tree.</p>
 
-  <p>Having now measured it against a real forest inventory, I would say the honest version is
+  <p>Having measured it against a real forest inventory, I'd say the honest version is
   narrower and more useful. Canopy height models are <em>excellent</em> at height and area-based
-  structure — 1.2 meters and r = 0.96 against the Forest Centre's inventory is genuinely good, and it
-  scales to millions of hectares for the cost of a flight. They are <em>poor</em> at counting
-  individual stems, and the shortfall is not a tuning problem. It is the physics of looking
+  structure. 1.2 meters and r = 0.96 against the Forest Centre's inventory is good, and it
+  scales to millions of hectares for the cost of a flight. They're <em>poor</em> at counting
+  individual stems, and no amount of tuning fixes that. It's the physics of looking
   down at a closed canopy.</p>
 
-  <p>Which is precisely why the Forest Centre's own inventory runs on the area-based approach —
-  predicting stand attributes from height distributions rather than finding individual trees —
-  on data thinner than anything I tested. They arrived there decades ago. My density study
+  <p>That's why the Forest Centre's own inventory runs on the area-based approach,
+  predicting stand attributes from height distributions instead of finding individual trees,
+  on data thinner than anything I tested. They got there decades ago. My density study
   rediscovered the reasoning from the wrong end.</p>
 
-  <p>And the harvest benchmark said something about where value actually sits: the
-  development-class call already determined the cutting list. If remote sensing is going to
-  earn its cost, it will be somewhere that classification cannot reach — detecting change
+  <p>The harvest benchmark also said something about where the value sits: the
+  development-class call had already decided the cutting list. If remote sensing is going to
+  earn its cost, it'll be somewhere classification can't reach, like detecting change
   <em>since</em> the last inventory, flagging stands whose stocking no longer matches their
-  record, catching partial cuts nobody reported. Not re-deriving a judgement already made.</p>
+  record, or catching partial cuts nobody reported. Re-deriving a judgement somebody already made doesn't count.</p>
 
   <p>Four numbers turned out to mean something other than they appeared: recall rising as data
   thinned, ground calibration passing while canopy was biased, two definitions of mean height
-  landing on opposite sides of the truth, and a 100% precision that was structurally
-  guaranteed. Each was checkable in twenty minutes. Not one of them announced itself. Every
-  single one arrived wearing the costume of a good result.</p>
+  landing on opposite sides of the truth, and a 100% precision that was guaranteed by
+  construction. Each was checkable in twenty minutes. None of them announced itself. They all
+  looked like good results.</p>
 
-  <p>I set out to learn point clouds. I did learn point clouds &mdash; PDAL pipelines, ground
+  <p>I set out to learn point clouds, and I did: PDAL pipelines, ground
   classification, height-above-ground, the whole chain from raw returns to a warehouse table.
-  But the thing I will actually carry out of this is smaller and more portable than any of
-  that: <strong>the metric that flatters you is rarely the metric that is telling you the
+  What I'll carry out of it is smaller than any of
+  that. <strong>The metric that flatters you is rarely the one telling you the
   truth.</strong> Height RMSE sat in a column I ignored for two days while I admired a recall
   score that got better as my data got worse.</p>
 

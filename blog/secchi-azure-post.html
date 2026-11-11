@@ -274,7 +274,7 @@
   <div class="article-body">
     <p>A month ago I wrote about <a href="/blog/secchi-post.html">secchi</a>, my little window into the University of Nevada, Reno's sensor network around Lake Tahoe. Since then it has kept quietly collecting: sondes out in the lake, loggers along the shore, forest stations up the slopes, plus USGS stream gauges and snow stations. All told it's about 12 million readings, and they all live in a set of files on GitHub.</p>
 
-    <p>Lots of organizations are moving their SQL Server databases into Microsoft's Azure cloud right now, and I wanted to know what that's really like. Not from a slide deck, but by doing it, start to finish, with data I know well. So on Wednesday morning I picked up the whole lake and moved it.</p>
+    <p>Lots of organizations are moving their SQL Server databases into Microsoft's Azure cloud right now, and I wanted to know what that's like from doing it, start to finish, with data I know well, instead of from a slide deck. So on Wednesday morning I picked up the whole lake and moved it.</p>
 
     <p>By lunch, every reading was in Azure, checked against the original month by month. A schedule keeps it current every other morning, and QGIS draws the map straight from the cloud. Here's how it went, including the parts that surprised me.</p>
 
@@ -341,7 +341,7 @@
 
     <h2>How I worked with AI</h2>
 
-    <p>I built this with Claude Code, an AI coding assistant, the same way I've built most of secchi. It drafts quickly, and I direct, review and decide. What makes me trust the result isn't who typed it. It's the checks: 201 tests before every change, the exact reconcile, and the sabotage test that caught my too-kind allowance. I wrote down <a href="https://github.com/bdgroves/secchi/blob/main/docs/ai-use.md" target="_blank" rel="noopener">how that works</a>, including what went wrong and what caught it. And I wrote the whole method up as a <a href="https://github.com/bdgroves/secchi/blob/main/docs/cloud/runbook.md" target="_blank" rel="noopener">runbook</a> for anyone moving many databases instead of one. Inventory, copy, prove, run side by side, watch the bill.</p>
+    <p>I built this with Claude Code, an AI coding assistant, the same way I've built most of secchi. It drafts quickly, and I direct, review and decide. Whoever did the typing, what makes me trust the result is the checks: 201 tests before every change, the exact reconcile, and the sabotage test that caught my too-kind allowance. I wrote down <a href="https://github.com/bdgroves/secchi/blob/main/docs/ai-use.md" target="_blank" rel="noopener">how that works</a>, including what went wrong and what caught it. And I wrote the whole method up as a <a href="https://github.com/bdgroves/secchi/blob/main/docs/cloud/runbook.md" target="_blank" rel="noopener">runbook</a> for anyone moving many databases instead of one. Inventory, copy, prove, run side by side, watch the bill.</p>
 
     <h2>Then I did it again, in C#</h2>
 
@@ -362,7 +362,7 @@
 
     <p>My first try lost by a lot. It read 100,000 rows at a time into an in-memory table, then sent them, and all that packing and unpacking adds up. The fix was to let <code>SqlBulkCopy</code> read straight from the file, one row at a time, as fast as the server takes them. That brought it level with <code>bcp</code>. Call it a tie, since one run on a shared computer can wobble by a few seconds. The C# loader also checks every value on the way in, and stops with the line and column if anything doesn't fit, which <code>bcp</code> doesn't do.</p>
 
-    <p>One surprise along the way: Microsoft's SQL Server library refused to connect at all because of a setting I'd turned on to make number parsing identical on every computer. It turns out the library needs the language data to understand SQL Server's text settings. One line in the project file, and a good reminder that the first failure is often the most educational one. The whole thing builds and runs on my Windows PC too, and I wrote a <a href="https://github.com/bdgroves/secchi/blob/main/docs/cloud/dotnet.md" target="_blank" rel="noopener">plain-words walkthrough of the C#</a>, file by file, for anyone curious how it fits together.</p>
+    <p>One surprise along the way: Microsoft's SQL Server library refused to connect at all because of a setting I'd turned on to make number parsing identical on every computer. It turns out the library needs the language data to understand SQL Server's text settings. One line in the project file fixed it. The first failure is often the one that teaches you the most. The whole thing builds and runs on my Windows PC too, and I wrote a <a href="https://github.com/bdgroves/secchi/blob/main/docs/cloud/dotnet.md" target="_blank" rel="noopener">plain-words walkthrough of the C#</a>, file by file, for anyone curious how it fits together.</p>
 
     <h2>What's next</h2>
 

@@ -311,7 +311,7 @@
 
   <div class="article-body">
 
-<p class="lede">I grew up in Groveland, in the Sierra Nevada foothills where Highway 120 climbs toward Yosemite. There is a creek there called Big Creek, and for a good part of every year it is not a creek at all. It is a dry bed with rocks in it.</p>
+<p class="lede">I grew up in Groveland, in the Sierra Nevada foothills where Highway 120 climbs toward Yosemite. There&rsquo;s a creek there called Big Creek, and for a good part of every year it isn&rsquo;t a creek at all. It&rsquo;s a dry bed with rocks in it.</p>
 
 <p>Last week I had a Snowflake warehouse full of streamgage data open for unrelated reasons, and I noticed one of the fourteen gages I had loaded was sitting in my own back yard. So I asked it some questions.</p>
 
@@ -321,7 +321,7 @@
 
 <figure>
   <img src="maps/bc_01_local.png" alt="Map of Groveland, California and the two USGS Big Creek stream gages, built in QGIS from real OpenStreetMap data and surveyed USGS coordinates, showing Highway 120, Pine Mountain Lake, and the Stanislaus National Forest boundary.">
-  <figcaption>Built in QGIS from a live OpenStreetMap basemap and the gages' own surveyed coordinates &mdash; not traced or approximated. Station 11284400, the active one behind every number above, sits just south of Pine Mountain Lake. Groveland is marked in red for orientation.</figcaption>
+  <figcaption>Built in QGIS from a live OpenStreetMap basemap and the gages' own surveyed coordinates, not traced or approximated. Station 11284400, the active one behind every number above, sits just south of Pine Mountain Lake. Groveland is marked in red for orientation.</figcaption>
   <div class="legend">
     <span class="chip" style="background:#3c6478;"></span><span>USGS gage</span>
     <span class="chip" style="background:#8b3a2a;"></span><span>Groveland</span>
@@ -331,7 +331,7 @@
 
 <figure>
   <img src="maps/bc_02_region.png" alt="Map of Tuolumne County, California, its real boundary pulled live from the US Census Bureau, showing Groveland's position relative to Sonora, Jamestown, Stanislaus National Forest, and Yosemite National Park.">
-  <figcaption>Tuolumne County's actual boundary, queried live from the US Census Bureau's TIGERweb service by FIPS code &mdash; not a stylized approximation. Groveland sits in the western foothills, with the county climbing east through Stanislaus National Forest into Yosemite Wilderness and the Sierra crest.</figcaption>
+  <figcaption>Tuolumne County's actual boundary, queried live from the US Census Bureau's TIGERweb service by FIPS code, so it&rsquo;s the real line and not a stylized approximation. Groveland sits in the western foothills, with the county climbing east through Stanislaus National Forest into Yosemite Wilderness and the Sierra crest.</figcaption>
 </figure>
 
 <h2>The numbers</h2>
@@ -345,15 +345,15 @@
 
 <p>Of 13,373 daily values since January 1990, <strong>4,927 recorded exactly zero.</strong> Not "very low." Zero. Across the fourteen Sierra gages I had loaded, Big Creek is the only one that ever reaches it.</p>
 
-<p>The longest unbroken dry spell ran <strong>244 days</strong> — June 30, 1990 to February 28, 1991. Eight months. The 2013–14 drought nearly matched it at 234.</p>
+<p>The longest unbroken dry spell ran <strong>244 days</strong>, from June 30, 1990 to February 28, 1991. Eight months. The 2013–14 drought nearly matched it at 234.</p>
 
-<h3>Then there is the other end</h3>
+<h3>Then there&rsquo;s the other end</h3>
 
 <p>On March 9, 2023, daily mean flow was 87.6 cfs. On March 10 it was <strong>1,820</strong>. By March 11 it had already fallen to 695.</p>
 
-<p>Big Creek's ratio of peak flow to mean flow is roughly <strong>200×</strong> — the highest in my comparison set by a wide margin. The runner-up, Cherry Creek near Early Intake, sits at 111×. The Merced at Yosemite is 32×. The Tuolumne below Early Intake is 23×.</p>
+<p>Big Creek's ratio of peak flow to mean flow is roughly <strong>200×</strong>, the highest in my comparison set by a wide margin. The runner-up, Cherry Creek near Early Intake, sits at 111×. The Merced at Yosemite is 32×. The Tuolumne below Early Intake is 23×.</p>
 
-<blockquote>Big Creek is not simply variable. Its extremes are enormous relative to its ordinary condition — which is, most of the time, nothing at all.</blockquote>
+<blockquote>Big Creek&rsquo;s extremes are enormous next to its ordinary condition, which most of the time is nothing at all.</blockquote>
 
 <h3>The thousand-fold year</h3>
 
@@ -370,73 +370,73 @@
 
 <p>Same creek. Same 16.4 square miles of hillside. Two years apart. <strong>A 1,028-fold difference in annual volume.</strong></p>
 
-<p>If you want a single number that explains California hydroclimate to somebody, that is a strong candidate.</p>
+<p>If you want one number to explain California hydroclimate to somebody, that&rsquo;s a strong candidate.</p>
 
 <h2>How this actually got answered</h2>
 
-<p>Here is the part that is really about data engineering rather than creeks.</p>
+<p>This next part is about data engineering more than creeks.</p>
 
-<p>I did not write these queries. I asked <strong>CoCo</strong> — Snowflake's warehouse-native AI agent, renamed from Cortex Code at their Summit in June — and it produced the analysis and a dashboard inside Snowsight.</p>
+<p>I didn't write these queries. I asked <strong>CoCo</strong>, Snowflake's warehouse-native AI agent (renamed from Cortex Code at their Summit in June), and it produced the analysis and a dashboard inside Snowsight.</p>
 
-<p>That worked. It is worth being precise about <em>why</em> it worked, because the reason is not "the AI is good."</p>
+<p>That worked, and I want to be precise about <em>why</em>, because the reason isn't "the AI is good."</p>
 
 <p>Weeks earlier I had built the boring part. A dbt project with staging models that flatten raw USGS payloads, a conformed gage dimension, an incremental fact table of daily discharge, and a rollup called <code>fct_water_year_summary</code> that already knew what a water year is (October through September, so a snowpack and its own meltwater land in the same accounting year), already computed annual volume in acre-feet, already carried percentiles and a flashiness index. Seventy-three tests guarding all of it.</p>
 
   <div class="aside">
     <div class="aside-title">Why Water Years Start in October</div>
-    <p>A calendar year splits a Sierra winter in half. Snow that falls in December and the meltwater it becomes the following May end up in two different accounting years, even though they are the same event on a six-month delay.</p>
-    <p>A water year runs October 1 to September 30 instead, which puts the whole cycle &mdash; first storms, peak snowpack, spring melt, summer drought &mdash; inside one bucket. It is the standard USGS and DWR convention for exactly this reason, and it is why <code>WY2017</code> in the tables below means something a calendar year never could: one number that actually represents one winter.</p>
+    <p>A calendar year splits a Sierra winter in half. Snow that falls in December and the meltwater it becomes the following May end up in two different accounting years, even though they&rsquo;re the same event on a six-month delay.</p>
+    <p>A water year runs October 1 to September 30 instead, which puts the whole cycle inside one bucket: first storms, peak snowpack, spring melt, summer drought. It&rsquo;s the standard USGS and DWR convention for exactly this reason. It&rsquo;s also why <code>WY2017</code> in the tables below means something a calendar year never could: one number that stands for one winter.</p>
   </div>
 
 <p>When I asked CoCo about Big Creek, it was reading <em>that</em>. Real column names, real grain, a semantic layer that had already made the hard decisions.</p>
 
-<blockquote><strong>An AI agent in your warehouse is exactly as good as the models underneath it.</strong> Point one at raw JSON in a landing table and it will flail, confidently. Point it at a tested dimensional model and it becomes genuinely useful.</blockquote>
+<blockquote><strong>An AI agent in your warehouse is exactly as good as the models underneath it.</strong> Point one at raw JSON in a landing table and it will flail, confidently. Point it at a tested dimensional model and it&rsquo;s actually useful.</blockquote>
 
-<p>The agent did not replace the modeling work. It made the modeling work pay off faster.</p>
+<p>The agent didn't replace the modeling work. It made that work pay off faster.</p>
 
 <h2>Two ways to be wrong about this creek</h2>
 
-<p>Both worth knowing, because both are easy traps.</p>
+<p>Both are easy traps.</p>
 
 <div class="aside">
   <div class="aside-title">The Peak You Get Depends on the Clock</div>
-  <p>My table says WY2017 peaked at 1,330 cfs. The USGS annual peak table says 2,810 cfs on February 7, 2017. Both are correct. Mine is the highest <em>daily mean</em>; theirs is the highest <em>instantaneous</em> reading. A flood crest lasting three hours gets averaged down across twenty-four. Same flood, two legitimate measurements, and if you mix them you will misstate a flood by half.</p>
+  <p>My table says WY2017 peaked at 1,330 cfs. The USGS annual peak table says 2,810 cfs on February 7, 2017. Both are correct. Mine is the highest <em>daily mean</em>; theirs is the highest <em>instantaneous</em> reading. A flood crest lasting three hours gets averaged down across twenty-four. Same flood, two legitimate measurements. Mix them up and you&rsquo;ll misstate a flood by half.</p>
 </div>
 
 <div class="aside">
   <div class="aside-title">Two Gages, Not the Same Watershed</div>
-  <p>Station 11284400 &mdash; "Big C above Whites Gulch" &mdash; drains <strong>16.4 square miles</strong> and is the active one behind everything above. Station 11284500, "Big C near Groveland," drains <strong>25.0</strong>. They sit about 1.6 miles apart, and that short distance adds roughly 52% more contributing area. Quote the wrong one and your runoff-per-acre math is off by half.</p>
+  <p>Station 11284400, "Big C above Whites Gulch," drains <strong>16.4 square miles</strong> and is the active one behind everything above. Station 11284500, "Big C near Groveland," drains <strong>25.0</strong>. They sit about 1.6 miles apart, and that short distance adds roughly 52% more contributing area. Quote the wrong one and your runoff-per-acre math is off by half.</p>
 </div>
 
 <p>A small validation I liked: I derived the upstream basin independently from the USGS Network-Linked Data Index and computed its area geodesically in Snowflake. <strong>16.1 square miles</strong> against USGS's published 16.4. Two different paths, same hillside.</p>
 
 <h2>Before the gage, there was the ditch</h2>
 
-<p>The hydrology explains something about the town, which is the part I did not expect to find interesting.</p>
+<p>The hydrology also explains something about the town, which I didn't expect to find interesting.</p>
 
-<p>Groveland exists because of gold, and gold mining needs water. But the local creeks — Big Creek among them — go dry for months. They could not support hydraulic mining on their own.</p>
+<p>Groveland exists because of gold, and gold mining needs water. But the local creeks, Big Creek among them, go dry for months. They couldn't support hydraulic mining on their own.</p>
 
 <p>So in <strong>1855</strong> the miners organized the Golden Rock Water Company and built water in from somewhere else. First delivery came on <strong>March 29, 1860</strong>: roughly forty miles of ditch, including the Big Gap Flume, 2,200 feet long and 280 feet high.</p>
 
 <p>Then in 1915 a second water boom arrived, this one San Francisco's. Groveland became a railroad-shop town and Mountain Division headquarters for the Hetch Hetchy project. O'Shaughnessy Dam was dedicated in 1923.</p>
 
-<p>And today the town's domestic water comes from that same Hetch Hetchy system — not from the creek at the bottom of the hill.</p>
+<p>And today the town's domestic water comes from that same Hetch Hetchy system, not from the creek at the bottom of the hill.</p>
 
-<blockquote>Big Creek has been a hydroclimate sentinel for this landscape and never a water supply for it. One hundred and seventy years of local history is essentially a record of engineering around the fact that this creek is not there half the year.</blockquote>
+<blockquote>Big Creek has been a hydroclimate sentinel for this landscape, never a water supply. A hundred and seventy years of local history is mostly a record of engineering around the fact that this creek isn't there half the year.</blockquote>
 
-<h2>What I would not claim</h2>
+<h2>What I won't claim</h2>
 
 <p>Three things I checked and decided not to assert:</p>
 
-<p><strong>That Big Creek feeds Hetch Hetchy.</strong> It does not. It is in the broader Tuolumne basin, far downstream and much lower. The reservoir is fed from the high country above Yosemite.</p>
+<p><strong>That Big Creek feeds Hetch Hetchy.</strong> It doesn't. It's in the broader Tuolumne basin, far downstream and much lower. The reservoir is fed from the high country above Yosemite.</p>
 
-<p><strong>That the gage is dam-controlled.</strong> I found a secondary source suggesting an upstream earthen dam. I could not confirm it in any authoritative dam inventory or USGS station record, so it stays out. The flow behavior looks unregulated to me — the zero-flow record alone argues against active control — but "looks like" is not a source.</p>
+<p><strong>That the gage is dam-controlled.</strong> I found a secondary source suggesting an upstream earthen dam. I could not confirm it in any authoritative dam inventory or USGS station record, so it stays out. The flow looks unregulated to me (the zero-flow record alone argues against active control), but "looks like" isn't a source.</p>
 
 <p><strong>That any of these numbers imply a recreation rating.</strong> Discharge alone does not determine whether a channel is safe or runnable. Gradient and channel geometry do.</p>
 
 <h2>Go watch it yourself</h2>
 
-<p>Station 11284400 is live. When the next atmospheric river comes through the western Sierra, you can watch this creek respond in something close to real time — <a href="https://waterdata.usgs.gov/monitoring-location/USGS-11284400/">USGS live monitoring page</a>.</p>
+<p>Station 11284400 is live. When the next atmospheric river comes through the western Sierra, you can watch this creek respond in something close to real time on the <a href="https://waterdata.usgs.gov/monitoring-location/USGS-11284400/">USGS live monitoring page</a>.</p>
 
 <p>Median date it starts flowing again after going dry, across 34 analyzed seasons: <strong>November 26</strong>.</p>
 

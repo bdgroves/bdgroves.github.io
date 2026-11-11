@@ -250,25 +250,25 @@
 
     <p>Cookie &amp; Kate links in a "Recipes 🌶🥦🍕" thread in my email. Apple Notes from the time I copied a tofu marinade off Instagram before it scrolled into the void. A photo of a Pike Place Market chalkboard. Three browser tabs open since the Obama administration. Two cookbooks on the shelf I never opened because I couldn't remember which one had the lentil dal. A printed PDF of an endurance fueling recipe shoved between two issues of <em>Cartographic Perspectives</em>.</p>
 
-    <p>When I wanted to actually cook something on a weeknight, the search cost was higher than the cooking cost. I'd give up and make pasta.</p>
+    <p>On a weeknight, finding the recipe took more effort than cooking it. I'd give up and make pasta.</p>
 
-    <p>This is the post about how I fixed that — and how the fix turned into a small, real piece of personal infrastructure I now use multiple times a week. The cookbook itself is the demo. The interesting part is what's underneath it.</p>
+    <p>This post is about how I fixed that, and how the fix turned into a small, real piece of personal infrastructure I now use several times a week. The cookbook is the demo. What's underneath it is the fun part.</p>
 
     <h2>What I wanted</h2>
 
-    <p>A single searchable page on my own site at <a href="/recipes.html">brooksgroves.com/recipes.html</a> that holds every recipe I cook. Filterable by ingredient, cuisine, cook time, dietary tags. Designed in the same parchment palette as the rest of the site so it doesn't feel like a third-party tool bolted on. Mine. Owned. Static. Fast.</p>
+    <p>A single searchable page on my own site at <a href="/recipes.html">brooksgroves.com/recipes.html</a> that holds every recipe I cook. Filterable by ingredient, cuisine, cook time and dietary tags. Same parchment palette as the rest of the site, so it doesn't feel like a third-party tool bolted on. Mine, static and fast.</p>
 
-    <p>That part was easy. Static HTML, a <code>recipes.json</code> file, a touch of JavaScript to filter and render. Day one work.</p>
+    <p>That part was easy: static HTML, a <code>recipes.json</code> file, and a little JavaScript to filter and render. Day one.</p>
 
-    <p>The hard part was the <strong>input pipeline</strong>. Hand-typing recipes into a JSON file is a quick way to ensure that no recipe gets added past the third one. The whole reason the bookmarks-everywhere problem existed is that the friction of structuring a recipe is too high. Solve the input problem or the cookbook just becomes the next graveyard.</p>
+    <p>The hard part was the <strong>input pipeline</strong>. If I had to hand-type recipes into a JSON file, I'd stop after the third one. Bookmarks piled up everywhere in the first place because structuring a recipe is a chore. If I didn't fix the input side, the cookbook would become the next graveyard.</p>
 
     <h2>What I built</h2>
 
-    <p>Three things, layered.</p>
+    <p>Three pieces, stacked on each other.</p>
 
     <h3>1. A Cloudflare Worker</h3>
 
-    <p>About 230 lines of code holding two encrypted secrets — an Anthropic API key and a fine-grained GitHub Personal Access Token — with four HTTP routes:</p>
+    <p>About 230 lines of code holding two encrypted secrets (an Anthropic API key and a fine-grained GitHub Personal Access Token), with four HTTP routes:</p>
 
     <table class="route-table">
       <tr><th>Route</th><th>What it does</th></tr>
@@ -278,25 +278,25 @@
       <tr><td>POST /update-recipe</td><td>Edits one in place</td></tr>
     </table>
 
-    <p>Free tier. Encrypted secrets the browser never sees. CORS allowlisted to my domain.</p>
+    <p>It runs on the free tier, the browser never sees the secrets, and CORS is allowlisted to my domain.</p>
 
     <h3>2. A Recipe Extractor at <code>/recipes/extract.html</code></h3>
 
-    <p>Three input modes: paste a URL, paste raw text (for paywalled sites, Apple Notes, screenshot OCR), or drop a photo. Every mode sends the content to Claude with a schema prompt. A single <strong>Save to Cookbook</strong> button commits the structured JSON straight to <code>recipes.json</code> on GitHub. The site rebuilds. The recipe is live on my phone in about thirty seconds.</p>
+    <p>Three input modes: paste a URL, paste raw text (for paywalled sites, Apple Notes, screenshot OCR), or drop a photo. Every mode sends the content to Claude with a schema prompt. One <strong>Save to Cookbook</strong> button commits the structured JSON straight to <code>recipes.json</code> on GitHub. The site rebuilds, and the recipe is live on my phone in about thirty seconds.</p>
 
     <h3>3. The cookbook at <code>/recipes.html</code></h3>
 
-    <p>Searchable, filterable, expand-a-card to read. An Admin button gates edit and delete controls. A Share button lets me text a recipe to anyone — it deep-links straight to the right card, auto-expanded.</p>
+    <p>Search it, filter it, tap a card to open it. An Admin button hides the edit and delete controls. A Share button lets me text a recipe to anyone, and the link opens straight to the right card, already expanded.</p>
 
-    <div class="callout"><p>That's the whole system. I see a recipe on Instagram, screenshot it, paste it into the extractor's Photo tab, hit Save. Done. Searchable forever.</p></div>
+    <div class="callout"><p>That's the whole system. I see a recipe on Instagram, screenshot it, paste it into the extractor's Photo tab and hit Save. Now I can find it again.</p></div>
 
     <h2>Why it works the way it works</h2>
 
     <h3>The Worker as the linchpin</h3>
 
-    <p>Every API key in this system lives encrypted in Cloudflare. Browser code never touches them. This isn't paranoia — it's the only sane shape for something I want to use from my phone, which means it has to work in any browser on any network without typing in credentials.</p>
+    <p>Every API key in this system lives encrypted in Cloudflare, and browser code never touches them. I want to use this from my phone, in any browser on any network, without typing in credentials, and that's the only sane way to set it up.</p>
 
-    <p>The Worker is also general infrastructure. It's not a "recipe Worker." It's <em>a</em> Worker, with routes. The same encrypted-keys + GitHub-commit pattern is already on my list for: a Save Concert button on my setlist log, a Save Book flow that takes a Goodreads URL, an auto-summarizer for the day's Giro d'Italia stage. Build the substrate once. Features get cheaper from then on.</p>
+    <p>The Worker is also general-purpose. I didn't build a "recipe Worker," just <em>a</em> Worker, with routes. The same encrypted-keys-plus-GitHub-commit pattern is already on my list for a Save Concert button on my setlist log, a Save Book flow that takes a Goodreads URL, and an auto-summarizer for the day's Giro d'Italia stage. Once the base is there, each new feature costs less.</p>
 
     <h3>Structure first</h3>
 
@@ -320,23 +320,23 @@
   "notes": "Watch closely under the broiler — sugar burns fast."
 }</code></pre>
 
-    <p>Boring. Predictable. The whole point. Filtering, scaling, sorting, exporting — anything I want to do later — works on this shape without re-typing recipes. The schema also encodes my dietary preference directly into the Claude system prompt. If a recipe contains chicken stock, the extractor automatically swaps in vegetable stock and notes the change. I can extract from omnivore food blogs without thinking about it.</p>
+    <p>Boring and predictable, which is what I want. Anything I decide to do later, like filtering, scaling or exporting, works on this shape without re-typing recipes. The schema also encodes my dietary preference directly into the Claude system prompt. If a recipe calls for chicken stock, the extractor swaps in vegetable stock and notes the change. I can extract from omnivore food blogs without thinking about it.</p>
 
     <h3>Static site, live edits</h3>
 
-    <p>The whole site is GitHub Pages — a glorified file server, no database, no runtime. By routing writes through a Worker that hits the GitHub Contents API, I get <strong>the appearance of a database with none of the maintenance</strong>. Every save is a real commit. Every edit is a real commit. If I delete a recipe by accident, <code>git log recipes.json</code> shows me every prior version, recoverable with a single command.</p>
+    <p>The whole site is GitHub Pages: a glorified file server with no database and no runtime. By routing writes through a Worker that hits the GitHub Contents API, I get <strong>the appearance of a database with none of the maintenance</strong>. Every save and every edit is a real commit. If I delete a recipe by accident, <code>git log recipes.json</code> shows me every prior version, recoverable with a single command.</p>
 
-    <p>Versioned data with no database is one of the most underrated tricks in small-scale software.</p>
+    <p>I think versioned data without a database is one of the most underrated tricks in small-scale software.</p>
 
     <h2>What broke</h2>
 
-    <p>Plenty. In roughly increasing order of how long it took to diagnose.</p>
+    <p>Plenty. Here it is, roughly in order of how long each took to figure out.</p>
 
     <h3>Mojibake spiral</h3>
 
-    <p>The first save worked fine. The fifth corrupted <code>recipes.json</code>. The Worker's base64 decode was using <code>atob()</code> directly, which returns a binary string where each character represents one byte. For ASCII that looks right. For an em-dash or a degree symbol — multi-byte in UTF-8 — every read-and-rewrite cycle re-interpreted the bytes and added a layer of garbage. By the time I noticed, one recipe's <code>notes</code> field had ballooned from <em>"Watch closely — sugar burns fast"</em> to <strong>393,301 characters</strong> of nested <code>Ã</code> and <code>Â</code> sequences. The whole file was 1.46 MB.</p>
+    <p>The first save worked fine. The fifth corrupted <code>recipes.json</code>. The Worker's base64 decode was using <code>atob()</code> directly, which returns a binary string where each character represents one byte. For ASCII that looks right. For an em-dash or a degree symbol (multi-byte in UTF-8), every read-and-rewrite cycle re-interpreted the bytes and added a layer of garbage. By the time I noticed, one recipe's <code>notes</code> field had ballooned from <em>"Watch closely — sugar burns fast"</em> to <strong>393,301 characters</strong> of nested <code>Ã</code> and <code>Â</code> sequences. The whole file was 1.46 MB.</p>
 
-    <p>The fix was a proper UTF-8 decoder using <code>TextDecoder</code>. The lesson is as old as Unicode: if you find yourself doing <code>String.fromCharCode(...new TextEncoder().encode(s))</code>, ask whether you actually want bytes or characters, because the shortcut compounds over time.</p>
+    <p>The fix was a proper UTF-8 decoder using <code>TextDecoder</code>. The lesson is as old as Unicode: if you find yourself doing <code>String.fromCharCode(...new TextEncoder().encode(s))</code>, stop and ask whether you want bytes or characters, because the shortcut gets worse every time it runs.</p>
 
     <h3>Stack overflow on save</h3>
 
@@ -348,9 +348,9 @@
 
     <h3>Cache poisoning</h3>
 
-    <p>GitHub Pages serves static files with caching hints that, in practice, meant my browser would show yesterday's JavaScript long after I'd shipped today's. Fixed with <code>Cache-Control: no-cache, no-store, must-revalidate</code> meta tags on the tool pages. Pages I actively iterate on should never cache.</p>
+    <p>GitHub Pages serves static files with caching hints that, in practice, meant my browser would show yesterday's JavaScript long after I'd shipped today's. Fixed with <code>Cache-Control: no-cache, no-store, must-revalidate</code> meta tags on the tool pages, since pages I'm still changing shouldn't cache.</p>
 
-    <p>Each of these bugs took 10 to 90 minutes to diagnose. Each was a four-line fix. Together they turned a proof-of-concept into something I actually trust to hold years of recipes.</p>
+    <p>Each of these bugs took 10 to 90 minutes to track down, and each was a four-line fix. Fixing them is what turned a proof-of-concept into something I trust to hold years of recipes.</p>
 
     <h2>What it's like to use</h2>
 
@@ -364,37 +364,37 @@
       <li>About 30 seconds later, GitHub Pages has rebuilt. The recipe is live, searchable, filterable by cuisine.</li>
     </ol>
 
-    <p>Total elapsed time: under a minute. Total typing: zero.</p>
+    <p>Under a minute, start to finish, and no typing.</p>
 
-    <p>When the extractor mis-categorizes something — calls a Mediterranean dish "American" because Cookie &amp; Kate's metadata is fuzzy — I open the card, hit the pencil icon, edit the JSON in-place, save. Real commit. Site rebuilds. Done.</p>
+    <p>When the extractor gets a category wrong (calling a Mediterranean dish "American" because Cookie &amp; Kate's metadata is fuzzy), I open the card, hit the pencil icon, fix the JSON in place and save. That's another real commit, and the site rebuilds.</p>
 
-    <h2>What this is actually about</h2>
+    <h2>The bigger picture</h2>
 
-    <p>The recipe cookbook is not really the project. The project is <strong>a small, growing-over-time AI infrastructure for my personal site</strong>. The cookbook is the first feature. The Worker is the load-bearing wall.</p>
+    <p>The cookbook is the first feature of something larger: <strong>a small AI infrastructure for my personal site that I can keep adding to</strong>. The Worker is the load-bearing wall.</p>
 
-    <p>A few things this project clarified:</p>
+    <p>A few things I came away with:</p>
 
-    <p><strong>Static sites with one tiny serverless backend hit way above their weight.</strong> No database, no Docker, no deploy pipeline, no monitoring stack. Total operating cost: zero dollars. Total places this can break in the middle of the night: approximately zero. The Worker has been running for two weeks and has executed thousands of requests. I have not thought about its health a single time.</p>
+    <p><strong>A static site with one tiny serverless backend punches way above its weight.</strong> There's no database, Docker, deploy pipeline or monitoring stack. It costs zero dollars to run, and there's next to nothing that can break in the middle of the night. The Worker has been running for two weeks and handled thousands of requests, and I haven't thought about its health once.</p>
 
-    <p><strong>LLMs are the right substrate for messy-input-to-clean-output problems.</strong> Every recipe page on the internet has a different shape. Some have JSON-LD schema, some don't. Some hide behind ad walls. Some are an infinite-scroll life story before the recipe begins. None of that matters when you can ask Claude to structure content into a fixed schema, substitute meat with vegetarian equivalents, and infer reasonable values for missing fields. The schema does the rest.</p>
+    <p><strong>LLMs are good at turning messy input into clean output.</strong> Every recipe page on the internet has a different shape. Some have JSON-LD schema and some don't. Some hide behind ad walls. Some make you scroll through a life story before the recipe starts. None of that matters when Claude can pour the content into a fixed schema, swap meat for vegetarian equivalents and fill in sensible values for missing fields.</p>
 
-    <p><strong>Friction kills personal projects.</strong> The cookbook would already be abandoned if adding recipes required hand-typing JSON. Every minute shaved off the add-a-recipe loop multiplied the probability I'd actually use the thing. The fix had to be a friction fix.</p>
+    <p><strong>Friction kills personal projects.</strong> If adding a recipe meant hand-typing JSON, I'd have abandoned the cookbook by now. Every minute I cut from adding a recipe made it more likely I'd actually use the thing.</p>
 
-    <p><strong>Versioned data with no database is one of the great free lunches in small-scale software.</strong> Every save is a commit. Every commit is recoverable. Audit logs come for free. If I want to know when I added a recipe, what it looked like before I edited it, or who made a change — <code>git log</code> answers all of that without building anything.</p>
+    <p><strong>Versioned data with no database is about as close to a free lunch as small-scale software gets.</strong> Every save is a commit, every commit can be recovered, and the audit log comes for free. When did I add a recipe? What did it look like before I edited it? Who changed it? <code>git log</code> answers all of that without me building anything.</p>
 
     <h2>What's next</h2>
 
-    <p>The same Worker pattern is already on the list for other parts of the site — a Save Concert button on the setlist log, a Save Book flow, maybe a geocache save route. Build the substrate once, features get cheaper.</p>
+    <p>The same Worker pattern is already on the list for other parts of the site: a Save Concert button on the setlist log, a Save Book flow, maybe a geocache save route.</p>
 
     <p>On the cookbook itself: better cooking-from-the-recipe view (scale to N servings, imperial/metric toggle, checkbox ingredient tracking), and freeform tags beyond cuisine and category — "potluck," "weeknight," "from a friend."</p>
 
-    <p>But mostly the answer to "what's next" is <em>use it</em>. Two weeks of using it told me more about what to build than any amount of planning. The cookbook has 8 recipes now. By the end of the year it'll have 80, and the system will have answered for itself what the next feature should be.</p>
+    <p>Mostly, though, what's next is <em>using it</em>. Two weeks of cooking from it told me more about what to build than any amount of planning. The cookbook has 8 recipes now. By the end of the year it'll have 80, and by then I'll know what the next feature should be.</p>
 
-    <p>The friction is gone. That was the whole project.</p>
+    <p>The friction is gone. That's what I was after all along.</p>
 
     <hr>
 
-    <p><em>The cookbook is at <a href="/recipes.html">brooksgroves.com/recipes.html</a>. The whole site is <a href="https://github.com/bdgroves/bdgroves.github.io">open source on GitHub</a>. The Worker is not — it's holding my keys.</em></p>
+    <p><em>The cookbook is at <a href="/recipes.html">brooksgroves.com/recipes.html</a>. The whole site is <a href="https://github.com/bdgroves/bdgroves.github.io">open source on GitHub</a>. The Worker isn't, since it's holding my keys.</em></p>
 
   </div>
 

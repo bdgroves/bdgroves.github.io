@@ -275,7 +275,7 @@
   <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/blog/img/humphreys-orbit/og.jpg.w1600.webp" alt="" decoding="async" fetchpriority="high" srcset="/img-opt/blog/img/humphreys-orbit/og.jpg.w640.webp 640w, /img-opt/blog/img/humphreys-orbit/og.jpg.w1600.webp 1200w" sizes="(max-width: 1140px) 100vw, 1100px"></figure><!-- POST-COVER:END -->
   <div class="article-body">
 
-    <p>Back in April I wrote about <a href="/blog/forge3d-post.html">my first week with forge3d</a>, and I admitted something a little funny: my favorite image had nothing to do with the GPU. <em>&ldquo;No interactive viewer. No dramatic camera flythrough.&rdquo;</em> Just Python, elevation, light and composition.</p>
+    <p>Back in April I wrote about <a href="/blog/forge3d-post.html">my first week with forge3d</a>, and I admitted something funny: my favorite image had nothing to do with the GPU. <em>&ldquo;No interactive viewer. No dramatic camera flythrough.&rdquo;</em> Just Python, elevation, light and composition.</p>
 
     <p>Six months later, I finally went and made the dramatic camera flythrough.</p>
 
@@ -294,9 +294,9 @@
 
     <h2>Why Humphreys</h2>
 
-    <p>Humphreys Peak is the highest point in Arizona, the top of the San Francisco Peaks just north of Flagstaff. The Peaks are what&rsquo;s left of a big stratovolcano. Collapse and erosion hollowed its top out into a horseshoe-shaped valley called the Inner Basin, and the summits you see today &mdash; Humphreys, Agassiz, Fremont, Doyle &mdash; are pieces of its old rim.</p>
+    <p>Humphreys Peak is the highest point in Arizona, the top of the San Francisco Peaks just north of Flagstaff. The Peaks are what&rsquo;s left of a big stratovolcano. Collapse and erosion hollowed its top out into a horseshoe-shaped valley called the Inner Basin, and the summits you see today (Humphreys, Agassiz, Fremont, Doyle) are pieces of its old rim.</p>
 
-    <p>That makes it a great subject for a camera that goes all the way around. From one side it&rsquo;s a single mountain. Come round to the other and the whole thing opens up, and you&rsquo;re looking straight down into the old volcano.</p>
+    <p>That makes it a good mountain to circle with a camera. From one side it&rsquo;s a single mountain. Come round to the other and the whole thing opens up, and you&rsquo;re looking straight down into the old volcano.</p>
 
     <h2>How It&rsquo;s Built</h2>
 
@@ -304,7 +304,7 @@
 
     <ol class="step-list">
       <li><strong>Elevation.</strong> A 20 km square of USGS 3DEP around the summit at 10 m, requested straight from the USGS ImageServer in UTM zone 12N, so every pixel is square and in metres.</li>
-      <li><strong>Imagery.</strong> The USGS National Map aerial layer for exactly the same square, stitched from sixteen 1,024-pixel tiles into one 4,096-pixel image &mdash; about 5 m a pixel. Both sources are public domain.</li>
+      <li><strong>Imagery.</strong> The USGS National Map aerial layer for exactly the same square, stitched from sixteen 1,024-pixel tiles into one 4,096-pixel image, about 5 m a pixel. Both sources are public domain.</li>
       <li><strong>The orbit.</strong> forge3d&rsquo;s viewer loads the terrain, drapes the imagery, and renders one frame per camera position: 601 frames, one full turn in 20 seconds, lit by a late-afternoon sun.</li>
       <li><strong>The finish.</strong> A pass in plain Python that swaps in a sky, adds the labels, and hands the frames to ffmpeg.</li>
     </ol>
@@ -323,15 +323,15 @@
 
     <p>The orbit centres on the highest cell in the DEM, so pointing it at a different mountain is just a different GeoTIFF.</p>
 
-    <h2>Three Things I Got Wrong</h2>
+    <h2>What I Got Wrong</h2>
 
     <p><strong>My first renders were a blank white screen.</strong> The forge3d docs describe the viewer&rsquo;s camera distances in &ldquo;terrain-width world units,&rdquo; so I sized everything in pixels: a 2,000-pixel DEM, a camera 840 units out. Nothing showed up. The viewer&rsquo;s own stats gave it away: its camera anchor was sitting at easting 438,384, northing 3,911,670. The viewer had read the GeoTIFF&rsquo;s coordinates and was working in real metres, so my camera was parked somewhere inside the mountain. Once I switched to metres, exaggeration became a plain number too: 1.0 is true scale.</p>
 
-    <p><strong>The built-in labels floated.</strong> forge3d can draw labels, and my first version used them. They came out small, a little soft, and hanging well above the summits. So I moved them out of the renderer. forge3d&rsquo;s orbit camera is simple enough to reproduce exactly &mdash; the eye sits at the target plus <code>r&middot;(sin&theta; cos&phi;, cos&theta;, sin&theta; sin&phi;)</code>, looking back with a vertical field of view &mdash; so for every frame I can project each summit onto the image myself and draw the label in Roboto with a proper dark halo. To make sure the maths matched, I painted a red dot on the test imagery at the summit and checked that my projected point landed on it. It landed right on it.</p>
+    <p><strong>The built-in labels floated.</strong> forge3d can draw labels, and my first version used them. They came out small, a little soft, and hanging well above the summits. So I moved them out of the renderer. forge3d&rsquo;s orbit camera is simple enough to reproduce exactly. The eye sits at the target plus <code>r&middot;(sin&theta; cos&phi;, cos&theta;, sin&theta; sin&phi;)</code>, looking back with a vertical field of view. So for every frame I can project each summit onto the image myself and draw the label in Roboto with a proper dark halo. To make sure the maths matched, I painted a red dot on the test imagery at the summit and checked that my projected point landed on it. It landed right on it.</p>
 
     <p>Owning the labels bought two more things. A label now hides when the mountain passes in front of it, because each frame marches a line of sight from the camera to the summit across the DEM. And when two labels collide as the ridge lines up with the camera, the higher peak wins and the other fades out instead of stacking on top.</p>
 
-    <p><strong>The sky wouldn&rsquo;t turn blue.</strong> forge3d has a background colour setting, but I couldn&rsquo;t get it to take in the viewer mode I was using for shadows. The background it does draw is a perfectly flat off-white, though, so the finishing pass keys it out &mdash; background-coloured pixels connected to the top edge &mdash; and puts a gradient sky behind the mountain. Growing that mask by a single pixel swallows the anti-aliased rim, so there&rsquo;s no white fringe on the ridgeline.</p>
+    <p><strong>The sky wouldn&rsquo;t turn blue.</strong> forge3d has a background colour setting, but I couldn&rsquo;t get it to take in the viewer mode I was using for shadows. The background it does draw is a perfectly flat off-white, though, so the finishing pass keys it out (background-coloured pixels connected to the top edge) and puts a gradient sky behind the mountain. Growing that mask by a single pixel swallows the anti-aliased rim, so there&rsquo;s no white fringe on the ridgeline.</p>
 
     <h2>A Note on GPUs</h2>
 

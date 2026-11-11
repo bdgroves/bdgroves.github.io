@@ -280,7 +280,7 @@
   <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/images/features/solstice-hero.jpg.w1600.webp" alt="" decoding="async" fetchpriority="high" srcset="/img-opt/images/features/solstice-hero.jpg.w640.webp 640w, /img-opt/images/features/solstice-hero.jpg.w1600.webp 1600w" sizes="(max-width: 1140px) 100vw, 1100px"></figure><!-- POST-COVER:END -->
   <div class="article-body">
 
-    <p>Back in April I built <a href="https://brooksgroves.com/solstice/" target="_blank">SOLSTICE</a>, a page that watches the sky over Chaco Canyon in New Mexico, the same sky the people who built its great houses were watching a thousand years ago. This fall I came back to it with everything I&rsquo;ve learned from <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a> since, and ended up rebuilding most of it. The big idea of the new version is simple: at Chaco, the horizon isn&rsquo;t flat. The canyon walls are the horizon, and the skyline is the calendar.</p>
+    <p>Back in April I built <a href="https://brooksgroves.com/solstice/" target="_blank">SOLSTICE</a>, a page that watches the sky over Chaco Canyon in New Mexico, the same sky the people who built its great houses were watching a thousand years ago. This fall I came back to it with everything I&rsquo;ve learned from <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a> since, and ended up rebuilding most of it. The new version starts from one idea: at Chaco, the horizon isn&rsquo;t flat. The canyon walls are the horizon, and the skyline is the calendar.</p>
 
     <div class="photo-block">
       <video id="sol-video" autoplay muted loop playsinline controls preload="metadata"
@@ -304,12 +304,12 @@
 
     <h2>The flight</h2>
 
-    <p>The camera flies the length of the canyon on the morning of the longest day, with the Sun placed where it will really be, low in the northeast, and the shadows running west down the canyon ahead of it.</p>
+    <p>The camera flies the length of the canyon on the morning of the longest day, with the Sun placed where it will actually be, low in the northeast, and the shadows running west down the canyon ahead of it.</p>
 
     <ul>
       <li><strong>Fajada Butte.</strong> It opens east of the butte that holds the Sun Dagger, swings around it, and turns west.</li>
       <li><strong>Una Vida and Hungo Pavi.</strong> Two of the oldest great houses, tucked in close under the north wall.</li>
-      <li><strong>Chetro Ketl and Pueblo Bonito.</strong> The heart of the canyon. Bonito&rsquo;s big D-shape is still in the cliff&rsquo;s shadow while the canyon floor in front of it is already lit.</li>
+      <li><strong>Chetro Ketl and Pueblo Bonito.</strong> The center of the canyon. Bonito&rsquo;s big D-shape is still in the cliff&rsquo;s shadow while the canyon floor in front of it is already lit.</li>
       <li><strong>Kin Kletso to Pe&ntilde;asco Blanco.</strong> Out along the north wall to the great house at the west end, near the painted panel often linked to the supernova of 1054.</li>
     </ul>
 
@@ -333,13 +333,13 @@
 
     <h2>What changed</h2>
 
-    <p>Going back through it carefully, I found a few things I&rsquo;d taken on trust in April that didn&rsquo;t hold up. Fixing them was honestly the best part, because each one taught me something about the place.</p>
+    <p>Going back through it carefully, I found a few things I&rsquo;d taken on trust in April that didn&rsquo;t hold up. Fixing them turned out to be my favourite part, because each one taught me something about the place.</p>
 
     <ul>
       <li><strong>The Casa Rinconada number.</strong> The old page waited for the sunrise to reach 66.5&deg;. That number is 90&deg; minus the tilt of the Earth&rsquo;s axis, not a sunrise direction, so the alignment light could never switch on. At Chaco&rsquo;s latitude the summer solstice Sun rises at about 59.8&deg; on a flat horizon, and at 61.6&deg; over Casa Rinconada&rsquo;s own skyline.</li>
       <li><strong>The Casa Rinconada story is debated.</strong> Light through a northeast window does reach a wall niche after solstice sunrise, but that part of the wall was rebuilt after the 1930s excavation, and a roof post would likely have blocked the beam. The page now tells it that way.</li>
       <li><strong>The sites moved.</strong> Some of my site markers were off by a few hundred metres, and Wijiji by four kilometres. All eleven now come from OpenStreetMap and Wikipedia and were checked against 0.6-metre aerial photos.</li>
-      <li><strong>The supernova panel</strong> is at Pe&ntilde;asco Blanco, at the west end of the canyon, not near Fajada Butte. And the citation I&rsquo;d attached to Casa Rinconada was really about the Moon markings on Fajada Butte.</li>
+      <li><strong>The supernova panel</strong> is at Pe&ntilde;asco Blanco, at the west end of the canyon, not near Fajada Butte. And the citation I&rsquo;d attached to Casa Rinconada was actually about the Moon markings on Fajada Butte.</li>
       <li><strong>The Moon&rsquo;s phase</strong> was being guessed from how much of it was lit, which can&rsquo;t tell a waxing Moon from a waning one. It now uses the Moon&rsquo;s angle from the Sun.</li>
     </ul>
 
@@ -347,7 +347,7 @@
 
     <h2>forge3d with no graphics card</h2>
 
-    <p>In April I wrote that rendering on GitHub&rsquo;s servers &ldquo;isn&rsquo;t practical,&rdquo; since they have no GPU. It turns out it is, just slowly. forge3d draws with Vulkan, and Mesa ships a software Vulkan driver that runs on an ordinary CPU. With a virtual display in front of it, the forge3d terrain viewer runs headless on a GitHub Actions machine. Each frame takes about twenty seconds, so the 1,651 frames of the flyover are split across thirty jobs that run side by side, then stitched together with ffmpeg and committed back to the site.</p>
+    <p>In April I wrote that rendering on GitHub&rsquo;s servers &ldquo;isn&rsquo;t practical,&rdquo; since they have no GPU. It turns out it is. It&rsquo;s slow, that&rsquo;s all. forge3d draws with Vulkan, and Mesa ships a software Vulkan driver that runs on an ordinary CPU. With a virtual display in front of it, the forge3d terrain viewer runs headless on a GitHub Actions machine. Each frame takes about twenty seconds, so the 1,651 frames of the flyover are split across thirty jobs that run side by side, then stitched together with ffmpeg and committed back to the site.</p>
 
     <ol class="step-list">
       <li><strong>The shape is USGS lidar.</strong> The whole canyon, about 22 by 20 kilometres, drawn in layers so the ground near the camera is as sharp as the data allows (more on that below).</li>
@@ -366,7 +366,7 @@
 
     <p>A day after this went up, I wanted the ground sharper, so I went looking for better lidar. It turned out the lidar was already good. The catch was forge3d&rsquo;s viewer, which squeezes any terrain down to about 2,048 points across. Spread over 22 kilometres of canyon, that&rsquo;s one point every 11 metres, however fine the data underneath. The fix was to draw every frame in layers with the same camera and the same Sun: the whole canyon for the horizon, a few kilometres around the camera a little sharper, and the ground right below it sharpest of all. Each layer stays under the limit, and the finer one wins wherever it has ground.</p>
 
-    <p>Then came the real surprise. USGS&rsquo;s finished elevation product has a hole right over the canyon core, the square kilometre around Pueblo Bonito, and it fills the hole with much coarser data. A newer survey was flown over Chaco but only published as raw point clouds, so I borrowed the trick from <a href="/blog/project-kiva-post.html">Project Kiva</a>: download the tiles near each great house, keep the laser returns that reached the ground, and grid them at half a metre. That&rsquo;s 89 tiles with 10 to 17 ground points in every square metre.</p>
+    <p>Then came the surprise. USGS&rsquo;s finished elevation product has a hole right over the canyon core, the square kilometre around Pueblo Bonito, and it fills the hole with much coarser data. A newer survey was flown over Chaco but only published as raw point clouds, so I borrowed the trick from <a href="/blog/project-kiva-post.html">Project Kiva</a>: download the tiles near each great house, keep the laser returns that reached the ground, and grid them at half a metre. That&rsquo;s 89 tiles with 10 to 17 ground points in every square metre.</p>
 
     <div class="photo-block">
       <img src="/img-opt/blog/img/solstice-revisited/bonito-lidar-before-after.jpg.w1600.webp" alt="Two shaded-relief views of the same 600-metre square around Pueblo Bonito. Left, from the USGS elevation service: a soft blur with the canyon wall barely shown. Right, half-metre lidar from the raw point clouds: the D-shaped great house and its walls, the boulders below the cliff, the park road and the arroyo, all crisp" loading="lazy" decoding="async" srcset="/img-opt/blog/img/solstice-revisited/bonito-lidar-before-after.jpg.w640.webp 640w, /img-opt/blog/img/solstice-revisited/bonito-lidar-before-after.jpg.w1600.webp 1205w" sizes="(max-width: 760px) 100vw, 760px">
@@ -395,7 +395,7 @@
 
     <h2>Last thing</h2>
 
-    <p>A daily job still updates the sky every morning, so the page keeps watching even when I&rsquo;m not. Thanks again to Milos Popovic for forge3d; this is the first time I&rsquo;ve run it without a graphics card at all, and it held up beautifully. And the most important line on the page belongs here too: Chaco Canyon is the ancestral homeland of the Pueblo peoples and the Din&eacute;, and a sacred place to them today.</p>
+    <p>A daily job still updates the sky every morning, so the page keeps watching even when I&rsquo;m not. Thanks again to Milos Popovic for forge3d. This is the first time I&rsquo;ve run it without any graphics card, and it held up fine. The most important line on the page belongs here too: Chaco Canyon is the ancestral homeland of the Pueblo peoples and the Din&eacute;, and a sacred place to them today.</p>
 
     <p>Live at <a href="https://brooksgroves.com/solstice/" target="_blank">brooksgroves.com/solstice</a> &middot; code at <a href="https://github.com/bdgroves/solstice" target="_blank">github.com/bdgroves/solstice</a> &middot; the first build post is <a href="/blog/solstice-post.html">here</a>.</p>
 

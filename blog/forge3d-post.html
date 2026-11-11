@@ -270,11 +270,11 @@
 
     <p>Every once in a while a new geospatial tool shows up and you can tell immediately it has range.</p>
 
-    <p>That was my reaction to <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a>, a new Python package by Milos Popovic: a GPU-accelerated 3D terrain renderer built in Rust and shipped as prebuilt Python wheels. No Rust toolchain. No elaborate setup. Just <code>pip install forge3d</code> and go.</p>
+    <p>That was my reaction to <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a>, a new Python package by Milos Popovic: a GPU-accelerated 3D terrain renderer built in Rust and shipped as prebuilt Python wheels. No Rust toolchain and no elaborate setup: you type <code>pip install forge3d</code> and go.</p>
 
-    <p>That is already a pretty compelling sentence. But what got me interested was not just the technical stack. It was the promise of a terrain workflow that felt fast, modern, and native to Python. So I did what I usually do when I find a new library that looks promising: I spun up an isolated pixi environment, opened a few notebooks, and started poking at it until I understood the shape of the thing.</p>
+    <p>That&rsquo;s already a pretty good pitch. What got me interested, though, was the promise of a terrain workflow that felt fast and modern and at home in Python. So I did what I usually do when I find a new library that looks promising: I spun up an isolated pixi environment, opened a few notebooks, and started poking at it until I understood the shape of the thing.</p>
 
-    <p>And honestly, I was up and running much faster than I expected.</p>
+    <p>I was up and running much faster than I expected.</p>
 
     <!-- HERO IMAGE — Rainier -->
     <div class="photo-block">
@@ -284,25 +284,25 @@
 
     <h2>Why I Tried It</h2>
 
-    <p>Washington State has incredibly good open LiDAR data, so it felt like the obvious place to start. I mostly wanted to see what forge3d could do — especially with lighting, relief, and terrain shading — and one of the nicest surprises was how quickly I got to something usable.</p>
+    <p>Washington State has very good open LiDAR data, so it was the obvious place to start. I mostly wanted to see what forge3d could do with lighting, relief and terrain shading. One of the nicest surprises was how quickly I got to something usable.</p>
 
-    <p>I had been doing similar terrain work in R with Rayshader, and this felt much faster to get off the ground. Once I understood the basics, it really started to open up. The bottleneck was no longer the software. It was just my own imagination, plus however much great open LiDAR data I could find.</p>
+    <p>I had been doing similar terrain work in R with Rayshader, and this was much faster to get off the ground. Once I understood the basics, it opened up fast. After that the software wasn&rsquo;t the bottleneck anymore. My own imagination was, plus however much good open LiDAR data I could find.</p>
 
-    <p>That is probably the best compliment I can give a new geospatial tool. It got out of the way quickly enough that I could start thinking about images instead of setup.</p>
+    <p>That&rsquo;s probably the best compliment I can give a new geospatial tool: it got out of the way fast enough that I could start thinking about images instead of setup.</p>
 
     <h2>First Impressions</h2>
 
-    <p>What stood out right away was that forge3d seems aimed at actual geospatial users, not just graphics people. Even early on, it already has the bones of a serious terrain workflow: DEM loading and terrain rendering, a large colormap catalog, CRS and reprojection support, Jupyter support, vector overlays, labels, and point cloud handling, and a Python API that is readable enough to learn from directly.</p>
+    <p>What stood out right away was that forge3d seems aimed at people who make maps, and not only at graphics people. Even this early, it already has the bones of a serious terrain workflow: DEM loading and terrain rendering, a large colormap catalog, CRS and reprojection support, Jupyter support, vector overlays, labels, and point cloud handling, and a Python API that is readable enough to learn from directly.</p>
 
-    <p>That last part matters more than people admit. A lot of geospatial libraries technically work, but make you fight them. This one feels like it wants you to get from raw elevation data to a render worth keeping with as little ceremony as possible. That is a very good instinct for a mapping library.</p>
+    <p>That last part matters more than people admit. Plenty of geospatial libraries technically work but make you fight them. This one seems to want you to get from raw elevation data to a render worth keeping with as little ceremony as possible, which is a good instinct for a mapping library.</p>
 
     <h2>I Started With Mount St. Helens</h2>
 
-    <p>I did not start by trying to reproduce the polished hero renders from the project page. I started with Mount St. Helens.</p>
+    <p>I didn&rsquo;t start by trying to reproduce the polished hero renders from the project page. I started with Mount St. Helens.</p>
 
-    <p>Partly because it is one of the most recognizable volcanic landscapes in the Pacific Northwest, and partly because it is just a great terrain subject. The crater, the blast zone, the radial drainage, the contrast between broad landforms and fine surface texture — it gives you a lot to work with very quickly.</p>
+    <p>Partly because it&rsquo;s one of the most recognizable volcanic landscapes in the Pacific Northwest, and partly because it&rsquo;s a great terrain subject. Between the crater, the blast zone, the radial drainage and the contrast of broad landforms with fine surface texture, it gives you a lot to work with right away.</p>
 
-    <p>It also made for a good test case because Washington's LiDAR data is good enough that you can really see the difference when you start pushing resolution. That led me to make three images: a 10-meter vs 1-meter resolution comparison, a standalone annotated terrain plate, and eventually a render of Crater Lake just to see how the workflow handled a completely different landform.</p>
+    <p>It was a good test case for another reason, too: Washington's LiDAR data is good enough that you can see the difference as you push the resolution. That led me to make three images: a 10-meter vs 1-meter resolution comparison, a standalone annotated terrain plate, and eventually a render of Crater Lake just to see how the workflow handled a completely different landform.</p>
 
     <!-- MT ST HELENS SINGLE -->
     <div class="photo-block">
@@ -312,9 +312,9 @@
 
     <h2>The Resolution Comparison</h2>
 
-    <p>This is where things got interesting. Same mountain, same color scale, same basic framing — but the jump from 10-meter USGS 3DEP data to 1-meter Washington DNR LiDAR changes the image completely. Gullies sharpen. Flow structure appears. Surface texture starts to read in a way that feels much more immediate.</p>
+    <p>Same mountain, same color scale, same basic framing, and still the jump from 10-meter USGS 3DEP data to 1-meter Washington DNR LiDAR changes the image completely. Gullies sharpen. Flow structure appears. The surface texture reads much more directly.</p>
 
-    <p>That is where the package stops being "cool rendering tech" and starts becoming genuinely useful. The difference is not subtle. It is the difference between a terrain render that communicates landform and one that communicates geology.</p>
+    <p>That&rsquo;s where the package stops being "cool rendering tech" and starts being useful. The difference isn&rsquo;t subtle: one render shows you the landform, and the other starts to show you the geology.</p>
 
     <!-- RESOLUTION COMPARISON -->
     <div class="photo-block">
@@ -324,9 +324,9 @@
 
     <h2>Then Crater Lake</h2>
 
-    <p>After St. Helens I wanted to test something structurally different — a caldera instead of a cone. Crater Lake is a great subject for exactly the same reasons St. Helens is: dramatic landform, clear story, and terrain that earns its elevation data.</p>
+    <p>After St. Helens I wanted to test something structurally different, a caldera instead of a cone. Crater Lake works for the same reasons St. Helens does: a dramatic landform with a clear story, and terrain that earns its elevation data.</p>
 
-    <p>The USGS 3DEP data handled the caldera rim and the deep lake basin cleanly. Wizard Island reads clearly in the render. The color scale at this elevation range does exactly what you want — it separates the water, the rim, and the surrounding plateau without any manual intervention.</p>
+    <p>The USGS 3DEP data handled the caldera rim and the deep lake basin cleanly, and Wizard Island stands out in the render. At this elevation range the color scale does what you want, separating the water, the rim and the surrounding plateau without any hand-tuning.</p>
 
     <!-- CRATER LAKE -->
     <div class="photo-block">
@@ -334,35 +334,35 @@
       <p class="photo-caption">Crater Lake National Park, Oregon · deepest lake in the US · rim elevation 2,716m · USGS 3DEP · rendered with forge3d + matplotlib · Wizard Island reads clearly in the basin.</p>
     </div>
 
-    <h2>The Funny Part: My Favorite Output Wasn't Really About the GPU</h2>
+    <h2>My Favorite Output Wasn't About the GPU</h2>
 
-    <p>The render I liked most was built with a pretty plain stack: forge3d for the terrain workflow, NumPy for the hillshade-style processing, and matplotlib for composition and output. No interactive viewer. No dramatic camera flythrough. No complicated rendering pipeline. Just Python, elevation, light, and composition.</p>
+    <p>Funny enough, the render I liked most was built with a pretty plain stack: forge3d for the terrain workflow, NumPy for the hillshade-style processing, and matplotlib for composition and output. There was no interactive viewer, no camera flythrough and no complicated rendering pipeline. Python, elevation, light and composition, and that was it.</p>
 
-    <p>That is not a criticism of forge3d. If anything, it is a point in its favor. Good tools do not force you into a single aesthetic or workflow. They give you leverage. forge3d seems built for high-end interactive and rendered output, but it also works as a very clean way into terrain data and scene-making even when the final image still passes through the Python tools you already trust.</p>
+    <p>I count that as a point in forge3d&rsquo;s favor. Good tools don&rsquo;t force you into one look or one workflow. forge3d seems built for high-end interactive and rendered output, but it also works as a clean way into terrain data and scene-making, even when the final image goes through the Python tools you already trust.</p>
 
     <h2>What Stood Out</h2>
 
-    <p><strong>Packaging that makes experimentation easy.</strong> A Rust-backed rendering library shipped as Python wheels is just easier to say yes to. There is a big difference between "install this and start playing" and "clear your afternoon because your build chain might break." forge3d makes experimentation easy, which is exactly what a young library should do.</p>
+    <p><strong>Packaging that makes experimentation easy.</strong> A Rust-backed rendering library shipped as Python wheels is easier to say yes to. There&rsquo;s a big difference between "install this and start playing" and "clear your afternoon because your build chain might break." Making it easy to try things is exactly what a young library should do.</p>
 
-    <p><strong>It feels designed for GIS people.</strong> This is not a graphics engine pretending to understand maps. The examples, terminology, and data model all suggest a project built by somebody who understands what geospatial users actually want to do: load terrain, manage coordinate systems, bring in overlays, place labels, and make strong images.</p>
+    <p><strong>It feels designed for GIS people.</strong> It doesn&rsquo;t read like a graphics engine pretending to understand maps. The examples, the terminology and the data model all suggest somebody who knows what geospatial users want to do: load terrain, manage coordinate systems, bring in overlays, place labels and make strong images.</p>
 
-    <p><strong>The source is readable.</strong> I like learning new libraries from the source when the docs are still evolving. forge3d is readable enough that this actually feels productive rather than intimidating. That matters a lot early in a project's life.</p>
+    <p><strong>The source is readable.</strong> I like learning new libraries from the source while the docs are still catching up, and forge3d&rsquo;s code is clear enough that this is productive instead of intimidating. That matters early in a project's life.</p>
 
     <h2>Why I Think It's Worth Watching</h2>
 
-    <p>A lot of geospatial Python tools are either analytically strong and visually awkward, or visually strong and disconnected from everyday GIS workflows. forge3d looks like it wants to bridge that gap.</p>
+    <p>A lot of geospatial Python tools are either analytically strong and visually awkward, or visually strong and disconnected from everyday GIS workflows. forge3d looks like it&rsquo;s trying to be both.</p>
 
-    <p>Terrain visualization is still more fragmented than it should be. You can do it in desktop GIS. You can do it in game engines. You can do it in custom graphics stacks. You can absolutely brute-force it in matplotlib. But there is still room for a tool that says: here is a modern renderer, here is a Python API, and here is a workflow that feels natural to geospatial people. That is a real niche.</p>
+    <p>Terrain visualization is still more scattered than it should be. You can do it in desktop GIS, in game engines or in custom graphics stacks, and you can brute-force it in matplotlib. There&rsquo;s still room for a tool that hands you a modern renderer and a Python API, with a workflow that feels natural to geospatial people. That&rsquo;s a real niche.</p>
 
-    <p>And right now it feels like there is a lot of exciting geospatial tooling coming online in 2026. forge3d feels like part of that wave.</p>
+    <p>A lot of exciting geospatial tooling is coming online in 2026, and forge3d feels like part of that wave.</p>
 
     <h2>What I Want to Do Next</h2>
 
-    <p>Now that I have the basic workflow working, I want to push it harder. The next thing on my list: find the highest-grade LiDAR I can get my hands on for Mount Rainier specifically and see what 1-meter resolution does to that summit terrain. The 30m DEM render above is already strong. What the WA DNR LiDAR does to it is going to be something else.</p>
+    <p>Now that the basic workflow runs, I want to push it harder. Next on my list is finding the highest-grade LiDAR I can get my hands on for Mount Rainier and seeing what 1-meter resolution does to that summit terrain. The 30m DEM render above already looks good. I expect the WA DNR LiDAR to turn it into something else.</p>
 
-    <p>That is where I ended up with forge3d. Once I got the hang of it, I felt like I was mostly limited by my own ideas — and by the quality of the open data I could find. That is a very fun place to be. For a first pass, that is about as strong an endorsement as I can give. I installed it because I was curious. A few notebooks later, I had images I genuinely wanted to keep.</p>
+    <p>Once I got the hang of forge3d, I was mostly limited by my own ideas and by the open data I could find, which is a fun place to be. For a first pass, I can&rsquo;t give a tool a much stronger endorsement than that.</p>
 
-    <p>That is usually a sign.</p>
+    <p>I installed it because I was curious. A few notebooks later, I had images I wanted to keep.</p>
 
     <p><em>Update, September 2026:</em> I finally made the camera flythrough. <a href="/blog/humphreys-orbit-post.html">Once Around Humphreys Peak</a> orbits Arizona&rsquo;s highest summit with USGS imagery draped over the terrain.</p>
 

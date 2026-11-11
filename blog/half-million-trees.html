@@ -385,17 +385,17 @@
 
   <p class="dek">Two days, one warehouse, and what the federal forest inventory says about Washington when you finally ask it properly.</p>
 
-  <p class="lede">I have been making maps for years and databases for almost as long, and somewhere in there I developed a habit I am not proud of: I would pull data, wrangle it in Python, write out a JSON file, and push it to a static site. It worked. It still works &mdash; half my projects run that way and they run without me touching them all summer.</p>
+  <p class="lede">I&rsquo;ve been making maps for years and databases for almost as long, and somewhere in there I picked up a habit I&rsquo;m not proud of: I would pull data, wrangle it in Python, write out a JSON file, and push it to a static site. It worked. It still works. Half my projects run that way, and they run all summer without me touching them.</p>
 
-  <p>But it is a script that computes and writes and <em>hopes</em>. There is nothing in it that tells you when you are wrong.</p>
+  <p>But it&rsquo;s a script that computes and writes and <em>hopes</em>. Nothing in it tells you when you&rsquo;re wrong.</p>
 
-  <p>So I spent a weekend learning two tools I had read about and never touched &mdash; Snowflake and dbt &mdash; by pointing them at data I actually care about. Rivers first. Then, when the rivers ran out of things to say, forests.</p>
+  <p>So I spent a weekend learning two tools I had read about and never touched, Snowflake and dbt, by pointing them at data I actually care about. Rivers first. Then, when the rivers ran out of things to say, forests.</p>
 
   <p>This is what came out.</p>
 
 <h2>The pile</h2>
 
-<p>By the end of it the warehouse held six different shapes of data, which was the point. I did not want one clean dataset. I wanted the mess that real platforms have to swallow.</p>
+<p>By the end of it the warehouse held six different shapes of data, which was the point. I didn&rsquo;t want one clean dataset. I wanted the mess that real platforms have to swallow.</p>
 
 <div class="stat-row">
   <div class="stat"><span class="n">531,490</span><span class="l">Trees measured</span></div>
@@ -404,13 +404,13 @@
   <div class="stat"><span class="n">~840k</span><span class="l">Rows total</span></div>
 </div>
 
-<p>Alpine lake chemistry, sampled by hand a few times a year. Streamgage telemetry every fifteen minutes. Thirty-six years of daily river flow. A stream network I derived myself from LiDAR. Then the big one: the <strong>Forest Inventory and Analysis</strong> database — the federal program that has been sending crews into the woods with calipers since Congress mandated it in 1928.</p>
+<p>Alpine lake chemistry, sampled by hand a few times a year. Streamgage telemetry every fifteen minutes. Thirty-six years of daily river flow. A stream network I derived myself from LiDAR. Then the big one: the <strong>Forest Inventory and Analysis</strong> database, from the federal program that has been sending crews into the woods with calipers since Congress mandated it in 1928.</p>
 
 <p>FIA is a strange and wonderful thing. Real people walk to a fixed point in the forest and measure every tree: species, diameter, height, whether it is alive. They come back a decade later and do it again. For Washington that is 531,490 tree measurements across 23,099 plots, going back to 2001.</p>
 
   <div class="aside">
     <div class="aside-title">How the Decade-Later Part Actually Works</div>
-    <p>FIA does not survey a state all at once and then wait ten years to do it again. In the western US the plots are split into ten rotating panels, and one panel &mdash; roughly a tenth of all plots &mdash; gets measured every single year. By year ten the whole state has been covered once, and the crews are already back on panel one. The data arrives continuously; the ten-year figure is just how long a full lap takes.</p>
+    <p>FIA does not survey a state all at once and then wait ten years to do it again. In the western US the plots are split into ten rotating panels, and one panel (roughly a tenth of all plots) gets measured every year. By year ten the whole state has been covered once, and the crews are already back on panel one. The data arrives continuously; the ten-year figure is just how long a full lap takes.</p>
     <p>That is also what makes a burned-and-remeasured plot possible without planning for it. Nobody scheduled a crew to revisit fire scars. The panel was already going to be there on its normal rotation, fire or no fire.</p>
   </div>
 
@@ -418,11 +418,11 @@
 
 <figure>
   <img src="maps/01_biomass.png" alt="Map of Washington State showing forest inventory plots colored by live biomass per acre. A dense band of high-biomass plots runs down the west slope of the Cascades and across the Olympic Peninsula; the northeast is sparse and low.">
-  <figcaption>Live standing biomass, tons per acre, on 6,157 forest plots. Green and teal are heavy; purple is light. The empty middle is the Columbia Basin — shrub-steppe, no trees, no plots.</figcaption>
+  <figcaption>Live standing biomass, tons per acre, on 6,157 forest plots. Green and teal are heavy; purple is light. The empty middle is the Columbia Basin: shrub-steppe, so no trees and no plots.</figcaption>
   <div class="legend"><span>Light</span><span class="bar" style="background:linear-gradient(90deg,#7b5ea7,#3f8f8a,#3a7a3a);"></span><span>Heavy</span></div>
 </figure>
 
-<p>The first thing the data does is draw Washington's geography without being asked. That bright band down the west slope of the Cascades and out across the Olympics is the wet forest — Douglas-fir, western hemlock, western redcedar, growing in a place that gets rain. East of the crest it falls off a cliff.</p>
+<p>The first thing the data does is draw Washington's geography without being asked. That bright band down the west slope of the Cascades and out across the Olympics is the wet forest: Douglas-fir, western hemlock and western redcedar, growing in a place that gets rain. East of the crest it falls off a cliff.</p>
 
 <p>Then ownership turned out to be the more interesting cut.</p>
 
@@ -436,9 +436,9 @@
   </tbody>
 </table>
 
-<p>National park land carries <strong>2.7 times</strong> the standing wood per acre that private timberland does. Not because it grows better. Because nothing has ever been taken off it.</p>
+<p>National park land carries <strong>2.7 times</strong> the standing wood per acre that private timberland does. It doesn&rsquo;t grow any better there. Nothing has ever been taken off it.</p>
 
-<p>The old-growth column is the whole story in one number. Forest Service: 1,942 plots older than 150 years. Private: 107. Industrial timberland never gets there — it is harvested at forty or fifty and planted again. Two entirely different objectives, and you can see both of them in a single <code>GROUP BY</code>.</p>
+<p>The old-growth column is the whole story in one number. Forest Service: 1,942 plots older than 150 years. Private: 107. Industrial timberland never gets there. It&rsquo;s harvested at forty or fifty and planted again. Two different goals, and you can see both of them in a single <code>GROUP BY</code>.</p>
 
 <h2>Where it dies</h2>
 
@@ -448,7 +448,7 @@
   <div class="legend"><span>Healthy</span><span class="bar" style="background:linear-gradient(90deg,#e8ddd0,#b5473a,#7a1f16);"></span><span>Not</span></div>
 </figure>
 
-<p>About one tree in five in Washington is standing dead, which sounds alarming until you learn that FIA counts snags on purpose — dead wood is real forest structure and real habitat. The interesting part is <em>which</em> trees.</p>
+<p>About one tree in five in Washington is standing dead, which sounds alarming until you learn that FIA counts snags on purpose, because dead wood is real forest structure and real habitat. The interesting part is <em>which</em> trees.</p>
 
 <table>
   <thead><tr><th>Species</th><th>Where</th><th class="num">Trees</th><th class="num">Dead</th></tr></thead>
@@ -462,13 +462,13 @@
   </tbody>
 </table>
 
-<p>Those top two are not a coincidence. Whitebark and western white pine are both <em>five-needle</em> pines, and both are susceptible to white pine blister rust — a fungus that arrived from Europe over a century ago and has been working through their family ever since. Add mountain pine beetle and a hundred years of fire suppression and you get 58% mortality.</p>
+<p>Those top two are not a coincidence. Whitebark and western white pine are both <em>five-needle</em> pines, and both are susceptible to white pine blister rust, a fungus that arrived from Europe over a century ago and has been working through their family ever since. Add mountain pine beetle and a hundred years of fire suppression and you get 58% mortality.</p>
 
-<p>Whitebark pine was listed as federally threatened in 2022. I did not know that when I ran the query. The data told me there was something wrong with that species before I went looking for why.</p>
+<p>Whitebark pine was listed as federally threatened in 2022. I didn&rsquo;t know that when I ran the query. The data told me there was something wrong with that species before I went looking for why.</p>
 
-<blockquote>The bottom of the table is just as honest. Western redcedar at 14%. Alaska yellow-cedar at 12%. Pacific yew at 11%. Rot-resistant, long-lived, and they simply stand there.</blockquote>
+<blockquote>The bottom of the table is just as honest. Western redcedar at 14%. Alaska yellow-cedar at 12%. Pacific yew at 11%. Rot-resistant and long-lived, they stay standing.</blockquote>
 
-<p>And the reassuring one, if you happen to run a timber company: Douglas-fir, 161,839 trees, sitting at 21.3% — dead average. Boring. An entire regional industry depends on that number staying boring.</p>
+<p>And the reassuring one, if you happen to run a timber company: Douglas-fir, 161,839 trees, sitting at 21.3%. Dead average. Boring. An entire regional industry depends on that number staying boring.</p>
 
 <h2>Then I added fire</h2>
 
@@ -478,7 +478,7 @@
   <div class="legend"><span class="chip" style="background:#c8712a;"></span><span>Burned since 2000</span></div>
 </figure>
 
-<p>Here is the thing I had not appreciated until the two maps were sitting on top of each other:</p>
+<p>What I hadn&rsquo;t appreciated until the two maps were sitting on top of each other:</p>
 
 <blockquote><strong>Washington's best timber ground and its worst fire ground are largely different places.</strong> The high-biomass west slope rarely burns. The east side burns hard and carries a fraction of the wood.</blockquote>
 
@@ -486,14 +486,14 @@
 
 <figure>
   <img src="maps/04_fire_okanogan.png" alt="Detail map of Okanogan County, Washington, showing overlapping labeled wildfire perimeters including Tripod Complex 2006, Carlton Complex 2014, and North Star 2015.">
-  <figcaption>Okanogan County. Tripod Complex 2006. Colockum Tarps 2013. Carlton Complex 2014 — 256,000 acres, the largest single wildfire in state history, then and still. Then North Star, Reach, Stickpin and Carpenter Road, all in 2015. The darker patches burned twice inside a decade.</figcaption>
+  <figcaption>Okanogan County. Tripod Complex 2006. Colockum Tarps 2013. Carlton Complex 2014: 256,000 acres, the largest single wildfire in state history, then and still. Then North Star, Reach, Stickpin and Carpenter Road, all in 2015. The darker patches burned twice inside a decade.</figcaption>
 </figure>
 
 <h3>The measurement that actually worked</h3>
 
-<p>I had tried this before with rivers and failed. The idea was simple — find a big fire, compare streamflow before and after. But every gage inside the burn had been decommissioned years before the fire happened. The instruments were gone.</p>
+<p>I had tried this before with rivers and failed. The idea was simple: find a big fire, compare streamflow before and after. But every gage inside the burn had been decommissioned years before the fire happened. The instruments were gone.</p>
 
-<p>Forest plots do not have that problem. <strong>FIA revisits on a schedule regardless of what happens to the plot.</strong> Burn it to the ground and a crew still shows up a decade later to measure what is left.</p>
+<p>Forest plots don&rsquo;t have that problem. <strong>FIA revisits on a schedule regardless of what happens to the plot.</strong> Burn it to the ground and a crew still shows up a decade later to measure what is left.</p>
 
 <p>Which means a plot that burned in 2014 and got remeasured in 2019 carries <em>its own before-picture</em>. No control group needed. Each plot is its own control.</p>
 
@@ -504,37 +504,37 @@
   <div class="stat"><span class="n">73.9%</span><span class="l">Stems dead after</span></div>
 </div>
 
-<p>A megafire takes about two-thirds of the standing live wood and leaves three of every four stems dead. That is not a model. That is 203 identified plots, measured before, measured after.</p>
+<p>A megafire takes about two-thirds of the standing live wood and leaves three of every four stems dead. Those numbers come off 203 identified plots, measured before and measured after.</p>
 
 <h2>Where I was wrong</h2>
 
-<p>I want to be straight about this part, because it is the actual reason I bothered learning any of this.</p>
+<p>I want to be straight about this part, because it&rsquo;s the actual reason I bothered learning any of this.</p>
 
 <p>Over two days I made six confident predictions. <strong>Five were wrong.</strong></p>
 
-<p>I said Sierra rivers should peak in the evening as snowmelt travelled downstream. They peak in the <em>morning</em> — because streamside trees pull water out of the ground all day while they photosynthesize, and the river only recovers overnight. The trees are breathing and you can see it in the discharge record.</p>
+<p>I said Sierra rivers should peak in the evening as snowmelt travelled downstream. They peak in the <em>morning</em>, because streamside trees pull water out of the ground all day while they photosynthesize, and the river only recovers overnight. The trees are breathing and you can see it in the discharge record.</p>
 
 <p>I said reservoir-controlled reaches would be flashy. They are the <em>smoothest</em> water in the dataset; a dam is a shock absorber.</p>
 
 <p>I said small watersheds would be flashier than big ones. The correlation was <span class="kicker">−0.60</span> and looked textbook, right up until I dropped a single outlier creek and it collapsed to <span class="kicker">−0.24</span>. One data point was carrying the whole finding.</p>
 
-<p>I said fire damage should scale with fire size. It does — but in mortality, not biomass, and I had been reading the wrong column.</p>
+<p>I said fire damage should scale with fire size. It does, in mortality rather than biomass. I&rsquo;d been reading the wrong column.</p>
 
 <h3>And twice the data lied quietly</h3>
 
-<p>A float conversion appended <code>.0</code> to 157,871 identifiers. Nothing errored. Nothing warned. The join simply returned zero rows and the model built successfully with nothing in it.</p>
+<p>A float conversion appended <code>.0</code> to 157,871 identifiers. Nothing errored. Nothing warned. The join returned zero rows and the model built successfully with nothing in it.</p>
 
-<p>Then a percentage came back saying burned plots had <em>gained</em> 12.4% biomass, on ground where 71% of the stems were dead. That one was averaging ratios instead of taking a ratio of totals — a handful of near-empty plots with tiny denominators flipped the sign on 185 plots' worth of real destruction. The correct number was <strong>−62.3%</strong>.</p>
+<p>Then a percentage came back saying burned plots had <em>gained</em> 12.4% biomass, on ground where 71% of the stems were dead. That one came from averaging ratios instead of taking a ratio of totals. A handful of near-empty plots with tiny denominators flipped the sign on 185 plots' worth of real destruction. The correct number was <strong>−62.3%</strong>.</p>
 
   <div class="aside">
     <div class="aside-title">Ratio of Totals, Not Average of Ratios</div>
-    <p>Say two plots burned. Plot A had 2 tons of biomass before and 3 after &mdash; some regrowth, a <em>+50%</em> reading. Plot B had 200 tons before and 20 after &mdash; a <em>&minus;90%</em> reading. Average those two percentages and you get +50% and &minus;90% split down the middle: <em>&minus;20%</em>. Sounds like a moderate loss.</p>
-    <p>But Plot B lost 180 real tons. Plot A gained 1. Add up what actually existed &mdash; 202 tons before, 23 after &mdash; and the true change is <em>&minus;88.6%</em>, not &minus;20%. Averaging the percentages let a nearly-empty plot's noise carry the same vote as a fully-forested plot's collapse. Sum first, divide once, and the small plots stop drowning out the big ones.</p>
+    <p>Say two plots burned. Plot A had 2 tons of biomass before and 3 after (some regrowth), a <em>+50%</em> reading. Plot B had 200 tons before and 20 after, a <em>&minus;90%</em> reading. Average those two percentages and you get +50% and &minus;90% split down the middle: <em>&minus;20%</em>. Sounds like a moderate loss.</p>
+    <p>But Plot B lost 180 real tons. Plot A gained 1. Add up what actually existed, 202 tons before and 23 after, and the true change is <em>&minus;88.6%</em>, not &minus;20%. Averaging the percentages let a nearly-empty plot's noise carry the same vote as a fully-forested plot's collapse. Sum first, divide once, and the small plots stop drowning out the big ones.</p>
   </div>
 
 <blockquote>Neither of those looked broken. Both produced numbers you could put in a slide deck.</blockquote>
 
-<p>What caught them was not cleverness. It was that the metrics were already modeled, already tested, and the next question was one query away — so checking cost thirty seconds instead of an afternoon. And it was knowing enough about forests to look at a number and think <em>that cannot be right</em>.</p>
+<p>Cleverness didn&rsquo;t catch them. What did was that the metrics were already modeled and tested, and the next question was one query away, so checking cost thirty seconds instead of an afternoon. And it was knowing enough about forests to look at a number and think <em>that cannot be right</em>.</p>
 
 <h2>What I actually learned</h2>
 
@@ -542,17 +542,17 @@
 
 <p><strong>Separate storage from compute</strong> and you stop making tradeoffs between the two. The warehouse suspends sixty seconds after I stop typing. Two days of this cost approximately nothing.</p>
 
-<p><strong>Not everything should be JSON.</strong> API feeds with schemas I do not control go in as semi-structured. A documented federal CSV goes in as typed columns — 531,490 rows and 198 columns compressed to under ten megabytes because I chose correctly.</p>
+<p><strong>Not everything should be JSON.</strong> API feeds with schemas I don&rsquo;t control go in as semi-structured. A documented federal CSV goes in as typed columns: 531,490 rows and 198 columns compressed to under ten megabytes because I chose correctly.</p>
 
-<p><strong>Transformations should be software.</strong> Version-controlled, dependency-ordered, and tested. Seventy-three automated tests, and they earned it — they caught duplicate lab records, wrong unit casing, a whole unit family I had never heard of, and a join key pointed at the wrong column.</p>
+<p><strong>Transformations should be software.</strong> Version-controlled, dependency-ordered, and tested. Seventy-three automated tests, and they earned their keep. They caught duplicate lab records, wrong unit casing, a whole unit family I had never heard of, and a join key pointed at the wrong column.</p>
 
-<p>But the real lesson is smaller and older than any of that. Build the thing that argues back. A script gives you an answer. A modeled, tested warehouse gives you an answer <em>and</em> a fighting chance of noticing when the answer is nonsense.</p>
+<p>The bigger lesson is older than any of that: build the thing that argues back. A script gives you an answer. A modeled, tested warehouse gives you an answer <em>and</em> a fighting chance of noticing when it&rsquo;s nonsense.</p>
 
-<p>Five wrong guesses in two days is not a bad weekend. It is the job.</p>
+<p>Five wrong guesses in two days isn&rsquo;t a bad weekend. That&rsquo;s the job.</p>
 
 <hr>
 
-<p style="font-size:.88rem;color:var(--ink-soft);font-style:italic">Data: USDA Forest Service Forest Inventory and Analysis; USGS Water Data; NIFC InterAgencyFirePerimeterHistory; USFS and NPS boundaries. Maps built in QGIS. A caveat worth stating: FIA publishes plot coordinates fuzzed up to about a mile to protect landowner privacy, so everything here is honest at regional scale and unreliable at the parcel level. The fire perimeter record also under-represents state and private land and thins after 2019 — absence of a fire in that dataset does not mean the ground never burned.</p>
+<p style="font-size:.88rem;color:var(--ink-soft);font-style:italic">Data: USDA Forest Service Forest Inventory and Analysis; USGS Water Data; NIFC InterAgencyFirePerimeterHistory; USFS and NPS boundaries. Maps built in QGIS. A caveat worth stating: FIA publishes plot coordinates fuzzed up to about a mile to protect landowner privacy, so everything here is honest at regional scale and unreliable at the parcel level. The fire perimeter record also under-represents state and private land and thins after 2019, so the absence of a fire in that dataset doesn&rsquo;t mean the ground never burned.</p>
 
     <hr>
 

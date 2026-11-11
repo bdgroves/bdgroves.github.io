@@ -280,7 +280,7 @@
   <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/blog/img/tuolumne-migration/og-2.jpg.w1600.webp" alt="" decoding="async" fetchpriority="high" srcset="/img-opt/blog/img/tuolumne-migration/og-2.jpg.w640.webp 640w, /img-opt/blog/img/tuolumne-migration/og-2.jpg.w1600.webp 1600w" sizes="(max-width: 1140px) 100vw, 1100px"></figure><!-- POST-COVER:END -->
   <div class="article-body">
 
-    <p>I grew up in Groveland, in the foothills of Tuolumne County, and like a lot of foothill kids I eventually moved away. So here&rsquo;s a question I&rsquo;ve wondered about for a while: when people leave Tuolumne County, where do they go? And who&rsquo;s moving in?</p>
+    <p>I grew up in Groveland, in the foothills of Tuolumne County, and like a lot of foothill kids I eventually moved away. I&rsquo;ve wondered about this for a while: when people leave Tuolumne County, where do they go? And who&rsquo;s moving in?</p>
 
     <p>My hunch was that most of it is short hops. Lots of people heading down the hill to Modesto, and not so many going all the way to Florida. So I asked the data, and drew the answer as arcs rising out of Sonora over a 3D California, rendered in <a href="https://github.com/milos-agathon/forge3d" target="_blank" rel="noopener">forge3d</a>. The more people, the taller and thicker the arc, so big nearby flows tower and small far-away ones stay low.</p>
 
@@ -312,7 +312,7 @@
 
     <p>The hunch held up. Stanislaus County, right down Highway 108, is the biggest flow both ways. Over five years, about 1,100 people moved from Tuolumne to Stanislaus, and about 1,900 moved up the hill the other way. Calaveras, across the river, is next overall, with roughly 750 going and 800 coming.</p>
 
-    <p>The fun surprise was the blue. The Bay Area sends a lot more people up to Tuolumne than it gets back. From Alameda County, about 830 moved in while about 290 moved out. Santa Clara was about 750 in and 250 out, and Contra Costa about 610 in and 190 out. Southern California, by comparison, is a few thin threads, a couple hundred people each way per county over five years.</p>
+    <p>The blue surprised me. The Bay Area sends a lot more people up to Tuolumne than it gets back. From Alameda County, about 830 moved in while about 290 moved out. Santa Clara was about 750 in and 250 out, and Contra Costa about 610 in and 190 out. Southern California, by comparison, is a few thin threads, a couple hundred people each way per county over five years.</p>
 
     <p>This map uses the IRS&rsquo;s county-to-county migration data, which comes from the addresses on tax returns. It&rsquo;s recent and fairly precise, but it hides any flow of fewer than 20 returns a year. So out of state, only Reno and Phoenix make the cut. For everywhere else, I turned to the Census Bureau.</p>
 
@@ -327,13 +327,13 @@
 
     <p>Out of state, Utah (about 130 a year) and Texas (about 110) lead, then Oregon, Massachusetts, Washington and North Carolina. And Florida? About 23 people a year, all to one county in the Panhandle. That&rsquo;s the low, lonely thread on the right.</p>
 
-    <p>One honest caveat: these are survey estimates, and for small flows the margins of error are wide. Florida&rsquo;s 23 comes with a margin of &plusmn;37, so the real number could be anywhere from zero to about 60. The big picture is solid, though: most people who leave Tuolumne County don&rsquo;t go far.</p>
+    <p>A caveat: these are survey estimates, and for small flows the margins of error are wide. Florida&rsquo;s 23 comes with a margin of &plusmn;37, so the real number could be anywhere from zero to about 60. The big pattern holds up, though. Most people who leave Tuolumne County don&rsquo;t go far.</p>
 
     <h2>How I made it</h2>
 
     <ul>
       <li><strong>The data.</strong> IRS Statistics of Income county-to-county migration files, filtered to flows in and out of Tuolumne County and added up over five filing years. And the Census Bureau&rsquo;s ACS 2016&ndash;2020 county-to-county migration flows. The two count different things in different years, so I kept them on separate maps.</li>
-      <li><strong>The terrain.</strong> Elevation from the AWS Terrain Tiles, about a kilometer per grid cell for California and two for the country, exaggerated 6&times; and 10&times;. I colored it in a California palette: golden foothills, green forest, granite peaks, a deep blue Pacific. The neighboring states are a little dimmer.</li>
+      <li><strong>The terrain.</strong> Elevation from the AWS Terrain Tiles, about a kilometer per grid cell for California and two for the country, exaggerated 6&times; and 10&times;. I colored it in a California palette of golden foothills, green forest and granite peaks, with a deep blue Pacific. The neighboring states are a little dimmer.</li>
       <li><strong>The arcs.</strong> forge3d path-traces the terrain and also gives me a depth map. I wrote a small camera function that matches forge3d&rsquo;s exactly, then drew each arc on top and hid any part that passes behind a mountain. An arc&rsquo;s height and thickness grow with the number of people.</li>
       <li><strong>The film.</strong> 336 frames, each one path-traced, split across 20 GitHub Actions runners working at once, then stitched together with ffmpeg.</li>
       <li><strong>The code.</strong> All on GitHub: the <a href="https://github.com/bdgroves/bdgroves.github.io/blob/main/scripts/migration_data.py" target="_blank" rel="noopener">data script</a> and the <a href="https://github.com/bdgroves/bdgroves.github.io/tree/main/scripts/migration_arcs" target="_blank" rel="noopener">render scripts</a>.</li>
@@ -343,7 +343,7 @@
 
     <h2>Last thing</h2>
 
-    <p>I&rsquo;m one of these arcs myself, just from long before this data. If you&rsquo;re from Tuolumne County too, or from anywhere, I&rsquo;d love to hear where your arc went. And a big thank-you to Milos Popovic for forge3d, which keeps making ideas like this one fun to try.</p>
+    <p>I&rsquo;m one of these arcs myself, from long before this data. If you&rsquo;re from Tuolumne County too, or from anywhere, I&rsquo;d love to hear where your arc went. And a big thank-you to Milos Popovic for forge3d, which keeps making ideas like this one fun to try.</p>
 
     <hr>
 
