@@ -288,7 +288,7 @@
     <p>It knew a lot. A few of my favorites:</p>
 
     <ul>
-      <li><strong>"Ice" is zero.</strong> USGS sometimes reports a frozen gage with a word instead of a number. COBOL's <code>NUMVAL</code> reads "Ice" as 0.00&nbsp;cfs, and an unsigned field turns −12.50 into a cheerful 12.50. Production has never been fooled, only because the little Python fetcher in front of it throws those values away. The protection lives in a different program than you'd expect, which is exactly the kind of thing that gets lost in a handoff.</li>
+      <li><strong>"Ice" is zero.</strong> USGS sometimes reports a frozen gage with a word instead of a number. COBOL's <code>NUMVAL</code> reads "Ice" as 0.00&nbsp;cfs, and an unsigned field turns −12.50 into a cheerful 12.50. Production has never been fooled, only because the little Python fetcher in front of it throws those values away. The protection lives in a different program than you'd expect, and that's the kind of thing that gets lost in a handoff.</li>
       <li><strong>A big enough flood loses a digit.</strong> The report's first section has room for 99,999.99&nbsp;cfs. Feed it 468,000 and it prints <code>68000.00</code>, without an error. (The highest 90th-percentile flow anywhere in these normals is 8,544&nbsp;cfs, so the Tuolumne would have to try very hard.)</li>
       <li><strong>Too much history makes a river look dead.</strong> The program holds 70 days per gage. Give it 75, and it keeps the <em>oldest</em> 70 and drops the newest, so a perfectly healthy gage gets flagged as stale.</li>
       <li><strong>Tomorrow is welcome.</strong> The "how old is this reading" field can't hold a negative number, so a date five days in the future counts as five days old.</li>
@@ -298,7 +298,7 @@
 
     <h2>Copy it faithfully, quirks and all</h2>
 
-    <p>Here's the part that felt strange: the C# port does every one of those things too, on purpose. If the new program quietly fixes things while you're trying to prove it matches the old one, you can never tell an improvement from a mistake. So first you match it exactly. Then you fix it, one change at a time, each with its own expected difference. Every method in the C# names the COBOL paragraph it replaces, so the two can be read side by side.</p>
+    <p>This part felt strange. The C# port does every one of those things too, on purpose. If the new program quietly fixes things while you're trying to prove it matches the old one, you can never tell an improvement from a mistake. So first you match it exactly. Then you fix it, one change at a time, each with its own expected difference. Every method in the C# names the COBOL paragraph it replaces, so the two can be read side by side.</p>
 
     <p>Coming from Python, C# felt familiar faster than I expected. Types are declared, braces replace indentation, <code>using</code> is <code>import</code>, and LINQ reads a lot like a list comprehension. The real lessons were all about numbers:</p>
 
@@ -316,7 +316,7 @@
 
     <h2>The parallel run</h2>
 
-    <p>This is the heart of a handoff: run the old system and the new one side by side on the same inputs, and refuse to call it done until they agree. SIERRA-FLOW made that unusually easy, because every morning's run commits its input file to GitHub. Its git history holds every night the job has ever had.</p>
+    <p>This is what a handoff comes down to. You run the old system and the new one side by side on the same inputs, and you don't call it done until they agree. SIERRA-FLOW made that unusually easy, because every morning's run commits its input file to GitHub. Its git history holds every night the job has ever had.</p>
 
     <p>So the test harness replays all of them. For each production night since version 3, it pulls that night's files out of history and runs both programs, with both clocks pinned to the exact second that night originally ran. GnuCOBOL reads a variable called <code>COB_CURRENT_DATE</code> for that, so I taught the C# to honor the same one. Then it compares the report, the results file, every console message and the return code. It also checks that the COBOL replay matches what production really printed that night, which proves the replay itself is honest.</p>
 
@@ -325,19 +325,19 @@
 
     <p>On Sundays it goes one step further: it downloads 30 years of real USGS history for all eight gages and has both programs build the normals from scratch, 2,928 percentile rows each. The first time it ran, those matched too.</p>
 
-    <p>On the new page there's one report split down the middle by a seam you can drag. Green-bar paper from GnuCOBOL is on the left, the C# output is on the right. Because the files are identical, every character lines up perfectly across the seam.</p>
+    <p>On the new page there's one report split down the middle by a seam you can drag. Green-bar paper from GnuCOBOL is on the left, the C# output is on the right. Because the files are identical, every character lines up across the seam.</p>
 
     <h2>Then I broke it on purpose</h2>
 
-    <p>A test that has never failed hasn't proven anything yet. So I changed one setting: I let C# round the way it rounds by default, "banker's rounding," where a 5 goes to the nearest even digit. Then I ran everything again.</p>
+    <p>A test that has never failed hasn't proven much. So I changed one setting: I let C# round the way it rounds by default, "banker's rounding," where a 5 goes to the nearest even digit. Then I ran everything again.</p>
 
-    <p>The parallel run caught it on two real nights. On October 4, the Tuolumne at Grand Canyon's 30-day average came out to exactly 11.805&nbsp;cfs. COBOL printed 11.81, and the broken C# printed 11.80. On October 15, Pohono Bridge in Yosemite Valley was 61.3% of its median for COBOL and 61.2% for the broken C#. In the normals, 374 of 1,098 rows changed. Nobody reading the report would notice a one-cent difference, and that's exactly why you want a machine checking.</p>
+    <p>The parallel run caught it on two real nights. On October 4, the Tuolumne at Grand Canyon's 30-day average came out to exactly 11.805&nbsp;cfs. COBOL printed 11.81, and the broken C# printed 11.80. On October 15, Pohono Bridge in Yosemite Valley was 61.3% of its median for COBOL and 61.2% for the broken C#. In the normals, 374 of 1,098 rows changed. Nobody reading the report would notice a one-cent difference. That's why you want a machine checking.</p>
 
     <h2>The database checks both, and finds a surprise</h2>
 
     <p>The last piece moves the data into SQL Server. The C# writes a T-SQL script that loads each night in one transaction: the gages as <code>geography</code> points, every daily mean, and the night's results. A daily mean that's already in the table goes through a <code>MERGE</code>, and any value that changed gets logged with <code>OUTPUT</code>. Then a second script works out the 30-day averages and trends again from the raw rows and throws an error if they don't match what the batch job wrote. That's three programs in three languages, all required to land on the same answer. Every night, GitHub Actions starts a fresh SQL Server 2022, loads every night in order and runs the check. So far it's 128 gage-nights out of 128.</p>
 
-    <p>Then the rivers spoke up. USGS publishes recent flows as <a href="https://waterdata.usgs.gov/provisional-data-statement/" target="_blank" rel="noopener">provisional</a>, which means they can change after review. On October 5, it revised 55 days of daily flow for the Tuolumne below La Grange Dam, all of them downward, by as much as 16%. September 30 went from 204&nbsp;cfs to 171. The COBOL job never noticed, because every morning it simply overwrites yesterday's file. The database keeps both numbers. For anyone whose job is keeping many data sources clean and consistent for a lot of people, that's the whole argument for the database in one chart.</p>
+    <p>Then the rivers threw in a surprise. USGS publishes recent flows as <a href="https://waterdata.usgs.gov/provisional-data-statement/" target="_blank" rel="noopener">provisional</a>, which means they can change after review. On October 5, it revised 55 days of daily flow for the Tuolumne below La Grange Dam, all of them downward, by as much as 16%. September 30 went from 204&nbsp;cfs to 171. The COBOL job never noticed, because every morning it simply overwrites yesterday's file. The database keeps both numbers. For anyone whose job is keeping many data sources clean and consistent for a lot of people, that's the whole argument for the database in one chart.</p>
 
     <h2>What's next</h2>
 
