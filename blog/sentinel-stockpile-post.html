@@ -328,13 +328,13 @@
       <tr><td>Brightness</td><td>Catches the actual stockpile material, which reflects more light than surrounding terminal surfaces</td></tr>
     </table>
 
-    <p>Each pixel gets classified as water, vegetation, stockpile, or ground. Count the stockpile pixels, multiply by the pixel area (100 m² each), and you have a measurement in square meters. Do it across 32 scenes over 12 months and you have a time series. The thresholds that separate "stockpile" from "ground" were tuned empirically — looking at the satellite imagery with human eyes, comparing it to the classification output, adjusting until the amber pixels land where the actual lumber sits. Part science, part craft.</p>
+    <p>Each pixel gets classified as water, vegetation, stockpile, or ground. Count the stockpile pixels, multiply by the pixel area (100 m² each), and you have a measurement in square meters. Do it across 32 scenes over 12 months and you have a time series. The thresholds between "stockpile" and "ground" were tuned by eye. I looked at the satellite imagery, compared it with the classifier's output, and adjusted until the amber pixels landed where the lumber actually sits. That part is as much craft as science.</p>
 
-    <blockquote>"This is the seasonal pulse of a $40 billion industry, visible from space, measured with free tools, and reproducible by anyone with a laptop."</blockquote>
+    <blockquote>"The yearly swing of a $40 billion industry, visible from space, measured with free tools, and repeatable by anyone with a laptop."</blockquote>
 
-    <h2>Why This Matters Beyond Lumber</h2>
+    <h2>Beyond lumber</h2>
 
-    <p>The Port of Longview lumber cycle is a proof of concept for a broader class of analysis. The same spectral classification approach works for anything that accumulates visibly at a fixed outdoor location:</p>
+    <p>The Port of Longview lumber cycle is a proof of concept. The same spectral classification works for anything that piles up where you can see it at a fixed outdoor site:</p>
 
     <div class="uses-grid">
       <div class="use-card">
@@ -347,21 +347,21 @@
       </div>
       <div class="use-card">
         <div class="use-card-head">🌾 Grain Elevators</div>
-        <div class="use-card-body">Seasonal agricultural commodity flows visible from the accumulation patterns at storage and export facilities.</div>
+        <div class="use-card-body">Harvest seasons show up in how grain builds up and ships out at storage and export facilities.</div>
       </div>
       <div class="use-card">
         <div class="use-card-head">⛏️ Mining Stockpiles</div>
-        <div class="use-card-body">Coal, ore, aggregate — anything stored outdoors in bulk before transport. Every mine is a potential monitoring site.</div>
+        <div class="use-card-body">Coal, ore, aggregate: anything stored outdoors in bulk before it ships. Any mine could be a monitoring site.</div>
       </div>
     </div>
 
-    <p>This is the kind of analysis hedge funds pay six figures a year for — satellite-derived commodity intelligence that moves faster than official reports. Sentinel Stockpile is proof you can build the same thing with open data, open tools, and a pixi environment.</p>
+    <p>Hedge funds pay six figures a year for this kind of analysis, satellite-derived commodity data that moves faster than official reports. Sentinel Stockpile shows you can build the same thing with open data, open tools and a pixi environment.</p>
 
-    <h2>The Architecture</h2>
+    <h2>How it's put together</h2>
 
-    <p>Each monitoring site is a JSON config file. Each commodity type has its own classification thresholds. The pipeline runs via GitHub Actions on a monthly cron — downloading fresh Sentinel-2 scenes from Microsoft Planetary Computer, classifying pixels, computing area measurements, and generating updated time series charts. No API keys. No paid accounts. The European Space Agency and Microsoft provide everything for free.</p>
+    <p>Each monitoring site is a JSON config file, and each commodity type has its own classification thresholds. The pipeline runs on GitHub Actions as a monthly cron job. It downloads fresh Sentinel-2 scenes from Microsoft Planetary Computer, classifies the pixels, measures the areas and redraws the time series charts. There are no API keys and no paid accounts; the European Space Agency and Microsoft provide all of it free.</p>
 
-    <p>Current sites: Port of Longview (12-month time series, complete), Port of Tacoma containers (configured, threshold tuning in progress), Weyerhaeuser Longview (configured). Next up: Sentinel-1 SAR integration to see through the PNW cloud gap that blanks out optical imagery from October through January. Radar fills the winter hole.</p>
+    <p>Current sites: Port of Longview (12-month time series, complete), Port of Tacoma containers (configured, threshold tuning in progress) and Weyerhaeuser Longview (configured). Next up is adding Sentinel-1 radar, which sees through the Northwest clouds that blank out optical imagery from October through January.</p>
 
     <hr>
 
