@@ -277,7 +277,7 @@
 
   <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/images/features/sierra-flow-handoff.jpg.w1600.webp" alt="" decoding="async" fetchpriority="high" srcset="/img-opt/images/features/sierra-flow-handoff.jpg.w640.webp 640w, /img-opt/images/features/sierra-flow-handoff.jpg.w1600.webp 1600w" sizes="(max-width: 1140px) 100vw, 1100px"></figure><!-- POST-COVER:END -->
   <div class="article-body">
-    <p>Every old program eventually has one last person who knows how it really works. In most offices that person is a few months from retirement, and somewhere there's a nightly batch job that only they can explain. For <a href="/blog/sierra-flow-revisited-post.html">SIERRA-FLOW</a>, my COBOL program that checks eight Sierra Nevada rivers every morning, that person is me. So I decided to do the handoff properly: write down everything it does, rebuild it in C#, and prove the new version prints exactly what the old one does, down to the last byte.</p>
+    <p>Every old program eventually has one last person who knows how it works. In most offices that person is a few months from retirement, and somewhere there's a nightly batch job that only they can explain. For <a href="/blog/sierra-flow-revisited-post.html">SIERRA-FLOW</a>, my COBOL program that checks eight Sierra Nevada rivers every morning, that person is me. So I decided to do the handoff properly: write down everything it does, rebuild it in C#, and prove the new version prints exactly what the old one does, down to the last byte.</p>
 
     <p>This post covers how that went. It took a lot more reading than writing, and the rivers had a surprise of their own.</p>
 
@@ -285,7 +285,7 @@
 
     <p>The first rule of taking over someone else's system is not to touch it yet. Before I wrote a line of C#, I read all 1,392 lines of COBOL as if a stranger had written them, and kept notes in a file called <code>HANDOFF.md</code>: what each paragraph does, what the return codes mean, and what to do at 7 a.m. when a gage goes quiet. Then I fed the program things it had never seen, to find out what it does that nobody wrote down.</p>
 
-    <p>It turned out to know quite a lot. A few of my favorites:</p>
+    <p>It knew a lot. A few of my favorites:</p>
 
     <ul>
       <li><strong>"Ice" is zero.</strong> USGS sometimes reports a frozen gage with a word instead of a number. COBOL's <code>NUMVAL</code> reads "Ice" as 0.00&nbsp;cfs, and an unsigned field turns −12.50 into a cheerful 12.50. Production has never been fooled, only because the little Python fetcher in front of it throws those values away. The protection lives in a different program than you'd expect, which is exactly the kind of thing that gets lost in a handoff.</li>
