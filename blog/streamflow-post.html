@@ -302,7 +302,7 @@
 
     <h2>The GitHub Actions Pipeline</h2>
 
-    <p>This is where the magic happens, and honestly it's the part I'm most proud of.</p>
+    <p>This is the part I'm most proud of.</p>
 
     <p>Every week, a GitHub Action wakes up, runs a Python script, fetches the latest data from the USGS API for all 8 gages, generates updated HTML charts, and commits the results back to the repo. GitHub Pages picks up the new files and serves them automatically. The whole cycle takes about 90 seconds.</p>
 
@@ -336,11 +336,11 @@ jobs:
 
     <h2>The Leaflet Map</h2>
 
-    <p>For the map I used Leaflet.js — a lightweight open-source mapping library that works great for static sites. Each gage gets a marker colored by its current flow relative to historical average: blue for above average, green for normal, orange for below, red for critically low.</p>
+    <p>For the map I used Leaflet.js, a lightweight open-source mapping library that works great for static sites. Each gage gets a marker colored by its current flow relative to historical average: blue for above average, green for normal, orange for below, red for critically low.</p>
 
     <p>Clicking a marker opens a popup with the current reading and a sparkline showing the last 7 days. The whole map loads from a GeoJSON file that the Python script generates along with the charts.</p>
 
-    <p>No Mapbox token. No Google Maps API key. Just Leaflet, OpenStreetMap tiles, and a static file.</p>
+    <p>No Mapbox token or Google Maps API key, either. It&rsquo;s Leaflet, OpenStreetMap tiles and a static file.</p>
 
     <hr>
 
@@ -348,11 +348,11 @@ jobs:
 
     <p>A few things I'd do differently if I built it today:</p>
 
-    <p><strong>Use pixi instead of bare pip.</strong> Dependency management on GitHub Actions gets messy fast. I've since switched all my projects to pixi for environment management and it's dramatically cleaner. I wrote about that switch <a href="/blog/pixi-post.html">here</a>.</p>
+    <p><strong>Use pixi instead of bare pip.</strong> Dependency management on GitHub Actions gets messy fast. I've since switched all my projects to pixi for environment management and it's much cleaner. I wrote about that switch <a href="/blog/pixi-post.html">here</a>.</p>
 
     <p><strong>Cache the historical data.</strong> Right now the script re-fetches years of historical data every week, which is slow and wasteful. I should pull it once, store it in the repo, and only fetch the delta. It works fine, but it's inelegant.</p>
 
-    <p><strong>Add alerts.</strong> The whole point of watching snowmelt is knowing when something unusual happens. I have a weather bot that already posts to Bluesky — wiring up a flow alert to the same pipeline would take an afternoon. It's on the list.</p>
+    <p><strong>Add alerts.</strong> The whole point of watching snowmelt is knowing when something unusual happens. I have a weather bot that already posts to Bluesky, and wiring up a flow alert to the same pipeline would take an afternoon. It's on the list.</p>
 
     <p><strong>Start simpler.</strong> I built the spaghetti charts first because they were the thing I most wanted to see. The map came later. If I'd tried to build everything at once I probably would have given up. Pick the one thing you actually care about and get that working first.</p>
 
