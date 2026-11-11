@@ -316,31 +316,31 @@
 
     <h2>The Eight Gages</h2>
 
-    <p>Three watersheds. Eight sensors. One storm system moving through all of them in sequence — first hitting the headwaters, then the canyon reaches, then the valley floor — a pulse you can watch travel downstream over days.</p>
+    <p>Three watersheds and eight sensors. A storm moves through them in order, hitting the headwaters first, then the canyon reaches, then the valley floor, and you can watch the pulse travel downstream over days.</p>
 
-    <p>The most interesting station is the one with the lowest flow: <strong>Big Creek near Hetch Hetchy, 3 CFS</strong>. Every other gage in the network sits downstream of a major reservoir, which buffers and smooths the natural flood pulse. Big Creek has nothing between it and the sky. No dams. No regulation. It responds directly and honestly to whatever the Sierra Nevada is doing. When it spikes, a storm just hit. When it drops below normal, the snowpack is struggling. The COBOL flags it. It's the canary in the watershed.</p>
+    <p>The most interesting station is the one with the lowest flow: <strong>Big Creek near Hetch Hetchy, 3 CFS</strong>. Every other gage in the network sits downstream of a major reservoir, which smooths out the natural flood pulse. Big Creek has no dam and no regulation above it, so it answers directly to whatever the Sierra is doing. When it spikes, a storm just hit. When it drops below normal, the snowpack is struggling, and the COBOL flags it. It's the canary in the watershed.</p>
 
-    <p>As of April 1, the Merced is running at 206% of normal. The Stanislaus is at 40%. Big Creek is at 38%. The Sierra is uneven this spring — wet in the south, dry in the north. That's a story you can read in eight numbers.</p>
+    <p>As of April 1, the Merced is running at 206% of normal. The Stanislaus is at 40%. Big Creek is at 38%. The Sierra is uneven this spring, wet in the south and dry in the north, and you can read that in eight numbers.</p>
 
-    <h2>The COBOL Is Legitimately Sophisticated</h2>
+    <h2>Not Hello World</h2>
 
-    <p>This isn't Hello World. The program runs to about 850 lines and uses features that would be at home in a production government data center:</p>
+    <p>The program runs to about 850 lines and uses features that would be at home in a production government data center:</p>
 
     <ul>
-      <li><strong>Dual input files</strong> — <code>streamflow.csv</code> and <code>baselines.csv</code> read simultaneously with separate FILE-CONTROL assignments</li>
-      <li><strong>Native SORT verb</strong> — stations ranked by mean discharge using COBOL's built-in sort, not a workaround</li>
-      <li><strong>Baseline cache pattern</strong> — historical medians load before station data registers, applied after processing to avoid file ordering dependencies</li>
-      <li><strong>Percent-of-normal computation</strong> — <code>COMPUTE ST-PCT-NORMAL = (ST-MEAN / ST-MEDIAN) * 100</code></li>
-      <li><strong>Day-over-day trend accumulation</strong> — 30 readings of delta → ▲ RISING / ▼ FALLING / ─ STABLE</li>
-      <li><strong>Watershed basin roll-up</strong> — EVALUATE assigns each gage to Tuolumne / Merced / Stanislaus, accumulates basin totals</li>
-      <li><strong>Four-section 132-column report</strong> — matching classic mainframe report standards</li>
+      <li><strong>Dual input files:</strong> <code>streamflow.csv</code> and <code>baselines.csv</code>, read at the same time with separate FILE-CONTROL assignments</li>
+      <li><strong>Native SORT verb.</strong> Stations are ranked by mean discharge with COBOL's built-in sort, no workaround.</li>
+      <li><strong>Baseline cache pattern:</strong> historical medians load before station data registers and get applied after processing, so file order doesn't matter</li>
+      <li><strong>Percent-of-normal</strong>, as <code>COMPUTE ST-PCT-NORMAL = (ST-MEAN / ST-MEDIAN) * 100</code></li>
+      <li><strong>Day-over-day trend accumulation</strong> over 30 readings of delta → ▲ RISING / ▼ FALLING / ─ STABLE</li>
+      <li><strong>Watershed basin roll-up.</strong> EVALUATE assigns each gage to Tuolumne / Merced / Stanislaus and accumulates basin totals.</li>
+      <li><strong>A four-section, 132-column report</strong> in the classic mainframe style</li>
     </ul>
 
-    <p>Debugging was instructive. COBOL is fixed-format — column positions matter, a trailing character in column 73 is a fatal error, and the compiler will tell you exactly which line broke and why. After three decades away from it, the muscle memory came back faster than expected. The language is verbose by design. It reads almost like English. That was Grace Hopper's original insight: make it readable enough that a business analyst could understand it, not just a programmer.</p>
+    <p>Debugging taught me plenty. COBOL is fixed-format: column positions matter, a trailing character in column 73 is a fatal error, and the compiler tells you exactly which line broke and why. After three decades away, the muscle memory came back faster than I expected. The language is wordy on purpose and reads almost like English. That was Grace Hopper's idea, to make code readable enough that a business analyst could follow it, not only a programmer.</p>
 
     <h2>Zero Dependencies, End to End</h2>
 
-    <p>The Python fetcher uses nothing but the standard library. The COBOL program has no external libraries. The dashboard is plain HTML, CSS, and vanilla JavaScript. No npm. No pip installs. No frameworks. No cloud bills. The entire stack runs on free infrastructure.</p>
+    <p>The Python fetcher uses nothing but the standard library. The COBOL program has no external libraries. The dashboard is plain HTML, CSS and vanilla JavaScript, with no npm, no pip installs and no cloud bills. The whole stack runs on free infrastructure.</p>
 
     <p>The USGS Water Services API is free, requires no key, and has 135 years of public hydrological data behind it. The GitHub Actions free tier handles the daily CI run in about four minutes. The dashboard is a static file served from GitHub Pages. Total monthly cost: $0.00.</p>
 
@@ -348,13 +348,13 @@
 
     <p>I didn't plan the timing. I was deep in a debugging session when someone mentioned the launch. By the time I had the COBOL running cleanly against live USGS data, the crew was already outbound.</p>
 
-    <p>There's something fitting about it. The Apollo program ran on FORTRAN and assembly, on computers with less processing power than a modern wristwatch. The engineering culture of that era — precise, documented, obsessive about correctness — is exactly the culture COBOL was designed for. Grace Hopper and Margaret Hamilton were contemporaries. The language and the Moon program grew up together.</p>
+    <p>It felt fitting. The Apollo program ran on FORTRAN and assembly, on computers with less processing power than a modern wristwatch. COBOL was designed for that era's engineering culture, which was precise, documented and obsessive about getting things right. Grace Hopper and Margaret Hamilton were contemporaries; the language and the Moon program grew up together.</p>
 
-    <p>Sixty-seven years later, a COBOL program is fetching live telemetry from rivers in the Sierra Nevada, running in a cloud CI/CD pipeline, and feeding a modern web dashboard. On the same day four humans left low Earth orbit for the first time since 1972.</p>
+    <p>Sixty-seven years later, a COBOL program is fetching live telemetry from rivers in the Sierra Nevada, running in a cloud CI/CD pipeline and feeding a web dashboard, on the same day four humans left low Earth orbit for the first time since 1972.</p>
 
     <p><code>SIERRA-FLOW V2.0: NORMAL TERMINATION. RETURN CODE: 0.</code></p>
 
-    <p>Not a bad detail. The <a href="https://brooksgroves.com/sierra-flow-cobol/" target="_blank">live dashboard</a> is here. The <a href="https://github.com/bdgroves/sierra-flow-cobol" target="_blank">source is on GitHub</a>. It updates every morning at 7AM Pacific. The Sierra rivers are running high. Big Creek is watching.</p>
+    <p>The <a href="https://brooksgroves.com/sierra-flow-cobol/" target="_blank">live dashboard</a> is here, and the <a href="https://github.com/bdgroves/sierra-flow-cobol" target="_blank">source is on GitHub</a>. It updates every morning at 7AM Pacific. Right now the Merced is running high and Big Creek is low.</p>
 
     <hr>
 
