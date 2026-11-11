@@ -289,42 +289,42 @@
       <tr><td>Winter (Jan)</td><td>5 ha</td><td>Rain shuts the logging roads and mills cut shifts. Things slow way down.</td></tr>
     </table>
 
-    <h2>See It With Your Own Eyes</h2>
+    <h2>July and January</h2>
 
-    <p>Here's what the port looks like from orbit in July versus January. Those reddish-brown rectangles in the upper left are log stacks. The bright white patches are dimensional lumber or tarped material. In July, they're everywhere. In January, the yard is mostly empty pavement.</p>
+    <p>Here's the port from orbit in July and again in January. The reddish-brown rectangles in the upper left are log stacks, and the bright white patches are dimensional lumber or tarped material. In July they're everywhere. In January the yard is mostly empty pavement.</p>
 
     <div class="fig-pair">
       <div class="fig">
         <img src="/img-opt/images/sentinel-rgb-july.png.w1600.webp" alt="True color satellite image July 2025 - Port of Longview" loading="lazy" decoding="async" srcset="/img-opt/images/sentinel-rgb-july.png.w640.webp 640w, /img-opt/images/sentinel-rgb-july.png.w1600.webp 1167w" sizes="(max-width: 760px) 100vw, 760px">
-        <p class="fig-caption"><strong>July 13, 2025 — Peak season.</strong> Log stacks and lumber filling the terminal. Columbia River at lower left.</p>
+        <p class="fig-caption"><strong>July 13, 2025: peak season.</strong> Log stacks and lumber filling the terminal. Columbia River at lower left.</p>
       </div>
       <div class="fig">
         <img src="/img-opt/images/sentinel-rgb-january.png.w1600.webp" alt="True color satellite image January 2026 - Port of Longview" loading="lazy" decoding="async" srcset="/img-opt/images/sentinel-rgb-january.png.w640.webp 640w, /img-opt/images/sentinel-rgb-january.png.w1600.webp 1167w" sizes="(max-width: 760px) 100vw, 760px">
-        <p class="fig-caption"><strong>January 16, 2026 — Winter low.</strong> Same terminal. Mostly bare pavement. The Columbia has risen with winter rain.</p>
+        <p class="fig-caption"><strong>January 16, 2026: winter low.</strong> Same terminal, mostly bare pavement. The Columbia has risen with winter rain.</p>
       </div>
     </div>
 
-    <p>Now here's what the classifier sees — the algorithm's interpretation of the same scenes, pixel by pixel:</p>
+    <p>And here's what the classifier makes of the same scenes, pixel by pixel:</p>
 
     <div class="fig-pair">
       <div class="fig">
         <img src="/img-opt/images/sentinel-map-july.png.w1600.webp" alt="Classification map July 2025 - 32% stockpile" loading="lazy" decoding="async" srcset="/img-opt/images/sentinel-map-july.png.w640.webp 640w, /img-opt/images/sentinel-map-july.png.w1600.webp 1166w" sizes="(max-width: 760px) 100vw, 760px">
-        <p class="fig-caption"><strong>July 2025 — 32% stockpile.</strong> Amber = stockpile. Blue = Columbia River. Brown = pavement. Green = vegetation. Nearly a third of the terminal covered in lumber.</p>
+        <p class="fig-caption"><strong>July 2025: 32% stockpile.</strong> Amber = stockpile. Blue = Columbia River. Brown = pavement. Green = vegetation. Nearly a third of the terminal covered in lumber.</p>
       </div>
       <div class="fig">
         <img src="/img-opt/images/sentinel-map-january.png.w1600.webp" alt="Classification map January 2026 - 3.4% stockpile" loading="lazy" decoding="async" srcset="/img-opt/images/sentinel-map-january.png.w640.webp 640w, /img-opt/images/sentinel-map-january.png.w1600.webp 1166w" sizes="(max-width: 760px) 100vw, 760px">
-        <p class="fig-caption"><strong>January 2026 — 3.4% stockpile.</strong> Same classifier. The terminal has exhaled. Blue dominates as the Columbia River rises. Amber nearly gone.</p>
+        <p class="fig-caption"><strong>January 2026: 3.4% stockpile.</strong> Same classifier. The terminal has emptied out, and there's more blue as the Columbia River rises. The amber is nearly gone.</p>
       </div>
     </div>
 
     <h2>How the Classification Works</h2>
 
-    <p>The trick is that different materials reflect light differently in ways the human eye can't fully resolve but multispectral sensors can. Sentinel-2 captures six spectral bands — visible light plus near-infrared and shortwave infrared — and we compute indices that quantify these reflectance differences.</p>
+    <p>Different materials reflect light differently, in ways the eye can't fully pick out but a multispectral sensor can. Sentinel-2 captures six spectral bands (visible light plus near-infrared and shortwave infrared), and from those I compute indices that put numbers on the differences.</p>
 
     <table class="index-table">
       <tr><th>Index</th><th>What It Does</th></tr>
-      <tr><td>NDVI</td><td>Vegetation index — identifies trees and grass so we can exclude them from stockpile counts</td></tr>
-      <tr><td>BSI</td><td>Bare soil index — separates textured surfaces like lumber stacks from smooth pavement</td></tr>
+      <tr><td>NDVI</td><td>Vegetation index. Picks out trees and grass so they stay out of the stockpile count</td></tr>
+      <tr><td>BSI</td><td>Bare soil index. Separates textured surfaces like lumber stacks from smooth pavement</td></tr>
       <tr><td>Brightness</td><td>Catches the actual stockpile material, which reflects more light than surrounding terminal surfaces</td></tr>
     </table>
 
