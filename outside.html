@@ -2596,6 +2596,23 @@ const WHITMAN_SCHEDULE = [
   {date:'2026-11-08', opp:'Pacific Lutheran',       loc:'home', where:'Hayner Field',       conf:true},
 ];
 
+// NCAA D-III Championship. Whitman made the 64-team field (selection show
+// 9 Nov 2026) and plays in the Saint John's pod at Haws Field, Collegeville,
+// Minn. Times are Pacific. Rounds past the first only show as "Next" while
+// Whitman is still alive: a loss in any tournament game ends the run. Games
+// the scraper finds that aren't listed here still show under recent results,
+// so the card keeps going on its own as the bracket fills in.
+// Source: ncaa.com 2026 DIII bracket and the gojohnnies.com pod page.
+const WHITMAN_NCAA = [
+  {date:'2026-11-14', opp:'North Park (Ill.)',    loc:'neutral', where:'Haws Field, Collegeville, MN', time:'11:30 am PT', round:'NCAA 1st round'},
+  {date:'2026-11-15', opp:"Saint John's or MSOE", loc:'neutral', where:'Haws Field, Collegeville, MN', time:'11:00 am PT', round:'NCAA 2nd round'},
+  {date:'2026-11-21', opp:'TBD',                  loc:'neutral', where:'site TBD',                                       round:'NCAA sectionals'},
+  {date:'2026-11-22', opp:'TBD',                  loc:'neutral', where:'site TBD',                                       round:'NCAA sectional final'},
+  {date:'2026-12-03', opp:'TBD',                  loc:'neutral', where:'site TBD',                                       round:'NCAA semifinal'},
+  {date:'2026-12-05', opp:'TBD',                  loc:'neutral', where:'site TBD',                     time:'9:00 am PT', round:'NCAA final'},
+];
+const WHITMAN_NCAA_START = WHITMAN_NCAA[0].date;
+
 // Results, record and goalkeeper stats come from data/whitman-soccer.json,
 // written twice a day by .github/workflows/fetch-whitman.yml. That fetch
 // happens server-side because the browser can't reach the sources directly
@@ -2624,8 +2641,30 @@ async function loadWhitmanSoccer(){
   const byDate  = {};
   played.forEach(g => { byDate[g.date] = g; });
 
-  const next = WHITMAN_SCHEDULE.find(g => g.date >= today && !g.scrimmage);
-  const recent = WHITMAN_SCHEDULE.filter(g => g.date < today).slice(-3).reverse();
+  // Tournament: Whitman is out once it loses an NCAA game. A tie is a
+  // penalty-shootout game the stats page can't settle, so it doesn't end
+  // the run on its own; the next result (or a loss) will.
+  const ncaaPlayed = played.filter(g => g.date >= WHITMAN_NCAA_START).sort((a,b) => a.date < b.date ? -1 : 1);
+  const lastNcaa = ncaaPlayed[ncaaPlayed.length - 1];
+  const eliminated = !!(lastNcaa && lastNcaa.wl === 'L');
+  const lastNcaaDate = lastNcaa ? lastNcaa.date : '';
+
+  // Everything that has happened: the listed schedule, listed NCAA games that
+  // have a result, and any game the scraper found that isn't listed at all.
+  const listedDates = new Set([...WHITMAN_SCHEDULE, ...WHITMAN_NCAA].map(g => g.date));
+  const extra = played.filter(g => !listedDates.has(g.date)).map(g => ({
+    date: g.date, opp: g.opponent, loc: g.loc, where: '',
+    round: g.date >= WHITMAN_NCAA_START ? 'NCAA' : '',
+  }));
+  const recent = [
+    ...WHITMAN_SCHEDULE.filter(g => g.date < today),
+    // a past round with no result yet shows as pending, unless Whitman was already out
+    ...WHITMAN_NCAA.filter(g => g.date < today && (byDate[g.date] || !(eliminated && g.date > lastNcaaDate))),
+    ...extra.filter(g => g.date < today),
+  ].sort((a,b) => a.date < b.date ? -1 : 1).slice(-3).reverse();
+
+  let next = WHITMAN_SCHEDULE.find(g => g.date >= today && !g.scrimmage);
+  if(!next && !eliminated) next = WHITMAN_NCAA.find(g => g.date >= today && g.date > lastNcaaDate);
 
   let html = `<div class="fb-card${record.overall ? ' fb-champ' : ''}">
     <div class="fb-card-head">
@@ -2649,13 +2688,21 @@ async function loadWhitmanSoccer(){
     html += `</div>`;
   }
 
+  if(today >= '2026-11-09'){
+    const champ = lastNcaa && lastNcaa.date === '2026-12-05' && lastNcaa.wl === 'W';
+    const msg = champ ? '🏆 NCAA D-III national champions'
+      : eliminated ? `NCAA D-III Tournament &middot; season ended ${whitmanFmtDate(lastNcaa.date)}`
+      : '⚽ In the NCAA D-III Tournament';
+    html += `<div style="margin-top:0.35rem;font-size:0.85rem;font-weight:600;color:${eliminated?'var(--stone)':'var(--gold)'};">${msg}</div>`;
+  }
+
   if(next){
     const days = Math.round((new Date(next.date+'T12:00:00') - new Date(today+'T12:00:00'))/86400000);
     const when = days===0 ? 'Today' : days===1 ? 'Tomorrow' : `in ${days} days`;
     html += `<div class="fb-game">
       <span class="fb-game-label">Next</span>
-      <span class="fb-game-detail">${next.loc==='home'?'vs':next.loc==='away'?'at':'vs'} ${next.opp}${next.conf?' <span style="color:var(--gold);">NWC</span>':''}
-        <div class="fb-game-time">${whitmanFmtDate(next.date)} &middot; ${when} &middot; ${next.where}</div>
+      <span class="fb-game-detail">${next.loc==='home'?'vs':next.loc==='away'?'at':'vs'} ${next.opp}${next.conf?' <span style="color:var(--gold);">NWC</span>':''}${next.round?` <span style="color:var(--gold);">${next.round}</span>`:''}
+        <div class="fb-game-time">${whitmanFmtDate(next.date)} &middot; ${when}${next.time?` &middot; ${next.time}`:''}${next.where?` &middot; ${next.where}`:''}</div>
       </span></div>`;
   }
 
@@ -2666,10 +2713,12 @@ async function loadWhitmanSoccer(){
       : g.scrimmage
       ? `<span style="color:var(--stone);">played</span>`
       : `<span style="color:var(--stone);">result pending</span>`;
-    const tag = g.scrimmage ? ` <span style="color:var(--stone);font-size:0.9em;">exhibition</span>` : '';
+    const tag = g.scrimmage ? ` <span style="color:var(--stone);font-size:0.9em;">exhibition</span>`
+      : g.round ? ` <span style="color:var(--gold);font-size:0.9em;">${g.round}</span>` : '';
+    const opp = r && r.opponent && (g.opp.includes(' or ') || g.opp === 'TBD') ? r.opponent : g.opp;
     html += `<div class="fb-game">
       <span class="fb-game-label">${whitmanFmtDate(g.date)}</span>
-      <span class="fb-game-detail">${score} &middot; ${g.loc==='away'?'at':'vs'} ${g.opp}${tag}</span></div>`;
+      <span class="fb-game-detail">${score} &middot; ${g.loc==='away'?'at':'vs'} ${opp}${tag}</span></div>`;
   }
 
   // Goalkeepers. Anyone flagged watch:true in the data sorts first and is
