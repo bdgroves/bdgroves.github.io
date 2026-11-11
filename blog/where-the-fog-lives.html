@@ -301,23 +301,23 @@
 
     <p class="lede">The Namib is one of the driest places on Earth, and it runs on fog. Cold water welling up in the Benguela Current chills the air over the South Atlantic, and on most mornings a grey wall of it slides in over Walvis Bay and Swakopmund and keeps going, across the gravel plains and the dunes, sometimes a hundred kilometers inland.</p>
 
-    <p>Everything out there has learned to drink it. Lichen fields. Welwitschia. A beetle that climbs a dune crest before dawn, faces the wind, and stands on its head so the fog condenses on its back and runs down to its mouth.</p>
+    <p>Everything out there drinks it, from the lichen fields and the welwitschia to a beetle that climbs a dune crest before dawn, faces the wind, and stands on its head so the fog condenses on its back and runs down to its mouth.</p>
 
-    <p>For a long time the question about fog was what it <em>carries</em>: water, salt, nutrients. This year the question changed. It turns out fog may also be a place where things <strong>live</strong>.</p>
+    <p>For a long time, what scientists wanted to know about fog was what it <em>carries</em>: water, salt and nutrients. This year it turned out fog may also be a place where things <strong>live</strong>.</p>
 
     <h2>Something is alive in there</h2>
 
     <p>In May 2026, a team working with Ferran Garcia-Pichel at Arizona State published a study in <em>mBio</em> that sounds like the opening of a horror film. They sampled fog in Pennsylvania and found bacteria, mostly <em>Methylobacterium</em>, that weren&rsquo;t just riding along in the droplets. Under the microscope they were <strong>getting bigger and dividing</strong>. And they were eating: breaking down formaldehyde, a common air pollutant that dissolves into fog, and turning it into carbon dioxide.</p>
 
-    <p>Fewer than one droplet in a hundred holds a bacterium, but fog water ends up about as crowded with microbes as seawater. Garcia-Pichel&rsquo;s framing is the part that stuck with me: &ldquo;If we harvest fog, we are getting rid of our little friends in the air. We don&rsquo;t know if that&rsquo;s going to make a big impact or not, but we should be considering that.&rdquo;</p>
+    <p>Fewer than one droplet in a hundred holds a bacterium, but fog water ends up about as crowded with microbes as seawater. The part that stuck with me is how Garcia-Pichel put it: &ldquo;If we harvest fog, we are getting rid of our little friends in the air. We don&rsquo;t know if that&rsquo;s going to make a big impact or not, but we should be considering that.&rdquo;</p>
 
-    <p>The Namib was already in this story. Back in 2019, Sarah Evans and colleagues compared fog microbes on the coast of Maine with fog at two Namib sites 50 and 55 kilometers inland, right around the Gobabeb research station. Different continents, different oceans, and the same result: microbial diversity went up during and after fog, and fog moved living cells from the sea onto the land.</p>
+    <p>The Namib was already in this story. Back in 2019, Sarah Evans and colleagues compared fog microbes on the coast of Maine with fog at two Namib sites 50 and 55 kilometers inland, right around the Gobabeb research station. Different continents and different oceans, same result: microbial diversity went up during and after fog, and fog moved living cells from the sea onto the land.</p>
 
     <p class="pull">If fog is a habitat, it needs a habitat map. So I built one.</p>
 
     <h2>Mapping the fog</h2>
 
-    <p>The first question any field team asks is simple: <strong>where and when is the fog reliable?</strong> You can&rsquo;t sample something that shows up twice a year.</p>
+    <p>The first thing a field team needs to know is <strong>where and when the fog is reliable</strong>. You can&rsquo;t sample something that shows up twice a year.</p>
 
     <p><a href="https://brooksgroves.com/fog-watch/">FOG-WATCH</a> answers that from free data. It pulls ten years of hourly weather from ERA5, the European reanalysis, through Open-Meteo&rsquo;s archive, no API key required. An hour counts as foggy when low cloud covers at least 70% of the sky <em>and</em> the air two meters off the ground is at least 95% saturated. A GitHub Action reruns it every month.</p>
 
@@ -343,7 +343,7 @@
     <p>The hour-by-month view is where it gets good. At Gobabeb the fog is a <strong>dawn thing</strong>. It builds after 2 a.m., peaks between 6 and 7 in the morning, when about one morning in seven is foggy from October through February, and it&rsquo;s gone by 10. May is almost fog-free. Out on the gridded map, the foggiest square of all isn&rsquo;t on land. It sits <strong>offshore, south of Sandwich Harbour</strong>, where the fog bank forms over the cold current before the wind pushes it inland.</p>
 
     <div class="note">
-      <p>A note on method, because the honest version matters. ERA5 is a reanalysis: a weather model constrained by decades of observations, laid on a grid about 25 km across. It isn&rsquo;t a fog sensor. My rule for &ldquo;foggy&rdquo; is a proxy, and it catches the low stratus deck that becomes fog when it touches the ground as well as fog itself.</p>
+      <p>A note on method, since it matters here. ERA5 is a reanalysis: a weather model constrained by decades of observations, laid on a grid about 25 km across. It isn&rsquo;t a fog sensor. My rule for &ldquo;foggy&rdquo; is a proxy, and it catches the low stratus deck that becomes fog when it touches the ground as well as fog itself.</p>
       <p>That trade is the whole point of the project. A proxy that&rsquo;s consistent everywhere lets you compare the Namib to the Atacama to San Francisco with the same ruler. Station records are better in one place. A grid is better at telling you where to put the stations.</p>
     </div>
 
@@ -384,14 +384,14 @@
 
     <div class="caveat">
       <div class="caveat-label">Where the map disagrees with itself</div>
-      <p>My single &ldquo;Golden Gate&rdquo; point peaks in December, not July. Its grid square probably sits where winter radiation fog satisfies the 95%-humidity rule more often than the summer marine layer does. It&rsquo;s a reminder that a 25 km square and a fixed threshold can both be wrong in small, specific ways, and that the grid view is the one to trust for patterns.</p>
+      <p>My single &ldquo;Golden Gate&rdquo; point peaks in December, not July. Its grid square probably sits where winter radiation fog satisfies the 95%-humidity rule more often than the summer marine layer does. It goes to show that a 25 km square and a fixed threshold can both be wrong in small, specific ways, and that the grid view is the one to trust for patterns.</p>
     </div>
 
     <h2>Where this goes</h2>
 
     <p>The next layer is satellites. GOES and MODIS can see fog directly, at much finer resolution than a reanalysis. After that comes the actual goal: ranking places that are <strong>foggy, reliable, and reachable by road</strong> as candidate sampling sites for the people now trying to figure out what lives in the fog.</p>
 
-    <p>The Namib has been running this experiment for millions of years. Beetles, lichens and welwitschia worked out where the fog lives long before anyone had a map. We&rsquo;re only now finding out that the fog itself is alive.</p>
+    <p>Beetles, lichens and welwitschia have been living on this fog for millions of years, and they found where it lives long before anyone had a map. The news that the fog itself may be alive is from this year.</p>
 
     <div class="cta">
       <p><strong>Explore it yourself.</strong> The fog-blanket map with a month slider, the Namib transect and the hour-by-month heatmaps are all live, and the code is open.</p>
@@ -403,7 +403,7 @@
 
     <h2>Go deeper</h2>
 
-    <p>A summary is not a substitute for the papers. Start with the listens if you have a commute, and the <em>mBio</em> paper if you have twenty minutes.</p>
+    <p>My summary won&rsquo;t replace the papers. Start with the listens if you have a commute, and the <em>mBio</em> paper if you have twenty minutes.</p>
 
     <div class="sources">
       <div class="sources-head">&#127911; Listen</div>

@@ -276,11 +276,11 @@
 
   <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/images/features/puget-tides.jpg.w1600.webp" alt="" decoding="async" fetchpriority="high" srcset="/img-opt/images/features/puget-tides.jpg.w640.webp 640w, /img-opt/images/features/puget-tides.jpg.w1600.webp 1200w" sizes="(max-width: 1140px) 100vw, 1100px"></figure><!-- POST-COVER:END -->
   <div class="article-body">
-    <p>This is the third of my old-language weather and water projects. <a href="/blog/sierra-flow-revisited-post.html">SIERRA-FLOW</a> does Sierra Nevada rivers in COBOL, and <a href="/blog/cascadia-wx-revisited-post.html">CASCADIA-WX</a> reads the Northwest&rsquo;s weather balloons in FORTRAN. I wanted one more that I could check against something real every single day, and I live a few miles from the water. So PUGET-TIDES follows the tide in from the Pacific at eight NOAA gauges, from Neah Bay at the tip of the Olympic Peninsula, through the Strait of Juan de Fuca, past the San Juans and Port Townsend, and down the Sound to Seattle and Tacoma.</p>
+    <p>This is the third of my old-language weather and water projects. <a href="/blog/sierra-flow-revisited-post.html">SIERRA-FLOW</a> does Sierra Nevada rivers in COBOL, and <a href="/blog/cascadia-wx-revisited-post.html">CASCADIA-WX</a> reads the Northwest&rsquo;s weather balloons in FORTRAN. I wanted one more I could check against something real every day, and I live a few miles from the water. So PUGET-TIDES follows the tide in from the Pacific at eight NOAA gauges, from Neah Bay at the tip of the Olympic Peninsula, through the Strait of Juan de Fuca, past the San Juans and Port Townsend, and down the Sound to Seattle and Tacoma.</p>
 
     <h2>Making a tide table</h2>
 
-    <p>A tide looks like one wave that comes and goes twice a day, but it&rsquo;s really the sum of dozens of smaller, steady waves, each keeping time with something the moon or the sun does. The biggest, called M2, follows the moon&rsquo;s twice-a-day pull. Others follow the moon swinging north and south of the equator, the moon coming closer and going farther, the sun, and the 18.6-year wobble of the moon&rsquo;s orbit. NOAA has measured the size and timing of 37 of these at every gauge. Add them up for any moment and you have the tide.</p>
+    <p>A tide looks like one wave that comes and goes twice a day. It&rsquo;s actually the sum of dozens of smaller, steady waves, each keeping time with something the moon or the sun does. The biggest, called M2, follows the moon&rsquo;s twice-a-day pull. Others follow the moon swinging north and south of the equator, the moon coming closer and going farther, the sun, and the 18.6-year wobble of the moon&rsquo;s orbit. NOAA has measured the size and timing of 37 of these at every gauge. Add them up for any moment and you have the tide.</p>
 
     <p>That&rsquo;s how tide tables have always been made. Lord Kelvin built a brass machine of pulleys and gears to add the waves up in 1872, and the Coast and Geodetic Survey printed America&rsquo;s tide tables on one, nicknamed Old Brass Brains, until the mid-1960s. PUGET-TIDES does it in FORTRAN: it works out where the moon and sun are from scratch, applies the corrections for the moon&rsquo;s 18.6-year cycle, and adds up all 37 waves at every gauge, every six minutes, a year ahead. All eight gauges take it about two seconds.</p>
 
@@ -298,13 +298,13 @@
       <p class="photo-caption">The week ahead at Seattle: FORTRAN's highs and lows beside NOAA's published table, and the check at all eight gauges.</p>
     </div>
 
-    <p>It took one bit of detective work to get there. At first FORTRAN was off by up to a third of a foot in some years, always in the same small wave, M1. Fitting a year of NOAA&rsquo;s predictions showed the difference was exactly the position of the moon&rsquo;s nearest point on January 1. NOAA starts that one wave each year without it, then lets it run at a speed that includes it. Once FORTRAN did the same, the two lined up. I&rsquo;d never have found that without a whole year to compare against.</p>
+    <p>Getting there took some detective work. At first FORTRAN was off by up to a third of a foot in some years, always in the same small wave, M1. Fitting a year of NOAA&rsquo;s predictions showed the difference was exactly the position of the moon&rsquo;s nearest point on January 1. NOAA starts that one wave each year without it, then lets it run at a speed that includes it. Once FORTRAN did the same, the two lined up. I&rsquo;d never have found that without a whole year to compare against.</p>
 
     <p>One more small thing: where the tide just stands for an hour, with a &ldquo;high&rdquo; and a &ldquo;low&rdquo; a hundredth of a foot apart, NOAA&rsquo;s tables leave the pair out, so FORTRAN does too, and the check counts any extras it finds.</p>
 
     <h2>What the weather adds</h2>
 
-    <p>The measured water level is almost never exactly the tide. The difference is the surge: wind piling water up, low air pressure letting the sea rise (about a foot for every 30 hectopascals), river water pouring in. FORTRAN subtracts its tide from every six-minute reading for the last month, and a second program, NORMALS, did the same for 1.78 million hours of readings from 1991 to 2020, so each day&rsquo;s surge can be compared with thirty years of the same weeks.</p>
+    <p>The measured water level is almost never exactly the tide. The difference is called the surge: wind piling water up, low air pressure letting the sea rise (about a foot for every 30 hectopascals), river water pouring in. FORTRAN subtracts its tide from every six-minute reading for the last month, and a second program, NORMALS, did the same for 1.78 million hours of readings from 1991 to 2020, so each day&rsquo;s surge can be compared with thirty years of the same weeks.</p>
 
     <div class="photo-block">
       <img src="/img-opt/blog/img/puget-tides/week.jpg.w1600.webp" width="1088" height="603" alt="Two charts for Seattle: the measured water level in cyan tracing almost exactly over FORTRAN's dashed amber tide for a week, then the tide alone for three days ahead; below, the surge in coral wandering between zero and three quarters of a foot above a shaded normal band" loading="lazy" decoding="async" srcset="/img-opt/blog/img/puget-tides/week.jpg.w640.webp 640w, /img-opt/blog/img/puget-tides/week.jpg.w1600.webp 1088w" sizes="(max-width: 760px) 100vw, 760px">
@@ -326,7 +326,7 @@
 
     <h2>The tide comes in</h2>
 
-    <p>The tide is a wave, and you can watch it travel. It reaches Port Angeles about two hours after Neah Bay, Port Townsend in three and a half, and Seattle and Tacoma about four and a third. Along the way it shrinks in the Strait, where the main lunar tide is only two-thirds of the ocean&rsquo;s, then grows again as Puget Sound&rsquo;s long inlets funnel it, until at Tacoma it&rsquo;s almost half again as big as at Neah Bay.</p>
+    <p>The tide is a wave, and you can watch it move up the coast. It reaches Port Angeles about two hours after Neah Bay, Port Townsend in three and a half, and Seattle and Tacoma about four and a third. Along the way it shrinks in the Strait, where the main lunar tide is only two-thirds of the ocean&rsquo;s, then grows again as Puget Sound&rsquo;s long inlets funnel it, until at Tacoma it&rsquo;s almost half again as big as at Neah Bay.</p>
 
     <div class="photo-block">
       <img src="/img-opt/blog/img/puget-tides/map.jpg.w1600.webp" width="1088" height="880" alt="A dark map of the Strait of Juan de Fuca and Puget Sound with eight cyan circles sized by the tide, labelled with how many hours after Neah Bay it arrives: plus 2.1 at Port Angeles, 3.6 at Port Townsend, 4.3 at Seattle and Tacoma; a table below lists each gauge's tide, range and record high" loading="lazy" decoding="async" srcset="/img-opt/blog/img/puget-tides/map.jpg.w640.webp 640w, /img-opt/blog/img/puget-tides/map.jpg.w1600.webp 1088w" sizes="(max-width: 760px) 100vw, 760px">
@@ -358,7 +358,7 @@
 
     <p>Every six hours a GitHub Action on Ubuntu runs the batch job: a stdlib-only Python script asks NOAA&rsquo;s free <a href="https://api.tidesandcurrents.noaa.gov/api/prod/" target="_blank">Tides &amp; Currents API</a> for the constituents, datums and the last month of water levels, GFortran 13 compiles the program, and FORTRAN runs and sets a return code. The normals took about three minutes to build and only need rebuilding once. Bremerton is the one gap: its gauge has no record between 1978 and 2021, so it has no normals or trend, and the page says so rather than guessing. All free, no keys, and not for navigation.</p>
 
-    <p>Lord Kelvin&rsquo;s machine needed a person to turn the crank. This one runs itself, and checks its own answers against the people who still make the official tables.</p>
+    <p>Lord Kelvin&rsquo;s machine needed someone to turn the crank. This one runs on its own every six hours and checks its answers against the people who still make the official tables.</p>
 
     <p class="note" style="font-size:0.9rem;color:var(--stone)">Code: <a href="https://github.com/bdgroves/puget-tides" target="_blank">github.com/bdgroves/puget-tides</a>. The method is Schureman&rsquo;s <em>Manual of Harmonic Analysis and Prediction of Tides</em> (1958), with the moon&rsquo;s and sun&rsquo;s positions from Meeus&rsquo;s <em>Astronomical Algorithms</em>.</p>
 

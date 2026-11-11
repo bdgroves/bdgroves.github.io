@@ -342,9 +342,9 @@
     <p>This is the same toolkit as <a href="/blog/humphreys-orbit-post.html">the Humphreys Peak orbit</a>, pointed at a much bigger problem. Milos Popovic, who wrote <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a>, has been making gorgeous animated maps of wildfire smoke and heat waves, and I wanted to try one on home turf.</p>
 
     <ol class="step-list">
-      <li><strong>Temperature.</strong> Hourly air temperature from <a href="https://open-meteo.com/en/docs/historical-weather-api" target="_blank">ERA5-Land</a>, the European reanalysis, on a 0.1&deg; grid (about 9 km) &mdash; 3,060 points over Washington, 192 hours, pulled from Open-Meteo&rsquo;s free API in about seven minutes.</li>
+      <li><strong>Temperature.</strong> Hourly air temperature from <a href="https://open-meteo.com/en/docs/historical-weather-api" target="_blank">ERA5-Land</a>, the European reanalysis, on a 0.1&deg; grid (about 9 km): 3,060 points over Washington for 192 hours, pulled from Open-Meteo&rsquo;s free API in about seven minutes.</li>
       <li><strong>Terrain.</strong> USGS 3DEP elevation for the whole state at 250 m.</li>
-      <li><strong>Downscaling.</strong> A 9 km grid cell averages a mountain and its valley together. So each 250 m pixel gets nudged by the standard lapse rate &mdash; about 3.6&deg;F cooler for every 1,000 ft above the cell&rsquo;s average height. That&rsquo;s why the Cascades and the volcanoes stay blue while the valleys cook.</li>
+      <li><strong>Downscaling.</strong> A 9 km grid cell averages a mountain and its valley together. So each 250 m pixel gets nudged by the standard lapse rate, about 3.6&deg;F cooler for every 1,000 ft above the cell&rsquo;s average height. That&rsquo;s why the Cascades and the volcanoes stay blue while the valleys cook.</li>
       <li><strong>The render.</strong> One temperature map per frame, draped over the terrain in forge3d, with a slow camera drift. 765 frames, four per simulated hour.</li>
       <li><strong>The finish.</strong> Plain Python adds the labels, the clock, the week timeline and the legend, and hands it all to ffmpeg.</li>
     </ol>
@@ -353,7 +353,7 @@
 
     <h2>Three things that fought back</h2>
 
-    <p><strong>Washington was too big.</strong> forge3d&rsquo;s viewer caps how far the camera can back away &mdash; 50 km, plenty for one mountain. Washington is about 600 km wide. The camera would silently stop at the limit and I&rsquo;d get a very detailed view of central Washington. The fix was to shrink the state: the terrain the viewer sees is Washington scaled down to 45 km across, with the heights scaled to match, and my label maths does the same conversion.</p>
+    <p><strong>Washington was too big.</strong> forge3d&rsquo;s viewer caps how far the camera can back away at 50 km. That&rsquo;s plenty for one mountain. Washington is about 600 km wide. The camera would silently stop at the limit and I&rsquo;d get a very detailed view of central Washington. The fix was to shrink the state: the terrain the viewer sees is Washington scaled down to 45 km across, with the heights scaled to match, and my label maths does the same conversion.</p>
 
     <p><strong>The water came out grey</strong> no matter what colour I painted it, because the renderer lights flat water like a sheet of brushed metal. So I cheated like a TV weatherman: the ocean is painted bright green-screen green, which no temperature on the scale uses, and the finishing pass keys it out and paints in deep Pacific blue.</p>
 

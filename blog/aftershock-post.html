@@ -241,7 +241,7 @@
   <a href="/blog/index.html" class="article-back">← Blog</a>
 
   <p class="article-kicker">Project Build · Geology · USGS · Seismic · GitHub Actions · April 2026</p>
-  <h1 class="article-title">🌍 AFTERSHOCK — Real-Time U.S. Seismic Activity Monitor</h1>
+  <h1 class="article-title">🌍 AFTERSHOCK: Real-Time U.S. Seismic Activity Monitor</h1>
   <div class="article-meta">
     <span>Brooks Groves</span>
     <span>April 2026</span>
@@ -269,28 +269,28 @@
     </div>
 
 
-    <p>I grew up in Groveland, California — a Gold Rush town wedged into the western Sierra Nevada foothills of Tuolumne County, where the hills are crumpled and old and full of stories the rocks don't easily give up. The Melones Fault Zone runs right through that country. As a kid, I walked those fault scarps without knowing what they were. I just knew the land felt different there — broken in some deep, geological way, like the earth was remembering something.</p>
+    <p>I grew up in Groveland, California, a Gold Rush town tucked into the western Sierra Nevada foothills of Tuolumne County. The hills there are old and crumpled, and the rocks don't give up their stories easily. The Melones Fault Zone runs right through that country. As a kid I walked those fault scarps without knowing what they were. I just knew the land felt different there, broken somehow.</p>
 
-    <p>The 1989 Loma Prieta earthquake hit when I was young. Fifteen seconds, M6.9, 63 dead. I remember what it felt like when the ground — the thing you spend your entire life trusting completely — decided for a few seconds that it was done being trusted.</p>
+    <p>The 1989 Loma Prieta earthquake hit when I was young. Fifteen seconds, M6.9, 63 dead. I remember what it felt like when the ground, the one thing you never think to doubt, stopped holding still for a few seconds.</p>
 
     <p>AFTERSHOCK is that memory grown up and given a dashboard.</p>
 
     <h2>What It Does</h2>
 
-    <p>Every six hours, a GitHub Actions pipeline wakes up, calls the USGS Earthquake Hazards Program ComCat API, and pulls every measurable shake across the United States and beyond — M1.5 and up, worldwide. It writes a static JSON file. A dark, cinematic map on ESRI Dark Gray Canvas tiles loads it. Earthquake dots sized and colored by magnitude — tiny green pinpoints for the microseismicity, climbing through yellow, orange, red, and into deep red and purple as the energy scales up. A magnitude 7 sits on the map like a bruise.</p>
+    <p>Every six hours, a GitHub Actions pipeline wakes up, calls the USGS Earthquake Hazards Program ComCat API, and pulls every measurable shake across the United States and beyond: M1.5 and up, worldwide. It writes a static JSON file, and a dark map on ESRI Dark Gray Canvas tiles loads it. The dots are sized and colored by magnitude. The microseismicity shows up as tiny green pinpoints, and the colors climb through yellow, orange and red into deep red and purple as the energy goes up. A magnitude 7 sits on the map like a bruise.</p>
 
     <div class="feature-grid">
       <div class="feature-card">
         <div class="feature-head">The Map</div>
-        <div class="feature-body">Click any dot. Popup with magnitude, location, depth, time elapsed, and a direct USGS event page link. Every earthquake, every dot.</div>
+        <div class="feature-body">Click any dot for a popup with magnitude, location, depth, time elapsed and a link to the USGS event page. Every earthquake gets one.</div>
       </div>
       <div class="feature-card">
         <div class="feature-head">State Deep-Dives</div>
-        <div class="feature-body">Click any US state — active or quiet. Event count, largest magnitude, average depth, magnitude distribution chart, most recent events list.</div>
+        <div class="feature-body">Click any US state, active or quiet: event count, largest magnitude, average depth, magnitude distribution chart, most recent events list.</div>
       </div>
       <div class="feature-card">
         <div class="feature-head">National Leaderboard</div>
-        <div class="feature-body">Top states ranked by event count, color-coded by intensity. Alaska is always first. It is not even close.</div>
+        <div class="feature-body">Top states ranked by event count, color-coded by intensity. Alaska is always first. It's not even close.</div>
       </div>
       <div class="feature-card">
         <div class="feature-head">Hiroshima Equivalent</div>
@@ -300,11 +300,11 @@
 
     <h2>The Filters</h2>
 
-    <p>Two controls that wire through everything simultaneously — the map, the state panel, the leaderboard, the recent events list. Time window buttons: 1D, 3D, 7D, 14D, 30D. Magnitude slider: drag from M1.5 up to M6.0. Watch the noise disappear. Watch the significant events remain. The interface responds instantly because all the data is already in the browser — one JSON file, loaded once.</p>
+    <p>Two controls drive everything at once: the map, the state panel, the leaderboard and the recent events list. The time window buttons go 1D, 3D, 7D, 14D, 30D. The magnitude slider drags from M1.5 up to M6.0, and as you slide it the noise drops away and the significant events stay. It all responds instantly because the data is already in the browser, one JSON file loaded once.</p>
 
     <h2>The Architecture</h2>
 
-    <p>Same pattern as everything else in this collection. One Python script. One JSON file. Zero databases. Zero servers.</p>
+    <p>It's the same pattern as everything else in this collection: one Python script and one JSON file, with no database and no server.</p>
 
     <div class="code-block"><span class="code-comment"># The entire pipeline</span>
 USGS ComCat API
@@ -313,15 +313,15 @@ USGS ComCat API
       → index.html  (Leaflet + Chart.js, no build step)
         → brooksgroves.com/aftershock</div>
 
-    <p>The whole thing is auditable in an afternoon. The automatic update commits read: <em>Seismic update: YYYY-MM-DD HH:MM UTC</em>. When those appear in the commit history, the pipeline is healthy.</p>
+    <p>You could read through the whole thing in an afternoon. The automatic update commits read <em>Seismic update: YYYY-MM-DD HH:MM UTC</em>, and as long as those keep showing up in the commit history, the pipeline is healthy.</p>
 
     <h2>The Quiet States</h2>
 
-    <p>One of the things I like most about the state deep-dives is how they handle quiet states. Click a state with no recent seismic activity and you don't get an error — you get a message: <em>"Quiet is not nothing — it may mean the fault is locked."</em> A locked fault accumulates strain. The quieter the fault, sometimes, the more concerning the silence.</p>
+    <p>One of my favorite things about the state deep-dives is how they handle quiet states. Click a state with no recent seismic activity and instead of an error you get a message: <em>"Quiet is not nothing — it may mean the fault is locked."</em> A locked fault builds up strain. Sometimes a quiet fault is the one to worry about.</p>
 
     <blockquote>"The fault does not forgive. The data never lies."</blockquote>
 
-    <p>The Cascadia Subduction Zone — offshore of Washington, Oregon, and northern California — hasn't produced a full-margin rupture since January 26, 1700. That's 326 years of locked strain. AFTERSHOCK watches the microseismicity along that margin constantly. The data updates every six hours. The fault moves on its own schedule.</p>
+    <p>The Cascadia Subduction Zone, offshore of Washington, Oregon and northern California, hasn't produced a full-margin rupture since January 26, 1700. That's 326 years of locked strain. AFTERSHOCK keeps an eye on the small quakes along that margin, and the data updates every six hours.</p>
 
     <hr>
 

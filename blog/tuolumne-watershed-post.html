@@ -295,7 +295,7 @@
 
   <div class="article-kicker">🌊 Hydrology · GIS Case Study · Tuolumne County · July 10, 2026</div>
   <h1 class="article-title">Thirty Minutes,<br>Fifty Years of Fire</h1>
-  <p class="article-deck">A watershed and post-fire flood-risk analysis for the county where I grew up — 1,151 streams, 30 fires since 1950, and one fire that broke out on the exact ground I was mapping, while I was mapping it.</p>
+  <p class="article-deck">A watershed and post-fire flood-risk analysis for the county where I grew up: 1,151 streams, 30 fires since 1950, and one fire that broke out on the exact ground I was mapping, while I was mapping it.</p>
 
   <div class="article-meta">
     <span>By <strong>Brooks Groves</strong></span>
@@ -335,25 +335,25 @@
   <!-- POST-COVER:START (scripts/post_polish.py) --><figure class="post-cover"><img src="/img-opt/blog/img/tuolumne-watershed-post/og.jpg.w1600.webp" alt="" decoding="async" fetchpriority="high" srcset="/img-opt/blog/img/tuolumne-watershed-post/og.jpg.w640.webp 640w, /img-opt/blog/img/tuolumne-watershed-post/og.jpg.w1600.webp 1600w" sizes="(max-width: 1140px) 100vw, 1100px"></figure><!-- POST-COVER:END -->
   <div class="article-body">
 
-    <p>I grew up in a place most people have never heard of, at the end of a road most people only drive once, on their way to somewhere else. Groveland sits on Highway 120, the northern gateway to Yosemite — which means most of the people who pass through it are looking past it, at the granite waiting forty-five minutes up the road. My parents were Forest Rangers on the Stanislaus National Forest. I grew up under that canopy, not passing through it.</p>
+    <p>I grew up in a place most people have never heard of, at the end of a road most people only drive once, on their way to somewhere else. Groveland sits on Highway 120, the northern gateway to Yosemite, so most of the people who pass through it are looking past it at the granite forty-five minutes up the road. My parents were Forest Rangers on the Stanislaus National Forest. I grew up under that canopy.</p>
 
     <p>I don't live there anymore. I live in Washington now. But Tuolumne County is still the place I measure other places against, and it's the place I went looking for the second I had a new tool in my hands.</p>
 
     <h2>The Spark</h2>
 
-    <p>I was listening to the <a href="https://mapscaping.com" target="_blank">Mapscaping Podcast</a> — an episode called "10 Tools for Telling Stories With Maps," with Ryan Shields, who makes maps for Johnny Harris's YouTube channel. At some point Ryan described pointing Claude at GRASS GIS and running a full hydrology analysis on USGS elevation data, and said it "just plowed through it." I already had QGIS open with the <a href="https://github.com/jjsantos01/qgis_mcp" target="_blank">QGIS MCP</a> plugin connected to Claude — I'd been using it for exactly this kind of thing — and I remember the thought arriving almost before the episode ended: <em>let me try this right now, on the place I actually know.</em></p>
+    <p>I was listening to the <a href="https://mapscaping.com" target="_blank">Mapscaping Podcast</a>, an episode called "10 Tools for Telling Stories With Maps," with Ryan Shields, who makes maps for Johnny Harris's YouTube channel. At some point Ryan described pointing Claude at GRASS GIS and running a full hydrology analysis on USGS elevation data, and said it "just plowed through it." I already had QGIS open with the <a href="https://github.com/jjsantos01/qgis_mcp" target="_blank">QGIS MCP</a> plugin connected to Claude (I'd been using it for exactly this kind of thing), and the thought showed up almost before the episode ended: <em>let me try this right now, on the place I actually know.</em></p>
 
-    <p>Not a random county. Not a demo watershed. Home.</p>
+    <p>So, home. Not some demo watershed.</p>
 
     <h2>What Thirty Minutes Gets You</h2>
 
-    <p>Here's the unglamorous part, told as fast as I can tell it, because the glamour isn't in the steps — it's in what the steps eventually show you.</p>
+    <p>Here's the unglamorous part, as fast as I can tell it. The steps are dull. What they show you at the end isn't.</p>
 
-    <p>USGS keeps a 30-meter elevation model of the entire country through its <a href="https://www.usgs.gov/3d-elevation-program" target="_blank">3D Elevation Program</a>, but the server that hands it out caps you at about four million pixels per request. Tuolumne County didn't fit in one bite, so I pulled it in four tiles, merged them with GDAL, and clipped the result down to the county line — a 5,240-by-2,875-pixel elevation model of home, 57.5 megabytes, sitting on my screen.</p>
+    <p>USGS keeps a 30-meter elevation model of the entire country through its <a href="https://www.usgs.gov/3d-elevation-program" target="_blank">3D Elevation Program</a>, but the server that hands it out caps you at about four million pixels per request. Tuolumne County didn't fit in one bite, so I pulled it in four tiles, merged them with GDAL, and clipped the result down to the county line. That left a 5,240-by-2,875-pixel elevation model of home, 57.5 megabytes, sitting on my screen.</p>
 
-    <p>Then GRASS GIS took over. <code>r.watershed</code> ran a full drainage-basin delineation — D8 flow direction, a threshold of 5,000 cells, roughly 4.5 square kilometers as the smallest basin worth naming — across all fifteen million cells of that DEM in <strong>thirty-one seconds</strong>. <code>r.stream.extract</code> followed and pulled out 2,338 features: 1,151 individual stream segments and 1,187 junctions where they meet.</p>
+    <p>Then GRASS GIS took over. <code>r.watershed</code> ran a full drainage-basin delineation (D8 flow direction, a threshold of 5,000 cells, so roughly 4.5 square kilometers as the smallest basin worth naming) across all fifteen million cells of that DEM in <strong>thirty-one seconds</strong>. <code>r.stream.extract</code> followed and pulled out 2,338 features: 1,151 individual stream segments and 1,187 junctions where they meet.</p>
 
-    <p>Every one of those 1,151 segments got classified by <a href="https://en.wikipedia.org/wiki/Strahler_number" target="_blank">Strahler order</a> — the standard way hydrologists rank a stream by how many smaller streams feed into it. Order 1 is a headwater trickle with nothing upstream of it; order 6 is a river that's already swallowed everything above it.</p>
+    <p>Every one of those 1,151 segments got classified by <a href="https://en.wikipedia.org/wiki/Strahler_number" target="_blank">Strahler order</a>, the standard way hydrologists rank a stream by how many smaller streams feed into it. Order 1 is a headwater trickle with nothing upstream of it; order 6 is a river that's already swallowed everything above it.</p>
 
     <table class="data-table">
       <thead>
@@ -377,25 +377,25 @@
       <div class="map-caption">▲ Tuolumne County stream network — QGIS 4.0 + GRASS GIS r.watershed / r.stream.extract, USGS 3DEP 30m DEM. Map export forthcoming.</div>
     </div>
 
-    <p>I colored it on the canvas the way it deserved: pale blue threads up in the granite, deepening step by step into navy by the time it reaches the reservoir. Watching that render — watching the whole county's water figure out where it's going, all at once, on my own screen — was the best thirty seconds of my week.</p>
+    <p>I colored it on the canvas: pale blue threads up in the granite, deepening step by step into navy by the time it reaches the reservoir. Watching that render, the whole county's water working out where it's going at once on my own screen, was the best thirty seconds of my week.</p>
 
     <h2>Then I Kept Going</h2>
 
-    <p>I could have stopped there. A watershed map of home is already more than I expected to have by lunchtime. But once the stream network existed, the next question wasn't optional, not for someone from there: <em>which of these creeks run through country that's already burned?</em></p>
+    <p>I could have stopped there. A watershed map of home was already more than I expected to have by lunchtime. But once the stream network existed, anyone from there would ask the next question: <em>which of these creeks run through country that's already burned?</em></p>
 
-    <p><a href="https://frap.fire.ca.gov" target="_blank">CAL FIRE keeps a historical fire-perimeter database</a> — FRAP, 23,334 records statewide going back to 1878. I pulled every major fire over 1,000 acres that had touched Tuolumne County since 1950. Thirty of them. Overlaid against the stream network, they told me something I didn't fully know until the map said it plainly: <strong>24% of Tuolumne County has burned at least once since 1950.</strong> Twenty percent of the stream network — 235 of those 1,151 segments — flows through ground that fire has already been over.</p>
+    <p><a href="https://frap.fire.ca.gov" target="_blank">CAL FIRE keeps a historical fire-perimeter database</a> called FRAP, with 23,334 records statewide going back to 1878. I pulled every major fire over 1,000 acres that had touched Tuolumne County since 1950. There were thirty. Laid over the stream network, they told me something I hadn't fully known until the map said it plainly: <strong>24% of Tuolumne County has burned at least once since 1950.</strong> Twenty percent of the stream network, 235 of those 1,151 segments, flows through ground that fire has already been over.</p>
 
     <div class="map-figure">
       <div class="map-placeholder">
         Map: 30 Major Fires · 1950–2026<br>
         <span style="opacity:0.6;font-size:0.65rem;">FRAP historical perimeters overlaid on Tuolumne County</span>
       </div>
-      <div class="map-caption">▲ Fire history — CAL FIRE FRAP, 30 perimeters &gt; 1,000 acres. Rim Fire (2013, 256,176 acres) dominates. Map export forthcoming.</div>
+      <div class="map-caption">▲ Fire history: CAL FIRE FRAP, 30 perimeters &gt; 1,000 acres. Rim Fire (2013, 256,176 acres) dominates. Map export forthcoming.</div>
     </div>
 
     <h2>The Part That Actually Got Me</h2>
 
-    <p>It's not just that the county burns. It's that the same canyons burn <em>again.</em></p>
+    <p>The county burns, sure. What got me is that the same canyons burn <em>again.</em></p>
 
     <div class="reburn">
       <h3>Reburn Cycle · Same Canyon, Different Decade</h3>
@@ -405,11 +405,11 @@
       <div class="reburn-row"><span class="reburn-name">Priest</span><span class="reburn-dates">1997 · <strong style="color:var(--fire)">2026</strong></span></div>
     </div>
 
-    <p>These aren't different fires finding new ground — they're the same drainages, catching again on something close to a generational clock, like the landscape has a memory and a short one. When you grow up near these place names, they're not rows in a database. They're the canyon your dad patrolled, the road you drove to school, the creek you fished. Seeing them line up on a timeline like that — 1972, 1992, 1999 — did something a statewide statistic never could have.</p>
+    <p>These are the same drainages catching again, on something close to a generational clock. When you grow up near these place names, they aren't rows in a database. They're the canyon your dad patrolled, the road you drove to school, the creek you fished. Seeing them line up on a timeline like that (1972, 1992, 1999) hit harder than any statewide statistic could have.</p>
 
-    <p>Burned soil doesn't just look bad and grow back. For two to five years it turns <a href="https://en.wikipedia.org/wiki/Hydrophobic_soil" target="_blank">hydrophobic</a> — it stops absorbing water at all. Combine that with steep Sierra terrain and no vegetation left to slow anything down, and you get debris flows and flash floods that are frequently worse for a downstream community than the fire itself was. I classified every fire-touched stream segment by years since burn: <strong>extreme</strong> risk at zero-to-two years, when the soil is still actively repelling water; <strong>moderate</strong> out to fifteen years, still-recovering ground; <strong>historical</strong> beyond that, mostly healed but not entirely.</p>
+    <p>Burned soil doesn't look bad for a while and then grow back. For two to five years it turns <a href="https://en.wikipedia.org/wiki/Hydrophobic_soil" target="_blank">hydrophobic</a> and stops absorbing water at all. Put that on steep Sierra terrain with no vegetation left to slow anything down, and you get debris flows and flash floods that are often worse for a downstream community than the fire was. I classified every fire-touched stream segment by years since burn: <strong>extreme</strong> risk at zero-to-two years, when the soil is still actively repelling water; <strong>moderate</strong> out to fifteen years, still-recovering ground; <strong>historical</strong> beyond that, mostly healed but not entirely.</p>
 
-    <p>A hundred and sixty segments — <strong>14% of the whole network</strong> — are still sitting in that moderate band because of two fires: the 2013 Rim Fire, at 256,176 acres the largest in county history, and the 2018 Donnell Fire. Thirteen years on, and the water still hasn't forgotten either one.</p>
+    <p>A hundred and sixty segments, <strong>14% of the whole network</strong>, are still in that moderate band because of two fires: the 2013 Rim Fire, at 256,176 acres the largest in county history, and the 2018 Donnell Fire. Thirteen years after the Rim Fire, that ground is still recovering.</p>
 
     <p>Two segments are sitting in the extreme band right now, for a much smaller, much more recent fire: the TCU 6-5 Fire, which broke out near Chinese Camp in September 2025, burned less than 7,000 acres, and took 95 structures with it anyway.</p>
 
@@ -418,26 +418,26 @@
         Map: Post-Fire Flood Risk<br>
         <span style="opacity:0.6;font-size:0.65rem;">235 stream segments · classified extreme / moderate / historical</span>
       </div>
-      <div class="map-caption">▲ Post-fire flood risk — 235 of 1,151 stream segments flow through fire-affected drainages. Extreme in red, moderate in orange, historical in yellow. Map export forthcoming.</div>
+      <div class="map-caption">▲ Post-fire flood risk: 235 of 1,151 stream segments flow through fire-affected drainages. Extreme in red, moderate in orange, historical in yellow. Map export forthcoming.</div>
     </div>
 
     <h2>Then the Universe Interrupted</h2>
 
-    <p>On July 6th, while I was in the middle of building this, a fire broke out on Old Priest Grade — the steep old highway grade that drops down into Groveland. It stayed small, about fifteen acres, and crews had it out fast. But it was burning the <em>exact corridor</em> I had open on my screen at that exact moment, feeding data into a model built to answer the question of what happens next time a fire hits that ground.</p>
+    <p>On July 6th, while I was in the middle of building this, a fire broke out on Old Priest Grade, the steep old highway grade that drops down into Groveland. It stayed small, about fifteen acres, and crews had it out fast. But it was burning the <em>exact corridor</em> I had open on my screen right then, in a model built to answer what happens the next time fire hits that ground.</p>
 
     <p class="pullquote">"I don't have a tidy way to explain how that felt. Mostly I just sat there for a second, looking at the map, and then looking at the actual smoke, forty-five minutes from where I grew up."</p>
 
-    <h2>Why Any of This Should Matter to You</h2>
+    <h2>Who Lives Downstream</h2>
 
-    <p><strong>Groveland</strong> and <strong>Big Oak Flat</strong> sit on Highway 120, downstream of drainages that have already burned more than once, including now, technically, this one. <strong>Chinese Camp</strong> is still inside its two-year hydrophobic window from the TCU fire. <strong>Don Pedro Reservoir</strong> — the county's main water storage — takes sediment-laden runoff straight off the Rim Fire scar every time it rains hard. The <strong>Hetch Hetchy Aqueduct</strong> and <strong>O'Shaughnessy Dam</strong>, which supply San Francisco's drinking water, sit inside that same Rim Fire perimeter. <strong>Highway 120</strong> itself, the only real road to Yosemite from this side, crosses several of these drainages directly. None of this is hypothetical or far away — it's the same physics currently generating <a href="https://www.weather.gov/alerts" target="_blank">hundreds of National Weather Service flood watches</a> around burn scars across the West, for the exact same reason: burned ground doesn't stay burned in place. It moves downhill, fast, onto whoever's underneath it.</p>
+    <p><strong>Groveland</strong> and <strong>Big Oak Flat</strong> sit on Highway 120, downstream of drainages that have already burned more than once, including now, technically, this one. <strong>Chinese Camp</strong> is still inside its two-year hydrophobic window from the TCU fire. <strong>Don Pedro Reservoir</strong>, the county's main water storage, takes sediment-laden runoff straight off the Rim Fire scar every time it rains hard. The <strong>Hetch Hetchy Aqueduct</strong> and <strong>O'Shaughnessy Dam</strong>, which supply San Francisco's drinking water, sit inside that same Rim Fire perimeter. <strong>Highway 120</strong> itself, the only real road to Yosemite from this side, crosses several of these drainages directly. None of this is hypothetical. It's the same physics behind the <a href="https://www.weather.gov/alerts" target="_blank">hundreds of National Weather Service flood watches</a> around burn scars across the West. Burned ground doesn't stay put. It moves downhill, fast, onto whoever's underneath it.</p>
 
     <h2>Why This Was Even Possible</h2>
 
-    <p>This kind of analysis — real drainage modeling, real fire-history overlay, run against a specific county's actual terrain — used to take days of setup, GIS licenses, and someone trained specifically to run them. Nobody does this work for a county of 55,000 people. There's no budget line for it, no newsroom assigned to it. Ryan Shields made a point on that same podcast episode about how tools like this finally make real data journalism viable for the places big outlets never get to. That's the part that's stuck with me the most.</p>
+    <p>This kind of analysis, with real drainage modeling and a fire-history overlay run against one county's actual terrain, used to take days of setup, GIS licenses, and someone trained to run them. Nobody does this work for a county of 55,000 people. There's no budget line for it and no newsroom assigned to it. Ryan Shields made a point on that same episode about how tools like this finally make data journalism workable for the places big outlets never get to. That's what has stuck with me most.</p>
 
-    <p>It's not that I built something impressive in thirty minutes. It's that thirty minutes is now enough — and the place that gets that thirty minutes doesn't have to be a place anyone's already paying attention to.</p>
+    <p>Thirty minutes is enough now, and the place you spend them on doesn't have to be one anybody's already watching.</p>
 
-    <p>It can just be the place you're from.</p>
+    <p>Mine was Tuolumne County.</p>
 
     <div class="scorecard">
       <div class="scorecard-lbl">By the Numbers</div>

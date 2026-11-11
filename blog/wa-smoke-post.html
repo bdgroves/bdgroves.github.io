@@ -306,7 +306,7 @@
     <h2>What you&rsquo;re watching</h2>
 
     <ul>
-      <li><strong>The haze</strong> is wildfire smoke near the ground &mdash; the air people were breathing &mdash; from NOAA&rsquo;s HRRR-Smoke model. Light smoke is pale grey; thick smoke goes brown.</li>
+      <li><strong>The haze</strong> is wildfire smoke near the ground (the air people were breathing), from NOAA&rsquo;s HRRR-Smoke model. Light smoke is pale grey; thick smoke goes brown.</li>
       <li><strong>The orange glow</strong> is fire seen by satellite. The VIIRS instruments on three polar-orbiting satellites pass over twice a day and flag every 375-metre pixel that&rsquo;s burning. Each detection glows for twelve hours, then leaves a dark burn scar, so you can watch the fires grow night by night.</li>
       <li><strong>The city numbers</strong> are smoke in micrograms per cubic metre, coloured by the EPA&rsquo;s Air Quality Index categories: green is good, red is unhealthy, purple and maroon are very unhealthy and hazardous.</li>
       <li><strong>At the end</strong>, the camera holds while the official fire perimeters are traced in.</li>
@@ -323,7 +323,7 @@
       <p class="photo-caption">Sunday, August 2, 5 PM · the day after the Spokane Complex fires started. The model has 719 &micro;g/m&sup3; over Spokane. Seattle: 0.</p>
     </div>
 
-    <p>On August 1 three fires broke out on the edges of Spokane &mdash; Old Trails, Autumn Lane and Fairview, together the Spokane Complex. They burned nearly 10,000 acres, forced 65,000 people to evacuate, and destroyed more than 830 homes. In the video it&rsquo;s a small fire next to the big ones up north. On the ground it was devastating.</p>
+    <p>On August 1 three fires broke out on the edges of Spokane: Old Trails, Autumn Lane and Fairview, together the Spokane Complex. They burned nearly 10,000 acres and destroyed more than 830 homes, and 65,000 people had to evacuate. In the video it&rsquo;s a small fire next to the big ones up north. On the ground it was devastating.</p>
 
     <p>The smoke over the city that first weekend is the darkest thing in the whole video. The Spokesman-Review reported that August 3 was the worst air of the month, and that by mid-August Spokane had gone eleven straight days without air meeting federal standards.</p>
 
@@ -341,12 +341,12 @@
     <p>Same toolkit as <a href="/blog/wa-heat-dome-post.html">the heat dome</a>, with two new ingredients. Credit again to Milos Popovic, whose wildfire smoke animations started this, and whose <a href="https://github.com/milos-agathon/forge3d" target="_blank">forge3d</a> draws the terrain.</p>
 
     <ol class="step-list">
-      <li><strong>Smoke.</strong> NOAA runs HRRR every hour on a 3 km grid with a smoke tracer fed by satellite fire observations. The files live in NOAA&rsquo;s open-data bucket on AWS at about 150 MB each, but each comes with an index, so the script downloads just the byte range holding near-surface smoke &mdash; 1,152 hours in about seven minutes.</li>
+      <li><strong>Smoke.</strong> NOAA runs HRRR every hour on a 3 km grid with a smoke tracer fed by satellite fire observations. The files live in NOAA&rsquo;s open-data bucket on AWS at about 150 MB each, but each comes with an index, so the script downloads only the byte range holding near-surface smoke. That&rsquo;s 1,152 hours in about seven minutes.</li>
       <li><strong>Fire.</strong> 133,866 satellite fire detections from <a href="https://firms.modaps.eosdis.nasa.gov/" target="_blank">NASA FIRMS</a>, and the official perimeters from the National Interagency Fire Center.</li>
-      <li><strong>Two renders a frame.</strong> The 3D viewer lights everything it draws, which made smoke look like paint on the hills. So each frame is rendered twice: once for the land and fires, and once for the smoke alone, colour-coded red-for-smoke, blue-for-none. Lighting scales red and blue together, so the ratio survives, and the finishing script reads the smoke back from it and lays it over the land as a veil &mdash; haze in the air rather than on the ground.</li>
+      <li><strong>Two renders a frame.</strong> The 3D viewer lights everything it draws, which made smoke look like paint on the hills. So each frame is rendered twice: once for the land and fires, and once for the smoke alone, colour-coded red-for-smoke, blue-for-none. Lighting scales red and blue together, so the ratio survives, and the finishing script reads the smoke back from it and lays it over the land as a veil, so the haze sits in the air instead of on the ground.</li>
     </ol>
 
-    <p>HRRR-Smoke is a model, not a network of monitors. It&rsquo;s good at where the smoke goes and roughly how thick it is, but the hourly number on a city won&rsquo;t match that city&rsquo;s air-quality monitor exactly, and the EPA&rsquo;s official categories are based on 24-hour averages. Treat the colours as a guide, not a reading. <strong>Update, October 4:</strong> a reader asked how it compared, so I <a href="/blog/wa-smoke-monitors-post.html">checked the model against 56 monitors</a>.</p>
+    <p>HRRR-Smoke is a model. It&rsquo;s good at where the smoke goes and roughly how thick it is, but the hourly number on a city won&rsquo;t match that city&rsquo;s air-quality monitor exactly, and the EPA&rsquo;s official categories are based on 24-hour averages. Treat the colours as a rough guide. <strong>Update, October 4:</strong> a reader asked how it compared, so I <a href="/blog/wa-smoke-monitors-post.html">checked the model against 56 monitors</a>.</p>
 
     <h2>Last thing</h2>
 

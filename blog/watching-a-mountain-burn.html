@@ -445,20 +445,20 @@ footer.end a:hover{color:var(--rust)}
 
     <p>It was 95% contained by 28 August. The cause is listed as human, still under
     investigation. The winter before had brought record-low snowpack, and the fire moved
-    through cheatgrass &mdash; an invasive annual that cures early and burns fast.</p>
+    through cheatgrass, an invasive annual that cures early and burns fast.</p>
     <p>One man who had lived on that mountain for over twenty years got out with his two
     golden retrievers and nothing else. Crews thought the line would hold; the wind
     changed and it came in about thirty minutes.</p>
-    <p>What follows is about a hillside, some trees, and a container I hid in 2008. It is
-    a very small part of this fire, and it is not the important part. I am writing it
-    because it is the part I could actually measure, and because measuring something is
-    the only useful thing I could do from Washington State.</p>
+    <p>What follows is about a hillside, some trees and a container I hid in 2008. It's
+    a very small part of this fire, and not the important part. I'm writing it because
+    it's the part I could measure, and measuring something was the only useful thing I
+    could do from Washington State.</p>
   </div>
 
   <p class="lede">There is a spot on Peavine Mountain, north of Reno, where a spring comes
   out of a drainage and feeds a stand of aspens. Basque sheepherders camped there in the
-  summers and carved their names into the trunks &mdash; names, dates, initials, drawings.
-  Some of them from the 1920s.</p>
+  summers and carved into the trunks: names, dates, initials, drawings. Some of them go
+  back to the 1920s.</p>
 
   <p>In 2008 I hid a geocache in that grove and called it
   <a href="https://www.geocaching.com/geocache/GC1CG0A_basque-sheepherder-the-high-camp">Basque
@@ -467,19 +467,19 @@ footer.end a:hover{color:var(--rust)}
   mountains. Sixty-three people have found it since.</p>
 
   <p>On 22 August 2026 at 11:23 in the morning, someone started a fire about five miles
-  north of Reno. By 12:55 PM &mdash; ninety-two minutes later &mdash; a thermal sensor in
-  low Earth orbit registered it burning 315 metres from that grove.</p>
+  north of Reno. By 12:55 PM, ninety-two minutes later, a thermal sensor in low Earth
+  orbit registered it burning 315 metres from that grove.</p>
 
   <p>I know that grove because I used to ride there. In the nineties I lived in downtown
   Reno and spent whole days climbing Peavine on a black Gary Fisher Paragon, and the aspens
-  on the back side &mdash; the sudden green shade after hours of sagebrush and no water
-  &mdash; were the reason to keep going over the top. I wrote about those rides
+  on the back side (the sudden green shade after hours of sagebrush and no water) were
+  the reason to keep going over the top. I wrote about those rides
   <a href="https://memoir.brooksgroves.com/paragon-peavine.html">here</a>, as it happens,
   the same week this fire started.</p>
 
-  <p>I could not go there. I live eight hundred miles away and the whole area was under
-  evacuation. So I did the only thing available, which was to point every free satellite
-  product I know how to use at a single hillside and find out what happened to it.</p>
+  <p>I couldn't go there. I live eight hundred miles away, and the whole area was under
+  evacuation. So I did the one thing available: I pointed every free satellite product I
+  know how to use at a single hillside to find out what happened to it.</p>
 
   <h2><span class="num">The Stack</span>What this was built on</h2>
 
@@ -488,19 +488,19 @@ footer.end a:hover{color:var(--rust)}
     <div><b>AWS Earth Search</b><span>STAC catalogue. The reason none of this costs anything.</span></div>
     <div><b>VIIRS</b><span>NASA thermal. Two satellites, roughly twice-daily passes.</span></div>
     <div><b>USGS 3DEP</b><span>Elevation. Feeds the watershed analysis.</span></div>
-    <div><b>GRASS r.watershed</b><span>Flow accumulation &mdash; where water goes.</span></div>
+    <div><b>GRASS r.watershed</b><span>Flow accumulation: where water goes.</span></div>
     <div><b>Python / rasterio</b><span>rioxarray, numpy, pystac-client. Nothing exotic.</span></div>
   </div>
 
-  <p>Total cost: nothing. No API key, no registration, no institutional access. That is
-  worth saying out loud, because this kind of assessment used to require a federal
-  agency's imagery contract.</p>
+  <p>Total cost: nothing. No API key, no registration, no institutional access. I want to
+  say that out loud, because this kind of assessment used to take a federal agency's
+  imagery contract.</p>
 
   <h2><span class="num">Act One</span>Why there was anything there to burn</h2>
 
   <p>Before asking what the fire did, I wanted to know why the grove existed at all. A
-  stand of aspens at 7,574 feet in the Great Basin is not a given &mdash; the surrounding
-  hillside is sagebrush. Something puts water there.</p>
+  stand of aspens at 7,574 feet in the Great Basin isn't a given. The hillside around it
+  is sagebrush. Something puts water there.</p>
 
   <p>So I ran <code>r.watershed</code> over USGS elevation data and looked at flow
   accumulation, which counts how many upslope cells drain through each pixel.</p>
@@ -513,22 +513,22 @@ footer.end a:hover{color:var(--rust)}
     </table>
   </div>
 
-  <p>Two numbers, five hundred metres apart, and they explain the entire site. The grove
-  sits essentially on a drainage line. The parking area sits on flat dry ridge.</p>
+  <p>Two numbers, five hundred metres apart, and they explain the whole site. The grove
+  sits more or less on a drainage line. The parking area is on flat, dry ridge.</p>
 
   <div class="finding">
     <div class="n">Finding 01</div>
     <p>The spring is why the grove is there. The grove is why the sheepherders camped
     there. The camping is why the carvings are there.</p>
-    <p>Hold on to that chain. It comes back in Act Four, and it does not end well.</p>
+    <p>Hold on to that chain. It comes back in Act Four, and it doesn't end well.</p>
   </div>
 
   <h2><span class="num">Act Two</span>Ninety-two minutes</h2>
 
   <p>VIIRS is a thermal sensor flying on two polar-orbiting satellites. Under normal
-  circumstances it does not let you watch a fire arrive at a specific coordinate &mdash;
-  you get a pass or two a day and a fire moves between them. Hawk moved fast enough, and
-  the overpasses lined up well enough, that here it essentially does.</p>
+  circumstances it won't let you watch a fire arrive at a specific coordinate. You get a
+  pass or two a day, and a fire moves between them. Hawk moved fast enough, and the
+  overpasses lined up well enough, that this time it nearly does.</p>
 
   <div class="c">
     <table>
@@ -544,9 +544,9 @@ footer.end a:hover{color:var(--rust)}
   <p>Eighty-one minutes to close 236 metres. Fire radiative power in that range is an
   active flaming front, not a smoulder.</p>
 
-  <p>And the brightness temperature on most of those detections came back at 367 K
-  &mdash; which is not a measurement, it is the top of the sensor's scale. VIIRS could not
-  register how hot it actually was.</p>
+  <p>Most of those detections came back with a brightness temperature of 367 K. That
+  isn't a measurement. It's the top of the sensor's scale. VIIRS couldn't register how hot
+  it actually was.</p>
 
   <h2><span class="num">Act Three</span>What burned</h2>
 
@@ -555,9 +555,8 @@ footer.end a:hover{color:var(--rust)}
   SWIR, so NBR runs high; fire strips the canopy and exposes char and bare soil, which
   flips the relationship hard.</p>
 
-  <p>What you actually want is the <em>change</em> &mdash; dNBR, before minus after
-  &mdash; because that isolates what the fire did from whatever the ground looked like to
-  begin with.</p>
+  <p>What you want is the <em>change</em>, dNBR (before minus after), because that
+  separates what the fire did from whatever the ground looked like to begin with.</p>
 
   <div class="c">
 <pre>NBR pre-fire   +0.526   (Aug 18, four days before ignition, 0.9% cloud)
@@ -567,8 +566,8 @@ dNBR           +0.562   ->  moderate-high severity
 RdNBR          +774.5   ->  in the range studies call high severity</pre>
   </div>
 
-  <p>The number that made it real to me, though, was NDVI &mdash; which just measures
-  greenness. Two ways of sampling it, both worth stating, because they answer slightly
+  <p>The number that made it real for me, though, was NDVI, which measures greenness.
+  I sampled it two ways, and both are worth giving, because they answer slightly
   different questions:</p>
 
   <div class="c">
@@ -579,13 +578,13 @@ RdNBR          +774.5   ->  in the range studies call high severity</pre>
     </table>
   </div>
 
-  <p>The single pixel is the grove at its densest &mdash; 0.776 is closed healthy canopy,
-  near the top of what vegetation reads anywhere. The 150 m mean is lower because the ring
+  <p>The single pixel is the grove at its densest. 0.776 is closed, healthy canopy, near
+  the top of what vegetation reads anywhere. The 150 m mean is lower because the ring
   takes in surrounding sagebrush as well as aspen. Both collapse by roughly the same
   proportion, and 0.217 at the cache pixel is bare soil with scattered debris.</p>
 
-  <p>This was not a surface fire that ran underneath the grove and scorched some trunks on
-  the way past. The crown went.</p>
+  <p>This wasn't a surface fire that ran under the grove and scorched a few trunks on the
+  way past. The crown went.</p>
 
   <figure class="bleed">
     <img src="img/peavine-watch/map_dnbr_site.png" alt="Burn severity map around the aspen grove, with VIIRS thermal detections approaching up the drainage from the southeast.">
@@ -597,7 +596,7 @@ RdNBR          +774.5   ->  in the range studies call high severity</pre>
 
   <h2><span class="num">Act Four</span>Terrain, or just more fuel?</h2>
 
-  <p>Here is where it got interesting, and where I nearly published something wrong.</p>
+  <p>This is where it got interesting, and where I nearly published something wrong.</p>
 
   <p>Same fire, same afternoon, five hundred metres apart: the grove in its drainage
   burned at dNBR +0.562. The parking area on the dry ridge burned at +0.118. Nearly five
@@ -605,25 +604,25 @@ RdNBR          +774.5   ->  in the range studies call high severity</pre>
 
   <p>The obvious reading is terrain. Fire runs uphill, because flames preheat the fuel
   above them; a drainage concentrates the front and channels its own wind up the gully.
-  The grove sat at the top of a natural chimney. Tidy story, fits the watershed analysis
-  from Act One, and I believed it for about an hour.</p>
+  The grove sat at the top of a natural chimney. It was a tidy story that fit the
+  watershed analysis from Act One, and I believed it for about an hour.</p>
 
   <div class="wrong">
     <div class="n">Where I was wrong</div>
-    <p>The two points did not start equal. The grove was <em>dense aspen</em>; the ridge
-    was <em>sparse sagebrush</em>. Denser vegetation burns hotter more or less everywhere,
-    because it has more to lose. Some unknown fraction of that 4&times; was never terrain
-    at all &mdash; it was just fuel load.</p>
-    <p>A dNBR comparison between two places with different pre-fire vegetation cannot
-    separate those two effects. Reporting it as a terrain result would have been
-    asserting something the measurement does not support.</p>
+    <p>The two points didn't start out equal. The grove was <em>dense aspen</em>; the
+    ridge was <em>sparse sagebrush</em>. Denser vegetation burns hotter almost everywhere,
+    because it has more to lose. Some unknown share of that 4&times; was never terrain at
+    all. It was fuel load.</p>
+    <p>Comparing dNBR between two places with different pre-fire vegetation can't pull
+    those effects apart. Calling it a terrain result would have claimed something the
+    measurement doesn't support.</p>
   </div>
 
   <p>The fix is to hold fuel constant. Rather than comparing the grove to the ridge,
-  compare the grove only to ground that was <em>equally vegetated before the fire</em>
-  &mdash; pixels with a pre-fire NBR between 0.40 and 0.55, the same band the grove sits
-  in. Whatever difference survives that control cannot be explained by how much fuel was
-  standing there.</p>
+  compare the grove only to ground that was <em>equally vegetated before the fire</em>:
+  pixels with a pre-fire NBR between 0.40 and 0.55, the same band the grove sits in. Any
+  difference that survives that control can't be explained by how much fuel was standing
+  there.</p>
 
   <div class="c">
 <pre>Ground with pre-fire NBR 0.40-0.55:
@@ -635,15 +634,15 @@ RdNBR          +774.5   ->  in the range studies call high severity</pre>
 
   <div class="finding">
     <div class="n">Finding 02</div>
-    <p>Even against equally-fuelled ground, the grove burned harder than 72.3% of it
-    &mdash; <b>+0.876 against +0.471</b>. That residual is not fuel load, because fuel load
-    is what was controlled for. What is left is terrain and moisture regime.</p>
-    <p>Both effects are real and they compound. The raw 4&times; overstated the terrain
-    effect; the honest figure is +0.405 dNBR.</p>
+    <p>Even against equally fuelled ground, the grove burned harder than 72.3% of it:
+    <b>+0.876 against +0.471</b>. That leftover can't be fuel load, because fuel load is
+    what I controlled for. What's left is terrain and moisture.</p>
+    <p>Both effects are real, and they compound. The raw 4&times; overstated the terrain
+    effect. The honest figure is +0.405 dNBR.</p>
   </div>
 
-  <p>Across the whole area, severity climbs steadily with pre-fire density &mdash; +0.344
-  on the sparsest ground, +0.657 on the densest. The grove sat at the intersection of both
+  <p>Across the whole area, severity climbs steadily with pre-fire density, from +0.344 on
+  the sparsest ground to +0.657 on the densest. The grove sat at the intersection of both
   effects: the heaviest fuel on the hillside, standing in the feature that concentrated
   the fire into it.</p>
 
@@ -657,33 +656,33 @@ RdNBR          +774.5   ->  in the range studies call high severity</pre>
     <img src="img/peavine-watch/map_dnbr_aoi.png" alt="Burn severity across the full seven-kilometre area of interest, showing the grove as one of the hottest points in the burn.">
     <figcaption>The grove within the wider burn. Only 20.3% of this area reached
     moderate-high severity or above; the grove mean of +0.671 exceeds 91.3% of the
-    surrounding three kilometres. It was not caught in a generally severe fire &mdash; it
-    was one of the hottest spots in it.</figcaption>
+    surrounding three kilometres. Most of this fire wasn't that severe. The grove was one
+    of its hottest spots.</figcaption>
   </figure>
 
   <p>One caution on my own metaphor. The slope there is 13.3&deg;, which is moderate. A
   textbook chimney is a steep narrow gully with a violent convective draft; this is a broad
   southeast-facing drainage near a summit. Fire running upslope with a drainage
-  concentrating the front is the accurate description. Directionally right, but I should
-  not oversell it.</p>
+  concentrating the front is the accurate description. The chimney idea points the right
+  way, but I shouldn't oversell it.</p>
 
   <h2><span class="num">Act Five</span>The recovery curve is not good news</h2>
 
   <p>Aspen regenerates aggressively from root suckers after fire, so the trees will very
-  likely come back. I set up a monitoring loop to watch it happen &mdash; a script that
-  records NBR, NDVI and NDSI at the burned grove and at an unburned control stand every
-  time Sentinel-2 passes over, appends a row to a time series, and publishes it. It runs
-  daily and needs nothing from me.</p>
+  likely come back. I set up a monitoring loop to watch it happen. Every time Sentinel-2
+  passes over, a script records NBR, NDVI and NDSI at the burned grove and at an unburned
+  control stand, appends a row to a time series and publishes it. It runs daily and needs
+  nothing from me.</p>
 
-  <p>My first instinct was that a rising NDVI curve would be the hopeful outcome. It is
-  very nearly the opposite, and the reason is a detail of plant physiology I had to go
-  and look up.</p>
+  <p>My first instinct was that a rising NDVI curve would be the hopeful outcome. It's
+  very nearly the opposite, and the reason is a detail of plant physiology I had to go look
+  up.</p>
 
   <div class="finding">
     <div class="n">Finding 03</div>
     <p>Aspen root suckering is suppressed by auxin flowing down from the living parent
-    stem. Kill the stem and that suppression lifts &mdash; which is precisely why aspen
-    regenerates so vigorously after fire.</p>
+    stem. Kill the stem and that suppression lifts, which is exactly why aspen comes back
+    so hard after fire.</p>
     <p><b>The regrowth is caused by the death of the overstory.</b> The healthier the
     green-up looks, the more confident you can be that the carved trunks are dead.</p>
   </div>
@@ -691,20 +690,19 @@ RdNBR          +774.5   ->  in the range studies call high severity</pre>
   <div class="c">
     <table>
       <tr><th>Grove mean NDVI, summer 2027</th><th>What it would mean</th></tr>
-      <tr><td>climbs to 0.3&ndash;0.5</td><td>vigorous suckering &mdash; roots alive, carved stems dead</td></tr>
-      <tr><td>stays near 0.1&ndash;0.15</td><td>roots died too &mdash; rarer, and worse</td></tr>
+      <tr><td>climbs to 0.3&ndash;0.5</td><td>vigorous suckering: roots alive, carved stems dead</td></tr>
+      <tr><td>stays near 0.1&ndash;0.15</td><td>roots died too (rarer, and worse)</td></tr>
     </table>
   </div>
 
   <p>All the figures in that table are the <b>150 m grove mean</b>, the same measurement
-  as the second row in Act Three &mdash; pre-fire 0.447, and 0.090 five days after the
-  fire.</p>
+  as the second row in Act Three: 0.447 before the fire, and 0.090 five days after.</p>
 
-  <p>There is one more piece I added after the first draft, because the raw curve is
-  harder to read than it looks. Vegetation senesces every autumn and greens up every
+  <p>I added one more piece after the first draft, because the raw curve is harder to
+  read than it looks. Vegetation senesces every autumn and greens up every
   spring whether or not it burned, so an October decline at the grove could be fire or it
   could just be October. Every satellite pass now also samples an <b>unburned control
-  stand</b> three kilometres west &mdash; comparable aspen, dNBR +0.001, none of its
+  stand</b> three kilometres west. It's comparable aspen, dNBR +0.001, and none of its
   pixels burned.</p>
 
   <div class="c">
@@ -717,28 +715,27 @@ RdNBR          +774.5   ->  in the range studies call high severity</pre>
   </div>
 
   <p>Both stands get the same season, sun angle and atmosphere, so the difference isolates
-  what the fire did. <b>&minus;0.458 is the finish line.</b> Recovery is not "does NDVI go
-  up" &mdash; spring answers that for you regardless. Recovery is whether that gap closes
-  toward zero.</p>
+  what the fire did. <b>&minus;0.458 is the finish line.</b> Spring will make NDVI go up
+  no matter what, so that's not the test. Recovery means that gap closing toward zero.</p>
 
   <h2><span class="num">Act Six</span>What the satellites can never tell me</h2>
 
   <p>The cache itself is a steel ammo can, which is about the best-case container for
   surviving a fast-moving grass and brush fire. A front like that passes in a minute or
-  two, not hours. It is scorched almost certainly and it is plausibly still sitting
+  two, not hours. It's almost certainly scorched, and it may well still be sitting
   there.</p>
 
-  <p>The carvings are a different problem entirely. They live in bark and cambium &mdash;
-  thin living tissue, which is exactly what makes aspen carvable in the first place and
-  exactly what gives it no defence against heat.</p>
+  <p>The carvings are another matter. They live in bark and cambium, thin living tissue.
+  That's what makes aspen carvable in the first place, and it's also why the tree has no
+  defence against heat.</p>
 
   <p>And no index I have can see bark. NDVI and NBR measure canopy and soil from 786
   kilometres up. The carvings are millimetres deep. Every number in this piece is
   consistent with the carvings having survived and equally consistent with their being
   gone.</p>
 
-  <p>That question needs a person standing in the grove. Which will be me, eventually,
-  when it is safe and open and I can get down there. In the meantime I have written to
+  <p>That question needs a person standing in the grove. That'll be me, eventually, once
+  it's safe and open and I can get down there. In the meantime I have written to
   UNR's Center for Basque Studies, who catalogue Peavine's arborglyphs and may hold
   photographs of what was there before August.</p>
 
@@ -750,31 +747,31 @@ RdNBR          +774.5   ->  in the range studies call high severity</pre>
   <div class="lessons">
     <p><b>Control your comparison or don't make it.</b> Two points burning differently
     tells you nothing if they started different. Holding pre-fire vegetation constant
-    turned a story I liked into a number I can defend &mdash; and shrank it from 4&times;
-    to +0.405.</p>
+    turned a story I liked into a number I can defend, and shrank it from 4&times; to
+    +0.405.</p>
     <p><b>Restrict both sides, or neither.</b> An early version of that analysis compared
     an unrestricted ring against a density-restricted comparison group. RdNBR divides by
     the square root of pre-fire NBR, so it explodes where that value is near zero, and the
     ring mean came back dominated by sparse sagebrush rather than the grove. It produced a
     dramatic number that meant nothing.</p>
     <p><b>Check the projection before differencing.</b> Peavine sits almost exactly on the
-    UTM zone 10/11 boundary, so it is covered by two satellite tiles. An early run
-    differenced a scene from each &mdash; different reprojection paths for the same ground,
-    introducing error precisely at feature boundaries like a grove edge.</p>
+    UTM zone 10/11 boundary, so two satellite tiles cover it. An early run differenced a
+    scene from each. That meant two reprojection paths for the same ground, and error
+    right at feature boundaries like a grove edge.</p>
     <p><b>Smoke can fake a snow signal.</b> The snow index reported plausible positive
     values on smoky scenes. Smoke and cloud share the bright-green, dark-SWIR signature the
     index is built on. Masking the scene classification layer first, and reporting what
     fraction of pixels survived, turned three confident wrong numbers into three honest
     UNRELIABLE flags.</p>
     <p><b>Hand-verify the formula.</b> My first RdNBR implementation was off by a factor of
-    about 31&mdash;a missing square root of 1000. I caught it by sanity-checking the output
+    about 31, from a missing square root of 1000. I caught it by sanity-checking the output
     against published ranges rather than trusting my own refactor.</p>
   </div>
 
   <h2><span class="num">Limits</span>What this does not establish</h2>
 
-  <p>The first version of this piece carried a different number, and the way it changed is
-  worth more than the number itself.</p>
+  <p>The first version of this piece carried a different number, and how it changed tells
+  you more than the number does.</p>
 
   <p><em>Update, 2 September.</em> The original run gave dNBR <b>+0.536</b>, computed against
   an Aug 23 post-fire scene taken while the fire was still burning at 0% containment, through
@@ -784,41 +781,41 @@ RdNBR          +774.5   ->  in the range studies call high severity</pre>
 
   <p>Re-run against the Aug 30 scene, the answer is <b>+0.562</b>. Slightly worse, not better.</p>
 
-  <p>But look at <em>which half moved.</em> The post-fire value barely shifted &mdash; from
-  &minus;0.055 to &minus;0.035, which is roughly what you would expect once smoke and fresh
-  ash clear off the signal. The pre-fire value jumped from +0.481 to <b>+0.526</b>, on what
+  <p>But look at <em>which half moved.</em> The post-fire value barely shifted, from
+  &minus;0.055 to &minus;0.035, about what you'd expect once smoke and fresh ash clear off
+  the signal. The pre-fire value jumped from +0.481 to <b>+0.526</b>, on what
   should be the identical Aug 18 scene.</p>
 
   <p>A pre-fire number has no business changing. Nothing happened to that hillside on 18
-  August. So the movement is not in the world, it is in the measurement &mdash; and the
-  likeliest culprit is a problem this project already knew it had. Peavine sits almost
+  August. So the movement is in the measurement, and the likeliest culprit is a problem
+  this project already knew it had. Peavine sits almost
   exactly on the boundary between UTM zones 10 and 11, so scenes covering the same ground
   arrive on two different tiles with two different reprojection paths. Difference across
   that boundary and you get registration error precisely at sharp edges, which is to say
   precisely at the edge of a grove. The current run reports the same tile for both scenes.
   The earlier one may not have had that luxury.</p>
 
-  <p>Which is an uncomfortable thing to publish, and the reason to publish it. The number
-  did not get more certain because a better satellite pass arrived. It got more certain
-  because the two halves finally came from the same grid. I would rather show that than
+  <p>That's uncomfortable to publish, which is the reason to publish it. The number got
+  more certain because the two halves finally came from the same grid, and a better
+  satellite pass had little to do with it. I would rather show that than
   quietly swap one figure for another and let the correction disappear.</p>
 
-  <p>More importantly: dNBR and RdNBR are not soil burn severity. They measure surface and
-  canopy change from above. Soil burn severity &mdash; the number that actually drives
-  debris-flow risk &mdash; requires a field team on the ground. A site can read high on
+  <p>The bigger caveat: dNBR and RdNBR aren't soil burn severity. They measure surface and
+  canopy change from above. Soil burn severity, the number that actually drives
+  debris-flow risk, takes a field team on the ground. A site can read high on
   dNBR with only lightly-burned soil underneath, or the reverse.</p>
 
   <p>That matters here more than usual, because of what comes next. Post-fire debris flow
   is usually discussed as a monsoon problem: a thirty-minute cloudburst on burnt,
-  water-repellent soil. At 7,574 feet the bigger driver is snowmelt &mdash; no canopy to
-  intercept it, no roots to hold the slope, and weeks of sustained meltwater rather than
-  one storm. The grove sits 31 metres from the channel that will carry it.</p>
+  water-repellent soil. At 7,574 feet the bigger driver is snowmelt. There's no canopy to
+  intercept it and no roots to hold the slope, and the meltwater keeps coming for weeks
+  instead of one storm. The grove sits 31 metres from the channel that will carry it.</p>
 
   <p>And there may never be an official assessment to check my work against. BAER is a
   <em>federal</em> post-fire response, and Peavine is a patchwork of BLM, City of Reno and
   private land. If the burn is mostly non-federal, no official severity product may ever be
-  published for this hillside &mdash; in which case a repository built on a laptop in
-  Washington State is the only one that will exist.</p>
+  published for this hillside. In that case a repository built on a laptop in Washington
+  State is the only one there'll be.</p>
 
   <p>Which is either encouraging or alarming depending on your mood, and is most of the
   reason I bothered.</p>
@@ -842,7 +839,7 @@ RdNBR          +774.5   ->  in the range studies call high severity</pre>
 
   <p style="font-size:0.82rem;color:var(--muted);margin-top:2rem;">If you were displaced by
   the Hawk Fire, Washoe County emergency information and recovery resources are the place to
-  start &mdash; not this page. Fire figures here are current to 2 September 2026. The fire reached 95%
+  start, not this page. Fire figures here are current to 2 September 2026. The fire reached 95%
   containment on 28 August; the severity analysis was re-run against a clean post-containment
   scene on 2 September.</p>
 

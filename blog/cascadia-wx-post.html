@@ -270,19 +270,19 @@
 
     <p>Yesterday I built a COBOL program that fetched live USGS streamflow data from eight Sierra Nevada rivers. It ran on Artemis II launch day and terminated normally with return code zero. I wrote about it <a href="/blog/sierra-flow-cobol-post.html">here</a>.</p>
 
-    <p>This morning, over coffee, I thought: COBOL was 1959. FORTRAN was 1957. And FORTRAN is still running the actual atmosphere.</p>
+    <p>This morning over coffee it hit me: COBOL came out in 1959, FORTRAN in 1957, and FORTRAN is still what runs the atmosphere.</p>
 
-    <p>The National Weather Service runs FORTRAN. NCAR runs FORTRAN. ECMWF — the European Centre for Medium-Range Weather Forecasts, widely considered the best weather modeling operation on Earth — runs FORTRAN. The WRF model, the backbone of regional weather forecasting in the United States, is FORTRAN. The first successful numerical weather prediction was computed in 1950 on ENIAC, and when that code was ported to faster machines, it was rewritten in FORTRAN. The atmosphere has been computed in FORTRAN for 75 years.</p>
+    <p>The National Weather Service runs FORTRAN, and so does NCAR. So does ECMWF, the European Centre for Medium-Range Weather Forecasts, which is widely considered the best weather modeling operation on Earth. The WRF model, which so much regional forecasting in the United States is built on, is FORTRAN. The first successful numerical weather prediction was computed in 1950 on ENIAC, and when that code moved to faster machines it was rewritten in FORTRAN. People have been computing the atmosphere in FORTRAN for 75 years.</p>
 
     <p>So I built <a href="https://github.com/bdgroves/cascadia-wx" target="_blank">CASCADIA-WX</a>.</p>
 
     <h2>What It Does</h2>
 
-    <p>Every morning at 8AM Pacific, GitHub Actions wakes up and runs the pipeline. A Python fetcher pulls live data from 11 NRCS SNOTEL stations buried in the Cascades, Olympics, and on the flanks of Rainier — sensors that have been running since before the internet existed, measuring snowpack in the mountains that supply water to most of western Washington. Four valley airport observations come in alongside. All of it goes into a CSV.</p>
+    <p>Every morning at 8AM Pacific, GitHub Actions runs the pipeline. A Python fetcher pulls live data from 11 NRCS SNOTEL stations in the Cascades, the Olympics and on the flanks of Rainier. Those sensors have been running since before the internet, measuring snowpack in the mountains that supply water to most of western Washington. Readings from four valley airports come in too, and all of it goes into a CSV.</p>
 
     <p>Then FORTRAN takes over.</p>
 
-    <p>The program computes environmental lapse rates from the temperature gradient between valley floor and mountain stations. It estimates snow level — the elevation where temperature crosses 2°C, the rain/snow phase boundary. It partitions precipitation phase, accumulates degree days, calculates an atmospheric river index from snow level anomaly and SWE rate, classifies the storm type (Gulf of Alaska, Pineapple Express, Cutoff Low), and rolls everything up by massif: Rainier, Olympics, Cascades. Four sections, formatted report, committed back to the repo. Dashboard reads it live.</p>
+    <p>The program works out environmental lapse rates from the temperature difference between the valley and mountain stations. It estimates the snow level, the elevation where the temperature crosses 2°C and rain turns to snow. Then it splits precipitation into rain and snow, adds up degree days, calculates an atmospheric river index from the snow level anomaly and SWE rate, sorts the storm into a type (Gulf of Alaska, Pineapple Express or Cutoff Low), and rolls it all up by massif: Rainier, the Olympics and the Cascades. Out comes a formatted report in four sections, committed back to the repo. The dashboard reads it live.</p>
 
     <div class="terminal-block">
       <div class="t-header">CASCADIA-WX — SECTION III: MOUNTAIN MASSIF SNOWPACK SUMMARY</div>
@@ -302,31 +302,31 @@
 
     <h2>The Numbers Are Alarming</h2>
 
-    <p>The Cascades are running at <strong>15% of normal snowpack</strong>. Snoqualmie Pass: 0.0 inches. Stevens Pass: 0.0 inches. Stampede Pass: 0.0 inches. The passes are bare in early April, which is when they should still be holding their peak accumulation before the melt season begins.</p>
+    <p>The Cascades are running at <strong>15% of normal snowpack</strong>. Snoqualmie Pass, 0.0 inches. Stevens Pass, 0.0 inches. Stampede Pass, 0.0 inches. The passes are bare in early April, when they should be near their peak, just before the melt starts.</p>
 
-    <p>Paradise, sitting at 5,150 feet on the southern flank of Rainier, is still holding 36.7 inches — 73% of normal. The mountain remembers what the passes have forgotten. But the reservoirs downstream feed from the whole watershed, not just the summit. What the passes don't hold now, the valley won't have in August.</p>
+    <p>Paradise, at 5,150 feet on the south side of Rainier, still has 36.7 inches, 73% of normal. That helps less than it sounds. The reservoirs downstream draw on the whole watershed, and whatever snow the passes don't hold now, the valley won't have in August.</p>
 
-    <p>This is exactly the kind of analysis FORTRAN was built for. Large arrays of numerical data, physical equations applied systematically, formatted output. The language was designed by John Backus at IBM in 1957 specifically because scientists were spending more time writing machine code than doing science. FORTRAN — FORmula TRANslation — let them write equations that looked like equations. Seventy years later that's still the right idea for atmospheric modeling.</p>
+    <p>This is the kind of work FORTRAN was built for: big arrays of numbers, physical equations applied over and over, and formatted output. John Backus designed the language at IBM in 1957 because scientists were spending more time writing machine code than doing science. The name is short for FORmula TRANslation, and it let them write equations that looked like equations. Seventy years later, that's still the right idea for atmospheric modeling.</p>
 
     <h2>The Eleven Stations</h2>
 
-    <p>Three massifs. Eleven sensors. Each one measuring snowpack that will become river flow that will become drinking water and irrigation and hydropower. The most interesting station in the network is also the highest: <strong>Corral Pass at 5,810 feet</strong> — the last to lose its snow, the first to signal when the season has truly turned. Snoqualmie Pass at 3,000 feet is the canary on the low end — when it goes bare in March instead of May, something is wrong.</p>
+    <p>Eleven sensors across three massifs, each one measuring snow that will become river flow, and then drinking water, irrigation and hydropower. The most interesting station in the network is also the highest, <strong>Corral Pass at 5,810 feet</strong>. It's the last to lose its snow and the first to show when the season has turned. Snoqualmie Pass, at 3,000 feet, is the canary on the low end. When it goes bare in March instead of May, something is wrong.</p>
 
-    <p>Right now, something is wrong. FORTRAN is measuring it every morning.</p>
+    <p>Right now something is wrong, and FORTRAN measures it every morning.</p>
 
     <h2>Why FORTRAN After COBOL</h2>
 
-    <p>Yesterday's COBOL project and today's FORTRAN project are sister projects in what is apparently becoming a retro-computing streak. Both use the same pattern: Python stdlib fetcher pulls free government data, old compiled language does the domain-specific computation, GitHub Actions runs it daily, static dashboard reads the output. Zero dependencies. Zero cost. Correct output every morning.</p>
+    <p>Yesterday's COBOL project and today's FORTRAN one are apparently turning into a retro-computing streak. They work the same way. A Python fetcher, standard library only, pulls free government data. The old compiled language does the domain math, GitHub Actions runs it daily, and a static dashboard reads the output. No dependencies, no cost, and correct output every morning.</p>
 
-    <p>The difference is in what the languages are good at. COBOL is verbose, record-oriented, obsessive about data layout — perfect for the structured tabular output of a streamflow report. FORTRAN is mathematical, array-oriented, built for floating point computation — perfect for the physics of atmospheric science. They're not interchangeable. They were designed for different problems, and both are still running in production at government agencies for exactly those problems.</p>
+    <p>Where they differ is in what each language is good at. COBOL is wordy and record-oriented and fussy about data layout, which suits the tabular output of a streamflow report. FORTRAN is mathematical and array-oriented, built for floating-point work, which suits the physics of the atmosphere. You can't swap one for the other. They were designed for different problems, and government agencies still run both in production for exactly those problems.</p>
 
-    <p>Writing FORTRAN in 2026 felt surprisingly natural. The fixed-format source (columns matter, line length is enforced) is initially jarring coming from modern languages, but the mathematical expressiveness is genuinely elegant. An array computation that would take several lines in Python is one line in FORTRAN. The lapse rate calculation, the degree day accumulation, the atmospheric river index — they read almost like the equations in a meteorology textbook. That was the original design goal, and it still works.</p>
+    <p>Writing FORTRAN in 2026 felt more natural than I expected. The fixed-format source (columns matter, line length is enforced) is jarring at first if you're coming from modern languages, but the math reads beautifully. An array computation that would take several lines in Python is one line in FORTRAN. The lapse rates, the degree days and the atmospheric river index read almost like the equations in a meteorology textbook. That was the original design goal, and it still works.</p>
 
     <h2>The Hatch Has to Be Maintained</h2>
 
-    <p>The README for this project has a LOST reference: <em>enter the numbers every 108 minutes or the snowpack anomaly gets worse.</em> That's a joke, but it's also not entirely wrong. The SNOTEL network has been continuously measuring snowpack since the 1970s. That unbroken record — daily observations, every station, every winter — is what makes percent-of-normal calculations meaningful. The baseline is the point. The comparison is the point. Without the continuous measurement, you just have numbers without context.</p>
+    <p>The README for this project has a LOST reference: <em>enter the numbers every 108 minutes or the snowpack anomaly gets worse.</em> That's a joke, but it isn't entirely wrong. The SNOTEL network has measured snowpack continuously since the 1970s, with daily observations at every station, every winter, and that unbroken record is what makes percent-of-normal mean anything. Without it you'd have numbers and nothing to compare them to.</p>
 
-    <p>CASCADIA-WX maintains that measurement in its own small way. Every morning at 8AM it wakes up, pulls the numbers, runs the physics, and commits the result. The hatch is maintained. Whether anyone is watching or not.</p>
+    <p>CASCADIA-WX does its small part. Every morning at 8AM it pulls the numbers, runs the physics and commits the result, whether anyone is watching or not.</p>
 
     <p>The <a href="https://brooksgroves.com/cascadia-wx/" target="_blank">live dashboard</a> is here. The <a href="https://github.com/bdgroves/cascadia-wx" target="_blank">source is on GitHub</a>. The snowpack is at 32% of normal and falling.</p>
 
