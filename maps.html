@@ -195,6 +195,7 @@
         <div class="sn-drop">
           <a href="/maps.html">🧭 All the maps</a>
           <a href="https://brooksgroves.com/30DayMapChallenge/2026/" target="_blank" rel="noopener">🗺️ #30DayMapChallenge 2026</a>
+          <a href="https://brooksgroves.com/30DayChartChallenge/2026/" target="_blank" rel="noopener">📊 #30DayChartChallenge 2026</a>
           <span class="sn-label">Flyover films</span>
           <a href="/blog/seattle-diorama-post.html">🏙️ Seattle in Miniature</a>
           <a href="/blog/torres-del-paine-post.html">🏔️ Torres del Paine, Twice</a>
@@ -333,6 +334,31 @@
     <div class="dmc-strip" id="dmc-strip"><a class="dmc-card all" href="https://brooksgroves.com/30DayMapChallenge/2026/">Open the gallery →</a></div>
     <div class="dmc-foot"><span id="dmc-legend"></span><a href="https://brooksgroves.com/30DayMapChallenge/2026/">All 30 days ↗</a></div>
   </section>
+  <section class="dmc" aria-labelledby="dcc-title" style="margin-top:2.5rem;">
+    <div class="dmc-head">
+      <div>
+        <div class="dmc-kicker">#30DayChartChallenge · the 2026 prompts</div>
+        <h2 class="dmc-title" id="dcc-title">30 Charts, After the Fact</h2>
+        <p class="dmc-desc">The April chart challenge's 2026 prompts, made for fun in November: my geocaches and concerts, Lake Tahoe's food web, Mono Lake, Rainier's snow, Whitman soccer and more. The 2027 edition is next.</p>
+      </div>
+      <div class="dmc-count" id="dcc-count"><b>30<small style="font-size:0.4em;color:var(--stone)">/30</small></b><span>charts made</span></div>
+    </div>
+    <div class="dmc-strip" id="dcc-strip"><a class="dmc-card all" href="https://brooksgroves.com/30DayChartChallenge/2026/">Open the gallery →</a></div>
+    <div class="dmc-foot"><span>Python and matplotlib, one Altair day</span><a href="https://brooksgroves.com/30DayChartChallenge/2026/">All 30 days ↗</a></div>
+  </section>
+  <script>
+  (function(){
+    var G = 'https://brooksgroves.com/30DayChartChallenge/2026/';
+    var esc = function(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+    fetch('https://raw.githubusercontent.com/bdgroves/30DayChartChallenge/main/2026/days.json', {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(M){
+      var made = M.days.filter(function(d){ return d.thumb; });
+      document.getElementById('dcc-strip').innerHTML = made.map(function(d){
+        return '<a class="dmc-card" href="' + G + '#day-' + d.day + '"><img src="' + esc(d.thumb) + '" alt="' + esc(d.alt || d.title) + '" loading="lazy">'
+          + '<div class="t"><div class="k">Day ' + d.day + ' · ' + esc(d.theme) + '</div><div class="h">' + esc(d.title) + '</div></div></a>';
+      }).join('') + '<a class="dmc-card all" href="' + G + '">See all 30 days →</a>';
+    }).catch(function(){ /* the gallery link stays */ });
+  })();
+  </script>
   <!-- maps-cards:start (scripts/hub_pages.py) -->
   <style>
     .mp { margin-top:3rem; padding-top:2rem; border-top:2px solid var(--ink); }
