@@ -270,11 +270,14 @@ callers — it's fine, just don't be surprised by it.
   volcanology, quantum-physics curricula. Each uses a curriculum-specific
   system prompt.
 
-**CORS:** OPEN — `Access-Control-Allow-Origin: *`. Anyone from any
-website can call this Worker. Low risk given low traffic, but if you
-ever see requests spike unexpectedly, this is the first thing to
-tighten (change the `*` to an allowlist like `brooks-anthropic-proxy`
-uses).
+**Locked down Nov 16, 2026** after someone used the open Worker to send
+~1M-token requests to Fable/Opus on the key (about $20). Now:
+- Model fixed in the Worker (`claude-sonnet-4-5`); callers can't pick it. Answers capped at 1000 tokens.
+- Size caps on the system prompt and questions; text only.
+- CORS limited to brooksgroves.com, bdgroves.github.io and localhost.
+- `/proxy` only fetches peaksandpints.com.
+- Optional daily caps (40 per visitor, 300 total) if a KV namespace is bound as `LIMITS` (not bound yet).
+- Source copy: `tools/workers/tiny-dawn-75f1.js` in this repo. Edit that, paste into Cloudflare, Deploy.
 
 **Deploy method:** Same as brooks-anthropic-proxy — manual, Cloudflare
 dashboard only, no Git.
@@ -305,7 +308,7 @@ there can be restored).
 ### Rotate the Anthropic API key
 
 Both Workers use the same `ANTHROPIC_API_KEY` (they're independent
-secret bindings, but happen to point at the same underlying key). To
+secret bindings, but happen to point at the same underlying key). Since Nov 16, 2026 that key is named `website-workers` in the Console; the old `quantum-qa-worker_v2` key is disabled. To
 rotate:
 
 1. [console.anthropic.com](https://console.anthropic.com) → API Keys →
