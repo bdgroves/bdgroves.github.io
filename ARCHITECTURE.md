@@ -219,7 +219,12 @@ only `claude-sonnet-5` and `claude-opus-4-5` (the `MODELS` list); `max_tokens` �
 body ≤ 6 MB; at most 4 photos, 40,000 characters of text and 6 messages; only
 model/max_tokens/system/messages/temperature are forwarded (no fast mode, tools, etc.);
 40 calls per visitor per day and **100 per day in total**, counted in the `LIMITS` KV
-namespace. The recipe routes are not limited. If a page switches models, add it to `MODELS`.
+namespace. If a page switches models, add it to `MODELS`.
+
+**Recipe save/edit/delete** (since Nov 16, 2026) need the owner password: the
+same `HOPLOVE_KEY` HopLove uses, sent as `X-HopLove-Key`. The recipe pages ask
+for it once per device and remember it (`localStorage` `hoplove_key`, shared with
+HopLove). Without it the Worker answers 401.
 
 **Secrets stored in the Worker:**
 - `ANTHROPIC_API_KEY` — for the Claude API calls
