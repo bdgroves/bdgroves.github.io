@@ -214,10 +214,12 @@ hasn't been necessary yet.
 | `GET /hoplove/ping` | HopLove checks this to know one-tap saving is available |
 | `POST /hoplove/save` | HopLove scan / rating / beer edit: opens an issue on `bdgroves/hoplove` that its workflows act on. With the owner key it's Brooks's; otherwise a scan becomes a "Suggested:" issue the workflows ignore |
 
-**Limits on `POST /` (added Sept 2026 for HopLove's public scan page):** only
-the allowed origins, any `claude-*` model, `max_tokens` ≤ 4096, body ≤ 6 MB,
-40 calls per visitor per day and 400 per day in total, counted in the
-`LIMITS` KV namespace (skipped if unbound). The recipe routes are not limited.
+**Limits on `POST /`** (tightened Nov 16, 2026): only the allowed origins;
+only `claude-sonnet-5` and `claude-opus-4-5` (the `MODELS` list); `max_tokens` ≤ 4096;
+body ≤ 6 MB; at most 4 photos, 40,000 characters of text and 6 messages; only
+model/max_tokens/system/messages/temperature are forwarded (no fast mode, tools, etc.);
+40 calls per visitor per day and **100 per day in total**, counted in the `LIMITS` KV
+namespace. The recipe routes are not limited. If a page switches models, add it to `MODELS`.
 
 **Secrets stored in the Worker:**
 - `ANTHROPIC_API_KEY` — for the Claude API calls
