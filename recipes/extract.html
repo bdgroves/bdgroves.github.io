@@ -265,6 +265,29 @@
 <script>
   // Cloudflare Worker proxy — keeps API key server-side
   const WORKER_URL = 'https://brooks-anthropic-proxy.bdgroves1970.workers.dev';
+  // Saving, editing and deleting recipes needs the owner password (same as
+  // HopLove). Asked for once per device and remembered; asked again if wrong.
+  function ownerKey(ask) {
+    let k = '';
+    try { k = localStorage.getItem('hoplove_key') || ''; } catch (e) {}
+    if (!k || ask) {
+      k = (window.prompt('Owner password (same as HopLove)') || '').trim();
+      if (k) { try { localStorage.setItem('hoplove_key', k); } catch (e) {} }
+    }
+    return k;
+  }
+  async function ownerFetch(url, opts) {
+    const send = (k) => fetch(url, { ...opts, headers: { ...(opts.headers || {}), 'X-HopLove-Key': k } });
+    let k = ownerKey(false);
+    if (!k) throw new Error('Owner password needed to change recipes.');
+    let r = await send(k);
+    if (r.status === 401) {
+      k = ownerKey(true);
+      if (k) r = await send(k);
+    }
+    return r;
+  }
+
 
   // Quick-load URLs from the recipes-todo queue (a curated subset)
   const QUICK_LOADS = [
@@ -703,7 +726,7 @@ Rules:
     }, 30000);
 
     try {
-      const resp = await fetch(WORKER_URL + '/save-recipe', {
+      const resp = await ownerFetch(WORKER_URL + '/save-recipe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ recipe }),

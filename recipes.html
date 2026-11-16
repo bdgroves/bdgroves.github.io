@@ -340,6 +340,29 @@
 <script>
   // Cloudflare Worker proxy for save/delete operations
   const WORKER_URL = 'https://brooks-anthropic-proxy.bdgroves1970.workers.dev';
+  // Saving, editing and deleting recipes needs the owner password (same as
+  // HopLove). Asked for once per device and remembered; asked again if wrong.
+  function ownerKey(ask) {
+    let k = '';
+    try { k = localStorage.getItem('hoplove_key') || ''; } catch (e) {}
+    if (!k || ask) {
+      k = (window.prompt('Owner password (same as HopLove)') || '').trim();
+      if (k) { try { localStorage.setItem('hoplove_key', k); } catch (e) {} }
+    }
+    return k;
+  }
+  async function ownerFetch(url, opts) {
+    const send = (k) => fetch(url, { ...opts, headers: { ...(opts.headers || {}), 'X-HopLove-Key': k } });
+    let k = ownerKey(false);
+    if (!k) throw new Error('Owner password needed to change recipes.');
+    let r = await send(k);
+    if (r.status === 401) {
+      k = ownerKey(true);
+      if (k) r = await send(k);
+    }
+    return r;
+  }
+
   const ADMIN_PASSWORD = 'Starwood'; // matches Westin Stories convention
 
   let recipes = [];
@@ -494,7 +517,7 @@
         btn.disabled = true;
 
         try {
-          const resp = await fetch(WORKER_URL + '/delete-recipe', {
+          const resp = await ownerFetch(WORKER_URL + '/delete-recipe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ slug }),
@@ -764,7 +787,7 @@
       setEditStatus(`<span style="display:inline-block;width:8px;height:8px;border:2px solid var(--mist);border-top-color:var(--rust);border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:-1px;"></span>Committing changes…`);
 
       try {
-        const resp = await fetch(WORKER_URL + '/update-recipe', {
+        const resp = await ownerFetch(WORKER_URL + '/update-recipe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
