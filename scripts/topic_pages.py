@@ -52,6 +52,7 @@ HEAD = """<!DOCTYPE html>
   <meta property="og:title" content="{title}">
   <meta property="og:description" content="{desc}">
   <meta property="og:url" content="https://brooksgroves.com{path}">
+  <link rel="canonical" href="https://brooksgroves.com{path}">
   <meta property="og:image" content="https://brooksgroves.com{img}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@bdgroves">

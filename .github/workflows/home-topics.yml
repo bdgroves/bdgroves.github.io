@@ -28,6 +28,7 @@ jobs:
       - run: python scripts/og_tags.py        # link-preview tags on every post
       - run: python scripts/post_polish.py    # cover picture + reading aids on every post
       - run: python scripts/analytics.py      # Cloudflare Web Analytics beacon (token in data/analytics.json)
+      - run: python scripts/seo.py            # canonical tag on every indexable page + sitemap.xml (Search Console)
       - run: python -m pip install --quiet pillow
       - run: python scripts/web_images.py     # WebP copies + srcset; runs last
       - name: Commit if the cards changed
