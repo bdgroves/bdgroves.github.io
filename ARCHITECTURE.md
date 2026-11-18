@@ -283,7 +283,8 @@ callers — it's fine, just don't be surprised by it.
 - Size caps on the system prompt and questions; text only.
 - CORS limited to brooksgroves.com, bdgroves.github.io and localhost.
 - `/proxy` only fetches peaksandpints.com.
-- Optional daily caps (40 per visitor, 300 total) if a KV namespace is bound as `LIMITS` (not bound yet).
+- Daily caps: 40 per visitor, 300 total, counted in the `hoplove-limits` KV namespace (bound as `LIMITS`).
+- Since Nov 18, 2026: requests with no Origin are refused too (scripts, not pages on the site).
 - Source copy: `tools/workers/tiny-dawn-75f1.js` in this repo. Edit that, paste into Cloudflare, Deploy.
 
 **Deploy method:** Same as brooks-anthropic-proxy — manual, Cloudflare
