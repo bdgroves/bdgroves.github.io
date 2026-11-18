@@ -99,8 +99,10 @@ export default {
 
     if (request.method !== 'POST' || url.pathname !== '/') return json({ error: 'Not found' }, 404, h);
 
-    // Browsers always send Origin on these requests; refuse other sites.
-    if (origin && !ALLOWED_ORIGINS.includes(origin)) return json({ error: 'Not allowed.' }, 403, h);
+    // Browsers always send Origin on these requests, so a request with no Origin is a script,
+    // not a page on the site: refuse it as well as other sites. (Nov 17 2026: the earlier
+    // `origin &&` let Origin-less requests straight through.)
+    if (!ALLOWED_ORIGINS.includes(origin)) return json({ error: 'Not allowed.' }, 403, h);
     if (!env.ANTHROPIC_API_KEY) return json({ error: 'Tutor is not set up.' }, 500, h);
 
     const raw = await request.text();
