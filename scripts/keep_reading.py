@@ -82,6 +82,7 @@ IMAGE_OVERRIDES = {
     "/blog/cookbook-post.html": "/blog/img/cookbook-post/og.jpg",
     "/blog/investment-club-blog.html": "/blog/img/investment-club-blog/og.jpg",
     "/blog/halloween-in-august.html": "/blog/img/halloween-in-august/og.jpg",
+    "/blog/abacus-on-the-17th-floor.html": "/blog/img/abacus-on-the-17th-floor/og.jpg",
     "/blog/pixi-post.html": "/blog/img/pixi-post/og.jpg",
     "/blog/wherobots-post.html": "/blog/img/wherobots-post/og.jpg",
     # batch 3 heroes (Oct 21)
