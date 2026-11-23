@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thirty Maps in Thirty Days — Brooks Groves</title>
+  <meta name="description" content="All thirty of my #30DayMapChallenge 2026 maps in one place: geocaches, Rainier&#x27;s earthquake swarms, a FORTRAN line-printer map, Lake Tahoe&#x27;s floor, a Seahawks quake on a seismometer and a hot-spring map inked on a bar napkin.">
+  <!-- link-preview tags: scripts/og_tags.py -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="🗺️ Thirty Maps in Thirty Days">
+  <meta property="og:url" content="https://brooksgroves.com/blog/30daymapchallenge-2026.html">
+  <meta property="og:image" content="https://brooksgroves.com/blog/img/30daymapchallenge-2026/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- /link-preview tags -->
+  <meta property="og:description" content="All thirty of my #30DayMapChallenge 2026 maps in one place: geocaches, Rainier&#x27;s earthquake swarms, a FORTRAN line-printer map, Lake Tahoe&#x27;s floor, a Seahawks quake on a seismometer and a hot-spring map inked on a bar napkin.">
+  <link rel="canonical" href="https://brooksgroves.com/blog/30daymapchallenge-2026.html">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌲</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink:#1c1a16; --parchment:#f5f0e8; --cream:#ede8dc;
+      --stone:#7a7268; --gold:#c8922a; --mist:#d6d0c4;
+      --white:#fdfaf4; --satellite:#2a5c3a; --data:#8b6914;
+    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--parchment); color:var(--ink); font-family:'Libre Baskerville',Georgia,serif; font-size:16px; line-height:1.7; overflow-x:hidden; }
+    body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E"); pointer-events:none; z-index:9999; opacity:0.5; }
+    .topline { height:4px; background:linear-gradient(90deg,var(--satellite) 0%,var(--data) 50%,var(--ink) 100%); }
+
+    header { border-bottom:2px solid var(--ink); padding:0 clamp(1.5rem,5vw,4rem); position:sticky; top:0; background:var(--parchment); z-index:100; }
+    .masthead-inner { display:flex; align-items:center; justify-content:space-between; gap:1rem; max-width:1400px; margin:0 auto; padding:0.75rem 0; }
+    .site-name { font-family:'Playfair Display',serif; font-size:clamp(1.1rem,2.5vw,1.5rem); font-weight:900; text-decoration:none; color:var(--ink); }
+    nav { display:flex; gap:clamp(0.8rem,2.5vw,2rem); align-items:center; flex-wrap:wrap; }
+    nav a { font-family:'DM Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    nav a:hover { color:var(--satellite); }
+    nav a.github { border:1px solid var(--mist); padding:0.3rem 0.7rem; color:var(--ink); }
+    nav a.github:hover { background:var(--ink); color:var(--parchment); }
+
+    .article-wrap { max-width:760px; margin:0 auto; padding:clamp(3rem,6vw,5rem) clamp(1.5rem,5vw,2rem) clamp(3rem,6vw,5rem); }
+    .article-back { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); display:inline-block; margin-bottom:2rem; }
+    .article-back:hover { color:var(--satellite); }
+    .article-kicker { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--satellite); margin-bottom:0.75rem; }
+    .article-title { font-family:'Playfair Display',serif; font-size:clamp(2rem,5vw,3.2rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1rem; }
+    .article-meta { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; margin-bottom:1rem; display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .article-tags { display:flex; gap:0.5rem; flex-wrap:wrap; padding-bottom:2rem; border-bottom:1px solid var(--mist); margin-bottom:2.5rem; }
+    .article-tag-pill { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); background:var(--cream); border:1px solid var(--mist); padding:0.25rem 0.65rem; border-radius:4px; text-decoration:none; display:inline-block; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+    .article-tag-pill:hover { background:var(--gold); border-color:var(--gold); color:var(--white); }
+
+    .article-body { font-size:1.05rem; line-height:1.85; }
+    .article-body p { margin-bottom:1.5rem; }
+    .article-body p:first-child::first-letter { font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:900; float:left; line-height:0.85; margin-right:0.1em; margin-top:0.05em; color:var(--satellite); }
+    .article-body h2 { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin:2.5rem 0 1rem; padding-top:2rem; border-top:1px solid var(--mist); color:var(--satellite); }
+    .article-body hr { border:none; border-top:1px solid var(--mist); margin:2.5rem 0; }
+    .article-body em { font-style:italic; }
+    .article-body strong { font-weight:700; }
+    .article-body blockquote { border-left:3px solid var(--satellite); padding-left:1.25rem; margin:1.5rem 0; font-style:italic; color:var(--stone); font-size:1rem; line-height:1.75; }
+    .article-body a { color:var(--satellite); text-decoration:underline; text-underline-offset:3px; }
+
+    /* IMAGE FIGURES */
+    .fig { margin:2rem 0; }
+    .fig img { width:100%; border:1px solid var(--mist); display:block; }
+    .fig-caption { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.08em; color:var(--stone); margin-top:0.5rem; line-height:1.6; }
+    .fig-caption strong { color:var(--data); }
+
+    /* SIDE BY SIDE */
+    .fig-pair { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:2rem 0; }
+    .fig-pair .fig { margin:0; }
+    @media(max-width:600px) { .fig-pair { grid-template-columns:1fr; } }
+
+    /* SEASONAL TABLE */
+    .season-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.88rem; }
+    .season-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .season-table td { padding:0.65rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; line-height:1.55; }
+    .season-table tr:last-child td { border-bottom:none; }
+    .season-table td:first-child { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--data); font-weight:600; white-space:nowrap; }
+
+    /* INDICES TABLE */
+    .index-table { width:100%; border-collapse:collapse; margin:1.5rem 0; font-size:0.85rem; }
+    .index-table th { font-family:'DM Mono',monospace; font-size:0.58rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--stone); text-align:left; padding:0.5rem 0.75rem; border-bottom:2px solid var(--ink); }
+    .index-table td { padding:0.6rem 0.75rem; border-bottom:1px solid var(--mist); vertical-align:top; }
+    .index-table tr:last-child td { border-bottom:none; }
+    .index-table td:first-child { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--satellite); font-weight:600; }
+
+    /* USES BOX */
+    .uses-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1.5rem 0; }
+    .use-card { background:var(--cream); padding:1rem 1.25rem; border-left:3px solid var(--data); }
+    .use-card-head { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--data); margin-bottom:0.4rem; }
+    .use-card-body { font-size:0.82rem; color:var(--stone); line-height:1.6; }
+    @media(max-width:560px) { .uses-grid { grid-template-columns:1fr; } }
+
+    .article-footer { margin-top:2.5rem; padding-top:2rem; border-top:2px solid var(--ink); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; }
+    .article-footer-author { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--stone); letter-spacing:0.1em; }
+    .article-footer-nav { display:flex; gap:1.5rem; }
+    .article-footer-nav a { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .article-footer-nav a:hover { color:var(--satellite); }
+
+    footer { background:var(--ink); color:var(--stone); padding:clamp(2rem,5vw,3rem) clamp(1.5rem,5vw,4rem); margin-top:4rem; }
+    .footer-inner { max-width:1400px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-name { font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; color:var(--white); }
+    .footer-tagline { font-family:'DM Mono',monospace; font-size:0.55rem; color:var(--stone); margin-top:0.2rem; }
+    .footer-links { display:flex; gap:1.5rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'DM Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; color:var(--stone); }
+    .footer-links a:hover { color:var(--gold); }
+  
+    .aside { background:var(--cream); border-top:2px solid var(--data); padding:1.3rem 1.5rem; margin:1.5rem 0; }
+    .aside-title { font-family:'DM Mono',monospace; font-size:0.62rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--data); margin-bottom:0.6rem; }
+    .aside p { margin:0 0 0.7rem; color:var(--stone); line-height:1.7; font-size:0.9rem; }
+    .aside p:last-child { margin-bottom:0; }
+    .pull-quote { border-left:3px solid var(--data); margin:2rem 0; padding:0.5rem 0 0.5rem 1.5rem; font-family:'Playfair Display',serif; font-style:italic; font-size:1.2rem; line-height:1.6; color:var(--stone); }
+    .article-kicker-inline { font-family:'DM Mono',monospace; font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone); margin:2.5rem 0 1.5rem; }
+
+    /* MONTH GRID */
+    .dmc-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1.25rem; margin:2rem 0 2.5rem; }
+    @media(max-width:600px) { .dmc-grid { grid-template-columns:1fr; } }
+    .dmc-card { display:flex; flex-direction:column; background:var(--white); border:1px solid var(--mist); text-decoration:none !important; color:inherit !important; transition:border-color .15s, transform .15s; }
+    .dmc-card:hover { border-color:var(--satellite); transform:translateY(-2px); }
+    .dmc-card img { width:100%; aspect-ratio:4/3; height:auto; object-fit:cover; object-position:center 40%; display:block; border-bottom:1px solid var(--mist); background:var(--cream); }
+    .dmc-text { padding:0.8rem 1rem 1rem; }
+    .dmc-day { font-family:'DM Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--satellite); margin-bottom:0.3rem; }
+    .dmc-title { font-family:'Playfair Display',serif; font-weight:700; font-size:1.08rem; line-height:1.25; margin-bottom:0.4rem; color:var(--ink); }
+    .dmc-pitch { font-size:0.82rem; line-height:1.6; color:var(--stone); }
+    .article-body h2 + .dmc-grid { margin-top:1rem; }
+</style>
+  <link rel="stylesheet" href="/css/site-footer.css">
+<script>
+  // Set the theme before first paint so there is no light flash on reload.
+  // Shared key across every brooksgroves.com page and subdomain, so the
+  // choice follows you from the homepage into the memoir and back.
+  (function(){
+    try {
+      var saved = localStorage.getItem('bg_theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (saved === 'dark' || (!saved && prefersDark)) {
+        document.documentElement.setAttribute('data-theme','dark');
+      }
+    } catch(e) { /* private mode / storage blocked — stay light */ }
+  })();
+</script>
+</head>
+<body id="top">
+<div class="topline"></div>
+<header>
+  <div class="masthead-inner">
+    <a href="/" class="site-name">Brooks Groves</a>
+    <nav class="site-nav" aria-label="Main">
+      <div class="sn-item"><a href="/work/">Work</a>
+        <div class="sn-drop">
+          <span class="sn-label">By field</span>
+          <a href="/meteorology.html">🌩 Meteorology</a>
+          <a href="/hydrology.html">💧 Hydrology</a>
+          <a href="/geospatial.html">🗺 Geospatial</a>
+          <a href="/volcanology.html">🌋 Volcanology</a>
+          <a href="/paleontology.html">🦕 Paleontology</a>
+          <a href="/ecology.html">🌿 Ecology</a>
+          <a href="/geology.html">🪨 Geology</a>
+          <a href="/archaeology.html">🏺 Archaeology</a>
+          <span class="sn-label">Projects</span>
+          <a href="https://brooksgroves.com/mother-lode/" target="_blank" rel="noopener">⛏️ Mother Lode</a>
+          <a href="https://brooksgroves.com/project-kiva" target="_blank" rel="noopener">🏺 Project Kiva</a>
+          <a href="https://brooksgroves.com/lidar-explore/" target="_blank" rel="noopener">🌲 LiDAR Explore</a>
+          <a href="/hoplove/">🍺 HopLove</a>
+          <a href="https://brooksgroves.com/little-free-pantry" target="_blank" rel="noopener">🏠 Little Free Pantry</a>
+          <a href="/radio/">📡 Ham radio: On the Air</a>
+          <a href="/outpost/">🛰️ OUTPOST (a sensor station, in planning)</a>
+          <span class="sn-label">Bots</span>
+          <a href="/blog/bdgrovesbot.html">🔥 BdgrovesBot (parked)</a>
+          <a href="/blog/alert-bots-revisited-post.html">🌙 The weather bots (on standby)</a>
+          <a href="https://github.com/bdgroves" target="_blank" rel="noopener">The code, on GitHub ↗</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/writing/" aria-current="page">Writing</a>
+        <div class="sn-drop">
+          <a href="/blog/">📝 Blog</a>
+          <a href="/writing/">📖 All writing</a>
+          <a href="/tags.html">🏷️ Posts by topic</a>
+          <span class="sn-label">Learning</span>
+          <a href="/learning/">📚 All curricula</a>
+          <a href="/learning/math-garden/">🌀 The Math Garden</a>
+          <a href="/learning/quantum-physics/">⚛️ Quantum Physics</a>
+          <a href="/learning/volcanology/">🌋 Volcanology</a>
+          <a href="/learning/desert-montane-ecosystems/">🌵 Desert &amp; Montane Ecosystems</a>
+          <a href="/learning/ecogeomorphology/">🌊 Ecogeomorphology</a>
+          <a href="/learning/grunge/">🎸 Grunge</a>
+          <a href="/learning/reggae/">🎵 Reggae</a>
+          <a href="/learning/afropop/">🌍 Afropop</a>
+          <a href="/learning/punk/">🎸 Punk Rock</a>
+          <a href="/learning/newwave/">🎹 New Wave</a>
+          <span class="sn-label">Stories 🔒</span>
+          <a href="https://memoir.brooksgroves.com">📜 Memoir</a>
+          <a href="https://westin.brooksgroves.com">🏨 Westin Stories</a>
+          <a href="https://journal.brooksgroves.com">✈️ Journal</a>
+          <a href="https://y2k.brooksgroves.com" target="_blank" rel="noopener">💾 Y2K Archive</a>
+          <a href="/recipes.html">🍳 Recipes</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/maps.html">Maps &amp; films</a>
+        <div class="sn-drop">
+          <a href="/maps.html">🧭 All the maps</a>
+          <a href="https://brooksgroves.com/30DayMapChallenge/2026/" target="_blank" rel="noopener">🗺️ #30DayMapChallenge 2026</a>
+          <a href="https://brooksgroves.com/30DayChartChallenge/2026/" target="_blank" rel="noopener">📊 #30DayChartChallenge 2026</a>
+          <span class="sn-label">Flyover films</span>
+          <a href="/blog/seattle-diorama-post.html">🏙️ Seattle in Miniature</a>
+          <a href="/blog/torres-del-paine-post.html">🏔️ Torres del Paine, Twice</a>
+          <a href="/blog/zermatt-diorama-post.html">🐄 Zermatt in Miniature</a>
+          <a href="/blog/dakar-diorama-post.html">🏁 The Dakar in Miniature</a>
+          <a href="/blog/amalfi-diorama-post.html">🍋 The Amalfi Coast in Miniature</a>
+          <a href="/blog/yosemite-diorama-post.html">🧗 Yosemite in Miniature</a>
+          <a href="/blog/athabasca-melt-post.html">🧊 The Athabasca Glacier, 1844 to 2100</a>
+          <a href="/blog/icefields-flyover-post.html">🏔️ The Icefields Parkway</a>
+          <a href="/blog/ruby-flyover-post.html">💎 The Ruby Mountains</a>
+          <a href="/blog/mono-flyover-post.html">🌋 Mono Basin</a>
+          <a href="/blog/yosemite-flyover-post.html">🧗 Yosemite</a>
+        </div>
+      </div>
+      <div class="sn-item"><a href="/live/">Live data</a>
+        <div class="sn-drop">
+          <span class="sn-label">Updating on their own</span>
+          <a href="/secchi/">🔵 secchi: Lake Tahoe</a>
+          <a href="https://brooksgroves.com/rainier-snowpack" target="_blank" rel="noopener">❄️ Rainier Snowpack</a>
+          <a href="https://brooksgroves.com/PELE" target="_blank" rel="noopener">🌋 PELE: Kīlauea</a>
+          <a href="https://brooksgroves.com/lahar-watch" target="_blank" rel="noopener">🌋 lahar-watch</a>
+          <a href="https://brooksgroves.com/aftershock" target="_blank" rel="noopener">🌍 AFTERSHOCK</a>
+          <a href="https://brooksgroves.com/sierra-streamflow" target="_blank" rel="noopener">💧 Sierra Streamflow</a>
+          <a href="https://brooksgroves.com/puget-tides/" target="_blank" rel="noopener">🌊 PUGET-TIDES</a>
+          <a href="https://brooksgroves.com/fog-watch/" target="_blank" rel="noopener">🌫️ FOG-WATCH</a>
+          <a href="https://brooksgroves.com/solstice" target="_blank" rel="noopener">☀️ SOLSTICE</a>
+          <a href="https://brooksgroves.com/weather-station" target="_blank" rel="noopener">🌡️ Weather Station</a>
+          <a href="https://brooksgroves.com/Alpine-watch/" target="_blank" rel="noopener">🏔️ ALPINE-WATCH</a>
+          <a href="https://brooksgroves.com/cypress-dome-watch/" target="_blank" rel="noopener">🌳 Cypress Domes</a>
+          <a href="https://brooksgroves.com/sentinel-stockpile/" target="_blank" rel="noopener">🛰️ Sentinel Stockpile</a>
+          <a href="https://brooksgroves.com/EDGAR" target="_blank" rel="noopener">⚾ EDGAR</a>
+        </div>
+      </div>
+      <div class="sn-item sn-end"><a href="/outside.html">Outside</a>
+        <div class="sn-drop">
+          <a href="/outside.html">🏔 Outside</a>
+          <a href="/concerts.html">🎫 Concerts</a>
+          <a href="/games.html">🎲 Games</a>
+          <a href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener">📕 Reading</a>
+        </div>
+      </div>
+      <div class="sn-item sn-end"><a href="/about.html">About</a>
+        <div class="sn-drop">
+          <a href="/about.html">👤 About me</a>
+          <span class="sn-label">Connect</span>
+          <a href="mailto:contact@brooksgroves.com" class="sn-contact">✉︎ contact@brooksgroves.com</a>
+          <a href="https://github.com/bdgroves" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="https://x.com/bdgroves" target="_blank" rel="noopener">X / Twitter ↗</a>
+          <a href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener">Bluesky ↗</a>
+          <a href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener">Strava ↗</a>
+          <a href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener">Untappd ↗</a>
+          <a href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener">Goodreads ↗</a>
+        </div>
+      </div>
+      <form class="nav-search" action="/search/" role="search"><input type="search" name="q" placeholder="Search" aria-label="Search brooksgroves.com" autocomplete="off"><button type="submit" aria-label="Search">⌕</button></form>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">&#9681;</button>
+    </nav>
+  </div>
+</header>
+
+<div class="article-wrap">
+  <a href="/blog/" class="article-back">← Blog</a>
+  <div class="article-num">Maps · #30DayMapChallenge · December 2026</div>
+  <p class="article-kicker">30 Themes · 30 Maps · One November</p>
+  <h1 class="article-title">Thirty Maps in Thirty Days</h1>
+  <div class="article-meta">
+    <span>Lakewood, WA · December 2026</span>
+    <span>Brooks Groves</span>
+  </div>
+  <div class="article-tags">
+    <a href="https://brooksgroves.com/tags.html#Cartography" class="article-tag-pill">Cartography</a>
+    <a href="https://brooksgroves.com/tags.html#GIS" class="article-tag-pill">GIS</a>
+    <a href="https://brooksgroves.com/tags.html#Python" class="article-tag-pill">Python</a>
+    <a href="https://brooksgroves.com/tags.html#Open%20Data" class="article-tag-pill">Open Data</a>
+    <a href="https://brooksgroves.com/tags.html#Groveland" class="article-tag-pill">Groveland</a>
+    <a href="https://brooksgroves.com/tags.html#Pacific%20Northwest" class="article-tag-pill">Pacific Northwest</a>
+  </div>
+
+  <div class="article-body">
+
+  <p>Every November, mapmakers all over the world take on the <a href="https://30daymapchallenge.com/" target="_blank" rel="noopener">#30DayMapChallenge</a>: thirty themes, one for each day, and a map for every one of them. This year I made all thirty. Each one went out to X and Bluesky on its day, and now that the month is over, here they all are in one place.</p>
+  <p>The themes sent me all over the place, from a 1772 chart of New Zealand to the census blocks of Nevada where nobody lives. But the maps kept finding their way home. Seven of them are about Groveland, the Tuolumne and the country I grew up in, and four are about Mount Rainier.</p>
+
+  <figure class="fig">
+    <img src="/blog/img/30daymapchallenge-2026/og.jpg" alt="All thirty #30DayMapChallenge 2026 maps as small tiles in a grid of ten by three, numbered 1 to 30" width="1600" height="900" loading="lazy" style="height:auto">
+    <figcaption class="fig-caption"><strong>The whole month.</strong> Day 1 at top left, Day 30 at bottom right. Tap any map below to open it full size.</figcaption>
+  </figure>
+
+  <p>A few of them stretched me in new directions. Day 7 was made live in QGIS against a ten-minute clock (I finished at 5:09). Day 10 is a FORTRAN program, written from a single one-sentence prompt, that prints Big Creek's watershed the way a 1960s line printer would. Day 27 counts all 3.8 million buildings in Washington with one DuckDB query. And Day 30 has no code at all: just bar ink on a cocktail napkin.</p>
+  <p>The rest are mostly Python (25 of the 30), built and rendered on GitHub Actions, with Mapbox basemaps (this year's sponsor) where streets and water help tell the story. Every map below links to its own page with the data sources and the stories behind it.</p>
+
+  <h2>Week one: points to the 10-minute map</h2>
+  <div class="dmc-grid">
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-01.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-01.jpg" alt="Map of 1,190 geocaches found by Hipparchus from 2001 to 2026, as small dots colored from pale gold for early years to dark red for recent ones. The main map covers the West Coast, where most are, thickest in Washington, California, Nevada. A small world map below shows finds in 25 countries, and a bar chart shows finds per year, with the most in 2017. The farthest finds: north in Iceland, south in South Island, NZ, east in North Island, NZ, west in Hawaii, and farthest from home in Tasmania, Australia, 13,421 km away." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 1 · Points</div>
+        <div class="dmc-title">1,190 caches</div>
+        <div class="dmc-pitch">Every geocache I&#x27;ve found as Hipparchus, one dot each, colored by year. Twenty-odd years of where curiosity has taken me.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-02.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-02.jpg" alt="Map of Stanley Park in Vancouver with the Seawall drawn as a red line around its shore, about 8.8 km, and landmarks including Beaver Lake, Brockton Point Lighthouse, Lumberman&#x27;s Arch, Nine O&#x27;Clock Gun, Prospect Point." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 2 · Lines</div>
+        <div class="dmc-title">The Seawall</div>
+        <div class="dmc-pitch">The path around Stanley Park in Vancouver: 8.8 km of Seawall between the forest and the sea, 10 km all the way round, on a Mapbox Outdoors basemap, with the landmarks along the way.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-03.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-03.jpg" alt="Map of Tuolumne County, California, covered in overlapping semi-transparent fire perimeters from 1900 to 2025, pale for old fires and red for recent ones. The 2013 Rim Fire, outlined with a dashed line, fills much of the middle of the county east of Groveland. 36% of the county has burned at least once and 16% twice or more." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 3 · Polygons</div>
+        <div class="dmc-title">Every fire around Groveland</div>
+        <div class="dmc-pitch">Every recorded fire perimeter in Tuolumne County since the early 1900s, oldest faint, newest bright, with the Rim Fire (2013) wrapped around Groveland.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-04.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-04.jpg" alt="Shaded relief map of Mount Rainier with 11,444 earthquakes since 2000 as dots within a 30 km circle. Most are gray background quakes, with colored clusters marking swarms; the largest, 1,362 quakes in July 2025, sits just under the summit. A bar chart of quakes per month shows a spike for each swarm." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 4 · Clusters</div>
+        <div class="dmc-title">Rainier&#x27;s swarms</div>
+        <div class="dmc-pitch">Earthquakes within 30 km of Mount Rainier since 2000, grouped into swarms by space and time. The July 2025 swarm, the largest ever recorded there, stands out.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-05.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-05.jpg" alt="Shaded relief map of Washington and northern Oregon with the areas that can see Mount Rainier&#x27;s summit shaded red: 35,267 square kilometers of land, reaching 390 km to the northwest at the farthest. Cities with a line of sight: Seattle, Tacoma, Lakewood, Olympia, Everett, Victoria, Portland, Yakima, Ellensburg, Aberdeen. Cities without: Bellingham, Vancouver, Salem, Wenatchee, Tri-Cities, Port Angeles, Spokane." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 5 · Sight</div>
+        <div class="dmc-title">Where you can see Rainier from</div>
+        <div class="dmc-pitch">A viewshed from the summit of Mount Rainier over 90 m terrain, with Earth&#x27;s curvature and refraction, showing every place in Washington with a line of sight to the mountain.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-06.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-06.jpg" alt="James Cook&#x27;s 1772 engraved chart of New Zealand, georeferenced, with today&#x27;s coastline traced over it in red; the two match closely, except that Banks Peninsula is drawn as an island, Stewart Island as part of the mainland, and much of the coast sits slightly east. Gold lines mark the west coasts Abel Tasman saw in 1642-43, with an inset of Tasman&#x27;s own coastline from the Bonaparte map of about 1644." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 6 · Vintage</div>
+        <div class="dmc-title">Tasman to Cook</div>
+        <div class="dmc-pitch">James Cook&#x27;s 1772 chart of New Zealand, lined up with today&#x27;s coast, with the stretches Abel Tasman saw in 1642–43 in gold. A map version of my Cartographic Perspectives article.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-07.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-07.jpg" alt="Dark map of the Los Angeles basin and its mountains, covered in 2,438 overlapping fire perimeters since 1950, colored from dark brown for the oldest to pale tan for the newest; burned ground blankets the Santa Monica, San Gabriel and Santa Susana mountains. The Palisades and Eaton fires of January 2025 are outlined in white, on the coast west of Santa Monica and above Altadena. A clock in the corner reads 05:09 of 10:00." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 7 · 10 minute map</div>
+        <div class="dmc-title">Every fire since 1950, Los Angeles</div>
+        <div class="dmc-pitch">Made in QGIS against the clock, finished at 5:09: every CAL FIRE perimeter around Los Angeles since 1950, stacked and colored by year, with the Palisades and Eaton fires of January 2025 outlined in white.</div>
+      </div>
+    </a>
+  </div>
+  <h2>Week two: Utopia to Borges</h2>
+  <div class="dmc-grid">
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-08.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-08.jpg" alt="Map of the lower 48 states dotted with 836 places named Paradise, Eden, Arcadia, Utopia or Shangri-La. Paradise (501) is the most common, then Eden (243). Only 264 are towns; the most common kinds are townships and other civil divisions, streams, valleys." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 8 · Utopia</div>
+        <div class="dmc-title">Paradise, Eden, Utopia</div>
+        <div class="dmc-pitch">Every place in the United States named Paradise, Eden, Utopia, Arcadia or Shangri-La, from Paradise on Rainier to Utopia, Texas.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-09.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-09.jpg" alt="A long horizontal satellite-photo ribbon of the 74 km straight line from the Port of Tacoma to Paradise on Mount Rainier, with Rainier&#x27;s lahar hazard zones outlined in red on the valley floors, labeled above with zones after Patrick Geddes&#x27;s Valley Section: port, city and suburb, acreage and farm, forest, rock and ice. Below it, stacked profiles on the same kilometer scale: people per square kilometer, high through Fife and Puyallup and falling to almost none after km 33; buildings per square kilometer, peaking in Puyallup; tree cover, rising to near 100% through the forest and dropping to zero on the mountain; and ground elevation, flat near sea level along the Puyallup valley, climbing to about 9,000 ft on Rainier&#x27;s southwest flank and ending at Paradise at about 5,400 ft, with a red band marking the stretches inside a lahar hazard zone." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 9 · Urban-rural</div>
+        <div class="dmc-title">Tacoma to Paradise</div>
+        <div class="dmc-pitch">One line from the Port of Tacoma to Paradise on Rainier, and what changes along it: people, buildings, trees and elevation.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-10.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-10.jpg" alt="A green-bar line-printer printout of Big Creek&#x27;s watershed near Groveland, California: the basin outlined in asterisks and shaded in eight tones of typed characters, darker where higher, with streams left as blank gaps, a G at the gage, and a typed legend of elevation classes, cells and percent of area below." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 10 · Prompting only</div>
+        <div class="dmc-title">A map made only by asking</div>
+        <div class="dmc-pitch">Big Creek&#x27;s watershed above Groveland as a 1960s line-printer map: a FORTRAN program, written entirely from a one-sentence prompt, prints the basin in eight overprinted tones on green-bar paper, the way SYMAP did. The prompts are posted with it.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-11.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-11.jpg" alt="Map of western Washington&#x27;s coast and inland waters with 121 tsunami siren locations, each ringed by a one-mile circle where it can be heard outdoors, over the tsunami hazard zones in red." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 11 · Sound</div>
+        <div class="dmc-title">Where the tsunami sirens reach</div>
+        <div class="dmc-pitch">Washington&#x27;s tsunami sirens, each with the one-mile circle it&#x27;s designed to be heard in, over the tsunami hazard zones they&#x27;re there to empty. (Pierce County&#x27;s lahar sirens were the first idea, but their locations aren&#x27;t published.)</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-12.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-12.jpg" alt="Map from San Francisco east to Yosemite. Gold lines are San Francisco&#x27;s power lines running from powerhouses below Groveland to the Bay Area; blue is the Hetch Hetchy aqueduct; gray is every other high-voltage line in the region." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 12 · Power</div>
+        <div class="dmc-title">The Tuolumne powers San Francisco</div>
+        <div class="dmc-pitch">Hetch Hetchy&#x27;s dams, the powerhouse at Moccasin just below Groveland, and the lines that carry the Tuolumne&#x27;s power to San Francisco.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-13.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-13.jpg" alt="Screenshot of the Follow a raindrop page: a raindrop starting near Groveland traced down the Tuolumne and San Joaquin rivers to the Delta, 279 km, on a pale basemap." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 13 · Interactions</div>
+        <div class="dmc-title">Follow a raindrop</div>
+        <div class="dmc-pitch">Click anywhere in the lower 48 and watch where the water goes, river by river, to the sea or a lake with no outlet, using the USGS&#x27;s navigation service. From Groveland, it is 279 km to the Delta.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-14.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-14.jpg" alt="Screenshot of the 1:1 page: almost empty parchment graph paper with a single thick blue line, one stretch of Big Creek at full size, and a minimap of the whole watershed in the corner." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 14 · Borgesian map</div>
+        <div class="dmc-title">1:1</div>
+        <div class="dmc-pitch">Borges&#x27;s map the size of the empire, made literal. Big Creek&#x27;s watershed at full scale as a page you can scroll for miles, with an odometer showing how far you&#x27;ve gone.</div>
+      </div>
+    </a>
+  </div>
+  <h2>Week three: inside Kīlauea to OpenStreetMap</h2>
+  <div class="dmc-grid">
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-15.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-15.jpg" alt="Left, a shaded-relief map of Kīlauea&#x27;s summit dotted with 19,535 earthquake epicenters since 2019; right, a north-south cross-section through Halema‘uma‘u showing where the earthquakes cluster with depth." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 15 · Inside out</div>
+        <div class="dmc-title">Inside Kīlauea</div>
+        <div class="dmc-pitch">The earthquakes beneath Kīlauea&#x27;s summit in cross-section, sketching the magma plumbing that the surface hides.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-16.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-16.jpg" alt="Map of Washington with colored dots at 28 outdoor places that won KING 5 Evening&#x27;s Best Northwest Escapes viewer poll from 2015 to 2026, bigger for more wins. Deception Pass has won most, 8 times; Ocean Shores 5, Chuckanut Drive 3, Lake Chelan 3, Snoqualmie Falls 3, Cape Disappointment 2. A list beside the map ranks them." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 16 · Collaborative map</div>
+        <div class="dmc-title">Washington&#x27;s favorite outdoors, by vote</div>
+        <div class="dmc-pitch">Made by the people who voted: every outdoor winner of KING 5 Evening&#x27;s Best Northwest Escapes viewer poll I could find, bigger the more it won. Deception Pass leads.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-17.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-17.jpg" alt="Night satellite image of Nevada and Utah: bright patches at Las Vegas, Reno, and the Salt Lake City to Provo corridor, faint specks for small towns, and a dark expanse around Great Basin National Park, circled in gold. Below, a profile of brightness along a line from Las Vegas through Wheeler Peak to Salt Lake City, high at both ends and near zero in the middle." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 17 · Light &amp; dark</div>
+        <div class="dmc-title">Great Basin&#x27;s dark sky</div>
+        <div class="dmc-pitch">Night lights across Nevada and Utah, with Great Basin National Park&#x27;s dark sky set against the glow of Las Vegas and Salt Lake City.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-18.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-18.jpg" alt="Map of Nevada&#x27;s census blocks: 77% of the land is pale, where nobody lived in 2020; light gray blocks hold a few people each; black specks around Las Vegas, Reno and the towns hold nine in ten Nevadans on 0.4% of the land." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 18 · NULL</div>
+        <div class="dmc-title">Nobody lives here</div>
+        <div class="dmc-pitch">Nevada&#x27;s 2020 census blocks with a population of zero. Most of the state is null.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-19.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-19.jpg" alt="Map of Yakima County&#x27;s 1,215 hop fields, each ruled into trellis rows colored in Washington&#x27;s statewide mix of hop smells, with a close-up of the yards near Union Gap, over shaded relief of the valley and its ridges, with the Yakima River, beside bars of Washington&#x27;s 2025 hop acreage by each variety&#x27;s leading aroma: tropical fruit 6,351 acres, citrus 5,753 acres, resinous 5,021 acres, spice 4,166 acres." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 19 · Smell</div>
+        <div class="dmc-title">What the Yakima Valley smells like</div>
+        <div class="dmc-pitch">Washington&#x27;s hop fields, and its hop acreage sorted by the first smell HopLove lists for each variety: tropical fruit, citrus, resin, spice, berry and more.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-20.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-20.jpg" alt="Hexagon map of western North America shaded by how many kangaroo rat records each holds, 96,883 in all across 1,694 hexagons; the busiest holds 3,143. Death Valley is marked." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 20 · Hexagons</div>
+        <div class="dmc-title">Kangaroo rats in hexagons</div>
+        <div class="dmc-pitch">Every Dipodomys observation across the Southwest and Great Basin, binned into H3 hexagons. A return to my 2023 Day 1.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-21.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-21.jpg" alt="Map of Groveland and Big Oak Flat, California, drawn only from OpenStreetMap: 3,437 buildings, roads, paths and named places, each colored by the year it was last edited, from pale tan for 2007 to dark plum for 2026. A panel says 101 volunteers drew it, 4,488 features in all, 39% untouched since first drawn, with a bar chart of features by year last edited; the busiest year is 2023." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 21 · OpenStreetMap</div>
+        <div class="dmc-title">Groveland, by volunteers</div>
+        <div class="dmc-pitch">Everything OpenStreetMap knows about Groveland and Big Oak Flat, the towns where I grew up, colored by the year a volunteer last touched it, and how many people drew it.</div>
+      </div>
+    </a>
+  </div>
+  <h2>The last stretch: projections to pen and paper</h2>
+  <div class="dmc-grid">
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-22.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-22.jpg" alt="A round world map centered on Groveland, California, where I grew up, in an azimuthal equidistant projection, with red lines out to the 37 countries I&#x27;ve been to and a few places closer to home, Lakewood among them. Africa: 7 countries, 14,433 to 16,395 km; Caribbean: 11 countries, 4,422 to 6,252 km; Europe: 14 countries, 6,699 to 10,649 km. Reno (191 km), Ruby Mountains (517 km), Lakewood (1,054 km), Canada (1,383 km), Brenham (2,352 km), Mexico (3,716 km), New Zealand (11,267 km), Australia (12,103 km), Indonesia (13,598 km). The farthest is Zimbabwe." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 22 · Projections</div>
+        <div class="dmc-title">The world from Groveland</div>
+        <div class="dmc-pitch">An azimuthal equidistant map centered on Groveland, where I grew up, with straight lines (true distances) to everywhere I&#x27;ve been since, from Namibia to Guadeloupe.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-23.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-23.jpg" alt="Map of Cascadia with gold circles at 45 breweries, sized by how many different beers I&#x27;ve had from each in a year of Untappd check-ins; Kings &amp; Daughters Brewery is biggest with 16. A list beside it names 22 breweries farther away." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 23 · Taste</div>
+        <div class="dmc-title">Every brewery I&#x27;ve checked into</div>
+        <div class="dmc-pitch">My Untappd check-ins, mapped by brewery, sized by how many beers.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-24.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-24.jpg" alt="Map of the Tuolumne River basin above Modesto, 4,742 square kilometers of the Sierra Nevada, with 3,825 kilometers of streams drawn thicker by stream order up to order 6, and the five SIERRA-FLOW gages marked." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 24 · Network</div>
+        <div class="dmc-title">Every stream that reaches Modesto</div>
+        <div class="dmc-pitch">The whole Tuolumne river network above Modesto, by stream order, with the SIERRA-FLOW gages on it.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-25.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-25.jpg" alt="A helicorder of the afternoon of January 8, 2011, at seismic station KDK beside the Seahawks&#x27; stadium: 26 wiggly lines, ten minutes each, from 12:50 to 5:10 PM. The biggest burst, at 4:42 PM, is labeled as Marshawn Lynch&#x27;s 67-yard touchdown run, the Beast Quake." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 25 · Is this a map?</div>
+        <div class="dmc-title">The Beast Quake</div>
+        <div class="dmc-pitch">January 8, 2011: the Seahawks&#x27; playoff win over the Saints on the seismometer across the street from the stadium, ten minutes a line, with Marshawn Lynch&#x27;s 67-yard touchdown run shaking the ground at 4:42 PM. A map of a game, or of a place?</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-26.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-26.jpg" alt="Map of Lake Tahoe&#x27;s floor shaded blue by depth to 497 m, with 100 m contours, the deepest point and TERC&#x27;s two Secchi stations marked. Beside it, bars hanging down from the surface show how far a Secchi disk could be seen each year since 1968: 31 m at best in 1968, 18 m at worst in 2021, and not at the 29.7 m target since 1970." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 26 · Water</div>
+        <div class="dmc-title">Lake Tahoe, clear and deep</div>
+        <div class="dmc-pitch">Tahoe&#x27;s floor, 497 m at the deepest, and beside it the lake&#x27;s clarity on the same downward axis: how far a Secchi disk could be seen each year since 1968, from the record my SECCHI project keeps.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-27.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-27.jpg" alt="Dark map of Washington State where each half-kilometer cell glows by how many of Overture Maps&#x27; 3,817,375 building footprints it holds, brightest around Puget Sound and Spokane. A panel shows who drew the footprints, led by OpenStreetMap volunteers at 72%." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 27 · New tool</div>
+        <div class="dmc-title">Every building in Washington</div>
+        <div class="dmc-pitch">All 3.8 million building footprints in Washington from Overture Maps, counted into half-kilometer cells by one DuckDB query run straight against Overture&#x27;s files on S3. New to me.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-28.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-28.jpg" alt="Map of the Pacific Northwest showing how strongly people felt the magnitude 6.8 Nisqually earthquake of February 28, 2001. Small squares colored from pale (weak) to dark red (very strong) cover western Washington, strongest around the epicenter at the south end of Puget Sound near Olympia, Lakewood and Tacoma, and fading toward Portland, Vancouver and Spokane. Based on 10,725 &#x27;Did You Feel It?&#x27; reports." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 28 · Feeling</div>
+        <div class="dmc-title">Did you feel it? Nisqually, 2001</div>
+        <div class="dmc-pitch">The M6.8 Nisqually earthquake of February 28, 2001, as the people who felt it reported it, from USGS &quot;Did You Feel It?&quot;.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-29.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-29.jpg" alt="Map of Mount Rainier with every 30 meter patch colored by the date its snow melted in 2026, from tan in April in the valleys to deep blue in August high on the mountain, with the glaciers in white where the snow never melted. Below, Paradise SNOTEL&#x27;s snow water equivalent through the 2026 water year against its median, with the satellite&#x27;s melt-out date for Paradise marked." loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 29 · Raster</div>
+        <div class="dmc-title">When Rainier&#x27;s snow melted</div>
+        <div class="dmc-pitch">Every 30 m patch of Mount Rainier colored by the day it lost its snow in 2026, from Sentinel-2&#x27;s scene classification, with the glaciers that never melted in white and Paradise&#x27;s SNOTEL record from my snowpack tracker as ground truth.</div>
+      </div>
+    </a>
+    <a class="dmc-card" href="https://brooksgroves.com/30DayMapChallenge/2026/share/day-30.html">
+      <img src="/blog/img/30daymapchallenge-2026/day-30.jpg" alt="A hand-drawn black-ink map on a white Iron Door Saloon cocktail napkin, the saloon&#x27;s blue and yellow logo on the right half. Across the top: &quot;If you hit the third cattle guard&quot;. Highway 395 runs down the middle past Bridgeport, Lee Vining and Mammoth, with arrows to Reno at the top and &quot;395 South, L.A. sucks&quot; at the bottom. Up north: Twin Lakes and Buckeye, Travertine past &quot;go around the guns&quot;, and a spring beyond a gate marked &quot;close the gate, rancher hates hippies&quot;. Mono Lake sits under &quot;Save Mono Lake&quot;. On the left, Tioga Pass and Highway 120 climb through hand-drawn mountains from the Iron Door in Groveland, where a bubble asks &quot;You?&quot;, with an arrow to SF. Down south, past the Green Church, Benton Crossing Road crosses three numbered cattle guards, and a dirt track at the third leads to Wild Willy&#x27;s. Around the edges: &quot;Don&#x27;t let the cows out&quot;, Area 51 with &quot;don&#x27;t go to the base&quot;, a peace sign over &quot;No nukes&quot;, a smiley face, and &quot;Leave it better than you found it!&quot;" loading="lazy" decoding="async">
+      <div class="dmc-text">
+        <div class="dmc-day">Day 30 · Pen &amp; paper</div>
+        <div class="dmc-title">If you hit the third cattle guard</div>
+        <div class="dmc-pitch">The hot-spring napkin from my memoir, redrawn by hand in bar ink on a cocktail napkin: the springs from Bridgeport to Long Valley and the roads between them, with directions counted in cattle guards, not miles. Drawn from memory, like the original.</div>
+      </div>
+    </a>
+  </div>
+
+  <h2>Behind the maps</h2>
+  <p>All of the code, data notes and finished maps are on GitHub in <a href="https://github.com/bdgroves/30DayMapChallenge/tree/main/2026" target="_blank" rel="noopener">bdgroves/30DayMapChallenge</a>, and the <a href="https://brooksgroves.com/30DayMapChallenge/2026/" target="_blank" rel="noopener">2026 gallery</a> has every map at full size with share buttons. My <a href="https://github.com/bdgroves/30DayMapChallenge/tree/main/2023" target="_blank" rel="noopener">2023</a> and <a href="https://github.com/bdgroves/30DayMapChallenge/tree/main/2024" target="_blank" rel="noopener">2024</a> maps are there too. Day 20's kangaroo rats are a return to my 2023 Day 1.</p>
+  <p>Thanks to everyone who liked, shared or replied along the way, and to the organizers who put the challenge together every year. Which one was your favorite? Let me know.</p>
+
+  <div class="aside">
+    <div class="aside-title">Links</div>
+    <p><a href="https://brooksgroves.com/30DayMapChallenge/2026/" target="_blank" rel="noopener">The 2026 gallery</a> &middot; <a href="https://github.com/bdgroves/30DayMapChallenge/tree/main/2026" target="_blank" rel="noopener">The code and data on GitHub</a> &middot; <a href="https://30daymapchallenge.com/" target="_blank" rel="noopener">#30DayMapChallenge: the official themes</a></p>
+  </div>
+
+  </div>
+
+  <div class="article-footer">
+    <div class="article-footer-author">Brooks Groves · Lakewood, WA</div>
+    <div class="article-footer-nav">
+      <a href="/blog/">← All Posts</a>
+      <a href="/writing/">Writing</a>
+      <a href="/tags.html">Tags</a>
+    </div>
+  </div>
+</div>
+
+<!-- KEEP-READING:START (generated by scripts/keep_reading.py; edit tags.html) -->
+<section class="keep-reading" aria-label="Keep reading">
+  <div class="kr-inner">
+    <div class="kr-head"><h2 class="kr-label">Keep reading</h2><a class="kr-more" href="/topics/maps/">More in 🗺️ Maps &amp; Flyovers &rarr;</a></div>
+    <div class="kr-grid">
+      <a class="kr-card" href="/blog/pixi-post.html">
+        <img class="kr-img" src="/img-opt/blog/img/pixi-post/og.jpg.w640.webp" alt="" loading="lazy" decoding="async" srcset="/img-opt/blog/img/pixi-post/og.jpg.w640.webp 640w, /img-opt/blog/img/pixi-post/og.jpg.w1600.webp 1600w" sizes="(max-width: 600px) 92vw, 400px">
+        <span class="kr-meta">March 2026</span>
+        <span class="kr-title">📦 Why I Switched to pixi for Python and R Environments</span>
+        <span class="kr-dek">After years of conda headaches, a cleaner path to reproducible geospatial work.</span>
+      </a>
+      <a class="kr-card" href="/blog/sentinel-stockpile-post.html">
+        <img class="kr-img" src="/img-opt/images/features/sentinel-stockpile.jpg.w640.webp" alt="" loading="lazy" decoding="async" srcset="/img-opt/images/features/sentinel-stockpile.jpg.w640.webp 640w, /img-opt/images/features/sentinel-stockpile.jpg.w1600.webp 1600w" sizes="(max-width: 600px) 92vw, 400px">
+        <span class="kr-meta">April 2026</span>
+        <span class="kr-title">🛰️ Sentinel Stockpile — The Economy You Can See From Space</span>
+        <span class="kr-dek">12 months of Sentinel-2 imagery tracking lumber stockpiles at the Port of Longview.</span>
+      </a>
+      <a class="kr-card" href="/blog/biggest-generation-post.html">
+        <img class="kr-img" src="/img-opt/blog/img/biggest-generation/og.jpg.w640.webp" alt="" loading="lazy" decoding="async" srcset="/img-opt/blog/img/biggest-generation/og.jpg.w640.webp 640w, /img-opt/blog/img/biggest-generation/og.jpg.w1600.webp 1600w" sizes="(max-width: 600px) 92vw, 400px">
+        <span class="kr-meta">Nov 2, 2026</span>
+        <span class="kr-title">👥 Who’s the Biggest Generation Where You Live?</span>
+        <span class="kr-dek">Inspired by Jake Steinberg’s map in The Twin Cities in 50 Maps: every census tract in the Seattle metro and in Tuolumne County, California, as a dot colored by its largest generation. Millennials lead 408 of 863 Seattle-area tracts, Gen Z fills the University of Washington, Gen Alpha gathers in the Pierce County suburbs, and Boomers lead 15 of Tuolumne’s 18 tracts, where one of the exceptions is a state prison.</span>
+      </a>
+    </div>
+  </div>
+</section>
+<!-- KEEP-READING:END -->
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <p class="footer-name">Brooks Groves</p>
+      <p class="footer-tagline">&#127794; Made in the Pacific Northwest &middot; &#10084;&#65039; Born in <a href="https://en.wikipedia.org/wiki/Tuolumne_County,_California" target="_blank" rel="noopener">Tuolumne County, CA</a></p>
+    </div>
+
+    <div class="footer-connect">
+      <div class="fc-label">Connect</div>
+      <div class="social-row">
+          <a class="social-btn" href="mailto:contact@brooksgroves.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M1.5 4.5h21v15h-21v-15Zm1.8 1.8v.4L12 12.9l8.7-6.2v-.4H3.3Zm0 2.6v9.1h17.4V8.9L12 15.1 3.3 8.9Z"/></svg></a>
+          <a class="social-btn" href="https://github.com/bdgroves" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+          <a class="social-btn" href="https://x.com/bdgroves" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></svg></a>
+          <a class="social-btn" href="https://www.linkedin.com/in/brooks-groves-gisp-137219139/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><span class="social-word" aria-hidden="true">in</span></a>
+          <a class="social-btn" href="https://bsky.app/profile/bdgroves.bsky.social" target="_blank" rel="noopener" aria-label="Bluesky" title="Bluesky"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026"/></svg></a>
+          <a class="social-btn" href="https://www.strava.com/athletes/59148" target="_blank" rel="noopener" aria-label="Strava" title="Strava"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169"/></svg></a>
+          <a class="social-btn" href="https://untappd.com/user/bdgroves" target="_blank" rel="noopener" aria-label="Untappd" title="Untappd"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 13.299l-5.824 8.133c-.298.416-.8.635-1.308.572-.578-.072-1.374-.289-2.195-.879S.392 19.849.139 19.323a1.402 1.402 0 0 1 .122-1.425l5.824-8.133a3.066 3.066 0 0 1 1.062-.927l1.146-.604c.23-.121.436-.283.608-.478.556-.631 2.049-2.284 4.696-4.957l.046-.212a.134.134 0 0 1 .096-.1l.146-.037a.135.135 0 0 0 .101-.141l-.015-.18a.13.13 0 0 1 .125-.142c.176-.005.518.046 1.001.393s.64.656.692.824a.13.13 0 0 1-.095.164l-.175.044a.133.133 0 0 0-.101.141l.012.15a.131.131 0 0 1-.063.123l-.186.112c-1.679 3.369-2.764 5.316-3.183 6.046a2.157 2.157 0 0 0-.257.73l-.205 1.281A3.074 3.074 0 0 1 11 13.3zm12.739 4.598l-5.824-8.133a3.066 3.066 0 0 0-1.062-.927l-1.146-.605a2.138 2.138 0 0 1-.608-.478 50.504 50.504 0 0 0-.587-.654.089.089 0 0 0-.142.018 97.261 97.261 0 0 1-1.745 3.223 1.42 1.42 0 0 0-.171.485 3.518 3.518 0 0 0 0 1.103l.01.064c.075.471.259.918.536 1.305l5.824 8.133c.296.413.79.635 1.294.574a4.759 4.759 0 0 0 2.209-.881 4.762 4.762 0 0 0 1.533-1.802 1.4 1.4 0 0 0-.122-1.425zM8.306 3.366l.175.044a.134.134 0 0 1 .101.141l-.012.15a.13.13 0 0 0 .063.123l.186.112c.311.623.599 1.194.869 1.721.026.051.091.06.129.019.437-.469.964-1.025 1.585-1.668a.137.137 0 0 0 .003-.19c-.315-.322-.645-.659-1.002-1.02l-.046-.212a.13.13 0 0 0-.096-.099l-.146-.037a.135.135 0 0 1-.101-.141l.015-.18a.13.13 0 0 0-.123-.142c-.175-.005-.518.045-1.002.393-.483.347-.64.656-.692.824a.13.13 0 0 0 .095.164z"/></svg></a>
+          <a class="social-btn" href="https://www.goodreads.com/user/show/9579797" target="_blank" rel="noopener" aria-label="Goodreads" title="Goodreads"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.346.026c.422-.083.859.037 1.179.325.346.284.55.705.557 1.153-.023.457-.247.88-.612 1.156l-2.182 1.748a.601.601 0 0 0-.255.43.52.52 0 0 0 .11.424 5.886 5.886 0 0 1 .832 6.58c-1.394 2.79-4.503 3.99-7.501 2.927a.792.792 0 0 0-.499-.01c-.224.07-.303.18-.453.383l-.014.02-.941 1.254s-.792.985.457.935c3.027-.119 3.817-.119 5.439-.01 2.641.18 3.806 1.903 3.806 3.275 0 1.623-1.036 3.383-3.809 3.383a117.46 117.46 0 0 0-5.517-.03c-.31.005-.597.013-.835.02-.228.006-.41.011-.52.011-.712 0-1.648-.186-1.66-1.068-.008-.729.624-1.12 1.11-1.172.43-.045.815.007 1.24.064.252.034.518.07.815.088.185.011.366.025.552.038.53.038 1.102.08 1.926.087.427.005.759.01 1.025.015.695.012.941.016 1.28-.015 1.248-.112 1.832-.61 1.832-1.376 0-.805-.584-1.264-1.698-1.414-1.564-.213-2.33-.163-3.72-.074a87.66 87.66 0 0 1-1.669.095c-.608.029-2.449.026-2.682-1.492-.053-.416-.073-1.116.807-2.325l.75-1.003c.36-.49.582-.898.053-1.559 0 0-.39-.468-.52-.638-1.215-1.587-1.512-4.08-.448-6.114 1.577-3.011 5.4-4.26 8.37-2.581.253.143.438.203.655.163.201-.032.27-.167.363-.344.02-.04.042-.082.067-.126.004-.01.241-.465.535-1.028l.734-1.41a1.493 1.493 0 0 1 1.041-.785ZM9.193 13.243c1.854.903 3.912.208 5.254-2.47 1.352-2.699.827-5.11-1.041-6.023C10.918 3.537 8.81 5.831 8.017 7.41c-1.355 2.698-.717 4.886 1.147 5.818Z"/></svg></a>
+          <a class="social-btn" href="https://ko-fi.com/brooksgroves" target="_blank" rel="noopener" aria-label="Tip Jar" title="Tip Jar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.351 2.715c-2.7 0-4.986.025-6.83.26C2.078 3.285 0 5.154 0 8.61c0 3.506.182 6.13 1.585 8.493 1.584 2.701 4.233 4.182 7.662 4.182h.83c4.209 0 6.494-2.234 7.637-4a9.5 9.5 0 0 0 1.091-2.338C21.792 14.688 24 12.22 24 9.208v-.415c0-3.247-2.13-5.507-5.792-5.87-1.558-.156-2.65-.208-6.857-.208m0 1.947c4.208 0 5.09.052 6.571.182 2.624.311 4.13 1.584 4.13 4v.39c0 2.156-1.792 3.844-3.87 3.844h-.935l-.156.649c-.208 1.013-.597 1.818-1.039 2.546-.909 1.428-2.545 3.064-5.922 3.064h-.805c-2.571 0-4.831-.883-6.078-3.195-1.09-2-1.298-4.155-1.298-7.506 0-2.181.857-3.402 3.012-3.714 1.533-.233 3.559-.26 6.39-.26m6.547 2.287c-.416 0-.65.234-.65.546v2.935c0 .311.234.545.65.545 1.324 0 2.051-.754 2.051-2s-.727-2.026-2.052-2.026m-10.39.182c-1.818 0-3.013 1.48-3.013 3.142 0 1.533.858 2.857 1.949 3.897.727.701 1.87 1.429 2.649 1.896a1.47 1.47 0 0 0 1.507 0c.78-.467 1.922-1.195 2.623-1.896 1.117-1.039 1.974-2.364 1.974-3.897 0-1.662-1.247-3.142-3.039-3.142-1.065 0-1.792.545-2.338 1.298-.493-.753-1.246-1.298-2.312-1.298"/></svg></a>
+      </div>
+    </div>
+
+    <div class="footer-pagelinks">
+      <div class="fc-label">More here</div>
+      <div class="pagelink-row">
+        <a href="/blog/index.html">Blog</a>
+        <a href="/geospatial.html">Geospatial</a>
+      </div>
+    </div>
+
+    <div class="footer-contact">
+      <div class="fc-item">
+        <div class="fc-label">Email</div>
+        <a href="mailto:contact@brooksgroves.com">contact@brooksgroves.com</a>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Based in</div>
+        <div class="fc-value">Lakewood, Washington</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Timezone</div>
+        <div class="fc-value">Pacific &middot; UTC&minus;8 / &minus;7</div>
+      </div>
+      <div class="fc-item">
+        <div class="fc-label">Replies</div>
+        <div class="fc-value">Usually within a few days</div>
+      </div>
+    </div>
+
+    <p class="footer-bottom">
+      <span>&copy; 2026 Brooks Groves &middot; Lakewood, WA &middot; <a href="/about.html">About</a> &middot; <a href="/tags.html">Tags</a></span>
+      <a href="#top">&uarr; Back to top</a>
+    </p>
+  </div>
+</footer>
+<script>
+// Dark mode toggle. The no-flash script in <head> sets the initial state;
+// this handles clicks and keeps the button's label truthful.
+(function(){
+  var root = document.documentElement;
+  var btn  = document.getElementById('theme-toggle');
+  if (!btn) return;
+  function sync(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    btn.textContent = dark ? '\u25D0' : '\u25D1';
+    // Describe what the button will DO, not what the page currently is —
+    // a screen reader user needs the action, not the status.
+    var label = dark ? 'Switch to light mode' : 'Switch to dark mode';
+    btn.setAttribute('aria-label', label);
+    btn.setAttribute('title', label);
+  }
+  sync();
+  btn.addEventListener('click', function(){
+    var dark = root.getAttribute('data-theme') === 'dark';
+    if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme','dark');
+    try { localStorage.setItem('bg_theme', dark ? 'light' : 'dark'); } catch(e) {}
+    sync();
+  });
+})();
+</script>
+<script src="/js/post.js" defer></script>
+<!-- ANALYTICS:START --><script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "6735f78105644b35a5b026c6e3c2b72a"}'></script><!-- ANALYTICS:END -->
+</body>
+</html>
